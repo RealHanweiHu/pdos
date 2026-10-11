@@ -26,7 +26,7 @@ from pdos_next.domain.capa_effectiveness import fact_consumption, fact_service
 from pdos_next.domain.professional_authority.schemas import DefinitionReference
 from pdos_next.domain.quality_execution import evidence
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Product
+from pdos_next.models import Category, Confirmation, Product
 from pdos_next.schemas.verification.contracts import SourceRef
 from pdos_next.service import digest
 
@@ -34,7 +34,7 @@ from pdos_next.service import digest
 def rejects(code, fn):
     with pytest.raises(DomainError) as error:
         fn()
-    assert error.value.code == code
+    assert error.value.reason == code
 
 
 def source_line(monkeypatch, f, text):
@@ -229,6 +229,8 @@ def test_actual_common_capture_is_first_before_phase_check_or_sql(monkeypatch, k
     proof = Confirmation(
         id=uid("root-integrated-" + kind),
         tenant_id=f.ctx.tenant_id,
+        category_id=f.ctx.category_id,
+        subject_type="product",
         product_id=f.product.id,
         actor_id=f.ctx.actor_id,
         subject_id=f.product.id,
@@ -458,6 +460,8 @@ def test_actual_common_tail_flushes_fact_before_deferred_current_pointer(monkeyp
         proof = Confirmation(
             id=uid("tail-proof-" + kind),
             tenant_id=f.ctx.tenant_id,
+            category_id=f.ctx.category_id,
+            subject_type="product",
             product_id=f.product.id,
             actor_id=f.ctx.actor_id,
             subject_id=f.product.id,
@@ -497,13 +501,25 @@ def test_actual_common_tail_flushes_fact_before_deferred_current_pointer(monkeyp
         assert args[3] == commands.SPECS[kind][2]
         return SimpleNamespace(id=uid("actual-tail-receipt-" + kind))
 
+    original_get = f.s.get
+    monkeypatch.setattr(
+        f.s,
+        "get",
+        lambda model, identity, **kw: (
+            SimpleNamespace(id=f.ctx.category_id, tenant_id=f.ctx.tenant_id)
+            if model is Category
+            else original_get(model, identity, **kw)
+        ),
+    )
     monkeypatch.setattr(f.s, "scalar", scalar)
     monkeypatch.setattr(f.s, "flush", flush)
-    monkeypatch.setattr(common, "require_access", lambda *_, **__: None)
+    monkeypatch.setattr(common, "require_access", lambda *_, **__: f.product)
     monkeypatch.setattr(common, "check_run", lambda *_, **__: None)
     monkeypatch.setattr(common, "check_qualification", lambda *_, **__: None)
     monkeypatch.setattr(common, "source_for", lambda *_, **__: None)
+    monkeypatch.setattr(common, "prove_sources", lambda *_, **__: None)
     monkeypatch.setattr(common, "append_receipt", receipt)
+    monkeypatch.setattr(common, "remember_key", lambda *_, **__: None)
     monkeypatch.setattr(common, "receipt_view", lambda r: {"id": str(r.id)})
     if kind == "rule":
         monkeypatch.setattr(capa_rule_import, "require_access", common.require_access)

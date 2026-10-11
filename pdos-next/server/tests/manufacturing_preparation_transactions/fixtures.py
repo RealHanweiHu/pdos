@@ -98,7 +98,13 @@ def source_ref(identity, text, line=1):
 def manufacturing_case(setup, configuration, tmp_path):
     # This exact guard must precede any local synthetic issuer enabling.
     verify_test_target(setup.engine)
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.ctx.actor_id,
+        requester_id=setup.ctx.requester_id,
+        category_id=setup.category,
+    ) as session:
         project, _, definition = projects._project(
             session, setup.ctx, setup.product, UUID(configuration["project"])
         )
@@ -203,7 +209,13 @@ def bootstrap_authority(work):
             "sources": [source_ref(work.credential_source, work.credential_text)],
             "reason": "Current bounded synthetic authority; no real manufacturing qualification",
         }
-        with tenant_session(setup.engine, setup.tenant) as session:
+        with tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.ctx.actor_id,
+            requester_id=setup.ctx.requester_id,
+            category_id=setup.category,
+        ) as session:
             receipts[kind] = import_professional_fact(
                 session,
                 setup.ctx,
@@ -213,7 +225,13 @@ def bootstrap_authority(work):
                 command_id=uuid4(),
             )
     work.authority_receipts = receipts
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.ctx.actor_id,
+        requester_id=setup.ctx.requester_id,
+        category_id=setup.category,
+    ) as session:
         facts = list(
             session.scalars(
                 select(ProfessionalFact).where(
@@ -312,7 +330,7 @@ def inputs(work, kind, body):
     command = cmd(setup, f"npi.{kind}.record", deepcopy(body))
     before = deepcopy(command)
     response = setup.client.post(
-        f"/v1/products/{setup.product}/manufacturing-preparations/inputs",
+        f"/v1/categories/{setup.category}/products/{setup.product}/manufacturing-preparations/inputs",
         headers=setup.headers,
         json=command,
     )
@@ -344,7 +362,13 @@ def prepared(work, material):
 
 
 def proof(work, command):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.ctx.actor_id,
+        requester_id=work.setup.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         row = session.scalar(
             select(Confirmation).where(
                 Confirmation.token_hash == digest(command["payload"]["confirmation_token"])
@@ -356,7 +380,7 @@ def proof(work, command):
 
 def fixed(work, kind, receipt):
     response = work.setup.client.get(
-        f"/v1/products/{work.setup.product}/manufacturing-preparations/{kind}/{receipt['subject_id']}"
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/manufacturing-preparations/{kind}/{receipt['subject_id']}"
         f"?revision={receipt['subject_revision']}",
         headers=work.setup.headers,
     )
@@ -366,7 +390,7 @@ def fixed(work, kind, receipt):
 
 def history(work):
     response = work.setup.client.get(
-        f"/v1/products/{work.setup.product}/manufacturing-preparations"
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/manufacturing-preparations"
         f"?project_id={work.project_id}&process_id={work.process_ref['id']}",
         headers=work.setup.headers,
     )
@@ -375,7 +399,13 @@ def history(work):
 
 
 def effect_counts(work):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.ctx.actor_id,
+        requester_id=work.setup.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         return {
             model.__tablename__: session.scalar(
                 select(func.count()).select_from(model).where(model.tenant_id == work.setup.tenant)
@@ -386,7 +416,13 @@ def effect_counts(work):
 
 def effect_hashes(work):
     """Hash all tenant rows and columns, including Product epoch and T1 consumption."""
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.ctx.actor_id,
+        requester_id=work.setup.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         return {
             model.__tablename__: digest(
                 sorted(
@@ -410,7 +446,13 @@ def parents(work):
     # Successfully adding a consuming document reference legitimately advances
     # Product.lifecycle_epoch. Check every other Product business column and all
     # ten parent tables here; effect_hashes retains the epoch for no-effect checks.
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.ctx.actor_id,
+        requester_id=work.setup.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         return {
             model.__tablename__: digest(
                 sorted(
@@ -433,7 +475,13 @@ def parents(work):
 
 def assert_atom(work, command, receipt):
     setup = work.setup
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.ctx.actor_id,
+        requester_id=setup.ctx.requester_id,
+        category_id=setup.category,
+    ) as session:
         row = session.get(PreparationVersion, UUID(receipt["subject_id"]))
         saved = session.get(Receipt, UUID(receipt["id"]))
         assert row is not None and saved is not None

@@ -1,0 +1,24 @@
+{
+  "scope": "M2 public research",
+  "database_used": false,
+  "external_network_calls": false,
+  "model_calls": false,
+  "verification": {
+    "pytest": "69 passed in 2.84s",
+    "ruff": "All checks passed",
+    "public_pdf": "actual fixed-image isolated container, synthetic PDF"
+  },
+  "files": {
+    "pdos-next/server/pdos_next/research/__init__.py": "e84b0071d9f95df592e0d6f177d9f8c23c97dda389cd5227c75e61ca3d34eeb0",
+    "pdos-next/server/pdos_next/research/pdf.py": "7c4aae6bbf05b44deba128187e14d1500485ef2ebe2c16f79a81ed19cd1470aa",
+    "pdos-next/server/pdos_next/research/search.py": "5877a419dd122cbf43c34413f7fabc58ca13a94dfe97e4f1c471832da6c2c6e2",
+    "pdos-next/server/pdos_next/research/service.py": "10b574caea6343c6846db238b1ae01dbd0d3fb6eeeff2d0a99f3a446fdc770ff",
+    "pdos-next/server/pdos_next/research/tools.py": "1f738035c2b7254240387353376b515588a33ba375a3ca008bb2c595474764bf",
+    "pdos-next/server/pdos_next/research/types.py": "ace279780b0ff68d0351d8bf5fd49e9f19c937051e572da1d08e8ac9f826a088",
+    "pdos-next/server/pdos_next/research/web.py": "f9773e44fcf33a357b791cda90d6f2e6a48bc47f6239f2ed68602be64c6eb41f",
+    "pdos-next/server/tests/agent_kernel/research/__init__.py": "39bfe228b220bfed2b6903672a2eaff9f4f3bdc4a7888c2a14f74de4d4a28d63",
+    "pdos-next/server/tests/agent_kernel/research/test_http_ports.py": "3c7f06441a4e4ae57689a5b65b7d3f5a351a478e1d48fcccc3468b13be72b39d",
+    "pdos-next/server/tests/agent_kernel/research/test_pdf_and_coverage.py": "3473c88b25b7f993223b3bc624792454deb754c36e9f750fff92de8f9b968830",
+    "pdos-next/server/tests/agent_kernel/research/test_research.py": "a079cb97c3be563b2c4aca415da657e94dc6bd4c4b572dcf5ae8d4b08422ac73"
+  }
+}

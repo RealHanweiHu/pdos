@@ -4,17 +4,19 @@ import hashlib
 import json
 from copy import deepcopy
 from dataclasses import dataclass
-from datetime import UTC, datetime
 from uuid import UUID, uuid4
 from weakref import WeakKeyDictionary
 
-from sqlalchemy import or_, select
+from sqlalchemy import select
 
 from pdos_next import change_controlled_store as models
 from pdos_next import change_order_store as outputs
 from pdos_next.change_implementation_owner import _atom_proof, common_group
 from pdos_next.change_order_service import _one, current_fixed, snapshot
+from pdos_next.clock import deadline_current, earliest_deadline
+from pdos_next.clock import now as server_now
 from pdos_next.contracts import Command
+from pdos_next.database import category_for_product
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.capa_verification.service import load_followup_basis
 from pdos_next.domain.change_control.rules import digest
@@ -22,7 +24,6 @@ from pdos_next.domain.change_execution import service as old
 from pdos_next.domain.change_execution.graph import OwnerReader
 from pdos_next.domain.configurations.service import _merge_reads
 from pdos_next.domain.professional_authority import service as professional
-from pdos_next.domain.professional_authority.models import ProfessionalFact
 from pdos_next.domain.projects.models import Project
 from pdos_next.domain.quality_followup.evidence import _constant, _pairs
 from pdos_next.errors import DomainError
@@ -33,7 +34,7 @@ from pdos_next.service import digest as common_digest
 
 
 def clock():
-    return datetime.now(UTC)
+    return server_now()
 
 
 def require(ok, code="CONTROLLED_MATERIAL_MISMATCH", status=409):
@@ -83,7 +84,7 @@ def _project(s, ctx, scope):
     )
     require(
         row.status == "active"
-        and (row.visibility == "product" or row.owner_id == ctx.requester_id),
+        and (row.visibility != "private" or row.owner_id == ctx.requester_id),
         "FORBIDDEN_SCOPE",
         403,
     )
@@ -107,7 +108,7 @@ def _caller(s, ctx, pid, *, write):
         s,
         Grant,
         Grant.tenant_id == ctx.tenant_id,
-        Grant.product_id == pid,
+        Grant.category_id == category_for_product(pid),
         Grant.principal_id == ctx.requester_id,
     )
     require(
@@ -118,7 +119,7 @@ def _caller(s, ctx, pid, *, write):
         "NAMED_PERSON_REQUIRED",
         403,
     )
-    require((not write or grant.can_write) and grant.expires_at is not None, "FORBIDDEN_SCOPE", 403)
+    require(not write or grant.can_write, "FORBIDDEN_SCOPE", 403)
     return (
         actor.id,
         actor.active,
@@ -131,74 +132,19 @@ def _caller(s, ctx, pid, *, write):
 
 
 def authority(s, ctx, pid, scope, operation, purpose, *, write=True):
-    evaluated = clock()
     result = old._authority(s, ctx, pid, scope, operation, purpose, write=write)
-    require(
-        bool(result.get("fact_refs")) and result.get("valid_until"), "INTEGRATION_REQUIRED", 503
-    )
-    # All future scope boundaries are conservative even if not presently selected.
-    # This does not use caller/Grant remaining TTL as an objective material hash.
-    facts = list(
-        s.scalars(
-            select(ProfessionalFact)
-            .where(
-                ProfessionalFact.tenant_id == ctx.tenant_id,
-                ProfessionalFact.product_id == pid,
-                ProfessionalFact.subject_id == ctx.requester_id,
-                or_(
-                    ProfessionalFact.project_id == scope.project_id,
-                    ProfessionalFact.project_id.is_(None),
-                ),
-            )
-            .limit(1001)
-            .execution_options(populate_existing=True, autoflush=False)
-        )
-    )
-    require(len(facts) <= 1000, "PROFESSIONAL_SCOPE_LIMIT", 422)
-    at = clock()
-    ends = [datetime.fromisoformat(result["valid_until"].replace("Z", "+00:00"))]
-    ends += [
-        v for f in facts for v in (f.valid_from, f.valid_until) if v is not None and v > evaluated
-    ]
-    require(at < min(ends), "SOURCE_STALE")
-    return result, min(ends)
+    require(bool(result.get("fact_refs")), "INTEGRATION_REQUIRED", 503)
+    require(professional.authority_time_current(result, clock()), "SOURCE_STALE")
+    return result, None
 
 
 def original_authority(s, ctx, pid, row):
-    evaluated = clock()
-    signer = Context(ctx.tenant_id, row.actor_id, row.actor_id)
+    signer = Context(ctx.tenant_id, row.actor_id, row.actor_id, category_id=ctx.category_id)
     check = professional.recheck_snapshot(
         s, signer, pid, row.project_id, row.authority_snapshot, clock(), write=False, retained=True
     )
     require(check.get("current") is True, "RECHECK_REQUIRED")
-    assessment = check["assessment"]
-    require(assessment.get("valid_until"), "INTEGRATION_REQUIRED", 503)
-    # A future relevant activation can invalidate this saved reviewer proof.
-    # All scope windows bound the final post-IO clock conservatively.
-    facts = list(
-        s.scalars(
-            select(ProfessionalFact)
-            .where(
-                ProfessionalFact.tenant_id == ctx.tenant_id,
-                ProfessionalFact.product_id == pid,
-                ProfessionalFact.subject_id == row.actor_id,
-                or_(
-                    ProfessionalFact.project_id == row.project_id,
-                    ProfessionalFact.project_id.is_(None),
-                ),
-            )
-            .limit(1001)
-            .execution_options(populate_existing=True, autoflush=False)
-        )
-    )
-    require(len(facts) <= 1000, "PROFESSIONAL_SCOPE_LIMIT", 422)
-    at = clock()
-    deadlines = [datetime.fromisoformat(assessment["valid_until"].replace("Z", "+00:00"))]
-    deadlines += [
-        v for f in facts for v in (f.valid_from, f.valid_until) if v is not None and v > evaluated
-    ]
-    require(at < min(deadlines), "SOURCE_STALE")
-    return min(deadlines)
+    return None
 
 
 def _reads(*groups):
@@ -349,7 +295,7 @@ def policy_callback(s, ctx, pid, *, scope, purpose, request, previous=None):
     _, project = _project(s, ctx, scope)
     pointer, row = policy_pointer(s, ctx, pid, scope, purpose)
     require(row is not None, "CHANGE_POLICY_OWNER_REQUIRED", 503)
-    require(row.visibility == "product" or row.owner_id == ctx.requester_id, "FORBIDDEN_SCOPE", 403)
+    require(row.visibility != "private" or row.owner_id == ctx.requester_id, "FORBIDDEN_SCOPE", 403)
     source = SourceRef.model_validate(row.source)
     material, _ = original(s, ctx, pid, source, models.PolicyMaterial)
     require(
@@ -423,7 +369,7 @@ def policy_callback(s, ctx, pid, *, scope, purpose, request, previous=None):
     require(
         material.valid_from
         <= clock()
-        < min(material.valid_until, until, original_until, final_original_until),
+        < earliest_deadline(material.valid_until, until, original_until, final_original_until),
         "RECHECK_REQUIRED",
     )
     result = outputs.ControlledPolicy(
@@ -437,7 +383,7 @@ def policy_callback(s, ctx, pid, *, scope, purpose, request, previous=None):
         valid_from=material.valid_from,
         # Propagate original publisher deadlines to later owner IO, while the
         # current consumer's Grant remains an independent caller gate.
-        valid_until=min(material.valid_until, original_until, final_original_until),
+        valid_until=earliest_deadline(material.valid_until, original_until, final_original_until),
         epoch=row.epoch,
         required_source_read_set=row.required_source_read_set,
         source_basis=basis,
@@ -453,7 +399,7 @@ def selection_callback(s, ctx, pid, *, scope, purpose, item, request, previous=N
     _, project = _project(s, ctx, scope)
     pointer, row = selection_pointer(s, ctx, pid, scope, request.id, item.id)
     require(row is not None, "CHANGE_SELECTION_OWNER_REQUIRED", 503)
-    require(row.visibility == "product" or row.owner_id == ctx.requester_id, "FORBIDDEN_SCOPE", 403)
+    require(row.visibility != "private" or row.owner_id == ctx.requester_id, "FORBIDDEN_SCOPE", 403)
     material, _ = original(
         s, ctx, pid, SourceRef.model_validate(row.source), models.SelectionMaterial
     )
@@ -572,7 +518,7 @@ def selection_callback(s, ctx, pid, *, scope, purpose, item, request, previous=N
     )
     _same_uow(s, uow, ctx, common_digest(vars(ctx)))
     require(
-        clock() < min(row.valid_until, until, original_until, final_original_until),
+        clock() < earliest_deadline(row.valid_until, until, original_until, final_original_until),
         "RECHECK_REQUIRED",
     )
     result = outputs.SelectionProof(
@@ -580,7 +526,7 @@ def selection_callback(s, ctx, pid, *, scope, purpose, item, request, previous=N
         item_sha256=row.item_sha256,
         nature=row.nature,
         applicable=True,
-        valid_until=min(
+        valid_until=earliest_deadline(
             row.valid_until, original_until, final_original_until, current_policy.valid_until
         ),
         sources=complete_sources,
@@ -648,6 +594,7 @@ def import_policy(s, ctx, pid, payload, *, command_id, request_key):
         command_id=command_id,
         idempotency_key=request_key,
         operation=models.POLICY_OPERATION,
+        category_id=ctx.category_id,
         product_id=pid,
         expected_revision=product.revision,
         source_read_set=reads,
@@ -750,7 +697,7 @@ def import_policy(s, ctx, pid, payload, *, command_id, request_key):
             "SOURCE_STALE",
         )
         _same_uow(s, uow, ctx, common_digest(vars(ctx)))
-        require(clock() < min(until, auth_until, value.valid_until), "SOURCE_STALE")
+        require(clock() < earliest_deadline(until, auth_until, value.valid_until), "SOURCE_STALE")
         return receipt_view(receipts[0])
     require(not keys, "INTEGRITY_MISMATCH")
     pointer, prior = policy_pointer(s, ctx, pid, scope, data.purpose, lock=True)
@@ -783,7 +730,8 @@ def import_policy(s, ctx, pid, payload, *, command_id, request_key):
     _same_uow(s, uow, ctx, common_digest(vars(ctx)))
     saved_at = clock()
     require(
-        value.valid_from <= saved_at < min(value.valid_until, until, auth_until), "SOURCE_STALE"
+        value.valid_from <= saved_at < earliest_deadline(value.valid_until, until, auth_until),
+        "SOURCE_STALE",
     )
     row = models.ChangePolicyFact(
         id=uuid4(),
@@ -884,7 +832,9 @@ class ApprovedActionIntentOwner:
         _, selected = selection_pointer(s, ctx, pid, request.scope, request.id, item.id)
         material = models.SelectionMaterial.model_validate(selected.material)
         require(material.action_id == action_id, "ACTION_INTENT_SCOPE_MISMATCH")
-        approval_until = min(approval_until, approved_order(s, ctx, pid, request, order))
+        approval_until = earliest_deadline(
+            approval_until, approved_order(s, ctx, pid, request, order)
+        )
         last_pointer, last_row = current_fixed(s, ctx, pid, change_id)
         require(
             (last_pointer.id, last_row.id, last_row.request_sha256)
@@ -897,7 +847,7 @@ class ApprovedActionIntentOwner:
         _same_uow(s, uow, ctx, common_digest(vars(ctx)))
         require(
             clock()
-            < min(
+            < earliest_deadline(
                 order.plan.expires_at,
                 selection.valid_until,
                 approval_until,
@@ -1039,6 +989,8 @@ def approved_order(s, ctx, pid, request, order):
             ),
             "SOURCE_STALE",
         )
-    deadline = min(order.plan.expires_at, *[a.expires_at for a in order.approvals], *deadlines)
-    require(clock() < deadline, "RECHECK_REQUIRED")
+    deadline = earliest_deadline(
+        order.plan.expires_at, *[a.expires_at for a in order.approvals], *deadlines
+    )
+    require(deadline_current(deadline), "RECHECK_REQUIRED")
     return deadline

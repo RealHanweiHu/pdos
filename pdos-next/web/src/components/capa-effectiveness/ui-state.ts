@@ -1,6 +1,7 @@
+import { proofClockCurrent } from "@/lib/proof-clock";
 import {
   uiSchema, tiers, parseModel, same, snapshot, record, uuid, positive, validCommand, validBinding,
-  validContext, validRef, validReads, validMissing, eventTime, json,
+  validContext, validRef, validReads, validMissing, json,
   type Context, type VersionRef, type Model, type Operation, type Command, type HostCommand,
   type Binding, type Inputs, type Prepared, type Receipt, type ExpiryTransport, type JsonObject,
 } from "./ui-contract";
@@ -26,7 +27,6 @@ const noToken = (command: Command): Command => ({ ...command, payload: Object.fr
 ) });
 const tokenField = (operation: Operation) => tiers[operation] === "T2" ? "approval_token" : "confirmation_token";
 const unprepared = (command: Command) => !["approval_token", "confirmation_token"].some(key => Object.hasOwn(command.payload, key));
-const deadline = (value: string, now: number) => eventTime(value) !== null && Number.isFinite(now) && Date.parse(value) > now;
 function bindingMatches(state: UiState, binding: Binding): boolean {
   return state.context !== null && state.model?.anchor !== null && state.model?.anchor !== undefined &&
     same(binding.scope, state.context.scope) && binding.caller_id === state.context.caller_id &&
@@ -96,7 +96,7 @@ export function canPrepare(state: UiState, operation: Operation): boolean {
       cap.authority.authorized !== true || cap.authority.qualified !== true || !bindingMatches(state, cap.binding)) return false;
   if (m.issue.visibility === "private" && m.issue.owner_id !== ctx.caller_id) return false;
   const independent = tiers[operation] === "T2";
-  if (independent && (m.anchor.visibility !== "product" || cap.independence !== "verified")) return false;
+  if (independent && (m.anchor.visibility !== "category" || cap.independence !== "verified")) return false;
   if (operation === "quality.capa.effectiveness.decide" && m.effectiveness !== null) return false;
   if (operation === "quality.issue.close" && (!m.effectiveness || m.effectiveness.outcome !== "effective" ||
       m.effectiveness.actor_id !== ctx.caller_id || !same(m.effectiveness.issue_ref, m.current_issue))) return false;
@@ -135,7 +135,7 @@ export function acceptPreview(state: UiState, value: Prepared, now: number): UiS
       !same(noToken(value.command), p.command) || !same(value.binding, p.binding) ||
       typeof value.command.payload[field] !== "string" || String(value.command.payload[field]).length < 20 ||
       Object.hasOwn(value.command.payload, other) || value.write_tier !== tiers[p.command.operation] ||
-      value.named_decision !== (tiers[p.command.operation] === "T2") || !deadline(value.expires_at, now) ||
+      value.named_decision !== (tiers[p.command.operation] === "T2") || !proofClockCurrent(tiers[p.command.operation], value.expires_at, now) ||
       !record(value.review) || !Object.hasOwn(value.review, "before") || !Object.hasOwn(value.review, "after") ||
       !json(value.review.before) || !json(value.review.after) ||
       typeof value.review.effect !== "string" || !value.review.effect.trim()) return evolve(state, { notice: "invalid_host_material" });
@@ -144,7 +144,7 @@ export function acceptPreview(state: UiState, value: Prepared, now: number): UiS
 export function confirm(state: UiState, now: number): UiState {
   const p = state.pending, prepared = state.preview;
   if (!p || p.mode !== "preview" || !prepared) return state;
-  if (!deadline(prepared.expires_at, now)) return evolve(state, {
+  if (!proofClockCurrent(tiers[p.command.operation], prepared.expires_at, now)) return evolve(state, {
     preview: null, pending: { ...p, mode: "expired_preview" }, notice: "preview_expired",
   });
   // Re-evaluate the stored host scope, without dropping the unresolved request to pass canPrepare.

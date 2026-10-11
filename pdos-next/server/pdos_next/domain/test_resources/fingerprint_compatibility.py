@@ -101,8 +101,9 @@ def _instant(value, *, optional=False):
     _require(parsed.tzinfo is not None and parsed.utcoffset() is not None)
 
 
-def _list(value, maximum, *, minimum=0):
-    _require(type(value) is list and minimum <= len(value) <= maximum)
+def _list(value, maximum=None, *, minimum=0):
+    # Collection completeness is an owner responsibility, not a business hard cap.
+    _require(type(value) is list and minimum <= len(value))
 
 
 def _safe_values(value):
@@ -169,11 +170,38 @@ def _authority(value, binding):
     for ref in value["fact_refs"]:
         _keys(
             ref,
-            {"id", "revision", "epoch", "kind", "role", "nature", "issuer_key", "issuer_version"},
+            {
+                "id",
+                "revision",
+                "epoch",
+                "kind",
+                "role",
+                "nature",
+                "issuer_key",
+                "issuer_version",
+                "series_id",
+                "fact_sha256",
+                "issuer_epoch",
+                "state",
+                "operations",
+                "purposes",
+                "valid_from",
+                "valid_until",
+            },
         )
         _uuid(ref["id"])
+        _require(ref["state"] in {"active", "withdrawn", "revoked", "unknown"})
+        for name in ("operations", "purposes"):
+            _list(ref[name], 1000)
+            for item in ref[name]:
+                _text(item)
+        _instant(ref["valid_from"])
+        _instant(ref["valid_until"])
         _revision(ref["revision"])
         _revision(ref["epoch"])
+        _uuid(ref["series_id"])
+        _hash(ref["fact_sha256"])
+        _revision(ref["issuer_epoch"], optional=True)
         _require(
             type(ref["kind"]) is str
             and ref["kind"] in {"duty", "qualification"}
@@ -193,7 +221,12 @@ def _authority(value, binding):
 
 
 def _source_basis(value):
-    _keys(value, {"refs", "security", "fixed_readset_security", "access"})
+    # Current provenance is independent of the current reader's ACL stamp.
+    has_access = "access" in value
+    _keys(
+        value,
+        {"refs", "security", "fixed_readset_security"} | ({"access"} if has_access else set()),
+    )
     _list(value["refs"], 40)
     identities = []
     for ref in value["refs"]:
@@ -229,11 +262,12 @@ def _source_basis(value):
             for field in ("source_state", "disposition"):
                 if entry[field] is not None:
                     _text(entry[field], 100)
-    _keys(value["access"], {"principal_id", "principal_epoch", "grant_id", "grant_epoch"})
-    for key in ("principal_id", "grant_id"):
-        _uuid(value["access"][key])
-    for key in ("principal_epoch", "grant_epoch"):
-        _revision(value["access"][key])
+    if has_access:
+        _keys(value["access"], {"principal_id", "principal_epoch", "grant_id", "grant_epoch"})
+        for key in ("principal_id", "grant_id"):
+            _uuid(value["access"][key])
+        for key in ("principal_epoch", "grant_epoch"):
+            _revision(value["access"][key])
 
 
 def validate_material(material):
@@ -244,12 +278,13 @@ def validate_material(material):
     _hash(material["fact"])
     _revision(material["epoch"])
     _list(material["issuer"], 4, minimum=4)
+    _require(len(material["issuer"]) == 4)
     key, version, epoch, available = material["issuer"]
     _text(key, 100)
     _text(version, 100)
     _revision(epoch)
     _require(type(available) is bool)
-    _require(type(material["issuer_epochs"]) is dict and 0 < len(material["issuer_epochs"]) <= 1000)
+    _require(type(material["issuer_epochs"]) is dict and bool(material["issuer_epochs"]))
     for name, revision in material["issuer_epochs"].items():
         _text(name, 100)
         _revision(revision)
@@ -288,6 +323,10 @@ def validate_material(material):
     for value in material["checks"]:
         _typed(value, Check)
     return binding
+
+
+# The built-in pure validator only reads its arguments; replacements need isolation.
+_READ_ONLY_MATERIAL_VALIDATOR = (validate_material, validate_material.__code__)
 
 
 @dataclass(frozen=True)

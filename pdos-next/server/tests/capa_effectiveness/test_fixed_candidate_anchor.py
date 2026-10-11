@@ -67,7 +67,7 @@ def safety(ref):
         hash=digest(str(ref.id)),
         status="active",
         owner_id=uid("owner"),
-        visibility="product",
+        visibility="category",
         source_kind="registered_native_text",
         registration={
             "receipt_id": uid(str(ref.id) + "-receipt"),
@@ -87,7 +87,7 @@ def origin_fixture():
         id=uid("issue"),
         revision=9,
         scope=run.scope,
-        audience=(f"product:{run.scope.product_id}",),
+        audience=(f"category:{uid('category')}",),
         title="Synthetic actual fixed failure",
         status="awaiting_verification",
         risk="high",
@@ -151,11 +151,12 @@ def origin_fixture():
         ref=VersionRef(id=uid("issue-v9"), revision=9, snapshot_sha256=digest(json_value(issue))),
         previous_ref=None,
         scope=issue.scope,
+        category_id=uid("category"),
         issue_id=issue.id,
         purpose=PURPOSE,
         owner_id=uid("owner"),
         writer_id=uid("owner"),
-        visibility="product",
+        visibility="category",
         nature="synthetic",
         operation="quality.capa.actions.complete",
         domain_intent_sha256=digest("original-domain-intent"),
@@ -185,7 +186,7 @@ def origin_fixture():
         rules_version="fixed-original-rules",
         rules_sha256=digest("fixed-rules"),
         verified=VerifiedRun(run=run, nature="synthetic"),
-        visibility="product",
+        visibility="category",
         owner_id=uid("tester"),
         sources=sources,
         required_source_read_set=reads,
@@ -226,15 +227,25 @@ def world(monkeypatch):
     event.listen(engine, "do_connect", lambda *_: pytest.fail("Owned pure must never connect"))
     s = Session(engine)
     s.begin()
-    ctx = Context(origin.scope.tenant_id, uid("shared-reader"), uid("shared-reader"))
-    product = Product(id=origin.scope.product_id, tenant_id=ctx.tenant_id, revision=10)
+    ctx = Context(
+        origin.scope.tenant_id,
+        uid("shared-reader"),
+        uid("shared-reader"),
+        category_id=origin.category_id,
+    )
+    product = Product(
+        id=origin.scope.product_id,
+        tenant_id=ctx.tenant_id,
+        category_id=origin.category_id,
+        revision=10,
+    )
     principal = Principal(
         id=ctx.actor_id, tenant_id=ctx.tenant_id, kind="human", active=True, access_epoch=1
     )
     grant = Grant(
         id=uid("reader-grant"),
         tenant_id=ctx.tenant_id,
-        product_id=product.id,
+        category_id=origin.category_id,
         principal_id=ctx.actor_id,
         can_write=True,
         access_epoch=1,
@@ -269,7 +280,14 @@ def world(monkeypatch):
     def one(session, model, *where):
         assert session is s and model in rows
         value = rows[model]
-        assert all(getattr(value, clause.left.key) == clause.right.value for clause in where)
+        for clause in where:
+            wanted = (
+                origin.category_id
+                if clause.left.key == "category_id"
+                and getattr(clause.right, "name", None) == "category_for_product"
+                else clause.right.value
+            )
+            assert getattr(value, clause.left.key) == wanted
         return value
 
     monkeypatch.setattr(preparation.guards, "_one", one)
@@ -284,7 +302,7 @@ def world(monkeypatch):
     project = preparation.anchor_storage.StoredProjectScope(
         scope=origin.scope,
         owner_id=uid("project-owner"),
-        visibility="product",
+        visibility="category",
         declared_scope="Explicit shared test project",
     )
     pointer = preparation.anchor_storage.StoredIssueCurrent(
@@ -338,7 +356,7 @@ def world(monkeypatch):
         expected_issue_revision=origin.ref.revision,
         capa_id=origin.issue.capa.id,
         reason="Later full candidate selection",
-        visibility="product",
+        visibility="category",
     )
 
     def version(session, context, pid, issue_id, ref, project_id=None):
@@ -438,7 +456,7 @@ def world(monkeypatch):
             "issue_version_id": origin.ref.id,
             "issue_revision": origin.ref.revision,
         }
-        assert query._limit_clause.value == 101
+        assert query._limit_clause.value == 1
         assert [clause.key for clause in query._order_by_clauses] == ["created_at", "id"]
         assert query.get_execution_options() == {"populate_existing": True, "autoflush": False}
         return [selected_row] * state.count if state.exists else []
@@ -486,8 +504,23 @@ def world(monkeypatch):
         "authorized": True,
         "qualified": True,
         "facts_revision": digest("test profession"),
-        "fact_refs": [{"id": str(fact.id), "revision": 1}],
-        "valid_until": fact.valid_until.isoformat(),
+        "roles": ["quality"],
+        "fact_refs": [
+            {
+                "id": str(fact.id),
+                "revision": 1,
+                "kind": kind,
+                "role": "quality",
+                "nature": "synthetic",
+                "state": "active",
+                "operations": [commands.OPERATION],
+                "purposes": [origin.purpose],
+                "valid_from": NOW.isoformat(),
+                "valid_until": fact.valid_until.isoformat(),
+            }
+            for kind in ("duty", "qualification")
+        ],
+        "valid_until": None,
         "synthetic": True,
         "required_source_read_set": [],
     }
@@ -496,7 +529,16 @@ def world(monkeypatch):
         "revision": 1,
         "nature": "synthetic",
         "facts_revision": digest("test policy"),
-        "valid_until": fact.valid_until.isoformat(),
+        "valid_until": None,
+        "source_basis": [
+            {
+                "id": str(uid("policy")),
+                "revision": 1,
+                "state": "active",
+                "valid_from": NOW.isoformat(),
+                "valid_until": fact.valid_until.isoformat(),
+            }
+        ],
         "private": False,
         "required_source_read_set": [],
         "sources": [],
@@ -559,7 +601,7 @@ def run(work, payload=None):
 def reject(code, call):
     with pytest.raises(DomainError) as caught:
         call()
-    assert caught.value.code == code
+    assert caught.value.reason == code
     return caught.value
 
 
@@ -707,7 +749,7 @@ def test_original_source_security_epoch_change_blocks_root_reuse(world):
         hash=digest("real original bytes test substitute"),
         status="active",
         owner_id=uid("report-owner"),
-        visibility="product",
+        visibility="category",
         source_kind="uploaded_original",
         original=a.OriginalSafety(
             id=uid("original"), epoch=1, source_state="active", disposition="active"
@@ -864,13 +906,14 @@ def test_real_select_is_exact_bounded_ordered_without_autoflush(world):
         sql.startswith("SELECT ")
         and "ORDER BY capa_verification_evidence.created_at, capa_verification_evidence.id" in sql
     )
-    assert query.compile(dialect=postgresql.dialect()).params["param_1"] == 101
+    assert query.compile(dialect=postgresql.dialect()).params["param_1"] == 1
 
 
-def test_root_candidate_limit_is_not_silently_truncated(world):
+def test_more_than_100_candidates_keep_the_actual_earliest_saved_anchor(world):
     world.state.count = 101
-    reject("SOURCE_STALE", lambda: run(world))
-    assert world.state.saved_calls == 0
+    phase = run(world)
+    assert phase.anchor.material_sha256 == world.original.material_sha256
+    assert world.state.saved_calls > 0
 
 
 def write_binding(world, phase, original_anchor):
@@ -893,6 +936,7 @@ def write_command(world):
         command_id=uid("exact-write-command"),
         idempotency_key="original-preview-key",
         operation=commands.OPERATION,
+        category_id=world.ctx.category_id,
         product_id=world.pid,
         expected_revision=10,
         source_read_set=[

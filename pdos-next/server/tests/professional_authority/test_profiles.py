@@ -158,7 +158,7 @@ def test_explicit_single_rotation_keeps_other_scope_and_invalidates_only_its_old
         authority._issuer(
             engine, old_first, old_first.tenant_id, old_first.product_id, old_first.project_id
         )
-    assert error.value.code == "TRUSTED_ISSUER_REQUIRED"
+    assert error.value.reason == "TRUSTED_ISSUER_REQUIRED"
     assert (
         authority._issuer(
             engine, old_second, old_second.tenant_id, old_second.product_id, old_second.project_id
@@ -209,7 +209,7 @@ def test_real_profile_still_disables_synthetic_authority_mode():
         authority._issuer(
             engine, synthetic, synthetic.tenant_id, synthetic.product_id, synthetic.project_id
         )
-    assert error.value.code == "SYNTHETIC_AUTHORITY_NOT_ALLOWED"
+    assert error.value.reason == "SYNTHETIC_AUTHORITY_NOT_ALLOWED"
 
 
 @pytest.mark.parametrize("epoch", [True, 0, -1, "1"])

@@ -74,10 +74,10 @@ function CandidateFields({ scope, materials, disabled = true, busy = false, disa
   const [selection, setSelection] = useState<CandidateFormSelection>(emptySelection);
   const locked = disabled !== false || busy === true;
   const payload = candidatePayload(scope, materials, selection, allowProductVisibility);
-  const sharingAllowed = allowProductVisibility === true && scope.visibility === "product" &&
-    materials.links.filter(choice => selection.links.includes(candidateLinkKey(choice.ref))).every(choice => choice.visibility === "product") &&
-    materials.mappings.filter(choice => selection.mappings.includes(candidateMappingKey(choice.mapping))).every(choice => choice.visibility === "product") &&
-    materials.sources.filter(choice => selection.sources.includes(candidateSourceKey(choice.reference))).every(choice => choice.visibility === "product");
+  const sharingAllowed = allowProductVisibility === true && scope.visibility === "category" &&
+    materials.links.filter(choice => selection.links.includes(candidateLinkKey(choice.ref))).every(choice => choice.visibility === "category") &&
+    materials.mappings.filter(choice => selection.mappings.includes(candidateMappingKey(choice.mapping))).every(choice => choice.visibility === "category") &&
+    materials.sources.filter(choice => selection.sources.includes(candidateSourceKey(choice.reference))).every(choice => choice.visibility === "category");
   function change(next: CandidateFormSelection) {
     if (locked) return;
     setSelection(next);
@@ -93,7 +93,7 @@ function CandidateFields({ scope, materials, disabled = true, busy = false, disa
       <p>{scope.issue_label || "当前固定问题"} · 当前第 {scope.current_issue.revision} 版用于并发核对</p>
       <p>{scope.capa_label || "当前固定整改"}</p>
       <p>{scope.origin_issue ? `原失败依据固定在第 ${scope.origin_issue.revision} 版，保留历史。` : "原失败固定版本尚未提供，不能推定其与当前版相同。"}</p>
-      <p>本候选不作有效性决定，不关闭问题，也不放行产品。</p>
+      <p>本候选不作有效性决定，不关闭问题，也不放行成品。</p>
     </div>
     {locked && <p role="status" className="flex items-start gap-2 rounded-lg border p-3 text-sm">
       <LockKey aria-hidden className="mt-0.5 size-4 shrink-0" />
@@ -110,7 +110,7 @@ function CandidateFields({ scope, materials, disabled = true, busy = false, disa
           const selected = selection.links.includes(key);
           return <label key={key} className={`flex items-start gap-3 rounded-lg border p-3 text-sm ${wrap}`}>
             <input type="checkbox" className="mt-1 size-4 shrink-0 accent-primary" checked={selected}
-              disabled={!selected && selection.links.length >= 20}
+
               onChange={() => change({ ...selection, links: toggled(selection.links, key) })} />
             <span className={wrap}><span className="font-medium">{choice.label || "固定回链，名称尚未提供"} · 第 1 版</span>
               <span className="mt-1 block text-muted-foreground">{choice.detail || "具体业务说明尚未提供，请核对宿主固定记录。"}</span></span>
@@ -126,7 +126,7 @@ function CandidateFields({ scope, materials, disabled = true, busy = false, disa
           return <div key={key} className={`rounded-lg border p-3 text-sm space-y-2 ${wrap}`}>
             <label className="flex items-start gap-3">
               <input type="checkbox" className="mt-1 size-4 shrink-0 accent-primary" checked={selected}
-                disabled={!selected && selection.mappings.length >= 10000}
+
                 onChange={() => change({ ...selection, mappings: toggled(selection.mappings, key) })} />
               <span className={`font-medium ${wrap}`}>{choice.label || "固定失败对应，名称尚未提供"}</span>
             </label>
@@ -160,7 +160,7 @@ function CandidateFields({ scope, materials, disabled = true, busy = false, disa
           const selected = selection.sources.includes(key);
           return <label key={key} className={`flex items-start gap-3 rounded-lg border p-3 text-sm ${wrap}`}>
             <input type="checkbox" className="mt-1 size-4 shrink-0 accent-primary" checked={selected}
-              disabled={!selected && selection.sources.length >= 20}
+
               onChange={() => change({ ...selection, sources: toggled(selection.sources, key) })} />
             <span className={wrap}><span className="font-medium">{choice.title || "固定来源，名称尚未提供"} · 第 {ref.expected_revision} 版 · 第 {ref.line} 行</span>
               <span className={`mt-2 block whitespace-pre-wrap text-muted-foreground ${wrap}`}>{ref.quote}</span></span>
@@ -174,11 +174,11 @@ function CandidateFields({ scope, materials, disabled = true, busy = false, disa
       </div>
       <div className="space-y-2"><label htmlFor={`${id}-visibility`} className="block text-sm font-medium">本候选可见范围</label>
         <select id={`${id}-visibility`} className={inputClass} value={selection.visibility}
-          onChange={event => change({ ...selection, visibility: event.target.value === "product" ? "product" : "private" })}>
-          <option value="private">仅本人可见</option><option value="product" disabled={!sharingAllowed}>产品范围可见（须宿主明确允许）</option>
+          onChange={event => change({ ...selection, visibility: event.target.value === "category" ? "category" : "private" })}>
+          <option value="private">仅本人可见</option><option value="category" disabled={!sharingAllowed}>品类授权成员可见（须宿主明确允许）</option>
         </select>
         <p className="subtle">默认仅本人可见；私人或受众尚不能核对的原材料不能扩大范围。</p>
-        {selection.visibility === "product" && !sharingAllowed && <p role="alert" className="text-sm">所选材料或当前范围已不允许共享，请明确改选仅本人可见；不会自动改写原选择。</p>}
+        {selection.visibility === "category" && !sharingAllowed && <p role="alert" className="text-sm">所选材料或当前范围已不允许共享，请明确改选仅本人可见；不会自动改写原选择。</p>}
       </div>
       <p className="flex items-start gap-2 text-sm"><WarningCircle aria-hidden className="mt-0.5 size-4 shrink-0" />
         <span>回链、失败对应或出处可以暂缺，提交的候选仍保持待核对。原件安全、方法适用、独立性和观察条件由宿主另行核验。</span></p>

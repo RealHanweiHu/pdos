@@ -1,0 +1,631 @@
+from concurrent.futures import ThreadPoolExecutor
+from datetime import timedelta
+from threading import Event
+from uuid import UUID, uuid4
+
+import pytest
+from alembic.autogenerate import compare_metadata
+from alembic.migration import MigrationContext
+from fastapi.testclient import TestClient
+from sqlalchemy import func, select, text
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
+
+from pdos_next.api import create_app
+from pdos_next.database import tenant_session
+from pdos_next.models import (
+    Artifact,
+    Audit,
+    Base,
+    Claim,
+    Consumption,
+    Grant,
+    Outbox,
+    Qualification,
+    Receipt,
+    WorkRequest,
+    now,
+)
+from pdos_next.service import digest
+
+
+def command(setup, op, payload, *, key=None, revision=1, source=None):
+    return {
+        "command_id": str(uuid4()),
+        "idempotency_key": key or str(uuid4()),
+        "operation": op,
+        "category_id": str(setup.category),
+        "product_id": str(setup.product),
+        "expected_revision": revision,
+        "source_read_set": [{"artifact_id": source, "expected_revision": 1}] if source else [],
+        "payload": payload,
+    }
+
+
+def post(setup, cmd, client=None):
+    return (client or setup.client).post(
+        f"/v1/categories/{setup.category}/commands", headers=setup.headers, json=cmd
+    )
+
+
+def source(setup, visibility="private"):
+    original = "\nSynthetic data only\nPressure: 150 PSI\nUnknown: test condition\n"
+    response = post(
+        setup,
+        command(
+            setup,
+            "evidence.artifact.register",
+            {
+                "title": "Synthetic input",
+                "source_label": "Synthetic test",
+                "content": original,
+                "visibility": visibility,
+            },
+        ),
+    )
+    assert response.status_code == 200, response.text
+    return response.json()["subject_id"], original
+
+
+def claim_cmd(setup, artifact, **overrides):
+    payload = {
+        "artifact_id": artifact,
+        "line": 3,
+        "quote": "Pressure: 150 PSI",
+        "statement": "Pressure is 150 PSI; condition unknown",
+        "nature": "extracted",
+        "availability": "known",
+        "visibility": "private",
+        **overrides,
+    }
+    return command(setup, "evidence.claim.record", payload, source=artifact)
+
+
+def work(setup, artifact):
+    response = post(
+        setup,
+        command(
+            setup,
+            "ai.work.start",
+            {
+                "artifact_id": artifact,
+                "source_revision": 1,
+                "goal": "Record one sourced claim",
+            },
+            source=artifact,
+        ),
+    )
+    assert response.status_code == 200, response.text
+    return response.json()["subject_id"]
+
+
+def qualified(setup):
+    with Session(setup.admin) as s, s.begin():
+        s.add(
+            Qualification(
+                tenant_id=setup.tenant,
+                writer_id=setup.agent,
+                skill_version="source-claim@1",
+                provider_version="synthetic@1",
+                operation="evidence.claim.record",
+                purpose="source_claim",
+                evaluation_kind="synthetic",
+                evaluation_ref="synthetic-test-only",
+                expires_at=now() + timedelta(hours=1),
+                active=True,
+            )
+        )
+
+
+class SyntheticProvider:
+    version = "synthetic@1"
+
+    def __init__(self, setup):
+        self.writer_id = setup.agent
+        self.calls = 0
+
+    def extract(self, *, goal, source, artifact_id):
+        self.calls += 1
+        return {
+            "artifact_id": str(artifact_id),
+            "line": 3,
+            "quote": "Pressure: 150 PSI",
+            "statement": "Synthetic extracted pressure: 150 PSI",
+            "nature": "extracted",
+            "availability": "known",
+            "visibility": "private",
+        }
+
+
+def workspace(setup, headers=None):
+    return setup.client.get(
+        f"/v1/categories/{setup.category}/products/{setup.product}/workspace",
+        headers=headers or setup.headers,
+    )
+
+
+def test_source_original_scope_and_same_transaction_receipts(setup):
+    artifact, original = source(setup)
+    response = post(setup, claim_cmd(setup, artifact))
+    assert response.status_code == 200, response.text
+    result = response.json()
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
+        a = s.get(Artifact, UUID(artifact))
+        assert a.content == original and a.content_hash == digest(original)
+        c = s.get(Claim, UUID(result["subject_id"]))
+        assert c.writer_id == setup.human and c.human_owner_id == setup.human
+        r = s.get(Receipt, UUID(result["id"]))
+        assert s.scalar(select(Audit.id).where(Audit.receipt_id == r.id))
+        assert s.scalar(select(Outbox.id).where(Outbox.receipt_id == r.id))
+    assert (
+        workspace(setup).json()["claims"][0]["statement"]
+        == "Pressure is 150 PSI; condition unknown"
+    )
+
+
+def test_key_conflict_and_cross_key_semantic_dedup(setup):
+    artifact, _ = source(setup)
+    cmd = claim_cmd(setup, artifact)
+    first = post(setup, cmd).json()
+    assert post(setup, {**cmd, "command_id": str(uuid4())}).json()["id"] == first["id"]
+    different = {**cmd, "payload": {**cmd["payload"], "statement": "Different intent"}}
+    assert post(setup, different).json()["code"] == "DUPLICATE_INTENT_CONFLICT"
+    assert post(setup, {**cmd, "idempotency_key": str(uuid4())}).json()["id"] == first["id"]
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
+        assert s.scalar(select(func.count()).select_from(Claim)) == 1
+
+
+def test_concurrent_intents_create_once(setup):
+    artifact, _ = source(setup)
+    cmd = claim_cmd(setup, artifact)
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        results = list(
+            pool.map(lambda _: post(setup, {**cmd, "idempotency_key": str(uuid4())}), range(4))
+        )
+    assert {r.status_code for r in results} == {200}
+    assert len({r.json()["id"] for r in results}) == 1
+
+
+@pytest.mark.parametrize(
+    "field", ["tenant", "tenant_id", "actor", "requester", "run", "grant", "cancel_epoch"]
+)
+def test_client_cannot_supply_trusted_identity(setup, field):
+    artifact, _ = source(setup)
+    assert post(setup, {**claim_cmd(setup, artifact), field: str(uuid4())}).status_code == 422
+
+
+def test_private_source_does_not_leak_or_expand_audience(setup):
+    artifact, _ = source(setup)
+    headers = {"Authorization": f"Bearer {setup.tokens[setup.peer]}"}
+    peer = workspace(setup, headers).json()
+    assert peer["sources"] == [] and peer["claims"] == []
+    assert post(setup, claim_cmd(setup, artifact, visibility="category")).status_code == 403
+    response = setup.client.post(
+        f"/v1/categories/{setup.category}/commands",
+        headers=headers,
+        json=claim_cmd(setup, artifact),
+    )
+    assert response.json()["code"] == "SOURCE_UNAVAILABLE"
+
+
+def test_cross_tenant_and_revoked_scope_are_denied(setup):
+    artifact, _ = source(setup)
+    headers = {"Authorization": f"Bearer {setup.tokens[setup.other_human]}"}
+    assert workspace(setup, headers).status_code == 403
+    with Session(setup.admin) as s, s.begin():
+        grant = s.scalar(
+            select(Grant).where(
+                Grant.category_id == setup.category, Grant.principal_id == setup.human
+            )
+        )
+        grant.expires_at = now() - timedelta(seconds=1)
+    assert post(setup, claim_cmd(setup, artifact)).json()["code"] == "FORBIDDEN_SCOPE"
+
+
+@pytest.mark.parametrize(
+    "change,code",
+    [
+        ({"line": 99}, "MISSING_REQUIRED_EVIDENCE"),
+        ({"quote": "invented quotation"}, "MISSING_REQUIRED_EVIDENCE"),
+    ],
+)
+def test_exact_source_locator_required(setup, change, code):
+    artifact, _ = source(setup)
+    assert post(setup, claim_cmd(setup, artifact, **change)).json()["code"] == code
+
+
+def test_version_and_source_withdrawal_guard(setup):
+    artifact, _ = source(setup)
+    cmd = claim_cmd(setup, artifact)
+    assert post(setup, {**cmd, "expected_revision": 2}).json()["code"] == "VERSION_CONFLICT"
+    with Session(setup.admin) as s, s.begin():
+        s.get(Artifact, UUID(artifact)).revision = 2
+    assert post(setup, cmd).json()["code"] == "SOURCE_STALE"
+    with Session(setup.admin) as s, s.begin():
+        s.get(Artifact, UUID(artifact)).status = "withdrawn"
+    assert post(setup, cmd).json()["code"] == "SOURCE_UNAVAILABLE"
+
+
+def test_failed_outbox_rolls_back_business_and_receipt(setup):
+    artifact, _ = source(setup)
+    from sqlalchemy import event
+
+    def fail(_mapper, _connection, _target):
+        raise RuntimeError("synthetic outbox failure")
+
+    event.listen(Outbox, "before_insert", fail)
+    try:
+        with pytest.raises(RuntimeError, match="synthetic outbox failure"):
+            post(setup, claim_cmd(setup, artifact))
+    finally:
+        event.remove(Outbox, "before_insert", fail)
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
+        assert s.scalar(select(func.count()).select_from(Claim)) == 0
+        assert (
+            s.scalar(
+                select(func.count())
+                .select_from(Receipt)
+                .where(Receipt.operation == "evidence.claim.record")
+            )
+            == 0
+        )
+
+
+def test_revert_preview_confirmation_and_history(setup):
+    artifact, _ = source(setup)
+    r = post(setup, claim_cmd(setup, artifact)).json()
+    preview = setup.client.post(
+        f"/v1/categories/{setup.category}/products/{setup.product}/receipts/{r['id']}/revert-preview",
+        headers=setup.headers,
+    ).json()
+    cmd = command(
+        setup,
+        "ai.run.revert",
+        {"receipt_id": r["id"], "confirmation_token": preview["confirmation_token"]},
+    )
+    assert post(setup, cmd).status_code == 200
+    assert post(setup, cmd).status_code == 200
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
+        assert s.get(Claim, UUID(r["subject_id"])).status == "reverted"
+        assert s.get(Receipt, UUID(r["id"])) is not None
+        assert s.get(Artifact, UUID(artifact)).status == "active"
+
+
+@pytest.mark.parametrize("protection", ["manual_edit", "downstream"])
+def test_revert_blocks_manual_edit_and_downstream_consumption(setup, protection):
+    artifact, _ = source(setup)
+    r = post(setup, claim_cmd(setup, artifact)).json()
+    preview = setup.client.post(
+        f"/v1/categories/{setup.category}/products/{setup.product}/receipts/{r['id']}/revert-preview",
+        headers=setup.headers,
+    ).json()
+    with Session(setup.admin) as s, s.begin():
+        if protection == "manual_edit":
+            s.get(Claim, UUID(r["subject_id"])).revision += 1
+        else:
+            s.add(
+                Consumption(
+                    tenant_id=setup.tenant,
+                    product_id=setup.product,
+                    claim_id=UUID(r["subject_id"]),
+                    consumer_type="synthetic-verification",
+                    consumer_id=uuid4(),
+                )
+            )
+    cmd = command(
+        setup,
+        "ai.run.revert",
+        {"receipt_id": r["id"], "confirmation_token": preview["confirmation_token"]},
+    )
+    assert post(setup, cmd).json()["code"] == "UNDO_BLOCKED_BY_DEPENDENCY"
+
+
+def test_default_agent_work_uses_durable_queue_and_preserves_manual_business(setup):
+    artifact, _ = source(setup)
+    work_id = work(setup, artifact)
+    body = {"idempotency_key": "agent-framework:" + str(uuid4())}
+    first = setup.client.post(
+        f"/v1/categories/{setup.category}/work-requests/{work_id}/resume", headers=setup.headers, json=body
+    ).json()
+    second = setup.client.post(
+        f"/v1/categories/{setup.category}/work-requests/{work_id}/resume", headers=setup.headers, json=body
+    ).json()
+    assert first == second
+    assert first["operation"] == "ai.work.resume"
+    assert (
+        setup.client.post(f"/v1/categories/{setup.category}/work-requests/{work_id}/resume", headers=setup.headers).status_code
+        == 422
+    )
+    assert post(setup, claim_cmd(setup, artifact)).status_code == 200
+
+
+def test_worker_missing_model_ports_records_current_wait_without_inference(setup):
+    from pdos_next.workflows.worker import Activities
+
+    artifact, _ = source(setup)
+    work_id = work(setup, artifact)
+    result = Activities(setup.engine, None, None).advance(
+        {
+            "tenant_id": str(setup.tenant),
+            "category_id": str(setup.category),
+            "actor_id": str(setup.human),
+            "requester_id": str(setup.human),
+            "product_id": str(setup.product),
+            "subject_id": work_id,
+        }
+    )
+    assert result["status"] == "waiting_input"
+    assert result["error_code"] == "SOURCE_UNAVAILABLE"
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
+        assert session.get(WorkRequest, UUID(work_id)).status == "waiting_input"
+
+
+def test_production_work_cannot_execute_locally_when_queue_disabled(setup):
+    artifact, _ = source(setup)
+    work_id = work(setup, artifact)
+    with TestClient(create_app(setup.engine, setup.auth, workflow_enabled=False)) as client:
+        result = client.post(f"/v1/categories/{setup.category}/work-requests/{work_id}/resume", headers=setup.headers)
+    assert result.json()["code"] == "INTERNAL_ERROR"
+    assert result.json()["detail"]["reason"] == "AGENT_TEMPORAL_REQUIRED"
+
+
+def test_synthetic_agent_has_distinct_identity_and_resumes_without_duplicate(setup):
+    artifact, _ = source(setup)
+    work_id = work(setup, artifact)
+    provider = SyntheticProvider(setup)
+    qualified(setup)
+    with TestClient(
+        create_app(setup.engine, setup.auth, provider=provider, synthetic_mode=True)
+    ) as client:
+        result = client.post(f"/v1/categories/{setup.category}/work-requests/{work_id}/resume", headers=setup.headers)
+        assert result.status_code == 200, result.text
+    with TestClient(
+        create_app(setup.engine, setup.auth, provider=provider, synthetic_mode=True)
+    ) as restarted:
+        second = restarted.post(f"/v1/categories/{setup.category}/work-requests/{work_id}/resume", headers=setup.headers).json()
+        assert second["result_id"] == result.json()["result_id"]
+    assert provider.calls == 1
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
+        c = s.get(Claim, UUID(result.json()["result_id"]))
+        assert c.writer_id == setup.agent and c.human_owner_id == setup.human
+        assert s.get(WorkRequest, UUID(work_id)).status == "completed"
+
+
+def test_unqualified_agent_never_calls_provider(setup):
+    artifact, _ = source(setup)
+    work_id = work(setup, artifact)
+    provider = SyntheticProvider(setup)
+    with TestClient(
+        create_app(setup.engine, setup.auth, provider=provider, synthetic_mode=True)
+    ) as client:
+        response = client.post(f"/v1/categories/{setup.category}/work-requests/{work_id}/resume", headers=setup.headers)
+    assert response.json()["code"] == "QUALIFICATION_REQUIRED" and provider.calls == 0
+    with pytest.raises(RuntimeError, match="synthetic providers"):
+        create_app(setup.engine, setup.auth, provider=provider)
+
+
+@pytest.mark.parametrize("changed", ["cancel", "scope", "source", "qualification"])
+def test_inflight_authority_changes_rechecked_before_command(setup, changed):
+    artifact, _ = source(setup)
+    work_id = work(setup, artifact)
+    qualified(setup)
+    started, release = Event(), Event()
+
+    class BlockingProvider(SyntheticProvider):
+        def extract(self, **kwargs):
+            started.set()
+            assert release.wait(10)
+            return super().extract(**kwargs)
+
+    provider = BlockingProvider(setup)
+    with (
+        TestClient(
+            create_app(setup.engine, setup.auth, provider=provider, synthetic_mode=True)
+        ) as client,
+        ThreadPoolExecutor() as pool,
+    ):
+        future = pool.submit(
+            client.post, f"/v1/categories/{setup.category}/work-requests/{work_id}/resume", headers=setup.headers
+        )
+        assert started.wait(10)
+        if changed == "cancel":
+            preview = setup.client.post(
+                f"/v1/categories/{setup.category}/products/{setup.product}/works/{work_id}/cancel-preview",
+                headers=setup.headers,
+            ).json()
+            response = post(
+                setup,
+                command(
+                    setup,
+                    "ai.run.cancel",
+                    {"work_id": work_id, "confirmation_token": preview["confirmation_token"]},
+                    revision=preview["expected_revision"],
+                ),
+            )
+            assert response.status_code == 200, response.text
+        else:
+            with Session(setup.admin) as s, s.begin():
+                if changed == "scope":
+                    g = s.scalar(
+                        select(Grant).where(
+                            Grant.category_id == setup.category, Grant.principal_id == setup.human
+                        )
+                    )
+                    g.expires_at = now() - timedelta(seconds=1)
+                elif changed == "source":
+                    s.get(Artifact, UUID(artifact)).status = "withdrawn"
+                else:
+                    q = s.scalar(
+                        select(Qualification).where(Qualification.writer_id == setup.agent)
+                    )
+                    q.active = False
+        release.set()
+        result = future.result()
+    assert result.status_code in {403, 409}
+    assert (
+        result.json()["code"]
+        == {
+            "cancel": "CANCELLED_RUN",
+            "scope": "FORBIDDEN_SCOPE",
+            "source": "SOURCE_UNAVAILABLE",
+            "qualification": "QUALIFICATION_REQUIRED",
+        }[changed]
+    )
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
+        assert s.scalar(select(func.count()).select_from(Claim)) == 0
+
+
+def test_prompt_injection_cannot_acquire_t2(setup):
+    artifact, _ = source(setup)
+    malicious = command(
+        setup, "product.definition.publish", {"approved": True, "actor": "CEO"}, source=artifact
+    )
+    assert post(setup, malicious).json()["code"] == "NAMED_DECISION_REQUIRED"
+    bad = claim_cmd(setup, artifact)
+    bad["payload"]["approved"] = True
+    assert post(setup, bad).status_code == 422
+
+
+def test_rls_pool_reset_privileges_and_original_immutability(setup):
+    artifact, _ = source(setup)
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
+        role = s.execute(
+            text("SELECT rolsuper, rolbypassrls FROM pg_roles WHERE rolname=current_user")
+        ).one()
+        assert role == (False, False)
+        assert s.get(Artifact, UUID(artifact))
+    with setup.engine.connect() as conn:
+        assert conn.execute(text("SELECT count(*) FROM artifact_versions")).scalar_one() == 0
+        assert (
+            conn.execute(
+                text("SELECT has_table_privilege('pdos_agent', 'claims', 'INSERT')")
+            ).scalar_one()
+            is False
+        )
+        assert (
+            conn.execute(
+                text("SELECT has_table_privilege(current_user, 'qualifications', 'INSERT')")
+            ).scalar_one()
+            is False
+        )
+    with (
+        pytest.raises(DBAPIError, match="immutable"),
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.human,
+            requester_id=setup.human,
+            category_id=setup.category,
+        ) as s,
+    ):
+        s.get(Artifact, UUID(artifact)).content = "tampered"
+        s.flush()
+
+
+def test_migration_matches_orm_and_test_guard(setup, monkeypatch):
+    with setup.admin.connect() as conn:
+        context = MigrationContext.configure(
+            conn,
+            opts={
+                "include_object": lambda obj, name, type_, reflected, compare_to: (
+                    name not in {"environment_guard", "alembic_version"}
+                )
+            },
+        )
+        assert compare_metadata(context, Base.metadata) == []
+    from pdos_next.safety import verify_test_target
+
+    monkeypatch.delenv("TEST_DATABASE_URL")
+    with pytest.raises(RuntimeError, match="unverified"):
+        verify_test_target(setup.engine)
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("provider_version", "different-model@1"),
+        ("skill_version", "source-claim@2"),
+        ("purpose", "different-purpose"),
+        ("expires_at", None),
+    ],
+)
+def test_qualification_is_bound_to_exact_capability_versions_and_purpose(setup, field, value):
+    artifact, _ = source(setup)
+    work_id = work(setup, artifact)
+    qualified(setup)
+    with Session(setup.admin) as s, s.begin():
+        q = s.scalar(select(Qualification).where(Qualification.writer_id == setup.agent))
+        setattr(q, field, value if field != "expires_at" else now() - timedelta(seconds=1))
+    provider = SyntheticProvider(setup)
+    with TestClient(
+        create_app(setup.engine, setup.auth, provider=provider, synthetic_mode=True)
+    ) as client:
+        result = client.post(f"/v1/categories/{setup.category}/work-requests/{work_id}/resume", headers=setup.headers)
+    assert result.json()["code"] == "QUALIFICATION_REQUIRED"
+    assert provider.calls == 0
+
+
+def test_completed_work_restores_receipt_without_reexecuting_source_proof(setup):
+    artifact, _ = source(setup)
+    work_id = work(setup, artifact)
+    qualified(setup)
+    provider = SyntheticProvider(setup)
+    with TestClient(
+        create_app(setup.engine, setup.auth, provider=provider, synthetic_mode=True)
+    ) as client:
+        assert (
+            client.post(f"/v1/categories/{setup.category}/work-requests/{work_id}/resume", headers=setup.headers).status_code
+            == 200
+        )
+        with Session(setup.admin) as s, s.begin():
+            s.get(Artifact, UUID(artifact)).status = "withdrawn"
+        result = client.post(f"/v1/categories/{setup.category}/work-requests/{work_id}/resume", headers=setup.headers)
+    assert result.status_code == 200 and result.json()["history"] is True and provider.calls == 1

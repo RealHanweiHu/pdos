@@ -30,7 +30,7 @@ export type CandidateReview = Record<string, unknown> & {
   stable_anchor: Record<string, unknown>; binding: Record<string, unknown>; inspection: Record<string, unknown>;
   raw_source_basis: unknown[]; required_source_read_set: Read[]; sources: unknown[];
   authority_snapshot: Record<string, unknown>; policy_snapshot: Record<string, unknown>;
-  owner_id: string; visibility: "private" | "product"; current_issue_revision: number;
+  owner_id: string; visibility: "private" | "category" | "audience"; current_issue_revision: number;
 };
 export type CandidatePrepared = { command: CandidateCommand; expires_at: string; review: CandidateReview };
 export type CandidateReceipt = { id: string; operation: typeof candidateOperation; subject_id: string;
@@ -67,12 +67,12 @@ export function candidateCanPrepare(host: CandidateHost): boolean {
 }
 export function exactCandidatePayload(value: unknown): value is CandidateFormPayload {
   if (!record(value) || Object.keys(value).length !== 8 || !uuid(value.issue_id) || !positive(value.expected_issue_revision) ||
-      !uuid(value.capa_id) || !Array.isArray(value.remediation_link_refs) || value.remediation_link_refs.length > 20 ||
+      !uuid(value.capa_id) || !Array.isArray(value.remediation_link_refs) ||
       !value.remediation_link_refs.every(ref => record(ref) && Object.keys(ref).length === 2 && uuid(ref.id) && ref.revision === 1) ||
       new Set(value.remediation_link_refs.map(ref => ref.id)).size !== value.remediation_link_refs.length ||
-      !Array.isArray(value.mappings) || value.mappings.length > 10000 || !Array.isArray(value.sources) || value.sources.length > 20 ||
+      !Array.isArray(value.mappings) || !Array.isArray(value.sources) ||
       typeof value.reason !== "string" || !value.reason.trim() || [...value.reason].length > 2000 ||
-      !["private", "product"].includes(String(value.visibility)) || !json(value)) return false;
+      !["private", "category", "audience"].includes(String(value.visibility)) || !json(value)) return false;
   // Reuse the frozen form validator with the exact already-selected objects. This
   // validates wire shape, not source visibility, qualification or currentness.
   const failures = [...new Set(value.mappings.map(row => record(row) ? String(row.failure_id) : ""))];
@@ -111,7 +111,7 @@ export function candidateReads(...sets: readonly (readonly Read[])[]): Read[] {
     refs.set(row.artifact_id, row.expected_revision);
   }
   const result = [...refs].map(([artifact_id, expected_revision]) => ({ artifact_id, expected_revision }));
-  if (result.length > 20) throw new Error("完整来源超过本次上限，请缩小实际材料范围。");
+
   return result;
 }
 export function newCandidateCommand(host: CandidateHost, payload: CandidateFormPayload, commandId: string, key: string): CandidateCommand {

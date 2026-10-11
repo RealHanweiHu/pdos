@@ -11,7 +11,7 @@ export type DefinitionSpec = {
   sources: DefinitionReference[];
 };
 export type DefinitionPayload = {
-  title: string; purpose: string; visibility: "private" | "product";
+  title: string; purpose: string; visibility: "private" | "category" | "audience";
   parent_definition_id: string | null; expected_parent_revision: number | null;
   use_cases: string[]; requirements: string[]; constraints: string[]; unknowns: string[];
   exclusions: string[]; sources: DefinitionReference[]; specs: DefinitionSpec[]; change_reason: string;

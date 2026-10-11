@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="48.692" timestamp="2026-10-09T18:45:06.525887-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.quality_execution_transactions.test_direct_confirmation_storage" name="test_direct_preview_storage_is_immutable_and_normal_consumption_is_monotonic[quality.issue.triage]" time="48.419"><failure message="AssertionError: assert ('postgres', True, True) == ('pdos_next_o... False, False)&#10;  &#10;  At index 0 diff: 'postgres' != 'pdos_next_owner'&#10;  Use -v to get more diff">tests/quality_execution_transactions/test_direct_confirmation_storage.py:209: in test_direct_preview_storage_is_immutable_and_normal_consumption_is_monotonic
+    _owner_delete_refused(work, token, original)
+tests/quality_execution_transactions/test_direct_confirmation_storage.py:108: in _owner_delete_refused
+    _ordinary_owner(session)
+tests/quality_execution_transactions/test_direct_confirmation_storage.py:58: in _ordinary_owner
+    assert session.execute(
+E   AssertionError: assert ('postgres', True, True) == ('pdos_next_o... False, False)
+E     
+E     At index 0 diff: 'postgres' != 'pdos_next_owner'
+E     Use -v to get more diff</failure></testcase></testsuite></testsuites>

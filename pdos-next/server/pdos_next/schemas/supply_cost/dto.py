@@ -33,6 +33,7 @@ Operation = Literal["supply.snapshot.record", "supply.coverage.calculate", "supp
 
 class Scope(FrozenDTO):
     tenant_id: Text
+    category_id: Text
     product_id: Text
     project_id: Text
     audience: Text
@@ -51,7 +52,7 @@ class DemandSnapshot(FrozenDTO):
     ref: SnapshotRef
     basis_sha256: Sha256
     manufacturing_sha256: Sha256
-    lines: Annotated[tuple[DemandLine, ...], Field(max_length=2000)]
+    lines: Annotated[tuple[DemandLine, ...], Field()]
 
 
 class BoundDemand(FrozenDTO):
@@ -134,14 +135,14 @@ class SupplySnapshot(FrozenDTO):
     ref: SnapshotRef
     previous_snapshot_id: Text | None = None
     previous_revision: Revision | None = None
-    commitments: Annotated[tuple[SupplyCommitment, ...], Field(max_length=4000)] = ()
-    in_transit: Annotated[tuple[TransitObservation, ...], Field(max_length=4000)] = ()
-    receipts: Annotated[tuple[ReceiptObservation, ...], Field(max_length=4000)] = ()
-    restrictions: Annotated[tuple[QualityRestriction, ...], Field(max_length=4000)] = ()
+    commitments: Annotated[tuple[SupplyCommitment, ...], Field()] = ()
+    in_transit: Annotated[tuple[TransitObservation, ...], Field()] = ()
+    receipts: Annotated[tuple[ReceiptObservation, ...], Field()] = ()
+    restrictions: Annotated[tuple[QualityRestriction, ...], Field()] = ()
     # Only these authoritative current pools enter the engine. The other records
     # never add capacity, nor does a commitment become stock when its date passes.
-    pools: Annotated[tuple[SupplyPool, ...], Field(max_length=4000)]
-    reservations: Annotated[tuple[ReservationSnapshot, ...], Field(max_length=8000)] = ()
+    pools: Annotated[tuple[SupplyPool, ...], Field()]
+    reservations: Annotated[tuple[ReservationSnapshot, ...], Field()] = ()
     supply_scope_complete: bool = Field(strict=True)
     note: Text
 
@@ -163,10 +164,10 @@ class CostInputs(FrozenDTO):
     ref: SnapshotRef
     cost_scope: CostScope
     process: ProcessSnapshot | None = None
-    material_prices: Annotated[tuple[MaterialPrice, ...], Field(max_length=2000)]
-    prices: Annotated[tuple[PriceSnapshot, ...], Field(max_length=4000)]
-    rates: Annotated[tuple[ExchangeRate, ...], Field(max_length=100)] = ()
-    nre_price_ids: Annotated[tuple[Text, ...], Field(max_length=1000)] = ()
+    material_prices: Annotated[tuple[MaterialPrice, ...], Field()]
+    prices: Annotated[tuple[PriceSnapshot, ...], Field()]
+    rates: Annotated[tuple[ExchangeRate, ...], Field()] = ()
+    nre_price_ids: Annotated[tuple[Text, ...], Field()] = ()
 
 
 class Delta(FrozenDTO):

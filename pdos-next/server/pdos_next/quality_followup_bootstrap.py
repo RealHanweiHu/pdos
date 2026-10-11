@@ -7,7 +7,7 @@ the returned callback explicitly; default quality_followup assessment is None.
 
 import json
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC
 from typing import Literal
 from uuid import UUID
 
@@ -18,6 +18,7 @@ from pdos_next.domain.quality_execution.evidence import (
     check_source,
     merge_reads,
 )
+from pdos_next.domain.quality_execution.policy import policy_time_current
 from pdos_next.domain.quality_execution.schemas import Revision, Sha256, Text
 from pdos_next.domain.quality_followup.evidence import _constant, _pairs
 from pdos_next.domain.quality_followup.schemas import (
@@ -61,7 +62,7 @@ class CompletionProfile(DTO):
     tenant_id: UUID
     product_id: UUID
     project_id: UUID
-    entries: tuple[CompletionProfileEntry, ...] = Field(min_length=1, max_length=100)
+    entries: tuple[CompletionProfileEntry, ...] = Field(min_length=1)
 
     @model_validator(mode="after")
     def unique_actions(self):
@@ -117,7 +118,7 @@ class ClassificationSourceBasis(DTO):
     hash: Sha256
     status: Literal["active"]
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     source_kind: Literal["registered_native_text"]
     registration: NativeRegistration
 
@@ -125,9 +126,7 @@ class ClassificationSourceBasis(DTO):
 class SyntheticCompletionAssessment(CompletionAssessment):
     """Host-only additive fields retained by A's isinstance/full model_dump path."""
 
-    classification_source_basis: tuple[ClassificationSourceBasis, ...] = Field(
-        min_length=1, max_length=20
-    )
+    classification_source_basis: tuple[ClassificationSourceBasis, ...] = Field(min_length=1)
     profile_epoch: Revision
     profile_sha256: Sha256
 
@@ -265,15 +264,10 @@ def _assess(configured, engine, s, ctx, product_id, basis, action, completion, p
     _active(engine, configured)
     if final_actual != actual or final_reads != reads:
         raise DomainError("SOURCE_STALE", "分类核对期间登记/安全/生命周期依据改变。")
-    try:
-        policy_until = datetime.fromisoformat(policy["valid_until"].replace("Z", "+00:00"))
-        if policy_until.utcoffset() is None or policy.get("nature") != "synthetic":
-            raise ValueError("Policy must be current synthetic with an aware fixed deadline")
-    except (KeyError, ValueError, TypeError, AttributeError) as exc:
-        raise DomainError("RECHECK_REQUIRED", "当前完整合成风险政策有效期不能核对。") from exc
     at = now()
-    deadline = min(entry.valid_until, policy_until)
-    if deadline <= at or observation.occurred_at > at:
+    if policy.get("nature") != "synthetic" or not policy_time_current(policy, at):
+        raise DomainError("RECHECK_REQUIRED", "当前完整合成风险政策条件不能核对。")
+    if entry.valid_until <= at or observation.occurred_at > at:
         raise DomainError("ACTION_COMPLETION_UNVERIFIED", "分类已过固定期限或完成事件为未来。")
     result = SyntheticCompletionAssessment(
         scope=basis.scope,
@@ -295,7 +289,7 @@ def _assess(configured, engine, s, ctx, product_id, basis, action, completion, p
         sources=(entry.source,),
         owner_proofs=(),
         required_source_read_set=reads,
-        valid_until=deadline,
+        time_constraints=(entry.valid_until,),
         classification_source_basis=actual,
         profile_epoch=configured.epoch,
         profile_sha256=digest(configured.data.model_dump(mode="json")),

@@ -46,7 +46,7 @@ class DefinitionRevision(Row, Base):
             ],
         ),
         CheckConstraint("status = 'draft'"),
-        CheckConstraint("visibility IN ('private','product')"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
         CheckConstraint("revision > 0 AND parent_definition_id IS DISTINCT FROM id"),
     )
 
@@ -125,8 +125,13 @@ class DefinitionSource(Row, Base):
             ],
         ),
         ForeignKeyConstraint(
-            ["tenant_id", "product_id", "artifact_id"],
-            ["artifact_versions.tenant_id", "artifact_versions.product_id", "artifact_versions.id"],
+            ["tenant_id", "category_id", "artifact_id"],
+            [
+                "artifact_versions.tenant_id",
+                "artifact_versions.category_id",
+                "artifact_versions.id",
+            ],
+            name="fk_definition_sources_category_artifact_id",
         ),
         CheckConstraint("source_revision > 0 AND line > 0"),
     )

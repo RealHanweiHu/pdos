@@ -182,9 +182,7 @@ class JournaledLocalObjectStore:
                             dir_fd=folder,
                         )
                     except FileExistsError:
-                        fd = os.open(
-                            name, os.O_RDWR | os.O_NOFOLLOW | os.O_CLOEXEC, dir_fd=folder
-                        )
+                        fd = os.open(name, os.O_RDWR | os.O_NOFOLLOW | os.O_CLOEXEC, dir_fd=folder)
                     fds.append(fd)
                     self._private(fd)
                     os.fsync(folder)
@@ -262,7 +260,8 @@ class JournaledLocalObjectStore:
             "schema_version": "pdos-object-journal-v1",
             "upload_id": str(upload_id),
             "tenant_id": str(scope.tenant_id),
-            "product_id": str(scope.product_id),
+            "product_id": str(scope.product_id) if scope.product_id else None,
+            "category_id": str(scope.category_id) if scope.category_id else None,
             "requester_id": str(requester_id),
             "reference": {
                 "id": str(reference.id),
@@ -282,6 +281,7 @@ class JournaledLocalObjectStore:
                 "upload_id",
                 "tenant_id",
                 "product_id",
+                "category_id",
                 "requester_id",
                 "reference",
                 "created_at",
@@ -298,7 +298,11 @@ class JournaledLocalObjectStore:
                 {k: v for k, v in entry.items() if k != "binding_sha256"}
             ):
                 raise ValueError("Journal binding mismatch")
-            scope = JournalScope(UUID(entry["tenant_id"]), UUID(entry["product_id"]))
+            scope = JournalScope(
+                UUID(entry["tenant_id"]),
+                UUID(entry["product_id"]) if entry["product_id"] else None,
+                UUID(entry["category_id"]) if entry["category_id"] else None,
+            )
             requester = UUID(entry["requester_id"])
             values = dict(entry["reference"])
             if type(values.get("version")) is not int or type(values.get("size_bytes")) is not int:
@@ -469,11 +473,12 @@ class JournaledLocalObjectStore:
         *,
         media_type: str,
         tenant_id: UUID,
-        product_id: UUID,
+        product_id: UUID | None,
         requester_id: UUID,
         upload_id: UUID,
+        category_id: UUID | None = None,
     ) -> ObjectRef:
-        scope = JournalScope(tenant_id, product_id)
+        scope = JournalScope(tenant_id, product_id, category_id if product_id is None else None)
         _identity(requester_id)
         _identity(upload_id)
         if not isinstance(content, bytes) or not content or len(content) > self.max_bytes:

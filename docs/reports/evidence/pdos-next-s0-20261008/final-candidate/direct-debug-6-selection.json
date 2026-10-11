@@ -1,0 +1,12 @@
+[
+  "tests/quality_execution_transactions/test_direct_confirmation_storage.py",
+  "tests/verification_launch/test_transactions.py::test_fixed_full_accepted_plan_promise_and_atomic_actual_start_leave_old_history",
+  "tests/verification_launch/test_transactions.py::test_inputs_are_readonly_even_when_sentinels_do_not_exist",
+  "tests/verification_launch/test_transactions.py::test_source_withdrawal_blocks_old_confirmation_and_keeps_every_effect_unwritten",
+  "tests/verification_launch/test_transactions.py::test_historical_resource_decision_callback_is_not_replayed_by_confirmed_start",
+  "tests/verification_launch/test_transactions.py::test_end_of_common_audit_outbox_failure_rolls_back_start_occupancy_usage_and_token",
+  "tests/verification_launch/test_transactions.py::test_direct_resource_current_successor_blocks_old_start_confirmation_without_effects",
+  "tests/test_retained_execution.py::test_retained_rr_evidence_does_not_survive_source_withdrawal_between_requests",
+  "tests/test_retained_execution.py::test_retained_saved_start_with_simulated_late_read_clock_and_no_new_permission",
+  "tests/test_retained_execution.py::test_retained_proof_rejects_changed_fixed_run_basis_even_with_valid_snapshot_hash"
+]

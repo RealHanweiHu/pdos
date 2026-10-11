@@ -7,12 +7,11 @@ import hashlib
 import re
 from copy import deepcopy
 from dataclasses import dataclass
-from datetime import datetime, timedelta
-from types import SimpleNamespace
 from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
-from sqlalchemy import select
+from sqlalchemy import exists, select
 
+from pdos_next.clock import deadline_current
 from pdos_next.domain.change_control.ports import Invocation
 from pdos_next.domain.change_control.rules import digest, graph_sources
 from pdos_next.domain.configurations.service import _merge_reads
@@ -28,7 +27,7 @@ from pdos_next.schemas.change_control.contracts import (
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
 
 from .adapters import authority_dto, kernel
-from .graph import OwnerReader, audience, capture_graph
+from .graph import CapturedInputReader, OwnerReader, audience, capture_graph
 from .models import ChangeCurrent, ChangeGraphCapture, ChangeRequestVersion
 from .schemas import ChangeCreatePayload, GraphCaptureInput, ImpactComputePayload
 
@@ -279,7 +278,8 @@ def _native_registration(s, ctx, pid, source):
             select(Receipt)
             .where(
                 Receipt.tenant_id == ctx.tenant_id,
-                Receipt.product_id == pid,
+                Receipt.category_id == source.category_id,
+                Receipt.product_id.is_not_distinct_from(source.product_id),
                 Receipt.operation == "evidence.artifact.register",
                 Receipt.subject_type == "artifact",
                 Receipt.subject_id == source.id,
@@ -293,7 +293,8 @@ def _native_registration(s, ctx, pid, source):
     receipt = rows[0]
     if (
         receipt.tenant_id != ctx.tenant_id
-        or receipt.product_id != pid
+        or receipt.category_id != source.category_id
+        or receipt.product_id != source.product_id
         or receipt.operation != "evidence.artifact.register"
         or receipt.subject_type != "artifact"
         or receipt.subject_id != source.id
@@ -326,7 +327,7 @@ def _native_registration(s, ctx, pid, source):
         if (
             run is None
             or run.tenant_id != ctx.tenant_id
-            or run.product_id != pid
+            or run.product_id != source.product_id
             or run.requester_id != receipt.requester_id
             or run.writer_id != receipt.actor_id
         ):
@@ -375,14 +376,17 @@ def _evidence(s, ctx, pid, reads, sources=(), *, io=True):
                 **provenance,
             }
             continue
-        original = require_original(s, ctx, pid, source.original_id, lock=True)
-        epoch, _ = require_safe(s, ctx, original)
+        writing = not s.info.get("read_snapshot")
+        original = require_original(s, ctx, pid, source.original_id, lock=writing)
+        epoch, _ = require_safe(s, ctx, original, lock=writing)
         ref = object_reference(original)
         if original.status != "parsed" or ref.size_bytes > MAX_ORIGINAL_BYTES:
             raise DomainError("SOURCE_UNAVAILABLE", "原件不可定位或超过有界核验上限。")
         if io:
             try:
-                content = read_registered_bytes(store, ref, ctx.tenant_id, pid)
+                content = read_registered_bytes(
+                    store, ref, ctx.tenant_id, original.product_id, ctx.category_id
+                )
             except StorageFailure:
                 raise DomainError(
                     "STORAGE_UNAVAILABLE", "变更原件读取失败，未保存业务变更。", 503
@@ -392,7 +396,7 @@ def _evidence(s, ctx, pid, reads, sources=(), *, io=True):
                 or hashlib.sha256(content).hexdigest() != ref.content_sha256
             ):
                 raise DomainError("INTEGRITY_MISMATCH", "变更原件字节摘要不一致。")
-            latest, _ = require_safe(s, ctx, original)
+            latest, _ = require_safe(s, ctx, original, lock=writing)
             if latest != epoch:
                 raise DomainError("SOURCE_STALE", "原件读取期间安全epoch变化。")
         private |= source.visibility == "private" or original.visibility == "private"
@@ -571,27 +575,19 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
 def _refresh(s, ctx, pid, operation, bound):
     # This is after all byte IO and owner/graph reads. It grants no authority from
     # a saved boolean and is called separately in each common command phase.
-    if bound.coverage is not None:
-        from pdos_next.change_coverage_binding import refresh_graph
-
-        bound.coverage = refresh_graph(
-            s,
-            ctx,
-            pid,
-            bound.coverage,
-            request=bound.request,
-            purpose=bound.purpose,
-            graph=bound.graph,
-        )
-    fresh = OwnerReader(s, ctx, pid, bound.scope, bound.target, _issue_loader(s))
-    for obj in bound.reader.objects.values():
-        current = fresh.resolve(obj.ref)
-        if (
-            not current.current
-            or digest(current.view) != digest(obj.view)
-            or current.source_basis != obj.source_basis
-        ):
-            raise DomainError("SOURCE_STALE", "原件读取后固定所有者/来源证明变化。")
+    # A captured closure already has the DB-owned watermark and is protected
+    # by the scope gate. Re-read its direct evidence and real intervals below;
+    # a second owner traversal would duplicate the complete capture.
+    if "closure" not in bound.source_basis:
+        fresh = OwnerReader(s, ctx, pid, bound.scope, bound.target, _issue_loader(s))
+        for obj in bound.reader.objects.values():
+            current = fresh.resolve(obj.ref)
+            if (
+                not current.current
+                or digest(current.view) != digest(obj.view)
+                or current.source_basis != obj.source_basis
+            ):
+                raise DomainError("SOURCE_STALE", "固定所有者或直接来源证明变化。")
     evidence, _, _ = _evidence(s, ctx, pid, bound.reads, bound.sources, io=False)
     value = _authority(s, ctx, pid, bound.scope, operation, bound.purpose, write=True)
     if (
@@ -618,7 +614,7 @@ def _refresh(s, ctx, pid, operation, bound):
 
 def _capture_valid(s, ctx, pid, bound):
     capture, graph = bound.capture, bound.graph
-    if now() >= capture.expires_at:
+    if not deadline_current(capture.expires_at, now()):
         raise DomainError("GRAPH_CAPTURE_EXPIRED", "影响图已过期，请重新捕获；原图不延长。")
     saved_authority = capture.authority_snapshot
     # Captured by the same actor; the scope/operation-specific current authority
@@ -670,7 +666,7 @@ def validate(s, ctx, command, product, payload):
 
 def _new_write(s, ctx, command, product, payload, bound):
     if product.revision != command.expected_revision:
-        raise DomainError("VERSION_CONFLICT", "产品版本已变化。")
+        raise DomainError("VERSION_CONFLICT", "型号版本已变化。")
     pointer, row = _current(s, ctx, product.id, bound.change_id, lock=True)
     if isinstance(payload, ChangeCreatePayload):
         if pointer is not None:
@@ -705,10 +701,9 @@ def _kernel(ctx, bound, at, save=None):
 
 
 def _valid_at(bound, at):
-    until = bound.authority.get("valid_until")
-    if until and at >= datetime.fromisoformat(until):
+    if not professional.authority_time_current(bound.authority, at):
         raise DomainError("SOURCE_STALE", "专业资格在本阶段核验期间到期，请重新核对。")
-    if bound.graph is not None and at >= bound.graph.expires_at:
+    if bound.graph is not None and not deadline_current(bound.graph.expires_at, at):
         raise DomainError("GRAPH_CAPTURE_EXPIRED", "固定图在本阶段核验期间到期。")
     if bound.coverage is not None and at >= bound.coverage.valid_until:
         raise DomainError("COVERAGE_OWNER_STALE", "当前覆盖依据已到期，请重新核对。", 409)
@@ -833,16 +828,110 @@ def replay_subject(s, ctx, command, product, payload):
     return row
 
 
+def _input_bound(s, ctx, command, product, payload):
+    """Project a captured Current graph using direct sources and its DB clock.
+
+    Actual command validation/preview/application keep their existing writer
+    readers. Only this HTTP input projection uses the persisted graph proof.
+    """
+    from pdos_next.change_graph_closure import lock_dependency_clock
+    from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
+    from pdos_next.service import digest as caller_digest
+
+    if (
+        not isinstance(payload, ImpactComputePayload)
+        or getattr(s.get_bind(), "_pdos_change_issue_loader", None) is not None
+    ):
+        return _load(s, ctx, command, product, payload, require_reads=False), None
+    semantic(payload)
+    _human(s, ctx, product.id, write=True)
+    uow, caller = _uow(s), caller_digest(vars(ctx))
+    row = _version(s, ctx, product.id, payload.change_id, payload.expected_change_revision)
+    request = _snapshot(row)
+    scope, purpose = _scope_seed(s, ctx, product.id, (*request.roots, *request.references))
+    capture = _row(s, ctx, product.id, ChangeGraphCapture, payload.snapshot.id)
+    if "closure" not in capture.source_basis:
+        return _load(s, ctx, command, product, payload, require_reads=False), None
+    graph = _graph(capture)
+    if (
+        capture.revision != payload.snapshot.revision
+        or capture.change_id != row.change_id
+        or capture.change_revision != row.revision
+        or capture.change_version_id != row.id
+    ):
+        raise DomainError("FIXED_REFERENCE_MISMATCH", "图捕获不属于固定Change版。")
+    lock_dependency_clock(s, ctx, scope=scope, audience=request.audience)
+    authority = _authority(s, ctx, product.id, scope, command.operation, purpose, write=True)
+    if not _capture_is_current(s, ctx, product.id, capture, request, purpose, authority):
+        raise DomainError("SOURCE_STALE", "固定图的直接来源、资格或依赖水位已变化。")
+
+    def material():
+        return caller_digest({c.key: getattr(capture, c.key) for c in capture.__table__.columns})
+
+    saved_material = material()
+    basis = deepcopy(capture.source_basis)
+    reader = CapturedInputReader(capture, request, graph)
+    sources = tuple(
+        dict.fromkeys(
+            (
+                *request.sources,
+                *(SourceRef.model_validate(v) for v in capture.sources),
+                *(v for h in payload.hypotheses for v in h.sources),
+                *(v for v in graph_sources(graph) if v.kind == "artifact"),
+            )
+        )
+    )
+    reads = _merge_reads(
+        capture.required_source_read_set,
+        authority["required_source_read_set"],
+        _source_reads(sources),
+    )
+    evidence, private, verified = _evidence(s, ctx, product.id, reads, sources)
+    if private and request.audience != audience(product.id, ctx.requester_id, "private"):
+        raise DomainError("AUDIENCE_USE_FORBIDDEN", "私有原件不能扩大变更受众。", 403)
+    basis["evidence"] = evidence
+    bound = Bound(
+        scope,
+        purpose,
+        request.audience,
+        row.change_id,
+        row,
+        request,
+        reader,
+        reads,
+        sources,
+        basis,
+        authority,
+        verified,
+        basis["runtime_stamp"],
+        graph,
+        capture,
+    )
+    _refresh(s, ctx, product.id, command.operation, bound)
+
+    def finish():
+        _same_uow(s, uow, ctx, caller)
+        if material() != saved_material or not _capture_is_current(
+            s, ctx, product.id, capture, request, purpose, authority
+        ):
+            raise DomainError("SOURCE_STALE", "输入投影期间固定图或依赖水位已变化。")
+        _human(s, ctx, product.id, write=True)
+        _valid_at(bound, now())
+
+    finish()
+    return bound, finish
+
+
 def inputs(s, ctx, product_id, command):
     if command.product_id != product_id or command.operation not in PAYLOADS:
-        raise DomainError("FORBIDDEN_SCOPE", "变更输入不属于当前产品/操作。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "变更输入不属于当前型号/操作。", 403)
     product = s.scalar(
         select(Product).where(Product.id == product_id, Product.tenant_id == ctx.tenant_id)
     )
     if product is None:
         raise DomainError("FORBIDDEN_SCOPE", "产品不可读取。", 403)
     payload = PAYLOADS[command.operation].model_validate(command.payload)
-    bound = _load(s, ctx, command, product, payload, require_reads=False)
+    bound, finish = _input_bound(s, ctx, command, product, payload)
     blockers = []
     try:
         _new_write(s, ctx, command, product, payload, bound)
@@ -859,6 +948,8 @@ def inputs(s, ctx, product_id, command):
         parsed,
         None,
     )
+    if finish is not None:
+        finish()
     return {
         "operation": command.operation,
         "change_id": str(bound.change_id),
@@ -898,7 +989,7 @@ def _capture_response(row, *, current=True):
             "change_id": str(row.change_id),
             "change_revision": row.change_revision,
             "graph": graph.model_dump(mode="json"),
-            "expires_at": row.expires_at.isoformat(),
+            "expires_at": row.expires_at.isoformat() if row.expires_at is not None else None,
             "created_at": row.created_at.isoformat(),
             "current": current,
             "source_status": "current" if current else "needs_recheck",
@@ -946,11 +1037,7 @@ def prepare_capture(s, ctx, product_id, input: GraphCaptureInput):
         if not reader.resolve(ref).current:
             raise DomainError("RECHECK_REQUIRED", "固定请求依据待重核。")
     at = old.created_at if old else now()
-    expiry = old.expires_at if old else at + timedelta(minutes=10)
-    if old is None and authority["valid_until"]:
-        expiry = min(expiry, datetime.fromisoformat(authority["valid_until"]))
-    if old is None and expiry <= at:
-        raise DomainError("QUALIFICATION_REQUIRED", "资格有效期不足以捕获图。", 403)
+    expiry = old.expires_at if old else None
     graph = capture_graph(
         reader,
         identity=old.id if old else uuid4(),
@@ -972,26 +1059,6 @@ def prepare_capture(s, ctx, product_id, input: GraphCaptureInput):
         saved=old.source_basis.get("coverage") if old is not None else None,
         optional=old is None or "coverage" not in old.source_basis,
     )
-    if old is None and coverage is not None and coverage.valid_until < expiry:
-        # Only a new capture may shorten its window. The owner proof contains
-        # the full graph header, so obtain a real read for the final graph rather
-        # than editing an opaque CoverageRead or saving its preliminary proof.
-        expiry = coverage.valid_until
-        graph = type(graph).model_validate(
-            {**graph.model_dump(mode="python"), "expires_at": expiry}
-        )
-        preliminary_basis = deepcopy(coverage.source_basis)
-        coverage = read_graph(
-            s,
-            ctx,
-            product_id,
-            request=request,
-            purpose=purpose,
-            graph=graph,
-        )
-        preliminary_basis["graph"]["expires_at"] = graph.expires_at.isoformat()
-        if preliminary_basis != coverage.source_basis or coverage.valid_until != expiry:
-            raise DomainError("SOURCE_STALE", "缩短图窗口期间原覆盖依据变化，请重新捕获。")
     graph = covered_graph(graph, coverage)
     sources = tuple(dict.fromkeys((*request.sources, *(coverage.sources if coverage else ()))))
     reads = _merge_reads(
@@ -1040,8 +1107,8 @@ def prepare_capture(s, ctx, product_id, input: GraphCaptureInput):
             or old.required_source_read_set != reads
         ):
             raise DomainError("SOURCE_STALE", "原捕获的权限、来源或图已变化；不能延长或覆盖。")
-        return _capture_response(old, current=now() < old.expires_at)
-    if now() >= expiry:
+        return _capture_response(old, current=deadline_current(old.expires_at))
+    if not deadline_current(expiry):
         raise DomainError("GRAPH_CAPTURE_EXPIRED", "有界图读取期间有效期已结束，请重新捕获。")
     _, latest = _current(s, ctx, product_id, row.change_id, lock=True)
     if latest is None or latest.id != row.id:
@@ -1073,8 +1140,15 @@ def prepare_capture(s, ctx, product_id, input: GraphCaptureInput):
     )
     s.add(capture)
     s.flush()
-    # Populate-existing Current must also survive trusted SQL in the full
-    # flush; the earlier row lock alone cannot fence this Session's own DML.
+    if bound.coverage is not None:
+        from pdos_next.domain.change_coverage_owner.owner import recheck_access
+
+        # Hold the real publisher locks and re-read its exact stamp AFTER full
+        # flush and other SQL. A failure escapes the entire caller UOW.
+        recheck_access(s, ctx, product_id, bound.coverage, request=request, purpose=purpose)
+    # The final owner access check also performs trusted SQL in this UOW.
+    # Compare scalar Current and dependency watermarks after it; row locks
+    # cannot protect against this Session's own writes. No graph is rebuilt.
     from pdos_next.change_order_service import current_fixed
 
     _, latest = current_fixed(s, ctx, product_id, row.change_id, lock=True)
@@ -1082,12 +1156,6 @@ def prepare_capture(s, ctx, product_id, input: GraphCaptureInput):
         raise DomainError("VERSION_CONFLICT", "图保存末端固定Change版已变化。")
     if closure_stamp(s, ctx, scope=scope, audience=request.audience) != dependency_closure:
         raise DomainError("RECHECK_REQUIRED", "图保存末端依赖水位变化。")
-    if bound.coverage is not None:
-        from pdos_next.domain.change_coverage_owner.owner import recheck_access
-
-        # Hold the real publisher locks and re-read its exact stamp AFTER full
-        # flush and other SQL. A failure escapes the entire caller UOW.
-        recheck_access(s, ctx, product_id, bound.coverage, request=request, purpose=purpose)
     if _runtime_stamp(s) != stamp:
         raise DomainError("RECHECK_REQUIRED", "图保存末端可信配置变化。")
     _valid_at(bound, now())
@@ -1102,7 +1170,8 @@ def _history_sources(s, ctx, pid, reads):
         source = s.scalar(
             select(Artifact).where(
                 Artifact.tenant_id == ctx.tenant_id,
-                Artifact.product_id == pid,
+                Artifact.category_id == ctx.category_id,
+                Artifact.product_id.is_(None) | (Artifact.product_id == pid),
                 Artifact.id == UUID(read["artifact_id"]),
             )
         )
@@ -1127,7 +1196,10 @@ def _source_options(s, ctx, pid, reads):
             row = source_for(s, ctx, pid, UUID(read["artifact_id"]), read["expected_revision"])
             if row.original_id is None:
                 continue
-            require_safe(s, ctx, require_original(s, ctx, pid, row.original_id, lock=True))
+            writing = not s.info.get("read_snapshot")
+            require_safe(
+                s, ctx, require_original(s, ctx, pid, row.original_id, lock=writing), lock=writing
+            )
         except DomainError:
             continue
         for number, line in enumerate(row.content.splitlines(), 1):
@@ -1145,15 +1217,66 @@ def _source_options(s, ctx, pid, reads):
                         "required_source_read_set": [read],
                     }
                 )
-            if len(options) >= 100:
-                return options
     return options
 
 
-def list_changes(s, ctx, product_id, *, issue_id=None, change_id=None):
-    _human(s, ctx, product_id)
+def _capture_is_current(s, ctx, pid, capture, request, purpose, authority):
+    """Current watermarks and real intervals; GET never rebuilds owner closure."""
+    from pdos_next.change_graph_closure import closure_stamp
+
+    basis = capture.source_basis
+    if (
+        not deadline_current(capture.expires_at)
+        or capture.authority_snapshot != authority
+        or basis.get("runtime_stamp") != _runtime_stamp(s)
+        or basis.get("closure")
+        != closure_stamp(s, ctx, scope=request.scope, audience=request.audience)
+        or basis.get("evidence")
+        != _evidence(s, ctx, pid, capture.required_source_read_set, io=False)[0]
+    ):
+        return False
+    if "coverage" in basis:
+        from pdos_next.domain.change_coverage_owner import models, owner
+
+        saved = basis["coverage"]
+        fact = s.scalar(
+            select(models.ChangeCoverageFact)
+            .join(
+                models.ChangeCoverageCurrent,
+                (models.ChangeCoverageCurrent.tenant_id == models.ChangeCoverageFact.tenant_id)
+                & (models.ChangeCoverageCurrent.product_id == models.ChangeCoverageFact.product_id)
+                & (models.ChangeCoverageCurrent.fact_id == models.ChangeCoverageFact.id)
+                & (models.ChangeCoverageCurrent.revision == models.ChangeCoverageFact.revision),
+            )
+            .where(
+                models.ChangeCoverageFact.tenant_id == ctx.tenant_id,
+                models.ChangeCoverageFact.product_id == pid,
+                models.ChangeCoverageFact.project_id == request.scope.project_id,
+                models.ChangeCoverageFact.change_id == request.id,
+                models.ChangeCoverageFact.id == UUID(saved["fact_id"]),
+                models.ChangeCoverageFact.purpose_sha256 == digest(purpose),
+            )
+        )
+        at = now()
+        if (
+            fact is None
+            or fact.revision != saved["revision"]
+            or fact.epoch != saved["epoch"]
+            or fact.material_sha256 != saved["material_sha256"]
+            or not fact.valid_from <= at < fact.valid_until
+            or saved["temporal_sha256"] != owner.temporal(s, ctx, pid, request.scope)[0]
+        ):
+            return False
+    return True
+
+
+def list_changes(
+    s, ctx, product_id, *, issue_id=None, change_id=None, history_cursor=None, capture_cursor=None
+):
+    from pdos_next.capa_history import page_query, page_rows
     from pdos_next.service import require_access
 
+    _human(s, ctx, product_id)
     caller_write = True
     try:
         require_access(s, ctx, product_id, write=True)
@@ -1162,14 +1285,43 @@ def list_changes(s, ctx, product_id, *, issue_id=None, change_id=None):
     q = select(ChangeRequestVersion).where(
         ChangeRequestVersion.tenant_id == ctx.tenant_id,
         ChangeRequestVersion.product_id == product_id,
-        (ChangeRequestVersion.visibility == "product")
+        (ChangeRequestVersion.visibility != "private")
         | (ChangeRequestVersion.owner_id == ctx.requester_id),
     )
     if change_id is not None:
         q = q.where(ChangeRequestVersion.change_id == change_id)
-    rows = s.scalars(
-        q.order_by(ChangeRequestVersion.created_at.desc(), ChangeRequestVersion.id).limit(101)
-    ).all()
+    if issue_id is not None:
+        refs = [[{"id": str(issue_id), "kind": kind}] for kind in ("issue", "capa")]
+        q = q.where(
+            ChangeRequestVersion.request_snapshot["roots"].contains(refs[0])
+            | ChangeRequestVersion.request_snapshot["roots"].contains(refs[1])
+            | ChangeRequestVersion.request_snapshot["references"].contains(refs[0])
+            | ChangeRequestVersion.request_snapshot["references"].contains(refs[1])
+        )
+    joined = (
+        (ChangeCurrent.tenant_id == ChangeRequestVersion.tenant_id)
+        & (ChangeCurrent.product_id == ChangeRequestVersion.product_id)
+        & (ChangeCurrent.change_id == ChangeRequestVersion.change_id)
+        & (ChangeCurrent.version_id == ChangeRequestVersion.id)
+        & (ChangeCurrent.revision == ChangeRequestVersion.revision)
+    )
+    current_rows = list(s.execute(q.add_columns(ChangeCurrent).join(ChangeCurrent, joined)))
+    current = {row.id: pointer for row, pointer in current_rows}
+    historical, history_page = page_rows(
+        s.scalars(
+            page_query(
+                q.where(~exists(select(ChangeCurrent.id).where(joined))),
+                ChangeRequestVersion.created_at,
+                ChangeRequestVersion.id,
+                "change",
+                history_cursor,
+                kinds={"change"},
+            )
+        ),
+        "change",
+        kinds={"change"},
+    )
+    rows = [*(row for row, _ in current_rows), *historical]
     items, captures, pointers, options, source_options, unavailable = [], [], {}, {}, [], 0
     create_authority, create_allowed = {}, False
     if issue_id is not None:
@@ -1221,39 +1373,40 @@ def list_changes(s, ctx, product_id, *, issue_id=None, change_id=None):
                 "reason_codes": [error.code],
             }
             create_allowed = False
-    for row in rows[:100]:
+    ready = {}
+    for row in rows:
         request = _snapshot(row)
-        if issue_id is not None and not any(
-            ref.id == issue_id and ref.kind in {"issue", "capa"}
-            for ref in (*request.roots, *request.references)
-        ):
-            continue
+        is_current, pointer = row.id in current, current.get(row.id)
+        authority = {
+            "authorized": False,
+            "qualified": None,
+            "reason_codes": [],
+            "status": "not_evaluated_historical",
+        }
+        eligible = False
         try:
             source_current = _history_sources(s, ctx, product_id, row.required_source_read_set)
-            pointer, latest = _current(s, ctx, product_id, row.change_id)
-            current = latest is not None and latest.id == row.id
-            _, purpose = _seed(s, ctx, product_id, (*request.roots, *request.references))
-            authority = professional.assess(
-                s, ctx, product_id, row.project_id, "change.impact.compute", purpose, now()
-            )
-            eligible = (
-                caller_write
-                and current
-                and source_current
-                and authority["authorized"] is True
-                and authority["qualified"] is True
-            )
+            if is_current:
+                scope, purpose = _scope_seed(
+                    s, ctx, product_id, (*request.roots, *request.references)
+                )
+                authority = professional.assess(
+                    s, ctx, product_id, scope.project_id, "change.impact.compute", purpose, now()
+                )
+                eligible = (
+                    caller_write
+                    and source_current
+                    and authority["authorized"] is True
+                    and authority["qualified"] is True
+                )
+                if eligible:
+                    ready[row.id] = (request, purpose, authority)
         except DomainError as error:
             if error.status == 403:
                 unavailable += 1
                 continue
             authority = {"authorized": False, "qualified": None, "reason_codes": [error.code]}
-            eligible, source_current, current, pointer = False, False, False, None
-        blockers = (
-            []
-            if eligible
-            else [{"code": "RECHECK_REQUIRED", "detail": "当前权限、专业依据或来源需核对。"}]
-        )
+            eligible, source_current = False, False
         items.append(
             {
                 "id": str(row.id),
@@ -1265,7 +1418,7 @@ def list_changes(s, ctx, product_id, *, issue_id=None, change_id=None):
                 "visibility": row.visibility,
                 "status": row.status,
                 "created_at": row.created_at.isoformat(),
-                "current": current,
+                "current": is_current,
                 "source_status": "current" if source_current else "needs_recheck",
                 "required_source_read_set": row.required_source_read_set,
                 "authority": authority,
@@ -1277,7 +1430,9 @@ def list_changes(s, ctx, product_id, *, issue_id=None, change_id=None):
                     "verification_record": False,
                     "close": False,
                 },
-                "blockers": blockers,
+                "blockers": []
+                if eligible
+                else [{"code": "RECHECK_REQUIRED", "detail": "当前权限、专业依据或来源需核对。"}],
             }
         )
         if pointer:
@@ -1285,45 +1440,51 @@ def list_changes(s, ctx, product_id, *, issue_id=None, change_id=None):
                 "version_id": str(pointer.version_id),
                 "revision": pointer.revision,
             }
-        for node in (*request.roots, *request.references):
-            options[node.identity] = {"label": node.kind, "ref": node.model_dump(mode="json")}
-        for capture in s.scalars(
-            select(ChangeGraphCapture)
-            .where(
-                ChangeGraphCapture.tenant_id == ctx.tenant_id,
-                ChangeGraphCapture.product_id == product_id,
-                ChangeGraphCapture.change_version_id == row.id,
-                (ChangeGraphCapture.visibility == "product")
-                | (ChangeGraphCapture.owner_id == ctx.requester_id),
+        if is_current:
+            for node in (*request.roots, *request.references):
+                options[node.identity] = {"label": node.kind, "ref": node.model_dump(mode="json")}
+    capture_query = select(ChangeGraphCapture).where(
+        ChangeGraphCapture.tenant_id == ctx.tenant_id,
+        ChangeGraphCapture.product_id == product_id,
+        (ChangeGraphCapture.visibility != "private")
+        | (ChangeGraphCapture.owner_id == ctx.requester_id),
+        ChangeGraphCapture.change_version_id.in_(q.with_only_columns(ChangeRequestVersion.id)),
+    )
+    current_captures = list(
+        s.scalars(
+            capture_query.where(
+                ChangeGraphCapture.change_version_id.in_(current),
             )
-            .order_by(ChangeGraphCapture.created_at.desc(), ChangeGraphCapture.id)
-            .limit(20)
-        ):
-            try:
-                visible = _history_sources(s, ctx, product_id, capture.required_source_read_set)
-            except DomainError:
+        )
+    )
+    historical_captures, capture_history_page = page_rows(
+        s.scalars(
+            page_query(
+                capture_query.where(ChangeGraphCapture.change_version_id.not_in(current)),
+                ChangeGraphCapture.created_at,
+                ChangeGraphCapture.id,
+                "capture",
+                capture_cursor,
+                kinds={"capture"},
+            )
+        ),
+        "capture",
+        kinds={"capture"},
+    )
+    for capture in [*current_captures, *historical_captures]:
+        try:
+            visible = _history_sources(s, ctx, product_id, capture.required_source_read_set)
+            reusable = visible and capture.change_version_id in ready
+            if reusable:
+                reusable = _capture_is_current(
+                    s, ctx, product_id, capture, *ready[capture.change_version_id]
+                )
+            captures.append(_capture_response(capture, current=bool(reusable))["capture"])
+        except DomainError as error:
+            if error.status == 403:
                 unavailable += 1
                 continue
-            capture_current = current and visible and now() < capture.expires_at
-            if capture_current and eligible:
-                try:
-                    product = s.scalar(
-                        select(Product).where(
-                            Product.tenant_id == ctx.tenant_id, Product.id == product_id
-                        )
-                    )
-                    payload = ImpactComputePayload.model_validate(
-                        _capture_response(capture)["impact_payload"]
-                    )
-                    command = SimpleNamespace(
-                        operation="change.impact.compute", product_id=product_id, source_read_set=[]
-                    )
-                    _load(s, ctx, command, product, payload, require_reads=False)
-                except DomainError:
-                    capture_current = False
-            else:
-                capture_current = False
-            captures.append(_capture_response(capture, current=capture_current)["capture"])
+            captures.append(_capture_response(capture, current=False)["capture"])
     return {
         "changes": items,
         "captures": captures,
@@ -1333,5 +1494,7 @@ def list_changes(s, ctx, product_id, *, issue_id=None, change_id=None):
         "capabilities": {"change.request.create": create_allowed},
         "authority": create_authority,
         "unavailable_count": unavailable,
-        "has_more": len(rows) > 100,
+        "history_page": history_page,
+        "capture_history_page": capture_history_page,
+        "has_more": bool(history_page["next_cursor"] or capture_history_page["next_cursor"]),
     }

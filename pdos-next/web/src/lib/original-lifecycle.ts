@@ -17,9 +17,9 @@ export type LifecyclePolicy = { version: string; profile: "local-synthetic" | "c
 export type LifecycleInventory = { items: LifecycleItem[]; policy: LifecyclePolicy | null; coverage_complete: boolean };
 export type LifecycleCandidate = {
   candidate_id: string; action: LifecycleAction; object_id: string; digest: string;
-  eligible: boolean; reasons: string[]; expires_at: string; not_before: string | null;
+  eligible: boolean; reasons: string[]; captured_at: string; not_before: string | null;
   lifecycle_revision?: number; object_version?: number; policy_version?: string;
-  captured_at?: string; content_sha256?: string; size_bytes?: number; media_type?: string;
+   content_sha256?: string; size_bytes?: number; media_type?: string;
   inventory_revision?: string; reference_read_version?: string; policy_digest?: string;
 };
 export type LifecycleOperation = "evidence.lifecycle.quarantine" | "evidence.lifecycle.restore" | "evidence.lifecycle.cancel" | "evidence.lifecycle.protection.record" | "evidence.lifecycle.upload.abandon";
@@ -98,7 +98,7 @@ export function normalizeInventory(value: unknown): LifecycleInventory {
 export function validLifecycleCandidate(value: unknown, item: LifecycleItem, action: LifecycleAction): value is LifecycleCandidate {
   return isRecord(value) && typeof value.candidate_id === "string" && !!value.candidate_id && value.action === action && value.object_id === item.id
     && typeof value.digest === "string" && /^[0-9a-f]{64}$/.test(value.digest) && typeof value.eligible === "boolean"
-    && Array.isArray(value.reasons) && value.reasons.every(reason => typeof reason === "string") && typeof value.expires_at === "string" && awareTimestamp(value.expires_at)
+    && Array.isArray(value.reasons) && value.reasons.every(reason => typeof reason === "string") && typeof value.captured_at === "string" && awareTimestamp(value.captured_at)
     && (value.not_before === null || typeof value.not_before === "string" && awareTimestamp(value.not_before))
     && (value.lifecycle_revision === undefined || value.lifecycle_revision === item.revision);
 }
@@ -113,7 +113,7 @@ export function lifecycleScope(productId: string, productRevision: number, item:
 export function lifecycleCommand(productId: string, productRevision: number, item: LifecycleItem, operation: LifecycleOperation, fields: LifecycleFields, reason: string, commandId: string, requestKey: string): LifecycleCommand {
   const cleaned = reason.trim(), minimumReasonLength = operation === "evidence.lifecycle.upload.abandon" ? 4 : 1;
   if (cleaned.length < minimumReasonLength || cleaned.length > 2000) throw new Error(`请填写 ${minimumReasonLength}–2000 字的具名核对原因。`);
-  if (!positiveInteger(productRevision)) throw new Error("产品版本尚未取得，请刷新核对。");
+  if (!positiveInteger(productRevision)) throw new Error("型号版本尚未取得，请刷新核对。");
   if (operation === "evidence.lifecycle.quarantine" && !item.can_quarantine || operation === "evidence.lifecycle.restore" && !item.can_restore || operation === "evidence.lifecycle.protection.record" && !item.can_record_protection || operation === "evidence.lifecycle.upload.abandon" && !item.can_abandon_upload) throw new Error("服务器当前不允许此动作，请刷新核对权限与保护事实。");
   if (operation === "evidence.lifecycle.cancel") {
     if (!("intent_id" in fields) || !item.intents.some(intent => intent.id === fields.intent_id && intent.revision === fields.expected_revision && intent.can_cancel)) throw new Error("服务器当前不允许取消此固定意图，请刷新核对。");

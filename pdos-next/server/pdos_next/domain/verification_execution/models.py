@@ -75,7 +75,7 @@ class VerificationPreparation(Row, Base):
             ],
         ),
         CheckConstraint("revision > 0 AND build_revision > 0 AND status = 'prepared'"),
-        CheckConstraint("visibility IN ('private','product')"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
         CheckConstraint(
             "(previous_preparation_id IS NULL AND previous_revision IS NULL AND revision = 1) OR "
             "(previous_preparation_id IS NOT NULL AND previous_revision IS NOT NULL "

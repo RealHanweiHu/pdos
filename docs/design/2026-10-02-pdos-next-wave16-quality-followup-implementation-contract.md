@@ -1,5 +1,7 @@
 # 第十六波：根因、实际完成与独立复验回链施工合同
 
+**2026-10-08：本施工合同已被[完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md)整体取代，仅作只读历史对照。下方旧“当前/下一步/冻结”不再作为施工指令。** 范围根、一致性、期限与数量限制按 v1.1 和已批准的 [S0 实施计划](2026-10-08-pdos-next-s0-refactoring-plan.md)执行；[旧条款对照与 B0 基线](../reports/evidence/pdos-next-s0-20261008/baseline/baseline.md)保留取代依据。原证据、失败与当时范围不改写。
+
 状态：主线冻结首段范围与并行归属。第十五波仍在公共复验和实际页面收口，本文不登记其通过。独占新增目录可先施工；共享注册、Issue writer、迁移及公开入口在第十五波收口后接入，不修改其冻结候选。
 
 依据：[完整目标架构](2026-10-02-pdos-complete-target-architecture-v1.md)、[执行方案](2026-10-02-pdos-next-execution-plan.md)、[后续盘点草案](2026-10-02-pdos-next-wave16-quality-followup-draft.md)与[实际接缝审阅](../reports/evidence/pdos-next-wave15-20261002/wave16-quality-adapter-review.md)。草案中的完整变更实施、有效性和关闭属于后续缺口，本合同没有开放其执行。

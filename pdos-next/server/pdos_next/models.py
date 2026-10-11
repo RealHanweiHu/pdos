@@ -1,25 +1,28 @@
 # ruff: noqa: I001 -- register child tables after their shared parent definitions
-from datetime import UTC, datetime
+from datetime import datetime
 from uuid import UUID, uuid4
 
 from sqlalchemy import (
     Boolean,
     CheckConstraint,
+    Column,
     DateTime,
     ForeignKeyConstraint,
+    FetchedValue,
     Index,
     Integer,
     String,
     Text,
     UniqueConstraint,
+    Uuid,
     text,
 )
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, declared_attr, mapped_column
 
 
-def now():
-    return datetime.now(UTC)
+from pdos_next.clock import now
+from pdos_next.command_handlers import T2_OPERATIONS
 
 
 class Base(DeclarativeBase):
@@ -30,6 +33,12 @@ class Row:
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     tenant_id: Mapped[UUID] = mapped_column(index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+    @declared_attr
+    def category_id(cls):
+        if any("product_id" in base.__dict__.get("__annotations__", {}) for base in cls.__mro__):
+            return mapped_column(Uuid, nullable=False, index=True, server_default=FetchedValue())
+        return None
 
 
 class Principal(Row, Base):
@@ -58,6 +67,40 @@ class LoginSession(Base):
     )
 
 
+class Category(Row, Base):
+    __tablename__ = "categories"
+    name: Mapped[str] = mapped_column(String(160))
+    purpose: Mapped[str] = mapped_column(Text)
+    owner_id: Mapped[UUID]
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    status: Mapped[str] = mapped_column(String(16), default="active")
+    lifecycle_epoch: Mapped[int] = mapped_column(Integer, default=1, server_default="1")
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
+        CheckConstraint("revision > 0 AND status IN ('active','archived')"),
+    )
+
+
+class ObjectAudience(Row, Base):
+    __tablename__ = "object_audiences"
+    category_id: Mapped[UUID] = mapped_column(index=True)
+    object_type: Mapped[str] = mapped_column(String(128))
+    subject_id: Mapped[UUID]
+    owner_id: Mapped[UUID]
+    principal_id: Mapped[UUID]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "category_id", "object_type", "subject_id", "principal_id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id"], ["categories.tenant_id", "categories.id"]
+        ),
+        ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
+        ForeignKeyConstraint(
+            ["tenant_id", "principal_id"], ["principals.tenant_id", "principals.id"]
+        ),
+    )
+
+
 class Product(Row, Base):
     __tablename__ = "products"
     name: Mapped[str] = mapped_column(String(160))
@@ -66,8 +109,14 @@ class Product(Row, Base):
     lifecycle_epoch: Mapped[int] = mapped_column(Integer, default=1)
     status: Mapped[str] = mapped_column(String(16), default="draft")
     owner_id: Mapped[UUID]
+    category_id: Mapped[UUID] = mapped_column(index=True)
+    visibility: Mapped[str] = mapped_column(String(16), default="category")
     __table_args__ = (
         UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "category_id", "id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id"], ["categories.tenant_id", "categories.id"]
+        ),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint("revision > 0"),
     )
@@ -75,14 +124,17 @@ class Product(Row, Base):
 
 class Grant(Row, Base):
     __tablename__ = "grants"
-    product_id: Mapped[UUID]
+    category_id: Mapped[UUID] = mapped_column(index=True)
     principal_id: Mapped[UUID]
     can_write: Mapped[bool] = mapped_column(Boolean, default=False)
-    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    product_manager: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     access_epoch: Mapped[int] = mapped_column(Integer, default=1)
     __table_args__ = (
-        UniqueConstraint("tenant_id", "product_id", "principal_id"),
-        ForeignKeyConstraint(["tenant_id", "product_id"], ["products.tenant_id", "products.id"]),
+        UniqueConstraint("tenant_id", "category_id", "principal_id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id"], ["categories.tenant_id", "categories.id"]
+        ),
         ForeignKeyConstraint(
             ["tenant_id", "principal_id"], ["principals.tenant_id", "principals.id"]
         ),
@@ -91,7 +143,7 @@ class Grant(Row, Base):
 
 class Artifact(Row, Base):
     __tablename__ = "artifact_versions"
-    product_id: Mapped[UUID]
+    product_id: Mapped[UUID | None]
     owner_id: Mapped[UUID]
     title: Mapped[str] = mapped_column(String(200))
     source_label: Mapped[str] = mapped_column(String(200))
@@ -114,7 +166,7 @@ class Artifact(Row, Base):
         UniqueConstraint("tenant_id", "product_id", "id"),
         ForeignKeyConstraint(["tenant_id", "product_id"], ["products.tenant_id", "products.id"]),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
-        CheckConstraint("visibility IN ('private','product')"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
         CheckConstraint("status IN ('active','withdrawn')"),
     )
 
@@ -137,8 +189,13 @@ class Claim(Row, Base):
     __table_args__ = (
         UniqueConstraint("tenant_id", "product_id", "id"),
         ForeignKeyConstraint(
-            ["tenant_id", "product_id", "artifact_id"],
-            ["artifact_versions.tenant_id", "artifact_versions.product_id", "artifact_versions.id"],
+            ["tenant_id", "category_id", "artifact_id"],
+            [
+                "artifact_versions.tenant_id",
+                "artifact_versions.category_id",
+                "artifact_versions.id",
+            ],
+            name="fk_claims_category_artifact_id",
         ),
         ForeignKeyConstraint(["tenant_id", "writer_id"], ["principals.tenant_id", "principals.id"]),
         ForeignKeyConstraint(
@@ -147,7 +204,7 @@ class Claim(Row, Base):
         ),
         CheckConstraint("nature IN ('observed','extracted','inferred')"),
         CheckConstraint("availability IN ('known','unknown','conflicted')"),
-        CheckConstraint("visibility IN ('private','product')"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
         CheckConstraint("status IN ('active','reverted')"),
         CheckConstraint("line > 0 AND revision > 0 AND source_revision > 0"),
     )
@@ -186,8 +243,13 @@ class WorkRequest(Row, Base):
     __table_args__ = (
         UniqueConstraint("tenant_id", "product_id", "id"),
         ForeignKeyConstraint(
-            ["tenant_id", "product_id", "artifact_id"],
-            ["artifact_versions.tenant_id", "artifact_versions.product_id", "artifact_versions.id"],
+            ["tenant_id", "category_id", "artifact_id"],
+            [
+                "artifact_versions.tenant_id",
+                "artifact_versions.category_id",
+                "artifact_versions.id",
+            ],
+            name="fk_work_requests_category_artifact_id",
         ),
         ForeignKeyConstraint(
             ["tenant_id", "accountable_owner_id"],
@@ -252,7 +314,7 @@ class Qualification(Row, Base):
 
 class Receipt(Row, Base):
     __tablename__ = "action_receipts"
-    product_id: Mapped[UUID]
+    product_id: Mapped[UUID | None]
     command_id: Mapped[UUID]
     actor_id: Mapped[UUID]
     requester_id: Mapped[UUID]
@@ -264,10 +326,18 @@ class Receipt(Row, Base):
     request_digest: Mapped[str] = mapped_column(String(64))
     intent_digest: Mapped[str] = mapped_column(String(64))
     run_id: Mapped[UUID | None]
+    agent_run_id: Mapped[UUID | None]
     result: Mapped[dict] = mapped_column(JSONB)
     __table_args__ = (
         UniqueConstraint("tenant_id", "id"),
-        UniqueConstraint("tenant_id", "product_id", "intent_digest"),
+        UniqueConstraint(
+            "tenant_id",
+            "category_id",
+            "product_id",
+            "intent_digest",
+            name="uq_action_receipts_scope_intent",
+            postgresql_nulls_not_distinct=True,
+        ),
         ForeignKeyConstraint(["tenant_id", "product_id"], ["products.tenant_id", "products.id"]),
         ForeignKeyConstraint(["tenant_id", "actor_id"], ["principals.tenant_id", "principals.id"]),
         ForeignKeyConstraint(
@@ -275,6 +345,12 @@ class Receipt(Row, Base):
             ["principals.tenant_id", "principals.id"],
         ),
         ForeignKeyConstraint(["tenant_id", "run_id"], ["runs.tenant_id", "runs.id"]),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "agent_run_id"],
+            ["agent_runs.tenant_id", "agent_runs.category_id", "agent_runs.id"],
+            name="fk_action_receipts_agent_run",
+        ),
+        CheckConstraint("run_id IS NULL OR agent_run_id IS NULL", name="receipt_one_run_identity"),
     )
 
 
@@ -284,6 +360,7 @@ class RequestKey(Row, Base):
     key: Mapped[str] = mapped_column(String(160))
     digest: Mapped[str] = mapped_column(String(64))
     receipt_id: Mapped[UUID]
+    category_id: Mapped[UUID] = mapped_column(index=True, server_default=FetchedValue())
     __table_args__ = (
         UniqueConstraint("tenant_id", "actor_id", "key"),
         ForeignKeyConstraint(["tenant_id", "actor_id"], ["principals.tenant_id", "principals.id"]),
@@ -297,6 +374,7 @@ class RequestKey(Row, Base):
 class Audit(Row, Base):
     __tablename__ = "audit_entries"
     receipt_id: Mapped[UUID]
+    category_id: Mapped[UUID] = mapped_column(index=True, server_default=FetchedValue())
     actor_id: Mapped[UUID]
     operation: Mapped[str] = mapped_column(String(80))
     __table_args__ = (
@@ -310,6 +388,7 @@ class Audit(Row, Base):
 class Outbox(Row, Base):
     __tablename__ = "outbox_events"
     receipt_id: Mapped[UUID]
+    category_id: Mapped[UUID] = mapped_column(index=True, server_default=FetchedValue())
     type: Mapped[str] = mapped_column(String(80))
     subject_id: Mapped[UUID]
     subject_revision: Mapped[int] = mapped_column(Integer)
@@ -332,18 +411,27 @@ class Outbox(Row, Base):
 
 class Confirmation(Row, Base):
     __tablename__ = "confirmations"
-    product_id: Mapped[UUID]
+    product_id: Mapped[UUID | None]
     actor_id: Mapped[UUID]
     subject_id: Mapped[UUID]
+    subject_type: Mapped[str] = mapped_column(
+        String(32), default="product", server_default="product"
+    )
     operation: Mapped[str] = mapped_column(String(80))
     revision: Mapped[int] = mapped_column(Integer)
     token_hash: Mapped[str] = mapped_column(String(64), unique=True)
-    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     consumed: Mapped[bool] = mapped_column(Boolean, default=False)
     payload_digest: Mapped[str | None] = mapped_column(String(64))
     snapshot: Mapped[dict | None] = mapped_column(JSONB)
     __table_args__ = (
         UniqueConstraint("tenant_id", "id", name="uq_confirmations_tenant_id_id_capa"),
+        CheckConstraint(
+            "expires_at IS NOT NULL OR operation IN ("
+            + ",".join(repr(operation) for operation in sorted(T2_OPERATIONS))
+            + ")",
+            name="ck_confirmations_decision_deadline",
+        ),
         ForeignKeyConstraint(["tenant_id", "product_id"], ["products.tenant_id", "products.id"]),
         ForeignKeyConstraint(["tenant_id", "actor_id"], ["principals.tenant_id", "principals.id"]),
     )
@@ -351,7 +439,7 @@ class Confirmation(Row, Base):
 
 class UploadedOriginal(Row, Base):
     __tablename__ = "uploaded_originals"
-    product_id: Mapped[UUID]
+    product_id: Mapped[UUID | None]
     owner_id: Mapped[UUID]
     title: Mapped[str] = mapped_column(String(200))
     filename: Mapped[str] = mapped_column(String(200))
@@ -370,7 +458,7 @@ class UploadedOriginal(Row, Base):
         UniqueConstraint("tenant_id", "product_id", "id"),
         ForeignKeyConstraint(["tenant_id", "product_id"], ["products.tenant_id", "products.id"]),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
-        CheckConstraint("visibility IN ('private','product')"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
         CheckConstraint("byte_count > 0 AND byte_count <= 8388608"),
         CheckConstraint("status IN ('uploaded','parsed','needs_ocr','failed')"),
     )
@@ -378,7 +466,7 @@ class UploadedOriginal(Row, Base):
 
 class OriginalScanRequest(Row, Base):
     __tablename__ = "original_scan_requests"
-    product_id: Mapped[UUID]
+    product_id: Mapped[UUID | None]
     original_id: Mapped[UUID]
     requester_id: Mapped[UUID]
     revision: Mapped[int] = mapped_column(Integer)
@@ -404,7 +492,7 @@ class OriginalScanRequest(Row, Base):
 
 class OriginalScanResult(Row, Base):
     __tablename__ = "original_scan_results"
-    product_id: Mapped[UUID]
+    product_id: Mapped[UUID | None]
     original_id: Mapped[UUID]
     request_id: Mapped[UUID]
     revision: Mapped[int] = mapped_column(Integer)
@@ -430,7 +518,7 @@ class OriginalScanResult(Row, Base):
 
 class OriginalSecurity(Row, Base):
     __tablename__ = "original_security"
-    product_id: Mapped[UUID]
+    product_id: Mapped[UUID | None]
     original_id: Mapped[UUID]
     epoch: Mapped[int] = mapped_column(Integer, default=1)
     source_state: Mapped[str] = mapped_column(String(16), default="active")
@@ -463,7 +551,7 @@ class OriginalSecurity(Row, Base):
 class Inbox(Row, Base):
     __tablename__ = "inbox_deliveries"
     event_id: Mapped[UUID]
-    product_id: Mapped[UUID]
+    product_id: Mapped[UUID | None]
     consumer: Mapped[str] = mapped_column(String(80))
     status: Mapped[str] = mapped_column(String(16), default="pending")
     workflow_id: Mapped[str | None] = mapped_column(String(200))
@@ -526,7 +614,7 @@ class UploadAttempt(Row, Base):
     """Committed reservation precedes bytes; terminal abandonment excludes late registration."""
 
     __tablename__ = "upload_attempts"
-    product_id: Mapped[UUID]
+    product_id: Mapped[UUID | None]
     owner_id: Mapped[UUID]
     request_key: Mapped[str] = mapped_column(String(200))
     request_digest: Mapped[str] = mapped_column(String(64))
@@ -552,7 +640,7 @@ class UploadAttempt(Row, Base):
 
 class LifecycleObject(Row, Base):
     __tablename__ = "lifecycle_objects"
-    product_id: Mapped[UUID]
+    product_id: Mapped[UUID | None]
     owner_id: Mapped[UUID]
     reference: Mapped[dict] = mapped_column(JSONB)
     revision: Mapped[int] = mapped_column(Integer, default=1)
@@ -570,7 +658,7 @@ class LifecycleObject(Row, Base):
 
 class LifecycleCandidate(Row, Base):
     __tablename__ = "lifecycle_candidates"
-    product_id: Mapped[UUID]
+    product_id: Mapped[UUID | None]
     object_id: Mapped[UUID]
     actor_id: Mapped[UUID]
     document: Mapped[dict] = mapped_column(JSONB)
@@ -586,7 +674,8 @@ class LifecycleCandidate(Row, Base):
 
 class LifecycleIntentRecord(Row, Base):
     __tablename__ = "lifecycle_intents"
-    product_id: Mapped[UUID]
+    category_id: Mapped[UUID] = mapped_column(index=True, server_default=FetchedValue())
+    product_id: Mapped[UUID | None]
     object_id: Mapped[UUID]
     actor_id: Mapped[UUID]
     revision: Mapped[int] = mapped_column(Integer)
@@ -601,7 +690,13 @@ class LifecycleIntentRecord(Row, Base):
             unique=True,
         ),
         UniqueConstraint("tenant_id", "product_id", "id"),
-        UniqueConstraint("tenant_id", "product_id", "intent_digest"),
+        UniqueConstraint(
+            "tenant_id",
+            "category_id",
+            "object_id",
+            "intent_digest",
+            name="uq_lifecycle_intents_scope_intent",
+        ),
         ForeignKeyConstraint(
             ["tenant_id", "product_id", "object_id"],
             ["lifecycle_objects.tenant_id", "lifecycle_objects.product_id", "lifecycle_objects.id"],
@@ -613,7 +708,7 @@ class LifecycleIntentRecord(Row, Base):
 
 class LifecycleRequest(Row, Base):
     __tablename__ = "lifecycle_requests"
-    product_id: Mapped[UUID]
+    product_id: Mapped[UUID | None]
     object_id: Mapped[UUID]
     actor_id: Mapped[UUID]
     key: Mapped[str] = mapped_column(String(200))
@@ -788,3 +883,121 @@ from pdos_next.domain.manufacturing_baseline.models import (  # noqa: E402,F401
 import pdos_next.change_dependency_clock  # noqa: E402,F401
 
 import pdos_next.domain.change_coverage_owner.models  # noqa: E402,F401
+
+# Every model-scoped row uses the same tenant/category/product foreign key.
+# Scope metadata is part of the mapped schema, never a client-selected ACL.
+for _table in Base.metadata.tables.values():
+    if "category_id" not in _table.c or _table.name in {"products", "object_audiences", "grants"}:
+        continue
+    _table.append_constraint(
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id"],
+            ["categories.tenant_id", "categories.id"],
+            name=f"fk_{_table.name}_category",
+        )
+    )
+    if "product_id" in _table.c:
+        _table.append_constraint(
+            ForeignKeyConstraint(
+                ["tenant_id", "category_id", "product_id"],
+                ["products.tenant_id", "products.category_id", "products.id"],
+                name=f"fk_{_table.name}_category_product",
+            )
+        )
+
+# Optional-model source bookkeeping still binds exact category/object identities.
+for _source in (
+    Artifact,
+    UploadedOriginal,
+    OriginalScanRequest,
+    UploadAttempt,
+    LifecycleObject,
+    LifecycleCandidate,
+    LifecycleIntentRecord,
+):
+    _source.__table__.append_constraint(
+        UniqueConstraint(
+            "tenant_id", "category_id", "id", name=f"uq_{_source.__tablename__}_category_identity"
+        )
+    )
+OriginalScanRequest.__table__.append_constraint(
+    UniqueConstraint(
+        "tenant_id",
+        "category_id",
+        "original_id",
+        "revision",
+        name="uq_original_scan_requests_scope_revision",
+    )
+)
+for _child, _column, _parent in (
+    (Artifact, "original_id", UploadedOriginal),
+    (OriginalScanRequest, "original_id", UploadedOriginal),
+    (OriginalSecurity, "original_id", UploadedOriginal),
+    (OriginalSecurity, "current_request_id", OriginalScanRequest),
+    (OriginalScanResult, "request_id", OriginalScanRequest),
+    (LifecycleCandidate, "object_id", LifecycleObject),
+    (LifecycleIntentRecord, "object_id", LifecycleObject),
+    (LifecycleRequest, "object_id", LifecycleObject),
+    (LifecycleRequest, "intent_id", LifecycleIntentRecord),
+):
+    _child.__table__.append_constraint(
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", _column],
+            [
+                f"{_parent.__tablename__}.tenant_id",
+                f"{_parent.__tablename__}.category_id",
+                f"{_parent.__tablename__}.id",
+            ],
+            name=f"fk_{_child.__tablename__}_category_{_column}",
+        )
+    )
+
+# Database-owned audience projections are not domain payload or fact material.
+for _name in (
+    "actual_configurations",
+    "build_authorization_decisions",
+    "build_execution_assessments",
+    "build_lots",
+    "build_operational_facts",
+    "build_readiness",
+    "build_starts",
+    "builds",
+    "measurement_import_captures",
+    "professional_authority_facts",
+    "sample_allocations",
+    "sample_readiness_facts",
+    "sample_run_usages",
+    "sample_units",
+    "test_measurements",
+    "test_resource_facts",
+    "test_resource_reservations",
+    "test_result_actions",
+    "test_result_projections",
+    "verification_actual_method_applicabilities",
+    "verification_actual_method_batches",
+    "verification_formal_requests",
+    "verification_handoff_facts",
+    "verification_launch_facts",
+    "verification_method_applicabilities",
+    "verification_preparations",
+    "verification_run_identities",
+    "verification_run_versions",
+    "verification_window_proposals",
+    "quality_issue_versions",
+    "quality_event_failure_links",
+    "quality_policy_facts",
+    "capa_remediation_links",
+    "capa_verification_evidence",
+    "capa_verification_rule_facts",
+    "capa_observation_facts",
+    "capa_named_verification_reviews",
+):
+    Base.metadata.tables[_name].append_column(
+        Column("audience_dependencies", JSONB, nullable=False, server_default=FetchedValue())
+    )
+
+# The Agent kernel owns its category scope and composite identity constraints.
+import pdos_next.agent_kernel.models  # noqa: E402,F401
+
+# Tenant model metadata is part of the actual shared schema; credentials stay in host ports.
+import pdos_next.model_configuration.persistence  # noqa: E402,F401

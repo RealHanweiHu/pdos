@@ -8,6 +8,7 @@ from uuid import UUID, uuid4
 
 from sqlalchemy import select
 
+from pdos_next.database import category_for_product
 from pdos_next.domain.configurations.service import _decimal, _merge_reads
 from pdos_next.domain.supply_execution.service import (
     _build,
@@ -19,6 +20,7 @@ from pdos_next.domain.supply_execution.service import (
 from pdos_next.domain.verification.rules import coverage_gaps, document_gaps
 from pdos_next.errors import DomainError
 from pdos_next.models import Grant, now
+from pdos_next.request_proof import snapshot_scalar
 from pdos_next.schemas.verification.contracts import (
     BuildRef,
     ConfigurationRef,
@@ -32,6 +34,7 @@ from pdos_next.schemas.verification.contracts import (
     Timeline,
     VerificationRequest,
 )
+from pdos_next.service import require_access
 
 from .models import VerificationCurrent, VerificationPreparation
 from .schemas import PreparationRecordPayload
@@ -101,12 +104,15 @@ def _blockers(build=None, samples=()):
 
 
 def _row(s, ctx, product_id, identity, *, write=False):
-    row = s.scalar(
+    row = snapshot_scalar(
+        s,
+        (VerificationPreparation, product_id, identity),
         select(VerificationPreparation).where(
             VerificationPreparation.id == identity,
             VerificationPreparation.tenant_id == ctx.tenant_id,
             VerificationPreparation.product_id == product_id,
-        )
+        ),
+        scope_id=product_id,
     )
     if (
         row is None
@@ -140,7 +146,9 @@ def _current(s, ctx, product_id, request_id, *, lock=False):
         VerificationCurrent.product_id == product_id,
         VerificationCurrent.request_id == request_id,
     )
-    pointer = s.scalar(query.with_for_update() if lock else query)
+    pointer = snapshot_scalar(
+        s, (VerificationCurrent, product_id, request_id), query, lock=lock, scope_id=product_id
+    )
     if pointer is None:
         return None, None
     row, _ = _row(s, ctx, product_id, pointer.preparation_id)
@@ -211,9 +219,11 @@ def semantic(payload):
 
 
 def _inputs(s, ctx, command, product, payload):
-    _human(s, ctx, product.id, write=True)
+    write = not getattr(s, "info", {}).get("read_snapshot", False)
+    _human(s, ctx, product.id, write=write)
+    require_access(s, ctx, product.id, write=True, lock=write)
     if product.tenant_id != ctx.tenant_id or command.product_id != product.id:
-        raise DomainError("FORBIDDEN_SCOPE", "验证准备不在当前产品范围。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "验证准备不在当前型号范围。", 403)
     build = _build(s, ctx, product.id, payload.build_id)
     _, engineering, manufacturing, planned_reads = _linked(s, ctx, product.id, build)
     # Select the intended historical predecessor, never a newer pointer before receipt replay.
@@ -242,15 +252,15 @@ def _inputs(s, ctx, command, product, payload):
     try:
         _, private = _sources(s, ctx, product.id, reads, references)
     except DomainError as error:
-        if error.code == "MISSING_REQUIRED_EVIDENCE":
-            raise DomainError(error.code, "准备资料须在指定原文行精确定位。", 422) from None
+        if error.reason == "MISSING_REQUIRED_EVIDENCE":
+            raise DomainError(error.reason, "准备资料须在指定原文行精确定位。", 422) from None
         raise
     visibility = (
         "private"
         if build.visibility == "private"
         or private
         or (previous and previous.visibility == "private")
-        else "product"
+        else "category"
     )
     if previous is not None and previous.visibility != visibility:
         raise DomainError("FORBIDDEN_SCOPE", "续版须保留原受众；私有依据请另建独立准备请求。", 403)
@@ -262,13 +272,14 @@ def validate(s, ctx, command, product, payload: PreparationRecordPayload):
 
 
 def _new_write(s, ctx, command, product, payload, values):
+    write = not getattr(s, "info", {}).get("read_snapshot", False)
     build, _, _, previous, _, _, _ = values
     if (
         command.expected_revision != product.revision
         or build.revision != payload.expected_build_revision
     ):
         raise DomainError("VERSION_CONFLICT", "产品或固定Build版本已变化，请重新读取。")
-    pointer, current = _current(s, ctx, product.id, payload.request_id, lock=True)
+    pointer, current = _current(s, ctx, product.id, payload.request_id, lock=write)
     if (current.revision if current else 0) != payload.expected_request_revision:
         raise DomainError("VERSION_CONFLICT", "准备请求当前版本已变化，请基于真实当前版修订。")
     if current is not None and (
@@ -548,7 +559,7 @@ def apply(s, ctx, command, product, payload):
     return row, "verification_preparation", row.visibility
 
 
-def get_preparation(s, ctx, product_id, identity):
+def get_preparation(s, ctx, product_id, identity, *, include_capabilities=True):
     _human(s, ctx, product_id)
     row, build = _row(s, ctx, product_id, identity)
     request = _snapshot(row)
@@ -563,7 +574,7 @@ def get_preparation(s, ctx, product_id, identity):
         source_status=state,
     )
     view["capabilities"] = _capabilities(
-        _can_write(s, ctx, product_id) and row.owner_id == ctx.requester_id
+        include_capabilities and _can_write(s, ctx, product_id) and row.owner_id == ctx.requester_id
     )
     return row, view
 
@@ -577,7 +588,7 @@ def _reference_samples(s, ctx, product_id):
         .where(
             SampleUnit.tenant_id == ctx.tenant_id,
             SampleUnit.product_id == product_id,
-            (SampleUnit.visibility == "product") | (SampleUnit.owner_id == ctx.requester_id),
+            (SampleUnit.visibility == "category") | (SampleUnit.owner_id == ctx.requester_id),
         )
         .order_by(SampleUnit.created_at.desc(), SampleUnit.id)
         .limit(101)
@@ -598,9 +609,9 @@ def _can_write(s, ctx, product_id):
         s.scalar(
             select(Grant.can_write).where(
                 Grant.tenant_id == ctx.tenant_id,
-                Grant.product_id == product_id,
+                Grant.category_id == category_for_product(product_id),
                 Grant.principal_id == ctx.requester_id,
-                Grant.expires_at > now(),
+                (Grant.expires_at.is_(None) | (Grant.expires_at > now())),
             )
         )
     )
@@ -624,7 +635,7 @@ def list_verification(s, ctx, product_id):
         .where(
             VerificationPreparation.tenant_id == ctx.tenant_id,
             VerificationPreparation.product_id == product_id,
-            (VerificationPreparation.visibility == "product")
+            (VerificationPreparation.visibility == "category")
             | (VerificationPreparation.owner_id == ctx.requester_id),
         )
         .order_by(VerificationPreparation.created_at.desc(), VerificationPreparation.id)

@@ -74,7 +74,7 @@ export function readChangeCoverage(input: CoverageReadingInput, now = Date.now()
       capturedAt: time(graph.captured_at) ? graph.captured_at : null, expiresAt: time(graph.expires_at) ? graph.expires_at : null,
       hash: typeof capture.graph_sha256 === "string" && /^[0-9a-f]{64}$/.test(capture.graph_sha256) ? capture.graph_sha256 : null,
       synthetic: graph.nature === "synthetic", current: capture.current === true && capture.source_status === "current",
-      expired: !Number.isFinite(now) || !time(graph.expires_at) || Date.parse(graph.expires_at) <= now },
+      expired: !Number.isFinite(now) || !(graph.expires_at === null || time(graph.expires_at) && Date.parse(graph.expires_at) > now) },
     facets: changeCoverageFacets.map(({ key, label }) => ({ facet: key, label, listed: null, unknown: null, needsReview: null, impactUnknown: null })),
     impact: { status: "not_assessed", unknowns: [] },
   };
@@ -83,10 +83,10 @@ export function readChangeCoverage(input: CoverageReadingInput, now = Date.now()
     && capture.id === graph.id && capture.revision === graph.revision && capture.change_id === input.expectedChangeId && uuid(input.expectedChangeId) && revision(capture.change_revision)
     && scope(input.expectedScope) && scope(graph.scope) && sameScope(graph.scope, input.expectedScope) && input.expectedScope.product_id === input.expectedProductId
     && audience(graph.audience) && audience(input.expectedAudience) && sameAudience(graph.audience, input.expectedAudience)
-    && time(graph.captured_at) && time(graph.expires_at) && time(capture.expires_at) && instantKey(graph.expires_at) === instantKey(capture.expires_at) && Date.parse(graph.expires_at) > Date.parse(graph.captured_at)
+    && time(graph.captured_at) && (graph.expires_at === null && capture.expires_at === null || time(graph.expires_at) && time(capture.expires_at) && instantKey(graph.expires_at) === instantKey(capture.expires_at) && Date.parse(graph.expires_at) > Date.parse(graph.captured_at))
     && ["real", "synthetic"].includes(String(graph.nature)) && typeof capture.current === "boolean" && capture.source_status === (capture.current ? "current" : "needs_recheck")
-    && Array.isArray(graph.nodes) && graph.nodes.length > 0 && graph.nodes.length <= 5000 && Array.isArray(graph.edges) && graph.edges.length <= 20000
-    && Array.isArray(graph.coverage) && graph.coverage.length <= 40000 && Array.isArray(graph.roots) && graph.roots.length > 0 && graph.roots.length <= 100 && Array.isArray(graph.sources) && graph.sources.length > 0;
+    && Array.isArray(graph.nodes) && graph.nodes.length > 0 && Array.isArray(graph.edges)
+    && Array.isArray(graph.coverage) && Array.isArray(graph.roots) && graph.roots.length > 0 && Array.isArray(graph.sources) && graph.sources.length > 0;
   if (!headerValid) { issues.add("固定图身份、范围、受众、期限或完整结构待核对。"); result.impact.status = "needs_review"; return finish(); }
   if (capture.graph_sha256 !== undefined && !result.snapshot.hash) issues.add("服务器提供的固定图摘要格式待核对。");
   const nodes = graph.nodes as unknown[], edges = graph.edges as unknown[], coverage = graph.coverage as unknown[], roots = graph.roots as unknown[], sources = graph.sources as unknown[];
@@ -110,7 +110,7 @@ export function readChangeCoverage(input: CoverageReadingInput, now = Date.now()
     edgeIds.add(edge.id);
   }
   const reads = new Map<string, number>();
-  if (!Array.isArray(capture.required_source_read_set) || capture.required_source_read_set.length > 20) issues.add("完整来源读集缺失或超过 20 份。");
+  if (!Array.isArray(capture.required_source_read_set)) issues.add("完整来源读集缺失。");
   else for (const read of capture.required_source_read_set) {
     if (!row(read) || !fields(read, ["artifact_id", "expected_revision"]) || !uuid(read.artifact_id) || !revision(read.expected_revision) || reads.has(read.artifact_id)) { issues.add("完整来源读集身份、版本或唯一性待核对。"); continue; }
     reads.set(read.artifact_id, read.expected_revision);

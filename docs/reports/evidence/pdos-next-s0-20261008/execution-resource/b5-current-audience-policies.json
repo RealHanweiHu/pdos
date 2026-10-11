@@ -1,0 +1,130 @@
+[
+  {
+    "tablename": "capa_named_verification_reviews",
+    "policyname": "category_scope",
+    "permissive": "PERMISSIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = capa_named_verification_reviews.tenant_id) AND (a.category_id = capa_named_verification_reviews.category_id) AND ((a.object_type)::text = 'capa_named_verification_reviews'::text) AND (a.subject_id = capa_named_verification_reviews.id) AND (a.owner_id = capa_named_verification_reviews.owner_id) AND (a.principal_id = scope_requester()))))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = capa_named_verification_reviews.tenant_id) AND (a.category_id = capa_named_verification_reviews.category_id) AND ((a.object_type)::text = 'capa_named_verification_reviews'::text) AND (a.subject_id = capa_named_verification_reviews.id) AND (a.owner_id = capa_named_verification_reviews.owner_id) AND (a.principal_id = scope_requester()))))))"
+  },
+  {
+    "tablename": "capa_named_verification_reviews",
+    "policyname": "model_audience",
+    "permissive": "RESTRICTIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = capa_named_verification_reviews.tenant_id) AND (p.category_id = capa_named_verification_reviews.category_id) AND (p.id = capa_named_verification_reviews.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = capa_named_verification_reviews.tenant_id) AND (p.category_id = capa_named_verification_reviews.category_id) AND (p.id = capa_named_verification_reviews.product_id)))))"
+  },
+  {
+    "tablename": "capa_observation_facts",
+    "policyname": "category_scope",
+    "permissive": "PERMISSIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = capa_observation_facts.tenant_id) AND (a.category_id = capa_observation_facts.category_id) AND ((a.object_type)::text = 'capa_observation_facts'::text) AND (a.subject_id = capa_observation_facts.id) AND (a.owner_id = capa_observation_facts.owner_id) AND (a.principal_id = scope_requester()))))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = capa_observation_facts.tenant_id) AND (a.category_id = capa_observation_facts.category_id) AND ((a.object_type)::text = 'capa_observation_facts'::text) AND (a.subject_id = capa_observation_facts.id) AND (a.owner_id = capa_observation_facts.owner_id) AND (a.principal_id = scope_requester()))))))"
+  },
+  {
+    "tablename": "capa_observation_facts",
+    "policyname": "model_audience",
+    "permissive": "RESTRICTIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = capa_observation_facts.tenant_id) AND (p.category_id = capa_observation_facts.category_id) AND (p.id = capa_observation_facts.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = capa_observation_facts.tenant_id) AND (p.category_id = capa_observation_facts.category_id) AND (p.id = capa_observation_facts.product_id)))))"
+  },
+  {
+    "tablename": "capa_remediation_links",
+    "policyname": "category_scope",
+    "permissive": "PERMISSIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = capa_remediation_links.tenant_id) AND (a.category_id = capa_remediation_links.category_id) AND ((a.object_type)::text = 'capa_remediation_links'::text) AND (a.subject_id = capa_remediation_links.id) AND (a.owner_id = capa_remediation_links.owner_id) AND (a.principal_id = scope_requester()))))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = capa_remediation_links.tenant_id) AND (a.category_id = capa_remediation_links.category_id) AND ((a.object_type)::text = 'capa_remediation_links'::text) AND (a.subject_id = capa_remediation_links.id) AND (a.owner_id = capa_remediation_links.owner_id) AND (a.principal_id = scope_requester()))))))"
+  },
+  {
+    "tablename": "capa_remediation_links",
+    "policyname": "model_audience",
+    "permissive": "RESTRICTIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = capa_remediation_links.tenant_id) AND (p.category_id = capa_remediation_links.category_id) AND (p.id = capa_remediation_links.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = capa_remediation_links.tenant_id) AND (p.category_id = capa_remediation_links.category_id) AND (p.id = capa_remediation_links.product_id)))))"
+  },
+  {
+    "tablename": "capa_verification_evidence",
+    "policyname": "category_scope",
+    "permissive": "PERMISSIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = capa_verification_evidence.tenant_id) AND (a.category_id = capa_verification_evidence.category_id) AND ((a.object_type)::text = 'capa_verification_evidence'::text) AND (a.subject_id = capa_verification_evidence.id) AND (a.owner_id = capa_verification_evidence.owner_id) AND (a.principal_id = scope_requester()))))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = capa_verification_evidence.tenant_id) AND (a.category_id = capa_verification_evidence.category_id) AND ((a.object_type)::text = 'capa_verification_evidence'::text) AND (a.subject_id = capa_verification_evidence.id) AND (a.owner_id = capa_verification_evidence.owner_id) AND (a.principal_id = scope_requester()))))))"
+  },
+  {
+    "tablename": "capa_verification_evidence",
+    "policyname": "model_audience",
+    "permissive": "RESTRICTIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = capa_verification_evidence.tenant_id) AND (p.category_id = capa_verification_evidence.category_id) AND (p.id = capa_verification_evidence.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = capa_verification_evidence.tenant_id) AND (p.category_id = capa_verification_evidence.category_id) AND (p.id = capa_verification_evidence.product_id)))))"
+  },
+  {
+    "tablename": "capa_verification_rule_facts",
+    "policyname": "category_scope",
+    "permissive": "PERMISSIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = capa_verification_rule_facts.tenant_id) AND (a.category_id = capa_verification_rule_facts.category_id) AND ((a.object_type)::text = 'capa_verification_rule_facts'::text) AND (a.subject_id = capa_verification_rule_facts.id) AND (a.owner_id = capa_verification_rule_facts.owner_id) AND (a.principal_id = scope_requester()))))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = capa_verification_rule_facts.tenant_id) AND (a.category_id = capa_verification_rule_facts.category_id) AND ((a.object_type)::text = 'capa_verification_rule_facts'::text) AND (a.subject_id = capa_verification_rule_facts.id) AND (a.owner_id = capa_verification_rule_facts.owner_id) AND (a.principal_id = scope_requester()))))))"
+  },
+  {
+    "tablename": "capa_verification_rule_facts",
+    "policyname": "model_audience",
+    "permissive": "RESTRICTIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = capa_verification_rule_facts.tenant_id) AND (p.category_id = capa_verification_rule_facts.category_id) AND (p.id = capa_verification_rule_facts.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = capa_verification_rule_facts.tenant_id) AND (p.category_id = capa_verification_rule_facts.category_id) AND (p.id = capa_verification_rule_facts.product_id)))))"
+  },
+  {
+    "tablename": "quality_event_failure_links",
+    "policyname": "category_scope",
+    "permissive": "PERMISSIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM test_result_projections p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.product_id = quality_event_failure_links.product_id) AND (p.id = quality_event_failure_links.projection_id)))) AND (EXISTS ( SELECT 1\n   FROM quality_issue_versions p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.product_id = quality_event_failure_links.product_id) AND (p.project_id = quality_event_failure_links.project_id) AND (p.issue_id = quality_event_failure_links.issue_id) AND (p.id = quality_event_failure_links.issue_version_id) AND (p.revision = quality_event_failure_links.issue_revision)))) AND (EXISTS ( SELECT 1\n   FROM test_result_projections p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.product_id = quality_event_failure_links.product_id) AND (p.project_id = quality_event_failure_links.project_id) AND (p.request_id = quality_event_failure_links.request_id) AND (p.run_id = quality_event_failure_links.run_id) AND (p.id = quality_event_failure_links.projection_id) AND (p.revision = quality_event_failure_links.projection_revision)))) AND (EXISTS ( SELECT 1\n   FROM test_measurements p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.product_id = quality_event_failure_links.product_id) AND (p.project_id = quality_event_failure_links.project_id) AND (p.request_id = quality_event_failure_links.request_id) AND (p.run_id = quality_event_failure_links.run_id) AND (p.id = quality_event_failure_links.measurement_id) AND (p.revision = quality_event_failure_links.measurement_revision)))) AND (EXISTS ( SELECT 1\n   FROM verification_run_versions p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.product_id = quality_event_failure_links.product_id) AND (p.project_id = quality_event_failure_links.project_id) AND (p.request_id = quality_event_failure_links.request_id) AND (p.run_id = quality_event_failure_links.run_id) AND (p.id = quality_event_failure_links.run_version_id) AND (p.revision = quality_event_failure_links.run_revision)))) AND (EXISTS ( SELECT 1\n   FROM test_measurements p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.product_id = quality_event_failure_links.product_id) AND (p.id = quality_event_failure_links.measurement_id)))) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.category_id = quality_event_failure_links.category_id) AND (p.id = quality_event_failure_links.product_id)))) AND (EXISTS ( SELECT 1\n   FROM verification_run_identities p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.product_id = quality_event_failure_links.product_id) AND (p.project_id = quality_event_failure_links.project_id) AND (p.build_id = quality_event_failure_links.build_id) AND (p.id = quality_event_failure_links.run_id)))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (EXISTS ( SELECT 1\n   FROM test_result_projections p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.product_id = quality_event_failure_links.product_id) AND (p.id = quality_event_failure_links.projection_id)))) AND (EXISTS ( SELECT 1\n   FROM quality_issue_versions p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.product_id = quality_event_failure_links.product_id) AND (p.project_id = quality_event_failure_links.project_id) AND (p.issue_id = quality_event_failure_links.issue_id) AND (p.id = quality_event_failure_links.issue_version_id) AND (p.revision = quality_event_failure_links.issue_revision)))) AND (EXISTS ( SELECT 1\n   FROM test_result_projections p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.product_id = quality_event_failure_links.product_id) AND (p.project_id = quality_event_failure_links.project_id) AND (p.request_id = quality_event_failure_links.request_id) AND (p.run_id = quality_event_failure_links.run_id) AND (p.id = quality_event_failure_links.projection_id) AND (p.revision = quality_event_failure_links.projection_revision)))) AND (EXISTS ( SELECT 1\n   FROM test_measurements p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.product_id = quality_event_failure_links.product_id) AND (p.project_id = quality_event_failure_links.project_id) AND (p.request_id = quality_event_failure_links.request_id) AND (p.run_id = quality_event_failure_links.run_id) AND (p.id = quality_event_failure_links.measurement_id) AND (p.revision = quality_event_failure_links.measurement_revision)))) AND (EXISTS ( SELECT 1\n   FROM verification_run_versions p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.product_id = quality_event_failure_links.product_id) AND (p.project_id = quality_event_failure_links.project_id) AND (p.request_id = quality_event_failure_links.request_id) AND (p.run_id = quality_event_failure_links.run_id) AND (p.id = quality_event_failure_links.run_version_id) AND (p.revision = quality_event_failure_links.run_revision)))) AND (EXISTS ( SELECT 1\n   FROM test_measurements p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.product_id = quality_event_failure_links.product_id) AND (p.id = quality_event_failure_links.measurement_id)))) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.category_id = quality_event_failure_links.category_id) AND (p.id = quality_event_failure_links.product_id)))) AND (EXISTS ( SELECT 1\n   FROM verification_run_identities p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.product_id = quality_event_failure_links.product_id) AND (p.project_id = quality_event_failure_links.project_id) AND (p.build_id = quality_event_failure_links.build_id) AND (p.id = quality_event_failure_links.run_id)))))"
+  },
+  {
+    "tablename": "quality_event_failure_links",
+    "policyname": "model_audience",
+    "permissive": "RESTRICTIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.category_id = quality_event_failure_links.category_id) AND (p.id = quality_event_failure_links.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = quality_event_failure_links.tenant_id) AND (p.category_id = quality_event_failure_links.category_id) AND (p.id = quality_event_failure_links.product_id)))))"
+  },
+  {
+    "tablename": "quality_issue_versions",
+    "policyname": "category_scope",
+    "permissive": "PERMISSIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = quality_issue_versions.tenant_id) AND (a.category_id = quality_issue_versions.category_id) AND ((a.object_type)::text = 'quality_issue_versions'::text) AND (a.subject_id = quality_issue_versions.id) AND (a.owner_id = quality_issue_versions.owner_id) AND (a.principal_id = scope_requester()))))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = quality_issue_versions.tenant_id) AND (a.category_id = quality_issue_versions.category_id) AND ((a.object_type)::text = 'quality_issue_versions'::text) AND (a.subject_id = quality_issue_versions.id) AND (a.owner_id = quality_issue_versions.owner_id) AND (a.principal_id = scope_requester()))))))"
+  },
+  {
+    "tablename": "quality_issue_versions",
+    "policyname": "model_audience",
+    "permissive": "RESTRICTIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = quality_issue_versions.tenant_id) AND (p.category_id = quality_issue_versions.category_id) AND (p.id = quality_issue_versions.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = quality_issue_versions.tenant_id) AND (p.category_id = quality_issue_versions.category_id) AND (p.id = quality_issue_versions.product_id)))))"
+  },
+  {
+    "tablename": "quality_policy_facts",
+    "policyname": "category_scope",
+    "permissive": "PERMISSIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = quality_policy_facts.tenant_id) AND (a.category_id = quality_policy_facts.category_id) AND ((a.object_type)::text = 'quality_policy_facts'::text) AND (a.subject_id = quality_policy_facts.id) AND (a.owner_id = quality_policy_facts.owner_id) AND (a.principal_id = scope_requester()))))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = quality_policy_facts.tenant_id) AND (a.category_id = quality_policy_facts.category_id) AND ((a.object_type)::text = 'quality_policy_facts'::text) AND (a.subject_id = quality_policy_facts.id) AND (a.owner_id = quality_policy_facts.owner_id) AND (a.principal_id = scope_requester()))))))"
+  },
+  {
+    "tablename": "quality_policy_facts",
+    "policyname": "model_audience",
+    "permissive": "RESTRICTIVE",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = quality_policy_facts.tenant_id) AND (p.category_id = quality_policy_facts.category_id) AND (p.id = quality_policy_facts.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = quality_policy_facts.tenant_id) AND (p.category_id = quality_policy_facts.category_id) AND (p.id = quality_policy_facts.product_id)))))"
+  }
+]

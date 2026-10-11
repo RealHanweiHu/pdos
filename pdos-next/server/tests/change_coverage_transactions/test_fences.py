@@ -17,7 +17,7 @@ from pdos_next.service import Context
 
 
 def test_actual_publisher_a_reader_b_fenced_until_transaction_end(setup):
-    ctx = Context(setup.tenant, setup.peer, setup.peer)
+    ctx = Context(setup.tenant, setup.peer, setup.peer, category_id=setup.category)
 
     def revoke(model, identity):
         try:
@@ -30,14 +30,20 @@ def test_actual_publisher_a_reader_b_fenced_until_transaction_end(setup):
                 else:
                     session.execute(
                         update(Grant)
-                        .where(Grant.principal_id == identity, Grant.product_id == setup.product)
+                        .where(Grant.principal_id == identity, Grant.category_id == setup.category)
                         .values(can_write=False)
                     )
         except DBAPIError as error:
             return error.orig.sqlstate
         return "COMMITTED"
 
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=ctx.actor_id,
+        requester_id=ctx.requester_id,
+        category_id=setup.category,
+    ) as session:
         session.scalar(select(Product).where(Product.id == setup.product).with_for_update())
         before, until = owner.lock_people(session, ctx, setup.product, setup.human)
         assert {row[0] for row in before} == {setup.human, setup.peer} and until > now()
@@ -48,7 +54,13 @@ def test_actual_publisher_a_reader_b_fenced_until_transaction_end(setup):
     assert revoke(Principal, setup.human) == "COMMITTED"
     with (
         pytest.raises(DomainError) as inactive,
-        tenant_session(setup.engine, setup.tenant) as session,
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=setup.category,
+        ) as session,
     ):
         owner.lock_people(session, ctx, setup.product, setup.human)
     assert inactive.value.status == 403
@@ -56,10 +68,19 @@ def test_actual_publisher_a_reader_b_fenced_until_transaction_end(setup):
 
 @pytest.mark.parametrize("field", ["can_write", "expires_at", "access_epoch"])
 def test_actual_pending_grant_revocation_never_reset_by_fresh_lock(setup, field):
-    with pytest.raises(DomainError), tenant_session(setup.engine, setup.tenant) as session:
+    with (
+        pytest.raises(DomainError),
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.ctx.actor_id,
+            requester_id=setup.ctx.requester_id,
+            category_id=setup.category,
+        ) as session,
+    ):
         grant = session.scalar(
             select(Grant).where(
-                Grant.product_id == setup.product, Grant.principal_id == setup.human
+                Grant.category_id == setup.category, Grant.principal_id == setup.human
             )
         )
         value = (

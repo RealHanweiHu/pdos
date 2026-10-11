@@ -1,4 +1,4 @@
-"""Re-enumerate an immutable Change graph before its current G3 owner guards.
+"""Compare Current watermarks; rebuild a fixed Change graph once for a T2 commit.
 
 This candidate reads actual owners, never writes or creates another graph identity.
 The dependency clock fences committed reverse/hidden dependency changes. It is
@@ -18,6 +18,7 @@ from sqlalchemy import and_, event, inspect, select, text
 from sqlalchemy.sql import visitors
 
 from pdos_next.change_dependency_clock import ChangeDependencyClock
+from pdos_next.clock import deadline_current, earliest_deadline, now
 from pdos_next.contracts import Command
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.change_control.rules import digest, graph_sources
@@ -31,8 +32,6 @@ from pdos_next.service import Context
 from pdos_next.service import digest as caller_digest
 
 VERSION = "change-dependency-closure-v1"
-MAX_NODES = 250
-MAX_ARTIFACTS = 20
 
 # Same candidate as next_0030; the manifest checks the two sets independently.
 # A pending dependency must be rejected, rather than hidden by no_autoflush.
@@ -102,7 +101,7 @@ def graph_material(graph):
     path keys, so comparison ignores only the fresh enumeration's edge ID while
     the caller continues using the original immutable graph and original IDs.
     """
-    _require(type(graph) is GraphSnapshot and len(graph.nodes) <= MAX_NODES)
+    _require(type(graph) is GraphSnapshot)
     value = graph.model_dump(mode="json")
     for field in ("roots", "nodes", "coverage", "sources"):
         value[field] = _sorted(value[field])
@@ -325,7 +324,6 @@ def _reads(reader, graph):
         _require(type(revision) is int and revision > 0)
         _require(identity not in result or result[identity] == revision)
         result[identity] = revision
-    _require(len(result) <= MAX_ARTIFACTS)
     return tuple({"artifact_id": key, "expected_revision": result[key]} for key in sorted(result))
 
 
@@ -369,13 +367,12 @@ def recheck_graph_closure(
     expected_closure,
     valid_until,
     coverage_refresh=None,
+    complete_recheck=False,
 ):
-    """Same-call full topology recheck. No persisted/cross-phase prepared result.
+    """A snapshot uses its DB watermark and direct read set.
 
-    coverage_refresh is a trusted server owner callback, never a payload flag:
-      callback(s, ctx, pid, *, graph, current_graph, reader) -> tuple[Coverage, ...]
-    It must re-read current complete-coverage owner facts and preserve UNKNOWN.
-    Missing complete-coverage integration rejects rather than inventing coverage.
+    A T2 commit may additionally reconstruct the full topology once. Coverage
+    remains a trusted server callback and cannot promote an UNKNOWN facet.
     """
     _scope(ctx, scope, audience)
     _require(type(command) is Command and command.product_id == scope.product_id)
@@ -386,7 +383,14 @@ def recheck_graph_closure(
     _require(type(graph) is GraphSnapshot and graph.scope == scope and graph.audience == audience)
     _require(graph.revision == 1 and tuple(roots) == graph.roots)
     _require(type(expected_closure) is dict and expected_closure.get("version") == VERSION)
-    _require(valid_until.tzinfo is not None and valid_until.utcoffset() is not None)
+    _require(
+        valid_until is None
+        or (valid_until.tzinfo is not None and valid_until.utcoffset() is not None)
+    )
+    _require(
+        type(complete_recheck) is bool
+        and (not complete_recheck or command.operation == "change.order.approve")
+    )
     _require(coverage_refresh is None or callable(coverage_refresh))
     _require(
         not any(c.status == "complete" for c in graph.coverage) or coverage_refresh is not None
@@ -394,7 +398,7 @@ def recheck_graph_closure(
     uow, caller = _uow(s), caller_digest(vars(ctx))
     original = (digest(command), digest(graph), digest(expected_closure), digest(scope), audience)
     runtime = _runtime(s, coverage_refresh)
-    earliest = min(valid_until, graph.expires_at)
+    earliest = earliest_deadline(valid_until, graph.expires_at)
 
     def live():
         _same_uow(s, uow, ctx, caller)
@@ -404,18 +408,17 @@ def recheck_graph_closure(
         )
         _require(_runtime(s, coverage_refresh) == runtime)
         _pending_dependencies(s)
-        now = datetime.now(UTC)
-        _require(graph.captured_at <= now < earliest)
-        return now
+        checked_at = now()
+        _require(graph.captured_at <= checked_at and deadline_current(earliest, checked_at))
+        return checked_at
 
     expected = deepcopy(expected_closure)
-    previous = None
-    result_reads = ()
     live()
     with _fresh_selects(s):
         _require(closure_stamp(s, ctx, scope=scope, audience=audience) == expected)
-        for _ in range(2):
-            reader = _reader(s, ctx, scope, audience)
+        reader = _reader(s, ctx, scope, audience)
+        current = graph
+        if complete_recheck:
             try:
                 current = graph_owner.capture_graph(
                     reader,
@@ -428,26 +431,21 @@ def recheck_graph_closure(
                 )
             except DomainError:
                 raise DomainError("RECHECK_REQUIRED", "当前依赖闭包待重新捕获核对。", 409) from None
-            _same_reader(reader, s, ctx, scope, audience)
-            _require(not reader.hidden_discovered)
-            if coverage_refresh is not None:
-                coverage = coverage_refresh(
-                    s, ctx, scope.product_id, graph=graph, current_graph=current, reader=reader
-                )
-                _require(type(coverage) is tuple and all(type(c) is Coverage for c in coverage))
-                current = GraphSnapshot.model_validate(
-                    {**current.model_dump(mode="python"), "coverage": coverage}
-                )
-            _same_reader(reader, s, ctx, scope, audience)
-            require_same_graph(graph, current)
-            materials = _owner_material(reader)
-            result_reads = _reads(reader, current)
-            # The counter surrounds complete material/coverage IO, not just BFS.
-            _require(closure_stamp(s, ctx, scope=scope, audience=audience) == expected)
-            live()
-            current_material = (graph_material(current), materials, result_reads)
-            _require(previous is None or previous == current_material)
-            previous = deepcopy(current_material)
+        _same_reader(reader, s, ctx, scope, audience)
+        _require(not reader.hidden_discovered)
+        if coverage_refresh is not None:
+            coverage = coverage_refresh(
+                s, ctx, scope.product_id, graph=graph, current_graph=current, reader=reader
+            )
+            _require(type(coverage) is tuple and all(type(c) is Coverage for c in coverage))
+            current = GraphSnapshot.model_validate(
+                {**current.model_dump(mode="python"), "coverage": coverage}
+            )
+        _same_reader(reader, s, ctx, scope, audience)
+        require_same_graph(graph, current)
+        result_reads = _reads(reader, current)
+        _require(closure_stamp(s, ctx, scope=scope, audience=audience) == expected)
+        live()
     # No helper IO occurs after this exact root/caller/runtime and clock closure.
     checked_at = live()
     return ClosureRead(graph, expected, result_reads, checked_at)

@@ -88,7 +88,7 @@ def reference(work):
 
 def prepare(setup, work, payload, *, headers=None, product=None):
     return setup.client.post(
-        f"/v1/products/{product or setup.product}/cost-captures",
+        f"/v1/categories/{setup.category}/products/{product or setup.product}/cost-captures",
         headers=headers or setup.headers,
         json=payload,
     )
@@ -137,7 +137,8 @@ def estimated(setup, work, payload):
 
 def listed(setup, *, headers=None):
     response = setup.client.get(
-        f"/v1/products/{setup.product}/costs", headers=headers or setup.headers
+        f"/v1/categories/{setup.category}/products/{setup.product}/costs",
+        headers=headers or setup.headers,
     )
     assert response.status_code == 200, response.text
     return response.json()
@@ -219,7 +220,13 @@ def quote_input(work, **changes):
 
 
 def result_for(setup, receipt):
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = session.get(CostEstimate, UUID(receipt["subject_id"]))
         return deepcopy(row.projection["result"])
 
@@ -319,7 +326,13 @@ def test_common_t1_and_canonical_t0_reuse_fixed_basis_and_keep_unknown_total(set
     assert Decimal(motor["quantity_for_build"]) == Decimal(22)
     assert Decimal(motor["quantity_per_product"]) == Decimal("2.2")
     assert Decimal(motor["build_candidate"]) == Decimal("2.2")
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         draft = session.get(CostCapture, UUID(capture["capture"]["id"]))
         saved = session.get(CostInputSnapshot, UUID(receipt["subject_id"]))
         projected = session.get(CostEstimate, UUID(estimate["subject_id"]))
@@ -388,7 +401,13 @@ def test_tax_conversion_and_budget_fx_keep_original_money_and_real_observation_t
     line = next(line for line in result["lines"] if line["line_id"] == "material:motor")
     assert Decimal(line["original_build_amount"]) == Decimal("2.64")
     assert line["original_currency"] == "EUR" and line["rate_id"] == "synthetic-budget-rate"
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         saved = session.get(CostInputSnapshot, UUID(inputs["subject_id"]))
         observed = datetime.fromisoformat(saved.inputs["rates"][0]["ref"]["captured_at"])
         assert observed == datetime.fromisoformat(cost_work["rate_observed_at"])
@@ -547,7 +566,9 @@ def test_private_cost_sources_and_results_do_not_leak_to_peer_or_other_tenant(
     headers = {"Authorization": f"Bearer {setup.tokens[getattr(setup, actor)]}"}
     refused = prepare(setup, cost_work, capture_input(cost_work), headers=headers)
     assert refused.status_code == 403, refused.text
-    read = setup.client.get(f"/v1/products/{setup.product}/costs", headers=headers)
+    read = setup.client.get(
+        f"/v1/categories/{setup.category}/products/{setup.product}/costs", headers=headers
+    )
     if actor == "peer":
         assert read.status_code == 200
         assert read.json()["captures"] == read.json()["inputs"] == read.json()["estimates"] == []
@@ -573,13 +594,22 @@ def test_capture_and_committed_estimate_replays_recheck_current_sources_and_righ
                 .where(Artifact.id == UUID(cost_work["cost_source"]))
                 .values(revision=2)
             )
-    for response in (prepare(setup, cost_work, payload), post(setup, command)):
-        assert response.status_code in {403, 409}, response.text
-    assert (
-        count(setup, CostCapture)
-        == count(setup, CostInputSnapshot)
-        == count(setup, CostEstimate)
-        == 1
+    responses = (prepare(setup, cost_work, payload), post(setup, command))
+    if change == "grant":
+        assert all(response.status_code == 403 for response in responses)
+        assert count(setup, CostEstimate) == 0
+    else:
+        assert all(response.status_code == 200 for response in responses)
+        assert responses[0].json()["capture"]["source_status"] == "needs_recheck"
+        fresh = {**payload, "capture_key": str(uuid4())}
+        denied = prepare(setup, cost_work, fresh)
+        assert denied.status_code == 409
+        assert denied.json()["code"] == (
+            "SOURCE_UNAVAILABLE" if change == "withdraw" else "SOURCE_STALE"
+        )
+    assert all(
+        count(setup, model, physical=True) == 1
+        for model in (CostCapture, CostInputSnapshot, CostEstimate)
     )
 
 
@@ -642,6 +672,9 @@ def test_original_acl_and_parse_state_are_rechecked_even_with_readable_derived_p
         ensure_scanned(
             setup.engine,
             {
+                "category_id": str(setup.category),
+                "actor_id": str(setup.human),
+                "requester_id": str(setup.human),
                 "tenant_id": str(setup.tenant),
                 "product_id": str(setup.product),
                 "subject_id": str(original_id),
@@ -684,7 +717,7 @@ def test_quote_end_drift_requires_new_review_then_can_save_explicit_unknown(
     with monkeypatch.context() as patch:
         set_clock(patch, expiry)
         refused = post(setup, command)
-        assert refused.status_code == 409 and refused.json()["code"] == "CONFIRMATION_SCOPE_CHANGED"
+        assert refused.status_code == 409 and refused.json()["code"] == "CONFIRMATION_REQUIRED"
         assert confirmation_consumed(setup, command) is False
         assert count(setup, CostInputSnapshot) == 0
         saved, renewed = accepted(setup, inputs_command(setup, capture))
@@ -694,7 +727,13 @@ def test_quote_end_drift_requires_new_review_then_can_save_explicit_unknown(
         result = result_for(setup, computed.json())
         assert "quote_not_valid" in cost_codes(result)
         assert Decimal(result["known_build_subtotal"]) == 0 and result["build_candidate"] is None
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = session.get(CostCapture, UUID(capture["capture"]["id"]))
         assert row.input_snapshot == original_capture
 
@@ -726,7 +765,7 @@ def test_final_receipt_failure_rolls_back_cost_pointer_confirmation_and_outbox(
     with monkeypatch.context() as patch:
         patch.setattr(service, "append_receipt", fail)
         refused = post(setup, command)
-    assert refused.json()["code"] == "SYNTHETIC_COST_RECEIPT_FAILURE", refused.text
+    assert refused.json()["code"] == "INTERNAL_ERROR", refused.text
     assert {model: count(setup, model) for model in tables} == before
     if operation == INPUTS:
         assert confirmation_consumed(setup, command) is False
@@ -765,7 +804,13 @@ def test_competing_successors_preserve_fixed_history_and_only_one_current_pointe
         "input_id": winner["subject_id"],
         "revision": 2,
     }
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         assert Decimal(
             session.get(CostInputSnapshot, UUID(first["subject_id"])).inputs["prices"][0]["amount"]
         ) == Decimal("0.10")
@@ -823,12 +868,18 @@ def test_cost_history_is_immutable_rls_scoped_and_agent_has_no_direct_or_qualifi
                 is False
             )
     with (
-        tenant_session(setup.engine, setup.tenant) as session,
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.human,
+            requester_id=setup.human,
+            category_id=setup.category,
+        ) as session,
         pytest.raises(DomainError) as refused,
     ):
         execute(
             session,
-            Context(setup.tenant, setup.agent, setup.human),
+            Context(setup.tenant, setup.agent, setup.human, category_id=setup.category),
             Command.model_validate(command),
         )
     assert refused.value.code == "FORBIDDEN_SCOPE"

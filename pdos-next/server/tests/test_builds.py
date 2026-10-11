@@ -116,14 +116,21 @@ def build_command(setup, config, **overrides):
 
 def listed(setup, headers=None):
     response = setup.client.get(
-        f"/v1/products/{setup.product}/builds", headers=headers or setup.headers
+        f"/v1/categories/{setup.category}/products/{setup.product}/builds",
+        headers=headers or setup.headers,
     )
     assert response.status_code == 200, response.text
     return response.json()
 
 
 def counts(setup, table):
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         return s.scalar(select(func.count()).select_from(table))
 
 
@@ -144,7 +151,13 @@ def test_plan_requires_confirmation_and_duplicate_is_one_atomic_receipt(setup, c
         == (configuration["engineering"]["subject_id"])
     )
     assert counts(setup, Build) == 1
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         for model in (Audit, Outbox):
             assert (
                 s.scalar(
@@ -178,10 +191,18 @@ def test_confirmation_does_not_cover_changed_material(setup, configuration, chan
         reviewed["source_read_set"] = []
     else:
         headers = {"Authorization": f"Bearer {setup.tokens[setup.peer]}"}
-    result = setup.client.post("/v1/commands", headers=headers, json=reviewed)
+    result = setup.client.post(
+        f"/v1/categories/{setup.category}/commands", headers=headers, json=reviewed
+    )
     assert result.status_code in {403, 409}
     assert counts(setup, Build) == 0
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert (
             s.scalar(select(Confirmation).where(Confirmation.operation == "build.create")).consumed
             is False
@@ -253,17 +274,20 @@ def test_new_configuration_revision_never_rewrites_old_build(setup, configuratio
         build_command(setup, configuration, engineering_configuration_id=new_eng["subject_id"]),
         True,
     )
-    assert mismatch.status_code == 409 and mismatch.json()["code"] == "CONFIGURATION_MISMATCH"
+    assert mismatch.status_code == 409 and mismatch.json()["code"] == "VALIDATION_FAILED"
+    assert mismatch.json()["detail"]["reason"] == "CONFIGURATION_MISMATCH"
 
 
 @pytest.mark.parametrize("change", ["withdraw", "stale", "grant"])
-def test_replay_and_compute_recheck_current_sources_and_grant(setup, configuration, change):
+def test_saved_replay_requires_read_access_and_new_compute_requires_current_sources(
+    setup, configuration, change
+):
     receipt, prepared = accepted(setup, build_command(setup, configuration))
     with Session(setup.admin) as s, s.begin():
         if change == "grant":
             s.execute(
                 update(Grant)
-                .where(Grant.product_id == setup.product, Grant.principal_id == setup.human)
+                .where(Grant.category_id == setup.category, Grant.principal_id == setup.human)
                 .values(expires_at=now() - timedelta(seconds=1))
             )
         else:
@@ -272,7 +296,11 @@ def test_replay_and_compute_recheck_current_sources_and_grant(setup, configurati
                 .where(Artifact.id == UUID(configuration["source"]))
                 .values(**({"status": "withdrawn"} if change == "withdraw" else {"revision": 2}))
             )
-    assert post(setup, prepared).status_code in {403, 409}
+    replay = post(setup, prepared)
+    if change == "grant":
+        assert replay.status_code == 403 and replay.json()["code"] == "FORBIDDEN_SCOPE", replay.text
+    else:
+        assert replay.status_code == 200 and replay.json()["id"] == receipt["id"], replay.text
     result = post(
         setup,
         cmd(
@@ -293,7 +321,7 @@ def test_private_build_and_sources_are_not_visible_to_peer(setup, configuration)
     accepted(setup, build_command(setup, configuration))
     assert listed(setup, {"Authorization": f"Bearer {setup.tokens[setup.peer]}"})["items"] == []
     outsider = setup.client.get(
-        f"/v1/products/{setup.product}/builds",
+        f"/v1/categories/{setup.category}/products/{setup.product}/builds",
         headers={"Authorization": f"Bearer {setup.tokens[setup.other_human]}"},
     )
     assert outsider.status_code == 403
@@ -336,9 +364,17 @@ def test_failed_receipt_rolls_back_plan_and_confirmation(setup, configuration, m
         return original(*args, **kwargs)
 
     monkeypatch.setattr(commands, "append_receipt", refuse)
-    assert post(setup, prepared).status_code == 409
+    failed = post(setup, prepared)
+    assert failed.status_code == 500 and failed.json()["code"] == "INTERNAL_ERROR"
+    assert failed.json()["detail"]["reason"] == "UNREGISTERED_REASON"
     assert counts(setup, Build) == 0
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert (
             s.scalar(select(Confirmation).where(Confirmation.operation == "build.create")).consumed
             is False
@@ -360,7 +396,16 @@ def test_build_snapshots_have_rls_and_no_application_update(setup, configuration
     receipt, _ = accepted(setup, build_command(setup, configuration))
     with Session(setup.engine) as s:
         assert s.scalar(select(func.count()).select_from(Build)) == 0
-    with pytest.raises(DBAPIError), tenant_session(setup.engine, setup.tenant) as s:
+    with (
+        pytest.raises(DBAPIError),
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.human,
+            requester_id=setup.human,
+            category_id=setup.category,
+        ) as s,
+    ):
         s.execute(
             update(Build).where(Build.id == UUID(receipt["subject_id"])).values(name="Override")
         )

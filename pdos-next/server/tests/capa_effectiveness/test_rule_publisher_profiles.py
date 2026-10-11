@@ -41,7 +41,7 @@ def marker(monkeypatch):
 def rejects(code, callback):
     with pytest.raises(DomainError) as error:
         callback()
-    assert error.value.code == code
+    assert error.value.reason == code
 
 
 def test_legacy_return_type_and_marker_guard_are_preserved(marker):

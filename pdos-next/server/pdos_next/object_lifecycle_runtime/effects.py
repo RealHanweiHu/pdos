@@ -44,7 +44,12 @@ class EffectFiles:
         self.files.check()
         try:
             inspection = self.journal.lookup_original(
-                ref, JournalScope(scope.tenant_id, scope.product_id)
+                ref,
+                JournalScope(
+                    scope.tenant_id,
+                    scope.product_id,
+                    scope.category_id if scope.product_id is None else None,
+                ),
             )
         except StorageFailure as exc:
             code = (
@@ -371,7 +376,11 @@ class EffectFiles:
                 raise RuntimeFailure("LIFECYCLE_INTEGRITY_UNAVAILABLE")
             from pdos_next.original_lifecycle.types import LifecycleScope
 
-            scope = LifecycleScope(inspection.scope.tenant_id, inspection.scope.product_id)
+            scope = LifecycleScope(
+                inspection.scope.tenant_id,
+                inspection.scope.product_id,
+                inspection.scope.category_id,
+            )
             base = self._base(ref, scope)
             if base is None:
                 return {"readable": True}
@@ -438,7 +447,9 @@ def process(request):
                 raise RuntimeFailure("LIFECYCLE_PROTOCOL_ERROR")
             from uuid import UUID
 
-            scope = LifecycleScope(**{key: UUID(item) for key, item in value["scope"].items()})
+            scope = LifecycleScope(
+                **{key: UUID(item) if item else None for key, item in value["scope"].items()}
+            )
             return effects.ensure_legacy_readable(reference(value["reference"]), scope)
         item = decode_permit(request["value"])
         if request["action"] == "apply":

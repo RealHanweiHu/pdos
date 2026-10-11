@@ -31,7 +31,9 @@ def shared(work, original_basis, monkeypatch):  # noqa: F811 - imported pytest f
     basis = original_basis.model_copy(update={"scope": work.scope})
     basis = basis.model_copy(update={"basis_sha256": service._basis_digest(basis)})
     signer = uuid4()
-    signer_ctx = common.Context(work.ctx.tenant_id, signer, signer)
+    signer_ctx = common.Context(
+        work.ctx.tenant_id, signer, signer, category_id=work.ctx.category_id
+    )
     expires = datetime.now(UTC) + timedelta(hours=1)
     person = work.s.seed(
         Principal,
@@ -45,7 +47,7 @@ def shared(work, original_basis, monkeypatch):  # noqa: F811 - imported pytest f
         Grant,
         id=uuid4(),
         tenant_id=work.ctx.tenant_id,
-        product_id=work.pid,
+        category_id=work.ctx.category_id,
         principal_id=signer,
         can_write=True,
         access_epoch=1,
@@ -73,21 +75,29 @@ def shared(work, original_basis, monkeypatch):  # noqa: F811 - imported pytest f
         "roles": ["quality"],
         "fact_refs": [{"id": str(fact["id"]), "revision": 1, "epoch": 1}],
         "facts_revision": "a" * 64,
-        "valid_until": expires.isoformat(),
+        "valid_until": None,
         "required_source_read_set": [],
         "synthetic": True,
     }
     published = {
-        "id": str(uuid4()),
+        "id": "policy-id",
         "revision": 1,
         "risk": "low",
         "independent_verification": True,
         "nature": "synthetic",
-        "valid_until": expires.isoformat(),
+        "valid_until": None,
         "facts_revision": "b" * 64,
         "sources": [],
         "required_source_read_set": [],
-        "source_basis": [],
+        "source_basis": [
+            {
+                "id": "policy-id",
+                "revision": 1,
+                "state": "active",
+                "valid_from": (expires - timedelta(hours=2)).isoformat(),
+                "valid_until": expires.isoformat(),
+            }
+        ],
         "private": False,
     }
     selected = output(basis)
@@ -131,7 +141,7 @@ def shared(work, original_basis, monkeypatch):  # noqa: F811 - imported pytest f
 
     def recheck(_s, ctx, pid, project_id, snapshot, at, **kwargs):
         value.authority_calls.append((ctx, at, kwargs))
-        assert ctx.actor_id == ctx.requester_id == signer and ctx.run_id is None
+        assert ctx is work.ctx and ctx.requester_id != signer and ctx.run_id is None
         assert snapshot == value.assessment
         assert pid == work.pid and project_id == work.scope.project_id
         assert kwargs == {"write": False, "retained": True}
@@ -166,7 +176,7 @@ def shared(work, original_basis, monkeypatch):  # noqa: F811 - imported pytest f
         purpose=basis.purpose,
         owner_id=signer,
         writer_id=signer,
-        visibility="product",
+        visibility="category",
         basis_snapshot=basis.model_dump(mode="json"),
         basis_sha256=basis.basis_sha256,
         output_snapshot=resolved.model_dump(mode="json"),
@@ -195,7 +205,7 @@ def test_shared_consumer_reads_original_signer_without_borrowing_output_or_polic
     before = deepcopy(v.row)
     result = read(v)
     assert result.outputs and result.owner_id == v.work.actor
-    assert v.authority_calls and all(c.requester_id == v.signer for c, _, _ in v.authority_calls)
+    assert v.authority_calls and all(c is v.work.ctx for c, _, _ in v.authority_calls)
     assert all(c is v.work.ctx for c in v.source_calls + v.human_calls)
     assert v.row == before
     assert "paired" not in str(result.model_dump(mode="json"))
@@ -220,12 +230,12 @@ def test_saved_signer_binding_is_exact_not_issue_owner_or_consumer(shared, field
         v.row["authority_snapshot"][field] = "another exact operation or purpose"
     with pytest.raises(DomainError) as error:
         read(v)
-    assert error.value.code == "INTEGRITY_MISMATCH"
+    assert error.value.reason == "INTEGRITY_MISMATCH"
     assert not v.authority_calls
 
 
 @pytest.mark.parametrize("field", ["inactive", "agent", "grant_write", "grant_expiry", "no_grant"])
-def test_original_signer_current_principal_and_grant_are_real(shared, field):
+def test_original_signer_later_membership_does_not_erase_signed_history(shared, field):
     v = shared
     if field == "inactive":
         v.person["active"] = False
@@ -237,9 +247,7 @@ def test_original_signer_current_principal_and_grant_are_real(shared, field):
         v.grant["expires_at"] = datetime.now(UTC) - timedelta(seconds=1)
     else:
         v.work.s.rows[Grant.__tablename__].remove(v.grant)
-    with pytest.raises(DomainError) as error:
-        read(v)
-    assert error.value.status == 403
+    assert read(v).outputs
 
 
 def test_saved_signer_qualification_must_remain_current_before_shared_link_return(shared):
@@ -247,7 +255,7 @@ def test_saved_signer_qualification_must_remain_current_before_shared_link_retur
     v.authority_current = False  # explicit current professional-owner refusal, no positive fake
     with pytest.raises(DomainError) as error:
         read(v)
-    assert error.value.code == "RECHECK_REQUIRED"
+    assert error.value.reason == "RECHECK_REQUIRED"
     assert v.row["authority_snapshot"]["facts_revision"] == "a" * 64
 
 
@@ -267,7 +275,7 @@ def test_policy_current_and_issuer_epoch_not_only_old_artifact_are_bound(shared,
     )
     with pytest.raises(DomainError) as error:
         read(v)
-    assert error.value.code == "RECHECK_REQUIRED"
+    assert error.value.reason == "RECHECK_REQUIRED"
 
 
 def test_private_link_cannot_be_read_using_original_signer_identity(shared):
@@ -311,7 +319,7 @@ def test_expiry_during_last_actual_consumer_grant_sql_is_rejected(shared, monkey
         nonlocal at, query_count
         if table == Grant.__tablename__:
             query_count += 1
-            if query_count == 4:  # signer initial/refresh/final, then real consumer
+            if query_count == 4:  # current consumer initial/refresh/final/final-clock check
                 at += timedelta(seconds=6)
 
     v.work.s.after_query = after_query
@@ -320,7 +328,9 @@ def test_expiry_during_last_actual_consumer_grant_sql_is_rejected(shared, monkey
     assert error.value.status == 403 and query_count == 4
 
 
-@pytest.mark.parametrize("change", ["source_epoch", "signer_epoch", "issuer_epoch", "policy_epoch"])
+@pytest.mark.parametrize(
+    "change", ["source_epoch", "consumer_epoch", "issuer_epoch", "policy_epoch"]
+)
 def test_post_owner_io_rechecks_source_and_original_signer_runtime(shared, change):
     v = shared
 
@@ -329,8 +339,8 @@ def test_post_owner_io_rechecks_source_and_original_signer_runtime(shared, chang
             return  # final source closure after both real owner passes
         if change == "source_epoch":
             v.source_epoch += 1
-        elif change == "signer_epoch":
-            v.grant["access_epoch"] += 1
+        elif change == "consumer_epoch":
+            v.work.grant["access_epoch"] += 1
         else:
             registry = "professional_issuer" if change == "issuer_epoch" else "quality_policy"
             setattr(
@@ -342,7 +352,7 @@ def test_post_owner_io_rechecks_source_and_original_signer_runtime(shared, chang
     v.source_hook = drift
     with pytest.raises(DomainError) as error:
         read(v)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 def test_clock_sampled_after_final_io_not_original_save_time(shared, monkeypatch):
@@ -357,9 +367,9 @@ def test_clock_sampled_after_final_io_not_original_save_time(shared, monkeypatch
             at += timedelta(seconds=6)
 
     v.work.s.after_query = after_query
-    with pytest.raises(DomainError) as error:
-        read(v)
-    assert error.value.code == "SOURCE_STALE"
+    result = read(v)
+    assert result.outputs
+    assert any(value.code == "RECHECK_REQUIRED" for value in result.missing)
 
 
 def test_expired_unrelated_old_fact_is_not_a_new_future_boundary(shared):

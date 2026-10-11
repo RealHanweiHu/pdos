@@ -1,15 +1,20 @@
 """Read-only fixed owner resolution in the caller UOW; never creates an execution."""
 
+import json
 from datetime import UTC, datetime
 from uuid import UUID
 
 from sqlalchemy import select
+from sqlalchemy.orm import Session
 
+from pdos_next.database import category_for_product
+from pdos_next.domain.quality_execution import policy
 from pdos_next.domain.quality_execution import service as quality
 from pdos_next.domain.quality_execution.evidence import merge_reads, refs_from_exact, source_basis
 from pdos_next.errors import DomainError
 from pdos_next.models import Grant, Principal, now
-from pdos_next.service import Context, digest
+from pdos_next.request_proof import request_proof, scope_is_held
+from pdos_next.service import digest
 
 from .schemas import (
     ActionBinding,
@@ -111,6 +116,37 @@ def basis_from_issue(row, issue, *, sources, reads, source_basis):
     return value.model_copy(update={"basis_sha256": _basis_digest(value)})
 
 
+def _snapshot_basis_context(s, ctx, product_id, row):
+    if not (
+        isinstance(s, Session) and s.info.get("read_snapshot") and scope_is_held(s, product_id)
+    ):
+        return None
+    from pdos_next.database import require_context
+    from pdos_next.domain.capa_effectiveness.fact_atom_storage import _uow
+    from pdos_next.quality_result_bridge import _runtime_stamp
+
+    require_context(s, ctx)
+    proof = request_proof(s)
+    key = (
+        "capa-fixed-followup-basis",
+        _uow(s),
+        proof.mutation_epoch,
+        digest(vars(ctx)),
+        digest(s.info.get("scope")),
+        product_id,
+        row.id,
+        row.revision,
+        digest({column.key: getattr(row, column.key) for column in row.__mapper__.column_attrs}),
+        _runtime_stamp(s),
+        id(quality._result),
+        id(quality._human),
+        id(quality._row),
+        id(quality._snapshot),
+        id(source_basis),
+    )
+    return proof, key
+
+
 def load_exact_followup_basis(s, ctx, product_id, issue_id, revision, *, write=False):
     """Recheck a genuine fixed version, without a new-write Current CAS requirement."""
     from pdos_next.domain.quality_execution.evidence import union_sources
@@ -120,6 +156,14 @@ def load_exact_followup_basis(s, ctx, product_id, issue_id, revision, *, write=F
     revision = FixedRef(id=issue_id, revision=revision).revision
     row = quality._row(s, ctx, product_id, issue_id, revision)
     issue = quality._snapshot(row)
+    context = None if write else _snapshot_basis_context(s, ctx, product_id, row)
+    if context is not None:
+        proof, key = context
+        if key in proof.scalar_rows:
+            # An immutable serialization keeps later DTO edits out of the held
+            # proof. Scope/caller, exact Issue and runtime are checked above;
+            # Current/CAS and the host's terminal clocks remain outside it.
+            return FollowupBasis.model_validate(json.loads(proof.scalar_rows[key]))
     values = []
     for failure in issue.failures:
         value = quality._result(
@@ -135,13 +179,19 @@ def load_exact_followup_basis(s, ctx, product_id, issue_id, revision, *, write=F
         values.append(value)
     reads = _reads(row.required_source_read_set, *(v.required_source_read_set for v in values))
     evidence, _ = source_basis(s, ctx, product_id, reads)
-    return basis_from_issue(
+    value = basis_from_issue(
         row,
         issue,
         sources=union_sources(row.sources, *(v.sources for v in values)),
         reads=reads,
         source_basis=evidence,
     )
+    if context is not None:
+        proof, key = context
+        final = _snapshot_basis_context(s, ctx, product_id, row)
+        if final is not None and final[0] is proof and final[1] == key:
+            proof.scalar_rows[key] = json.dumps(value.model_dump(mode="json"), sort_keys=True)
+    return value
 
 
 def load_followup_basis(s, ctx, product_id, issue_id, expected_issue_revision, *, write=False):
@@ -171,7 +221,7 @@ def recheck_followup_basis(s, ctx, product_id, basis, *, write=False):
 
     basis = FollowupBasis.model_validate(basis)
     if basis.scope.tenant_id != ctx.tenant_id or basis.scope.product_id != product_id:
-        raise DomainError("FORBIDDEN_SCOPE", "整改依据不在当前租户产品范围。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "整改依据不在当前租户型号范围。", 403)
     if basis.basis_sha256 != _basis_digest(basis):
         raise DomainError("INTEGRITY_MISMATCH", "固定整改依据摘要不能核对。")
     # A historical version must genuinely exist and have the same fixed identity.
@@ -491,8 +541,8 @@ def _direct_reading(s, ctx, product_id, basis, ref):
 
 def _unique_outputs(refs):
     refs = tuple(OutputRef.model_validate(ref) for ref in refs)
-    if not 1 <= len(refs) <= 20:
-        raise DomainError("INVALID_SCOPE", "单次回链需要1至20个精确输出。", 422)
+    if not refs:
+        raise DomainError("INVALID_SCOPE", "回链需要精确输出。", 422)
     if len({(r.kind, r.id, r.revision, r.key) for r in refs}) != len(refs):
         raise DomainError("INVALID_SCOPE", "固定输出不能重复。", 422)
     return refs
@@ -528,7 +578,10 @@ def resolve_followup_outputs(
         if private_source
         or current.visibility == "private"
         or any(output.visibility == "private" for output in outputs)
-        else "product"
+        else "audience"
+        if current.visibility == "audience"
+        or any(output.visibility == "audience" for output in outputs)
+        else "category"
     )
     missing = tuple(m for output in outputs for m in output.missing)
     if action.completion_sha256 is None:
@@ -731,9 +784,8 @@ def _link(s, ctx, product_id, basis, ref):
         raise DomainError("SOURCE_STALE", "原回链全部来源安全依据已改变。")
     if private and row.visibility != "private":
         raise DomainError("FORBIDDEN_SCOPE", "回链不能扩大私人来源受众。", 403)
-    # Only the immutable original signer's professional validity uses that
-    # historical identity. All outputs, projects, sources and policy remain
-    # under the actual consumer; no signer context can broaden their ACL.
+    # Signed history is retained under the actual consumer's scope. A later
+    # signer qualification change marks the evidence for review.
     late_authority, late_access = _link_authority(s, ctx, product_id, row, saved, signer)
     late_policy = _link_policy(s, ctx, product_id, row, saved)
     after, after_private = source_basis(s, ctx, product_id, reads)
@@ -746,22 +798,38 @@ def _link(s, ctx, product_id, basis, ref):
         or _link_runtime(s) != runtime
     ):
         raise DomainError("SOURCE_STALE", "读取期间原签发人、政策或完整来源依据已变化。")
-    deadlines = (
-        *_link_authority_boundaries(s, ctx, product_id, saved, late_authority),
-        datetime.fromisoformat(late_policy["valid_until"]),
-        late_access["expires_at"],
-    )
-    final_signer = _link_access(s, ctx, product_id, signer, write=True)
-    if final_signer != late_access:
-        raise DomainError("SOURCE_STALE", "末端原签发人当前权限epoch已改变。")
+    deadlines = (late_access["expires_at"],)
+    final_consumer = _link_access(s, ctx, product_id, ctx.requester_id, write=False)
+    if final_consumer != late_access:
+        raise DomainError("SOURCE_STALE", "末端当前读取者权限epoch已改变。")
     quality._human(s, ctx, product_id, write=False)
     consumer = _link_access(s, ctx, product_id, ctx.requester_id, write=False)
-    deadlines = (*deadlines, consumer["expires_at"])
+    deadlines = tuple(value for value in (*deadlines, consumer["expires_at"]) if value is not None)
     final_at = now()  # after the final caller/Grant SQL, never the old save clock
-    if any(bound <= final_at for bound in deadlines) or _link_runtime(s) != runtime:
+    from pdos_next.domain.professional_authority.service import authority_time_current
+
+    if (
+        not policy.policy_time_current(late_policy, final_at)
+        or any(bound <= final_at for bound in deadlines)
+        or _link_runtime(s) != runtime
+    ):
         raise DomainError("SOURCE_STALE", "原签发人、当前读取者或政策期限已失效。")
-    result = current.model_copy(update={"required_source_read_set": reads})
-    if now() >= min(deadlines):
+    needs_review = late_authority.get("needs_review") is True or not authority_time_current(
+        late_authority, final_at
+    )
+    missing = current.missing
+    if needs_review:
+        missing = (
+            *missing,
+            _missing(
+                "owner",
+                "RECHECK_REQUIRED",
+                "原回链签发资格待复核；新受约束动作须重新取得有效依据。",
+            ),
+        )
+    result = current.model_copy(update={"required_source_read_set": reads, "missing": missing})
+    at = now()
+    if not policy.policy_time_current(late_policy, at) or any(value <= at for value in deadlines):
         raise DomainError("SOURCE_STALE", "固定回链材料构造期间当前依据已到期。")
     return result
 
@@ -803,13 +871,16 @@ def _link_access(s, ctx, pid, person_id, *, write):
     grant = exact(
         Grant,
         Grant.tenant_id == ctx.tenant_id,
-        Grant.product_id == pid,
+        Grant.category_id == category_for_product(pid),
         Grant.principal_id == person_id,
     )
     if (
         person.kind != "human"
         or person.active is not True
-        or grant.expires_at <= now()
+        or (
+            grant.expires_at is not None
+            and (grant.expires_at is not None and grant.expires_at <= now())
+        )
         or (write and grant.can_write is not True)
     ):
         raise DomainError("FORBIDDEN_SCOPE", "原签发人或当前读取者当前权限已失效。", 403)
@@ -826,11 +897,10 @@ def _link_access(s, ctx, pid, person_id, *, write):
 def _link_authority(s, ctx, pid, row, saved, signer):
     from pdos_next.domain.professional_authority.service import recheck_snapshot
 
-    access = _link_access(s, ctx, pid, signer, write=True)
-    historical = Context(ctx.tenant_id, signer, signer)
+    access = _link_access(s, ctx, pid, ctx.requester_id, write=False)
     value = recheck_snapshot(
         s,
-        historical,
+        ctx,
         pid,
         saved.scope.project_id,
         row.authority_snapshot,
@@ -840,52 +910,7 @@ def _link_authority(s, ctx, pid, row, saved, signer):
     )
     if value.get("current") is not True or not value.get("assessment"):
         raise DomainError("RECHECK_REQUIRED", "原回链签发人的当前专业依据需要重核。")
-    return value["assessment"], access
-
-
-def _link_authority_boundaries(s, ctx, pid, saved, assessment):
-    from pdos_next.domain.professional_authority.models import ProfessionalFact
-
-    try:
-        at = now()
-        bounds = [datetime.fromisoformat(assessment["valid_until"])]
-        refs = assessment["fact_refs"]
-        signer = UUID(assessment["subject_id"])
-        if not refs or len(refs) > 100:
-            raise ValueError("Incomplete authority references")
-        for ref in refs:
-            rows = list(
-                s.scalars(
-                    select(ProfessionalFact)
-                    .where(
-                        ProfessionalFact.tenant_id == ctx.tenant_id,
-                        ProfessionalFact.product_id == pid,
-                        ProfessionalFact.project_id == saved.scope.project_id,
-                        ProfessionalFact.subject_id == signer,
-                        ProfessionalFact.id == UUID(ref["id"]),
-                        ProfessionalFact.revision == ref["revision"],
-                    )
-                    .limit(2)
-                    .execution_options(populate_existing=True, autoflush=False)
-                )
-            )
-            if len(rows) != 1:
-                raise ValueError("Missing exact authority fact")
-            fact = rows[0]
-            if fact.state == "active":
-                # Expiry remains an invalidating boundary even if this query
-                # itself has just outlived it. Activation is only prospective.
-                if fact.valid_until > at:
-                    bounds.append(fact.valid_until)
-                if fact.valid_from > at:
-                    bounds.append(fact.valid_from)
-        if any(v.tzinfo is None or v.utcoffset() is None for v in bounds):
-            raise ValueError("Unqualified clock")
-        return tuple(bounds)
-    except (KeyError, TypeError, ValueError):
-        raise DomainError(
-            "INTEGRATION_REQUIRED", "原签发人当前资格边界缺少完整实际引用。", 503
-        ) from None
+    return {**value["assessment"], "needs_review": value.get("needs_review") is True}, access
 
 
 def _link_policy(s, ctx, pid, row, saved):

@@ -1,0 +1,3 @@
+Owned tables: 12
+Differences: []
+Root Receipt FK installed/validated: True

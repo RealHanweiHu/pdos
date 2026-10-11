@@ -12,6 +12,7 @@ from datetime import UTC, datetime
 from pdos_next.service import digest
 from pdos_next.errors import DomainError
 from pdos_next.domain.quality_execution import policy
+from pdos_next.domain.professional_authority.service import authority_time_current
 from pdos_next.domain.capa_effectiveness import anchor as a
 from pdos_next.domain.capa_effectiveness import fact_atom_storage as guards
 from pdos_next.domain.capa_effectiveness import fact_commands as commands
@@ -21,7 +22,6 @@ from pdos_next.domain.capa_effectiveness.named_review_owner import (
     ActualNamedReviewOwner,
     _checked_refs,
     _independent,
-    instant,
     require,
 )
 from pdos_next.domain.capa_effectiveness.participants_owner import read_participants
@@ -33,7 +33,8 @@ class ReviewSelectionRead:
     sources: tuple
     reads: tuple
     basis_sha256: str
-    valid_until: datetime
+    valid_until: datetime | None
+    time_constraints: tuple[datetime, ...] = ()
 
 
 def read_review_selection(s, ctx, pid, fact_owner, rule, saved, candidate, observations):
@@ -111,6 +112,12 @@ def read_review_selection(s, ctx, pid, fact_owner, rule, saved, candidate, obser
         active_policy = policy.assess(
             s, ctx, pid, saved.origin.scope.project_id, saved.origin.purpose
         )
+        require(
+            authority_time_current(authority, datetime.now(UTC))
+            and policy.policy_time_current(active_policy, datetime.now(UTC)),
+            "SOURCE_STALE",
+            409,
+        )
         sources = a.canonical_sources(
             (
                 *saved.origin_sources,
@@ -146,9 +153,9 @@ def read_review_selection(s, ctx, pid, fact_owner, rule, saved, candidate, obser
         bounds = (
             rule.valid_until,
             participants.valid_until,
-            instant(authority["valid_until"]),
-            instant(active_policy["valid_until"]),
+            *participants.time_constraints,
             *(live.host_gate.valid_until for _, live in pairs),
+            *(value for _, live in pairs for value in live.host_gate.time_constraints),
         )
         closure = read_source_closure(
             s,
@@ -164,8 +171,12 @@ def read_review_selection(s, ctx, pid, fact_owner, rule, saved, candidate, obser
         )
         # Public context repeats this whole read after rendering source options.
         owner._phase(s, ctx, captured, caller, runtime)
-        deadline = min(*bounds, closure.valid_until)
-        require(datetime.now(UTC) < deadline, "SOURCE_STALE", 409)
+        time_constraints = tuple(
+            value
+            for value in (*bounds, closure.valid_until, *closure.time_constraints)
+            if value is not None
+        )
+        require(all(datetime.now(UTC) < value for value in time_constraints), "SOURCE_STALE", 409)
         material = {
             "candidate": candidate.ref.model_dump(mode="json"),
             "group": candidate.group,
@@ -188,7 +199,9 @@ def read_review_selection(s, ctx, pid, fact_owner, rule, saved, candidate, obser
             "sources": closure.material_sha256,
             "choices": choices,
         }
-        return ReviewSelectionRead(tuple(choices), sources, reads, digest(material), deadline)
+        return ReviewSelectionRead(
+            tuple(choices), sources, reads, digest(material), None, time_constraints
+        )
 
 
 def verify_review_selection(previous, current):
@@ -197,5 +210,6 @@ def verify_review_selection(previous, current):
         or previous.reads != current.reads
         or previous.sources != current.sources
         or previous.valid_until != current.valid_until
+        or previous.time_constraints != current.time_constraints
     ):
         raise DomainError("SOURCE_STALE", "读取期间候选、参与者或实际复验依据已变化。", 409)

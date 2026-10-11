@@ -4,7 +4,7 @@ from uuid import UUID
 
 from pydantic import Field, field_validator, model_validator
 
-from pdos_next.contracts import StrictModel
+from pdos_next.schema_base import StrictModel
 
 
 class DefinitionReference(StrictModel):
@@ -28,14 +28,14 @@ class DefinitionSpec(StrictModel):
     text: str | None = Field(default=None, max_length=2000)
     unit: str | None = Field(default=None, min_length=1, max_length=80)
     tolerance: Number = None
-    test_conditions: list[str] = Field(default_factory=list, max_length=30)
+    test_conditions: list[str] = Field(default_factory=list)
     method: str | None = Field(default=None, min_length=1, max_length=2000)
     acceptance_criterion: str | None = Field(default=None, min_length=1, max_length=2000)
     nature: Literal["observed", "extracted", "computed", "inferred", "decided"] = "extracted"
     state: Literal["proposed", "needs_confirmation"] = "needs_confirmation"
     owner_id: UUID | None = None
     reason: str = Field(min_length=1, max_length=2000)
-    sources: list[DefinitionReference] = Field(min_length=1, max_length=20)
+    sources: list[DefinitionReference] = Field(min_length=1)
 
     @field_validator("value", "lower", "upper", "tolerance")
     @classmethod
@@ -97,16 +97,16 @@ class DefinitionSpec(StrictModel):
 class DefinitionDraftPayload(StrictModel):
     title: str = Field(min_length=2, max_length=200)
     purpose: str = Field(min_length=3, max_length=2000)
-    visibility: Literal["private", "product"] = "private"
+    visibility: Literal["private", "category", "audience"] = "private"
     parent_definition_id: UUID | None = None
     expected_parent_revision: int | None = Field(default=None, ge=1)
-    use_cases: list[str] = Field(min_length=1, max_length=50)
-    requirements: list[str] = Field(default_factory=list, max_length=100)
-    constraints: list[str] = Field(default_factory=list, max_length=100)
-    unknowns: list[str] = Field(default_factory=list, max_length=100)
-    exclusions: list[str] = Field(default_factory=list, max_length=100)
-    sources: list[DefinitionReference] = Field(min_length=1, max_length=20)
-    specs: list[DefinitionSpec] = Field(default_factory=list, max_length=100)
+    use_cases: list[str] = Field(min_length=1)
+    requirements: list[str] = Field(default_factory=list)
+    constraints: list[str] = Field(default_factory=list)
+    unknowns: list[str] = Field(default_factory=list)
+    exclusions: list[str] = Field(default_factory=list)
+    sources: list[DefinitionReference] = Field(min_length=1)
+    specs: list[DefinitionSpec] = Field(default_factory=list)
     change_reason: str = Field(min_length=3, max_length=2000)
 
     @field_validator("use_cases", "requirements", "constraints", "unknowns", "exclusions")

@@ -1,6 +1,5 @@
 """Callable resource handler; all mutations stay staged in the caller's one UOW."""
 
-from datetime import timedelta
 from typing import Literal
 
 from pdos_next.schemas.resource_readiness.contracts import (
@@ -104,7 +103,7 @@ class ResourceReservationHandler:
         return request.window.start >= context.now
 
     @staticmethod
-    def _digest(context, request, report, version, state, reason, expires_at):
+    def _digest(context, request, report, version, state, reason):
         return digest(
             {
                 "context_revision": context.facts_revision,
@@ -113,7 +112,6 @@ class ResourceReservationHandler:
                 "expected_revision": version,
                 "target_state": state,
                 "reason": reason,
-                "expires_at": expires_at.isoformat(),
             }
         )
 
@@ -158,7 +156,6 @@ class ResourceReservationHandler:
                 allowed = False
         if (existing.revision if existing else 0) != expected_revision:
             allowed = False
-        expires_at = context.now + timedelta(minutes=5)
         return ReservationPreview(
             request=request,
             report=report,
@@ -166,11 +163,8 @@ class ResourceReservationHandler:
             expected_revision=expected_revision,
             target_state=target_state,
             reason=reason,
-            digest=self._digest(
-                context, request, report, expected_revision, target_state, reason, expires_at
-            ),
+            digest=self._digest(context, request, report, expected_revision, target_state, reason),
             allowed=allowed,
-            expires_at=expires_at,
             effect=(
                 "Stage formal resource occupancy in caller UOW; samples and receipt must commit "
                 "together"
@@ -195,10 +189,12 @@ class ResourceReservationHandler:
             or set(context.required_resources) != set(request.uses)
         ):
             raise ResourceError("required_scope_mismatch", "Server-required resource set changed")
-        if not context.authorized or context.qualified is not True or not context.policy_registered:
-            raise ResourceError(
-                "authority_unavailable", "Current authority/qualification/policy missing"
-            )
+        if not context.authorized:
+            raise ResourceError("authority_forbidden", "Current authority is revoked")
+        if context.qualified is not True:
+            raise ResourceError("qualification_required", "Current qualification missing")
+        if not context.policy_registered:
+            raise ResourceError("policy_unavailable", "Current registered execution policy missing")
         if context.owner_run_id != request.owner_run_id:
             raise ResourceError("owner_mismatch", "Run differs from current authority")
         if (
@@ -227,8 +223,12 @@ class ResourceReservationHandler:
             raise ResourceError("terminal_reservation", "Historical reservation cannot reactivate")
         if (existing.revision if existing else 0) != expected_revision:
             raise ResourceError("version_conflict", "Reservation changed since preview")
-        if not preview.allowed or context.now >= preview.expires_at:
-            raise ResourceError("preview_expired_or_blocked", "Preview expired or action blocked")
+        if not terminal and context.cancelled:
+            raise ResourceError("run_cancelled", "Owning run is cancelled")
+        if not terminal and context.sources_current is not True:
+            raise ResourceError("sources_stale", "Owning source readset is no longer current")
+        if not preview.allowed:
+            raise ResourceError("preview_blocked", "Action is blocked")
         if preview.context_revision != context.facts_revision or preview.digest != self._digest(
             context,
             request,
@@ -236,7 +236,6 @@ class ResourceReservationHandler:
             expected_revision,
             target_state,
             preview.reason,
-            preview.expires_at,
         ):
             raise ResourceError(
                 "readset_changed", "Authority, evidence, calendar or occupancy changed"
@@ -246,8 +245,6 @@ class ResourceReservationHandler:
                 raise ResourceError(
                     "terminal_requires_history", "Terminal change needs history/reason"
                 )
-        elif context.cancelled or context.sources_current is not True:
-            raise ResourceError("run_stale", "Owning run cancelled or source readset invalid")
         elif not self._time_allowed(context, request):
             raise ResourceError(
                 "execution_started", "Elapsed start needs a verified host Actual event"

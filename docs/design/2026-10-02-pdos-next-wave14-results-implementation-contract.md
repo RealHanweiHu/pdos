@@ -1,5 +1,7 @@
 # 第十四波实施合同
 
+**2026-10-08：本施工合同已被[完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md)整体取代，仅作只读历史对照。下方旧“当前/下一步/冻结”不再作为施工指令。** 范围根、一致性、期限与数量限制按 v1.1 和已批准的 [S0 实施计划](2026-10-08-pdos-next-s0-refactoring-plan.md)执行；[旧条款对照与 B0 基线](../reports/evidence/pdos-next-s0-20261008/baseline/baseline.md)保留取代依据。原证据、失败与当时范围不改写。
+
 状态：2026-10-02 已进入施工；第十三波本地合成闭环已交付。冻结公共接缝，验收仍以唯一清单和本波证据为准。[草稿](2026-10-02-pdos-next-wave14-results-contract-draft.md)及[衔接审查](2026-10-02-pdos-next-wave14-results-integration-review.md)的范围、来源、T1/T2与人工出口边界保留。
 
 ## 复用与交付

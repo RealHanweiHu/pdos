@@ -65,7 +65,7 @@ class Project(Row, Base):
             name="fk_project_current_plan",
             use_alter=True,
         ),
-        CheckConstraint("visibility IN ('private','product') AND status = 'active'"),
+        CheckConstraint("visibility IN ('private','category','audience') AND status = 'active'"),
         CheckConstraint("revision > 0"),
     )
 
@@ -110,7 +110,7 @@ class PlanProposal(Row, Base):
         project_fk(),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint("status = 'proposed' AND revision > 0 AND project_revision > 0"),
-        CheckConstraint("visibility IN ('private','product')"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
     )
 
 
@@ -140,7 +140,7 @@ class PlanRevision(Row, Base):
         ),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint("status = 'applied' AND revision > 0"),
-        CheckConstraint("visibility IN ('private','product')"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
     )
 
 

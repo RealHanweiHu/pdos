@@ -25,19 +25,24 @@ def import_quality_policy_fact(s, ctx, issuer, payload, *, request_key: str, com
         or not actor.active
     ):
         raise DomainError("NAMED_PERSON_REQUIRED", "政策导入必须经可信具名宿主办理。", 403)
+    require_access(s, ctx, data.product_id, write=True, lock=True)
     product = s.scalar(
         select(Product)
         .where(Product.tenant_id == ctx.tenant_id, Product.id == data.product_id)
         .with_for_update()
+        .execution_options(populate_existing=True)
     )
     if product is None:
         raise DomainError("FORBIDDEN_SCOPE", "政策产品不在当前宿主范围。", 403)
-    require_access(s, ctx, product.id, write=True, lock=True)
+    from pdos_next.request_proof import request_proof
+
+    request_proof(s).scope_locks.add(product.id)
     _issuer(s.get_bind(), issuer, ctx.tenant_id, product.id, data.project_id)
     command = Command(
         command_id=command_id,
         idempotency_key=request_key,
         operation="quality.policy.import",
+        category_id=product.category_id,
         product_id=product.id,
         expected_revision=product.revision,
         payload=data.model_dump(mode="json"),
@@ -100,6 +105,7 @@ def import_quality_policy_fact(s, ctx, issuer, payload, *, request_key: str, com
     s.add(
         RequestKey(
             tenant_id=ctx.tenant_id,
+            category_id=product.category_id,
             actor_id=ctx.actor_id,
             key=request_key,
             digest=fingerprint,

@@ -1,4 +1,4 @@
-"""Fail-closed runtime selection and a currentness callback for the existing ClaimGateway."""
+"""Fail-closed runtime selection and a currentness callback for server-owned permit callbacks."""
 
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -31,6 +31,7 @@ class Selection:
     state: Literal["unavailable", "authorizer_check"] = "unavailable"
     configuration: ConfigurationVersion | None = field(default=None, repr=False)
     route: ProviderRoute | None = field(default=None, repr=False)
+    reason: str | None = None
 
 
 class RuntimeConfiguration:
@@ -114,7 +115,7 @@ class RuntimeConfiguration:
             self._facts(query, latest, now)
             return Selection("MODEL_AUTHORIZER_CHECK_REQUIRED", "authorizer_check", head, route)
         except DomainError as error:
-            return Selection(error.code)
+            return Selection(error.code, reason=error.reason)
 
     def currentness(
         self,
@@ -126,7 +127,7 @@ class RuntimeConfiguration:
     ) -> Callable[[CallPermit], None]:
         """Compose with mainline authorization, never substitute for its permit currentness.
 
-        ClaimGateway itself checks request_digest and expiry; this callback additionally
+        The caller checks request_digest and expiry; this callback additionally
         ties the server-captured Run and immutable tenant/secret/config binding to it.
         """
 

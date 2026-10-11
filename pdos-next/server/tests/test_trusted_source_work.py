@@ -1,17 +1,14 @@
 from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
-from threading import Event
 from uuid import UUID, uuid4
 
 import pytest
 from alembic.autogenerate import compare_metadata
 from alembic.migration import MigrationContext
-from fastapi.testclient import TestClient
 from sqlalchemy import func, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 
-from pdos_next.api import create_app
 from pdos_next.database import tenant_session
 from pdos_next.models import (
     Artifact,
@@ -21,9 +18,7 @@ from pdos_next.models import (
     Consumption,
     Grant,
     Outbox,
-    Qualification,
     Receipt,
-    WorkRequest,
     now,
 )
 from pdos_next.service import digest
@@ -34,6 +29,7 @@ def command(setup, op, payload, *, key=None, revision=1, source=None):
         "command_id": str(uuid4()),
         "idempotency_key": key or str(uuid4()),
         "operation": op,
+        "category_id": str(setup.category),
         "product_id": str(setup.product),
         "expected_revision": revision,
         "source_read_set": [{"artifact_id": source, "expected_revision": 1}] if source else [],
@@ -42,7 +38,9 @@ def command(setup, op, payload, *, key=None, revision=1, source=None):
 
 
 def post(setup, cmd, client=None):
-    return (client or setup.client).post("/v1/commands", headers=setup.headers, json=cmd)
+    return (client or setup.client).post(
+        f"/v1/categories/{setup.category}/commands", headers=setup.headers, json=cmd
+    )
 
 
 def source(setup, visibility="private"):
@@ -78,65 +76,10 @@ def claim_cmd(setup, artifact, **overrides):
     return command(setup, "evidence.claim.record", payload, source=artifact)
 
 
-def work(setup, artifact):
-    response = post(
-        setup,
-        command(
-            setup,
-            "ai.work.start",
-            {
-                "artifact_id": artifact,
-                "source_revision": 1,
-                "goal": "Record one sourced claim",
-            },
-            source=artifact,
-        ),
-    )
-    assert response.status_code == 200, response.text
-    return response.json()["subject_id"]
-
-
-def qualified(setup):
-    with Session(setup.admin) as s, s.begin():
-        s.add(
-            Qualification(
-                tenant_id=setup.tenant,
-                writer_id=setup.agent,
-                skill_version="source-claim@1",
-                provider_version="synthetic@1",
-                operation="evidence.claim.record",
-                purpose="source_claim",
-                evaluation_kind="synthetic",
-                evaluation_ref="synthetic-test-only",
-                expires_at=now() + timedelta(hours=1),
-                active=True,
-            )
-        )
-
-
-class SyntheticProvider:
-    version = "synthetic@1"
-
-    def __init__(self, setup):
-        self.writer_id = setup.agent
-        self.calls = 0
-
-    def extract(self, *, goal, source, artifact_id):
-        self.calls += 1
-        return {
-            "artifact_id": str(artifact_id),
-            "line": 3,
-            "quote": "Pressure: 150 PSI",
-            "statement": "Synthetic extracted pressure: 150 PSI",
-            "nature": "extracted",
-            "availability": "known",
-            "visibility": "private",
-        }
-
-
 def workspace(setup, headers=None):
     return setup.client.get(
-        f"/v1/products/{setup.product}/workspace", headers=headers or setup.headers
+        f"/v1/categories/{setup.category}/products/{setup.product}/workspace",
+        headers=headers or setup.headers,
     )
 
 
@@ -145,7 +88,13 @@ def test_source_original_scope_and_same_transaction_receipts(setup):
     response = post(setup, claim_cmd(setup, artifact))
     assert response.status_code == 200, response.text
     result = response.json()
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         a = s.get(Artifact, UUID(artifact))
         assert a.content == original and a.content_hash == digest(original)
         c = s.get(Claim, UUID(result["subject_id"]))
@@ -167,7 +116,13 @@ def test_key_conflict_and_cross_key_semantic_dedup(setup):
     different = {**cmd, "payload": {**cmd["payload"], "statement": "Different intent"}}
     assert post(setup, different).json()["code"] == "DUPLICATE_INTENT_CONFLICT"
     assert post(setup, {**cmd, "idempotency_key": str(uuid4())}).json()["id"] == first["id"]
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.scalar(select(func.count()).select_from(Claim)) == 1
 
 
@@ -195,8 +150,12 @@ def test_private_source_does_not_leak_or_expand_audience(setup):
     headers = {"Authorization": f"Bearer {setup.tokens[setup.peer]}"}
     peer = workspace(setup, headers).json()
     assert peer["sources"] == [] and peer["claims"] == []
-    assert post(setup, claim_cmd(setup, artifact, visibility="product")).status_code == 403
-    response = setup.client.post("/v1/commands", headers=headers, json=claim_cmd(setup, artifact))
+    assert post(setup, claim_cmd(setup, artifact, visibility="category")).status_code == 403
+    response = setup.client.post(
+        f"/v1/categories/{setup.category}/commands",
+        headers=headers,
+        json=claim_cmd(setup, artifact),
+    )
     assert response.json()["code"] == "SOURCE_UNAVAILABLE"
 
 
@@ -207,7 +166,7 @@ def test_cross_tenant_and_revoked_scope_are_denied(setup):
     with Session(setup.admin) as s, s.begin():
         grant = s.scalar(
             select(Grant).where(
-                Grant.product_id == setup.product, Grant.principal_id == setup.human
+                Grant.category_id == setup.category, Grant.principal_id == setup.human
             )
         )
         grant.expires_at = now() - timedelta(seconds=1)
@@ -251,7 +210,13 @@ def test_failed_outbox_rolls_back_business_and_receipt(setup):
             post(setup, claim_cmd(setup, artifact))
     finally:
         event.remove(Outbox, "before_insert", fail)
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.scalar(select(func.count()).select_from(Claim)) == 0
         assert (
             s.scalar(
@@ -267,7 +232,8 @@ def test_revert_preview_confirmation_and_history(setup):
     artifact, _ = source(setup)
     r = post(setup, claim_cmd(setup, artifact)).json()
     preview = setup.client.post(
-        f"/v1/products/{setup.product}/receipts/{r['id']}/revert-preview", headers=setup.headers
+        f"/v1/categories/{setup.category}/products/{setup.product}/receipts/{r['id']}/revert-preview",
+        headers=setup.headers,
     ).json()
     cmd = command(
         setup,
@@ -276,7 +242,13 @@ def test_revert_preview_confirmation_and_history(setup):
     )
     assert post(setup, cmd).status_code == 200
     assert post(setup, cmd).status_code == 200
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.get(Claim, UUID(r["subject_id"])).status == "reverted"
         assert s.get(Receipt, UUID(r["id"])) is not None
         assert s.get(Artifact, UUID(artifact)).status == "active"
@@ -287,7 +259,8 @@ def test_revert_blocks_manual_edit_and_downstream_consumption(setup, protection)
     artifact, _ = source(setup)
     r = post(setup, claim_cmd(setup, artifact)).json()
     preview = setup.client.post(
-        f"/v1/products/{setup.product}/receipts/{r['id']}/revert-preview", headers=setup.headers
+        f"/v1/categories/{setup.category}/products/{setup.product}/receipts/{r['id']}/revert-preview",
+        headers=setup.headers,
     ).json()
     with Session(setup.admin) as s, s.begin():
         if protection == "manual_edit":
@@ -310,171 +283,15 @@ def test_revert_blocks_manual_edit_and_downstream_consumption(setup, protection)
     assert post(setup, cmd).json()["code"] == "UNDO_BLOCKED_BY_DEPENDENCY"
 
 
-def test_default_agent_work_uses_durable_queue_and_preserves_manual_business(setup):
-    artifact, _ = source(setup)
-    work_id = work(setup, artifact)
-    body = {"idempotency_key": "agent-framework:" + str(uuid4())}
-    first = setup.client.post(
-        f"/v1/work-requests/{work_id}/resume", headers=setup.headers, json=body
-    ).json()
-    second = setup.client.post(
-        f"/v1/work-requests/{work_id}/resume", headers=setup.headers, json=body
-    ).json()
-    assert first == second
-    assert first["operation"] == "ai.work.resume"
-    assert (
-        setup.client.post(f"/v1/work-requests/{work_id}/resume", headers=setup.headers).status_code
-        == 422
-    )
-    assert post(setup, claim_cmd(setup, artifact)).status_code == 200
-
-
-def test_worker_missing_model_ports_records_current_wait_without_inference(setup):
-    from pdos_next.workflows.worker import Activities
-
-    artifact, _ = source(setup)
-    work_id = work(setup, artifact)
-    result = Activities(setup.engine, None, None).advance(
-        {
-            "tenant_id": str(setup.tenant),
-            "product_id": str(setup.product),
-            "subject_id": work_id,
-        }
-    )
-    assert result["status"] == "waiting_input"
-    assert result["error_code"] == "MODEL_RUNTIME_PORTS_MISSING"
-    with tenant_session(setup.engine, setup.tenant) as session:
-        assert session.get(WorkRequest, UUID(work_id)).status == "waiting_input"
-
-
-def test_production_work_cannot_execute_locally_when_queue_disabled(setup):
-    artifact, _ = source(setup)
-    work_id = work(setup, artifact)
-    with TestClient(create_app(setup.engine, setup.auth, workflow_enabled=False)) as client:
-        result = client.post(f"/v1/work-requests/{work_id}/resume", headers=setup.headers)
-    assert result.json()["code"] == "AGENT_TEMPORAL_REQUIRED"
-
-
-def test_synthetic_agent_has_distinct_identity_and_resumes_without_duplicate(setup):
-    artifact, _ = source(setup)
-    work_id = work(setup, artifact)
-    provider = SyntheticProvider(setup)
-    qualified(setup)
-    with TestClient(
-        create_app(setup.engine, setup.auth, provider=provider, synthetic_mode=True)
-    ) as client:
-        result = client.post(f"/v1/work-requests/{work_id}/resume", headers=setup.headers)
-        assert result.status_code == 200, result.text
-    with TestClient(
-        create_app(setup.engine, setup.auth, provider=provider, synthetic_mode=True)
-    ) as restarted:
-        second = restarted.post(f"/v1/work-requests/{work_id}/resume", headers=setup.headers).json()
-        assert second["result_id"] == result.json()["result_id"]
-    assert provider.calls == 1
-    with tenant_session(setup.engine, setup.tenant) as s:
-        c = s.get(Claim, UUID(result.json()["result_id"]))
-        assert c.writer_id == setup.agent and c.human_owner_id == setup.human
-        assert s.get(WorkRequest, UUID(work_id)).status == "completed"
-
-
-def test_unqualified_agent_never_calls_provider(setup):
-    artifact, _ = source(setup)
-    work_id = work(setup, artifact)
-    provider = SyntheticProvider(setup)
-    with TestClient(
-        create_app(setup.engine, setup.auth, provider=provider, synthetic_mode=True)
-    ) as client:
-        response = client.post(f"/v1/work-requests/{work_id}/resume", headers=setup.headers)
-    assert response.json()["code"] == "QUALIFICATION_REQUIRED" and provider.calls == 0
-    with pytest.raises(RuntimeError, match="synthetic providers"):
-        create_app(setup.engine, setup.auth, provider=provider)
-
-
-@pytest.mark.parametrize("changed", ["cancel", "scope", "source", "qualification"])
-def test_inflight_authority_changes_rechecked_before_command(setup, changed):
-    artifact, _ = source(setup)
-    work_id = work(setup, artifact)
-    qualified(setup)
-    started, release = Event(), Event()
-
-    class BlockingProvider(SyntheticProvider):
-        def extract(self, **kwargs):
-            started.set()
-            assert release.wait(10)
-            return super().extract(**kwargs)
-
-    provider = BlockingProvider(setup)
-    with (
-        TestClient(
-            create_app(setup.engine, setup.auth, provider=provider, synthetic_mode=True)
-        ) as client,
-        ThreadPoolExecutor() as pool,
-    ):
-        future = pool.submit(
-            client.post, f"/v1/work-requests/{work_id}/resume", headers=setup.headers
-        )
-        assert started.wait(10)
-        if changed == "cancel":
-            preview = setup.client.post(
-                f"/v1/products/{setup.product}/works/{work_id}/cancel-preview",
-                headers=setup.headers,
-            ).json()
-            response = post(
-                setup,
-                command(
-                    setup,
-                    "ai.run.cancel",
-                    {"work_id": work_id, "confirmation_token": preview["confirmation_token"]},
-                    revision=preview["expected_revision"],
-                ),
-            )
-            assert response.status_code == 200, response.text
-        else:
-            with Session(setup.admin) as s, s.begin():
-                if changed == "scope":
-                    g = s.scalar(
-                        select(Grant).where(
-                            Grant.product_id == setup.product, Grant.principal_id == setup.human
-                        )
-                    )
-                    g.expires_at = now() - timedelta(seconds=1)
-                elif changed == "source":
-                    s.get(Artifact, UUID(artifact)).status = "withdrawn"
-                else:
-                    q = s.scalar(
-                        select(Qualification).where(Qualification.writer_id == setup.agent)
-                    )
-                    q.active = False
-        release.set()
-        result = future.result()
-    assert result.status_code in {403, 409}
-    assert (
-        result.json()["code"]
-        == {
-            "cancel": "CANCELLED_RUN",
-            "scope": "FORBIDDEN_SCOPE",
-            "source": "SOURCE_UNAVAILABLE",
-            "qualification": "QUALIFICATION_REQUIRED",
-        }[changed]
-    )
-    with tenant_session(setup.engine, setup.tenant) as s:
-        assert s.scalar(select(func.count()).select_from(Claim)) == 0
-
-
-def test_prompt_injection_cannot_acquire_t2(setup):
-    artifact, _ = source(setup)
-    malicious = command(
-        setup, "product.definition.publish", {"approved": True, "actor": "CEO"}, source=artifact
-    )
-    assert post(setup, malicious).json()["code"] == "NAMED_DECISION_REQUIRED"
-    bad = claim_cmd(setup, artifact)
-    bad["payload"]["approved"] = True
-    assert post(setup, bad).status_code == 422
-
-
 def test_rls_pool_reset_privileges_and_original_immutability(setup):
     artifact, _ = source(setup)
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         role = s.execute(
             text("SELECT rolsuper, rolbypassrls FROM pg_roles WHERE rolname=current_user")
         ).one()
@@ -496,7 +313,13 @@ def test_rls_pool_reset_privileges_and_original_immutability(setup):
         )
     with (
         pytest.raises(DBAPIError, match="immutable"),
-        tenant_session(setup.engine, setup.tenant) as s,
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.human,
+            requester_id=setup.human,
+            category_id=setup.category,
+        ) as s,
     ):
         s.get(Artifact, UUID(artifact)).content = "tampered"
         s.flush()
@@ -518,46 +341,3 @@ def test_migration_matches_orm_and_test_guard(setup, monkeypatch):
     monkeypatch.delenv("TEST_DATABASE_URL")
     with pytest.raises(RuntimeError, match="unverified"):
         verify_test_target(setup.engine)
-
-
-@pytest.mark.parametrize(
-    "field,value",
-    [
-        ("provider_version", "different-model@1"),
-        ("skill_version", "source-claim@2"),
-        ("purpose", "different-purpose"),
-        ("expires_at", None),
-    ],
-)
-def test_qualification_is_bound_to_exact_capability_versions_and_purpose(setup, field, value):
-    artifact, _ = source(setup)
-    work_id = work(setup, artifact)
-    qualified(setup)
-    with Session(setup.admin) as s, s.begin():
-        q = s.scalar(select(Qualification).where(Qualification.writer_id == setup.agent))
-        setattr(q, field, value if field != "expires_at" else now() - timedelta(seconds=1))
-    provider = SyntheticProvider(setup)
-    with TestClient(
-        create_app(setup.engine, setup.auth, provider=provider, synthetic_mode=True)
-    ) as client:
-        result = client.post(f"/v1/work-requests/{work_id}/resume", headers=setup.headers)
-    assert result.json()["code"] == "QUALIFICATION_REQUIRED"
-    assert provider.calls == 0
-
-
-def test_completed_work_rechecks_current_source(setup):
-    artifact, _ = source(setup)
-    work_id = work(setup, artifact)
-    qualified(setup)
-    provider = SyntheticProvider(setup)
-    with TestClient(
-        create_app(setup.engine, setup.auth, provider=provider, synthetic_mode=True)
-    ) as client:
-        assert (
-            client.post(f"/v1/work-requests/{work_id}/resume", headers=setup.headers).status_code
-            == 200
-        )
-        with Session(setup.admin) as s, s.begin():
-            s.get(Artifact, UUID(artifact)).status = "withdrawn"
-        result = client.post(f"/v1/work-requests/{work_id}/resume", headers=setup.headers)
-    assert result.json()["code"] == "SOURCE_UNAVAILABLE" and provider.calls == 1

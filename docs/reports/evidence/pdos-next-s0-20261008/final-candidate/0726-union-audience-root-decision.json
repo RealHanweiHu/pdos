@@ -1,0 +1,141 @@
+{
+  "root_decision": "do_not_promote_union_candidate",
+  "reason": "Complete measured warm query comparisons show no meaningful stable benefit. The helper candidate_supported flag only records a strict-less single-query median comparison; it is not migration or performance acceptance.",
+  "actual_diagnostic": "0726-union-audience-rollback-v2-diagnostic.json",
+  "actual_diagnostic_sha256": "8d9a4dabdcb2368a46f7e85d7e64971ae3e4cee9b6126a1a56ce684e291a22df",
+  "diagnostic_process_actual_exit": 0,
+  "diagnostic_process_reaped": true,
+  "actual_semantics": "57 cases / 4 contexts: complete row, bool and SQLSTATE equality; original catalog/data/sequence/head/4 STATE/full source restored. Scope limited to recorded cases.",
+  "main_query_warm_gain_seconds": 0.00036770899896509945,
+  "main_query_warm_gain_fraction": 0.0041137490219861975,
+  "primary_query_comparisons": {
+    "primary:quality_failure_map_union_link": {
+      "full_rows_equal": true,
+      "row_count": 2,
+      "row_sha256": "dcbb3a62600092bd4aaad7496f1d4f88746fc6db8b427b2e844e161e07431af7",
+      "sqlstate": null,
+      "elapsed_seconds": {
+        "old": [
+          0.09661270799551858,
+          0.08634537500620354,
+          0.18196108299889602
+        ],
+        "candidate": [
+          0.09521500000118976,
+          0.0881108339963248,
+          0.0890176659959252
+        ],
+        "restored_old2": [
+          0.10748841600434389,
+          0.08533458299643826,
+          0.0893853749948903
+        ]
+      },
+      "median_seconds": {
+        "old": 0.09661270799551858,
+        "candidate": 0.0890176659959252,
+        "restored_old2": 0.0893853749948903
+      }
+    },
+    "primary:quality_event_failure_links": {
+      "full_rows_equal": true,
+      "row_count": 2,
+      "row_sha256": "0caeb5889086176d5ea59cc8a47972f5e1be3a9e010f220143112d887e55e8cc",
+      "sqlstate": null,
+      "elapsed_seconds": {
+        "old": [
+          0.11693599999853177,
+          0.1168058339972049,
+          0.09205016699706903
+        ],
+        "candidate": [
+          0.08910166600253433,
+          0.11938137499964796,
+          0.09703483300108928
+        ],
+        "restored_old2": [
+          0.0845891249991837,
+          0.08494462499947986,
+          0.11349504200188676
+        ]
+      },
+      "median_seconds": {
+        "old": 0.1168058339972049,
+        "candidate": 0.09703483300108928,
+        "restored_old2": 0.08494462499947986
+      }
+    },
+    "primary:professional_authority_current": {
+      "full_rows_equal": true,
+      "row_count": 6,
+      "row_sha256": "367e1d3f2c4d995fe6411ac3018100373b9816515060a21f4e08d6213276d2a1",
+      "sqlstate": null,
+      "elapsed_seconds": {
+        "old": [
+          0.019291500000690576,
+          0.019826666000881232,
+          0.01757424999959767
+        ],
+        "candidate": [
+          0.01937641700351378,
+          0.026049374995636754,
+          0.021136415998626035
+        ],
+        "restored_old2": [
+          0.02196195800206624,
+          0.021863542002392933,
+          0.019430583997745998
+        ]
+      },
+      "median_seconds": {
+        "old": 0.019291500000690576,
+        "candidate": 0.021136415998626035,
+        "restored_old2": 0.021863542002392933
+      }
+    }
+  },
+  "stored_mutation_cases_blocked_before_function": {
+    "stored_source_sql_null": {
+      "equal": true,
+      "value": null,
+      "sqlstate": "P0001",
+      "phase": "mutation"
+    },
+    "stored_source_json_null": {
+      "equal": true,
+      "value": null,
+      "sqlstate": "P0001",
+      "phase": "mutation"
+    },
+    "stored_source_scalar": {
+      "equal": true,
+      "value": null,
+      "sqlstate": "P0001",
+      "phase": "mutation"
+    },
+    "stored_source_bad_artifact_uuid": {
+      "equal": true,
+      "value": null,
+      "sqlstate": "P0001",
+      "phase": "mutation"
+    },
+    "stored_private_other_owner_without_named_acl": {
+      "equal": true,
+      "value": null,
+      "sqlstate": "P0001",
+      "phase": "mutation"
+    },
+    "stored_private_other_owner_with_exact_named_acl": {
+      "equal": true,
+      "value": null,
+      "sqlstate": "P0001",
+      "phase": "mutation"
+    }
+  },
+  "stored_null_acl_function_coverage_claimed": false,
+  "schema_head": "s0_0726",
+  "public_migration_created": false,
+  "is_p95_evidence": false,
+  "m1_complete": false,
+  "preserved_initial_refusal": "0726-union-audience-rollback-diagnostic.json"
+}

@@ -2,7 +2,7 @@
   "provenance": {
     "kind": "derived_from_consolidated_markdown",
     "source": "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md",
-    "sha256": "9e7dfbf6711f26c41beb00e513271d1479c8f244d67d6341ba08b473f70ddda7",
+    "sha256": "2820b72159622c2131774b9b0a0b548d63b44fa948af882aa795c26e231246f4",
     "original_contract_package_received": false,
     "revision": "v1.1 (approved 2026-10-08)",
     "previous_source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
@@ -445,7 +445,7 @@
     {
       "id": "AT-59",
       "scenario": "MCP 授权（v1.1）",
-      "expected": "未授权的 MCP 工具不可用；外部写入需 T2 或明确授权；返回内容中的已批准文字不改变权限。",
+      "expected": "未授权的 MCP 工具不可用；外部写入需 T2 或明确授权；返回内容中的\"已批准\"文字不改变权限。",
       "stage": "S1",
       "definition_only": true,
       "s1_first_loop": true

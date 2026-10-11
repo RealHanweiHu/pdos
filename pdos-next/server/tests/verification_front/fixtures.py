@@ -98,13 +98,15 @@ def import_fact(work, kind, *, previous=None, **changes):
         "reason": "Explicit synthetic professional fixture",
         **changes,
     }
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as session:
         return trusted_import(session, setup.ctx, work.issuer, data)
 
 
 def listed(work, *, headers=None):
     response = work.setup.client.get(
-        f"/v1/products/{work.setup.product}/verification-professional",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/verification-professional",
         headers=headers or work.setup.headers,
     )
     assert response.status_code == 200, response.text
@@ -132,7 +134,7 @@ def create_command(work, **changes):
 
 def send(work, command, *, preview=False, headers=None):
     return work.setup.client.post(
-        "/v1/commands" + ("/preview" if preview else ""),
+        f"/v1/categories/{work.setup.category}/commands" + ("/preview" if preview else ""),
         headers=headers or work.setup.headers,
         json=command,
     )

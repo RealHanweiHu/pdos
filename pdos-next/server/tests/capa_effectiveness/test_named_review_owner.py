@@ -157,7 +157,7 @@ def test_current_reviewer_cannot_be_any_actual_participant_even_report_registran
     actual = Participant(id=work.actor, roles=(role,), owner_sources=(source,))
     with pytest.raises(DomainError) as error:
         owner._independent(work.ctx, SimpleNamespace(participants=(actual,)))
-    assert error.value.code == "INDEPENDENT_REVIEWER_REQUIRED"
+    assert error.value.reason == "INDEPENDENT_REVIEWER_REQUIRED"
 
 
 def test_peer_product_grant_does_not_itself_claim_independence(work):
@@ -175,7 +175,7 @@ def test_missing_or_raw_paired_reader_never_attests_real_run(work, reader):
     value = configured(paired_owner=reader)
     with pytest.raises(DomainError) as error:
         value._pair(work.s, work.ctx, work.pid, object())
-    assert error.value.code == "LIVE_PAIRED_OWNER_REQUIRED"
+    assert error.value.reason == "LIVE_PAIRED_OWNER_REQUIRED"
     assert not work.s.queries
 
 
@@ -214,7 +214,7 @@ def test_nonunknown_human_selection_still_needs_actual_applicability_owner(work,
             (),
             (),
         )
-    assert error.value.code == "FACT_APPLICABILITY_OWNER_REQUIRED"
+    assert error.value.reason == "FACT_APPLICABILITY_OWNER_REQUIRED"
 
 
 def test_overall_applicable_cannot_hide_unknown_subconclusions(work):
@@ -276,7 +276,7 @@ def test_actual_core_binding_uses_current_formal_and_new_build_not_run_origin(wo
         request_id=request_id,
         revision=4,
         owner_id=work.actor,
-        visibility="product",
+        visibility="category",
         request_version_id=uuid4(),
         request_revision=2,
         run_snapshot=snapshot,
@@ -294,7 +294,7 @@ def test_actual_core_binding_uses_current_formal_and_new_build_not_run_origin(wo
         request_revision=7,
     )
     saved = SimpleNamespace(
-        origin=SimpleNamespace(scope=work.scope, visibility="product", purpose="exact new purpose")
+        origin=SimpleNamespace(scope=work.scope, visibility="category", purpose="exact new purpose")
     )
     candidate = SimpleNamespace(
         binding=SimpleNamespace(
@@ -316,7 +316,7 @@ def test_actual_core_binding_uses_current_formal_and_new_build_not_run_origin(wo
     if changed:
         with pytest.raises(DomainError) as error:
             configured()._bindings(work.s, work.ctx, work.pid, saved, candidate)
-        assert error.value.code in {"FACT_REVIEW_PAIR_SCOPE_MISMATCH", "FORBIDDEN_SCOPE"}
+        assert error.value.reason in {"FACT_REVIEW_PAIR_SCOPE_MISMATCH", "FORBIDDEN_SCOPE"}
         return
     (bound,) = configured()._bindings(work.s, work.ctx, work.pid, saved, candidate)
     assert bound.output_ref.id == current_formal and bound.output_ref.revision == 7
@@ -335,7 +335,7 @@ def test_real_uow_identity_and_runtime_epoch_are_not_dto_flags(work):
     value.paired_owner = object()
     with pytest.raises(DomainError) as error:
         value._phase(work.s, work.ctx, uow, caller, stamp)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 def test_full_applicability_result_cannot_cross_session_or_rewrite_action(work):
@@ -422,7 +422,7 @@ def test_typed_source_subclass_equivalence_keeps_every_exact_field(work, changed
                 payload,
                 actual,
             )
-        assert error.value.code == "FACT_APPLICABILITY_MISMATCH"
+        assert error.value.reason == "FACT_APPLICABILITY_MISMATCH"
 
 
 def test_actual_mapping_cannot_replace_fixed_current_sample_or_measurement():
@@ -495,7 +495,7 @@ def test_read_checks_actual_caller_exclusion_before_missing_live_pair(
     )
     with pytest.raises(DomainError) as error:
         value.read(work.s, ctx, pid, payload)
-    assert error.value.code == (
+    assert error.value.reason == (
         "INDEPENDENT_REVIEWER_REQUIRED" if participant_is_caller else "LIVE_PAIRED_OWNER_REQUIRED"
     )
     assert not work.s.new and not work.s.dirty

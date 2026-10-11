@@ -5,6 +5,9 @@ existing owners, but original bytes, historical authority and retained effects
 still need the future trusted reader's independent refresh/attest.
 """
 
+from pdos_next.database import category_for_product
+
+
 # Initialize the actual common registry before importing its domain children.
 # ruff: noqa: I001
 
@@ -13,7 +16,7 @@ from uuid import UUID
 
 from pdos_next.service import Context, digest, require_access
 
-from . import paired as p  
+from . import paired as p
 from pdos_next.domain.builds import service as builds
 from pdos_next.domain.configurations.models import EngineeringConfiguration, ProcessRevision
 from pdos_next.domain.verification_front import service as front
@@ -108,7 +111,7 @@ def _acl(s, ctx, pid, *, write):
         s,
         select(Grant).where(
             Grant.tenant_id == ctx.tenant_id,
-            Grant.product_id == pid,
+            Grant.category_id == category_for_product(pid),
             Grant.principal_id == ctx.requester_id,
         ),
     )
@@ -119,7 +122,10 @@ def _acl(s, ctx, pid, *, write):
         or actor.kind != "human"
         or actor.active is not True
         or grant is None
-        or grant.expires_at <= now()
+        or (
+            grant.expires_at is not None
+            and (grant.expires_at is not None and grant.expires_at <= now())
+        )
         or (write and grant.can_write is not True)
     ):
         raise DomainError("FORBIDDEN_SCOPE", "当前本人读取范围或身份已失效。", 403)
@@ -232,7 +238,7 @@ def _fact(row, scope, projection_ref=None):
     )
 
 
-def _common(fact, pid, actor):
+def _common(fact, pid, actor, category_id):
     if actor != fact.actor_id:
         raise DomainError("PAIR_WRITER_MISMATCH", "共同原办理人不等于真实领域当次人。")
     raw = fact.input_snapshot
@@ -251,6 +257,7 @@ def _common(fact, pid, actor):
     return p.CommonIntentMaterial(
         handler="verification_launch" if module is launch else "verification_results",
         operation=fact.operation,
+        category=category_id,
         product=pid,
         payload=semantic,
         named_actor=actor,
@@ -445,7 +452,7 @@ def _read_storage_pair(s, ctx, product_id, output_ref, *, at, write=False) -> p.
         _missing(
             "PAIR_REQUEST_PROVENANCE_MISSING", "原回执缺原writer与原摘要的真实RequestKey关联。"
         )
-    common = _common(fact, product_id, receipt.requester_id)
+    common = _common(fact, product_id, receipt.requester_id, ctx.category_id)
     audits = _many(s, Audit, Audit.tenant_id == ctx.tenant_id, Audit.receipt_id == receipt.id)
     events = _many(s, Outbox, Outbox.tenant_id == ctx.tenant_id, Outbox.receipt_id == receipt.id)
     projection, projected = None, None

@@ -1,0 +1,12 @@
+{
+  "exit_code": 0,
+  "child_reaped": true,
+  "target": "127.0.0.1:52733/pdos_test",
+  "head": "s0_0719",
+  "state_unchanged": true,
+  "restored_stopped_state": true,
+  "source_sha256": {
+    "pdos-next/server/pdos_next/domain/preproject/views.py": "c8bec814beb8fb1fe8cae6e3217a1fc35aab3a1426e3e5f24b7205f97d8497b3",
+    "pdos-next/server/tests/preproject/test_review_fixes.py": "7c019c881c6ecd130b283fe1d6f4a0c46f1cbba5aab85450cb4c4f88af179dfc"
+  }
+}

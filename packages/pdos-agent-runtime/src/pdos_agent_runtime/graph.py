@@ -1,6 +1,7 @@
 """An actual LangGraph boundary around a complete capability, not its provider call."""
 
 from collections.abc import Callable
+from contextlib import contextmanager
 from contextvars import ContextVar
 from typing import TypedDict
 
@@ -10,7 +11,11 @@ _active = ContextVar("pdos_agent_graph", default=False)
 
 
 def in_agent_graph() -> bool:
-    return _active.get()
+    return bool(_active.get())
+
+
+def in_registered_agent_graph(name: str = "xiaopai") -> bool:
+    return name == "xiaopai" and _active.get() == name
 
 
 class State(TypedDict, total=False):
@@ -55,3 +60,15 @@ def execute_graph(
     return compiled.invoke(
         None if saved and saved.values else {"input": payload}, config
     )["result"]
+
+
+@contextmanager
+def registered_graph_context(name: str):
+    """Fixed graph entry for the next host; no arbitrary model bypass or retired realm."""
+    if name != "xiaopai":
+        raise ValueError("Unregistered agent graph")
+    token = _active.set(name)
+    try:
+        yield
+    finally:
+        _active.reset(token)

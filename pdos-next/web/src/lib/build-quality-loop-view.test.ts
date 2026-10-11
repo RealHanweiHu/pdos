@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import {
-  blankQualityLocal, blankQualityWork, changeCreatePayload, changeRefKey, createFailurePayload, emptyChanges, emptyQuality, graphCaptureRequest, impactPayload, issuePayload, issueReferenceOptions, mapChangeReading, mapIssueReading, qualityCapability, qualityCommand, qualityEvent, qualityIndexScope, qualityPayloadReads, qualityReads, qualitySame, qualitySource, readQualityContext, restoreQualityLocal, selectQualityIndexed, selectQualityScope, validGraphCapture, validQualityInputs, validQualityPreview, validQualityReceipt,
+  appendChangeHistory, blankQualityLocal, blankQualityWork, changeCreatePayload, changeRefKey, createFailurePayload, emptyChanges, emptyQuality, graphCaptureRequest, impactPayload, issuePayload, issueReferenceOptions, mapChangeReading, mapIssueReading, qualityCapability, qualityCommand, qualityEvent, qualityIndexScope, qualityPayloadReads, qualityReads, qualitySame, qualitySource, readQualityContext, restoreQualityLocal, selectQualityIndexed, selectQualityScope, validGraphCapture, validQualityInputs, validQualityPreview, validQualityReceipt,
   type ChangeRow, type GraphCapture, type QualityApi, type QualityContext, type QualityFailure, type QualityIndexedSelection, type QualityIssue, type QualitySource, type QualityPreview,
 } from "./build-quality-loop-view";
 import { emptyResults } from "./build-results-view";
@@ -157,4 +157,18 @@ test("local history display preserves false current capabilities and cannot prom
 test("remote scope or arbitrary form edits cannot enter the local indexed-only path", () => {
   const { local, context, checked } = indexedWork();
   for (const patch of [{ selectedBuildId: "other-build" }, { selectedRunId: "other-run" }, { selectedIssueId: "other-issue" }, { work: blankQualityWork() }, { selectedFailureId: 0 }]) assert.throws(() => selectQualityIndexed(local, patch as unknown as QualityIndexedSelection, context, checked, checked));
+});
+
+test("history pagination preserves records and uses only the fresh server Current for actions", () => {
+  const old = change(), oldCapture = { ...capture(), expires_at: null }, latest = { ...old, id: "new-version", revision: 2 };
+  const previous = { ...emptyChanges, changes: [old], captures: [oldCapture], current_by_change: { "change-logical": { version_id: old.id, revision: 1 } } };
+  const page = { ...emptyChanges, changes: [latest, { ...old, current: false, capabilities: { impact_compute: false } }], captures: [], current_by_change: { "change-logical": { version_id: latest.id, revision: 2 } }, history_page: { next_cursor: "next-history-page" } };
+  const merged = appendChangeHistory(previous, page);
+  assert.equal(merged.changes.length, 2);
+  assert.equal(merged.changes.find(row => row.id === old.id)?.capabilities.impact_compute, false);
+  assert.equal(merged.changes.find(row => row.id === latest.id)?.current, true);
+  assert.equal(merged.captures[0].current, false);
+  assert.equal(merged.captures[0].expires_at, null);
+  assert.equal(previous.captures[0].current, true);
+  assert.deepEqual(merged.current_by_change, page.current_by_change);
 });

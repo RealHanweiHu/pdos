@@ -22,7 +22,6 @@ from pdos_next.domain.capa_verification.models import CapaVerificationEvidence
 from pdos_next.domain.quality_execution import evidence
 from pdos_next.safety import verify_test_target
 
-MAX_PROFILES = 20
 _DISPATCHER = "_pdos_capa_rule_profile_dispatcher"
 
 
@@ -78,10 +77,10 @@ class RegisteredSyntheticRulePublisher:
                     CapaVerificationEvidence.issue_revision == payload.origin.revision,
                 )
                 .order_by(CapaVerificationEvidence.created_at, CapaVerificationEvidence.id)
-                .limit(101)
+                .limit(1)
             )
         )
-        require(0 < len(rows) <= 100, "FACT_FIXED_ANCHOR_REQUIRED")
+        require(bool(rows), "FACT_FIXED_ANCHOR_REQUIRED")
         selected = candidate_storage.read_candidate(
             s, ctx, pid, rows[0].id, semantic_owner=candidate_commands.semantic_owner()
         )
@@ -321,7 +320,7 @@ def configure_local_profiles(engine, profiles):
     single profile. Each tenant/product has one project and an independent key;
     unknown scopes and conflicting keys never fall back to another profile.
     """
-    if type(profiles) is not list or not 1 <= len(profiles) <= MAX_PROFILES:
+    if type(profiles) is not list or not profiles:
         raise ValueError("Rule profiles require an explicit list of 1..20 scopes")
     values = tuple(_profile(profile) for profile in profiles)
     if len({v[3] for v in values}) != len(values) or len({v[:2] for v in values}) != len(values):

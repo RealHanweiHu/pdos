@@ -1,0 +1,866 @@
+{
+  "scope": "Existing S0 modules; independent M3/preproject collection is not S0 execution evidence",
+  "original_actual_results": "full-regression-results.json",
+  "current_collection": "0726-canonical-current-collection-fixed.json",
+  "current_collection_is_pass_evidence": false,
+  "original_failure_dispositions": "failure-closure-map.json",
+  "current_runtime_delta_and_affected_verification": "source-delta-coverage.json",
+  "final_source_freeze": "performance-source-manifest.json",
+  "claim": "Original full results retained; repaired scopes have separate actual evidence. This is not a second complete current-candidate pass.",
+  "modules": {
+    "agent_kernel": {
+      "original_outcomes": {
+        "passed": 254
+      },
+      "current_s0_collected_nodes": 254,
+      "original_failed_dispositions": {}
+    },
+    "build_operational_facts": {
+      "original_outcomes": {
+        "passed": 49
+      },
+      "current_s0_collected_nodes": 49,
+      "original_failed_dispositions": {}
+    },
+    "build_start": {
+      "original_outcomes": {
+        "passed": 69
+      },
+      "current_s0_collected_nodes": 69,
+      "original_failed_dispositions": {}
+    },
+    "capa_effectiveness": {
+      "original_outcomes": {
+        "passed": 530
+      },
+      "current_s0_collected_nodes": 530,
+      "original_failed_dispositions": {}
+    },
+    "capa_link_phases": {
+      "original_outcomes": {
+        "passed": 91
+      },
+      "current_s0_collected_nodes": 91,
+      "original_failed_dispositions": {}
+    },
+    "capa_verification": {
+      "original_outcomes": {
+        "passed": 52
+      },
+      "current_s0_collected_nodes": 52,
+      "original_failed_dispositions": {}
+    },
+    "change_control": {
+      "original_outcomes": {
+        "passed": 105
+      },
+      "current_s0_collected_nodes": 105,
+      "original_failed_dispositions": {}
+    },
+    "change_coverage_owner": {
+      "original_outcomes": {
+        "passed": 115
+      },
+      "current_s0_collected_nodes": 116,
+      "original_failed_dispositions": {}
+    },
+    "change_coverage_transactions": {
+      "original_outcomes": {
+        "failure": 4,
+        "passed": 2
+      },
+      "current_s0_collected_nodes": 6,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 4
+      }
+    },
+    "change_execution": {
+      "original_outcomes": {
+        "passed": 191
+      },
+      "current_s0_collected_nodes": 191,
+      "original_failed_dispositions": {}
+    },
+    "change_graph_closure": {
+      "original_outcomes": {
+        "passed": 72
+      },
+      "current_s0_collected_nodes": 72,
+      "original_failed_dispositions": {}
+    },
+    "change_manufacturing_transactions": {
+      "original_outcomes": {
+        "passed": 3
+      },
+      "current_s0_collected_nodes": 3,
+      "original_failed_dispositions": {}
+    },
+    "change_publication_finalization": {
+      "original_outcomes": {
+        "passed": 64
+      },
+      "current_s0_collected_nodes": 64,
+      "original_failed_dispositions": {}
+    },
+    "change_scope_only": {
+      "original_outcomes": {
+        "passed": 55,
+        "failure": 1
+      },
+      "current_s0_collected_nodes": 56,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 1
+      }
+    },
+    "current_read_profiler_workers": {
+      "original_outcomes": {
+        "passed": 9
+      },
+      "current_s0_collected_nodes": 9,
+      "original_failed_dispositions": {}
+    },
+    "derivation_engine": {
+      "original_outcomes": {
+        "passed": 52
+      },
+      "current_s0_collected_nodes": 52,
+      "original_failed_dispositions": {}
+    },
+    "discovery": {
+      "original_outcomes": {
+        "failure": 17,
+        "passed": 46
+      },
+      "current_s0_collected_nodes": 63,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 17
+      }
+    },
+    "evidence_processing": {
+      "original_outcomes": {
+        "passed": 28
+      },
+      "current_s0_collected_nodes": 28,
+      "original_failed_dispositions": {}
+    },
+    "evidence_security": {
+      "original_outcomes": {
+        "passed": 80
+      },
+      "current_s0_collected_nodes": 80,
+      "original_failed_dispositions": {}
+    },
+    "manufacturing_browser_seed": {
+      "original_outcomes": {
+        "skipped": 1
+      },
+      "current_s0_collected_nodes": 1,
+      "original_failed_dispositions": {}
+    },
+    "manufacturing_preparation": {
+      "original_outcomes": {
+        "passed": 140
+      },
+      "current_s0_collected_nodes": 140,
+      "original_failed_dispositions": {}
+    },
+    "manufacturing_preparation_transactions": {
+      "original_outcomes": {
+        "passed": 1
+      },
+      "current_s0_collected_nodes": 1,
+      "original_failed_dispositions": {}
+    },
+    "manufacturing_resource_api": {
+      "original_outcomes": {
+        "failure": 31,
+        "passed": 1
+      },
+      "current_s0_collected_nodes": 32,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 31
+      }
+    },
+    "manufacturing_resource_native_transactions": {
+      "original_outcomes": {
+        "failure": 1
+      },
+      "current_s0_collected_nodes": 2,
+      "original_failed_dispositions": {
+        "closed_actual_affected_passed": 1
+      }
+    },
+    "manufacturing_resource_owner": {
+      "original_outcomes": {
+        "passed": 46
+      },
+      "current_s0_collected_nodes": 46,
+      "original_failed_dispositions": {}
+    },
+    "manufacturing_resource_transactions": {
+      "original_outcomes": {
+        "error": 4
+      },
+      "current_s0_collected_nodes": 4,
+      "original_failed_dispositions": {
+        "closed_actual_affected_passed": 4
+      }
+    },
+    "manufacturing_trials": {
+      "original_outcomes": {
+        "passed": 162
+      },
+      "current_s0_collected_nodes": 162,
+      "original_failed_dispositions": {}
+    },
+    "measurement_evidence": {
+      "original_outcomes": {
+        "passed": 87
+      },
+      "current_s0_collected_nodes": 87,
+      "original_failed_dispositions": {}
+    },
+    "model_configuration": {
+      "original_outcomes": {
+        "passed": 76
+      },
+      "current_s0_collected_nodes": 76,
+      "original_failed_dispositions": {}
+    },
+    "object_journal": {
+      "original_outcomes": {
+        "passed": 26
+      },
+      "current_s0_collected_nodes": 26,
+      "original_failed_dispositions": {}
+    },
+    "object_lifecycle_runtime": {
+      "original_outcomes": {
+        "passed": 40
+      },
+      "current_s0_collected_nodes": 40,
+      "original_failed_dispositions": {}
+    },
+    "original_lifecycle": {
+      "original_outcomes": {
+        "passed": 75
+      },
+      "current_s0_collected_nodes": 75,
+      "original_failed_dispositions": {}
+    },
+    "original_lifecycle_execution": {
+      "original_outcomes": {
+        "passed": 38
+      },
+      "current_s0_collected_nodes": 38,
+      "original_failed_dispositions": {}
+    },
+    "planning": {
+      "original_outcomes": {
+        "passed": 29
+      },
+      "current_s0_collected_nodes": 29,
+      "original_failed_dispositions": {}
+    },
+    "planning_engine": {
+      "original_outcomes": {
+        "passed": 120
+      },
+      "current_s0_collected_nodes": 120,
+      "original_failed_dispositions": {}
+    },
+    "products": {
+      "original_outcomes": {
+        "passed": 70
+      },
+      "current_s0_collected_nodes": 70,
+      "original_failed_dispositions": {}
+    },
+    "professional_authority": {
+      "original_outcomes": {
+        "passed": 86
+      },
+      "current_s0_collected_nodes": 92,
+      "original_failed_dispositions": {}
+    },
+    "professional_authority_batch": {
+      "original_outcomes": {
+        "passed": 42
+      },
+      "current_s0_collected_nodes": 42,
+      "original_failed_dispositions": {}
+    },
+    "professional_authority_batch_transactions": {
+      "original_outcomes": {
+        "passed": 2
+      },
+      "current_s0_collected_nodes": 2,
+      "original_failed_dispositions": {}
+    },
+    "providers": {
+      "original_outcomes": {
+        "passed": 70,
+        "failure": 35
+      },
+      "current_s0_collected_nodes": 49,
+      "original_failed_dispositions": {
+        "retired_interface_archived_not_retested_pass": 35
+      }
+    },
+    "quality_execution": {
+      "original_outcomes": {
+        "passed": 95
+      },
+      "current_s0_collected_nodes": 95,
+      "original_failed_dispositions": {}
+    },
+    "quality_followup": {
+      "original_outcomes": {
+        "passed": 52
+      },
+      "current_s0_collected_nodes": 52,
+      "original_failed_dispositions": {}
+    },
+    "quality_followup_bootstrap": {
+      "original_outcomes": {
+        "passed": 32
+      },
+      "current_s0_collected_nodes": 32,
+      "original_failed_dispositions": {}
+    },
+    "quality_followup_host": {
+      "original_outcomes": {
+        "error": 32,
+        "passed": 1
+      },
+      "current_s0_collected_nodes": 34,
+      "original_failed_dispositions": {
+        "closed_actual_affected_passed": 32
+      }
+    },
+    "quality_followup_root": {
+      "original_outcomes": {
+        "passed": 59,
+        "error": 2
+      },
+      "current_s0_collected_nodes": 61,
+      "original_failed_dispositions": {
+        "closed_actual_affected_passed": 2
+      }
+    },
+    "quality_followup_transactions": {
+      "original_outcomes": {
+        "error": 5,
+        "passed": 13,
+        "failure": 1
+      },
+      "current_s0_collected_nodes": 19,
+      "original_failed_dispositions": {
+        "closed_actual_affected_passed": 6
+      }
+    },
+    "quality_followup_views": {
+      "original_outcomes": {
+        "passed": 29
+      },
+      "current_s0_collected_nodes": 29,
+      "original_failed_dispositions": {}
+    },
+    "quality_issues": {
+      "original_outcomes": {
+        "passed": 43,
+        "failure": 67
+      },
+      "current_s0_collected_nodes": 115,
+      "original_failed_dispositions": {
+        "closed_actual_affected_passed": 67
+      }
+    },
+    "resource_readiness": {
+      "original_outcomes": {
+        "passed": 109
+      },
+      "current_s0_collected_nodes": 109,
+      "original_failed_dispositions": {}
+    },
+    "sample_handoff": {
+      "original_outcomes": {
+        "passed": 66
+      },
+      "current_s0_collected_nodes": 66,
+      "original_failed_dispositions": {}
+    },
+    "security_runtime": {
+      "original_outcomes": {
+        "passed": 24
+      },
+      "current_s0_collected_nodes": 24,
+      "original_failed_dispositions": {}
+    },
+    "supply_cost_domain": {
+      "original_outcomes": {
+        "passed": 106
+      },
+      "current_s0_collected_nodes": 106,
+      "original_failed_dispositions": {}
+    },
+    "supply_cost_engine": {
+      "original_outcomes": {
+        "passed": 75
+      },
+      "current_s0_collected_nodes": 75,
+      "original_failed_dispositions": {}
+    },
+    "test_build_comparison": {
+      "original_outcomes": {
+        "passed": 5
+      },
+      "current_s0_collected_nodes": 5,
+      "original_failed_dispositions": {}
+    },
+    "test_build_demand": {
+      "original_outcomes": {
+        "passed": 14,
+        "failure": 9,
+        "error": 2
+      },
+      "current_s0_collected_nodes": 25,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 11
+      }
+    },
+    "test_build_execution": {
+      "original_outcomes": {
+        "failure": 27,
+        "passed": 33
+      },
+      "current_s0_collected_nodes": 60,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 27
+      }
+    },
+    "test_build_readiness": {
+      "original_outcomes": {
+        "passed": 41
+      },
+      "current_s0_collected_nodes": 41,
+      "original_failed_dispositions": {}
+    },
+    "test_build_start_common": {
+      "original_outcomes": {
+        "passed": 8
+      },
+      "current_s0_collected_nodes": 8,
+      "original_failed_dispositions": {}
+    },
+    "test_builds": {
+      "original_outcomes": {
+        "passed": 18,
+        "failure": 8
+      },
+      "current_s0_collected_nodes": 26,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 8
+      }
+    },
+    "test_business_audience_summary": {
+      "original_outcomes": {
+        "passed": 1
+      },
+      "current_s0_collected_nodes": 1,
+      "original_failed_dispositions": {}
+    },
+    "test_capa_history": {
+      "original_outcomes": {
+        "passed": 6
+      },
+      "current_s0_collected_nodes": 6,
+      "original_failed_dispositions": {}
+    },
+    "test_category_scope": {
+      "original_outcomes": {
+        "passed": 8,
+        "failure": 1
+      },
+      "current_s0_collected_nodes": 9,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 1
+      }
+    },
+    "test_category_source_consumers": {
+      "original_outcomes": {
+        "passed": 2
+      },
+      "current_s0_collected_nodes": 2,
+      "original_failed_dispositions": {}
+    },
+    "test_category_source_lifecycle_fence": {
+      "original_outcomes": {
+        "passed": 1
+      },
+      "current_s0_collected_nodes": 1,
+      "original_failed_dispositions": {}
+    },
+    "test_change_capture_deadline": {
+      "original_outcomes": {
+        "failure": 14
+      },
+      "current_s0_collected_nodes": 14,
+      "original_failed_dispositions": {
+        "closed_actual_affected_passed": 14
+      }
+    },
+    "test_checkpoint_recovery": {
+      "original_outcomes": {
+        "passed": 6
+      },
+      "current_s0_collected_nodes": 6,
+      "original_failed_dispositions": {}
+    },
+    "test_command_proof": {
+      "original_outcomes": {
+        "passed": 15
+      },
+      "current_s0_collected_nodes": 15,
+      "original_failed_dispositions": {}
+    },
+    "test_configurations": {
+      "original_outcomes": {
+        "passed": 26
+      },
+      "current_s0_collected_nodes": 26,
+      "original_failed_dispositions": {}
+    },
+    "test_cost_execution": {
+      "original_outcomes": {
+        "passed": 37
+      },
+      "current_s0_collected_nodes": 37,
+      "original_failed_dispositions": {}
+    },
+    "test_current_read_profiler": {
+      "original_outcomes": {
+        "passed": 3
+      },
+      "current_s0_collected_nodes": 3,
+      "original_failed_dispositions": {}
+    },
+    "test_decision_deadlines": {
+      "original_outcomes": {
+        "passed": 1
+      },
+      "current_s0_collected_nodes": 1,
+      "original_failed_dispositions": {}
+    },
+    "test_durable_evidence": {
+      "original_outcomes": {
+        "passed": 18
+      },
+      "current_s0_collected_nodes": 18,
+      "original_failed_dispositions": {}
+    },
+    "test_fingerprint_compatibility": {
+      "original_outcomes": {
+        "passed": 44
+      },
+      "current_s0_collected_nodes": 44,
+      "original_failed_dispositions": {}
+    },
+    "test_handoff_common": {
+      "original_outcomes": {
+        "failure": 7
+      },
+      "current_s0_collected_nodes": 7,
+      "original_failed_dispositions": {
+        "closed_actual_affected_passed": 7
+      }
+    },
+    "test_host_profile_choices": {
+      "original_outcomes": {
+        "passed": 9,
+        "failure": 30
+      },
+      "current_s0_collected_nodes": 40,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 30
+      }
+    },
+    "test_launch_common": {
+      "original_outcomes": {
+        "passed": 1,
+        "failure": 6
+      },
+      "current_s0_collected_nodes": 7,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 6
+      }
+    },
+    "test_launch_plan_integration": {
+      "original_outcomes": {
+        "error": 4
+      },
+      "current_s0_collected_nodes": 4,
+      "original_failed_dispositions": {
+        "closed_actual_affected_passed": 4
+      }
+    },
+    "test_launch_plan_preview": {
+      "original_outcomes": {
+        "passed": 38
+      },
+      "current_s0_collected_nodes": 38,
+      "original_failed_dispositions": {}
+    },
+    "test_launch_storage": {
+      "original_outcomes": {
+        "failure": 3
+      },
+      "current_s0_collected_nodes": 3,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 3
+      }
+    },
+    "test_operational_bootstrap_profiles": {
+      "original_outcomes": {
+        "passed": 38,
+        "failure": 1
+      },
+      "current_s0_collected_nodes": 39,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 1
+      }
+    },
+    "test_original_lifecycle_integration": {
+      "original_outcomes": {
+        "passed": 27
+      },
+      "current_s0_collected_nodes": 27,
+      "original_failed_dispositions": {}
+    },
+    "test_original_security": {
+      "original_outcomes": {
+        "passed": 29
+      },
+      "current_s0_collected_nodes": 29,
+      "original_failed_dispositions": {}
+    },
+    "test_project_first_plan": {
+      "original_outcomes": {
+        "passed": 19
+      },
+      "current_s0_collected_nodes": 19,
+      "original_failed_dispositions": {}
+    },
+    "test_public_api": {
+      "original_outcomes": {
+        "passed": 1
+      },
+      "current_s0_collected_nodes": 1,
+      "original_failed_dispositions": {}
+    },
+    "test_quality_bootstrap_profiles": {
+      "original_outcomes": {
+        "passed": 27
+      },
+      "current_s0_collected_nodes": 27,
+      "original_failed_dispositions": {}
+    },
+    "test_quality_capture_intervals": {
+      "original_outcomes": {
+        "passed": 1
+      },
+      "current_s0_collected_nodes": 1,
+      "original_failed_dispositions": {}
+    },
+    "test_resource_dependency": {
+      "original_outcomes": {
+        "passed": 102
+      },
+      "current_s0_collected_nodes": 102,
+      "original_failed_dispositions": {}
+    },
+    "test_resource_dependency_atomic_execution": {
+      "original_outcomes": {
+        "passed": 1
+      },
+      "current_s0_collected_nodes": 1,
+      "original_failed_dispositions": {}
+    },
+    "test_resource_dependency_execution": {
+      "original_outcomes": {
+        "passed": 1
+      },
+      "current_s0_collected_nodes": 1,
+      "original_failed_dispositions": {}
+    },
+    "test_resources": {
+      "original_outcomes": {
+        "passed": 44,
+        "failure": 2
+      },
+      "current_s0_collected_nodes": 96,
+      "original_failed_dispositions": {
+        "closed_actual_affected_passed": 2
+      }
+    },
+    "test_retained_execution": {
+      "original_outcomes": {
+        "failure": 6
+      },
+      "current_s0_collected_nodes": 26,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 6
+      }
+    },
+    "test_retained_fingerprint_compatibility": {
+      "original_outcomes": {
+        "passed": 40
+      },
+      "current_s0_collected_nodes": 40,
+      "original_failed_dispositions": {}
+    },
+    "test_retained_registry_compatibility": {
+      "original_outcomes": {
+        "failure": 3
+      },
+      "current_s0_collected_nodes": 3,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 3
+      }
+    },
+    "test_retained_versioned_fingerprint": {
+      "original_outcomes": {
+        "passed": 53
+      },
+      "current_s0_collected_nodes": 53,
+      "original_failed_dispositions": {}
+    },
+    "test_scoped_dispatch": {
+      "original_outcomes": {
+        "passed": 2
+      },
+      "current_s0_collected_nodes": 2,
+      "original_failed_dispositions": {}
+    },
+    "test_supply_execution": {
+      "original_outcomes": {
+        "passed": 29
+      },
+      "current_s0_collected_nodes": 29,
+      "original_failed_dispositions": {}
+    },
+    "test_test_resource_bootstrap_profiles": {
+      "original_outcomes": {
+        "passed": 19,
+        "failure": 1
+      },
+      "current_s0_collected_nodes": 20,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 1
+      }
+    },
+    "test_trusted_source_work": {
+      "original_outcomes": {
+        "passed": 21
+      },
+      "current_s0_collected_nodes": 21,
+      "original_failed_dispositions": {}
+    },
+    "test_verification_execution": {
+      "original_outcomes": {
+        "passed": 22,
+        "failure": 10
+      },
+      "current_s0_collected_nodes": 32,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 10
+      }
+    },
+    "verification": {
+      "original_outcomes": {
+        "passed": 112,
+        "failure": 44
+      },
+      "current_s0_collected_nodes": 156,
+      "original_failed_dispositions": {
+        "closed_actual_node_passed": 44
+      }
+    },
+    "verification_front": {
+      "original_outcomes": {
+        "failure": 26,
+        "passed": 17
+      },
+      "current_s0_collected_nodes": 43,
+      "original_failed_dispositions": {
+        "closed_actual_affected_passed": 15,
+        "closed_actual_node_passed": 11
+      }
+    },
+    "verification_handoff": {
+      "original_outcomes": {
+        "passed": 41,
+        "failure": 13
+      },
+      "current_s0_collected_nodes": 69,
+      "original_failed_dispositions": {
+        "closed_actual_affected_passed": 11,
+        "closed_actual_node_passed": 2
+      }
+    },
+    "verification_launch": {
+      "original_outcomes": {
+        "passed": 58
+      },
+      "current_s0_collected_nodes": 86,
+      "original_failed_dispositions": {}
+    },
+    "verification_launch_v2": {
+      "original_outcomes": {
+        "passed": 64
+      },
+      "current_s0_collected_nodes": 64,
+      "original_failed_dispositions": {}
+    },
+    "verification_results": {
+      "original_outcomes": {
+        "passed": 54
+      },
+      "current_s0_collected_nodes": 54,
+      "original_failed_dispositions": {}
+    },
+    "category_root": {
+      "original_outcomes": {},
+      "original_failed_dispositions": {},
+      "added_since_original_collection": true,
+      "current_affected_evidence": "0722-affected.json",
+      "current_s0_collected_nodes": 2
+    },
+    "quality_execution_transactions": {
+      "original_outcomes": {},
+      "original_failed_dispositions": {},
+      "added_since_original_collection": true,
+      "current_affected_evidence": "0722-affected.json",
+      "current_s0_collected_nodes": 26
+    },
+    "test_quality_result_bridge_reuse": {
+      "original_outcomes": {},
+      "original_failed_dispositions": {},
+      "current_s0_collected_nodes": 107
+    },
+    "test_direct_source_audience": {
+      "original_outcomes": {},
+      "original_failed_dispositions": {},
+      "introduced_affected_evidence": "0725-quality-scope-pg.json",
+      "current_s0_collected_nodes": 4
+    }
+  },
+  "previous_current_collection": "0725-quality-projection-current-collection.json",
+  "current_collection_totals": {
+    "all": 5518,
+    "s0": 5468,
+    "m3_excluded": 50,
+    "modules": 109
+  },
+  "additional_source_review": "0722-source-coverage-review.json"
+}

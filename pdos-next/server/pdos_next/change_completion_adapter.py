@@ -6,7 +6,7 @@ Missing/invalid formal implementation never falls back to investigation.
 
 import hashlib
 import json
-from datetime import UTC, datetime
+from datetime import datetime
 
 from sqlalchemy import select
 
@@ -18,6 +18,7 @@ from pdos_next.change_implementation_owner import (
     original_occurrence,
 )
 from pdos_next.change_order_service import _one, current_fixed
+from pdos_next.clock import deadline_current, earliest_deadline
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.change_execution import service as change
 from pdos_next.domain.quality_execution import policy
@@ -276,7 +277,7 @@ class FormalChangeCompletionOwner:
             "SOURCE_STALE",
         )
         _same_uow(s, uow, ctx, digest(vars(ctx)))
-        deadline = min(
+        deadline = earliest_deadline(
             caller_until,
             authority_until,
             final_until,
@@ -284,9 +285,11 @@ class FormalChangeCompletionOwner:
             approval_until,
             executed.valid_until,
             selected.selection.valid_until,
-            datetime.fromisoformat(fresh_policy["valid_until"].replace("Z", "+00:00")),
+            datetime.fromisoformat(fresh_policy["valid_until"].replace("Z", "+00:00"))
+            if fresh_policy.get("valid_until")
+            else None,
         )
-        controlled.require(datetime.now(UTC) < deadline, "SOURCE_STALE")
+        controlled.require(deadline_current(deadline), "SOURCE_STALE")
         values = dict(
             scope=basis.scope,
             issue_id=basis.issue_id,

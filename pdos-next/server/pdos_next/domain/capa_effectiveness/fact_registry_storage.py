@@ -1,7 +1,7 @@
 """Unregistered SQL registry/raw reader; it issues no live owner proof.
 
 Depends on frozen fact_atom_storage v5 for real UOW/caller/group reading. Every
-SELECT is exact, bounded and without autoflush; there is no write or commit.
+SELECT is exact and without autoflush; there is no write or commit.
 Registry membership is distinct from source/issuer/professional applicability.
 """
 
@@ -15,8 +15,8 @@ from typing import Literal
 from collections.abc import Callable
 from uuid import UUID
 
-from . import fact_atom_storage as atom_storage  
-from . import fact_storage_models as models  
+from . import fact_atom_storage as atom_storage
+from . import fact_storage_models as models
 from .anchor import StableCapaAnchor
 from .fact_storage_codec import assemble_fact
 from .facts import FactRef, NamedReview, ObservationVersion, RuleVersion, GATES, _action_bindings
@@ -30,7 +30,6 @@ from sqlalchemy import select
 
 Kind = Literal["rule", "observation", "review"]
 Fact = RuleVersion | ObservationVersion | NamedReview
-MAX_NODES = 64  # Aggregate immutable versions, origins, pointers and candidate.
 TABLES = {
     "rule": models.RuleFact.__table__,
     "observation": models.ObservationFact.__table__,
@@ -77,7 +76,7 @@ class CandidateRegistryRead:
     capa_id: UUID
     purpose: str
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     nature: Literal["real", "synthetic"]
     anchor_sha256: str
     requirement_sha256: str
@@ -125,16 +124,17 @@ class _Read:
 
     def _budget(self, key):
         self.nodes.add(key)
-        _require(len(self.nodes) <= MAX_NODES, "FACT_REGISTRY_LIMIT_EXCEEDED")
 
     def _one(self, table, where):
-        rows = list(
-            self.s.execute(
-                select(table)
-                .where(*where)
-                .limit(2)
-                .execution_options(populate_existing=True, autoflush=False)
-            ).mappings()
+        from pdos_next.request_proof import snapshot_mappings
+
+        rows = snapshot_mappings(
+            self.s,
+            select(table)
+            .where(*where)
+            .limit(2)
+            .execution_options(populate_existing=True, autoflush=False),
+            scope_id=self.product_id,
         )
         _require(len(rows) == 1, "FACT_EXACT_REGISTRY_ROW_MISSING")
         return deepcopy(dict(rows[0]))
@@ -148,7 +148,8 @@ class _Read:
         self._budget(("project", project_id))
         value = self._scoped(Project.__table__, id=project_id)
         _require(
-            value["visibility"] in ("private", "product") and value["status"] == "active",
+            value["visibility"] in ("private", "category", "audience")
+            and value["status"] == "active",
             "FACT_PROJECT_STATE_INVALID",
         )
         if value["visibility"] == "private" and value["owner_id"] != self.ctx.requester_id:
@@ -353,6 +354,38 @@ class _Read:
                 ),
                 "FACT_CURRENT_ISSUER_SERIES_MISMATCH",
             )
+        from pdos_next.request_proof import scope_is_held
+
+        if scope_is_held(self.s, self.product_id):
+            # The installed append-only series owns predecessor validation:
+            # unique (scope, series, revision), exact same-series predecessor FK,
+            # and revision=previous_revision+1 make the sequence unbranched.
+            # Under the actual gate/RR snapshot, use the selected fixed fact and
+            # Current watermark instead of reading every historical ancestor.
+            _require(
+                fact.ref.revision <= current.ref.revision
+                and (fact.ref.revision != current.ref.revision or fact.ref == current.ref),
+                "FACT_SELECTED_VERSION_NOT_IN_CURRENT_SERIES",
+            )
+            columns = (
+                ("issuer_key", "external_id")
+                if kind == "rule"
+                else ("rule_fact_id", "rule_revision", "rule_sha256", "executor_id")
+            )
+            _require(
+                all(row[column] == latest_row[column] for column in columns),
+                "FACT_SERIES_SCOPE_OR_ANCHOR_MISMATCH",
+            )
+            state = RegistryState(
+                kind,
+                fact.ref,
+                row["series_id"],
+                current.ref,
+                pointer["epoch"],
+                "current_registered" if fact.ref == current.ref else "historical_registered",
+            )
+            self.states[key] = state
+            return state
         chain, previous = [], current
         while True:
             selected_row = self.facts[(kind, previous.ref.id, previous.ref.revision)][2]

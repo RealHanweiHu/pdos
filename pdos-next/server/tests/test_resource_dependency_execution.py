@@ -51,8 +51,11 @@ def engines():
     tested = make_url(os.environ["TEST_DATABASE_URL"])
     assert (auth.host, auth.port, auth.database) == (tested.host, tested.port, tested.database)
     assert auth.username == "pdos_next_auth"
+    dispatch = engine_for(os.environ["DISPATCH_DATABASE_URL"])
+    verify_test_target(dispatch)
+    values[1]._pdos_dispatch_engine = dispatch
     yield tuple(values)
-    for engine in values:
+    for engine in (*values, dispatch):
         engine.dispose()
 
 
@@ -67,8 +70,10 @@ def launch_work(ready_work, monkeypatch, request):
     monkeypatch.setattr(handoff_fixtures, "start", start_with_results)
     acceptance = launch_fixtures.accepted_work.__wrapped__(ready_work, monkeypatch)
     work = next(acceptance)
-    # Existing explicit profile, real 5-minute future start; no clock override.
-    preparation = launch_fixtures.launch_work.__wrapped__(work, request=request)
+    # Freeze only preparation; actual Start uses real UTC and the real PG guard.
+    preparation = launch_fixtures.launch_work.__wrapped__(
+        work, request=request, monkeypatch=monkeypatch
+    )
     try:
         yield next(preparation)
     finally:
@@ -119,7 +124,13 @@ def test_full_saved_v2_actual_start_unrelated_scope_and_original_request_recover
         receipt, confirmed = accepted(work.quality, value)
         work.start_command = value
     start_seconds = time.monotonic() - started
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         row = _run_row(s, work)
         saved = s.scalar(
             select(ResourceReservation).where(
@@ -143,9 +154,16 @@ def test_full_saved_v2_actual_start_unrelated_scope_and_original_request_recover
         raw = {
             column.name: deepcopy(getattr(saved, column.name))
             for column in ResourceReservation.__table__.columns
+            if column.name != "audience_dependencies"
         }
     add_unrelated_scope(work)
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         after = _proof(s, work)
         assert after["current"] is True, after["reason_codes"]
         assert after["facts_revision"] == retained["facts_revision"]
@@ -154,11 +172,19 @@ def test_full_saved_v2_actual_start_unrelated_scope_and_original_request_recover
         assert after["sample_usage"] == retained["sample_usage"]
         assert _effects(s, work) == before
     recovered = work.quality.client.post(
-        "/v1/commands", json=confirmed, headers=work.quality.headers
+        f"/v1/categories/{work.setup.category}/commands",
+        json=confirmed,
+        headers=work.quality.headers,
     )
     assert recovered.status_code == 200, recovered.text
     assert recovered.json()["id"] == receipt["id"]
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         assert _effects(s, work) == before
     # Actual CHECK precedes duplicate owner/FK rules; the exact named failure
     # demonstrates a malformed proof cannot enter the actual business table.
@@ -167,7 +193,13 @@ def test_full_saved_v2_actual_start_unrelated_scope_and_original_request_recover
         with pytest.raises(DBAPIError) as error, s.begin_nested():
             s.execute(insert(ResourceReservation).values(**malformed))
         assert error.value.orig.diag.constraint_name == "test_resource_dependency_version_complete"
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         assert _effects(s, work) == before
     path = os.environ.get("PDOS_ROOT_VERSIONED_FLOW_REPORT")
     if path:

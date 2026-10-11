@@ -71,16 +71,16 @@ class FollowupBasis(DTO):
     capa_id: UUID
     purpose: Text
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     nature: Nature
     requirement: EffectivenessRequirement
     requirement_sha256: Sha256
-    failure_ids: tuple[Text, ...] = Field(min_length=1, max_length=10000)
+    failure_ids: tuple[Text, ...] = Field(min_length=1)
     failure_basis_sha256: Sha256
-    actions: tuple[ActionBinding, ...] = Field(min_length=1, max_length=10000)
+    actions: tuple[ActionBinding, ...] = Field(min_length=1)
     root_cause_sha256: Sha256 | None = None
     sources: tuple[SourceRef, ...]
-    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
+    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1)
     source_basis_sha256: Sha256
     basis_sha256: Sha256
 
@@ -122,7 +122,7 @@ class OutputReading(DTO):
     logical_id: UUID | None = None
     project_id: UUID | None = None  # product-level configuration has no project identity
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     title: Text
     status: Text
     meaning: Literal["draft", "planned", "observed", "performed"]
@@ -136,10 +136,10 @@ class OutputReading(DTO):
 class ResolvedOutputs(DTO):
     basis: FollowupBasis
     action_id: UUID
-    outputs: tuple[OutputReading, ...] = Field(min_length=1, max_length=20)
-    visibility: Literal["private", "product"]
+    outputs: tuple[OutputReading, ...] = Field(min_length=1)
+    visibility: Literal["private", "category", "audience"]
     owner_id: UUID
-    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
+    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1)
     source_basis_sha256: Sha256
     resolution_sha256: Sha256
     missing: tuple[Missing, ...] = ()
@@ -152,8 +152,8 @@ class FollowupLinkPayload(DTO):
     expected_issue_revision: Revision
     capa_id: UUID
     action_id: UUID
-    output_refs: tuple[OutputRef, ...] = Field(min_length=1, max_length=20)
-    sources: tuple[DefinitionReference, ...] = Field(default=(), max_length=20)
+    output_refs: tuple[OutputRef, ...] = Field(min_length=1)
+    sources: tuple[DefinitionReference, ...] = Field(default=())
     reason: Text
     confirmation_token: Token | None = None
 
@@ -171,13 +171,13 @@ class RemediationLink(DTO):
     revision: Literal[1] = 1
     basis: FollowupBasis
     action_id: UUID
-    output_refs: tuple[OutputRef, ...] = Field(min_length=1, max_length=20)
+    output_refs: tuple[OutputRef, ...] = Field(min_length=1)
     resolution_sha256: Sha256
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     received_at: AwareDatetime
     sources: tuple[SourceRef, ...]
-    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
+    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1)
     reason: Text
 
     @field_validator("received_at")
@@ -196,7 +196,7 @@ class FailurePairMapping(DTO):
     item_id: Annotated[str, Field(min_length=1, max_length=120)]
     measurement_id: UUID | None = None
     projection_id: UUID | None = None
-    applicability_sources: tuple[DefinitionReference, ...] = Field(default=(), max_length=20)
+    applicability_sources: tuple[DefinitionReference, ...] = Field(default=())
 
     @model_validator(mode="after")
     def run_only(self):
@@ -207,8 +207,8 @@ class FailurePairMapping(DTO):
 
 class CandidateBinding(DTO):
     basis: FollowupBasis
-    remediation_link_refs: tuple[FixedRef, ...] = Field(default=(), max_length=20)
-    mappings: tuple[FailurePairMapping, ...] = Field(default=(), max_length=10000)
+    remediation_link_refs: tuple[FixedRef, ...] = Field(default=())
+    mappings: tuple[FailurePairMapping, ...] = Field(default=())
 
     @model_validator(mode="after")
     def mapping_scope(self):
@@ -234,7 +234,7 @@ class CandidateInspect(DTO):
     observed_until: None = None
     result: Literal["indeterminate"] = "indeterminate"
     current: bool = Field(strict=True)
-    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
+    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1)
     source_basis_sha256: Sha256
     inspection_sha256: Sha256
     missing: tuple[Missing, ...]

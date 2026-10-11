@@ -214,7 +214,9 @@ def evaluate(
                     snapshot,
                     fact.source,
                 )
-            elif fact.valid_from is None or fact.valid_until is None:
+            elif kind in {"calibration", "qualification"} and (
+                fact.valid_from is None or fact.valid_until is None
+            ):
                 add(
                     f"{kind}_validity_unknown",
                     "UNKNOWN",
@@ -222,7 +224,9 @@ def evaluate(
                     snapshot,
                     fact.source,
                 )
-            elif fact.valid_from > request.window.start or fact.valid_until < request.window.finish:
+            elif (fact.valid_from is not None and fact.valid_from > request.window.start) or (
+                fact.valid_until is not None and fact.valid_until < request.window.finish
+            ):
                 add(
                     f"{kind}_out_of_window",
                     "BLOCKED",

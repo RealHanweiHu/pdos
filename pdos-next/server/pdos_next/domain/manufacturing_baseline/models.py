@@ -6,7 +6,6 @@ ProcessRevision and its existing revision chain are never updated or duplicated.
 from datetime import datetime
 from uuid import UUID
 
-from pdos_next.models import Base, Row
 from sqlalchemy import (
     CheckConstraint,
     DateTime,
@@ -18,6 +17,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
+
+from pdos_next.models import Base, Row
 
 TABLE = "manufacturing_preparation_versions"
 CURRENT = "manufacturing_preparation_currents"
@@ -99,7 +100,8 @@ class PreparationVersion(Row, Base):
             "AND status='draft'"
         ),
         CheckConstraint(
-            "visibility IN ('private','product') AND process_revision>0 AND shared_proof_revision>0"
+            "visibility IN ('private','category','audience') AND "
+            "process_revision>0 AND shared_proof_revision>0"
         ),
         CheckConstraint(
             "(kind='manufacturing_baseline' AND operation_key IS NULL) OR "

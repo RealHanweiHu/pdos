@@ -6,6 +6,9 @@ attestation refreshes those owners in its own caller transaction. It neither
 creates occupancy nor consumes confirmation, and never changes a result.
 """
 
+from pdos_next.database import category_for_product
+
+
 # The common registry must initialize before its domain model children.
 # ruff: noqa: I001
 from copy import deepcopy
@@ -20,7 +23,6 @@ from pdos_next.domain.capa_effectiveness import anchor, anchor_storage, paired, 
 from pdos_next.domain.capa_effectiveness.fact_sources_owner import read_source_closure
 from pdos_next.domain.quality_execution import evidence
 from pdos_next.domain.professional_authority.schemas import DefinitionReference
-from pdos_next.domain.professional_authority.models import ProfessionalCurrent, ProfessionalFact
 from pdos_next.domain.test_resources import service as resources
 from pdos_next.domain.test_resources.retained import inspect_retained_execution
 from pdos_next.domain.test_resources.schemas import TestPlanBinding
@@ -72,7 +74,7 @@ def _one(s, ctx, pid, model, identity):
     _require(len(rows) == 1, "PAIR_FIXED_ROW_MISSING", 503)
     row = rows[0]
     _require(
-        row.visibility in {"private", "product"}
+        row.visibility in {"private", "category", "audience"}
         and (row.visibility != "private" or row.owner_id == ctx.requester_id),
         "FORBIDDEN_SCOPE",
         403,
@@ -83,7 +85,9 @@ def _one(s, ctx, pid, model, identity):
 def _row_material(row):
     # All actual immutable columns, including sparse source_basis and authority.
     return {
-        column.key: _wire(deepcopy(getattr(row, column.key))) for column in row.__table__.columns
+        column.key: _wire(deepcopy(getattr(row, column.key)))
+        for column in row.__table__.columns
+        if column.key != "audience_dependencies"
     }
 
 
@@ -157,7 +161,7 @@ def _authority(s, ctx, pid, rows, read):
         _require(saved.get("subject_id") == str(actor), "PAIR_PROFESSIONAL_BINDING_MISMATCH")
         # Historical qualification uses its actual saved period, while the real
         # consumer source/Project ACL is independently guarded by this owner.
-        proof = front._recheck(s, ctx, pid, row.project_id, saved, at=row.created_at)
+        proof = front._recheck(s, ctx, pid, row.project_id, saved, at=_now())
         _require(proof.get("current") is True, "PAIR_PROFESSIONAL_STALE")
         assessment = proof["assessment"]
         values[f"{key[0]}:{key[1]}"] = deepcopy(proof)
@@ -183,7 +187,7 @@ def _fixed_source_basis(s, ctx, pid, rows):
             actual, private = physical._basis(
                 s, ctx, pid, row.required_source_read_set, row.sources
             )
-            _require(actual == row.source_basis and (row.visibility != "product" or not private))
+            _require(actual == row.source_basis and (row.visibility != "category" or not private))
 
 
 def _source_read(s, ctx, pid, read, rows, *extra_reads):
@@ -200,7 +204,9 @@ def _source_read(s, ctx, pid, read, rows, *extra_reads):
         owner_id=read.material.request_after.owner_id,
         visibility="private"
         if any(row.visibility == "private" for row in rows.values())
-        else "product",
+        else "audience"
+        if any(row.visibility == "audience" for row in rows.values())
+        else "category",
         sources=sources,
         reads=reads,
     )
@@ -231,46 +237,6 @@ def _execution(s, ctx, pid, read, structure, rows):
         "PAIR_PLAN_RESOURCES_NOT_READY",
     )
     return None, value
-
-
-def _planned_deadlines(s, ctx, pid, read, started_at):
-    # The planned resource owner evaluates its actual executor at current time.
-    # A future matching-scope fact activation/expiry cannot be crossed after
-    # that evaluation. Historical performed decisions use their saved periods.
-    facts = list(
-        s.scalars(
-            select(ProfessionalFact)
-            .join(
-                ProfessionalCurrent,
-                (ProfessionalCurrent.tenant_id == ProfessionalFact.tenant_id)
-                & (ProfessionalCurrent.product_id == ProfessionalFact.product_id)
-                & (ProfessionalCurrent.project_id == ProfessionalFact.project_id)
-                & (ProfessionalCurrent.subject_id == ProfessionalFact.subject_id)
-                & (ProfessionalCurrent.fact_id == ProfessionalFact.id)
-                & (ProfessionalCurrent.fact_revision == ProfessionalFact.revision),
-            )
-            .where(
-                ProfessionalFact.tenant_id == ctx.tenant_id,
-                ProfessionalFact.product_id == pid,
-                ProfessionalFact.project_id == read.binding.scope.project_id,
-                ProfessionalFact.subject_id == read.material.run_after.plan.executor_id,
-            )
-            .limit(21)
-            .execution_options(populate_existing=True, autoflush=False)
-        )
-    )
-    _require(len(facts) <= 20, "PAIR_PROFESSIONAL_OWNER_REQUIRED", 503)
-    bounds = []
-    for fact in facts:
-        for value in (fact.valid_from, fact.valid_until):
-            _require(
-                isinstance(value, datetime) and value.tzinfo is not None,
-                "PAIR_PROFESSIONAL_OWNER_REQUIRED",
-                503,
-            )
-            if value > started_at:
-                bounds.append(value)
-    return tuple(bounds)
 
 
 def _numerical(s, ctx, pid, read, structure):
@@ -327,7 +293,7 @@ def _caller(s, ctx, pid):
         s,
         select(Grant).where(
             Grant.tenant_id == ctx.tenant_id,
-            Grant.product_id == pid,
+            Grant.category_id == category_for_product(pid),
             Grant.principal_id == ctx.requester_id,
         ),
     )
@@ -354,41 +320,6 @@ def _caller(s, ctx, pid):
         "can_write": grant.can_write,
         "expires_at": grant.expires_at,
     }
-
-
-def _signers(s, ctx, pid, rows):
-    values = {}
-    for row in rows.values():
-        saved = getattr(row, "authority_snapshot", None)
-        if saved is None:
-            continue
-        actor = UUID(saved["subject_id"])
-        person = paired_storage._query(
-            s, select(Principal).where(Principal.tenant_id == ctx.tenant_id, Principal.id == actor)
-        )
-        grant = paired_storage._query(
-            s,
-            select(Grant).where(
-                Grant.tenant_id == ctx.tenant_id,
-                Grant.product_id == pid,
-                Grant.principal_id == actor,
-            ),
-        )
-        _require(
-            person is not None
-            and person.kind == "human"
-            and person.active is True
-            and grant is not None
-            and grant.can_write is True,
-            "PAIR_PROFESSIONAL_STALE",
-        )
-        values[str(actor)] = {
-            "principal_epoch": person.access_epoch,
-            "grant_id": grant.id,
-            "grant_epoch": grant.access_epoch,
-            "expires_at": grant.expires_at,
-        }
-    return values
 
 
 @dataclass(frozen=True)
@@ -469,7 +400,6 @@ class LivePairedOwner:
             "PAIR_SCOPE_MISMATCH",
             403,
         )
-        started_at = _now()
         actual = paired.verify_paired_material(read.binding, read.material, at=at)
         _require(
             actual.proof is not None and actual.proof == structure, "PAIR_STRUCTURE_UNBOUND", 503
@@ -479,7 +409,6 @@ class LivePairedOwner:
             caller = _caller(s, ctx, product_id)
             rows = _rows(s, ctx, product_id, read)
             stored = _stored_digest(rows)
-            signers = _signers(s, ctx, product_id, rows)
             authorities, authority_reads = _authority(s, ctx, product_id, rows, read)
             retained, plan = _execution(s, ctx, product_id, read, structure, rows)
             numerical = _numerical(s, ctx, product_id, read, structure)
@@ -527,11 +456,6 @@ class LivePairedOwner:
                 anchor_storage._project(s, ctx, product_id, read.binding.scope.project_id)
                 == project
             )
-            planned_deadlines = (
-                _planned_deadlines(s, ctx, product_id, read, started_at) if plan is not None else ()
-            )
-            final_signers = _signers(s, ctx, product_id, fresh_rows)
-            _require(final_signers == signers, "PAIR_PROFESSIONAL_STALE")
             final_caller = _caller(s, ctx, product_id)
             _require(final_caller == caller)
             self._bound(s, ctx, read, write)
@@ -540,14 +464,17 @@ class LivePairedOwner:
             checked = _now()
             bounds = [
                 sources.valid_until,
+                *sources.time_constraints,
                 caller["expires_at"],
-                *(value["expires_at"] for value in signers.values()),
-                *planned_deadlines,
+                *(plan.expiry_boundaries if plan is not None else ()),
             ]
             if plan is not None and plan.valid_until is not None:
                 bounds.append(plan.valid_until)
+            time_constraints = tuple(value for value in bounds if value is not None)
             _require(
-                all(v.tzinfo is not None and checked < v for v in bounds), "PAIR_LIVE_PROOF_EXPIRED"
+                all(v.tzinfo is not None and checked < v for v in time_constraints)
+                and (plan is None or not resources.expired(plan, checked)),
+                "PAIR_LIVE_PROOF_EXPIRED",
             )
             paired_storage._guard_uow(s, state.uow, ctx, state.caller_sha256)
             _require(result_owner._runtime_stamp(s) == state.runtime_sha256)
@@ -557,7 +484,7 @@ class LivePairedOwner:
                     "basis": sources.source_basis,
                     "reads": _wire(sources.required_source_read_set),
                 },
-                "professional": {"assessments": authorities, "signers": signers},
+                "professional": {"assessments": authorities},
                 "original_bytes": {
                     "sources": sources.byte_material,
                     "measurement": _numerical_material(numerical),
@@ -582,5 +509,9 @@ class LivePairedOwner:
                     for kind, value in materials.items()
                 ),
                 checked,
-                min(bounds),
+                None,
+                time_constraints=time_constraints,
+                needs_review=any(
+                    value.get("needs_review") is True for value in authorities.values()
+                ),
             )

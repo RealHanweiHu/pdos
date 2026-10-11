@@ -28,7 +28,13 @@ from pdos_next.schemas.supply_cost.dto import (
 )
 
 AS_OF = datetime(2026, 10, 2, 12, tzinfo=UTC)
-SCOPE = Scope(tenant_id="tenant", product_id="product", project_id="project", audience="internal")
+SCOPE = Scope(
+    tenant_id="tenant",
+    category_id="category",
+    product_id="product",
+    project_id="project",
+    audience="internal",
+)
 
 
 def ref(source_id, *, version="1", captured_at=None, valid_until=None, state="current"):

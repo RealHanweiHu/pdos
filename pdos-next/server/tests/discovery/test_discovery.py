@@ -186,7 +186,7 @@ def request(observation, **changes):
 def error(code, callback):
     with pytest.raises(DomainError) as caught:
         callback()
-    assert caught.value.code == code
+    assert caught.value.reason == code
 
 
 def test_research_needs_no_product_project_or_placeholder():
@@ -243,7 +243,7 @@ def test_scope_and_ai_guards(change, code):
         {"scope_id": uuid4()},
         {"tenant_id": uuid4()},
         {"actor_id": uuid4()},
-        {"audience": "product"},
+        {"audience": "category"},
     ],
 )
 def test_research_scope_and_private_owner_never_widen(change):

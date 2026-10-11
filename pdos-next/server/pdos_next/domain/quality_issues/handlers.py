@@ -112,7 +112,9 @@ class QualityIssueHandler:
         assessments = tuple(
             self._port("runs").currentness(authority.scope, f) for f in issue.failures
         )
-        for source in issue_sources(issue):
+        # Normal actions inspect each exact direct reference once. Recheck keeps
+        # repeated assessments so its existing diagnostic sequence is unchanged.
+        for source in issue_sources(issue, distinct=not allow_stale):
             assessments += (
                 self._port("evidence").currentness(authority.scope, source, "quality.issue"),
             )

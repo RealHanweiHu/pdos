@@ -19,6 +19,7 @@ from pdos_next.domain.original_lifecycle_execution.store import (
     SqlLifecycleAuthority,
     SqlLifecycleStore,
 )
+from pdos_next.error_catalog import REASONS
 from pdos_next.errors import DomainError
 from pdos_next.original_lifecycle.service import LifecycleService
 from pdos_next.original_lifecycle.types import (
@@ -40,9 +41,14 @@ class FakeSession:
     def __init__(self, runtime, clock):
         self.bind = SimpleNamespace(lifecycle_runtime=runtime)
         self.clock = clock
+        self.info = {}
+        self.transaction = object()
         self.rows = {}
         self.statements = []
         self.flushes = 0
+
+    def get_transaction(self):
+        return self.transaction
 
     def get_bind(self):
         return self.bind
@@ -89,7 +95,10 @@ class FakeReferenceGuard:
 
 def sql_fixture():
     clock, facts, authority, original_service, _ = fixture()
-    ctx = Context(facts.scope.tenant_id, authority.actor_id, authority.actor_id)
+    facts.category_id = uuid4()
+    ctx = Context(
+        facts.scope.tenant_id, authority.actor_id, authority.actor_id, category_id=facts.category_id
+    )
     holder = {"facts": facts.original, "owner": ctx.actor_id}
 
     def read_facts(s, context, pid, ref, previous):
@@ -118,6 +127,7 @@ def sql_fixture():
             id=facts.scope.product_id,
             tenant_id=ctx.tenant_id,
             owner_id=ctx.actor_id,
+            category_id=ctx.category_id,
             name="synthetic",
             purpose="pure",
             revision=1,
@@ -137,7 +147,7 @@ def sql_fixture():
         models.Grant(
             id=uuid4(),
             tenant_id=ctx.tenant_id,
-            product_id=facts.scope.product_id,
+            category_id=ctx.category_id,
             principal_id=ctx.actor_id,
             can_write=True,
             expires_at=clock.now() + timedelta(hours=1),
@@ -160,7 +170,8 @@ def test_missing_runtime_fails_closed():
     s = SimpleNamespace(get_bind=lambda: SimpleNamespace())
     with pytest.raises(DomainError) as error:
         commands.runtime_for(s, Context(uuid4(), uuid4(), uuid4()), uuid4())
-    assert error.value.code == "LIFECYCLE_UNAVAILABLE"
+    assert error.value.code == REASONS["LIFECYCLE_UNAVAILABLE"]
+    assert error.value.reason == "LIFECYCLE_UNAVAILABLE"
 
 
 def test_only_observation_time_changes_do_not_invalidate_fixed_facts():
@@ -308,6 +319,7 @@ def test_public_intent_projection_omits_storage_key_and_worker_lease():
 def command_for(facts, operation, revision=1):
     return SimpleNamespace(
         operation=operation,
+        category_id=facts.category_id,
         product_id=facts.scope.product_id,
         expected_revision=revision,
         source_read_set=(),
@@ -379,7 +391,8 @@ def test_pending_intent_blocks_protection_edits(monkeypatch):
     command = command_for(facts, "evidence.lifecycle.protection.record")
     with pytest.raises(DomainError) as error:
         commands.preview_view(session, ctx, command, session.rows[models.Product][0], payload)
-    assert error.value.code == "EFFECT_PENDING"
+    assert error.value.code == REASONS["EFFECT_PENDING"]
+    assert error.value.reason == "EFFECT_PENDING"
 
 
 def test_common_replay_subject_reuses_same_facts_candidate_before_stale_t1_check(monkeypatch):
@@ -398,7 +411,8 @@ def test_common_replay_subject_reuses_same_facts_candidate_before_stale_t1_check
     assert commands.replay_subject(session, ctx, command, product, payload).id == original.id
     with pytest.raises(DomainError) as stale:
         commands.preview_view(session, ctx, command, product, payload)
-    assert stale.value.code == "PREVIEW_STALE"
+    assert stale.value.code == REASONS["PREVIEW_STALE"]
+    assert stale.value.reason == "PREVIEW_STALE"
     session.rows[models.Grant][0].can_write = False
     with pytest.raises(DomainError) as denied:
         commands.replay_subject(session, ctx, command, product, payload)

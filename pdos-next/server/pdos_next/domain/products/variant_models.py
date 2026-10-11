@@ -27,7 +27,7 @@ class Variant(Row, Base):
         ForeignKeyConstraint(["tenant_id", "product_id"], ["products.tenant_id", "products.id"]),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint("kind IN ('customer','region','configuration')"),
-        CheckConstraint("visibility IN ('private','product')"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
         CheckConstraint("status = 'draft'"),
     )
 
@@ -76,7 +76,7 @@ class VariantRevision(Row, Base):
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint("revision > 0 AND parent_revision > 0"),
         CheckConstraint("status = 'draft'"),
-        CheckConstraint("visibility IN ('private','product')"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
         CheckConstraint(
             "jsonb_typeof(effective_definition) = 'object' AND jsonb_typeof(overrides) = 'object'"
         ),

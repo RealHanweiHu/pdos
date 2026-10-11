@@ -13,9 +13,11 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from pdos_next.contracts import Command
 from pdos_next.domain.configurations.service import _merge_reads
+from pdos_next.domain.professional_authority.service import authority_time_current
 from pdos_next.domain.supply_execution.service import _human, _read_evidence, _sources
 from pdos_next.domain.test_resources.schemas import TestPairBinding, TestPlanBinding
 from pdos_next.domain.verification.handlers import semantic_digest
@@ -40,6 +42,7 @@ from pdos_next.domain.verification_front.models import (
 from pdos_next.domain.verification_handoff import service as physical
 from pdos_next.errors import DomainError
 from pdos_next.models import Principal, Product, now
+from pdos_next.request_proof import batch_read, command_inputs_once, snapshot_get, snapshot_scalar
 from pdos_next.schemas.verification.contracts import (
     ExecutionConditions,
     RunPlan,
@@ -47,7 +50,7 @@ from pdos_next.schemas.verification.contracts import (
     SchedulePromise,
     TestRun,
 )
-from pdos_next.service import digest, source_for
+from pdos_next.service import digest, require_access, source_for
 
 from .adapters import LaunchCommands, LaunchSamples, kernel
 from .models import (
@@ -101,13 +104,9 @@ def _intent(ctx, command, payload):
 
 
 def _row(s, ctx, product_id, model, identity):
-    row = s.scalar(
-        select(model).where(
-            model.tenant_id == ctx.tenant_id, model.product_id == product_id, model.id == identity
-        )
-    )
-    if row is None or (row.visibility == "private" and row.owner_id != ctx.requester_id):
-        raise DomainError("FORBIDDEN_SCOPE", "测试办理对象不在当前可见产品范围。", 403)
+    row = snapshot_get(s, model, identity, scope_id=product_id)
+    if row is None or row.tenant_id != ctx.tenant_id or row.product_id != product_id:
+        raise DomainError("FORBIDDEN_SCOPE", "测试办理对象不在当前可见型号范围。", 403)
     return row
 
 
@@ -121,7 +120,13 @@ def _current(s, ctx, product_id, run_id=None, *, request_id=None, lock=False):
         if run_id
         else q.where(VerificationRunCurrent.request_id == request_id)
     )
-    pointer = s.scalar(q.with_for_update() if lock else q)
+    pointer = snapshot_scalar(
+        s,
+        (VerificationRunCurrent, product_id, run_id, request_id),
+        q,
+        lock=lock,
+        scope_id=product_id,
+    )
     if pointer is None:
         return None, None
     row = _row(s, ctx, product_id, VerificationRunVersion, pointer.run_version_id)
@@ -135,17 +140,20 @@ def _current(s, ctx, product_id, run_id=None, *, request_id=None, lock=False):
 
 
 def _version(s, ctx, product_id, run_id, revision):
-    identity = s.scalar(
-        select(VerificationRunVersion.id).where(
+    row = snapshot_scalar(
+        s,
+        (VerificationRunVersion, "version", product_id, run_id, revision),
+        select(VerificationRunVersion).where(
             VerificationRunVersion.tenant_id == ctx.tenant_id,
             VerificationRunVersion.product_id == product_id,
             VerificationRunVersion.run_id == run_id,
             VerificationRunVersion.revision == revision,
-        )
+        ),
+        scope_id=product_id,
     )
-    if identity is None:
+    if row is None:
         raise DomainError("VERSION_CONFLICT", "固定Run版本不存在。")
-    return _row(s, ctx, product_id, VerificationRunVersion, identity)
+    return row
 
 
 def _snapshot(row):
@@ -293,10 +301,19 @@ class Bound:
     fingerprint_runtime: object = None
     caller_uow: object = None
     caller_digest: str | None = None
+    direct_contract: bool = False
+    direct_authority_stamp: object = None
+    direct_sources: tuple = ()
+    direct_prepared: dict | None = None
+    direct_watermark: dict | None = None
+    direct_material_sha256: str | None = None
 
 
 def _close_start_boundary(s, ctx, bound, *, check_deadlines=True):
     """The v2 Start owner closes its own IO without changing legacy v1 gates."""
+    if getattr(bound, "direct_contract", False):
+        _direct_close(s, ctx, bound)
+        return
     if getattr(bound, "fingerprint_runtime", None) is None:
         return
     from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow
@@ -307,9 +324,8 @@ def _close_start_boundary(s, ctx, bound, *, check_deadlines=True):
     if not check_deadlines:
         return  # Qualification failures retain the existing explicit _guards code.
     clock = now()  # No owner IO after these real expiry checks.
-    authority_until = datetime.fromisoformat(bound.physical.authority["valid_until"])
-    if clock >= authority_until or (
-        bound.resources.valid_until is not None and clock >= bound.resources.valid_until
+    if not authority_time_current(bound.physical.authority, clock) or resources.expired(
+        bound.resources, clock
     ):
         raise DomainError("SOURCE_STALE", "具名资格或资源在新开测核对期间到期。")
 
@@ -428,26 +444,100 @@ def _start_reservation_proof(s, ctx, command, product_id, payload, bound):
     return deepcopy(saved)
 
 
+def _prefetch_formal_parents(s, ctx, product_id, request, methods):
+    """Read exact method parents together; their original guards still run later."""
+    if (
+        not isinstance(s, Session)
+        or not s.info.get("read_snapshot")
+        or not s.in_transaction()
+        or s.new
+        or s.dirty
+        or s.deleted
+        or not methods
+    ):
+        return
+    scope = (ctx.tenant_id, product_id, request.scope.project_id, request.id)
+
+    def parent(row):
+        if (
+            row is not None
+            and (
+                row.tenant_id,
+                row.product_id,
+                row.project_id,
+                row.request_id,
+            )
+            == scope
+        ):
+            return row.request_version_id
+        return None
+
+    identities = {parent(row) for row in methods.values()} - {None}
+    if not identities:
+        return
+    for doc in request.documents:
+        if (
+            doc.id.startswith(PROFESSIONAL_PREFIX)
+            and doc.source
+            and doc.source.kind == "domain"
+            and doc.source.position == METHOD_POSITION
+        ):
+            row = snapshot_get(s, MethodApplicability, doc.source.id, scope_id=product_id)
+            identities.add(parent(row))
+    identities.discard(None)
+    if len(identities) > 1:
+        # batch_read keeps the RLS-loaded ORM rows alive in this same RR Session.
+        # _row/_snapshot, actual/planned binding, sources and qualification checks
+        # retain their existing order; this read supplies no successful proof.
+        batch_read(s, FormalVerificationRequest, identities)
+
+
+@command_inputs_once
 def _load(s, ctx, command, product, payload, *, require_reads=True, verify_event=True):
-    _human(s, ctx, product.id, write=True)
+    if isinstance(payload, StartPayload):
+        return _load_start_direct(
+            s,
+            ctx,
+            command,
+            product,
+            payload,
+            require_reads=require_reads,
+            verify_event=verify_event,
+        )
+    write = not getattr(s, "info", {}).get("read_snapshot", False)
+    _human(s, ctx, product.id, write=write)
+    require_access(s, ctx, product.id, write=True, lock=write)
     if command.product_id != product.id or product.tenant_id != ctx.tenant_id:
         raise DomainError("FORBIDDEN_SCOPE", "开测不在服务器绑定产品。", 403)
-    row = front._version(s, ctx, product.id, payload.request_id, payload.expected_request_revision)
-    request = front._snapshot(row)
     # Parent/pointer gates precede every global resource and sample gate. Historical
     # replays still lock the actual current parent, without applying a premature CAS.
-    front._current(s, ctx, product.id, payload.request_id, lock=True)
-    _current(s, ctx, product.id, request_id=payload.request_id, lock=True)
+    _, current_request = front._current(s, ctx, product.id, payload.request_id, lock=write)
+    row = (
+        current_request
+        if current_request is not None
+        and current_request.revision == payload.expected_request_revision
+        else front._version(
+            s, ctx, product.id, payload.request_id, payload.expected_request_revision
+        )
+    )
+    request = front._snapshot(row)
+    _, current_run = _current(s, ctx, product.id, request_id=payload.request_id, lock=write)
     identity = select(VerificationRunIdentity).where(
         VerificationRunIdentity.tenant_id == ctx.tenant_id,
         VerificationRunIdentity.product_id == product.id,
         VerificationRunIdentity.id == payload.run_id,
     )
-    s.scalar(identity.with_for_update())
+    snapshot_scalar(
+        s,
+        (VerificationRunIdentity, product.id, payload.run_id),
+        identity,
+        lock=write,
+        scope_id=product.id,
+    )
     build = front._build(s, ctx, product.id, request.build.id)
     _, _, _, reads = front._linked(s, ctx, product.id, build)
     authority = front._assess(
-        s, ctx, product.id, build.project_id, command.operation, request.purpose, write=True
+        s, ctx, product.id, build.project_id, command.operation, request.purpose, write=write
     )
     original = s.scalar(
         select(VerificationLaunchFact).where(
@@ -462,7 +552,13 @@ def _load(s, ctx, command, product, payload, *, require_reads=True, verify_event
     if isinstance(payload, PlanPayload):
         plan, coverage = payload.execution_plan, payload.coverage
     else:
-        run_row = _version(s, ctx, product.id, payload.run_id, payload.expected_run_revision)
+        run_row = (
+            current_run
+            if current_run is not None
+            and current_run.run_id == payload.run_id
+            and current_run.revision == payload.expected_run_revision
+            else _version(s, ctx, product.id, payload.run_id, payload.expected_run_revision)
+        )
         run, plan = _snapshot(run_row)
         if (
             run.request_id != request.id
@@ -495,7 +591,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True, verify_event
         declared_binding,
         plan.resource_fact_id,
         plan.expected_resource_fact_revision,
-        write=True,
+        write=write,
     )
     refs = physical._merge_refs(
         row.sources,
@@ -513,7 +609,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True, verify_event
     inspected, methods = {}, {}
     selected = {c.sample_id for c in coverage}
     for sample in sorted((v for v in request.samples if v.id in selected), key=lambda v: str(v.id)):
-        value = physical._inspect(s, ctx, product.id, request, sample, write=True)
+        value = physical._inspect(s, ctx, product.id, request, sample, write=write)
         inspected[sample.id] = value
         refs = physical._merge_refs(refs, value["source_refs"])
         reads = _merge_reads(reads, value["required_source_read_set"], refs)
@@ -533,6 +629,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True, verify_event
         binding = expected = _binding(row, request, payload.run_id, plan, methods)
     if binding != expected:
         raise DomainError("SOURCE_CHANGED", "Run原已接收范围、配置或实际方法固定版本已漂移。")
+    _prefetch_formal_parents(s, ctx, product.id, request, methods)
     # Preparation/inputs may lock and read, but must not initialize usage or occupancy.
     # Only the private accepted Start callback creates those records.
     kwargs = {"at": now(), "write": False}
@@ -588,10 +685,10 @@ def _load(s, ctx, command, product, payload, *, require_reads=True, verify_event
         refs,
     )
     basis, private = physical._basis(s, ctx, product.id, reads, refs)
-    if row.visibility == "product" and (
+    if row.visibility == "category" and (
         private
-        or any(v["visibility"] == "private" for v in inspected.values())
-        or fact.visibility == "private"
+        or any(v["visibility"] != "category" for v in inspected.values())
+        or fact.visibility != "category"
     ):
         raise DomainError("FORBIDDEN_SCOPE", "私有测试实物、资源与来源不能扩大到共享请求。", 403)
     if require_reads:
@@ -693,13 +790,15 @@ def _event(s, ctx, product_id, request, plan, payload, refs, *, actual):
 
 
 def _guards(s, ctx, command, product, payload, bound, *, verify_event=True):
+    if getattr(bound, "direct_contract", False):
+        _direct_close(s, ctx, bound)
+        return
     p, a = bound.physical, bound.physical.authority
     if (
         a["authorized"] is not True
         or a["qualified"] is not True
         or a["subject_id"] != str(ctx.requester_id)
-        or not a.get("valid_until")
-        or datetime.fromisoformat(a["valid_until"]) <= now()
+        or not authority_time_current(a, now())
     ):
         raise DomainError(
             "QUALIFICATION_REQUIRED", "当前本人缺少本Run用途的品质/测试职责及资格。", 403
@@ -710,10 +809,13 @@ def _guards(s, ctx, command, product, payload, bound, *, verify_event=True):
     physical._execution(s, ctx, product.id, p.build)
     for doc in p.base.documents:
         if doc.id.startswith(PROFESSIONAL_PREFIX) and doc.source:
-            row = s.get(MethodApplicability, doc.source.id)
+            row = snapshot_get(s, MethodApplicability, doc.source.id, scope_id=product.id)
             if row is None or doc.source.kind != "domain" or doc.source.position != METHOD_POSITION:
                 raise DomainError("SOURCE_UNAVAILABLE", "固定计划专业方法不存在。")
-            physical._bound_method_check(s, ctx, product.id, p, row)
+            if getattr(bound, "direct_contract", False):
+                front._method_check(s, ctx, product.id, row, p.base, prospective=True)
+            else:
+                physical._bound_method_check(s, ctx, product.id, p, row)
     samples = {sample.id: sample for sample in p.base.samples}
     for c in accepted_coverage(p.base):
         value = p.samples[c.sample_id]
@@ -788,9 +890,10 @@ def validate(s, ctx, command, product, payload):
 
 
 def _new_write(s, ctx, command, product, payload, bound):
+    write = not getattr(s, "info", {}).get("read_snapshot", False)
     if command.expected_revision != product.revision:
-        raise DomainError("VERSION_CONFLICT", "产品版本已变化，请重新读取。")
-    request_pointer, current = front._current(s, ctx, product.id, payload.request_id, lock=True)
+        raise DomainError("VERSION_CONFLICT", "型号版本已变化，请重新读取。")
+    request_pointer, current = front._current(s, ctx, product.id, payload.request_id, lock=write)
     if (
         current is None
         or current.id != bound.physical.previous.id
@@ -798,7 +901,7 @@ def _new_write(s, ctx, command, product, payload, bound):
     ):
         raise DomainError("VERSION_CONFLICT", "正式请求当前版本已变化。")
     run_pointer, current_run = _current(
-        s, ctx, product.id, request_id=payload.request_id, lock=True
+        s, ctx, product.id, request_id=payload.request_id, lock=write
     )
     if isinstance(payload, PlanPayload):
         identity = s.scalar(
@@ -869,7 +972,10 @@ def _kernel(s, ctx, command, product, payload, bound, save, *, accepted=False):
     def check_source(scope, source, purpose):
         if scope != p.base.scope:
             raise DomainError("FORBIDDEN_SCOPE", "开测来源不在固定服务器范围。", 403)
-        if source.kind == "artifact" and source in refs:
+        if source.kind == "artifact" and (
+            source in refs
+            or (getattr(bound, "direct_contract", False) and source in bound.direct_sources)
+        ):
             return
         if source.kind == "domain" and source.position == METHOD_POSITION:
             row = s.get(MethodApplicability, source.id)
@@ -891,6 +997,12 @@ def _kernel(s, ctx, command, product, payload, bound, save, *, accepted=False):
         raise DomainError("SOURCE_UNAVAILABLE", "来源不是本次服务器已核对的固定事实。")
 
     def applicable(sample):
+        if getattr(bound, "direct_contract", False):
+            return all(
+                (sample.id, pair.item_id) in p.methods
+                for pair in bound.binding.pairs
+                if pair.sample.id == sample.id
+            )
         covers = [v for v in bound.binding.pairs if v.sample.id == sample.id]
         for pair in covers:
             try:
@@ -904,7 +1016,7 @@ def _kernel(s, ctx, command, product, payload, bound, save, *, accepted=False):
                     p.methods[(sample.id, pair.item_id)],
                 )
             except DomainError as error:
-                if error.code in {"SOURCE_STALE", "ACTUAL_METHOD_UNKNOWN"}:
+                if error.reason in {"SOURCE_STALE", "ACTUAL_METHOD_UNKNOWN"}:
                     return False
                 raise
         return bool(covers)
@@ -924,6 +1036,22 @@ def _kernel(s, ctx, command, product, payload, bound, save, *, accepted=False):
             or {v.id for v in samples} != {v.sample.id for v in bound.binding.pairs}
         ):
             raise DomainError("INTEGRITY_MISMATCH", "内部资源/样件占用不匹配本次固定开测确认。")
+        if getattr(bound, "direct_contract", False):
+            bound.reservation = resources.stage_start_prepared_direct(
+                s,
+                ctx,
+                product.id,
+                bound.binding,
+                bound.plan.resource_fact_id,
+                bound.plan.expected_resource_fact_revision,
+                prepared=bound.direct_prepared,
+                intent_digest=_intent(ctx, command, payload),
+                accepted_confirmation=True,
+                verified_actual_start=payload.at,
+                close_current=lambda: _direct_close(s, ctx, bound),
+            )
+            bound.reserved_dependency_proof = bound.dependency_proof
+            return
         collected = []
         bound.reservation = resources.stage_start(
             s,
@@ -1036,11 +1164,22 @@ def _record(s, ctx, command, product, payload, bound, pointers, mutation):
             resource_facts_revision=bound.resources.facts_revision,
             reservation=bound.reservation.model_dump(mode="json") if bound.reservation else None,
         )
+        if getattr(bound, "direct_contract", False):
+            raw.update(
+                execution_proof_contract=_DIRECT_START_CONTRACT,
+                direct_watermark=bound.direct_watermark,
+                direct_source_basis=bound.source_basis,
+                direct_material_sha256=bound.direct_material_sha256,
+            )
         if resource_proof is not None:
             raw.update(
                 resource_fingerprint_version=bound.fingerprint_version,
                 resource_dependency_proof=resource_proof,
             )
+        if getattr(bound, "direct_contract", False):
+            from pdos_next.domain.test_resources.retained import direct_execution_sha256
+
+            raw["direct_execution_sha256"] = direct_execution_sha256(raw)
         next_run = VerificationRunVersion(
             id=uuid4(),
             tenant_id=ctx.tenant_id,
@@ -1203,19 +1342,28 @@ def _run_view(row, run, *, current=False, prospective=False, resource_report=Non
     }
 
 
-def _saved_effects(s, ctx, product_id, row):
+def _saved_effects(s, ctx, product_id, row, *, fresh=False):
     """Observed own committed effects; no claim about current qualification/free capacity."""
     from pdos_next.domain.build_operational_facts.models import ResourceOccupancy
+    from pdos_next.domain.test_resources import service as resources
     from pdos_next.domain.test_resources.models import SampleRunUsage, TestResourceReservation
 
     saved = row.input_snapshot.get("reservation")
-    proof = s.scalar(
-        select(TestResourceReservation).where(
-            TestResourceReservation.tenant_id == ctx.tenant_id,
-            TestResourceReservation.product_id == product_id,
-            TestResourceReservation.run_id == row.run_id,
-        )
+    query = select(TestResourceReservation).where(
+        TestResourceReservation.tenant_id == ctx.tenant_id,
+        TestResourceReservation.product_id == product_id,
+        TestResourceReservation.run_id == row.run_id,
     )
+    from pdos_next.database import require_context
+
+    if isinstance(s, Session):
+        require_context(s, ctx)
+    if not fresh and resources._owned_read_snapshot(s, product_id):
+        proof = snapshot_scalar(
+            s, (TestResourceReservation, product_id, row.run_id), query, scope_id=product_id
+        )
+    else:
+        proof = s.scalar(query.execution_options(populate_existing=True))
     if (
         not saved
         or proof is None
@@ -1243,29 +1391,58 @@ def _saved_effects(s, ctx, product_id, row):
         != original.input_snapshot.get("resource_dependency_proof")
     ):
         raise DomainError("RUN_START_PROOF_INVALID", "后续结果不能替换原资源凭证。")
-    occupied = s.scalars(
-        select(ResourceOccupancy)
-        .where(
-            ResourceOccupancy.tenant_id == ctx.tenant_id,
-            ResourceOccupancy.product_id == product_id,
-            ResourceOccupancy.project_id == row.project_id,
-            ResourceOccupancy.build_id == row.build_id,
-            ResourceOccupancy.owner_kind == "test_run",
-            ResourceOccupancy.owner_execution_id == row.run_id,
+    canonical_rr = not fresh and resources._canonical_rr(s)
+    if canonical_rr:
+        occupied = sorted(
+            resources._own_occupancies(s, ctx, product_id, row.run_id),
+            key=lambda value: value.resource_id,
         )
-        .order_by(ResourceOccupancy.resource_id)
-    ).all()
-    usages = s.scalars(
-        select(SampleRunUsage)
-        .where(
-            SampleRunUsage.tenant_id == ctx.tenant_id,
-            SampleRunUsage.product_id == product_id,
-            SampleRunUsage.project_id == row.project_id,
-            SampleRunUsage.build_id == row.build_id,
-            SampleRunUsage.run_id == row.run_id,
+        usages = sorted(
+            resources._own_usages(s, ctx, product_id, row.run_id),
+            key=lambda value: value.sample_id,
         )
-        .order_by(SampleRunUsage.sample_id)
-    ).all()
+    else:
+        query = (
+            select(ResourceOccupancy)
+            .where(
+                ResourceOccupancy.tenant_id == ctx.tenant_id,
+                ResourceOccupancy.product_id == product_id,
+                ResourceOccupancy.project_id == row.project_id,
+                ResourceOccupancy.build_id == row.build_id,
+                ResourceOccupancy.owner_kind == "test_run",
+                ResourceOccupancy.owner_execution_id == row.run_id,
+            )
+            .order_by(ResourceOccupancy.resource_id)
+        )
+        occupied = resources._owned_rows(s, ctx, product_id, query, fresh=fresh)
+        query = (
+            select(SampleRunUsage)
+            .where(
+                SampleRunUsage.tenant_id == ctx.tenant_id,
+                SampleRunUsage.product_id == product_id,
+                SampleRunUsage.project_id == row.project_id,
+                SampleRunUsage.build_id == row.build_id,
+                SampleRunUsage.run_id == row.run_id,
+            )
+            .order_by(SampleRunUsage.sample_id)
+        )
+        usages = resources._owned_rows(s, ctx, product_id, query, fresh=fresh)
+    # A wide shared collection must never silently hide wrong-scope own rows.
+    # Match every predicate from the original two SELECTs before exposing IDs.
+    scope = (ctx.tenant_id, product_id, row.project_id, row.build_id)
+    if canonical_rr and (
+        any(
+            (value.tenant_id, value.product_id, value.project_id, value.build_id) != scope
+            or (value.owner_kind, value.owner_execution_id) != ("test_run", row.run_id)
+            for value in occupied
+        )
+        or any(
+            (value.tenant_id, value.product_id, value.project_id, value.build_id) != scope
+            or value.run_id != row.run_id
+            for value in usages
+        )
+    ):
+        raise DomainError("RUN_RESERVATION_MISSING", "原Run完整归属集合出现范围不一致。")
     if {str(v.id) for v in occupied} != set(saved.get("occupancy_ids", ())) or {
         str(v.id) for v in usages
     } != set(saved.get("sample_usage_ids", ())):
@@ -1399,9 +1576,9 @@ def inputs(s, ctx, product_id, command: Command):
         _guards(s, ctx, command, product, payload, bound)
         _new_write(s, ctx, command, product, payload, bound)
     except DomainError as error:
-        if error.code in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
+        if error.reason in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
             raise
-        blockers.append({"code": error.code, "detail": error.message})
+        blockers.append({"code": error.reason, "detail": error.message})
     _close_start_boundary(s, ctx, bound, check_deadlines=not blockers)
     return {
         "operation": command.operation,
@@ -1444,14 +1621,12 @@ def list_launch(s, ctx, product_id, *, build_id=None):
     uses a fresh Bound; no proof is reused across operations or requests.
     """
     from pdos_next.domain.build_execution.models import SampleUnit
-    from pdos_next.domain.sample_handoff.service import ReadContext
+    from pdos_next.domain.sample_handoff.service import preload_current, read_context_for
     from pdos_next.domain.test_resources import service as resources
 
     _human(s, ctx, product_id)
-    product = s.scalar(
-        select(Product).where(Product.tenant_id == ctx.tenant_id, Product.id == product_id)
-    )
-    if product is None:
+    product = snapshot_get(s, Product, product_id, scope_id=product_id)
+    if product is None or product.tenant_id != ctx.tenant_id:
         raise DomainError("FORBIDDEN_SCOPE", "产品不可见。", 403)
     if build_id is not None:
         build = front._build(s, ctx, product_id, build_id)
@@ -1470,12 +1645,10 @@ def list_launch(s, ctx, product_id, *, build_id=None):
         query = query.where(FormalVerificationRequest.build_id == build_id)
         runs_query = runs_query.where(VerificationRunVersion.build_id == build_id)
     rows = s.scalars(
-        query.order_by(FormalVerificationRequest.created_at, FormalVerificationRequest.id).limit(
-            201
-        )
+        query.order_by(FormalVerificationRequest.created_at, FormalVerificationRequest.id)
     ).all()
     run_rows = s.scalars(
-        runs_query.order_by(VerificationRunVersion.created_at, VerificationRunVersion.id).limit(201)
+        runs_query.order_by(VerificationRunVersion.created_at, VerificationRunVersion.id)
     ).all()
     resource_views = resources.list_resources(s, ctx, product_id, build_id=build_id)[
         "resource_facts"
@@ -1495,14 +1668,12 @@ def list_launch(s, ctx, product_id, *, build_id=None):
                 "detail": "本闭环只记录固定计划、承诺和实际开测；结果与专业处置尚未接入。",
             }
         ],
-        "has_more": len(rows) > 200 or len(run_rows) > 200,
+        "has_more": False,
         "unavailable_count": 0,
     }
     current_requests, pointers, samples = {}, {}, {}
-    read_context = ReadContext(s, ctx, product_id)
-    for row in rows[:200]:
-        if row.visibility == "private" and row.owner_id != ctx.requester_id:
-            continue
+    read_context = read_context_for(s, ctx, product_id)
+    for row in rows:
         try:
             source_status = _read_evidence(s, ctx, product_id, row)
             request = front._snapshot(row)
@@ -1518,11 +1689,13 @@ def list_launch(s, ctx, product_id, *, build_id=None):
                 source_status=source_status,
             )
             if is_current:
-                view["authority"] = {
-                    "run_plan": front._assess(
-                        s, ctx, product_id, row.project_id, OPERATIONS["run_plan"], request.purpose
-                    )
-                }
+                if s.info.get("read_snapshot"):
+                    from pdos_next.request_proof import batch_read
+
+                    sample_ids = {sample.id for sample in request.samples}
+                    batch_read(s, SampleUnit, sample_ids)
+                    preload_current(s, ctx, product_id, sample_ids)
+                view["authority"] = {}
                 view["current_evaluation"] = "not_evaluated_current"
                 current_requests[row.request_id] = (row, request, view)
                 result["current_by_request"][str(row.request_id)] = {
@@ -1538,6 +1711,9 @@ def list_launch(s, ctx, product_id, *, build_id=None):
                     and request.status == "accepted"
                     and fixed_run is None
                 ):
+                    view["authority"]["run_plan"] = front._assess(
+                        s, ctx, product_id, row.project_id, OPERATIONS["run_plan"], request.purpose
+                    )
                     for fact in resource_views:
                         binding = TestPlanBinding.model_validate(fact["binding"])
                         if (
@@ -1582,7 +1758,7 @@ def list_launch(s, ctx, product_id, *, build_id=None):
                             )
                             view["current_evaluation"] = "evaluated_current"
                         except DomainError as error:
-                            view["blockers"].append({"code": error.code, "detail": error.message})
+                            view["blockers"].append({"code": error.reason, "detail": error.message})
                     if not view["capabilities"]["run_plan"] and not view["blockers"]:
                         view["blockers"].append(
                             {
@@ -1594,15 +1770,13 @@ def list_launch(s, ctx, product_id, *, build_id=None):
                     key = (row.request_id, sample.id)
                     if key in samples:
                         continue
-                    sample_row = s.scalar(
-                        select(SampleUnit).where(
-                            SampleUnit.tenant_id == ctx.tenant_id,
-                            SampleUnit.product_id == product_id,
-                            SampleUnit.build_id == row.build_id,
-                            SampleUnit.id == sample.id,
-                        )
-                    )
-                    if sample_row:
+                    sample_row = snapshot_get(s, SampleUnit, sample.id, scope_id=product_id)
+                    if (
+                        sample_row is not None
+                        and sample_row.tenant_id == ctx.tenant_id
+                        and sample_row.product_id == product_id
+                        and sample_row.build_id == row.build_id
+                    ):
                         sample_view, _, _ = physical._sample_view(
                             s, ctx, product_id, request, sample_row, read_context=read_context
                         )
@@ -1611,9 +1785,7 @@ def list_launch(s, ctx, product_id, *, build_id=None):
         except DomainError as error:
             if error.status != 403:
                 result["unavailable_count"] += 1
-    for row in run_rows[:200]:
-        if row.visibility == "private" and row.owner_id != ctx.requester_id:
-            continue
+    for row in run_rows:
         try:
             source_status = _read_evidence(s, ctx, product_id, row)
             run, plan = _snapshot(row)
@@ -1626,7 +1798,7 @@ def list_launch(s, ctx, product_id, *, build_id=None):
                 except DomainError as error:
                     if error.status == 403:
                         raise
-                    view["blockers"].append({"code": error.code, "detail": error.message})
+                    view["blockers"].append({"code": error.reason, "detail": error.message})
             view["source_status"] = source_status
             view["authority_snapshot"] = view["authority"]
             view["authority"] = {}
@@ -1637,9 +1809,6 @@ def list_launch(s, ctx, product_id, *, build_id=None):
                 }
                 request_row, request, _ = current_requests[row.request_id]
                 for key, cls in (("schedule_promise", PromisePayload), ("run_start", StartPayload)):
-                    view["authority"][key] = front._assess(
-                        s, ctx, product_id, row.project_id, OPERATIONS[key], request.purpose
-                    )
                     eligible = run.status == "planned" and (
                         request.status == "accepted"
                         if key == "schedule_promise"
@@ -1647,6 +1816,9 @@ def list_launch(s, ctx, product_id, *, build_id=None):
                     )
                     if not eligible or source_status != "current":
                         continue
+                    view["authority"][key] = front._assess(
+                        s, ctx, product_id, row.project_id, OPERATIONS[key], request.purpose
+                    )
                     at = plan.window.start if key == "schedule_promise" else now()
                     payload = cls(
                         request_id=request.id,
@@ -1668,7 +1840,7 @@ def list_launch(s, ctx, product_id, *, build_id=None):
                         view["required_source_read_set"] = bound.physical.reads
                         view["current_evaluation"] = "evaluated_current"
                     except DomainError as error:
-                        view["blockers"].append({"code": error.code, "detail": error.message})
+                        view["blockers"].append({"code": error.reason, "detail": error.message})
             result["runs"].append(view)
         except DomainError as error:
             if error.status != 403:
@@ -1688,3 +1860,608 @@ def list_launch(s, ctx, product_id, *, build_id=None):
             v["capabilities"].get(key, False) for v in result["requests"] + result["runs"]
         )
     return result
+
+
+_DIRECT_START_CONTRACT = "s0-direct-v1"
+_DIRECT_START_MATERIAL = "s0.minimal-test-run-start.v1"
+
+
+@dataclass
+class _DirectStartPhase:
+    bound: Bound
+    pointers: tuple
+    mutation: object
+    material: dict
+    review: dict
+
+
+def _direct_authority_stamp(s, assessment):
+    """Only current executor issuer entries; old signers and other scopes are absent."""
+    engine = s.get_bind()
+    registry = getattr(engine, "_pdos_professional_issuers", {})
+    epochs = getattr(engine, "_pdos_professional_issuer_epochs", {})
+    from pdos_next.domain.professional_authority import service as professional
+
+    values = []
+    scope = assessment["scope"]
+    for ref in assessment["fact_refs"]:
+        issuer = registry.get(ref["issuer_key"])
+        try:
+            professional._issuer(
+                engine,
+                issuer,
+                UUID(scope["tenant_id"]),
+                UUID(scope["product_id"]),
+                UUID(scope["project_id"]),
+            )
+        except DomainError as exc:
+            raise DomainError("SOURCE_STALE", "当前执行者签发入口已变化。") from exc
+        if (
+            issuer.version != ref["issuer_version"]
+            or issuer.epoch != ref["issuer_epoch"]
+            or epochs.get(ref["issuer_key"]) != ref["issuer_epoch"]
+        ):
+            raise DomainError("SOURCE_STALE", "当前执行者签发入口已变化。")
+        values.append((ref["issuer_key"], issuer, issuer.epoch))
+    return tuple(values)
+
+
+def _direct_close(s, ctx, bound):
+    from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow
+
+    _same_uow(s, bound.caller_uow, ctx, bound.caller_digest)
+    from pdos_next.domain.professional_authority import service as professional
+
+    person, grant = professional._subject_access(
+        s, ctx, bound.physical.base.scope.product_id, ctx.requester_id
+    )
+    clock = now()
+    if (
+        person is None
+        or grant is None
+        or person.active is not True
+        or person.kind != "human"
+        or grant.can_write is not True
+        or (grant.expires_at is not None and grant.expires_at <= clock)
+    ):
+        raise DomainError("FORBIDDEN_SCOPE", "当前执行者授权已失效。", 403)
+    if (
+        bound.direct_authority_stamp != _direct_authority_stamp(s, bound.physical.authority)
+        or not authority_time_current(bound.physical.authority, clock)
+        or not bound.plan.window.start <= clock < bound.plan.window.finish
+    ):
+        raise DomainError("SOURCE_STALE", "当前执行者资格或本次实际执行窗口已变化。")
+
+
+def _direct_start_references(request_row, request, run, plan, payload):
+    """Select just references actually consumed by the Start rule, not inherited reads."""
+    wanted = [payload.at.source]
+    wanted += [
+        ref
+        for item in run.items
+        for ref in (
+            item.drawing,
+            item.method,
+            item.criterion_source,
+            item.criterion.source if item.criterion else None,
+        )
+        if ref
+    ]
+    wanted += [
+        doc.source
+        for doc in request.documents
+        if doc.source and set(doc.item_ids) & {c.item_id for c in run.coverage}
+    ]
+    declared = physical._merge_refs(
+        request_row.sources,
+        [v.model_dump(mode="json") for v in payload.sources],
+        [plan.equipment.model_dump(mode="json"), plan.calibration.model_dump(mode="json")],
+    )
+    refs = physical._merge_refs(
+        [v.model_dump(mode="json") for v in payload.sources],
+        [plan.equipment.model_dump(mode="json"), plan.calibration.model_dump(mode="json")],
+    )
+    for source in wanted:
+        if source.kind != "artifact":
+            continue
+        matches = [
+            ref
+            for ref in declared
+            if physical.event_source(
+                SimpleNamespace(**{**ref, "artifact_id": UUID(ref["artifact_id"])})
+            )
+            == source
+        ]
+        if not matches:
+            raise DomainError("MISSING_REQUIRED_EVIDENCE", "直接文档来源缺少原固定引用。")
+        refs = physical._merge_refs(refs, matches)
+    return refs, wanted
+
+
+def _direct_start_summaries(s, ctx, pid, request, binding, *, write):
+    from pdos_next.domain.build_execution.models import SampleUnit
+    from pdos_next.domain.sample_handoff import service as readiness
+
+    samples, methods, watermarks = {}, {}, {"samples": [], "methods": []}
+    for pair in sorted(binding.pairs, key=lambda p: (p.sample.id.bytes, p.item_id)):
+        sample = pair.sample
+        if sample.id not in samples:
+            unit = _row(s, ctx, pid, SampleUnit, sample.id)
+            pointer, fact = readiness._current(s, ctx, pid, sample.id, lock=write)
+            if (
+                fact is None
+                or (
+                    unit.project_id,
+                    unit.build_id,
+                    unit.revision,
+                    unit.actual_configuration_id,
+                    fact.project_id,
+                    fact.build_id,
+                    fact.sample_revision,
+                    fact.actual_configuration_id,
+                    fact.actual_configuration_revision,
+                    fact.purpose,
+                    fact.status,
+                )
+                != (
+                    binding.project_id,
+                    binding.build_id,
+                    sample.revision,
+                    sample.actual_configuration.id,
+                    binding.project_id,
+                    binding.build_id,
+                    sample.revision,
+                    sample.actual_configuration.id,
+                    sample.actual_configuration.revision,
+                    binding.purpose,
+                    "ready",
+                )
+                or unit.availability == "hold"
+                or not readiness._visible(fact, ctx)
+            ):
+                raise DomainError("SAMPLE_UNAVAILABLE", "直接实物版本或本用途Current就绪已变化。")
+            fixed = fact.fixed_snapshot
+            if (
+                fixed["sample"]["id"] != str(unit.id)
+                or fixed["sample"]["revision"] != unit.revision
+                or fixed["actual_configuration"]["id"] != str(sample.actual_configuration.id)
+                or fixed["actual_configuration"]["revision"] != sample.actual_configuration.revision
+                or fixed["build"]["id"] != str(binding.build_id)
+            ):
+                raise DomainError("INTEGRITY_MISMATCH", "就绪摘要未绑定本次固定实际配置。")
+            clocks = {
+                "occurred_at": fact.occurred_at.isoformat(),
+                "received_at": fact.received_at.isoformat(),
+                "original_timezone": fact.occurred_timezone,
+            }
+            summary = deepcopy(fixed)
+            summary.update(
+                availability="ready",
+                purpose=binding.purpose,
+                visibility=fact.visibility,
+                clocks=clocks,
+                facts_revision=digest([str(fact.id), fact.revision, fact.snapshot_sha256]),
+                current_readiness={
+                    "id": str(fact.id),
+                    "revision": fact.revision,
+                    "state": fact.status,
+                    "purpose": fact.purpose,
+                    "clocks": clocks,
+                    "source_ref": {
+                        "kind": "domain",
+                        "id": str(fact.id),
+                        "revision": fact.revision,
+                        "position": "sample-readiness",
+                    },
+                },
+            )
+            samples[sample.id] = summary
+            watermarks["samples"].append(
+                [
+                    str(ctx.tenant_id),
+                    str(pid),
+                    str(binding.project_id),
+                    str(binding.build_id),
+                    str(unit.id),
+                    unit.revision,
+                    str(sample.actual_configuration.id),
+                    sample.actual_configuration.revision,
+                    str(pointer.id),
+                    str(fact.id),
+                    fact.revision,
+                    fact.snapshot_sha256,
+                    fact.status,
+                    fact.purpose,
+                    unit.availability,
+                ]
+            )
+        pointer, row = physical._method_pointer(
+            s, ctx, pid, request.id, sample.id, pair.item_id, lock=write
+        )
+        if (
+            row is None
+            or row.status != "applicable"
+            or (
+                row.id,
+                row.revision,
+                row.snapshot_sha256,
+                row.project_id,
+                row.build_id,
+                row.sample_revision,
+                row.actual_configuration_id,
+                row.actual_configuration_revision,
+            )
+            != (
+                pair.method_id,
+                pair.method_revision,
+                pair.method_sha256,
+                binding.project_id,
+                binding.build_id,
+                sample.revision,
+                sample.actual_configuration.id,
+                sample.actual_configuration.revision,
+            )
+        ):
+            raise DomainError("ACTUAL_METHOD_UNKNOWN", "直接实际方法Current或固定适用版本已变化。")
+        item = next(v for v in request.items if v.id == pair.item_id)
+        if (
+            row.method_digest != digest(item.model_dump(mode="json"))
+            or row.snapshot_sha256 != digest(row.assessment_snapshot)
+            or row.assessment_snapshot["sample"] != sample.model_dump(mode="json")
+            or row.assessment_snapshot["fixed_item"] != item.model_dump(mode="json")
+            or row.assessment_snapshot["actual_configuration"]
+            != samples[sample.id]["actual_configuration"]
+        ):
+            raise DomainError("INTEGRITY_MISMATCH", "直接实际方法摘要无法核对。")
+        methods[(sample.id, pair.item_id)] = row
+        watermarks["methods"].append(
+            [
+                str(ctx.tenant_id),
+                str(pid),
+                str(request.id),
+                str(sample.id),
+                pair.item_id,
+                str(pointer.id),
+                str(row.id),
+                row.revision,
+                row.snapshot_sha256,
+                row.method_digest,
+                row.status,
+            ]
+        )
+    return samples, methods, watermarks
+
+
+def _load_start_direct(
+    s, ctx, command, product, payload, *, require_reads=True, verify_event=True, owner_material=None
+):
+    from pdos_next.domain.capa_effectiveness.fact_atom_storage import _uow
+    from pdos_next.domain.configurations.schemas import DefinitionReference
+    from pdos_next.domain.quality_execution.evidence import refs_from_exact
+    from pdos_next.domain.test_resources import service as resources
+    from pdos_next.source_current import direct_source_basis
+
+    caller_uow, caller_digest = _uow(s), digest(vars(ctx))
+    write = not s.info.get("read_snapshot", False)
+    _human(s, ctx, product.id, write=write)
+    require_access(s, ctx, product.id, write=True, lock=write)
+    if command.operation != "test.run.start" or command.product_id != product.id:
+        raise DomainError("FORBIDDEN_SCOPE", "直接开测阶段未绑定服务器操作及产品。", 403)
+    row = front._version(s, ctx, product.id, payload.request_id, payload.expected_request_revision)
+    request = front._snapshot(row)
+    run_row = _version(s, ctx, product.id, payload.run_id, payload.expected_run_revision)
+    run, plan = _snapshot(run_row)
+    if (
+        run.request_id != request.id
+        or run.build != request.build
+        or run_row.plan_sha256 != payload.expected_plan_sha256
+    ):
+        raise DomainError("SOURCE_CHANGED", "固定Run或计划版本已变化。")
+    binding = TestPlanBinding.model_validate(run_row.input_snapshot["plan_binding"])
+    _full_coverage(request, run.coverage)
+    if (
+        binding.run_id != run.id
+        or binding.request_id != request.id
+        or binding.build_id != request.build.id
+        or binding.project_id != request.scope.project_id
+        or binding.purpose != request.purpose
+        or _fixed_plan(binding) != _fixed_plan(plan)
+        or {(p.sample.id, p.item_id) for p in binding.pairs} != pairs(run.coverage)
+    ):
+        raise DomainError("TEST_PLAN_SCOPE_MISMATCH", "固定Run绑定范围无法核对。")
+    refs, wanted = _direct_start_references(row, request, run, plan, payload)
+    reads = _merge_reads(refs)
+    if require_reads:
+        supplied = {str(v.artifact_id): v.expected_revision for v in command.source_read_set}
+        if any(supplied.get(v["artifact_id"]) != v["expected_revision"] for v in reads):
+            raise DomainError("MISSING_REQUIRED_EVIDENCE", "须固定本次直接消费来源的版本。")
+    # Preserve DefinitionReference's existing substring locator semantics while
+    # supplying the common source port with the actual complete original line.
+    canonical = refs_from_exact(
+        s, ctx, product.id, tuple(DefinitionReference.model_validate(v) for v in refs)
+    )
+    basis, private = direct_source_basis(s, ctx, product, canonical, reads)
+    if verify_event:
+        _event(s, ctx, product.id, request, plan, payload, refs, actual=True)
+    authority = front._assess(
+        s,
+        ctx,
+        product.id,
+        request.scope.project_id,
+        command.operation,
+        request.purpose,
+        write=write,
+    )
+    if (
+        authority["authorized"] is not True
+        or authority["qualified"] is not True
+        or authority["subject_id"] != str(ctx.requester_id)
+        or not set(authority["roles"]) & {"quality", "test"}
+        or not authority_time_current(authority, now())
+        or binding.executor_id != ctx.requester_id
+    ):
+        raise DomainError("QUALIFICATION_REQUIRED", "当前执行者未满足本次具名开测资格。", 403)
+    authority_stamp = _direct_authority_stamp(s, authority)
+    # No external Source/Original IO follows the direct Current/capacity reads.
+    build = front._build(s, ctx, product.id, request.build.id)
+    samples, methods, current = _direct_start_summaries(
+        s, ctx, product.id, request, binding, write=write
+    )
+    for doc in request.documents:
+        if doc.source and doc.id.startswith(PROFESSIONAL_PREFIX):
+            fixed = _row(s, ctx, product.id, MethodApplicability, doc.source.id)
+            if doc.source.kind != "domain" or doc.source.position != METHOD_POSITION:
+                raise DomainError("SOURCE_UNAVAILABLE", "固定专业适用来源不匹配。")
+            # prospective checks are purely the original immutable hash/scope
+            # checks; Start does not re-evaluate the historical reviewer.
+            front._method_check(s, ctx, product.id, fixed, request, prospective=True)
+    p = physical.Bound(
+        row, request, build, authority, refs, reads, basis, samples, methods, row.visibility, now()
+    )
+    bound = Bound(
+        p,
+        run_row,
+        run,
+        plan,
+        binding,
+        None,
+        None,
+        basis,
+        fingerprint_version=resources._FINGERPRINT_V2,
+        caller_uow=caller_uow,
+        caller_digest=caller_digest,
+        direct_contract=True,
+        direct_authority_stamp=authority_stamp,
+        direct_sources=tuple(wanted),
+    )
+    pointers = _new_write(s, ctx, command, product, payload, bound)
+    rp, vp = pointers
+    current.update(
+        request=[
+            str(ctx.tenant_id),
+            str(product.id),
+            str(request.scope.project_id),
+            str(request.build.id),
+            str(rp.id),
+            str(row.id),
+            row.revision,
+            row.snapshot_sha256,
+        ],
+        run=[
+            str(ctx.tenant_id),
+            str(product.id),
+            str(request.scope.project_id),
+            str(request.build.id),
+            str(vp.id),
+            str(run_row.id),
+            run_row.revision,
+            run_row.snapshot_sha256,
+            run_row.plan_sha256,
+        ],
+        executor=authority["facts_revision"],
+        sources=basis,
+        product_revision=product.revision,
+    )
+    if owner_material is None:
+        prepared = resources.prepare_start_direct(
+            s,
+            ctx,
+            product.id,
+            binding,
+            plan.resource_fact_id,
+            plan.expected_resource_fact_revision,
+            authority=authority,
+            samples=samples,
+            source_basis=basis,
+            reads=reads,
+            verified_actual_start=payload.at if verify_event else None,
+        )
+    else:
+        prepared = deepcopy(owner_material["resource"])
+        _fact, data, _assets, _sentinels, resource_watermark = resources._direct_start_inputs(
+            s,
+            ctx,
+            product.id,
+            binding,
+            plan.resource_fact_id,
+            plan.expected_resource_fact_revision,
+            write=write,
+        )
+        if prepared["watermark"] != resource_watermark or prepared["data"] != data.model_dump(
+            mode="json"
+        ):
+            raise DomainError("RESOURCE_FACTS_CHANGED", "确认后直接资源或容量水位已变化。")
+    current["resource"] = prepared["watermark"]
+    bound.resources = resources.BoundTestResources.model_validate(prepared["bundle"])
+    bound.dependency_proof = resources._verify_stored_fingerprint_v2(prepared["dependency_proof"])
+    bound.direct_prepared, bound.direct_watermark = prepared, current
+    if row.visibility == "category" and (
+        private
+        or prepared["visibility"] != "category"
+        or any(v["visibility"] != "category" for v in samples.values())
+    ):
+        raise DomainError("FORBIDDEN_SCOPE", "私有直接来源或样件不能扩大到共享请求。", 403)
+    _direct_close(s, ctx, bound)
+    return bound
+
+
+def prepare_preview(s, ctx, command, product, payload):
+    bound = _load_start_direct(s, ctx, command, product, payload)
+    k = _kernel(s, ctx, command, product, payload, bound, lambda _: None)
+    value = _payload_kernel(payload, bound.plan)
+    preview, mutation = k._prepare(
+        authority_dto(bound.physical.authority, ctx.requester_id, now()),
+        _invocation(command, payload, value),
+        value,
+    )
+    if not preview.allowed:
+        raise DomainError("MISSING_REQUIRED_EVIDENCE", "固定开测直接资料不完整。")
+    material = {
+        "schema_version": _DIRECT_START_MATERIAL,
+        "operation": command.operation,
+        "scope": {
+            "tenant_id": str(ctx.tenant_id),
+            "category_id": str(ctx.category_id),
+            "product_id": str(product.id),
+            "requester_id": str(ctx.requester_id),
+        },
+        "intent_digest": _intent(ctx, command, payload),
+        "direct_watermark": bound.direct_watermark,
+        "request_version_id": str(bound.physical.previous.id),
+        "run_version_id": str(bound.run_row.id),
+        "resource": bound.direct_prepared,
+        "prepared_mutation": mutation.model_dump(mode="json"),
+        "source_basis": bound.source_basis,
+    }
+    material["material_sha256"] = digest(material)
+    bound.direct_material_sha256 = material["material_sha256"]
+    report = bound.resources.report.model_dump(mode="json")
+    report["checked_at"] = None
+    report["checked_at_basis"] = "server_direct_watermark_on_confirm"
+    review = {
+        "operation": command.operation,
+        "effect": EFFECT,
+        "before": {
+            "request": {
+                "id": str(bound.physical.previous.id),
+                "request_id": str(bound.physical.base.id),
+                "revision": bound.physical.base.revision,
+                "status": bound.physical.base.status,
+                "request_snapshot": bound.physical.base.model_dump(mode="json"),
+            },
+            "run": _run_view(bound.run_row, bound.run),
+        },
+        "after": {
+            "request": mutation.request.model_dump(mode="json"),
+            "run": mutation.run.model_dump(mode="json"),
+            "resource_report": report,
+            "sample_usage": [v.model_dump(mode="json") for v in bound.resources.sample_usage],
+            "occupancy_effect": "stage_formal_and_sample_use_in_caller_uow",
+        },
+        "authority": bound.physical.authority,
+        "required_source_read_set": bound.physical.reads,
+        "resource_report": report,
+        "reason": payload.reason,
+    }
+    _direct_close(s, ctx, bound)
+    return _DirectStartPhase(
+        bound, _new_write(s, ctx, command, product, payload, bound), mutation, material, review
+    )
+
+
+def preview_prepared(s, ctx, command, product, payload, phase):
+    if phase.material["intent_digest"] != _intent(ctx, command, payload):
+        raise DomainError("INTEGRITY_MISMATCH", "开测预览阶段意图已变化。")
+    _direct_close(s, ctx, phase.bound)
+    return deepcopy(phase.review)
+
+
+def encode_prepared(phase):
+    return deepcopy(phase.material)
+
+
+def prepare_confirmed(s, ctx, command, product, payload, owner_material):
+    from pdos_next.domain.verification.ports import Mutation
+
+    if (
+        type(owner_material) is not dict
+        or owner_material.get("schema_version") != _DIRECT_START_MATERIAL
+        or owner_material.get("operation") != command.operation
+        or owner_material.get("intent_digest") != _intent(ctx, command, payload)
+        or owner_material.get("scope")
+        != {
+            "tenant_id": str(ctx.tenant_id),
+            "category_id": str(ctx.category_id),
+            "product_id": str(product.id),
+            "requester_id": str(ctx.requester_id),
+        }
+    ):
+        raise DomainError("CONFIRMATION_REQUIRED", "缺少服务器保存的本次开测预览材料。", 403)
+    if owner_material.get("material_sha256") != digest(
+        {key: value for key, value in owner_material.items() if key != "material_sha256"}
+    ):
+        raise DomainError("INTEGRITY_MISMATCH", "服务器预览开测材料摘要不能核对。")
+    bound = _load_start_direct(s, ctx, command, product, payload, owner_material=owner_material)
+    bound.direct_material_sha256 = owner_material["material_sha256"]
+    if (
+        bound.direct_watermark != owner_material["direct_watermark"]
+        or str(bound.physical.previous.id) != owner_material["request_version_id"]
+        or str(bound.run_row.id) != owner_material["run_version_id"]
+    ):
+        raise DomainError("SOURCE_STALE", "预览后的直接Current版本或水位已变化。")
+    mutation = Mutation.model_validate(owner_material["prepared_mutation"])
+    if (
+        mutation.operation != command.operation
+        or mutation.request_before_revision != bound.physical.base.revision
+        or mutation.run_before_revision != bound.run.revision
+        or mutation.request.id != bound.physical.base.id
+        or mutation.run.id != bound.run.id
+        or mutation.run.status != "running"
+        or mutation.run.coverage != bound.run.coverage
+        or mutation.run.execution != _execution(bound.plan)
+        or mutation.run.actual_start.occurred_at != payload.at.occurred_at
+        or mutation.run.actual_start.source != payload.at.source
+    ):
+        raise DomainError("INTEGRITY_MISMATCH", "保存的预览变化未精确绑定本次开测。")
+    return _DirectStartPhase(
+        bound,
+        _new_write(s, ctx, command, product, payload, bound),
+        mutation,
+        deepcopy(owner_material),
+        {},
+    )
+
+
+def apply_confirmed(s, ctx, command, product, payload, phase):
+    from pdos_next.domain.test_resources import service as resources
+    from pdos_next.domain.verification.ports import Mutation
+
+    bound = phase.bound
+    if phase.material["intent_digest"] != _intent(ctx, command, payload):
+        raise DomainError("INTEGRITY_MISMATCH", "确认消费后开测意图不能替换。")
+    _direct_close(s, ctx, bound)
+    bound.reservation = resources.stage_start_prepared_direct(
+        s,
+        ctx,
+        product.id,
+        bound.binding,
+        bound.plan.resource_fact_id,
+        bound.plan.expected_resource_fact_revision,
+        prepared=bound.direct_prepared,
+        intent_digest=_intent(ctx, command, payload),
+        accepted_confirmation=True,
+        verified_actual_start=payload.at,
+        close_current=lambda: _direct_close(s, ctx, bound),
+    )
+    bound.reserved_dependency_proof = bound.dependency_proof
+    raw = phase.mutation.model_dump(mode="json")
+    clock = now().isoformat()
+    raw["run"]["actual_start"]["received_at"] = clock
+    raw["request"]["timeline"]["actual_start"]["received_at"] = clock
+    for event in raw["events"]:
+        event["at"]["received_at"] = clock
+    row = _record(
+        s, ctx, command, product, payload, bound, phase.pointers, Mutation.model_validate(raw)
+    )
+    _direct_close(s, ctx, bound)
+    return row, "test_run", bound.physical.visibility

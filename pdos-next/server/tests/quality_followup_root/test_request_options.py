@@ -1,4 +1,4 @@
-"""Compile the real bounded owner query; no database or replacement SQL policy."""
+"""Compile the actual owner scope query; row audiences remain PostgreSQL RLS."""
 
 import re
 from types import SimpleNamespace
@@ -70,20 +70,18 @@ def test_real_query_keeps_exact_current_scope_and_reader_visibility(selection):
         ("tenant_id", TENANT),
         ("product_id", PRODUCT),
         ("project_id", PROJECT),
-        ("owner_id", ACTOR),
     ):
         assert f"verification_formal_requests.{column} = '{value}'" in sql
-    assert "verification_formal_requests.visibility = 'product'" in sql
+    assert "verification_formal_requests.owner_id =" not in sql
     assert "order by verification_formal_requests.created_at desc" in sql
-    assert sql.endswith("limit 21")
+    assert "limit" not in sql
 
 
-def test_direct_canonical_receipt_exists_filters_before_order_and_limit(selection):
+def test_direct_canonical_receipt_exists_filters_before_order(selection):
     sql = compiled_query(selection)
     exists_at = sql.index("exists (select")
     order_at = sql.index("order by")
-    limit_at = sql.index("limit 21")
-    assert exists_at < order_at < limit_at
+    assert exists_at < order_at and "limit" not in sql
     receipt_scope = sql[exists_at:order_at]
     # Test the actual correlated SQL, not whether an in-memory fake would qualify a row.
     for receipt_column, formal_column in (
@@ -161,7 +159,7 @@ def test_basis_scope_mismatch_is_rejected_before_even_constructing_a_query(selec
     session = ReadOnlySession()
     with pytest.raises(DomainError) as failure:
         request_options(session, selection.ctx, selection.product, selection.basis)
-    assert failure.value.code == "FORBIDDEN_SCOPE"
+    assert failure.value.reason == "FORBIDDEN_SCOPE"
     assert failure.value.status == 403
     assert session.queries == []
 
@@ -193,16 +191,15 @@ def test_actual_run_current_query_binds_every_pointer_and_exact_receipt(selectio
         ("tenant_id", TENANT),
         ("product_id", PRODUCT),
         ("project_id", PROJECT),
-        ("owner_id", ACTOR),
     ):
         assert f"verification_run_versions.{column} = '{value}'" in sql
-    assert "verification_run_versions.visibility = 'product'" in sql
+    assert "verification_run_versions.owner_id =" not in sql
     assert "action_receipts.subject_type = 'test_run'" in sql
     assert "action_receipts.operation = verification_run_versions.operation" in sql
     assert "to_jsonb(verification_run_versions.revision)" in sql
     assert "action_receipts.subject_id = verification_run_versions.id" in sql
     assert "action_receipts.subject_revision = verification_run_versions.revision" in sql
-    assert sql.endswith("limit 21")
+    assert "limit" not in sql
 
 
 def test_run_options_use_immutable_versions_and_do_not_relabel_formal_rows(selection):
@@ -217,9 +214,8 @@ def test_run_options_use_immutable_versions_and_do_not_relabel_formal_rows(selec
 
 def test_combined_owner_scope_never_silently_truncates_the_21st_run(selection):
     session = ReadOnlySession(runs=(SimpleNamespace(id=OTHER, revision=1),) * 21)
-    with pytest.raises(DomainError) as error:
-        request_options(session, selection.ctx, selection.product, selection.basis)
-    assert error.value.status == 503
+    refs = request_options(session, selection.ctx, selection.product, selection.basis)
+    assert len(refs) == 21 and all(ref.kind == "verification_run" for ref in refs)
 
 
 def test_supported_advanced_current_formals_require_the_distinct_owner_family(selection):
@@ -240,6 +236,5 @@ def test_supported_advanced_current_formals_require_the_distinct_owner_family(se
 
 def test_current_formal_bound_never_silently_truncates_the_21st_row(selection):
     session = ReadOnlySession(rows=(SimpleNamespace(id=OTHER, revision=1),) * 21)
-    with pytest.raises(DomainError) as error:
-        request_options(session, selection.ctx, selection.product, selection.basis)
-    assert error.value.status == 503
+    refs = request_options(session, selection.ctx, selection.product, selection.basis)
+    assert len(refs) == 21 and all(ref.kind == "verification_request" for ref in refs)

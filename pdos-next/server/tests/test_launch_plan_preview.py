@@ -57,12 +57,15 @@ def work(monkeypatch):
     payload = payload.model_copy(
         update={"sources": tuple(DefinitionReference.model_validate(r) for r in references)}
     )
-    ctx = Context(value.request.scope.tenant_id, value.actor, value.actor)
+    category = uuid4()
+    ctx = Context(value.request.scope.tenant_id, value.actor, value.actor, category_id=category)
     engine = SimpleNamespace()
     s = Session(bind=engine)
     product = Product(
         id=value.request.scope.product_id,
         tenant_id=ctx.tenant_id,
+        category_id=category,
+        visibility="private",
         created_at=delivered.AT,
         owner_id=value.actor,
         name="Isolated synthetic counting fixture",
@@ -77,6 +80,7 @@ def work(monkeypatch):
         command_id=uuid4(),
         idempotency_key=str(uuid4()),
         operation=seam.OPERATION,
+        category_id=category,
         product_id=product.id,
         expected_revision=3,
         source_read_set=[
@@ -86,7 +90,25 @@ def work(monkeypatch):
     )
     load, guards, cas = seam.launch._load, seam.launch._guards, seam.launch._new_write
     bound = load(s, ctx, command, product, payload)
-    bound.physical.authority["valid_until"] = (clock[0] + timedelta(minutes=5)).isoformat()
+    bound.physical.authority.update(
+        operation=command.operation,
+        purpose=value.request.purpose,
+        synthetic=True,
+        valid_until=None,
+        fact_refs=[
+            {
+                "kind": kind,
+                "role": "quality",
+                "nature": "synthetic",
+                "state": "active",
+                "operations": [command.operation],
+                "purposes": [value.request.purpose],
+                "valid_from": (clock[0] - timedelta(hours=1)).isoformat(),
+                "valid_until": (clock[0] + timedelta(minutes=5)).isoformat(),
+            }
+            for kind in ("duty", "qualification")
+        ],
+    )
     bound.physical.reads = [r.model_dump(mode="json") for r in command.source_read_set]
     counts = {"load": 0, "guards": 0, "cas": 0}
     failure = [None]
@@ -177,7 +199,7 @@ def test_real_owner_failure_propagates_and_is_never_cached(work, code):
     work.failure[0] = code
     with pytest.raises(DomainError) as error:
         preview(work)
-    assert error.value.code == code
+    assert error.value.reason == code
     work.failure[0] = None
     preview(work)
     assert work.counts["load"] == 2
@@ -188,7 +210,7 @@ def test_seam_cannot_dispatch_promise_or_start(work, operation):
     command = work.command.model_copy(update={"operation": operation})
     with pytest.raises(DomainError) as error:
         seam.preview_once(work.s, work.ctx, command, work.product, work.payload)
-    assert error.value.code == "FORBIDDEN_OPERATION" and work.counts["load"] == 0
+    assert error.value.reason == "FORBIDDEN_OPERATION" and work.counts["load"] == 0
 
 
 def test_pending_agent_context_is_not_human_authority(work):
@@ -202,7 +224,7 @@ def test_other_product_scope_cannot_enter_owner(work):
     command = work.command.model_copy(update={"product_id": uuid4()})
     with pytest.raises(DomainError) as error:
         seam.preview_once(work.s, work.ctx, command, work.product, work.payload)
-    assert error.value.code == "FORBIDDEN_SCOPE" and work.counts["load"] == 0
+    assert error.value.reason == "FORBIDDEN_SCOPE" and work.counts["load"] == 0
 
 
 def test_clock_after_all_owner_work_rejects_window_that_elapsed(work, monkeypatch):
@@ -216,13 +238,13 @@ def test_clock_after_all_owner_work_rejects_window_that_elapsed(work, monkeypatc
     monkeypatch.setattr(seam.launch, "preview_view", slow)
     with pytest.raises(DomainError) as error:
         preview(work)
-    assert error.value.code == "INVALID_EVENT_TIME"
+    assert error.value.reason == "INVALID_EVENT_TIME"
     assert not work.s.new and work.work.reserved == []
 
 
 def test_own_professional_expiry_after_owner_io_blocks_return(work, monkeypatch):
     render = seam.launch.preview_view
-    work.bound.physical.authority["valid_until"] = (
+    work.bound.physical.authority["fact_refs"][0]["valid_until"] = (
         work.clock[0] + timedelta(seconds=10)
     ).isoformat()
 
@@ -234,15 +256,15 @@ def test_own_professional_expiry_after_owner_io_blocks_return(work, monkeypatch)
     monkeypatch.setattr(seam.launch, "preview_view", slow)
     with pytest.raises(DomainError) as error:
         preview(work)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 @pytest.mark.parametrize("until", [None, "not-a-time", "2026-10-03T12:00:00"])
 def test_missing_or_unaware_actual_authority_deadline_is_unknown(work, until):
-    work.bound.physical.authority["valid_until"] = until
+    work.bound.physical.authority["fact_refs"][0]["valid_until"] = until
     with pytest.raises(DomainError) as error:
         preview(work)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 @pytest.mark.parametrize("field", ["idempotency_key", "source_read_set", "payload"])
@@ -262,7 +284,7 @@ def test_original_envelope_changes_during_io_are_rejected(work, monkeypatch, fie
     monkeypatch.setattr(seam.launch, "preview_view", drift)
     with pytest.raises(DomainError) as error:
         preview(work)
-    assert error.value.code in {"SOURCE_CHANGED", "FORBIDDEN_OPERATION"}
+    assert error.value.reason in {"SOURCE_CHANGED", "FORBIDDEN_OPERATION"}
 
 
 def test_current_issuer_epoch_aba_during_io_is_rejected(work, monkeypatch):
@@ -277,7 +299,7 @@ def test_current_issuer_epoch_aba_during_io_is_rejected(work, monkeypatch):
     monkeypatch.setattr(seam.launch, "preview_view", drift)
     with pytest.raises(DomainError) as error:
         preview(work)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 def test_owner_callback_replacement_during_io_is_rejected(work, monkeypatch):
@@ -291,7 +313,7 @@ def test_owner_callback_replacement_during_io_is_rejected(work, monkeypatch):
     monkeypatch.setattr(seam.launch, "preview_view", drift)
     with pytest.raises(DomainError) as error:
         preview(work)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 def test_nested_transaction_change_during_owner_work_is_rejected(work, monkeypatch):
@@ -305,7 +327,7 @@ def test_nested_transaction_change_during_owner_work_is_rejected(work, monkeypat
     monkeypatch.setattr(seam.launch, "preview_view", drift)
     with pytest.raises(DomainError) as error:
         preview(work)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 def test_same_actual_nested_uow_is_accepted_without_connection(work):
@@ -326,7 +348,7 @@ def test_product_material_change_is_rejected(work, monkeypatch):
     monkeypatch.setattr(seam.launch, "preview_view", drift)
     with pytest.raises(DomainError) as error:
         preview(work)
-    assert error.value.code == "INTEGRATION_REQUIRED"
+    assert error.value.reason == "INTEGRATION_REQUIRED"
 
 
 def test_successful_bound_proof_reuses_owner_only_with_fresh_sources_each_hit(monkeypatch):
@@ -371,7 +393,7 @@ def test_successful_cached_proof_does_not_bypass_source_withdrawal(monkeypatch):
 
     with pytest.raises(DomainError) as error:
         physical._bound_proof(None, None, None, bound, row, "same", lambda: None, withdrawn)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 def proof_work(monkeypatch):
@@ -380,7 +402,7 @@ def proof_work(monkeypatch):
     counts = {"check": 0, "sources": 0}
     monkeypatch.setattr(physical, "now", lambda: clock[0])
     monkeypatch.setattr(
-        physical, "_proof_stamp", lambda *_: (stamp[0], delivered.AT + timedelta(minutes=10))
+        physical, "_proof_stamp", lambda *_: (stamp[0], delivered.AT + timedelta(minutes=3))
     )
     row = SimpleNamespace(
         authority_snapshot={"valid_until": (delivered.AT + timedelta(minutes=3)).isoformat()}
@@ -447,7 +469,7 @@ def test_clock_expiry_during_original_owner_io_cannot_cache_success(monkeypatch)
 
     with pytest.raises(DomainError) as error:
         check_proof(w, slow)
-    assert error.value.code == "SOURCE_STALE" and w.bound.proofs == {}
+    assert error.value.reason == "SOURCE_STALE" and w.bound.proofs == {}
 
 
 def test_cache_deadline_is_not_renewed_by_repeated_success(monkeypatch):
@@ -460,7 +482,7 @@ def test_cache_deadline_is_not_renewed_by_repeated_success(monkeypatch):
     w.clock[0] += timedelta(minutes=2)
     with pytest.raises(DomainError) as error:
         check_proof(w)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 def test_ending_original_uow_during_io_never_reads_expired_product(work, monkeypatch):
@@ -474,7 +496,7 @@ def test_ending_original_uow_during_io_never_reads_expired_product(work, monkeyp
     monkeypatch.setattr(seam.launch, "preview_view", ended)
     with pytest.raises(DomainError) as error:
         preview(work)
-    assert error.value.code == "INTEGRATION_REQUIRED"
+    assert error.value.reason == "INTEGRATION_REQUIRED"
 
 
 def test_delivered_validate_guards_are_present_in_unchanged_preview():
@@ -551,7 +573,7 @@ def test_real_host_event_requires_past_only_for_actual_start(work, monkeypatch, 
             seam.launch._event(
                 None, work.ctx, work.product.id, request, plan, payload, refs, actual=True
             )
-        assert error.value.code == "INVALID_EVENT_TIME"
+        assert error.value.reason == "INVALID_EVENT_TIME"
     else:
         seam.launch._event(
             None, work.ctx, work.product.id, request, plan, payload, refs, actual=False

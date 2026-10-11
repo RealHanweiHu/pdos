@@ -6,12 +6,6 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pdos_next import test_resource_bootstrap as bootstrap
-from pdos_next.domain.build_operational_facts.schemas import DecisionInput
-from pdos_next.domain.test_resources import service as domain
-from pdos_next.domain.test_resources.schemas import TestPlanBinding as PlanBinding
-from pdos_next.errors import DomainError
-from pdos_next.schemas.resource_readiness.contracts import ResourceRef
 from test_operational_bootstrap_profiles import (
     AT,
     marker,
@@ -21,6 +15,14 @@ from test_operational_bootstrap_profiles import (
     reused_epoch_drift_refused,
 )
 from test_operational_bootstrap_profiles import profile as operational_profile
+
+from pdos_next import test_resource_bootstrap as bootstrap
+from pdos_next.domain.build_operational_facts.schemas import DecisionInput
+from pdos_next.domain.test_resources import service as domain
+from pdos_next.domain.test_resources.schemas import TestPlanBinding as PlanBinding
+from pdos_next.error_catalog import REASONS
+from pdos_next.errors import DomainError
+from pdos_next.schemas.resource_readiness.contracts import ResourceRef
 
 
 def profile(*, key="new-test", tenant=None, product=None):
@@ -101,7 +103,8 @@ def test_wrong_product_is_rejected_by_actual_domain_issuer_and_wrong_run_by_call
     assert domain._issuer(session, ctx, left.product_id, uuid4(), left) is left
     with pytest.raises(DomainError) as error:
         domain._issuer(session, ctx, right.product_id, uuid4(), left)
-    assert error.value.code == "TRUSTED_ISSUER_REQUIRED"
+    assert error.value.reason == "TRUSTED_ISSUER_REQUIRED"
+    assert error.value.code == REASONS["TRUSTED_ISSUER_REQUIRED"]
     entry = a["decisions"][0]
     args = (
         session,

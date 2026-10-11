@@ -6,7 +6,7 @@ from uuid import UUID
 
 from pydantic import ConfigDict, Field, field_validator, model_validator
 
-from pdos_next.contracts import StrictModel
+from pdos_next.schema_base import StrictModel
 from pdos_next.schemas.products.definitions import DefinitionDraftPayload
 
 
@@ -168,7 +168,7 @@ class Research(DTO):
     id: UUID
     tenant_id: UUID
     owner_id: UUID
-    audience: Literal["private", "product"]
+    audience: Literal["private", "category", "audience"]
     scope_id: UUID
     revision: int = Field(ge=1)
     title: str

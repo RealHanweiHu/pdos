@@ -123,6 +123,21 @@ function ScopedCandidatePanel({ api, onSaved, onPendingChange, onAccessRejected,
     await onSaved();
     await read();
   }, [onSaved, read]);
+  const loadHistory = async () => {
+    if (!data?.history_page?.next_cursor || loading) return;
+    const ticket = sequence.current;
+    setLoading(true); setError("");
+    try {
+      const value = await api<unknown>(`v1/products/${current.current.product.id}/capa-candidates?issue_id=${encodeURIComponent(current.current.issueId)}&history_cursor=${encodeURIComponent(data.history_page.next_cursor)}`);
+      if (!alive.current || ticket !== sequence.current) return;
+      const page = normalizeCandidatePanel(value, current.current);
+      setData(old => old ? { ...old, candidates: [...old.candidates, ...page.candidates.filter(row => !old.candidates.some(saved => saved.id === row.id))], history_page: page.history_page } : old);
+    } catch (failure) {
+      if (!alive.current || ticket !== sequence.current) return;
+      if ([401, 403].includes(candidateErrorStatus(failure) ?? 0) || failure instanceof CandidatePanelScopeError) clearPrivate();
+      setError("历史读取失败，请重试；已有填写与原请求保留。");
+    } finally { if (alive.current && ticket === sequence.current) setLoading(false); }
+  };
   const refresh = () => { if (!loading) void read().catch(() => { /* Current read error is already shown. */ }); };
   return <section className={`space-y-4 ${wrap}`} aria-label="复验候选" aria-busy={loading}>
     <div className="panel space-y-3">
@@ -145,6 +160,7 @@ function ScopedCandidatePanel({ api, onSaved, onPendingChange, onAccessRejected,
           <details className="text-xs text-muted-foreground"><summary className="cursor-pointer py-2">固定记录对账</summary>
             <p>候选：{candidate.id}</p><p>保存回执：{candidate.receipt_id}</p></details>
         </article>)}
+        {data.history_page?.next_cursor && <Button variant="outline" disabled={loading} onClick={() => void loadHistory()}>读取更多候选历史</Button>}
         <p className="subtle">有效性决定与单独关闭尚未接通。未知不等于无效；候选不会推进问题状态。</p>
       </section>
     </>}
@@ -164,7 +180,7 @@ function BusinessReview({ reading: r, host, reads }: { reading: CandidateBusines
     {r.synthetic && <p className="rounded-lg border border-primary p-3 text-sm">本地合成演练：原失败、整改和当前专业政策用于核验流程，不代表真实生产资格。</p>}
     <section className="space-y-2"><h4 className="font-medium">本次范围与原失败依据</h4><p>{r.title}</p><p>用途：{r.purpose}</p>
       <p>原失败依据固定第 {r.origin_revision} 版；本次核对当前第 {r.current_revision} 版，历史不覆盖。</p>
-      <p>可见范围：{r.visibility === "private" ? "原范围内仅本人可见" : "原产品范围内可见"} · 完整来源 {r.source_count} 份</p>
+      <p>可见范围：{r.visibility === "private" ? "原范围内仅本人可见" : "原型号范围内可见"} · 完整来源 {r.source_count} 份</p>
       <p>保存原因：{r.reason}</p></section>
     <section className="space-y-3"><h4 className="font-medium">原失败原值与工况（只读）</h4>
       {r.failures.map((f, index) => <article key={f.identity} className={`space-y-2 rounded-lg border p-3 text-sm ${wrap}`}>
@@ -194,7 +210,7 @@ function BusinessReview({ reading: r, host, reads }: { reading: CandidateBusines
     </section>
     <section className="space-y-2"><h4 className="font-medium">独立验证要求与当前专业政策</h4><p>验证方法：{r.requirement.method}</p><p>验收要求：{r.requirement.acceptance}</p><p>要求观察至：{r.requirement.observation_until}</p>
       <p>政策第 {r.policy_revision} 版 · 风险 {risks[r.risk]} · {r.independent_verification ? "要求独立验证" : "政策未要求独立验证（候选自身仍未知）"}</p>
-      <p>政策有效至：{r.policy_valid_until}</p><p>服务器已核对本操作专业准入：{r.roles.length ? r.roles.map(role => roles[role] ?? "职责名称未提供").join("、") : "职责名称未提供"} · 有效至 {r.authority_valid_until}</p>
+      <p>{r.policy_valid_until ? `政策有效至：${r.policy_valid_until}` : "当前政策及各项适用时间已核对"}</p><p>本操作专业准入：{r.roles.length ? r.roles.map(role => roles[role] ?? "职责名称未提供").join("、") : "职责名称未提供"}{r.authority_valid_until ? ` · 有效至 ${r.authority_valid_until}` : " · 当前职责与资格已核对"}</p>
       <p>本次保存不包含具名复核、有效性决定或问题关闭。</p></section>
     <section className="space-y-2"><h4 className="font-medium">本次精确原文出处</h4>{!r.sources.length && <p>未额外选择候选出处；原失败与整改的固定来源仍保留在完整读集中。</p>}
       {r.sources.map((source, index) => <blockquote key={index} className={`space-y-2 rounded-lg border p-3 text-sm ${wrap}`}><p>{source.title || "固定来源，标题未提供"} · 第 {source.reference.expected_revision} 版 · 第 {source.reference.line} 行</p><p className="whitespace-pre-wrap">{source.reference.quote}</p></blockquote>)}
@@ -203,7 +219,7 @@ function BusinessReview({ reading: r, host, reads }: { reading: CandidateBusines
     <section className="space-y-2 rounded-lg border border-primary p-3"><h4 className="font-medium">待独立核对的缺项与保存后果</h4>
       <p>适用性未知 · 独立核验未知 · 观察完整性未知 · 综合仍待核对</p>
       {r.missing.length ? <ul className="list-disc space-y-2 pl-5 text-sm">{r.missing.map((gap, index) => <li key={`${gap.code}:${index}`}>{gap.detail}</li>)}</ul> : <p>服务器未列额外缺项；三项专业判断仍保持未知。</p>}
-      <p className="text-sm">只保存本次固定候选与原失败对应，不覆盖历史、原值或原时钟，不决定措施有效，不关闭问题，也不放行产品。</p></section>
+      <p className="text-sm">只保存本次固定候选与原失败对应，不覆盖历史、原值或原时钟，不决定措施有效，不关闭问题，也不放行成品。</p></section>
   </div>;
 }
 function Fact({ label, value }: { label: string; value: unknown }) { return <div className={wrap}><dt className="text-muted-foreground">{label}</dt><dd>{typeof value === "string" || typeof value === "number" ? value : empty}</dd></div>; }

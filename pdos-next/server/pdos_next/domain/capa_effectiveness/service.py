@@ -131,7 +131,6 @@ def _reads(command, prepared):
     _require(bool(command.source_read_set), "MISSING_REQUIRED_EVIDENCE", 409)
     _require(
         bool(prepared.required_source_read_set)
-        and len(prepared.required_source_read_set) <= 20
         and anchor.canonical_reads(command.source_read_set)
         == anchor.canonical_reads(prepared.required_source_read_set),
         "MISSING_REQUIRED_EVIDENCE",
@@ -160,7 +159,7 @@ def _origin(s, ctx, product_id, payload):
         QualityIssueVersion.revision == pointer.issue_revision,
     )
     _require(
-        row.visibility in {"private", "product"}
+        row.visibility in {"private", "category", "audience"}
         and (row.visibility != "private" or row.owner_id == ctx.requester_id),
         "FORBIDDEN_SCOPE",
         403,
@@ -191,7 +190,7 @@ def review(s, ctx, product_id, payload):
             candidate_prepare.require_prepared_candidate_clock(
                 s, ctx, product_id, checked, prepared, datetime.now(UTC)
             )
-            return deepcopy(result)
+            return result
         finally:
             _discard(prepared)
 

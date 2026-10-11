@@ -55,6 +55,7 @@ from pdos_next.domain.verification_handoff.models import (
 from pdos_next.domain.verification_handoff.schemas import ActualMethodPreparePayload
 from pdos_next.domain.sample_handoff import service as physical
 from pdos_next.domain.professional_authority.models import ProfessionalFact
+from pdos_next.domain.professional_authority.service import authority_time_current
 from pdos_next.schemas.verification.contracts import VerificationRequest
 
 
@@ -82,12 +83,11 @@ def _source_keys(values):
     return {(v.kind, v.id, v.revision, v.position) for v in _sources(values)}
 
 
-def _future_professional(s, ctx, pid, snapshot):
-    """Full actual assessment refs include negative facts and future activations."""
-    require(snapshot.get("fact_refs") and snapshot.get("valid_until"))
-    at, boundaries = datetime.now(UTC), [instant(snapshot["valid_until"])]
+def _professional_current(s, ctx, pid, snapshot):
+    """Check exact selected facts and their actual operation, without a capture TTL."""
+    require(snapshot.get("fact_refs"))
     for ref in snapshot["fact_refs"]:
-        row = guards._one(
+        guards._one(
             s,
             ProfessionalFact,
             ProfessionalFact.tenant_id == ctx.tenant_id,
@@ -97,9 +97,8 @@ def _future_professional(s, ctx, pid, snapshot):
             ProfessionalFact.id == UUID(ref["id"]),
             ProfessionalFact.revision == ref["revision"],
         )
-        if row.state == "active":
-            boundaries.extend(v for v in (row.valid_from, row.valid_until) if v > at)
-    return tuple(boundaries)
+    require(authority_time_current(snapshot, datetime.now(UTC)), "SOURCE_STALE", 409)
+    return ()
 
 
 @dataclass(frozen=True)
@@ -122,7 +121,8 @@ class ActualActionAttestation:
     owner_material: dict
     reads: tuple
     checked_at: datetime
-    valid_until: datetime
+    valid_until: datetime | None
+    time_constraints: tuple[datetime, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -131,8 +131,9 @@ class ActionRead:
     owner_material: dict
     sources: tuple
     reads: tuple
-    valid_until: datetime
+    valid_until: datetime | None
     missing: tuple[str, ...]
+    time_constraints: tuple[datetime, ...] = ()
 
 
 class ActualActionFulfillmentOwner:
@@ -393,6 +394,7 @@ class ActualActionFulfillmentOwner:
                     and proof.owner_refs == late.owner_refs
                     and proof.reads == late.reads
                     and proof.valid_until == late.valid_until
+                    and proof.time_constraints == late.time_constraints
                     and proof.classification == late.classification,
                     "SOURCE_STALE",
                     409,
@@ -402,6 +404,7 @@ class ActualActionFulfillmentOwner:
                 sources.extend(proof.owner_refs)
                 reads.extend(proof.reads)
                 bounds.append(proof.valid_until)
+                bounds.extend(proof.time_constraints)
             else:
                 missing.add("ACTION_FULFILLMENT_UNDETERMINED")
             sources = a.canonical_sources(sources)
@@ -464,7 +467,9 @@ class ActualActionFulfillmentOwner:
                 "SOURCE_STALE",
                 409,
             )
-            checked, until = _deadline(s, ctx, pid, (*bounds, final.valid_until))
+            checked, time_constraints = _deadline(
+                s, ctx, pid, (*bounds, final.valid_until, *final.time_constraints)
+            )
             guards._same_uow(s, captured, ctx, caller)
             value = ActionFulfillment(
                 action=binding,
@@ -479,9 +484,17 @@ class ActualActionFulfillmentOwner:
                 },
             )
             result = ActionRead(
-                value, _wire(material), sources, reads, until, tuple(sorted(missing))
+                value,
+                _wire(material),
+                sources,
+                reads,
+                None,
+                tuple(sorted(missing)),
+                time_constraints,
             )
-            require(datetime.now(UTC) < until, "SOURCE_STALE", 409)
+            require(
+                all(datetime.now(UTC) < value for value in time_constraints), "SOURCE_STALE", 409
+            )
             guards._same_uow(s, captured, ctx, caller)
             return result
 
@@ -489,7 +502,7 @@ class ActualActionFulfillmentOwner:
     def _completion(s, ctx, pid, origin, completion):
         source = completion.at.source
         reads, basis, private = evidence.check_source(s, ctx, pid, source)
-        require(origin.visibility != "product" or not private, "FORBIDDEN_SCOPE", 403)
+        require(origin.visibility != "category" or not private, "FORBIDDEN_SCOPE", 403)
         match = evidence.POSITION.fullmatch(source.position)
         require(match is not None and source.kind == "artifact", "ACTION_COMPLETION_OWNER_REQUIRED")
         row = source_for(s, ctx, pid, source.id, source.revision)
@@ -522,7 +535,13 @@ class ActualActionFulfillmentOwner:
             "ACTION_FULFILLMENT_MISMATCH",
             409,
         )
-        require(proof.checked_at <= datetime.now(UTC) < proof.valid_until, "SOURCE_STALE", 409)
+        require(
+            proof.checked_at <= datetime.now(UTC)
+            and (proof.valid_until is None or datetime.now(UTC) < proof.valid_until)
+            and all(datetime.now(UTC) < value for value in proof.time_constraints),
+            "SOURCE_STALE",
+            409,
+        )
 
     def refresh(self, s, ctx, pid, selection, previous, **kwargs):
         actual = self.read(s, ctx, pid, selection, **kwargs)
@@ -531,7 +550,8 @@ class ActualActionFulfillmentOwner:
             and actual.owner_material == previous.owner_material
             and actual.sources == previous.sources
             and actual.reads == previous.reads
-            and actual.valid_until == previous.valid_until,
+            and actual.valid_until == previous.valid_until
+            and actual.time_constraints == previous.time_constraints,
             "SOURCE_STALE",
             409,
         )
@@ -603,6 +623,7 @@ class ActualApplicabilityOwner:
         require(
             actual.structure is not None
             and actual.host_gate is not None
+            and not actual.host_gate.needs_review
             and not actual.missing
             and actual.structure.meaning == "performed",
             "LIVE_PAIRED_OWNER_REQUIRED",
@@ -805,7 +826,7 @@ class ActualApplicabilityOwner:
         if row["status"] == "applicable":
             require(item.method is not None and criterion is not None, "ACTUAL_METHOD_UNKNOWN", 409)
         reader.refs.extend(actual_sources)
-        bounds = _future_professional(s, ctx, pid, row["authority_snapshot"])
+        bounds = _professional_current(s, ctx, pid, row["authority_snapshot"])
         value = PairApplicability(
             mapping=mapping,
             method=item.method,
@@ -857,7 +878,8 @@ class ActualApplicabilityOwner:
                 policy.assess(s, ctx, pid, origin.scope.project_id, origin.purpose)
             )
             require(
-                policy_value.get("nature") == origin.nature and policy_value.get("valid_until"),
+                policy_value.get("nature") == origin.nature
+                and policy.policy_time_current(policy_value, datetime.now(UTC)),
                 "CURRENT_POLICY_OWNER_REQUIRED",
             )
             live = tuple(self._pair(s, ctx, pid, v, anchor) for v in pairs)
@@ -870,9 +892,9 @@ class ActualApplicabilityOwner:
             values, material, checks = [], [], []
             bounds = [
                 rule.valid_until,
-                instant(policy_value["valid_until"]),
-                *_future_professional(s, ctx, pid, authority),
+                *_professional_current(s, ctx, pid, authority),
                 *(v.host_gate.valid_until for v in live),
+                *(value for v in live for value in v.host_gate.time_constraints),
             ]
             for selected in payload.pair_applicability:
                 raw = indexed.get((selected.mapping.run.id, selected.mapping.run.revision))
@@ -944,6 +966,7 @@ class ActualApplicabilityOwner:
                 )
             )
             bounds.extend(v.valid_until for v in actions)
+            bounds.extend(value for v in actions for value in v.time_constraints)
             closure = read_source_closure(
                 s,
                 ctx,
@@ -979,7 +1002,9 @@ class ActualApplicabilityOwner:
                 require(
                     late.structure == old.structure
                     and late.host_gate.stamps == old.host_gate.stamps
-                    and late.host_gate.valid_until == old.host_gate.valid_until,
+                    and late.host_gate.valid_until == old.host_gate.valid_until
+                    and late.host_gate.time_constraints == old.host_gate.time_constraints
+                    and late.host_gate.needs_review == old.host_gate.needs_review,
                     "SOURCE_STALE",
                     409,
                 )
@@ -1016,7 +1041,9 @@ class ActualApplicabilityOwner:
                 "SOURCE_STALE",
                 409,
             )
-            checked, until = _deadline(s, ctx, pid, (*bounds, final.valid_until))
+            checked, time_constraints = _deadline(
+                s, ctx, pid, (*bounds, final.valid_until, *final.time_constraints)
+            )
             guards._same_uow(s, captured, ctx, caller)
             result = ActualReviewApplicability(
                 session=s,
@@ -1046,9 +1073,12 @@ class ActualApplicabilityOwner:
                 sources=sources,
                 reads=reads,
                 checked_at=checked,
-                valid_until=until,
+                valid_until=None,
+                time_constraints=time_constraints,
             )
-            require(datetime.now(UTC) < until, "SOURCE_STALE", 409)
+            require(
+                all(datetime.now(UTC) < value for value in time_constraints), "SOURCE_STALE", 409
+            )
             guards._same_uow(s, captured, ctx, caller)
             return result
 
@@ -1066,7 +1096,8 @@ class ActualApplicabilityOwner:
             and actual.actions == previous.actions
             and actual.sources == previous.sources
             and actual.reads == previous.reads
-            and actual.valid_until == previous.valid_until,
+            and actual.valid_until == previous.valid_until
+            and actual.time_constraints == previous.time_constraints,
             "SOURCE_STALE",
             409,
         )

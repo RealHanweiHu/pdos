@@ -1,0 +1,226 @@
+[
+  {
+    "tablename": "build_authorization_decisions",
+    "policyname": "category_scope",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = build_authorization_decisions.tenant_id) AND (a.category_id = build_authorization_decisions.category_id) AND ((a.object_type)::text = 'build_authorization_decisions'::text) AND (a.subject_id = build_authorization_decisions.id) AND (a.owner_id = build_authorization_decisions.owner_id) AND (a.principal_id = scope_requester()))))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = build_authorization_decisions.tenant_id) AND (a.category_id = build_authorization_decisions.category_id) AND ((a.object_type)::text = 'build_authorization_decisions'::text) AND (a.subject_id = build_authorization_decisions.id) AND (a.owner_id = build_authorization_decisions.owner_id) AND (a.principal_id = scope_requester()))))))"
+  },
+  {
+    "tablename": "build_authorization_decisions",
+    "policyname": "direct_source_audience",
+    "cmd": "SELECT",
+    "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)",
+    "with_check": null
+  },
+  {
+    "tablename": "build_authorization_decisions",
+    "policyname": "model_audience",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_authorization_decisions.tenant_id) AND (p.category_id = build_authorization_decisions.category_id) AND (p.id = build_authorization_decisions.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_authorization_decisions.tenant_id) AND (p.category_id = build_authorization_decisions.category_id) AND (p.id = build_authorization_decisions.product_id)))))"
+  },
+  {
+    "tablename": "build_authorization_decisions",
+    "policyname": "upstream_audience",
+    "cmd": "SELECT",
+    "qual": "(((assessment_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'build_execution_assessments'::text, assessment_id)) AND ((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id)))",
+    "with_check": null
+  },
+  {
+    "tablename": "build_current_authorizations",
+    "policyname": "category_scope",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_current_authorizations.tenant_id) AND (p.category_id = build_current_authorizations.category_id) AND (p.id = build_current_authorizations.product_id)))) AND (EXISTS ( SELECT 1\n   FROM build_authorization_decisions p\n  WHERE ((p.tenant_id = build_current_authorizations.tenant_id) AND (p.product_id = build_current_authorizations.product_id) AND (p.project_id = build_current_authorizations.project_id) AND (p.build_id = build_current_authorizations.build_id) AND ((p.role)::text = (build_current_authorizations.role)::text) AND (p.id = build_current_authorizations.decision_id) AND (p.revision = build_current_authorizations.decision_revision)))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_current_authorizations.tenant_id) AND (p.category_id = build_current_authorizations.category_id) AND (p.id = build_current_authorizations.product_id)))) AND (EXISTS ( SELECT 1\n   FROM build_authorization_decisions p\n  WHERE ((p.tenant_id = build_current_authorizations.tenant_id) AND (p.product_id = build_current_authorizations.product_id) AND (p.project_id = build_current_authorizations.project_id) AND (p.build_id = build_current_authorizations.build_id) AND ((p.role)::text = (build_current_authorizations.role)::text) AND (p.id = build_current_authorizations.decision_id) AND (p.revision = build_current_authorizations.decision_revision)))))"
+  },
+  {
+    "tablename": "build_current_authorizations",
+    "policyname": "model_audience",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_current_authorizations.tenant_id) AND (p.category_id = build_current_authorizations.category_id) AND (p.id = build_current_authorizations.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_current_authorizations.tenant_id) AND (p.category_id = build_current_authorizations.category_id) AND (p.id = build_current_authorizations.product_id)))))"
+  },
+  {
+    "tablename": "build_starts",
+    "policyname": "category_scope",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = build_starts.tenant_id) AND (a.category_id = build_starts.category_id) AND ((a.object_type)::text = 'build_starts'::text) AND (a.subject_id = build_starts.id) AND (a.owner_id = build_starts.owner_id) AND (a.principal_id = scope_requester()))))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = build_starts.tenant_id) AND (a.category_id = build_starts.category_id) AND ((a.object_type)::text = 'build_starts'::text) AND (a.subject_id = build_starts.id) AND (a.owner_id = build_starts.owner_id) AND (a.principal_id = scope_requester()))))))"
+  },
+  {
+    "tablename": "build_starts",
+    "policyname": "direct_source_audience",
+    "cmd": "SELECT",
+    "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)",
+    "with_check": null
+  },
+  {
+    "tablename": "build_starts",
+    "policyname": "model_audience",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_starts.tenant_id) AND (p.category_id = build_starts.category_id) AND (p.id = build_starts.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_starts.tenant_id) AND (p.category_id = build_starts.category_id) AND (p.id = build_starts.product_id)))))"
+  },
+  {
+    "tablename": "build_starts",
+    "policyname": "upstream_audience",
+    "cmd": "SELECT",
+    "qual": "(((assessment_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'build_execution_assessments'::text, assessment_id)) AND ((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id)) AND ((engineering_authorization_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'build_authorization_decisions'::text, engineering_authorization_id)) AND ((manufacturing_authorization_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'build_authorization_decisions'::text, manufacturing_authorization_id)))",
+    "with_check": null
+  },
+  {
+    "tablename": "sample_current_readiness",
+    "policyname": "category_scope",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = sample_current_readiness.tenant_id) AND (p.category_id = sample_current_readiness.category_id) AND (p.id = sample_current_readiness.product_id)))) AND (EXISTS ( SELECT 1\n   FROM sample_readiness_facts p\n  WHERE ((p.tenant_id = sample_current_readiness.tenant_id) AND (p.product_id = sample_current_readiness.product_id) AND (p.project_id = sample_current_readiness.project_id) AND (p.build_id = sample_current_readiness.build_id) AND (p.sample_id = sample_current_readiness.sample_id) AND (p.id = sample_current_readiness.readiness_id) AND (p.revision = sample_current_readiness.readiness_revision)))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = sample_current_readiness.tenant_id) AND (p.category_id = sample_current_readiness.category_id) AND (p.id = sample_current_readiness.product_id)))) AND (EXISTS ( SELECT 1\n   FROM sample_readiness_facts p\n  WHERE ((p.tenant_id = sample_current_readiness.tenant_id) AND (p.product_id = sample_current_readiness.product_id) AND (p.project_id = sample_current_readiness.project_id) AND (p.build_id = sample_current_readiness.build_id) AND (p.sample_id = sample_current_readiness.sample_id) AND (p.id = sample_current_readiness.readiness_id) AND (p.revision = sample_current_readiness.readiness_revision)))))"
+  },
+  {
+    "tablename": "sample_current_readiness",
+    "policyname": "model_audience",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = sample_current_readiness.tenant_id) AND (p.category_id = sample_current_readiness.category_id) AND (p.id = sample_current_readiness.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = sample_current_readiness.tenant_id) AND (p.category_id = sample_current_readiness.category_id) AND (p.id = sample_current_readiness.product_id)))))"
+  },
+  {
+    "tablename": "sample_readiness_facts",
+    "policyname": "category_scope",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = sample_readiness_facts.tenant_id) AND (a.category_id = sample_readiness_facts.category_id) AND ((a.object_type)::text = 'sample_readiness_facts'::text) AND (a.subject_id = sample_readiness_facts.id) AND (a.owner_id = sample_readiness_facts.owner_id) AND (a.principal_id = scope_requester()))))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = sample_readiness_facts.tenant_id) AND (a.category_id = sample_readiness_facts.category_id) AND ((a.object_type)::text = 'sample_readiness_facts'::text) AND (a.subject_id = sample_readiness_facts.id) AND (a.owner_id = sample_readiness_facts.owner_id) AND (a.principal_id = scope_requester()))))))"
+  },
+  {
+    "tablename": "sample_readiness_facts",
+    "policyname": "direct_source_audience",
+    "cmd": "SELECT",
+    "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)",
+    "with_check": null
+  },
+  {
+    "tablename": "sample_readiness_facts",
+    "policyname": "model_audience",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = sample_readiness_facts.tenant_id) AND (p.category_id = sample_readiness_facts.category_id) AND (p.id = sample_readiness_facts.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = sample_readiness_facts.tenant_id) AND (p.category_id = sample_readiness_facts.category_id) AND (p.id = sample_readiness_facts.product_id)))))"
+  },
+  {
+    "tablename": "sample_readiness_facts",
+    "policyname": "upstream_audience",
+    "cmd": "SELECT",
+    "qual": "(((lot_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'build_lots'::text, lot_id)) AND ((sample_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'sample_units'::text, sample_id)))",
+    "with_check": null
+  },
+  {
+    "tablename": "sample_units",
+    "policyname": "category_scope",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = sample_units.tenant_id) AND (a.category_id = sample_units.category_id) AND ((a.object_type)::text = 'sample_units'::text) AND (a.subject_id = sample_units.id) AND (a.owner_id = sample_units.owner_id) AND (a.principal_id = scope_requester()))))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = sample_units.tenant_id) AND (a.category_id = sample_units.category_id) AND ((a.object_type)::text = 'sample_units'::text) AND (a.subject_id = sample_units.id) AND (a.owner_id = sample_units.owner_id) AND (a.principal_id = scope_requester()))))))"
+  },
+  {
+    "tablename": "sample_units",
+    "policyname": "direct_source_audience",
+    "cmd": "SELECT",
+    "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)",
+    "with_check": null
+  },
+  {
+    "tablename": "sample_units",
+    "policyname": "model_audience",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = sample_units.tenant_id) AND (p.category_id = sample_units.category_id) AND (p.id = sample_units.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = sample_units.tenant_id) AND (p.category_id = sample_units.category_id) AND (p.id = sample_units.product_id)))))"
+  },
+  {
+    "tablename": "sample_units",
+    "policyname": "upstream_audience",
+    "cmd": "SELECT",
+    "qual": "(((allocation_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'sample_allocations'::text, allocation_id)) AND ((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id)) AND ((lot_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'build_lots'::text, lot_id)))",
+    "with_check": null
+  },
+  {
+    "tablename": "verification_actual_method_applicabilities",
+    "policyname": "category_scope",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = verification_actual_method_applicabilities.tenant_id) AND (a.category_id = verification_actual_method_applicabilities.category_id) AND ((a.object_type)::text = 'verification_actual_method_applicabilities'::text) AND (a.subject_id = verification_actual_method_applicabilities.id) AND (a.owner_id = verification_actual_method_applicabilities.owner_id) AND (a.principal_id = scope_requester()))))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = verification_actual_method_applicabilities.tenant_id) AND (a.category_id = verification_actual_method_applicabilities.category_id) AND ((a.object_type)::text = 'verification_actual_method_applicabilities'::text) AND (a.subject_id = verification_actual_method_applicabilities.id) AND (a.owner_id = verification_actual_method_applicabilities.owner_id) AND (a.principal_id = scope_requester()))))))"
+  },
+  {
+    "tablename": "verification_actual_method_applicabilities",
+    "policyname": "direct_source_audience",
+    "cmd": "SELECT",
+    "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)",
+    "with_check": null
+  },
+  {
+    "tablename": "verification_actual_method_applicabilities",
+    "policyname": "model_audience",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_actual_method_applicabilities.tenant_id) AND (p.category_id = verification_actual_method_applicabilities.category_id) AND (p.id = verification_actual_method_applicabilities.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_actual_method_applicabilities.tenant_id) AND (p.category_id = verification_actual_method_applicabilities.category_id) AND (p.id = verification_actual_method_applicabilities.product_id)))))"
+  },
+  {
+    "tablename": "verification_actual_method_applicabilities",
+    "policyname": "upstream_audience",
+    "cmd": "SELECT",
+    "qual": "(((actual_configuration_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'actual_configurations'::text, actual_configuration_id)) AND ((batch_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_actual_method_batches'::text, batch_id)) AND ((request_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_formal_requests'::text, request_version_id)) AND ((sample_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'sample_units'::text, sample_id)))",
+    "with_check": null
+  },
+  {
+    "tablename": "verification_current_actual_methods",
+    "policyname": "category_scope",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_current_actual_methods.tenant_id) AND (p.category_id = verification_current_actual_methods.category_id) AND (p.id = verification_current_actual_methods.product_id)))) AND (EXISTS ( SELECT 1\n   FROM verification_actual_method_applicabilities p\n  WHERE ((p.tenant_id = verification_current_actual_methods.tenant_id) AND (p.product_id = verification_current_actual_methods.product_id) AND (p.request_id = verification_current_actual_methods.request_id) AND (p.sample_id = verification_current_actual_methods.sample_id) AND ((p.item_id)::text = (verification_current_actual_methods.item_id)::text) AND (p.id = verification_current_actual_methods.assessment_id) AND (p.revision = verification_current_actual_methods.assessment_revision)))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_current_actual_methods.tenant_id) AND (p.category_id = verification_current_actual_methods.category_id) AND (p.id = verification_current_actual_methods.product_id)))) AND (EXISTS ( SELECT 1\n   FROM verification_actual_method_applicabilities p\n  WHERE ((p.tenant_id = verification_current_actual_methods.tenant_id) AND (p.product_id = verification_current_actual_methods.product_id) AND (p.request_id = verification_current_actual_methods.request_id) AND (p.sample_id = verification_current_actual_methods.sample_id) AND ((p.item_id)::text = (verification_current_actual_methods.item_id)::text) AND (p.id = verification_current_actual_methods.assessment_id) AND (p.revision = verification_current_actual_methods.assessment_revision)))))"
+  },
+  {
+    "tablename": "verification_current_actual_methods",
+    "policyname": "model_audience",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_current_actual_methods.tenant_id) AND (p.category_id = verification_current_actual_methods.category_id) AND (p.id = verification_current_actual_methods.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_current_actual_methods.tenant_id) AND (p.category_id = verification_current_actual_methods.category_id) AND (p.id = verification_current_actual_methods.product_id)))))"
+  },
+  {
+    "tablename": "verification_current_formal_requests",
+    "policyname": "category_scope",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_current_formal_requests.tenant_id) AND (p.category_id = verification_current_formal_requests.category_id) AND (p.id = verification_current_formal_requests.product_id)))) AND (EXISTS ( SELECT 1\n   FROM verification_formal_requests p\n  WHERE ((p.tenant_id = verification_current_formal_requests.tenant_id) AND (p.product_id = verification_current_formal_requests.product_id) AND (p.request_id = verification_current_formal_requests.request_id) AND (p.id = verification_current_formal_requests.request_version_id) AND (p.revision = verification_current_formal_requests.request_revision)))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_current_formal_requests.tenant_id) AND (p.category_id = verification_current_formal_requests.category_id) AND (p.id = verification_current_formal_requests.product_id)))) AND (EXISTS ( SELECT 1\n   FROM verification_formal_requests p\n  WHERE ((p.tenant_id = verification_current_formal_requests.tenant_id) AND (p.product_id = verification_current_formal_requests.product_id) AND (p.request_id = verification_current_formal_requests.request_id) AND (p.id = verification_current_formal_requests.request_version_id) AND (p.revision = verification_current_formal_requests.request_revision)))))"
+  },
+  {
+    "tablename": "verification_current_formal_requests",
+    "policyname": "model_audience",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_current_formal_requests.tenant_id) AND (p.category_id = verification_current_formal_requests.category_id) AND (p.id = verification_current_formal_requests.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_current_formal_requests.tenant_id) AND (p.category_id = verification_current_formal_requests.category_id) AND (p.id = verification_current_formal_requests.product_id)))))"
+  },
+  {
+    "tablename": "verification_formal_requests",
+    "policyname": "category_scope",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = verification_formal_requests.tenant_id) AND (a.category_id = verification_formal_requests.category_id) AND ((a.object_type)::text = 'verification_formal_requests'::text) AND (a.subject_id = verification_formal_requests.id) AND (a.owner_id = verification_formal_requests.owner_id) AND (a.principal_id = scope_requester()))))))",
+    "with_check": "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = verification_formal_requests.tenant_id) AND (a.category_id = verification_formal_requests.category_id) AND ((a.object_type)::text = 'verification_formal_requests'::text) AND (a.subject_id = verification_formal_requests.id) AND (a.owner_id = verification_formal_requests.owner_id) AND (a.principal_id = scope_requester()))))))"
+  },
+  {
+    "tablename": "verification_formal_requests",
+    "policyname": "direct_source_audience",
+    "cmd": "SELECT",
+    "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)",
+    "with_check": null
+  },
+  {
+    "tablename": "verification_formal_requests",
+    "policyname": "model_audience",
+    "cmd": "ALL",
+    "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_formal_requests.tenant_id) AND (p.category_id = verification_formal_requests.category_id) AND (p.id = verification_formal_requests.product_id)))))",
+    "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_formal_requests.tenant_id) AND (p.category_id = verification_formal_requests.category_id) AND (p.id = verification_formal_requests.product_id)))))"
+  },
+  {
+    "tablename": "verification_formal_requests",
+    "policyname": "upstream_audience",
+    "cmd": "SELECT",
+    "qual": "(((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id)) AND ((preparation_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_preparations'::text, preparation_id)))",
+    "with_check": null
+  }
+]

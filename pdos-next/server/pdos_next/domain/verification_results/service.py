@@ -10,13 +10,15 @@ import json
 import re
 from copy import deepcopy
 from dataclasses import dataclass
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
 
 from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from pdos_next.contracts import Command
+from pdos_next.database import category_for_product
 from pdos_next.domain.measurement_evidence.schemas import ObservationSelection as SourceSelection
 from pdos_next.domain.measurement_evidence.schemas import ReportBinding
 from pdos_next.domain.measurement_evidence.verifier import (
@@ -24,6 +26,7 @@ from pdos_next.domain.measurement_evidence.verifier import (
     fixed_run_sha256,
     verify_measurement,
 )
+from pdos_next.domain.professional_authority.service import authority_time_current
 from pdos_next.domain.verification import rules
 from pdos_next.domain.verification.handlers import semantic_digest
 from pdos_next.domain.verification.ports import Invocation
@@ -41,6 +44,12 @@ from pdos_next.models import Artifact, Grant, Principal, Product, now
 from pdos_next.object_storage import StorageFailure
 from pdos_next.original_security import require_safe
 from pdos_next.originals import object_reference, read_registered_bytes, require_original
+from pdos_next.request_proof import (
+    command_inputs_once,
+    scope_is_held,
+    snapshot_rows,
+    snapshot_scalar,
+)
 from pdos_next.schemas.verification.contracts import (
     Measurement,
     ResultsSubmit,
@@ -108,6 +117,31 @@ def _row(s, ctx, pid, model, identity):
     return launch._row(s, ctx, pid, model, identity)
 
 
+def _rr_read_session(s):
+    return (
+        isinstance(s, Session)
+        and s.info.get("read_snapshot")
+        and s.in_transaction()
+        and not (s.new or s.dirty or s.deleted)
+    )
+
+
+def _held_read_session(s, ctx, pid):
+    if not (isinstance(s, Session) and s.in_transaction() and not (s.new or s.dirty or s.deleted)):
+        return False
+    from pdos_next.database import require_context
+
+    require_context(s, ctx)
+    # A writer shares only exact immutable rows under its actual model gate.
+    # Business, source-byte and terminal owner checks are never saved here.
+    return scope_is_held(s, pid)
+
+
+def _read_query_key(s, ctx, query):
+    compiled = query.compile()
+    return digest([vars(ctx), s.info.get("scope"), str(compiled), compiled.params])
+
+
 def _union(*groups):
     result = {}
     for group in groups:
@@ -118,26 +152,21 @@ def _union(*groups):
             if key in result and result[key] != rev:
                 raise DomainError("SOURCE_STALE", "同一原文不能绑定不同版本。")
             result[key] = rev
-    if len(result) > 20:
-        raise DomainError("MISSING_REQUIRED_EVIDENCE", "结果完整原文读集超过20份。", 422)
     return [{"artifact_id": key, "expected_revision": result[key]} for key in sorted(result)]
 
 
-def _base(s, ctx, pid, request_id, request_revision, run_id, run_revision):
-    launch._human(s, ctx, pid, write=True)
+def _base(s, ctx, pid, request_id, request_revision, run_id, run_revision, *, write=True):
+    launch._human(s, ctx, pid, write=write)
     request_row = front._version(s, ctx, pid, request_id, request_revision)
     request = front._snapshot(request_row)
-    front._current(s, ctx, pid, request_id, lock=True)
-    launch._current(s, ctx, pid, request_id=request_id, lock=True)
-    identity = s.scalar(
-        select(VerificationRunIdentity)
-        .where(
-            VerificationRunIdentity.tenant_id == ctx.tenant_id,
-            VerificationRunIdentity.product_id == pid,
-            VerificationRunIdentity.id == run_id,
-        )
-        .with_for_update()
+    front._current(s, ctx, pid, request_id, lock=write)
+    launch._current(s, ctx, pid, request_id=request_id, lock=write)
+    query = select(VerificationRunIdentity).where(
+        VerificationRunIdentity.tenant_id == ctx.tenant_id,
+        VerificationRunIdentity.product_id == pid,
+        VerificationRunIdentity.id == run_id,
     )
+    identity = s.scalar(query.with_for_update() if write else query)
     if identity is None or identity.request_id != request_id:
         raise DomainError("FORBIDDEN_SCOPE", "结果必须引用已有同范围Run身份。", 403)
     run_row = launch._version(s, ctx, pid, run_id, run_revision)
@@ -156,8 +185,9 @@ def _read_report(s, ctx, pid, run, plan, artifact_id, artifact_revision, store):
     artifact = source_for(s, ctx, pid, artifact_id, artifact_revision)
     if artifact.original_id is None:
         raise DomainError("ORIGINAL_REQUIRED", "测量必须来自不可变原件，派生文本不能替代。")
-    original = require_original(s, ctx, pid, artifact.original_id, lock=True)
-    epoch, _ = require_safe(s, ctx, original)
+    original = require_original(s, ctx, pid, artifact.original_id)
+    lock = not getattr(s, "info", {}).get("read_snapshot", False)
+    epoch, _ = require_safe(s, ctx, original, lock=lock)
     ref = object_reference(original)
     if ref.media_type not in {"text/plain", "application/x-ndjson", "application/jsonl"}:
         raise DomainError("UNSUPPORTED_REPORT", "首版只核验有界原生UTF-8 JSONL报告。", 422)
@@ -171,7 +201,7 @@ def _read_report(s, ctx, pid, run, plan, artifact_id, artifact_revision, store):
         or len(content) != original.byte_count
     ):
         raise DomainError("INTEGRITY_MISMATCH", "原报告字节完整性无法核对。")
-    current_epoch, _ = require_safe(s, ctx, original)
+    current_epoch, _ = require_safe(s, ctx, original, lock=lock)
     if current_epoch != epoch:
         raise DomainError("SOURCE_STALE", "读取期间原件安全版本已变化。")
     binding = ReportBinding(
@@ -228,14 +258,35 @@ class PreparedCapture:
     measurements: tuple
 
 
-def read_capture_report(s, ctx, pid, input: CaptureInput, store):
-    product = s.scalar(
-        select(Product)
-        .where(Product.id == pid, Product.tenant_id == ctx.tenant_id)
-        .with_for_update()
+def recover_capture(s, ctx, pid, input):
+    """A readable same-intent capture is returned before bytes, extraction or new proof."""
+    from pdos_next.database import require_context
+    from pdos_next.domain.supply_execution.service import _read_evidence
+    from pdos_next.service import require_access
+
+    require_context(s, ctx)
+    require_access(s, ctx, pid)
+    existing = s.scalar(
+        select(MeasurementImportCapture).where(
+            MeasurementImportCapture.tenant_id == ctx.tenant_id,
+            MeasurementImportCapture.product_id == pid,
+            MeasurementImportCapture.owner_id == ctx.requester_id,
+            MeasurementImportCapture.capture_key == input.capture_key,
+        )
     )
-    if product is None:
-        raise DomainError("FORBIDDEN_SCOPE", "结果报告不在当前产品。", 403)
+    if existing is None:
+        return None
+    if existing.input_digest != digest(input.model_dump(mode="json")):
+        raise DomainError("DUPLICATE_INTENT_CONFLICT", "捕获编号已绑定不同报告/范围。")
+    result = _capture_response(existing)
+    result["capture"]["source_status"] = _read_evidence(s, ctx, pid, existing)
+    return result
+
+
+def read_capture_report(s, ctx, pid, input: CaptureInput, store):
+    from pdos_next.service import require_access
+
+    require_access(s, ctx, pid)
     _, _, row, run, plan, reads, refs = _base(
         s,
         ctx,
@@ -244,19 +295,20 @@ def read_capture_report(s, ctx, pid, input: CaptureInput, store):
         input.expected_request_revision,
         input.run_id,
         input.expected_run_revision,
+        write=False,
     )
     if run.status != "running":
         raise DomainError("INVALID_STATE", "报告候选必须引用真实运行中的Run。")
     content, binding, artifact = _read_report(
         s, ctx, pid, run, plan, input.report_artifact_id, input.expected_report_revision, store
     )
-    if row.visibility == "product" and artifact.visibility == "private":
+    if row.visibility == "category" and artifact.visibility != "category":
         raise DomainError("FORBIDDEN_SCOPE", "私有原报告不能扩大到共享Run。", 403)
     reads = _union(
         reads, [{"artifact_id": str(artifact.id), "expected_revision": artifact.revision}]
     )
     basis, private = physical._basis(s, ctx, pid, reads, refs)
-    if row.visibility == "product" and private:
+    if row.visibility == "category" and private:
         raise DomainError("FORBIDDEN_SCOPE", "私有原件不能扩大到共享结果。", 403)
     return ReadReport(content, binding, basis, reads, refs)
 
@@ -272,6 +324,9 @@ def extract_capture(input: CaptureInput, report: ReadReport):
 
 
 def prepare_capture(s, ctx, pid, input: CaptureInput, prepared: PreparedCapture):
+    existing = recover_capture(s, ctx, pid, input)
+    if existing is not None:
+        return existing
     if not isinstance(prepared, PreparedCapture):
         raise DomainError("INTEGRATION_REQUIRED", "报告候选须经服务器两阶段核验。", 503)
     store = getattr(s.get_bind(), "_pdos_results_store", None)
@@ -343,7 +398,6 @@ def prepare_capture(s, ctx, pid, input: CaptureInput, prepared: PreparedCapture)
         sources=current.refs,
         required_source_read_set=current.reads,
         source_basis=current.source_basis,
-        expires_at=now() + timedelta(minutes=30),
         reason=input.reason,
     )
     s.add(capture)
@@ -384,8 +438,6 @@ def _capture_response(row):
             "request_id": str(row.request_id),
             "status": row.status,
             "created_at": row.created_at.isoformat(),
-            "expires_at": row.expires_at.isoformat(),
-            "expired": row.expires_at <= now(),
             "observations": row.observations,
             "source_status": "current",
             "applied_action_id": None,
@@ -478,16 +530,18 @@ def _report_for_capture(s, ctx, pid, row, run, plan):
 
 
 def _measurement_records(s, ctx, pid, run):
-    rows = list(
-        s.scalars(
-            select(MeasurementRecord).where(
-                MeasurementRecord.tenant_id == ctx.tenant_id,
-                MeasurementRecord.product_id == pid,
-                MeasurementRecord.run_id == run.id,
-            )
-        )
-    )
     fixed = {m.id: m for m in run.measurements}
+    query = select(MeasurementRecord).where(
+        MeasurementRecord.tenant_id == ctx.tenant_id,
+        MeasurementRecord.product_id == pid,
+        MeasurementRecord.run_id == run.id,
+        MeasurementRecord.id.in_(fixed),
+    )
+    rows = (
+        snapshot_rows(s, (MeasurementRecord, _read_query_key(s, ctx, query)), query, scope_id=pid)
+        if _held_read_session(s, ctx, pid)
+        else list(s.scalars(query))
+    )
     rows = [row for row in rows if row.id in fixed]
     if len(rows) != len(fixed):
         raise DomainError("INTEGRITY_MISMATCH", "固定Run原测量记录缺失。")
@@ -507,25 +561,39 @@ def _measurement_capture(s, ctx, pid, measurement):
     immutable original-byte binding may be rechecked for a readable formal result;
     original Artifact/Original ACL is still checked independently on every read.
     """
-    row = s.scalar(
-        select(MeasurementImportCapture).where(
-            MeasurementImportCapture.tenant_id == ctx.tenant_id,
-            MeasurementImportCapture.product_id == pid,
-            MeasurementImportCapture.id == measurement.capture_id,
-            MeasurementImportCapture.run_id == measurement.run_id,
-            MeasurementImportCapture.request_id == measurement.request_id,
-            MeasurementImportCapture.build_id == measurement.build_id,
-            MeasurementImportCapture.project_id == measurement.project_id,
+    query = select(MeasurementImportCapture).where(
+        MeasurementImportCapture.tenant_id == ctx.tenant_id,
+        MeasurementImportCapture.product_id == pid,
+        MeasurementImportCapture.id == measurement.capture_id,
+        MeasurementImportCapture.run_id == measurement.run_id,
+        MeasurementImportCapture.request_id == measurement.request_id,
+        MeasurementImportCapture.build_id == measurement.build_id,
+        MeasurementImportCapture.project_id == measurement.project_id,
+    )
+    row = (
+        snapshot_scalar(
+            s,
+            (MeasurementImportCapture, _read_query_key(s, ctx, query)),
+            query,
+            scope_id=pid,
         )
+        if _held_read_session(s, ctx, pid)
+        else s.scalar(query)
     )
     if row is None:
         raise DomainError("INTEGRITY_MISMATCH", "原测量捕获证明不在同一固定范围。")
     return row
 
 
+@command_inputs_once
 def _load(s, ctx, command, product, payload, *, require_reads=True):
     if command.product_id != product.id or product.tenant_id != ctx.tenant_id:
         raise DomainError("FORBIDDEN_SCOPE", "结果不在当前服务器产品。", 403)
+    write = not getattr(s, "info", {}).get("read_snapshot", False)
+    if not write:
+        from pdos_next.service import require_access
+
+        require_access(s, ctx, product.id, write=True, lock=False)
     row, request, run_row, run, plan, reads, refs = _base(
         s,
         ctx,
@@ -534,10 +602,12 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
         payload.expected_request_revision,
         payload.run_id,
         payload.expected_run_revision,
+        write=write,
     )
     authority = front._assess(
-        s, ctx, product.id, row.project_id, command.operation, request.purpose, write=True
+        s, ctx, product.id, row.project_id, command.operation, request.purpose, write=write
     )
+    _authority_guard(ctx, payload, authority)
     retained = _retained(s, ctx, product.id, run_row)
     reads = _union(
         reads, authority["required_source_read_set"], retained.get("required_source_read_set", [])
@@ -616,7 +686,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
     ):
         raise DomainError("RESULT_BASIS_CHANGED", "计算必须绑定当前完整原值与固定判据。")
     basis, private = physical._basis(s, ctx, product.id, reads, refs)
-    if run_row.visibility == "product" and private:
+    if run_row.visibility == "category" and private:
         raise DomainError("FORBIDDEN_SCOPE", "私有资料不能扩大为共享结果。", 403)
     if require_reads:
         supplied = {str(v.artifact_id): v.expected_revision for v in command.source_read_set}
@@ -670,7 +740,13 @@ def _refresh_phase_proofs(s, ctx, pid, operation, bound):
     try:
         retained = _retained(s, ctx, pid, bound.run_row)
         authority = front._assess(
-            s, ctx, pid, bound.request_row.project_id, operation, bound.request.purpose, write=True
+            s,
+            ctx,
+            pid,
+            bound.request_row.project_id,
+            operation,
+            bound.request.purpose,
+            write=not getattr(s, "info", {}).get("read_snapshot", False),
         )
     except DomainError:
         raise DomainError(
@@ -732,19 +808,20 @@ def _event(s, ctx, pid, bound, payload, event, operation):
         raise DomainError("INVALID_EVENT_EVIDENCE", "事件事实未绑定本Run/本人/目的/真实时间。", 422)
 
 
-def _guards(s, ctx, command, product, payload, bound):
-    a = bound.authority
+def _authority_guard(ctx, payload, a):
+    roles = {"quality", "test"} if isinstance(payload, ImportPayload) else {"quality"}
     if (
         a.get("authorized") is not True
-        or a.get("qualified") is not True
         or a.get("subject_id") != str(ctx.requester_id)
-        or not a.get("valid_until")
-        or datetime.fromisoformat(a["valid_until"]) <= now()
+        or not roles.intersection(a.get("roles", ()))
     ):
-        raise DomainError("QUALIFICATION_REQUIRED", "当前本人缺少该Run用途的结果办理资格。", 403)
-    roles = {"quality", "test"} if isinstance(payload, ImportPayload) else {"quality"}
-    if not roles.intersection(a.get("roles", ())):
         raise DomainError("FORBIDDEN_OPERATION", "结果办理职责未授权。", 403)
+    if a.get("qualified") is not True or not authority_time_current(a, now()):
+        raise DomainError("QUALIFICATION_REQUIRED", "当前本人缺少该Run用途的结果办理资格。", 403)
+
+
+def _guards(s, ctx, command, product, payload, bound):
+    _authority_guard(ctx, payload, bound.authority)
     if hasattr(payload, "at"):
         _event(s, ctx, product.id, bound, payload, payload.at, command.operation)
     if isinstance(payload, ImportPayload) and payload.actual_end:
@@ -771,16 +848,15 @@ def validate(s, ctx, command, product, payload):
 
 def _new_write(s, ctx, command, product, payload, bound):
     if command.expected_revision != product.revision:
-        raise DomainError("VERSION_CONFLICT", "产品版本已变化。")
-    request_pointer, request = front._current(s, ctx, product.id, payload.request_id, lock=True)
-    run_pointer, run = launch._current(s, ctx, product.id, run_id=payload.run_id, lock=True)
+        raise DomainError("VERSION_CONFLICT", "型号版本已变化。")
+    lock = not getattr(s, "info", {}).get("read_snapshot", False)
+    request_pointer, request = front._current(s, ctx, product.id, payload.request_id, lock=lock)
+    run_pointer, run = launch._current(s, ctx, product.id, run_id=payload.run_id, lock=lock)
     if request.id != bound.request_row.id or run.id != bound.run_row.id:
         raise DomainError("VERSION_CONFLICT", "Run或正式请求已有后继版本。")
     if isinstance(payload, ImportPayload):
         if bound.run.status != "running":
             raise DomainError("INVALID_STATE", "仅运行中的Run可追加部分/最终结果。")
-        if bound.capture and bound.capture.expires_at <= now():
-            raise DomainError("CAPTURE_EXPIRED", "原报告候选已到期，请重新核对。")
         if rules.pairs(tuple(v.coverage for v in bound.measurements)) & rules.pairs(
             tuple(v.coverage for v in bound.run.measurements)
         ):
@@ -1337,9 +1413,9 @@ def inputs(s, ctx, product_id, command: Command):
         if not isinstance(payload, ComputePayload):
             _prospective(s, ctx, command, product, payload, bound)
     except DomainError as error:
-        if error.status == 403 or error.code == "SOURCE_UNAVAILABLE":
+        if error.status == 403 or error.reason == "SOURCE_UNAVAILABLE":
             raise
-        blockers.append({"code": error.code, "detail": error.message})
+        blockers.append({"code": error.reason, "detail": error.message})
     return {
         "operation": command.operation,
         "request_id": str(payload.request_id),
@@ -1372,16 +1448,13 @@ def _report_sources(s, ctx, pid):
             Artifact.original_id.is_not(None),
         )
         .order_by(Artifact.created_at.desc(), Artifact.id)
-        .limit(40)
     ).all()
     result = []
     for row in rows:
-        if row.visibility == "private" and row.owner_id != ctx.requester_id:
-            continue
         try:
             source_for(s, ctx, pid, row.id, row.revision)
-            original = require_original(s, ctx, pid, row.original_id, lock=True)
-            epoch, _ = require_safe(s, ctx, original)
+            original = require_original(s, ctx, pid, row.original_id)
+            epoch, _ = require_safe(s, ctx, original, lock=False)
             if (
                 original.media_type != "text/plain"
                 or original.byte_count > 2_000_000
@@ -1397,7 +1470,7 @@ def _report_sources(s, ctx, pid):
             text = content.decode("utf-8", errors="strict")
             lines = text.splitlines()
             fragments = []
-            for number, line in enumerate(lines[:10000], 1):
+            for number, line in enumerate(lines, 1):
                 if not line.strip():
                     continue
                 try:
@@ -1413,9 +1486,7 @@ def _report_sources(s, ctx, pid):
                         "truncated": len(line) > 2000,
                     }
                 )
-                if len(fragments) == 100:
-                    break
-            current_epoch, _ = require_safe(s, ctx, original)
+            current_epoch, _ = require_safe(s, ctx, original, lock=False)
             if current_epoch != epoch or not fragments:
                 continue
             result.append(
@@ -1429,7 +1500,7 @@ def _report_sources(s, ctx, pid):
                     "original_sha256": original.content_hash,
                     "security_epoch": epoch,
                     "lines": fragments,
-                    "has_more": len(fragments) == 100 or len(lines) > 10000,
+                    "has_more": False,
                     "verification": "original_bytes_integrity_checked_format_not_verified",
                     "derived_line_not_assumed": True,
                 }
@@ -1441,6 +1512,15 @@ def _report_sources(s, ctx, pid):
 
 def _read_capabilities(s, ctx, pid, row, request_row, run, request, plan, view):
     """Current proofs surround original I/O; no confirmation, write or reservation."""
+    from pdos_next.service import require_access
+
+    write_access = True
+    try:
+        require_access(s, ctx, pid, write=True, lock=False)
+    except DomainError as error:
+        if error.status != 403:
+            raise
+        write_access = False
     retained = _retained(s, ctx, pid, row)
     reads = _union(
         row.required_source_read_set,
@@ -1481,11 +1561,11 @@ def _read_capabilities(s, ctx, pid, row, request_row, run, request, plan, view):
             )
         )
         positive = (
-            authority.get("authorized") is True
+            write_access
+            and authority.get("authorized") is True
             and authority.get("qualified") is True
             and authority.get("subject_id") == str(ctx.requester_id)
-            and authority.get("valid_until") is not None
-            and datetime.fromisoformat(authority["valid_until"]) > now()
+            and authority_time_current(authority, now())
         )
         view["capabilities"][key] = bool(state and positive)
     physical._basis(s, ctx, pid, reads, refs)
@@ -1506,12 +1586,11 @@ def _next_owners(s, ctx, pid, project_id):
             Principal.tenant_id == ctx.tenant_id,
             Principal.kind == "human",
             Principal.active.is_(True),
-            Grant.product_id == pid,
+            Grant.category_id == category_for_product(pid),
             Grant.can_write.is_(True),
-            Grant.expires_at > now(),
+            (Grant.expires_at.is_(None) | (Grant.expires_at > now())),
         )
         .order_by(Principal.id)
-        .limit(201)
     ).all()
     result = []
     for principal in rows:
@@ -1544,9 +1623,9 @@ def list_results(s, ctx, product_id, *, build_id=None, run_id=None):
         return q
 
     run_rows = s.scalars(
-        scoped(VerificationRunVersion)
-        .order_by(VerificationRunVersion.created_at.desc(), VerificationRunVersion.id)
-        .limit(201)
+        scoped(VerificationRunVersion).order_by(
+            VerificationRunVersion.created_at.desc(), VerificationRunVersion.id
+        )
     ).all()
     result = {
         "requests": [],
@@ -1561,13 +1640,11 @@ def list_results(s, ctx, product_id, *, build_id=None, run_id=None):
         "report_sources": [],
         "next_owners": [],
         "capabilities": {k: False for k in OP_KEYS.values()},
-        "has_more": len(run_rows) > 200,
+        "has_more": False,
         "unavailable_count": 0,
     }
     requests, run_views, sample_keys, owner_keys = {}, {}, set(), set()
-    for row in run_rows[:200]:
-        if row.visibility == "private" and row.owner_id != ctx.requester_id:
-            continue
+    for row in run_rows:
         try:
             status = launch._read_evidence(s, ctx, product_id, row)
             run, plan = launch._snapshot(row)
@@ -1609,7 +1686,7 @@ def list_results(s, ctx, product_id, *, build_id=None, run_id=None):
                         if error.status == 403:
                             raise
                         view["capabilities"] = {k: False for k in OP_KEYS.values()}
-                        view["blockers"].append({"code": error.code, "detail": error.message})
+                        view["blockers"].append({"code": error.reason, "detail": error.message})
                 for sample in run.samples:
                     if sample.id not in sample_keys:
                         from pdos_next.domain.build_execution.models import SampleUnit
@@ -1622,10 +1699,7 @@ def list_results(s, ctx, product_id, *, build_id=None, run_id=None):
                                 SampleUnit.build_id == row.build_id,
                             )
                         )
-                        if actual_sample is None or (
-                            actual_sample.visibility == "private"
-                            and actual_sample.owner_id != ctx.requester_id
-                        ):
+                        if actual_sample is None:
                             raise DomainError(
                                 "FORBIDDEN_SCOPE", "固定样件当前显示范围不可见。", 403
                             )
@@ -1653,12 +1727,9 @@ def list_results(s, ctx, product_id, *, build_id=None, run_id=None):
         (TestResultProjection, "projections"),
         (TestResultActionFact, "actions"),
     ):
-        rows = s.scalars(scoped(model).order_by(model.created_at.desc(), model.id).limit(201)).all()
-        result["has_more"] = result["has_more"] or len(rows) > 200
-        for row in rows[:200]:
-            if row.run_id not in run_views or (
-                row.visibility == "private" and row.owner_id != ctx.requester_id
-            ):
+        rows = s.scalars(scoped(model).order_by(model.created_at.desc(), model.id)).all()
+        for row in rows:
+            if row.run_id not in run_views:
                 continue
             try:
                 status = launch._read_evidence(s, ctx, product_id, row)

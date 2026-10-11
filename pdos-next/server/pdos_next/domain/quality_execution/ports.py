@@ -24,10 +24,10 @@ class FixedQualityResult(DTO):
     rules_version: str = Field(min_length=1, max_length=120)
     rules_sha256: Sha256
     verified: VerifiedRun
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     owner_id: UUID
     sources: tuple[SourceRef, ...]
-    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
+    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1)
     source_basis: dict[str, JsonValue]
     retained: dict[str, JsonValue]
     current: bool
@@ -40,6 +40,17 @@ class FixedQualityResult(DTO):
         if len([m for m in self.verified.run.measurements if m.id == self.measurement_id]) != 1:
             raise ValueError("Bridge must bind exactly one recorded measurement")
         return self
+
+
+class FixedQualityScope(DTO):
+    """RLS-owned result identity for a current authority check, never failure evidence."""
+
+    scope: Scope
+    purpose: str = Field(min_length=1, max_length=2000)
+    run_id: UUID
+    run_version_id: UUID
+    run_revision: Revision
+    event_id: UUID
 
 
 class ResultBridge(Protocol):

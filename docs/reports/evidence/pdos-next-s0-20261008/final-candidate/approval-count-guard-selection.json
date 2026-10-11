@@ -1,0 +1,3 @@
+[
+  "tests/change_coverage_owner/test_owner_boundary.py::test_original_approval_registry_keeps_pins_beyond_previous_cap"
+]

@@ -19,7 +19,7 @@ from pdos_next.contracts import Command
 from pdos_next.domain.change_coverage_owner import owner
 from pdos_next.domain.change_execution import service as impact
 from pdos_next.domain.change_execution.models import ChangeRequestVersion
-from pdos_next.models import Audit, Grant, Outbox, Principal, Receipt, RequestKey
+from pdos_next.models import Audit, Category, Grant, Outbox, Principal, Receipt, RequestKey
 
 SERVER = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location(
@@ -40,7 +40,7 @@ def payload_for(e, operation):
     target = {"change_id": e.material.change_id, "expected_change_revision": 1}
     if operation == "change.impact.compute":
         return {**target, "snapshot": {"id": e.graph.id, "revision": 1, "kind": "graph_snapshot"}}
-    target["visibility"] = "product"
+    target["visibility"] = "category"
     if operation == "change.order.prepare":
         return {
             **target,
@@ -82,13 +82,24 @@ def case(request, monkeypatch):
             kind="human",
             access_epoch=1,
         )
+        e.rows.append(
+            Category(
+                id=e.ctx.category_id,
+                tenant_id=e.ctx.tenant_id,
+                owner_id=e.ctx.requester_id,
+                name="explicit offline category",
+                purpose="offline guard boundary",
+                status="active",
+                revision=1,
+            )
+        )
         e.rows.extend(
             (
                 writer,
                 Grant(
                     id=uuid4(),
                     tenant_id=e.ctx.tenant_id,
-                    product_id=e.pid,
+                    category_id=e.ctx.category_id,
                     principal_id=writer.id,
                     can_write=True,
                     access_epoch=1,
@@ -99,7 +110,7 @@ def case(request, monkeypatch):
         # Set the writer permission before the publication's temporal material
         # is captured. Do not grant authority after a saved owner proof exists.
         existing.publish(e)
-        e.ctx = common.Context(e.ctx.tenant_id, writer.id, writer.id)
+        e.ctx = common.Context(e.ctx.tenant_id, writer.id, writer.id, category_id=e.ctx.category_id)
         assert e.publisher.id != e.ctx.actor_id
         operation = request.param
         product = next(row for row in e.rows if type(row) is common.Product)
@@ -107,6 +118,7 @@ def case(request, monkeypatch):
             command_id=uuid4(),
             idempotency_key="offline-coverage-common-tail-" + operation,
             operation=operation,
+            category_id=e.ctx.category_id,
             product_id=e.pid,
             expected_revision=product.revision,
             source_read_set=[{"artifact_id": e.source.id, "expected_revision": e.source.revision}],
@@ -170,7 +182,7 @@ def case(request, monkeypatch):
                     status="analysis",
                     operation=command.operation,
                     owner_id=e.ctx.actor_id,
-                    visibility="product",
+                    visibility="category",
                     source_basis={
                         "coverage": deepcopy(e.current.source_basis),
                         "closure": deepcopy(e.closure),
@@ -181,7 +193,7 @@ def case(request, monkeypatch):
                 e.subject = row
                 if e.attach is not None:
                     e.attach(row)
-                return row, "change_request", "product"
+                return row, "change_request", "category"
 
         module = DomainSubstitute()
         e.module = module
@@ -197,6 +209,24 @@ def case(request, monkeypatch):
                 row for row in e.rows if isinstance(row, cls) and row.id == identity
             ),
         )
+        # Actual common branching and final owner guards, with SQL ports
+        # explicitly substituted. This fixture never proves app RLS or bytes.
+        monkeypatch.setattr(common, "require_access", lambda *a, **k: product)
+        monkeypatch.setattr(common, "prove_sources", lambda *a: None)
+
+        def remember(session, ctx, key, request_digest, receipt):
+            session.add(
+                RequestKey(
+                    tenant_id=ctx.tenant_id,
+                    category_id=ctx.category_id,
+                    actor_id=ctx.actor_id,
+                    key=key,
+                    digest=request_digest,
+                    receipt_id=receipt.id,
+                )
+            )
+
+        monkeypatch.setattr(common, "remember_key", remember)
         original_flush = e.s.flush
 
         def flush(*args, **kwargs):

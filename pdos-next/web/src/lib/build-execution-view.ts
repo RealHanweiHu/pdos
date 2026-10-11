@@ -5,7 +5,7 @@ import { mergeReadSets, referencesReadSet, utcInput } from "@/lib/build-preparat
 
 export type ExecutionApi = <T>(path: string, body?: unknown) => Promise<T>;
 export type ExecutionOperation = "build.configuration.actual.record" | "build.output.record" | "build.sample.allocate";
-export type ExecutionBase = { id: string; revision: number; owner_id: string; visibility: "private" | "product"; build_id: string; project_id: string; sources: DefinitionReference[]; required_source_read_set: SourceRead[]; source_status: "current" | "needs_recheck"; reason: string; created_at?: string };
+export type ExecutionBase = { id: string; revision: number; owner_id: string; visibility: "private" | "category" | "audience"; build_id: string; project_id: string; sources: DefinitionReference[]; required_source_read_set: SourceRead[]; source_status: "current" | "needs_recheck"; reason: string; created_at?: string };
 export type FixedConfigurations = { engineering_configuration: EngineeringConfiguration; manufacturing_configuration: ManufacturingConfiguration };
 export type ConfigurationDifference = { path: string; label?: string; before: unknown; after: unknown };
 export type ExplainedDifference = ConfigurationDifference & { reason: string; sources: DefinitionReference[] };
@@ -24,7 +24,7 @@ export type ExecutionList = { actual_configurations: ActualConfiguration[]; lots
 export type ActualComparison = {
   build: { id: string; revision: number; name: string; project_id: string; unit: string; planned_quantity: string; status: string };
   planned: FixedConfigurations; actual: FixedConfigurations; differences: ConfigurationDifference[];
-  required_source_read_set: SourceRead[]; source_status: "current" | "needs_recheck"; visibility: "private" | "product";
+  required_source_read_set: SourceRead[]; source_status: "current" | "needs_recheck"; visibility: "private" | "category" | "audience";
 };
 export type DifferencePayload = { path: string; reason: string; sources: DefinitionReference[] };
 export type ActualConfigurationPayload = {
@@ -62,7 +62,7 @@ export const availabilityNames = { unknown: "可用性未知，待核对", hold:
 export function blankSample(): SampleDraft { return { label: "", operationKey: "", cavity: "", custodian: "unknown", custodianLabel: "", location: "", destination: "", availability: "unknown" }; }
 export function blankExecution(): ExecutionDraft { return { engineeringId: "", manufacturingId: "", actualObservedUtc: "", actualReason: "", differences: {}, actualId: "", lotLabel: "", count: "", observationSystem: "", observationId: "", observationNature: "real", occurredUtc: "", outputReason: "", lotId: "", samples: [blankSample()], allocationReason: "", references: [] }; }
 function record(value: unknown): value is Record<string, unknown> { return value !== null && typeof value === "object" && !Array.isArray(value); }
-function validReferences(value: unknown): value is DefinitionReference[] { return Array.isArray(value) && value.length <= 20 && value.every(ref => record(ref) && typeof ref.artifact_id === "string" && Number.isInteger(ref.expected_revision) && Number(ref.expected_revision) > 0 && Number.isInteger(ref.line) && Number(ref.line) > 0 && typeof ref.quote === "string"); }
+function validReferences(value: unknown): value is DefinitionReference[] { return Array.isArray(value) && value.every(ref => record(ref) && typeof ref.artifact_id === "string" && Number.isInteger(ref.expected_revision) && Number(ref.expected_revision) > 0 && Number.isInteger(ref.line) && Number(ref.line) > 0 && typeof ref.quote === "string"); }
 function validDraft(value: unknown): value is ExecutionDraft {
   if (!record(value) || !["engineeringId", "manufacturingId", "actualObservedUtc", "actualReason", "actualId", "lotLabel", "count", "observationSystem", "observationId", "occurredUtc", "outputReason", "lotId", "allocationReason"].every(key => typeof value[key] === "string") || !["real", "synthetic"].includes(String(value.observationNature)) || !validReferences(value.references) || !record(value.differences)) return false;
   if (!Object.values(value.differences).every(difference => record(difference) && typeof difference.reason === "string" && validReferences(difference.references))) return false;
@@ -80,14 +80,14 @@ export function restoreExecution(value: unknown, productId: string): LocalExecut
   return value as unknown as LocalExecution;
 }
 function evidence(refs: DefinitionReference[]): DefinitionReference[] {
-  if (!refs.length || refs.length > 20) throw new Error("请加入 1–20 条能精确定位的原文依据。");
+  if (!refs.length) throw new Error("请加入 至少一条能精确定位的原文依据。");
   return refs.map(({ artifact_id, expected_revision, line, quote }) => ({ artifact_id, expected_revision, line, quote }));
 }
 function reason(value: string): string { if (value.trim().length < 3 || value.length > 2000) throw new Error("请填写 3–2000 字的记录原因。"); return value.trim(); }
 function boundedText(value: string, title: string, max: number): string { const text = value.trim(); if (!text || text.length > max) throw new Error(`${title}须为 1–${max} 字的明确记录。`); return text; }
 function optionalText(value: string, title: string, max: number): string | null { return value.trim() ? boundedText(value, title, max) : null; }
 function eventTime(value: string, title: string): string { const result = utcInput(value, title); if (!result) throw new Error(`${title}须为已发生的明确 UTC 时间，不能用当前时间代填。`); return result; }
-export function unitCount(value: string): number { const text = value.trim(); if (!/^\d+$/.test(text) || !Number.isSafeInteger(Number(text)) || Number(text) < 1 || Number(text) > 1000000) throw new Error("产出件数须为 1–1000000 的明确整数，不作重量或单位换算。"); return Number(text); }
+export function unitCount(value: string): number { const text = value.trim(); if (!/^\d+$/.test(text) || !Number.isSafeInteger(Number(text)) || Number(text) < 1) throw new Error("产出件数须为大于零的可精确表示整数，不作重量或单位换算。"); return Number(text); }
 export function actualPayload(draft: ExecutionDraft, build: Build, comparison: ActualComparison): ActualConfigurationPayload {
   if (comparison.source_status !== "current") throw new Error("固定计划或实际来源需重核，当前不能继续登记。");
   if (comparison.build.id !== build.id || comparison.build.revision !== build.revision || comparison.actual.engineering_configuration.id !== draft.engineeringId || comparison.actual.manufacturing_configuration.id !== draft.manufacturingId) throw new Error("差异不是当前选择，请重新读取计划与实际的差异。");
@@ -107,7 +107,7 @@ export function outputPayload(draft: ExecutionDraft, build: Build, actual: Actua
 export function samplePayload(draft: ExecutionDraft, lot: BuildLot, actual: ActualConfiguration, principalId: string): SampleAllocatePayload {
   if (lot.source_status !== "current" || actual.source_status !== "current") throw new Error("批次或实际配置来源需重核，当前不能继续分配样件。");
   if (lot.id !== draft.lotId || lot.actual_configuration_id !== actual.id) throw new Error("样件须来自所选批次固定的实际配置。");
-  if (!draft.samples.length || draft.samples.length > 500 || draft.samples.length > lot.remaining_unit_count) throw new Error("样件数须在本批次剩余可分配件数内，单次最多 500 件。");
+  if (!draft.samples.length || draft.samples.length > lot.remaining_unit_count) throw new Error("样件数须在本批次剩余可分配件数内。");
   const samples = draft.samples.map(sample => {
     if (sample.operationKey && !actual.actual.manufacturing_configuration.operations.some(operation => operation.key === sample.operationKey)) throw new Error("样件来源工序不属于固定实际制造配置。");
     if (sample.custodian === "label" && !sample.custodianLabel.trim()) throw new Error("保管人选为外部姓名时，请填写明确姓名；未知请选择待核对。");
@@ -118,6 +118,6 @@ export function samplePayload(draft: ExecutionDraft, lot: BuildLot, actual: Actu
 }
 export function executionReads(inherited: SourceRead[], refs: DefinitionReference[], differences: { sources: DefinitionReference[] }[] = []): SourceRead[] { return mergeReadSets(inherited, referencesReadSet([...refs, ...differences.flatMap(difference => difference.sources)])); }
 export function differenceLabel(path: string): string {
-  const names: Record<string, string> = { engineering_configuration: "工程配置", manufacturing_configuration: "制造配置", definition: "产品定义", definition_id: "固定产品定义", bom: "BOM", bom_id: "固定 BOM", mechanical: "机械设计版本", electronic: "电子设计版本", firmware: "固件制品版本", design_versions: "设计版本", operations: "工序", site: "制造场地", line: "制造产线", unit: "单位", quantity: "每件用量", loss_rate: "损耗率", part_id: "固定物料", part: "物料", lines: "BOM 物料行", name: "名称", revision: "版本", sop: "作业文件", resources: "资源要求", resource_requirements: "资源要求", cycle_time_minutes: "节拍", acceptance_criterion: "验收判据", bom_line_keys: "关联物料行", notes: "说明", key: "标识", critical: "关键件", depends_on: "前置工序", internal_number: "研发编号", erp_number: "ERP 料号", customer_number: "客户料号" };
+  const names: Record<string, string> = { engineering_configuration: "工程配置", manufacturing_configuration: "制造配置", definition: "型号定义", definition_id: "固定型号定义", bom: "BOM", bom_id: "固定 BOM", mechanical: "机械设计版本", electronic: "电子设计版本", firmware: "固件制品版本", design_versions: "设计版本", operations: "工序", site: "制造场地", line: "制造产线", unit: "单位", quantity: "每件用量", loss_rate: "损耗率", part_id: "固定物料", part: "物料", lines: "BOM 物料行", name: "名称", revision: "版本", sop: "作业文件", resources: "资源要求", resource_requirements: "资源要求", cycle_time_minutes: "节拍", acceptance_criterion: "验收判据", bom_line_keys: "关联物料行", notes: "说明", key: "标识", critical: "关键件", depends_on: "前置工序", internal_number: "研发编号", erp_number: "ERP 料号", customer_number: "客户料号" };
   return path.split(/[./]/).filter(Boolean).map(part => names[part] ?? part).join(" · ");
 }

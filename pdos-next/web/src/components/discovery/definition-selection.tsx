@@ -37,9 +37,9 @@ export function DefinitionSelection({ research, context, callbacks, parent, conf
   }
   return <section className="space-y-3 rounded-lg border p-4" aria-labelledby={`${id}-heading`}>
     <h2 id={`${id}-heading`} className="font-semibold">选择内部定义候选</h2>
-    <p className="text-sm text-muted-foreground">办理人：{context.actorLabel} · 产品：{context.productLabel ?? "尚未绑定"} · 用途：{context.purpose ?? "待服务器绑定"}</p>
+    <p className="text-sm text-muted-foreground">办理人：{context.actorLabel} · 型号：{context.productLabel ?? "尚未绑定"} · 用途：{context.purpose ?? "待服务器绑定"}</p>
     <p className="text-sm">每组明确选择或保留冲突。核对后由统一预览入口办理一次确认；此次提交是一个整体定义候选。</p>
-    {!available && <p role="status">{context.unavailableReason ?? "定义预览待主线接入，或真实产品尚未绑定"}</p>}
+    {!available && <p role="status">{context.unavailableReason ?? "定义预览待主线接入，或真实型号尚未绑定"}</p>}
     <form className="space-y-4" onSubmit={submit}>
       <label className="block text-sm" htmlFor={`${id}-title`}>定义标题</label><input id={`${id}-title`} name="title" required minLength={2} maxLength={200} className={input} />
       {groups.map(([key, entries], index) => {

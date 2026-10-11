@@ -170,7 +170,7 @@ def test_incompatible_aggregate(field, value):
     other = type(other).model_validate({**other.model_dump(), field: value})
     with pytest.raises(DomainError) as error:
         aggregate(((scope, counts()), (other, counts())))
-    assert error.value.code == "INCOMPATIBLE_SCOPE"
+    assert error.value.reason == "INCOMPATIBLE_SCOPE"
 
 
 @pytest.mark.parametrize(
@@ -189,14 +189,14 @@ def test_incompatible_basis_aggregate(field, value):
     )
     with pytest.raises(DomainError) as error:
         aggregate(((scope, counts()), (other, counts())))
-    assert error.value.code == "INCOMPATIBLE_SCOPE"
+    assert error.value.reason == "INCOMPATIBLE_SCOPE"
 
 
 def test_same_lot_and_missing_counts_aggregate():
     scope, other = scopes()
     with pytest.raises(DomainError) as error:
         aggregate(((scope, counts()), (scope, counts())))
-    assert error.value.code == "OVERLAPPING_SCOPE"
+    assert error.value.reason == "OVERLAPPING_SCOPE"
     result = aggregate(((scope, counts()), (other, counts(final_good=None))))
     assert result.counts.final_good is None and result.final_good_yield is None
 
@@ -205,7 +205,7 @@ def test_same_lot_and_missing_counts_aggregate():
 def test_invalid_direct_sample_policy(threshold):
     with pytest.raises(DomainError) as error:
         calculate(counts(), threshold)
-    assert error.value.code == "INVALID_SAMPLE_POLICY"
+    assert error.value.reason == "INVALID_SAMPLE_POLICY"
 
 
 def test_yield_precision_independent_of_callers_decimal_context():

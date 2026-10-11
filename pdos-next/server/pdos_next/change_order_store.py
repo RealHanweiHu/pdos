@@ -57,9 +57,16 @@ def shared_constraints(operation):
         parent_fk(),
         CheckConstraint(f"operation = '{operation}'"),
         CheckConstraint("revision = 1 AND change_revision > 1 AND shared_proof_revision > 0"),
-        CheckConstraint("visibility IN ('private','product')"),
-        CheckConstraint("proof_consumed_at <= created_at AND created_at < proof_expires_at"),
-        CheckConstraint("jsonb_array_length(required_source_read_set) BETWEEN 1 AND 20"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
+        CheckConstraint(
+            "proof_consumed_at <= created_at AND "
+            + (
+                "(proof_expires_at IS NULL OR created_at < proof_expires_at)"
+                if operation == "change.order.approve"
+                else "proof_expires_at IS NOT NULL AND created_at < proof_expires_at"
+            )
+        ),
+        CheckConstraint("jsonb_array_length(required_source_read_set)>0"),
     )
 
 
@@ -79,7 +86,7 @@ class _Atom(Row):
     shared_proof_id: Mapped[UUID]
     shared_proof_revision: Mapped[int] = mapped_column(Integer)
     proof_consumed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
-    proof_expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    proof_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     token_sha256: Mapped[str] = mapped_column(String(64))
     material_sha256: Mapped[str] = mapped_column(String(64))
     read_set_sha256: Mapped[str] = mapped_column(String(64))
@@ -93,6 +100,7 @@ class _Atom(Row):
 
 class ChangeOrderRecord(_Atom, Base):
     __tablename__ = "change_order_records"
+    proof_expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     order_id: Mapped[UUID]
     content_sha256: Mapped[str] = mapped_column(String(64))
     order_snapshot: Mapped[dict] = mapped_column(JSONB)
@@ -152,7 +160,7 @@ class ImplementationCapture(Row, Base):
     required_source_read_set: Mapped[list] = mapped_column(JSONB)
     source_basis: Mapped[dict] = mapped_column(JSONB)
     output_basis: Mapped[dict] = mapped_column(JSONB)
-    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     __table_args__ = (
         UniqueConstraint("tenant_id", "product_id", "id"),
         UniqueConstraint(*BOUND, "fact_id"),
@@ -164,17 +172,17 @@ class ImplementationCapture(Row, Base):
         ),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint(
-            "revision = 1 AND visibility IN ('private','product') AND change_revision > 0"
+            "revision = 1 AND visibility IN ('private','category','audience') AND "
+            "change_revision > 0"
         ),
-        CheckConstraint(
-            "expires_at > created_at AND expires_at <= created_at + interval '10 minutes'"
-        ),
-        CheckConstraint("jsonb_array_length(required_source_read_set) BETWEEN 1 AND 20"),
+        CheckConstraint("expires_at IS NULL OR expires_at > created_at"),
+        CheckConstraint("jsonb_array_length(required_source_read_set)>0"),
     )
 
 
 class ChangeImplementationRecord(_Atom, Base):
     __tablename__ = "change_implementation_records"
+    proof_expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     order_id: Mapped[UUID]
     order_record_id: Mapped[UUID]
     item_id: Mapped[UUID]

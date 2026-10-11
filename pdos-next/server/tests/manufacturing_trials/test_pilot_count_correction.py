@@ -127,12 +127,12 @@ def test_unexplained_good_is_count_conflict_even_with_complete_partition(changes
     for operation in (validate_counts, lambda value: calculate(value, 1)):
         with pytest.raises(DomainError) as error:
             operation(values)
-        assert error.value.code == "COUNT_CONFLICT"
+        assert error.value.reason == "COUNT_CONFLICT"
         assert error.value.status == 422
     assert values.model_dump() == before
     with pytest.raises(DomainError) as error:
         project(record(values), checked_at=AT)
-    assert error.value.code == "COUNT_CONFLICT" and error.value.status == 422
+    assert error.value.reason == "COUNT_CONFLICT" and error.value.status == 422
 
 
 def test_real_rework_path_keeps_first_and_final_rates_separate():
@@ -152,7 +152,7 @@ def test_existing_pass_to_scrap_contradiction_still_rejected():
     values = quantities(first_pass=10, first_failed=0, reworked_good=0, rework_cycles=0)
     with pytest.raises(DomainError) as error:
         validate_counts(values)
-    assert error.value.code == "COUNT_CONFLICT" and error.value.status == 422
+    assert error.value.reason == "COUNT_CONFLICT" and error.value.status == 422
 
 
 def test_previously_unknown_unit_can_become_good_without_invented_rework():
@@ -256,4 +256,4 @@ def test_same_physical_sample_id_with_new_revision_cannot_aggregate_twice():
     second = RecordedBatch.model_validate(material)
     with pytest.raises(DomainError) as error:
         aggregate((first, second), checked_at=AT)
-    assert error.value.code == "OVERLAPPING_UNITS" and error.value.status == 422
+    assert error.value.reason == "OVERLAPPING_UNITS" and error.value.status == 422

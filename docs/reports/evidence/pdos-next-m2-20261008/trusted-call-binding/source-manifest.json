@@ -1,0 +1,102 @@
+{
+  "candidate": "m2-trusted-call-binding-20261008",
+  "files": [
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/b7-integration.md",
+      "sha256": "a58cf14380858f5f85d46a1c21401cab5fb4edfb4b91196ea2dc97720241fca3"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/affected-pure.log",
+      "sha256": "1fcee5958cd6f5993586e99c857438c72fd5e571100bb9f1f1f633bd04c2949c"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/b7-port-contract.md",
+      "sha256": "d1b5374000aab6490a0470e1236ea10caf483d405189cd87829c6c9d6e256f42"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/result.md",
+      "sha256": "c605ad5632328ae682fee208d6678ee452e7d7958ab5051edb079525dd72e247"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0716.py",
+      "sha256": "33aef3428e53a837813100288dfd36ff7604415dbe5f761ae69c6582062ce3b9"
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0716_trusted_execution_binding.py",
+      "sha256": "da928650926e81dca243531c1b7353ff0974e588cb066614c49398c4b091aeba"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/activities.py",
+      "sha256": "1077851ab9a7440242d3c5c892c009ac0577a8ce2b8dbb2f52aecea862d1e700"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/bindings.py",
+      "sha256": "5f6f20e45790be017d4aa56d16fcfd81b08f5e5f55a50fb528d605d842fae1d6"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/execution.py",
+      "sha256": "65df5b7f4f32bee33327b6675cd6bfa5279b58f97de8b72f776e5c84bd1e9137"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/execution_schema.py",
+      "sha256": "c5bfa70d8d36ddfab2d1aacf8e8867b2cec9c5c57346f6c8e60c8007394e62c4"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/gateway.py",
+      "sha256": "9b32c03049aee885efa05922fb2172776fc39c058c0ace5c7d63077d89718e27"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/graph.py",
+      "sha256": "22f7043b589881c4116a7bf070ccef412d2d019752ff0797f7a7252cca0587bb"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/host.py",
+      "sha256": "1c61a4979b8ea102523aa8cf2a5583abf18cec62d314349da0cb30d1fb305f04"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/models.py",
+      "sha256": "320724d2abf65c5821c2a5acfe8ee907b7166ca981c4614dac33b4b732990e38"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/persistence.py",
+      "sha256": "5b98cf37dfc6ab82c0ab3be6a3fd4b38d0dc8c24f253b6d0c5dcead2156ffdc5"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/policy.py",
+      "sha256": "bcc2fa339ccf309a73efb43bfd91ce93678b4739c7bbeb23b584dd9204820454"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/registry.py",
+      "sha256": "0ee250d41533db062ec4ec463f69f64efe641de9aa1e84ab35e91641523b75b8"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/skills.py",
+      "sha256": "9a5d6fd0d31844b9648c4f04ad3287803e90b0bf5030f35feb6a916316adf97b"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/types.py",
+      "sha256": "aab9c330f051ad2616ae3263a10aa21063b481cf63319a2ad1bd6cc4463bbe05"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_execution_binding.py",
+      "sha256": "9e3fdd59052ceeebdca694107ae4e0aa18476b574db4c111310d23265342ecab"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_graph.py",
+      "sha256": "0e606053a5d785ecac40511c66a8c38547f70bc7d5817624ae2b659ad6cecbd8"
+    }
+  ],
+  "source_digest": "a6a50be5c48abe3768fe0eb36f4e7df73137d02301edbb905d4d7ac14d068419",
+  "pure_selection": {
+    "passed": 85,
+    "seconds": 7.45
+  },
+  "database_operations": 0,
+  "real_model_calls": 0,
+  "migration": {
+    "revision": "s0_0716",
+    "down_revision": "s0_0715",
+    "applied": false
+  },
+  "formal_exit": false
+}

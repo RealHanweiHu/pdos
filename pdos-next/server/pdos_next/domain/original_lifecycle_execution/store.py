@@ -1,7 +1,6 @@
 """SQL ports use the caller transaction and the shared Product protection gate."""
 
 from dataclasses import asdict, replace
-from datetime import timedelta
 from uuid import uuid4
 
 from sqlalchemy import select
@@ -17,6 +16,7 @@ from pdos_next.original_lifecycle.types import (
     LifecycleScope,
     RequestBinding,
 )
+from pdos_next.request_proof import request_proof
 
 from .codec import (
     decode_candidate,
@@ -42,12 +42,22 @@ def fail(code="BINDING_MISMATCH", message="生命周期记录与当前对象范�
 class SqlLifecycleStore:
     def __init__(self, session, ctx, product_id, runtime, *, emit_transition=True):
         self.s, self.ctx, self.product_id, self.runtime = session, ctx, product_id, runtime
-        self.scope = LifecycleScope(ctx.tenant_id, product_id)
+        self.scope = LifecycleScope(
+            ctx.tenant_id, product_id, ctx.category_id if product_id is None else None
+        )
         self.emit_transition = emit_transition
         self.request_reason = None
         self._fences = {}
 
     def gate(self):
+        proof = request_proof(self.s)
+        key = ("lifecycle_product", self.ctx, self.product_id)
+        if key in proof.read_rows:
+            return proof.read_rows[key]
+        if self.product_id is None:
+            from pdos_next.service import require_access
+
+            return require_access(self.s, self.ctx, None, write=True, lock=True)
         product = self.s.scalar(
             select(models.Product)
             .where(
@@ -56,14 +66,19 @@ class SqlLifecycleStore:
             .with_for_update()
             .execution_options(populate_existing=True)
         )
-        if product is None:
-            fail("FORBIDDEN_SCOPE", "产品不在当前授权范围。")
+        if product is None or product.category_id != self.ctx.category_id:
+            fail("FORBIDDEN_SCOPE", "型号不在当前授权品类范围。")
+        proof.read_rows[key] = product
         return product
 
     def _query(self, model):
         return (
             select(model)
-            .where(model.tenant_id == self.ctx.tenant_id, model.product_id == self.product_id)
+            .where(
+                model.tenant_id == self.ctx.tenant_id,
+                model.category_id == self.ctx.category_id,
+                model.product_id == self.product_id,
+            )
             .execution_options(populate_existing=True)
         )
 
@@ -105,6 +120,7 @@ class SqlLifecycleStore:
             row = models.LifecycleObject(
                 id=reference.id,
                 tenant_id=self.ctx.tenant_id,
+                category_id=self.ctx.category_id,
                 product_id=self.product_id,
                 owner_id=facts.owner_id,
                 reference=encode_state(current)["value"]["reference"],
@@ -156,6 +172,7 @@ class SqlLifecycleStore:
             models.LifecycleCandidate(
                 id=candidate.id,
                 tenant_id=self.ctx.tenant_id,
+                category_id=self.ctx.category_id,
                 product_id=self.product_id,
                 object_id=candidate.original.reference.id,
                 actor_id=self.ctx.requester_id,
@@ -253,6 +270,7 @@ class SqlLifecycleStore:
         self.s.add(
             models.LifecycleRequest(
                 tenant_id=self.ctx.tenant_id,
+                category_id=self.ctx.category_id,
                 product_id=self.product_id,
                 object_id=intent.reference.id,
                 actor_id=binding.actor_id,
@@ -304,6 +322,7 @@ class SqlLifecycleStore:
             models.LifecycleIntentRecord(
                 id=intent.id,
                 tenant_id=self.ctx.tenant_id,
+                category_id=self.ctx.category_id,
                 product_id=self.product_id,
                 object_id=intent.reference.id,
                 actor_id=intent.named_decider_id,
@@ -366,7 +385,7 @@ class SqlLifecycleAuthority:
         store, ctx = self.store, self.store.ctx
         if server_context != ctx:
             fail("FORBIDDEN_SCOPE", "生命周期上下文必须由服务器固定。")
-        store.gate()
+        product = store.gate()
         row = store.object_row(reference.id)
         if row is None or store._row_state(row).reference != reference:
             fail()
@@ -387,22 +406,39 @@ class SqlLifecycleAuthority:
             ):
                 fail("WORKER_AUTHORITY_REQUIRED", "工作器授权未绑定当前具名意图。")
             return authorization
-        principal = store.s.scalar(
-            select(models.Principal)
-            .where(models.Principal.id == ctx.actor_id, models.Principal.tenant_id == ctx.tenant_id)
-            .with_for_update()
-            .execution_options(populate_existing=True)
+        proof = request_proof(store.s)
+        key = ("lifecycle_authority", ctx, product.category_id)
+        common = proof.authority.get(
+            (ctx.tenant_id, product.category_id, ctx.actor_id, ctx.requester_id)
         )
-        grant = store.s.scalar(
-            select(models.Grant)
-            .where(
-                models.Grant.principal_id == ctx.actor_id,
-                models.Grant.tenant_id == ctx.tenant_id,
-                models.Grant.product_id == store.product_id,
+        if key not in proof.read_rows and common and common["locked"] and "rows" in common:
+            proof.read_rows[key] = next(
+                (
+                    (principal, grant)
+                    for principal, grant in common["rows"]
+                    if principal.id == ctx.actor_id
+                ),
+                (None, None),
             )
-            .with_for_update()
-            .execution_options(populate_existing=True)
-        )
+        if key not in proof.read_rows:
+            principal = store.s.scalar(
+                select(models.Principal)
+                .where(
+                    models.Principal.id == ctx.actor_id, models.Principal.tenant_id == ctx.tenant_id
+                )
+                .with_for_update(read=True)
+            )
+            grant = store.s.scalar(
+                select(models.Grant)
+                .where(
+                    models.Grant.principal_id == ctx.actor_id,
+                    models.Grant.tenant_id == ctx.tenant_id,
+                    models.Grant.category_id == product.category_id,
+                )
+                .with_for_update(read=True)
+            )
+            proof.read_rows[key] = (principal, grant)
+        principal, grant = proof.read_rows[key]
         if (
             ctx.run_id is not None
             or ctx.actor_id != ctx.requester_id
@@ -411,7 +447,7 @@ class SqlLifecycleAuthority:
             or principal.kind != "human"
             or grant is None
             or not grant.can_write
-            or grant.expires_at <= now
+            or (grant.expires_at is not None and grant.expires_at <= now)
         ):
             fail("NAMED_CONFIRMATION_REQUIRED", "生命周期操作需要当前具名本人及产品写权限。")
         revision = digest(
@@ -431,6 +467,6 @@ class SqlLifecycleAuthority:
             ActorKind.HUMAN,
             action,
             revision,
-            min(grant.expires_at, now + timedelta(minutes=5)),
+            grant.expires_at,
             ctx.actor_id,
         )

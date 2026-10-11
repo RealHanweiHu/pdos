@@ -9,7 +9,7 @@ export function SourcePackage({ research, context, unavailableReason }: {
   const missing = context.requiredCategories.filter(category => !present.has(category));
   return <section className="space-y-4 rounded-lg border p-4" aria-label="研究来源与观察">
     <div><h2 className="font-semibold">{research.title} · 来源包 v{research.revision}</h2>
-      <p className="text-sm text-muted-foreground">{research.mode === "oem" ? "OEM 内部导入" : "无项目研究"} · {context.scopeLabel ?? "研究范围待绑定"} · 目标产品：{context.productLabel ?? "尚未绑定，可先研究"}</p></div>
+      <p className="text-sm text-muted-foreground">{research.mode === "oem" ? "OEM 内部导入" : "无项目研究"} · {context.scopeLabel ?? "研究范围待绑定"} · 目标型号：{context.productLabel ?? "尚未绑定，可先研究"}</p></div>
     <p className="text-sm">完整性：{!context.requiredCategories.length ? "适用核对规则尚未绑定" : missing.length ? `仍缺 ${missing.join("、")}` : "本轮要求的资料类别已登记，仍需核对内容与冲突"}</p>
     <ul className="space-y-2 text-sm">{research.items.map((item, index) => <li key={`${item.source.artifact_id}-${index}`} className="rounded-lg border p-3">
       <div className="font-medium">{item.category} · v{item.source.expected_revision} · {locationLabel(item.source)}</div>

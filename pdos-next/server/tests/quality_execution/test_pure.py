@@ -25,7 +25,7 @@ from pdos_next.domain.quality_execution.models import (
     QualityIssueVersion,
     QualityPolicyFact,
 )
-from pdos_next.domain.quality_execution.ports import FixedQualityResult
+from pdos_next.domain.quality_execution.ports import FixedQualityResult, FixedQualityScope
 from pdos_next.domain.quality_execution.schemas import (
     CapaDraftPayload,
     ContainmentPayload,
@@ -45,7 +45,7 @@ from pdos_next.service import Context, digest
 def assert_code(code, fn):
     with pytest.raises(DomainError) as error:
         fn()
-    assert error.value.code == code
+    assert error.value.reason == code
 
 
 def result(event=None, **changes):
@@ -112,7 +112,12 @@ class MemorySession:
         rows = [r for r in self.rows if isinstance(r, cls)]
         for where in query._where_criteria:
             name = where.left.key
-            value = where.right.value
+            value = (
+                uid("category")
+                if name == "category_id"
+                and getattr(where.right, "name", None) == "category_for_product"
+                else where.right.value
+            )
             if where.operator.__name__ == "in_op":
                 rows = [r for r in rows if getattr(r, name) in value]
             else:
@@ -140,8 +145,8 @@ class MemorySession:
 @pytest.fixture
 def host(monkeypatch):
     session = MemorySession()
-    ctx = Context(uid("tenant"), uid("actor"), uid("actor"))
-    product = SimpleNamespace(id=uid("product"), revision=1)
+    ctx = Context(uid("tenant"), uid("actor"), uid("actor"), category_id=uid("category"))
+    product = SimpleNamespace(id=uid("product"), category_id=uid("category"), revision=1)
     state = {"authorized": True, "epoch": 1, "byte_reads": 0}
 
     def bridge(s, context, pid, **binding):
@@ -165,12 +170,31 @@ def host(monkeypatch):
             "qualified": state["authorized"],
             "roles": ["quality"],
             "facts_revision": digest(state["epoch"]),
-            "valid_until": (NOW + timedelta(hours=1)).isoformat(),
+            "valid_until": None,
+            "operation": args[4],
+            "purpose": args[5],
+            "synthetic": True,
+            "fact_refs": [
+                {
+                    "kind": kind,
+                    "role": "quality",
+                    "nature": "synthetic",
+                    "state": "active",
+                    "operations": [args[4]],
+                    "purposes": [args[5]],
+                    "valid_from": (NOW - timedelta(hours=1)).isoformat(),
+                    "valid_until": (NOW + timedelta(hours=1)).isoformat(),
+                }
+                for kind in ("duty", "qualification")
+            ],
             "required_source_read_set": [],
         }
 
     def basis(s, context, pid, reads):
-        return [dict(r) for r in evidence.merge_reads(reads)], False
+        return [
+            {"id": r["artifact_id"], "revision": r["expected_revision"]}
+            for r in evidence.merge_reads(reads)
+        ], False
 
     publication = {
         "id": str(uid("risk-policy")),
@@ -181,7 +205,16 @@ def host(monkeypatch):
         "sources": (),
         "required_source_read_set": [],
         "facts_revision": digest("policy"),
-        "valid_until": (NOW + timedelta(hours=1)).isoformat(),
+        "valid_until": None,
+        "source_basis": [
+            {
+                "id": str(uid("risk-policy")),
+                "revision": 1,
+                "state": "active",
+                "valid_from": (NOW - timedelta(hours=1)).isoformat(),
+                "valid_until": (NOW + timedelta(hours=1)).isoformat(),
+            }
+        ],
         "private": False,
     }
     monkeypatch.setattr(service, "now", lambda: NOW)
@@ -190,9 +223,70 @@ def host(monkeypatch):
     monkeypatch.setattr(service.policy, "assess", lambda *a, **k: deepcopy(publication))
     monkeypatch.setattr(service, "source_basis", basis)
     monkeypatch.setattr(service, "check_source", lambda *a: ([], [], False))
+    from pdos_next import quality_result_bridge, source_current
+
+    def fixed_failure(s, context, pid, issue, failure, *, purpose):
+        fixed = state.get("values", {}).get(failure.run.id, result())
+        if (
+            state.get("retained_revoked")
+            or not fixed.current
+            or fixed.scope != issue.scope
+            or fixed.verified.run.id != failure.run.id
+            or fixed.measurement_id != failure.measurement_id
+        ):
+            raise DomainError("SOURCE_STALE", "Synthetic fixed failure changed")
+        measurement = next(
+            item for item in fixed.verified.run.measurements if item.id == failure.measurement_id
+        )
+        return quality_result_bridge.DirectQualityFailure(
+            scope=fixed.scope,
+            purpose=purpose,
+            failure=failure,
+            measurement=measurement.model_dump(mode="json"),
+            projection_id=fixed.projection_id,
+            basis_sha256=fixed.basis_sha256,
+            sources=fixed.sources,
+            required_source_read_set=fixed.required_source_read_set,
+            watermark={"synthetic_host": True},
+            event_ids=(),
+        )
+
+    # This fake host represents original proof with one fixed synthetic basis;
+    # actual direct source positions and immutable rows are verified by PG tests.
+    monkeypatch.setattr(
+        source_current,
+        "direct_source_basis",
+        lambda s, context, pid, refs, reads: service.source_basis(
+            s, context, pid, result().required_source_read_set
+        ),
+    )
+    monkeypatch.setattr(
+        quality_result_bridge,
+        "direct_issue_failure",
+        fixed_failure,
+    )
+    original_load = service._load
+
+    def kernel_inputs(s, context, command, actual_product, payload, *, require_reads=True):
+        # This in-memory host supplies fixed kernel inputs. Actual direct T1
+        # Session/source guards belong to the PG and confirmation suites.
+        if command.operation not in {
+            "quality.issue.triage",
+            "quality.issue.containment.record",
+        }:
+            return original_load(
+                s, context, command, actual_product, payload, require_reads=require_reads
+            )
+        bound = service._load_material(
+            s, context, command, actual_product, payload, require_reads=require_reads
+        )
+        service._refresh(s, context, actual_product.id, command.operation, bound)
+        return bound
+
+    monkeypatch.setattr(service, "_load", kernel_inputs)
     actor_grant = Grant(
         tenant_id=ctx.tenant_id,
-        product_id=product.id,
+        category_id=uid("category"),
         principal_id=ctx.requester_id,
         can_write=True,
         expires_at=NOW + timedelta(hours=1),
@@ -352,6 +446,35 @@ def test_missing_bridge_or_final_refresh_fails_closed_before_mutation(host):
     assert not any(isinstance(r, QualityIssueVersion) for r in host.s.rows)
 
 
+def scope_reader(host, **changes):
+    fixed = result()
+    return lambda *_args, **binding: FixedQualityScope(
+        scope=fixed.scope,
+        purpose=fixed.purpose,
+        run_id=fixed.verified.run.id,
+        run_version_id=changes.get("run_version_id", fixed.run_version_id),
+        run_revision=fixed.run_revision,
+        event_id=binding["event_id"],
+    )
+
+
+def test_ineligible_result_scope_rejects_before_full_original_proof(host):
+    host.s.engine._pdos_quality_result_scope = scope_reader(host)
+    host.state["authorized"] = False
+    assert_code("QUALIFICATION_REQUIRED", lambda: create(host))
+    assert host.state["byte_reads"] == 0
+    assert not any(isinstance(row, QualityIssueVersion) for row in host.s.rows)
+
+
+def test_scope_header_cannot_replace_complete_failure_identity(host):
+    host.s.engine._pdos_quality_result_scope = scope_reader(
+        host, run_version_id=uid("foreign-run-version")
+    )
+    assert_code("INTEGRITY_MISMATCH", lambda: create(host))
+    assert host.state["byte_reads"] == 1
+    assert not any(isinstance(row, QualityIssueVersion) for row in host.s.rows)
+
+
 @pytest.mark.parametrize("changed", ["authority", "retained"])
 def test_original_bytes_callback_revocation_is_rechecked_at_end(host, changed):
     def revoked(_):
@@ -433,6 +556,7 @@ def test_exact_line_source_preserves_whitespace_and_rejects_substring_hash(monke
     row = SimpleNamespace(
         id=uid("manual"),
         tenant_id=uid("tenant"),
+        product_id=uid("product"),
         revision=1,
         content=line,
         content_hash=digest(line),
@@ -481,12 +605,8 @@ def test_readset_never_truncates_or_accepts_bool_revision():
             [{"artifact_id": uid("a"), "expected_revision": 2}],
         ),
     )
-    assert_code(
-        "MISSING_REQUIRED_EVIDENCE",
-        lambda: evidence.merge_reads(
-            [{"artifact_id": uid(str(i)), "expected_revision": 1} for i in range(21)]
-        ),
-    )
+    reads = [{"artifact_id": uid(str(i)), "expected_revision": 1} for i in range(21)]
+    assert len(evidence.merge_reads(reads)) == 21
 
 
 def policy_input():

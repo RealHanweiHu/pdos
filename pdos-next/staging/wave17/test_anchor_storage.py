@@ -143,6 +143,7 @@ def work(monkeypatch):
         intent_digest=digest(
             {
                 "operation": storage.OPERATION,
+                "category": None,
                 "product": row.product_id,
                 "payload": semantic,
                 "named_actor": row.writer_id,
@@ -203,6 +204,7 @@ def work(monkeypatch):
                 "actor": row.writer_id,
                 "requester": row.writer_id,
                 "operation": storage.OPERATION,
+                "category": None,
                 "product": row.product_id,
                 "expected_revision": 42,
                 "read_set": sorted(

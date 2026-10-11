@@ -1,0 +1,6 @@
+[
+  "tests/quality_execution_transactions/test_native_registration_batch.py",
+  "tests/quality_execution/test_pure.py",
+  "tests/quality_execution_transactions/test_read_batch.py::test_quality_reading_terminal_error_prevents_returning_built_current_view",
+  "tests/quality_execution_transactions/test_read_batch.py::test_quality_reading_optional_port_preserves_original_scope_and_value"
+]

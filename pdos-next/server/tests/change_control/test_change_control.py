@@ -27,7 +27,7 @@ from .helpers import NOW, SOURCE, FakeHost, graph, plan, ref, uid
 def rejected(code, function):
     with pytest.raises(DomainError) as caught:
         function()
-    assert caught.value.code == code
+    assert caught.value.reason == code
 
 
 def approval_payload(discipline="engineering"):
@@ -130,7 +130,7 @@ def test_server_acl_denial_prevents_creation(source):
         host.denied_sources.add(digest(SOURCE))
     else:
         host.denied_refs.add(ref("spec").identity)
-    rejected("FORBIDDEN_SOURCE" if source else "FORBIDDEN_SCOPE", host.create)
+    rejected("FORBIDDEN_SCOPE" if source else "FORBIDDEN_SCOPE", host.create)
 
 
 def test_port_must_not_substitute_latest_reference():
@@ -299,7 +299,7 @@ def test_t1_common_confirmation_one_use_expiry_and_missing_proof():
     rejected("CONFIRMATION_REQUIRED", lambda: host.execute(invocation, payload))
     invocation = host.proof(invocation, payload)
     host.proofs[invocation.confirmation_token]["expires"] = NOW
-    rejected("CONFIRMATION_EXPIRED", lambda: host.execute(invocation, payload))
+    rejected("PREVIEW_EXPIRED", lambda: host.execute(invocation, payload))
     assert not host.order.implementations
 
 
@@ -311,7 +311,7 @@ def test_fact_drift_invalidates_common_preview_before_writes():
     payload = {"item_id": item.id, "fact_id": fact.id}
     invocation = host.proof(host.invocation("change.implementation.record", payload), payload)
     host.implementations[fact.id] = replace(fact, note="owner corrected execution evidence")
-    rejected("CONFIRMATION_STALE", lambda: host.execute(invocation, payload))
+    rejected("RECHECK_REQUIRED", lambda: host.execute(invocation, payload))
     assert not host.order.implementations
     assert not host.proofs[invocation.confirmation_token]["used"]
 
@@ -602,7 +602,7 @@ def test_output_use_audience_is_distinct_from_read_permission(checkpoint):
         action = partial(reading, host)
     before = len(host.receipts)
     host.audience_allowed = False
-    rejected("FORBIDDEN_AUDIENCE", action)
+    rejected("AUDIENCE_USE_FORBIDDEN", action)
     assert len(host.receipts) == before
 
 
@@ -715,7 +715,7 @@ def test_history_reader_does_not_expose_acl_denied_sources():
     host = FakeHost()
     host.effective()
     host.denied_sources.add(digest(SOURCE))
-    rejected("FORBIDDEN_SOURCE", lambda: reading(host))
+    rejected("FORBIDDEN_SCOPE", lambda: reading(host))
 
 
 def test_receipt_transport_identity_cannot_be_reimported_under_fresh_fact_id():
@@ -759,7 +759,7 @@ def test_common_confirmation_proof_cannot_be_transferred_to_other_actor():
     payload = approval_payload()
     invocation = host.proof(host.invocation("change.order.approve", payload), payload)
     host.actor("other-engineer")
-    rejected("CONFIRMATION_ACTOR_MISMATCH", lambda: host.execute(invocation, payload))
+    rejected("CONFIRMATION_SCOPE_CHANGED", lambda: host.execute(invocation, payload))
     assert not host.order.approvals
     assert not host.proofs[invocation.confirmation_token]["used"]
 

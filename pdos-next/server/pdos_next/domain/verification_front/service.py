@@ -27,6 +27,7 @@ from pdos_next.domain.verification.rules import accepted_coverage, coverage_gaps
 from pdos_next.domain.verification_execution import service as preparation_service
 from pdos_next.errors import DomainError
 from pdos_next.models import now
+from pdos_next.request_proof import snapshot_get, snapshot_scalar
 from pdos_next.schemas.resource_readiness.contracts import ExecutionWindow
 from pdos_next.schemas.verification.contracts import (
     EventTime,
@@ -36,7 +37,7 @@ from pdos_next.schemas.verification.contracts import (
     SourceRef,
     VerificationRequest,
 )
-from pdos_next.service import Context, digest
+from pdos_next.service import digest, require_access
 
 from .adapters import (
     METHOD_POSITION,
@@ -103,12 +104,9 @@ def _assess(s, ctx, product_id, project_id, operation, purpose, *, write=False, 
 def _recheck(s, ctx, product_id, project_id, snapshot, *, at=None):
     from pdos_next.domain.professional_authority.service import recheck_snapshot
 
-    reviewer = UUID(snapshot["subject_id"])
-    # Only read historical professional validity; this context never authorizes a write.
-    historical = Context(ctx.tenant_id, reviewer, reviewer)
     return recheck_snapshot(
         s,
-        historical,
+        ctx,
         product_id,
         project_id,
         snapshot,
@@ -147,7 +145,13 @@ def _current(s, ctx, product_id, request_id, *, lock=False):
         FormalVerificationCurrent.product_id == product_id,
         FormalVerificationCurrent.request_id == request_id,
     )
-    pointer = s.scalar(query.with_for_update() if lock else query)
+    pointer = snapshot_scalar(
+        s,
+        (FormalVerificationCurrent, product_id, request_id),
+        query,
+        lock=lock,
+        scope_id=product_id,
+    )
     if pointer is None:
         return None, None
     row = _row(s, ctx, product_id, pointer.request_version_id)
@@ -157,30 +161,27 @@ def _current(s, ctx, product_id, request_id, *, lock=False):
 
 
 def _row(s, ctx, product_id, identity):
-    row = s.scalar(
-        select(FormalVerificationRequest).where(
-            FormalVerificationRequest.tenant_id == ctx.tenant_id,
-            FormalVerificationRequest.product_id == product_id,
-            FormalVerificationRequest.id == identity,
-        )
-    )
-    if row is None or (row.visibility == "private" and row.owner_id != ctx.requester_id):
+    row = snapshot_get(s, FormalVerificationRequest, identity, scope_id=product_id)
+    if row is None or row.tenant_id != ctx.tenant_id or row.product_id != product_id:
         raise DomainError("FORBIDDEN_SCOPE", "正式验证请求不在当前可用范围。", 403)
     return row
 
 
 def _version(s, ctx, product_id, request_id, revision):
-    identity = s.scalar(
-        select(FormalVerificationRequest.id).where(
+    row = snapshot_scalar(
+        s,
+        (FormalVerificationRequest, "version", product_id, request_id, revision),
+        select(FormalVerificationRequest).where(
             FormalVerificationRequest.tenant_id == ctx.tenant_id,
             FormalVerificationRequest.product_id == product_id,
             FormalVerificationRequest.request_id == request_id,
             FormalVerificationRequest.revision == revision,
-        )
+        ),
+        scope_id=product_id,
     )
-    if identity is None:
+    if row is None:
         raise DomainError("VERSION_CONFLICT", "固定请求前版不存在，请重新读取。")
-    return _row(s, ctx, product_id, identity)
+    return row
 
 
 def _snapshot(row):
@@ -323,9 +324,11 @@ class Bound:
 
 
 def _load(s, ctx, command, product, payload, *, require_reads=True):
-    _human(s, ctx, product.id, write=True)
+    write = not getattr(s, "info", {}).get("read_snapshot", False)
+    _human(s, ctx, product.id, write=write)
+    require_access(s, ctx, product.id, write=True, lock=write)
     if product.tenant_id != ctx.tenant_id or command.product_id != product.id:
-        raise DomainError("FORBIDDEN_SCOPE", "验证不在当前产品范围。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "验证不在当前型号范围。", 403)
     if isinstance(payload, RequestCreatePayload):
         prep, _ = preparation_service.get_preparation(s, ctx, product.id, payload.preparation_id)
         if prep.revision != payload.expected_preparation_revision or (
@@ -367,7 +370,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
     references = [refs[key] for key in sorted(refs)]
     at = now()
     authority = _assess(
-        s, ctx, product.id, build.project_id, command.operation, base.purpose, write=True, at=at
+        s, ctx, product.id, build.project_id, command.operation, base.purpose, write=write, at=at
     )
     reads = _merge_reads(
         planned_reads,
@@ -385,9 +388,9 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
                 "MISSING_REQUIRED_EVIDENCE", "需要固定准备、双配置和专业事实全部来源。"
             )
     _, private = _sources(s, ctx, product.id, reads, references)
-    visibility = "private" if private or prep.visibility == "private" else "product"
+    visibility = "private" if private or prep.visibility != "category" else "category"
     if previous is not None:
-        if visibility == "private" and previous.visibility == "product":
+        if visibility == "private" and previous.visibility == "category":
             raise DomainError("FORBIDDEN_SCOPE", "私有来源不能加入共享正式请求。", 403)
         visibility = previous.visibility
     return Bound(build, prep, base, previous, authority, references, reads, visibility, now())
@@ -409,9 +412,10 @@ def _authorize(bound, ctx):
 
 
 def _new_write(s, ctx, command, product, payload, bound):
+    write = not getattr(s, "info", {}).get("read_snapshot", False)
     if command.expected_revision != product.revision:
-        raise DomainError("VERSION_CONFLICT", "产品范围版本已变化。")
-    pointer, current = _current(s, ctx, product.id, payload.request_id, lock=True)
+        raise DomainError("VERSION_CONFLICT", "型号范围版本已变化。")
+    pointer, current = _current(s, ctx, product.id, payload.request_id, lock=write)
     expected = 0 if isinstance(payload, RequestCreatePayload) else payload.expected_request_revision
     if (current.revision if current else 0) != expected:
         raise DomainError("VERSION_CONFLICT", "正式请求当前版本已变化。")
@@ -567,8 +571,6 @@ def _method_check(s, ctx, product_id, row, request, *, prospective=False, positi
     ):
         raise DomainError("INTEGRITY_MISMATCH", "专业方法适用记录与固定项/计划双配置不一致。")
     if not prospective:
-        if row.visibility == "private" and row.owner_id != ctx.requester_id:
-            raise DomainError("SOURCE_UNAVAILABLE", "专业适用记录不在当前受众。", 403)
         parent = _row(s, ctx, product_id, row.request_version_id)
         if parent.revision != row.request_revision or parent.request_id != request.id:
             raise DomainError("INTEGRITY_MISMATCH", "专业核对前版绑定无法核对。")
@@ -580,7 +582,7 @@ def _method_check(s, ctx, product_id, row, request, *, prospective=False, positi
 def _check_existing_proofs(s, ctx, product_id, request):
     for doc in request.documents:
         if doc.id.startswith(PROFESSIONAL_PREFIX) and doc.source:
-            row = s.get(MethodApplicability, doc.source.id)
+            row = snapshot_get(s, MethodApplicability, doc.source.id, scope_id=product_id)
             if row is None or doc.source.kind != "domain" or doc.source.position != METHOD_POSITION:
                 raise DomainError("SOURCE_UNAVAILABLE", "固定专业适用记录不存在。")
             _method_check(s, ctx, product_id, row, request)
@@ -647,7 +649,7 @@ def _kernel(
             raise DomainError("SOURCE_UNAVAILABLE", "前段来源仅允许固定原文和已登记专业事实。")
         row = sealed.get(source.id) if prospective else None
         if source.position == METHOD_POSITION:
-            row = row or s.get(MethodApplicability, source.id)
+            row = row or snapshot_get(s, MethodApplicability, source.id, scope_id=product.id)
             if row is None or source.revision != 1:
                 raise DomainError("SOURCE_UNAVAILABLE", "专业适用记录不存在。")
             _method_check(
@@ -857,7 +859,7 @@ def _assessment_view(s, ctx, product_id, row, request, *, prospective=False):
             checked = _recheck(s, ctx, product_id, row.project_id, row.authority_snapshot)
             status, reasons = checked["current"], checked["reason_codes"]
         except DomainError as error:
-            status, reasons = False, [error.code]
+            status, reasons = False, [error.reason]
     value = row.assessment_snapshot
     return {
         "id": str(row.id),
@@ -889,7 +891,7 @@ def _window_view(s, ctx, product_id, row, *, prospective=False):
             result = _recheck(s, ctx, product_id, row.project_id, row.authority_snapshot)
             current, reasons = result["current"], result["reason_codes"]
         except DomainError as error:
-            current, reasons = False, [error.code]
+            current, reasons = False, [error.reason]
     return {
         "id": str(row.id),
         "revision": row.revision,
@@ -947,7 +949,9 @@ def _view(
     proposed = {child.id: child for child in children}
     methods = []
     for identity in sorted(method_ids, key=str):
-        method = proposed.get(identity) or s.get(MethodApplicability, identity)
+        method = proposed.get(identity) or snapshot_get(
+            s, MethodApplicability, identity, scope_id=product_id
+        )
         if method is None:
             raise DomainError("INTEGRITY_MISMATCH", "固定专业适用记录缺失。")
         view = _assessment_view(
@@ -1140,10 +1144,9 @@ def list_verification(s, ctx, product_id):
             FormalVerificationRequest.product_id == product_id,
         )
         .order_by(FormalVerificationRequest.created_at, FormalVerificationRequest.id)
-        .limit(201)
     ).all()
     requests, preparations, current, unavailable, groups = [], [], {}, 0, {}
-    for identity in identities[:200]:
+    for identity in identities:
         try:
             _, view = get_request(s, ctx, product_id, identity)
         except DomainError:
@@ -1163,9 +1166,8 @@ def list_verification(s, ctx, product_id):
             VerificationPreparation.product_id == product_id,
         )
         .order_by(VerificationPreparation.created_at, VerificationPreparation.id)
-        .limit(201)
     ).all()
-    for identity in prep_ids[:200]:
+    for identity in prep_ids:
         try:
             row, view = preparation_service.get_preparation(s, ctx, product_id, identity)
             authority = _authority_rows(s, ctx, product_id, row.project_id, view["purpose"])
@@ -1204,6 +1206,6 @@ def list_verification(s, ctx, product_id):
                 "detail": "实物交样与品质接收请在样件交接入口办理；正式预约、开测与结果仍未接通。",
             }
         ],
-        "has_more": len(identities) > 200 or len(prep_ids) > 200,
+        "has_more": False,
         "unavailable_count": unavailable,
     }

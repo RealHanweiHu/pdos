@@ -1,7 +1,8 @@
-"""Unnumbered PostgreSQL DDL/RLS/atom proposal. Never executes SQL.
+"""Historical pre-S0 schema proposal, retained only for structural comparison.
 
-Root must compose with the real head and verify actual PG/SAVEPOINT/RLS tails.
-No existing migration or old quality/candidate guard is replaced by this module.
+It never executes SQL. Active schema and repaired guards are owned by the
+s0 Alembic chain, including s0_0424; old caps and aggregate TTLs below are
+superseded and must not be installed as a new runtime contract.
 """
 
 from sqlalchemy.dialects import postgresql
@@ -179,7 +180,7 @@ l.project_id=v.project_id
    WHERE p.tenant_id=t AND p.product_id=v.product_id AND p.id=v.process_id AND
 p.revision=v.process_revision
      AND e.definition_id=l.definition_id AND e.definition_revision=l.definition_revision
-     AND (v.visibility='private' OR (p.visibility='product' AND e.visibility='product'))
+     AND (v.visibility='private' OR (p.visibility='category' AND e.visibility='category'))
      AND p.operations IS NOT DISTINCT FROM v.body->'process_snapshot'->'operations') THEN
    RAISE EXCEPTION 'Preparation actual process/engineering/project binding mismatch'; END IF;
  IF v.kind<>'manufacturing_baseline' THEN
@@ -204,7 +205,7 @@ d.process_revision<>v.process_revision
             OR d.baseline_revision<>v.revision OR child.kind<>d.document_kind OR
 child.revision<>d.document_revision
             OR child.operation_key<>d.operation_key OR child.purpose<>v.purpose
-            OR (v.visibility='product' AND child.visibility<>'product')
+            OR (v.visibility='category' AND child.visibility<>'product')
             OR NOT EXISTS(SELECT 1 FROM manufacturing_preparation_currents cur
                  WHERE cur.tenant_id=t AND cur.version_id=child.id AND
 cur.revision=child.revision)))

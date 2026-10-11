@@ -47,7 +47,7 @@ test("port unavailable disables trial entry and never fabricates a receipt", () 
 });
 test("missing baseline and draft process remain explicit while a candidate is allowed", () => {
   const html = render(PilotRunWorkbench, { context, fixed: pilot, action, callbacks, initialPurpose: "合成准备" });
-  for (const text of ["实际 BuildLot", "实际产品配置", "正式制造基线未齐", "仅为草稿", "尚不可宣称正式可开工", "不新增库存", "正式制造基线缺失"]) assert.ok(html.includes(text), text);
+  for (const text of ["实际 BuildLot", "实际型号配置", "正式制造基线未齐", "仅为草稿", "尚不可宣称正式可开工", "不新增库存", "正式制造基线缺失"]) assert.ok(html.includes(text), text);
   assert.match(html, /<button(?![^>]*disabled="")[^>]*>预览试产候选<\/button>/);
 });
 test("stale actual configuration disables pilot preparation", () => {

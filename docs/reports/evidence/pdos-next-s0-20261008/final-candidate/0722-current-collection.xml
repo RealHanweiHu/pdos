@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="1.594" timestamp="2026-10-09T09:07:23.874699-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="" name="tests.quality_execution_transactions.test_request_prepare" time="0.000"><error message="collection failure">ImportError while importing test module '/Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/quality_execution_transactions/test_request_prepare.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/quality_execution_transactions/test_request_prepare.py:7: in &lt;module&gt;
+    from conftest import setup
+E   ImportError: cannot import name 'setup' from 'conftest' (/Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/providers/conftest.py)</error></testcase></testsuite></testsuites>

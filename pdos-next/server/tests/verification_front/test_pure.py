@@ -133,14 +133,14 @@ def test_product_access_never_substitutes_professional_qualification(bound, qual
     bound.assessment["qualified"] = qualified
     with pytest.raises(DomainError) as error:
         create(bound)
-    assert error.value.code == "QUALIFICATION_REQUIRED"
+    assert error.value.reason == "QUALIFICATION_REQUIRED"
 
 
 def test_quality_role_is_not_inferred_from_authorized_flag(bound):
     bound.assessment["roles"] = []
     with pytest.raises(DomainError) as error:
         create(bound)
-    assert error.value.code == "FORBIDDEN_OPERATION"
+    assert error.value.reason == "FORBIDDEN_OPERATION"
 
 
 def test_shared_t1_proof_cannot_be_enabled_by_payload(bound):
@@ -151,7 +151,7 @@ def test_shared_t1_proof_cannot_be_enabled_by_payload(bound):
     )
     with pytest.raises(DomainError) as error:
         commands.confirm(SimpleNamespace(operation="verification.method.prepare"), None, None)
-    assert error.value.code == "CONFIRMATION_REQUIRED"
+    assert error.value.reason == "CONFIRMATION_REQUIRED"
 
 
 @pytest.mark.parametrize("status", ["unknown", "not_applicable", "applicable"])
@@ -242,7 +242,7 @@ def test_positive_method_cannot_compensate_missing_fixed_method(bound):
             payload,
             value,
         )
-    assert error.value.code == "METHOD_EVIDENCE_INCOMPLETE"
+    assert error.value.reason == "METHOD_EVIDENCE_INCOMPLETE"
 
 
 def test_tentative_interval_keeps_unknowns_zero_occupancy_and_no_run(bound):

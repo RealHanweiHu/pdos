@@ -7,7 +7,6 @@ from uuid import UUID
 from pdos_next.domain.quality_execution.policy import configure_local_synthetic
 from pdos_next.safety import verify_test_target
 
-MAX_PROFILES = 20
 _KEYS = {"tenant_id", "product_id", "project_id", "issuer_key", "issuer_version"}
 _REGISTRY = "_pdos_quality_policy_issuers"
 _CONFIGURATIONS = "_pdos_quality_bootstrap_profiles"
@@ -108,8 +107,10 @@ def configure_local_profile(engine, profile):
 
 def configure_local_profiles(engine, profiles):
     """Register a fully validated finite list; preserve every identical live old issuer."""
-    if type(profiles) is not list or not 1 <= len(profiles) <= MAX_PROFILES:
-        raise ValueError("Profiles must be an explicit nonempty JSON list of at most 20")
+    if type(profiles) is not list or not profiles:
+        raise ValueError(
+            "Profiles must be an explicit nonempty JSON list with named explicit scopes"
+        )
     prepared, scopes, keys = [], set(), set()
     registry, epochs, configured = _configuration_state(engine)
     for entry in profiles:

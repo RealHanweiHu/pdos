@@ -39,7 +39,7 @@ from pdos_next.service import Context, digest, execute
 
 
 def unconsumed(work, token):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(work.setup.engine, work.setup.tenant, actor_id=work.quality.human, category_id=work.setup.category) as session:
         assert (
             session.scalar(
                 select(Confirmation.consumed).where(Confirmation.token_hash == digest(token))
@@ -57,7 +57,7 @@ def test_capture_stable_key_and_unknown_original_value_remain_explicit(results_w
         work, (0, 1), artifact_id=source, key="stable-synthetic-report-capture"
     )
     response = work.quality.client.post(
-        f"/v1/products/{work.setup.product}/verification-results/captures",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/verification-results/captures",
         headers=work.quality.headers,
         json=input,
     )
@@ -65,11 +65,11 @@ def test_capture_stable_key_and_unknown_original_value_remain_explicit(results_w
     assert response.json()["capture"]["id"] == captured["capture"]["id"]
     changed = {**input, "reason": "Different original capture intent"}
     conflict = work.quality.client.post(
-        f"/v1/products/{work.setup.product}/verification-results/captures",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/verification-results/captures",
         headers=work.quality.headers,
         json=changed,
     )
-    assert conflict.status_code == 409 and conflict.json()["code"] == "DUPLICATE_INTENT_CONFLICT"
+    assert conflict.status_code == 409 and conflict.json()["detail"]["reason"] == "DUPLICATE_INTENT_CONFLICT"
     accepted(work.quality, command(work, "test.results.import", captured=captured, final=True))
     result = current_rows(work)
     assert result.run.status == "results_pending" and result.run.result == "indeterminate"
@@ -80,20 +80,20 @@ def test_capture_stable_key_and_unknown_original_value_remain_explicit(results_w
     # the original exact key remains a readable immutable draft.
     before_replay = counts(work)
     old_key = work.quality.client.post(
-        f"/v1/products/{work.setup.product}/verification-results/captures",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/verification-results/captures",
         headers=work.quality.headers,
         json=input,
     )
     assert old_key.status_code == 200, old_key.text
     assert old_key.json()["capture"]["id"] == captured["capture"]["id"]
     new_key = work.quality.client.post(
-        f"/v1/products/{work.setup.product}/verification-results/captures",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/verification-results/captures",
         headers=work.quality.headers,
         json={**input, "capture_key": str(uuid4())},
     )
-    assert new_key.status_code == 409 and new_key.json()["code"] == "VERSION_CONFLICT"
+    assert new_key.status_code == 409 and new_key.json()["detail"]["reason"] == "VERSION_CONFLICT"
     assert counts(work) == before_replay
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(work.setup.engine, work.setup.tenant, actor_id=work.quality.human, category_id=work.setup.category) as session:
         measured = session.scalar(
             select(MeasurementRecord).where(
                 MeasurementRecord.run_id == work.binding.run_id,
@@ -137,11 +137,12 @@ def test_report_source_withdrawal_blocks_pending_confirm_and_receipt_replay_keep
             update(Artifact).where(Artifact.id == work.report_artifact).values(status="withdrawn")
         )
     refused = post(work.quality, prepared)
-    assert refused.status_code == 409 and refused.json()["code"] == "SOURCE_UNAVAILABLE"
+    assert refused.status_code == 409 and refused.json()["detail"]["reason"] == "SOURCE_UNAVAILABLE"
     assert counts(work) == before and current_rows(work).run.status == "running"
     unconsumed(work, token)
-    # A second independent report can be formally recorded; removing that source
-    # later blocks old successful intent replay and does not erase its rows.
+    # A second independent report can be formally recorded. Withdrawal blocks
+    # new decisions; the same successful request still returns its history
+    # under the caller's current read scope (v1.1 §08.3).
     source = upload_report(work, work.report_rows)
     captured, _ = capture(work, (0,), artifact_id=source)
     receipt, prepared = accepted(
@@ -150,10 +151,11 @@ def test_report_source_withdrawal_blocks_pending_confirm_and_receipt_replay_keep
     saved_counts = counts(work)
     with Session(work.setup.admin) as session, session.begin():
         session.execute(update(Artifact).where(Artifact.id == source).values(status="withdrawn"))
-    refused = post(work.quality, prepared)
-    assert refused.status_code == 409 and refused.json()["code"] == "SOURCE_UNAVAILABLE"
+    recovered = post(work.quality, prepared)
+    assert recovered.status_code == 200, recovered.text
+    assert recovered.json()["id"] == receipt["id"]
     assert counts(work) == saved_counts
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(work.setup.engine, work.setup.tenant, actor_id=work.quality.human, category_id=work.setup.category) as session:
         assert session.get(Receipt, UUID(receipt["id"])) is not None
         assert (
             session.scalar(
@@ -180,7 +182,7 @@ def test_concurrent_imports_same_run_cas_commit_exactly_one_atomic_group(results
         responses = list(pool.map(lambda value: post(work.quality, value), prepared))
     assert sorted(response.status_code for response in responses) == [200, 409]
     losing = next(response for response in responses if response.status_code == 409)
-    assert losing.json()["code"] == "MISSING_REQUIRED_EVIDENCE"
+    assert losing.json()["detail"]["reason"] == "MISSING_REQUIRED_EVIDENCE"
     after = counts(work)
     assert after[MeasurementRecord.__tablename__] == before[MeasurementRecord.__tablename__] + 1
     assert (
@@ -208,7 +210,7 @@ def test_concurrent_imports_same_run_cas_commit_exactly_one_atomic_group(results
                 for identity, revision in sorted(reads.items())
             ]
             stale = post(work.quality, refreshed, True)
-            assert stale.status_code == 409 and stale.json()["code"] == "VERSION_CONFLICT"
+            assert stale.status_code == 409 and stale.json()["detail"]["reason"] == "VERSION_CONFLICT"
             assert counts(work) == after
             assert len(current_rows(work).run.measurements) == 1
             unconsumed(work, value["payload"]["confirmation_token"])
@@ -219,30 +221,32 @@ def test_quality_current_role_and_exact_scope_cannot_be_supplied_by_client_or_ag
     captured, _ = capture(work, (0,))
     value = command(work, "test.results.import", captured=captured)
     refused = post(work.engineer, value, True)
-    assert refused.status_code == 403 and refused.json()["code"] == "FORBIDDEN_SCOPE"
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    assert refused.status_code == 403, refused.text
+    assert refused.json()["code"] == "FORBIDDEN_SCOPE"
+    assert refused.json()["detail"]["reason"] == "FORBIDDEN_OPERATION"
+    with tenant_session(work.setup.engine, work.setup.tenant, actor_id=work.quality.human, category_id=work.setup.category) as session:
         with pytest.raises(DomainError) as error:
             execute(
                 session,
                 Context(work.setup.tenant, work.setup.agent, work.setup.agent),
                 Command.model_validate(value),
             )
-        assert error.value.code == "FORBIDDEN_SCOPE"
+        assert error.value.reason == "FORBIDDEN_SCOPE"
     changed = deepcopy(value)
     changed["payload"]["tenant_id"] = str(work.setup.tenant)
     refused = post(work.quality, changed, True)
-    assert refused.status_code == 422 and refused.json()["code"] == "INVALID_PAYLOAD"
+    assert refused.status_code == 422 and refused.json()["detail"]["reason"] == "INVALID_PAYLOAD"
     changed = deepcopy(value)
     changed["payload"]["run_id"] = str(uuid4())
     refused = post(work.quality, changed, True)
-    assert refused.status_code == 403 and refused.json()["code"] == "FORBIDDEN_SCOPE"
+    assert refused.status_code == 403 and refused.json()["detail"]["reason"] == "FORBIDDEN_SCOPE"
 
 
 def test_result_tables_are_immutable_and_rls_agent_zero_write(results_work):
     work = results_work
     captured, _ = capture(work, (0, 1))
     accepted(work.quality, command(work, "test.results.import", captured=captured, final=True))
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(work.setup.engine, work.setup.tenant, actor_id=work.quality.human, category_id=work.setup.category) as session:
         identities = {
             model: session.scalar(select(model.id).where(model.run_id == work.binding.run_id))
             for model in (
@@ -254,7 +258,7 @@ def test_result_tables_are_immutable_and_rls_agent_zero_write(results_work):
         }
     for model, identity in identities.items():
         with pytest.raises(DBAPIError, match="permission denied"):
-            with tenant_session(work.setup.engine, work.setup.tenant) as session:
+            with tenant_session(work.setup.engine, work.setup.tenant, actor_id=work.quality.human, category_id=work.setup.category) as session:
                 session.execute(update(model).where(model.id == identity).values(status="tampered"))
         with pytest.raises(DBAPIError, match="immutable"):
             with Session(work.setup.admin) as session, session.begin():

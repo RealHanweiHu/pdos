@@ -5,7 +5,7 @@ export function CandidateReading({ candidate }: { candidate: DefinitionCandidate
   return <section aria-label="固定定义候选" className="space-y-3 rounded-lg border p-4 text-sm">
     <h2 className="font-semibold">{candidate.payload.title} · 内部定义草稿预览</h2>
     <p>{candidate.effect}</p>
-    <p>用途：{candidate.payload.purpose} · 来源包 v{candidate.research_revision} · 产品 v{candidate.expected_product_revision}</p>
+    <p>用途：{candidate.payload.purpose} · 来源包 v{candidate.research_revision} · 型号 v{candidate.expected_product_revision}</p>
     <p className="break-all font-mono text-xs text-muted-foreground">固定候选 {candidate.digest}</p>
     {candidate.payload.specs.map(spec => <article key={spec.key} className="rounded-lg bg-muted/40 p-3">
       <strong>{spec.key} · {spec.parameter}</strong><p className="font-mono">{spec.availability === "known" ? rawSpec({ ...spec, applicability: null }) : spec.availability === "conflicted" ? "冲突，目标值未裁决" : "未知，保留原始候选"}</p>

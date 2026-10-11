@@ -1,0 +1,7 @@
+{
+  "synthetic_only": true,
+  "phase": "t1_confirmation_fixture_prepare",
+  "http_status": 409,
+  "reason": "identical claim intent was deduplicated; later withdrawal reused reverted fact",
+  "recovery": "distinct fixed synthetic statement per sample; business source unchanged"
+}

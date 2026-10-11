@@ -39,7 +39,7 @@ from pdos_next.service import digest
 
 
 def counts(work, *, result_only=False):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(work.setup.engine, work.setup.tenant, actor_id=work.quality.human, category_id=work.setup.category) as session:
 
         def count(model):
             statement = select(func.count()).select_from(model)
@@ -139,7 +139,7 @@ def test_partial_final_compute_review_disposition_same_chain_retains_prior_execu
     assert after[Receipt.__tablename__] == baseline[Receipt.__tablename__] + 5
     assert after[Audit.__tablename__] == baseline[Audit.__tablename__] + 5
     assert after[Outbox.__tablename__] == baseline[Outbox.__tablename__] + 5
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(work.setup.engine, work.setup.tenant, actor_id=work.quality.human, category_id=work.setup.category) as session:
         original_row = session.get(VerificationRunVersion, work.original_start_id)
         assert original_row.run_snapshot == work.original_start
         action = session.scalar(
@@ -192,7 +192,7 @@ def test_import_last_outbox_failure_rolls_back_measurements_projection_chain_and
     assert counts(work) == before
     after = current_rows(work)
     assert after.row.id == fixed.row.id and after.request.id == fixed.request.id
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(work.setup.engine, work.setup.tenant, actor_id=work.quality.human, category_id=work.setup.category) as session:
         assert (
             session.scalar(
                 select(Confirmation.consumed).where(Confirmation.token_hash == digest(token))

@@ -2,9 +2,9 @@
 
 # ruff: noqa: F811 - pytest fixture imports deliberately register dependencies
 import json
-import time
+from contextvars import ContextVar
 from copy import deepcopy
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
@@ -50,7 +50,7 @@ def ready_work(operational_work, request, monkeypatch):
                 update(Grant)
                 .where(
                     Grant.tenant_id == work.setup.tenant,
-                    Grant.product_id == work.setup.product,
+                    Grant.category_id == work.setup.category,
                     Grant.principal_id.in_((work.setup.human, work.setup.peer)),
                 )
                 .values(expires_at=until)
@@ -150,7 +150,7 @@ def _launch_timing(request):
 
 
 @pytest.fixture
-def launch_work(accepted_work, request):
+def launch_work(accepted_work, request, monkeypatch):
     window_minutes, fact_minutes = _launch_timing(request)
     work = accepted_work
     view = upstream.listing(work)
@@ -158,15 +158,23 @@ def launch_work(accepted_work, request):
     raw = row["request_snapshot"]
     run_id = uuid4()
     at = now()
+    from pdos_next import clock
+
+    # The plan/promise use a frozen server clock at an already real instant.
+    # Start restores real UTC; the database's future-event guard stays active.
+    monkeypatch.setattr(clock, "_clock", ContextVar("synthetic_plan_clock", default=lambda: at))
     window = {
-        # Enough for real Plan/Promise HTTP round trips; actual Start waits for
-        # this real instant, never advances Python beyond PostgreSQL's clock.
-        "start": at + timedelta(minutes=5),
+        "start": at + timedelta(seconds=1),
         "finish": at + timedelta(minutes=window_minutes),
         "original_timezone": "UTC",
     }
     by_pair = {(r["sample"]["id"], r["item_id"]): r for r in view["actual_methods"] if r["current"]}
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as session:
         method_hashes = {
             key: session.get(ActualMethodApplicability, UUID(value["id"])).snapshot_sha256
             for key, value in by_pair.items()
@@ -291,7 +299,12 @@ def launch_work(accepted_work, request):
             "reason": "Explicit synthetic named TestRun resources, no real qualification",
         }
     )
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as session:
         receipt = import_test_resource_fact(
             session,
             work.quality.ctx,
@@ -324,7 +337,7 @@ def launch_work(accepted_work, request):
 def listing(work, setup=None):
     setup = setup or work.quality
     response = setup.client.get(
-        f"/v1/products/{setup.product}/verification-launch",
+        f"/v1/categories/{setup.category}/products/{setup.product}/verification-launch",
         headers=setup.headers,
         params={"build_id": work.build_id},
     )
@@ -350,7 +363,12 @@ def command(work, operation, **changes):
 
     # Test input construction reads the same persisted pointers directly. The
     # actual inputs/preview/execute remain real API calls with all host guards.
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as session:
         _, row = front._current(
             session, work.quality.ctx, work.setup.product, UUID(work.request_id)
         )
@@ -402,7 +420,7 @@ def command(work, operation, **changes):
         )
     value = cmd(work.quality, operation, payload)
     response = work.quality.client.post(
-        f"/v1/products/{work.setup.product}/verification-launch/inputs",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/verification-launch/inputs",
         headers=work.quality.headers,
         json=value,
     )
@@ -433,10 +451,14 @@ def promised(work):
 
 
 def advance_clock(work, monkeypatch):
-    # Compatibility name for callers: wait for the real clock, never mock it.
-    target = work.binding.window.start + timedelta(milliseconds=250)
-    while now() < target:
-        time.sleep(min(1.0, max(0.001, (target - now()).total_seconds())))
+    from pdos_next import clock
+
+    # The stored plan/promise precede this real instant. Never move Python
+    # ahead of PostgreSQL or bypass its actual-start storage guard.
+    assert datetime.now(UTC) >= work.binding.window.start
+    monkeypatch.setattr(
+        clock, "_clock", ContextVar("real_start_clock", default=lambda: datetime.now(UTC))
+    )
     return now()
 
 

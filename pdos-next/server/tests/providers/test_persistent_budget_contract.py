@@ -8,7 +8,6 @@ import pytest
 from pdos_next.errors import DomainError
 from pdos_next.model_gateway import CallPermit, Reservation
 from pdos_next.model_gateway.persistent_budget import (
-    DatabaseBudgetPort,
     _apply_settlement,
     _metadata,
     _permit_shape,
@@ -48,28 +47,9 @@ def bound():
 )
 def test_budget_permit_rejects_mismatch_before_database(change):
     ctx, permit = bound()
-    port = DatabaseBudgetPort(None, ctx, lambda _: pytest.fail("Current callback invoked"))
     with pytest.raises(DomainError) as error:
-        port.reserve(change(permit), input_bytes=100, max_output_tokens=30)
-    assert error.value.code == "MODEL_EGRESS_DENIED"
-
-
-@pytest.mark.parametrize("counts", [(True, 10), (100, 0), (-1, 10), (1_048_577, 10), (10, 32769)])
-def test_budget_bounds_reject_before_database(counts):
-    ctx, permit = bound()
-    port = DatabaseBudgetPort(None, ctx, lambda _: pytest.fail("Current callback invoked"))
-    with pytest.raises(DomainError) as error:
-        port.reserve(permit, input_bytes=counts[0], max_output_tokens=counts[1])
-    assert error.value.code == "MODEL_BUDGET_INVALID"
-
-
-def test_missing_run_or_current_callback_never_creates_accounting_port():
-    ctx, _ = bound()
-    for changed in [replace(ctx, run_id=None), replace(ctx, cancel_epoch=None)]:
-        with pytest.raises(DomainError):
-            DatabaseBudgetPort(None, changed, lambda _: None)
-    with pytest.raises(DomainError):
-        DatabaseBudgetPort(None, ctx, None)
+        _permit_shape(change(permit), ctx)
+    assert error.value.reason == "MODEL_EGRESS_DENIED"
 
 
 @pytest.mark.parametrize(
@@ -108,7 +88,7 @@ def test_repeat_settlement_with_changed_usage_or_outcome_is_conflict():
     ]:
         with pytest.raises(DomainError) as error:
             _apply_settlement(run, row, final)
-        assert error.value.code == "MODEL_BUDGET_CONFLICT"
+        assert error.value.reason == "MODEL_BUDGET_CONFLICT"
         assert run.used_tokens == 130 and row.status == "completed"
 
 
@@ -146,7 +126,7 @@ def test_repeated_trace_and_usage_are_idempotent_but_breakdown_is_immutable():
             row,
             _settlement(ProviderUsage(50, 30, 21, 9), "completed", None, "synthetic-request-1"),
         )
-    assert changed.value.code == "MODEL_BUDGET_CONFLICT"
+    assert changed.value.reason == "MODEL_BUDGET_CONFLICT"
     assert row.normalized_usage["cache_read_tokens"] == 20
 
 
@@ -166,7 +146,7 @@ def test_original_unknown_request_id_cannot_be_replaced_during_settlement():
             row,
             _settlement(ProviderUsage(50, 30), "completed", None, "synthetic-other-request"),
         )
-    assert replaced.value.code == "MODEL_BUDGET_CONFLICT"
+    assert replaced.value.reason == "MODEL_BUDGET_CONFLICT"
     assert run.used_tokens == 0 and run.reserved_tokens == 130 and row.revision == 2
 
 

@@ -160,12 +160,15 @@ def h(monkeypatch, materials):
 
         return call
 
-    def occupancies(*args):
+    def occupancies(*args, **kwargs):
         fixture.calls.append("occupancies-after-fingerprint")
         if fixture.after_hash:
             fixture.after_hash()
         return ()
 
+    from pdos_next.domain.build_operational_facts import physical_summary
+
+    monkeypatch.setattr(physical_summary, "capacity_summary", gate("foreign-capacity", []))
     monkeypatch.setattr(resources, "now", lambda: fixture.clock)
     monkeypatch.setattr(resources, "lock_binding_assets", gate("complete-union-assets"))
     monkeypatch.setattr(resources, "_current", lambda *args: (pointer, fact))
@@ -183,6 +186,11 @@ def h(monkeypatch, materials):
     monkeypatch.setattr(resources, "_occupancies", occupancies)
     monkeypatch.setattr(
         resources.professional, "assess", gate("exact-executor-authority", authority)
+    )
+    monkeypatch.setattr(
+        resources.professional,
+        "recheck_snapshot",
+        lambda *args, **kwargs: {"current": True, "assessment": authority},
     )
     return fixture
 

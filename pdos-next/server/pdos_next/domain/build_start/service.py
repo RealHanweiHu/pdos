@@ -21,7 +21,8 @@ from pdos_next.domain.supply_execution.service import (
 )
 from pdos_next.errors import DomainError
 from pdos_next.models import Artifact, now
-from pdos_next.service import Context, digest
+from pdos_next.request_proof import command_inputs_once, snapshot_get, snapshot_scalar
+from pdos_next.service import digest
 
 from .models import (
     BuildAssessmentCurrent,
@@ -104,7 +105,9 @@ def _current_assessment(s, ctx, product_id, build_id, *, lock=False):
         BuildAssessmentCurrent.product_id == product_id,
         BuildAssessmentCurrent.build_id == build_id,
     )
-    pointer = s.scalar(query.with_for_update() if lock else query)
+    pointer = snapshot_scalar(
+        s, (BuildAssessmentCurrent, product_id, build_id), query, lock=lock, scope_id=product_id
+    )
     return pointer, _row(
         s, ctx, product_id, BuildExecutionAssessment, pointer.assessment_id
     ) if pointer else None
@@ -117,21 +120,36 @@ def _current_decision(s, ctx, product_id, build_id, role, *, lock=False):
         BuildAuthorizationCurrent.build_id == build_id,
         BuildAuthorizationCurrent.role == role,
     )
-    pointer = s.scalar(query.with_for_update() if lock else query)
+    pointer = snapshot_scalar(
+        s,
+        (BuildAuthorizationCurrent, product_id, build_id, role),
+        query,
+        lock=lock,
+        scope_id=product_id,
+    )
     return pointer, _row(
         s, ctx, product_id, BuildAuthorizationDecision, pointer.decision_id
     ) if pointer else None
 
 
 def _row(s, ctx, product_id, model, identity):
-    row = s.scalar(
-        select(model).where(
-            model.tenant_id == ctx.tenant_id, model.product_id == product_id, model.id == identity
-        )
-    )
-    if row is None or (row.visibility == "private" and row.owner_id != ctx.requester_id):
+    row = snapshot_get(s, model, identity, scope_id=product_id)
+    return _validated_row(s, ctx, product_id, row)
+
+
+def _validated_row(s, ctx, product_id, row):
+    """Validate a complete row already actually selected under this caller's RLS.
+
+    This is not an authority proof or a Session cache. The original Build
+    scope read and every fixed-field/content-hash check still run for each use.
+    """
+    if row is None or row.tenant_id != ctx.tenant_id or row.product_id != product_id:
         raise DomainError("FORBIDDEN_SCOPE", "执行评估、批准或开工事实不在当前可读范围。", 403)
     build = _build(s, ctx, product_id, row.build_id)
+    return _validate_row_material(row, build)
+
+
+def _validate_row_material(row, build):
     if (
         row.project_id != build.project_id
         or row.engineering_configuration_id != build.engineering_configuration_id
@@ -144,12 +162,15 @@ def _row(s, ctx, product_id, model, identity):
 
 
 def _start(s, ctx, product_id, build_id):
-    return s.scalar(
+    return snapshot_scalar(
+        s,
+        (BuildStart, "by-build", product_id, build_id),
         select(BuildStart).where(
             BuildStart.tenant_id == ctx.tenant_id,
             BuildStart.product_id == product_id,
             BuildStart.build_id == build_id,
-        )
+        ),
+        scope_id=product_id,
     )
 
 
@@ -240,23 +261,18 @@ def _require_authority(value, role, *, until=None):
             "本动作需要当前具名人员的用途限定职责与有效专业资格。",
             403,
         )
-    expiry = value.get("valid_until")
-    if until is not None and (expiry is None or datetime.fromisoformat(expiry) < until):
-        raise DomainError(
-            "AUTHORITY_WINDOW_NOT_COVERED", "专业职责或资格有效期未覆盖固定执行窗口。", 409
-        )
 
 
 def _recheck_authority(s, ctx, product_id, project_id, snapshot, at, *, retained=False):
     from pdos_next.domain.professional_authority.service import recheck_snapshot
 
     try:
-        person = UUID(snapshot["subject_id"])
+        UUID(snapshot["subject_id"])
     except (ValueError, TypeError, KeyError):
         raise DomainError("INTEGRITY_MISMATCH", "具名专业批准的人员身份无法核对。") from None
     result = recheck_snapshot(
         s,
-        Context(ctx.tenant_id, person, person),
+        ctx,
         product_id,
         project_id,
         snapshot,
@@ -328,23 +344,34 @@ def _bundle(s, ctx, product_id, build, scope, at, *, write=False, saved_start=No
 
 
 def _actual_binding(s, ctx, product_id, build):
-    from pdos_next.domain.build_execution.models import ActualConfiguration
+    from sqlalchemy import func
 
-    rows = s.scalars(
+    from pdos_next.domain.build_execution.models import ActualConfiguration
+    from pdos_next.request_proof import request_proof, scoped_rows
+
+    rows = scoped_rows(
+        s,
+        (ActualConfiguration, build.id),
         select(ActualConfiguration)
         .where(
             ActualConfiguration.tenant_id == ctx.tenant_id,
             ActualConfiguration.product_id == product_id,
             ActualConfiguration.build_id == build.id,
         )
-        .order_by(ActualConfiguration.id)
-    ).all()
+        .order_by(ActualConfiguration.id),
+    )
+    proof = request_proof(s)
+    key = ("actual-configuration-completeness", build.id, tuple(row.id for row in rows))
+    if key not in proof.read_rows:
+        proof.read_rows[key] = s.scalar(
+            func.build_actual_count(ctx.tenant_id, build.category_id, product_id, build.id)
+        )
+    if proof.read_rows[key] != len(rows):
+        raise DomainError(
+            "SOURCE_UNAVAILABLE", "本轮实物配置含当前不可读依据，须由有权限的人员核对。", 403
+        )
     facts, reads, deviation = [], [], False
     for row in rows:
-        if row.visibility == "private" and row.owner_id != ctx.requester_id:
-            raise DomainError(
-                "SOURCE_UNAVAILABLE", "当前执行条件存在不可读事实，须由正确范围人员重新核对。", 403
-            )
         reads.extend(row.required_source_read_set)
         differs = (
             bool(row.differences)
@@ -384,7 +411,7 @@ def _exact_reads(s, ctx, product_id, command, required, references=(), *, build=
             409,
         )
     _, private = _sources(s, ctx, product_id, required, references)
-    if build is not None and build.visibility == "product" and private:
+    if build is not None and build.visibility == "category" and private:
         raise DomainError(
             "PRIVATE_SOURCE_SCOPE",
             "本轮共享执行范围不能加入私人依据，请使用匹配范围的固定事实。",
@@ -485,7 +512,9 @@ def _decision_guard(s, ctx, product_id, row, assessment, role, scope, at, *, ret
         raise DomainError(
             "AUTHORIZATION_SCOPE_MISMATCH", "两项批准必须绑定同一当前评估与固定执行范围。", 409
         )
-    if row.valid_until <= at or row.valid_until < scope.window_end:
+    if row.valid_until is not None and (
+        row.valid_until <= at or row.valid_until < scope.window_end
+    ):
         raise DomainError("AUTHORIZATION_EXPIRED", "专业批准已失效或未覆盖执行窗口。", 409)
     _require_authority(
         _recheck_authority(
@@ -515,6 +544,7 @@ def _decision_guard(s, ctx, product_id, row, assessment, role, scope, at, *, ret
     validate_professional_review(review_payload, role, scope, at)
 
 
+@command_inputs_once
 def _start_inputs(s, ctx, command, product, payload, at):
     assessment, build, scope = _assessment(s, ctx, product.id, payload)
     _current_assessment_guard(s, ctx, product.id, assessment)
@@ -575,6 +605,7 @@ def _start_inputs(s, ctx, command, product, payload, at):
     return assessment, build, scope, engineering, manufacturing, actor, bundle, reads, saved
 
 
+@command_inputs_once
 def _authorization_inputs(s, ctx, command, product, payload, at):
     role = ROLES[command.operation]
     assessment, build, scope = _assessment(s, ctx, product.id, payload)
@@ -590,18 +621,11 @@ def _authorization_inputs(s, ctx, command, product, payload, at):
         _current_assessment_guard(s, ctx, product.id, assessment)
         bundle = _bundle(s, ctx, product.id, build, scope, at, write=True)
         _match_bundle(assessment, bundle, at)
-        if payload.valid_until <= at or payload.valid_until < scope.window_end:
-            raise DomainError(
-                "AUTHORIZATION_WINDOW_NOT_COVERED", "批准有效期须覆盖固定执行窗口且当前有效。", 409
-            )
-        if (
-            datetime.fromisoformat(authority["valid_until"]) < payload.valid_until
-            or datetime.fromisoformat(bundle["valid_until"]) < payload.valid_until
+        if payload.valid_until is not None and (
+            payload.valid_until <= at or payload.valid_until < scope.window_end
         ):
             raise DomainError(
-                "AUTHORIZATION_VALIDITY_EXCEEDED",
-                "批准期限不能超过当前专业权威与操作事实的有效期。",
-                409,
+                "AUTHORIZATION_WINDOW_NOT_COVERED", "批准有效期须覆盖固定执行窗口且当前有效。", 409
             )
     else:
         # Withdrawal of a current decision is possible even after assessment replacement.
@@ -815,7 +839,7 @@ def _resolved(assessment, engineering, manufacturing):
 
 def preview_view(s, ctx, command, product, payload):
     if command.expected_revision != product.revision:
-        raise DomainError("VERSION_CONFLICT", "产品范围版本已经变化。", 409)
+        raise DomainError("VERSION_CONFLICT", "型号范围版本已经变化。", 409)
     validate(s, ctx, command, product, payload)
     at = now()
     if isinstance(payload, BuildAssessmentPayload):
@@ -880,7 +904,7 @@ def preview_view(s, ctx, command, product, payload):
 
 def apply(s, ctx, command, product, payload):
     if command.expected_revision != product.revision:
-        raise DomainError("VERSION_CONFLICT", "产品范围版本已经变化。", 409)
+        raise DomainError("VERSION_CONFLICT", "型号范围版本已经变化。", 409)
     at = now()
     if isinstance(payload, BuildAssessmentPayload):
         row, _ = _assessment_candidate(s, ctx, command, product, payload, at)
@@ -1006,7 +1030,7 @@ def assessment_inputs(s, ctx, product_id, payload):
     )
     reads = _reads(linked_reads, result["required_source_read_set"])
     _, private = _sources(s, ctx, product_id, reads)
-    if build.visibility == "product" and private:
+    if build.visibility == "category" and private:
         raise DomainError("PRIVATE_SOURCE_SCOPE", "共享本轮不能使用私人操作事实来源。", 403)
     return {
         "build_id": str(build.id),
@@ -1047,7 +1071,7 @@ def _view(s, ctx, product_id, row):
         raw["expected_previous_revision"] = row.previous_revision or 0
         assessment = _row(s, ctx, product_id, BuildExecutionAssessment, row.assessment_id)
         raw["execution_scope"] = deepcopy(assessment.execution_scope)
-        raw["expired"] = row.valid_until <= now()
+        raw["expired"] = row.valid_until is not None and row.valid_until <= now()
     else:
         raw["execution_result"] = deepcopy(row.reservations.get("execution_result"))
     return raw
@@ -1061,9 +1085,124 @@ def _allowed(authority, role, scope):
         return False
 
 
+def _saved_capabilities(
+    s, ctx, product_id, build, assessment, decisions, saved, *, as_of=None, include_actions=True
+):
+    """Stored execution result plus exact Current/source watermarks; no reallocation."""
+    from .current import _require, authority_watermarks, reservation_watermarks
+
+    at = as_of or now()
+    caps = {
+        "readiness_compute": False,
+        "engineering_approve": False,
+        "engineering_revoke": False,
+        "manufacturing_approve": False,
+        "manufacturing_revoke": False,
+        "start": False,
+        "authority": {"start": deepcopy(saved.authority_snapshot)},
+        "revoke_authority": {},
+        "blockers": [],
+        "required_source_read_set": deepcopy(saved.required_source_read_set),
+        "needs_input": assessment is None,
+        "execution_status": "executing",
+        "stop_required": True,
+        "execution_qualification": "needs_recheck",
+    }
+    try:
+        _require(
+            assessment is not None
+            and assessment.id == saved.assessment_id
+            and assessment.revision == saved.assessment_revision
+            and assessment.snapshot_sha256 == saved.assessment_sha256
+        )
+        _require(digest(_material(saved)) == saved.snapshot_sha256, "INTEGRITY_MISMATCH")
+        scope = _scope_of(assessment)
+        for role in ("engineering", "manufacturing"):
+            decision = decisions.get(role)
+            _require(
+                decision is not None
+                and decision.action == "approve"
+                and decision.id == getattr(saved, f"{role}_authorization_id")
+                and decision.revision == getattr(saved, f"{role}_authorization_revision")
+                and decision.assessment_id == assessment.id
+                and decision.assessment_sha256 == assessment.snapshot_sha256,
+                "AUTHORIZATION_NOT_CURRENT",
+            )
+            _require(
+                decision.valid_until is None or decision.valid_until > at, "AUTHORIZATION_EXPIRED"
+            )
+            authority_watermarks(
+                s,
+                ctx,
+                product_id,
+                build.project_id,
+                decision.authority_snapshot,
+                at,
+                retained=as_of is not None,
+            )
+        authority_watermarks(
+            s,
+            ctx,
+            product_id,
+            build.project_id,
+            saved.authority_snapshot,
+            at,
+            retained=as_of is not None,
+        )
+        reservation_watermarks(s, ctx, product_id, build, assessment, saved, _port_scope(scope), at)
+        actual, actual_reads, deviation = _actual_binding(s, ctx, product_id, build)
+        fixed = assessment.result.get("actual_configuration_binding") or []
+        indexed = {row["id"]: row for row in actual}
+        _require(not deviation, "ACTUAL_CONFIGURATION_DEVIATION")
+        _require(all(indexed.get(row["id"]) == row for row in fixed))
+        reads = _reads(saved.required_source_read_set, actual_reads)
+        _, private = _sources(s, ctx, product_id, reads)
+        _require(not private or build.visibility != "category", "PRIVATE_SOURCE_SCOPE")
+        resolved = _resolved(assessment, decisions["engineering"], decisions["manufacturing"])
+        _require(resolved == saved.reservations["execution_result"], "INTEGRITY_MISMATCH")
+        caps.update(
+            current_result=deepcopy(saved.reservations["execution_result"]),
+            required_source_read_set=reads,
+            stop_required=False,
+            execution_qualification="limited_current",
+        )
+    except DomainError as error:
+        if error.status == 403 and error.reason in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
+            raise
+        caps["blockers"].append({"code": error.reason, "detail": error.message})
+    if include_actions and as_of is None and assessment is not None:
+        from pdos_next.service import require_access
+
+        try:
+            require_access(s, ctx, product_id, write=True)
+            _human(s, ctx, product_id)
+        except DomainError:
+            return caps
+        scope = _scope_of(assessment)
+        for role in ("engineering", "manufacturing"):
+            try:
+                value = _authority(
+                    s, ctx, product_id, build, f"build.{role}.authorize", scope.purpose, at
+                )
+                caps["authority"][f"{role}_authorize"] = value
+                caps["revoke_authority"][role] = value
+                _require_authority(value, role)
+                decision = decisions.get(role)
+                if decision is not None:
+                    _sources(s, ctx, product_id, decision.required_source_read_set)
+                    caps[f"{role}_revoke"] = decision.action == "approve"
+            except DomainError:
+                pass
+    return caps
+
+
 def _capabilities(s, ctx, product_id, build, assessment, decisions, saved, *, as_of=None):
     from pdos_next.service import require_access
 
+    if saved is not None:
+        return _saved_capabilities(
+            s, ctx, product_id, build, assessment, decisions, saved, as_of=as_of
+        )
     at, blockers = as_of or now(), []
     caps = {
         "readiness_compute": False,
@@ -1086,7 +1225,7 @@ def _capabilities(s, ctx, product_id, build, assessment, decisions, saved, *, as
         _human(s, ctx, product_id)
         caps["readiness_compute"] = saved is None
     except DomainError as error:
-        blockers.append({"code": error.code, "detail": "当前人员不能办理本轮执行动作。"})
+        blockers.append({"code": error.reason, "detail": "当前人员不能办理本轮执行动作。"})
     if assessment is None:
         blockers.append(
             {
@@ -1102,9 +1241,15 @@ def _capabilities(s, ctx, product_id, build, assessment, decisions, saved, *, as
         ("build.start", "start"),
     ):
         caps["authority"][key] = _authority(s, ctx, product_id, build, operation, scope.purpose, at)
-        if as_of is not None and saved is not None and operation == "build.start":
+        if saved is not None and operation == "build.start":
             caps["authority"][key] = _recheck_authority(
-                s, ctx, product_id, build.project_id, saved.authority_snapshot, at, retained=True
+                s,
+                ctx,
+                product_id,
+                build.project_id,
+                saved.authority_snapshot,
+                at,
+                retained=as_of is not None,
             )
     current = False
     try:
@@ -1127,11 +1272,11 @@ def _capabilities(s, ctx, product_id, build, assessment, decisions, saved, *, as
         require_candidate(assessment.result)
         # Newly observed matching configurations remain source-controlled too.
         _, private = _sources(s, ctx, product_id, bundle["required_source_read_set"])
-        if private and build.visibility == "product":
+        if private and build.visibility == "category":
             raise DomainError("PRIVATE_SOURCE_SCOPE", "来源受众与本轮共享范围不一致。", 403)
         current = True
     except DomainError as error:
-        blockers.append({"code": error.code, "detail": error.message})
+        blockers.append({"code": error.reason, "detail": error.message})
         caps["stop_required"] = saved is not None
     for role in ("engineering", "manufacturing"):
         caps[f"{role}_approve"] = (
@@ -1202,7 +1347,7 @@ def _capabilities(s, ctx, product_id, build, assessment, decisions, saved, *, as
                     assessment, decisions["engineering"], decisions["manufacturing"]
                 )
         except DomainError as error:
-            blockers.append({"code": error.code, "detail": error.message})
+            blockers.append({"code": error.reason, "detail": error.message})
             caps["stop_required"] = saved is not None
     if not scope.window_start <= at < scope.window_end:
         caps["start"] = False
@@ -1248,7 +1393,7 @@ def list_execution(s, ctx, product_id):
             try:
                 result[key].append(_view(s, ctx, product_id, row))
             except DomainError as error:
-                if error.code in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
+                if error.reason in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
                     continue
                 raise
     builds = s.scalars(
@@ -1257,8 +1402,6 @@ def list_execution(s, ctx, product_id):
         .order_by(Build.created_at, Build.id)
     ).all()
     for build in builds:
-        if build.visibility == "private" and build.owner_id != ctx.requester_id:
-            continue
         try:
             _, assessment = _current_assessment(s, ctx, product_id, build.id)
             if assessment is not None:
@@ -1278,7 +1421,7 @@ def list_execution(s, ctx, product_id):
                             role
                         ] = {"decision_id": str(decision.id), "revision": decision.revision}
                 except DomainError as error:
-                    if error.code not in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
+                    if error.reason not in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
                         raise
             saved = _start(s, ctx, product_id, build.id)
             if saved is not None:
@@ -1288,7 +1431,7 @@ def list_execution(s, ctx, product_id):
                 s, ctx, product_id, build, assessment, decisions, saved
             )
         except DomainError as error:
-            if error.code not in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
+            if error.reason not in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
                 raise
     return result
 
@@ -1296,6 +1439,440 @@ def list_execution(s, ctx, product_id):
 def get_assessment(s, ctx, product_id, identity):
     row = _row(s, ctx, product_id, BuildExecutionAssessment, identity)
     return row, _view(s, ctx, product_id, row)
+
+
+def _projection_current(s, ctx, product_id, build):
+    """Read this Build's complete Current set in one RLS snapshot query."""
+    from sqlalchemy import literal
+    from sqlalchemy.orm import aliased
+
+    from pdos_next.request_proof import request_proof
+
+    if build.tenant_id != ctx.tenant_id or build.product_id != product_id:
+        raise DomainError("FORBIDDEN_SCOPE", "执行投影不在当前构建范围。", 403)
+    # Start is unique and immutable for this Build. Sample inspection already
+    # read it under this exact RR/RLS scope; other callers still read it here.
+    saved = _start(s, ctx, product_id, build.id)
+    proof = request_proof(s)
+    key = ("build-projection-current", product_id, build.id)
+    if key not in proof.scalar_rows:
+        engineering = aliased(BuildAuthorizationCurrent)
+        manufacturing = aliased(BuildAuthorizationCurrent)
+        engineering_fact = aliased(BuildAuthorizationDecision)
+        manufacturing_fact = aliased(BuildAuthorizationDecision)
+        # execution_projection already read this exact Build under the same RR
+        # RLS snapshot. Its identity anchors the direct Current query; repeating
+        # the Build SELECT would re-evaluate the same full ancestor ACL set.
+        selected_build = select(
+            literal(build.tenant_id).label("tenant_id"),
+            literal(build.product_id).label("product_id"),
+            literal(build.id).label("id"),
+        ).subquery()
+        scope = selected_build.c
+        query = (
+            select(
+                BuildAssessmentCurrent,
+                BuildExecutionAssessment,
+                engineering,
+                engineering_fact,
+                manufacturing,
+                manufacturing_fact,
+            )
+            .select_from(selected_build)
+            .outerjoin(
+                BuildAssessmentCurrent,
+                (BuildAssessmentCurrent.tenant_id == scope.tenant_id)
+                & (BuildAssessmentCurrent.product_id == scope.product_id)
+                & (BuildAssessmentCurrent.build_id == scope.id),
+            )
+            .outerjoin(
+                BuildExecutionAssessment,
+                BuildExecutionAssessment.id == BuildAssessmentCurrent.assessment_id,
+            )
+            .outerjoin(
+                engineering,
+                (engineering.tenant_id == scope.tenant_id)
+                & (engineering.product_id == scope.product_id)
+                & (engineering.build_id == scope.id)
+                & (engineering.role == "engineering"),
+            )
+            .outerjoin(engineering_fact, engineering_fact.id == engineering.decision_id)
+            .outerjoin(
+                manufacturing,
+                (manufacturing.tenant_id == scope.tenant_id)
+                & (manufacturing.product_id == scope.product_id)
+                & (manufacturing.build_id == scope.id)
+                & (manufacturing.role == "manufacturing"),
+            )
+            .outerjoin(manufacturing_fact, manufacturing_fact.id == manufacturing.decision_id)
+        )
+        proof.scalar_rows[key] = s.execute(query).one()
+    pointer, assessment, ep, ef, mp, mf = proof.scalar_rows[key]
+    if assessment is not None:
+        if pointer.assessment_revision != assessment.revision:
+            raise DomainError("INTEGRITY_MISMATCH", "执行评估 Current 无法核对。")
+        assessment = _row(s, ctx, product_id, BuildExecutionAssessment, assessment.id)
+    decisions = {}
+    for role, current, fact in (("engineering", ep, ef), ("manufacturing", mp, mf)):
+        if fact is not None:
+            if current.decision_revision != fact.revision or fact.role != role:
+                raise DomainError("INTEGRITY_MISMATCH", "执行批准 Current 无法核对。")
+            decisions[role] = _row(s, ctx, product_id, BuildAuthorizationDecision, fact.id)
+    if saved is not None:
+        saved = _row(s, ctx, product_id, BuildStart, saved.id)
+    return assessment, decisions, saved
+
+
+def _writer_projection_scope(s, ctx, product_id):
+    """Actual clean held Product scope; a marker alone never proves raw rows."""
+    from sqlalchemy.engine import Connection, Engine
+    from sqlalchemy.orm import Session, SessionTransaction
+
+    from pdos_next.database import require_context
+    from pdos_next.domain.builds.models import Build
+    from pdos_next.models import Product
+    from pdos_next.request_proof import request_proof
+
+    if (
+        not isinstance(s, Session)
+        or s.is_active is not True
+        or not s.in_transaction()
+        or s.info.get("read_snapshot") is True
+        or s.new
+        or s.dirty
+        or s.deleted
+    ):
+        return None
+    require_context(s, ctx)
+    scope = (ctx.tenant_id, ctx.actor_id, ctx.requester_id, ctx.category_id)
+    if s.info.get("scope") != scope:
+        return None
+    proof = request_proof(s)
+    if product_id not in proof.scope_locks or s.get_transaction() is not proof.transaction:
+        return None
+    chain, seen = [], set()
+    node = s._transaction
+    while node is not None:
+        if (
+            not isinstance(node, SessionTransaction)
+            or node.session is not s
+            or node.is_active is not True
+            or id(node) in seen
+            or len(chain) >= 128
+        ):
+            return None
+        seen.add(id(node))
+        chain.append(node)
+        node = node.parent
+    if not chain or chain[-1] is not proof.transaction:
+        return None
+    if s.get_nested_transaction() is not next((node for node in chain if node.nested), None):
+        return None
+    try:
+        bind = s.get_bind()
+        if not isinstance(bind, (Engine, Connection)) or any(
+            s.get_bind(mapper=model) is not bind
+            for model in (
+                Product,
+                Build,
+                BuildAssessmentCurrent,
+                BuildExecutionAssessment,
+                BuildAuthorizationCurrent,
+                BuildAuthorizationDecision,
+                BuildStart,
+            )
+        ):
+            return None
+    except Exception:
+        # Binding resolution is only an optimization prerequisite. An unknown
+        # or routed bind uses the same original ordered domain reads.
+        return None
+    # Inspect only connections already enlisted by the real gate SELECT.
+    # Calling s.connection() here could enlist a new bind after s.bind changed
+    # and falsely associate the old Product marker with another database UOW.
+    enlisted = getattr(proof.transaction, "_connections", None)
+    if not isinstance(enlisted, dict) or bind not in enlisted:
+        return None
+    entry = enlisted[bind]
+    if not isinstance(entry, tuple) or len(entry) != 4:
+        return None
+    connection, transaction = entry[:2]
+    if (
+        not isinstance(connection, Connection)
+        or connection.closed
+        or connection.invalidated
+        or getattr(transaction, "is_active", False) is not True
+        or not connection.in_transaction()
+        or connection.get_transaction() is not transaction
+        or set(enlisted) != {connection, connection.engine}
+        or any(
+            not isinstance(value, tuple)
+            or len(value) != 4
+            or value[0] is not connection
+            or value[1] is not transaction
+            for value in enlisted.values()
+        )
+        or (isinstance(bind, Engine) and connection.engine is not bind)
+        or (isinstance(bind, Connection) and connection is not bind)
+    ):
+        return None
+    return (
+        digest(vars(ctx)),
+        scope,
+        tuple(chain),
+        proof.transaction,
+        proof.mutation_epoch,
+        bind,
+        connection,
+        transaction,
+    )
+
+
+def _writer_projection_query(build):
+    """Complete fresh fields, never ORM identity-map or cached Current values."""
+    from sqlalchemy import literal
+
+    ac = BuildAssessmentCurrent.__table__.alias("owner_assessment_current")
+    af = BuildExecutionAssessment.__table__.alias("owner_assessment_fact")
+    ec = BuildAuthorizationCurrent.__table__.alias("owner_engineering_current")
+    ef = BuildAuthorizationDecision.__table__.alias("owner_engineering_fact")
+    mc = BuildAuthorizationCurrent.__table__.alias("owner_manufacturing_current")
+    mf = BuildAuthorizationDecision.__table__.alias("owner_manufacturing_fact")
+    owners = (
+        ("ac", ac, BuildAssessmentCurrent),
+        ("af", af, BuildExecutionAssessment),
+        ("ec", ec, BuildAuthorizationCurrent),
+        ("ef", ef, BuildAuthorizationDecision),
+        ("mc", mc, BuildAuthorizationCurrent),
+        ("mf", mf, BuildAuthorizationDecision),
+    )
+    anchor = select(
+        literal(build.tenant_id).label("tenant_id"),
+        literal(build.product_id).label("product_id"),
+        literal(build.id).label("id"),
+    ).subquery()
+    scope = anchor.c
+
+    def current_on(table):
+        return (
+            (table.c.tenant_id == scope.tenant_id)
+            & (table.c.product_id == scope.product_id)
+            & (table.c.build_id == scope.id)
+        )
+
+    query = select(
+        *(
+            column.label(f"{prefix}_{column.key}")
+            for prefix, table, _ in owners
+            for column in table.c
+        )
+    ).select_from(anchor)
+    query = (
+        query.outerjoin(ac, current_on(ac))
+        .outerjoin(af, af.c.id == ac.c.assessment_id)
+        .outerjoin(ec, current_on(ec) & (ec.c.role == "engineering"))
+        .outerjoin(ef, ef.c.id == ec.c.decision_id)
+        .outerjoin(mc, current_on(mc) & (mc.c.role == "manufacturing"))
+        .outerjoin(mf, mf.c.id == mc.c.decision_id)
+    )
+    return query, owners
+
+
+def _projection_ordered(s, ctx, product_id, build):
+    """The original writer path, including its exact error/role order."""
+    _, assessment = _current_assessment(s, ctx, product_id, build.id)
+    decisions = {}
+    for role in ("engineering", "manufacturing"):
+        try:
+            _, decision = _current_decision(s, ctx, product_id, build.id, role)
+            if decision is not None:
+                decisions[role] = decision
+        except DomainError as error:
+            if error.reason not in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
+                raise
+    saved = _start(s, ctx, product_id, build.id)
+    if saved is not None:
+        saved = _validated_row(s, ctx, product_id, saved)
+    return assessment, decisions, saved
+
+
+def _writer_projection_stamp(s, ctx, product_id, token):
+    """Actual RLS Product clock and DB identity, on the already enlisted UOW.
+
+    The clock is never an authority/source proof. Its conditional scalar read
+    keeps malformed or missing GUCs out of category_access's UUID casts; the
+    returned DB scope is still rejected explicitly instead of borrowing info.
+    """
+    from sqlalchemy import and_, case, func
+
+    from pdos_next.models import Product
+
+    names = ("tenant_id", "actor_id", "requester_id", "category_id")
+    expected = (ctx.tenant_id, ctx.actor_id, ctx.requester_id, ctx.category_id)
+    settings = tuple(func.current_setting(f"pdos.{name}", True) for name in names)
+    matches = and_(
+        *(setting == (str(value) if value is not None else "")
+          for setting, value in zip(settings, expected, strict=True))
+    )
+    clock = (
+        select(Product.lifecycle_epoch)
+        .where(
+            Product.tenant_id == ctx.tenant_id,
+            Product.category_id == ctx.category_id,
+            Product.id == product_id,
+        )
+        .scalar_subquery()
+    )
+    query = select(
+        *(setting.label(name) for name, setting in zip(names, settings, strict=True)),
+        case((matches, clock), else_=None).label("lifecycle_epoch"),
+    )
+    # _writer_projection_scope proved this is the one actual, active,
+    # already-enlisted Connection. Do not resolve or enlist a different bind.
+    selected = list(token[-2].execute(query).mappings())
+    if len(selected) != 1:
+        raise DomainError("FORBIDDEN_SCOPE", "请求身份与数据库事务范围不符。", 403)
+    row = selected[0]
+    try:
+        db_scope = tuple(UUID(row.get(name)) for name in names)
+    except (AttributeError, TypeError, ValueError):
+        raise DomainError("FORBIDDEN_SCOPE", "请求身份与数据库事务范围不符。", 403) from None
+    if db_scope != expected:
+        raise DomainError("FORBIDDEN_SCOPE", "请求身份与数据库事务范围不符。", 403)
+    epoch = row.get("lifecycle_epoch")
+    if type(epoch) is not int:
+        # The real Product clock is NOT NULL. A NULL means this fresh RLS
+        # read has no visible Product; do not inherit an older scalar proof.
+        raise DomainError("FORBIDDEN_SCOPE", "请求身份与数据库事务范围不符。", 403)
+    return epoch
+
+
+def _projection_writer(s, ctx, product_id, build):
+    """Share complete raw owner fields only while the actual DB clock matches.
+
+    Each invocation reads Product's RLS clock and four DB scope GUCs anew.
+    Legal Current changes, including this Session's untracked SQL, advance
+    that clock. Every hit reconstructs all models and runs the original
+    scope/hash guards; source, issuer, clock and execution guards run later
+    as before. Nothing here caches an affirmative execution projection.
+    """
+    from sqlalchemy.exc import DBAPIError
+
+    from pdos_next.request_proof import request_proof
+
+    if not all(
+        isinstance(value, UUID)
+        for value in (ctx.tenant_id, ctx.actor_id, ctx.requester_id, ctx.category_id)
+    ):
+        # Legacy/category-less callers retain the original ordered semantics;
+        # this clock optimization requires a complete server-bound DB scope.
+        return None
+    token = _writer_projection_scope(s, ctx, product_id)
+    if token is None:
+        return None
+    epoch = _writer_projection_stamp(s, ctx, product_id, token)
+    if _writer_projection_scope(s, ctx, product_id) != token:
+        return None
+    query, owners = _writer_projection_query(build)
+    # This one fixed query factory has exact role literals and bindings. Use
+    # its stable full table/column/mapper signature instead of compiling the
+    # complete SQL text on every invocation. Actual execution still compiles
+    # normally on a miss; the full scope and actual bind are in this key.
+    signature = tuple(
+        (
+            prefix,
+            table.name,
+            model,
+            tuple(model.__table__.c),
+            tuple(table.c.keys()),
+            tuple(
+                (attribute.key, tuple(attribute.columns))
+                for attribute in model.__mapper__.column_attrs
+            ),
+        )
+        for prefix, table, model in owners
+    )
+    key = (
+        "build-projection-writer-raw",
+        (
+            ctx.tenant_id, product_id, build.tenant_id, build.category_id,
+            build.product_id, build.project_id, build.id,
+        ),
+        token,
+        epoch,
+        signature,
+    )
+    proof = request_proof(s)
+    retained = proof.scalar_rows.get(key)
+    if retained is not None:
+        selected_rows = deepcopy(retained)
+    else:
+        try:
+            with s.no_autoflush, s.begin_nested():
+                selected_rows = tuple(dict(row) for row in s.execute(query).mappings())
+        except DBAPIError:
+            # SAVEPOINT rollback legitimately invalidates request proof markers.
+            # Do not rebuild markers by hand; ordered loaders read normally.
+            return None
+    if _writer_projection_scope(s, ctx, product_id) != token or len(selected_rows) != 1:
+        return None
+    selected = selected_rows[0]
+    rows = []
+    for prefix, table, model in owners:
+        fields = {column.key: selected[f"{prefix}_{column.key}"] for column in table.c}
+        if fields["id"] is None:
+            return None
+        # Some full SQL columns (audience_dependencies) intentionally have
+        # no mapped Python attribute. Preserve their real SQL/RLS read, but
+        # construct only each mapper's exact single-column property name.
+        values = {}
+        for property_ in model.__mapper__.column_attrs:
+            if len(property_.columns) != 1:
+                return None
+            column = property_.columns[0]
+            if table.original.c.get(column.key) is not column or column.key not in fields:
+                return None
+            values[property_.key] = fields[column.key]
+        # Detached local field values retain the original type-dispatched
+        # material/hash validator. They are never added to this Session/cache.
+        rows.append(model(**values))
+    ac, af, ec, ef, mc, mf = rows
+    for current, fact, identity, revision, role in (
+        (ac, af, "assessment_id", "assessment_revision", None),
+        (ec, ef, "decision_id", "decision_revision", "engineering"),
+        (mc, mf, "decision_id", "decision_revision", "manufacturing"),
+    ):
+        if (
+            (current.tenant_id, current.product_id, current.project_id, current.build_id)
+            != (ctx.tenant_id, product_id, build.project_id, build.id)
+            or (fact.tenant_id, fact.product_id, fact.project_id, fact.build_id)
+            != (ctx.tenant_id, product_id, build.project_id, build.id)
+            or getattr(current, identity) != fact.id
+            or getattr(current, revision) != fact.revision
+            or (role is not None and (current.role != role or fact.role != role))
+        ):
+            return None
+    assessment = _validated_row(s, ctx, product_id, af)
+    decisions = {}
+    for role, fact in (("engineering", ef), ("manufacturing", mf)):
+        try:
+            decisions[role] = _validated_row(s, ctx, product_id, fact)
+        except DomainError as error:
+            if error.reason not in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
+                raise
+    saved = _start(s, ctx, product_id, build.id)
+    if saved is not None:
+        saved = _validated_row(s, ctx, product_id, saved)
+    if (
+        retained is None
+        and set(decisions) == {"engineering", "manufacturing"}
+        and _writer_projection_scope(s, ctx, product_id) == token
+    ):
+        # Only an actual complete matched set with all original row validators
+        # successful is retained. Deep copies keep mutable JSON out of callers.
+        # Existing flush/direct-mutation/rollback invalidators clear this map.
+        proof.scalar_rows[key] = deepcopy(selected_rows)
+    return assessment, decisions, saved
 
 
 def execution_projection(s, ctx, product_id, build_id, *, retained_at=None):
@@ -1307,26 +1884,41 @@ def execution_projection(s, ctx, product_id, build_id, *, retained_at=None):
     # This port is called once per sample. Read only this Build's current chain,
     # applying the same guards as its list projection instead of every history row.
     try:
-        _, assessment = _current_assessment(s, ctx, product_id, build.id)
+        packed = getattr(s, "info", {}).get("read_snapshot") is True
+        if packed:
+            assessment, decisions, saved = _projection_current(s, ctx, product_id, build)
+        else:
+            owner_rows = _projection_writer(s, ctx, product_id, build)
+            if owner_rows is None:
+                owner_rows = _projection_ordered(s, ctx, product_id, build)
+            assessment, decisions, saved = owner_rows
         if assessment is not None:
             _read_evidence(s, ctx, product_id, assessment)
-        decisions = {}
-        for role in ("engineering", "manufacturing"):
+        for role, decision in tuple(decisions.items()):
             try:
-                _, decision = _current_decision(s, ctx, product_id, build.id, role)
-                if decision is not None:
-                    _read_evidence(s, ctx, product_id, decision)
-                    decisions[role] = decision
+                _read_evidence(s, ctx, product_id, decision)
             except DomainError as error:
-                if error.code not in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
+                decisions.pop(role)
+                if error.reason not in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
                     raise
-        saved = _start(s, ctx, product_id, build.id)
         if saved is not None:
-            saved = _row(s, ctx, product_id, BuildStart, saved.id)
             _read_evidence(s, ctx, product_id, saved)
-        result = _capabilities(
-            s, ctx, product_id, build, assessment, decisions, saved, as_of=retained_at
-        )
+        if saved is not None:
+            result = _saved_capabilities(
+                s,
+                ctx,
+                product_id,
+                build,
+                assessment,
+                decisions,
+                saved,
+                as_of=retained_at,
+                include_actions=False,
+            )
+        else:
+            result = _capabilities(
+                s, ctx, product_id, build, assessment, decisions, saved, as_of=retained_at
+            )
         if retained_at is not None:
             # A historical evidence check never grants a present execution action.
             for key in (
@@ -1341,7 +1933,7 @@ def execution_projection(s, ctx, product_id, build_id, *, retained_at=None):
             result["evaluation_nature"] = "retained_execution_at_saved_start"
         return result
     except DomainError as error:
-        if error.code not in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
+        if error.reason not in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
             raise
         return None
 

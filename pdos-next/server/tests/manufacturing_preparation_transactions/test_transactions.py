@@ -72,7 +72,10 @@ def test_current_manufacturing_first_save_history_unknown_and_common_rollback(
     original_parents = parents(work)
     original_effects = effect_counts(work)
     wi_body, cp_body = payload(work, "work_instruction"), payload(work, "control_plan")
-    input_url = f"/v1/products/{setup.product}/manufacturing-preparations/inputs"
+    input_url = (
+        f"/v1/categories/{setup.category}/products/{setup.product}"
+        "/manufacturing-preparations/inputs"
+    )
 
     # Configuring an issuer does not give this person a duty or qualification.
     for kind, body in (("work_instruction", wi_body), ("control_plan", cp_body)):
@@ -179,7 +182,7 @@ def test_current_manufacturing_first_save_history_unknown_and_common_rollback(
     def lose_committed_response(request):
         response = actual_transport(request)
         if (
-            request.url.path == "/v1/commands"
+            request.url.path == f"/v1/categories/{setup.category}/commands"
             and request.method == "POST"
             and json.loads(request.content)["command_id"] == baseline_command["command_id"]
         ):
@@ -195,10 +198,16 @@ def test_current_manufacturing_first_save_history_unknown_and_common_rollback(
         fault.setattr(setup.client._transport, "handle_request", lose_committed_response)
         with pytest.raises(httpx.ReadError, match="after actual commit"):
             post(setup, baseline_command)
-    assert lost_responses == ["/v1/commands"]
+    assert lost_responses == [f"/v1/categories/{setup.category}/commands"]
     assert baseline_command == exact_original_command
     assert proof(work, baseline_command) == (confirmation_id, True)
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.ctx.actor_id,
+        requester_id=setup.ctx.requester_id,
+        category_id=setup.category,
+    ) as session:
         key = session.scalar(
             select(RequestKey).where(
                 RequestKey.actor_id == setup.human,
@@ -229,7 +238,13 @@ def test_current_manufacturing_first_save_history_unknown_and_common_rollback(
     baseline_current = fixed(work, "manufacturing_baseline", baseline_receipt)
     assert baseline_current["is_current"] is True and baseline_current["source_status"] == "current"
     assert baseline_current["body"] == baseline_body
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.ctx.actor_id,
+        requester_id=setup.ctx.requester_id,
+        category_id=setup.category,
+    ) as session:
         links = list(
             session.scalars(
                 select(BaselineDocumentLink).where(
@@ -280,17 +295,23 @@ def test_current_manufacturing_first_save_history_unknown_and_common_rollback(
         assert subject_type == "work_instruction" and subject.revision == 3
         assert session.get(PreparationVersion, subject.id) is subject
         failed_rows.append(subject.id)
-        raise DomainError("SYNTHETIC_RECEIPT_FAILURE", "Synthetic terminal common receipt failure")
+        raise DomainError("INTERNAL_ERROR", "Synthetic terminal common receipt failure")
 
     with monkeypatch.context() as fault:
         fault.setattr(common, "append_receipt", fail_common_receipt)
         failed = post(setup, failed_command)
-    assert failed.status_code == 409, failed.text
-    assert failed.json()["code"] == "SYNTHETIC_RECEIPT_FAILURE" and len(failed_rows) == 1
+    assert failed.status_code == 500, failed.text
+    assert failed.json()["code"] == "INTERNAL_ERROR" and len(failed_rows) == 1
     assert effect_counts(work) == before_failure
     assert effect_hashes(work) == before_failure_hashes
     assert proof(work, failed_command) == (failure_proof_id, False)
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.ctx.actor_id,
+        requester_id=setup.ctx.requester_id,
+        category_id=setup.category,
+    ) as session:
         assert session.get(PreparationVersion, failed_rows[0]) is None
     assert fixed(work, "work_instruction", wi2_receipt) == wi_current
     assert fixed(work, "manufacturing_baseline", baseline_receipt) == baseline_current
@@ -321,14 +342,25 @@ def test_current_manufacturing_first_save_history_unknown_and_common_rollback(
     # epoch advance. Recovery must leave this complete post-withdrawal state intact.
     before_stale_recovery_hashes = effect_hashes(work)
     stale_recovery = post(setup, exact_original_command)
-    assert stale_recovery.status_code in (403, 409), stale_recovery.text
-    assert stale_recovery.json()["code"] == "SOURCE_UNAVAILABLE"
+    assert stale_recovery.status_code == 200, stale_recovery.text
+    assert stale_recovery.json()["id"] == baseline_receipt["id"]
+    fresh_input = setup.client.post(
+        input_url,
+        headers=setup.headers,
+        json=cmd(
+            setup,
+            "npi.work_instruction.record",
+            payload(work, "work_instruction", previous=wi_current, revision=3),
+        ),
+    )
+    assert fresh_input.status_code in (403, 409), fresh_input.text
+    assert fresh_input.json()["code"] == "SOURCE_STALE"
     assert effect_counts(work) == before_stale_recovery
     assert effect_hashes(work) == before_stale_recovery_hashes
     assert parents(work) == original_parents
 
     peer = setup.client.get(
-        f"/v1/products/{setup.product}/manufacturing-preparations"
+        f"/v1/categories/{setup.category}/products/{setup.product}/manufacturing-preparations"
         f"?project_id={work.project_id}&process_id={work.process_ref['id']}",
         headers={"Authorization": f"Bearer {setup.tokens[setup.peer]}"},
     )

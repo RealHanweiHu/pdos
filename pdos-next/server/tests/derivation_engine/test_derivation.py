@@ -5,7 +5,9 @@ from uuid import UUID
 
 import pytest
 
-from pdos_next.engines.derivation import (
+from pdos_next.domain.products.variants import accept_changes, merge_paths, snapshot_from_definition
+from pdos_next.domain.products.variants import compare_snapshots as three_way
+from pdos_next.schemas.products.derivation import (
     AdoptionSelection,
     ApplicabilityScope,
     DefinitionContent,
@@ -16,10 +18,6 @@ from pdos_next.engines.derivation import (
     SnapshotRef,
     SourceReference,
     SpecSnapshot,
-    accept_changes,
-    merge_paths,
-    snapshot_from_definition,
-    three_way,
 )
 
 PARENT_PRODUCT = UUID(int=101)
@@ -70,7 +68,12 @@ def content(specs=(), **changes):
 
 def snapshot(number, product, revision, payload, **changes):
     values = {
-        "ref": SnapshotRef(definition_id=UUID(int=number), product_id=product, revision=revision),
+        "ref": SnapshotRef(
+            category_id=UUID(int=100),
+            definition_id=UUID(int=number),
+            product_id=product,
+            revision=revision,
+        ),
         "content": payload,
         "title": f"Definition {number}",
         "status": "draft",
@@ -92,7 +95,9 @@ def request(old_specs=(), new_specs=(), child_specs=(), **changes):
 
 
 def scope(product=CHILD_PRODUCT):
-    return ApplicabilityScope(product_id=product, description="Speaker child variant")
+    return ApplicabilityScope(
+        category_id=UUID(int=100), product_id=product, description="Speaker child variant"
+    )
 
 
 def selection(req, selected_paths, **changes):
@@ -470,7 +475,10 @@ def test_denied_or_unknown_port_cannot_adopt(assessment):
     [
         {
             "pinned_parent": SnapshotRef(
-                definition_id=UUID(int=1), product_id=PARENT_PRODUCT, revision=9
+                category_id=UUID(int=100),
+                definition_id=UUID(int=1),
+                product_id=PARENT_PRODUCT,
+                revision=9,
             )
         },
         {"new_parent": snapshot(2, PARENT_PRODUCT, 1, content())},
@@ -552,6 +560,7 @@ def test_current_definition_view_adapter_retains_exact_decimals_and_fixed_identi
     spec["value"] = "12.000000000000"
     view = {
         "id": str(UUID(int=1)),
+        "category_id": str(UUID(int=100)),
         "product_id": str(PARENT_PRODUCT),
         "revision": 1,
         "title": "Parent source",

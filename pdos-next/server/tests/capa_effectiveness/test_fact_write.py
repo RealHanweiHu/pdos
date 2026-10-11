@@ -34,7 +34,7 @@ from pdos_next.service import Context, digest
 def rejects(code, fn):
     with pytest.raises(DomainError) as error:
         fn()
-    assert error.value.code == code
+    assert error.value.reason == code
 
 
 def make_world(monkeypatch, kind="observation"):
@@ -46,7 +46,10 @@ def make_world(monkeypatch, kind="observation"):
     s = Session(bind=bind)
     s.begin()
     ctx = Context(
-        origin.scope.tenant_id, uid("independent-fact-writer"), uid("independent-fact-writer")
+        origin.scope.tenant_id,
+        uid("independent-fact-writer"),
+        uid("independent-fact-writer"),
+        category_id=origin.category_id,
     )
     source = origin.sources[-1].model_dump(mode="json")
     at = {
@@ -78,7 +81,7 @@ def make_world(monkeypatch, kind="observation"):
         "capa_id": str(origin.issue.capa.id),
         "sources": [source],
         "reason": "Explicit original unknown remains a named recorded fact",
-        "visibility": "product",
+        "visibility": "category",
     }
     fact_ref = {
         "id": str(uid("actual-rule")),
@@ -262,10 +265,37 @@ def make_world(monkeypatch, kind="observation"):
         "synthetic": True,
         "required_source_read_set": body["required_source_read_set"],
         "facts_revision": digest("explicit substituted current operation facts"),
+        "roles": ["quality"],
+        "fact_refs": [
+            dict(
+                id=str(uid("fact-" + selected)),
+                revision=1,
+                kind=selected,
+                role="quality",
+                nature="synthetic",
+                state="active",
+                operations=[commands.SPECS[kind][0]],
+                purposes=[origin.purpose],
+                valid_from=(clock.at - timedelta(hours=1)).isoformat(),
+                valid_until=(clock.at + timedelta(minutes=45)).isoformat(),
+            )
+            for selected in ("duty", "qualification")
+        ],
     }
     policy = {
         "facts_revision": digest("explicit substituted current policy"),
         "required_source_read_set": body["required_source_read_set"],
+        "id": str(uid("selected-policy")),
+        "revision": 1,
+        "source_basis": [
+            dict(
+                id=str(uid("selected-policy")),
+                revision=1,
+                state="active",
+                valid_from=(clock.at - timedelta(hours=1)).isoformat(),
+                valid_until=(clock.at + timedelta(hours=1)).isoformat(),
+            )
+        ],
     }
     if kind == "review":
         body.update(authority_snapshot=authority, policy_snapshot=policy)
@@ -282,7 +312,8 @@ def make_world(monkeypatch, kind="observation"):
                 "outcome": "unknown",
                 "live_effectiveness_authorized": False,
             },
-            "valid_until": (clock.at + timedelta(minutes=45)).isoformat(),
+            "valid_until": None,
+            "time_constraints": [(clock.at + timedelta(minutes=45)).isoformat()],
         }
     )
     state = SimpleNamespace(reads=0, refreshes=0, epoch=1, hook=None, sql_hook=None)
@@ -305,14 +336,19 @@ def make_world(monkeypatch, kind="observation"):
             assert session is s
             return digest({"explicit_synthetic_runtime_epoch": state.epoch})
 
-    product = Product(id=origin.scope.product_id, tenant_id=ctx.tenant_id, revision=40)
+    product = Product(
+        id=origin.scope.product_id,
+        tenant_id=ctx.tenant_id,
+        category_id=ctx.category_id,
+        revision=40,
+    )
     person = Principal(
         id=ctx.actor_id, tenant_id=ctx.tenant_id, kind="human", active=True, access_epoch=1
     )
     grant = Grant(
         id=uid("fact-grant"),
         tenant_id=ctx.tenant_id,
-        product_id=product.id,
+        category_id=ctx.category_id,
         principal_id=ctx.actor_id,
         can_write=True,
         access_epoch=1,
@@ -323,7 +359,7 @@ def make_world(monkeypatch, kind="observation"):
         tenant_id=ctx.tenant_id,
         product_id=product.id,
         owner_id=origin.owner_id,
-        visibility="product",
+        visibility="category",
         status="active",
     )
     current = QualityIssueCurrent(
@@ -348,7 +384,13 @@ def make_world(monkeypatch, kind="observation"):
 
     def one(session, model, *where, lock=False):
         assert session is s and model in rows
-        assert all(getattr(rows[model], clause.left.key) == clause.right.value for clause in where)
+        for clause in where:
+            value = (
+                ctx.category_id
+                if getattr(clause.right, "name", None) == "category_for_product"
+                else clause.right.value
+            )
+            assert getattr(rows[model], clause.left.key) == value
         if state.sql_hook:
             state.sql_hook(model)
         return rows[model]
@@ -371,6 +413,7 @@ def make_world(monkeypatch, kind="observation"):
         command_id=uid("wave18-command-" + kind),
         idempotency_key="wave18-" + kind,
         operation=commands.SPECS[kind][0],
+        category_id=ctx.category_id,
         product_id=product.id,
         expected_revision=product.revision,
         source_read_set=body["required_source_read_set"],
@@ -484,7 +527,7 @@ def test_actual_common_consumer_writer_preserves_unknown_body_json_and_one_point
         assert all(
             getattr(pointer, column.key) is not None
             for column in pointer.__table__.columns
-            if not column.nullable
+            if not column.nullable and column.server_default is None
         )
         assert row.fact_body["body"]["records"][0]["raw_material"]["value"] is None
         assert row.fact_body["body"]["records"][0]["missing_fields"] == ["value"]
@@ -504,6 +547,7 @@ def test_rule_only_host_appends_null_public_proof_and_never_full_atom(monkeypatc
     intent = digest(
         {
             "operation": f.command.operation,
+            "category": f.command.category_id,
             "product": f.command.product_id,
             "payload": commands.semantic(f.payload),
             "named_actor": f.ctx.requester_id,
@@ -530,7 +574,7 @@ def test_rule_only_host_appends_null_public_proof_and_never_full_atom(monkeypatc
     assert all(
         getattr(pointer, column.key) is not None
         for column in pointer.__table__.columns
-        if not column.nullable
+        if not column.nullable and column.server_default is None
     )
     assert all(
         getattr(row, key) is None
@@ -597,7 +641,7 @@ def test_private_project_and_private_source_cannot_be_shared(monkeypatch):
     f = make_world(monkeypatch)
     f.project.visibility = "private"
     rejects("FORBIDDEN_SCOPE", lambda: prepared(f))
-    f.project.visibility = "product"
+    f.project.visibility = "category"
     raw = f.material.model_dump(mode="json")
     raw["body_material"]["source_basis"][0]["visibility"] = "private"
     f.host.owner.read = lambda *_, **__: writer.FactWriteMaterial.model_validate(raw)
@@ -619,7 +663,7 @@ def test_all_owner_io_has_final_runtime_current_private_acl_and_clock_guards(mon
         elif change == "current":
             f.current.epoch += 1
         else:
-            f.clock.at = f.material.valid_until
+            f.clock.at = min(f.material.time_constraints)
 
     f.state.hook = change_during_refresh
     expected = "FORBIDDEN_SCOPE" if change == "project" else "SOURCE_STALE"
@@ -674,7 +718,7 @@ def test_final_pointer_io_cannot_skip_fresh_caller_revocation(monkeypatch):
 def test_known_next_activation_deadline_is_exclusive_even_after_serialization(monkeypatch):
     f = make_world(monkeypatch)
     f.material = writer.FactWriteMaterial.model_validate(
-        {**f.material.model_dump(), "valid_until": f.clock.at + timedelta(minutes=5)}
+        {**f.material.model_dump(), "time_constraints": (f.clock.at + timedelta(minutes=5),)}
     )
     f.host.owner.read = lambda *_, **__: f.material
     f.host.owner.refresh = lambda *_, **__: f.material
@@ -684,7 +728,7 @@ def test_known_next_activation_deadline_is_exclusive_even_after_serialization(mo
 
     def crosses_next_activation(*args):
         row = construct(*args)
-        f.clock.at = phase.valid_until
+        f.clock.at = min(phase.material.time_constraints)
         return row
 
     monkeypatch.setattr(writer, "_construct_row", crosses_next_activation)
@@ -773,6 +817,7 @@ def test_successor_advances_exact_existing_series_without_erasing_previous_full_
         intent = digest(
             {
                 "operation": f.command.operation,
+                "category": f.command.category_id,
                 "product": f.command.product_id,
                 "payload": commands.semantic(f.payload),
                 "named_actor": f.ctx.requester_id,

@@ -2,7 +2,6 @@
 
 import json
 from copy import deepcopy
-from datetime import timedelta
 from decimal import Decimal
 from uuid import UUID, uuid4
 
@@ -25,7 +24,7 @@ from pdos_next.domain.supply_cost.rules import (
 from pdos_next.engines.supply_cost.common import SnapshotRef, digest
 from pdos_next.engines.supply_cost.dto import PoolKey, SupplyPool
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Grant, Principal, Product, now
+from pdos_next.models import Artifact, Principal, Product, now
 from pdos_next.schemas.supply_cost.dto import (
     BoundDemand,
     CoverageProjection,
@@ -80,6 +79,9 @@ def _human(s, ctx, product_id, *, write=False):
 
 
 def _row(s, ctx, product_id, model, identity, *, write=False):
+    from pdos_next.service import require_access
+
+    require_access(s, ctx, product_id, write=write, lock=write)
     row = s.scalar(
         select(model).where(
             model.id == identity,
@@ -87,11 +89,7 @@ def _row(s, ctx, product_id, model, identity, *, write=False):
             model.tenant_id == ctx.tenant_id,
         )
     )
-    if (
-        row is None
-        or (row.visibility == "private" and row.owner_id != ctx.requester_id)
-        or (write and row.owner_id != ctx.requester_id)
-    ):
+    if row is None or (write and row.owner_id != ctx.requester_id):
         raise DomainError("FORBIDDEN_SCOPE", "供给来源或投影不在当前可用范围。", 403)
     build = _build(s, ctx, product_id, row.build_id, write=write)
     if row.project_id != build.project_id:
@@ -102,12 +100,15 @@ def _row(s, ctx, product_id, model, identity, *, write=False):
 def _scope(ctx, product_id, build):
     return Scope(
         tenant_id=str(ctx.tenant_id),
+        category_id=str(build.category_id),
         product_id=str(product_id),
         project_id=str(build.project_id),
         audience=(
             f"private:{build.owner_id}"
             if build.visibility == "private"
-            else f"product:{product_id}"
+            else f"audience:build:{build.id}"
+            if build.visibility == "audience"
+            else f"category:{build.category_id}"
         ),
     )
 
@@ -156,18 +157,14 @@ def _references(data):
 
 def _sources(s, ctx, product_id, reads, references=()):
     from pdos_next.originals import object_reference, require_original
+    from pdos_next.request_proof import batch_read, request_proof
     from pdos_next.service import digest as content_digest
     from pdos_next.service import source_for
 
-    expiry = min(
-        s.scalars(
-            select(Grant.expires_at).where(
-                Grant.tenant_id == ctx.tenant_id,
-                Grant.product_id == product_id,
-                Grant.principal_id.in_({ctx.actor_id, ctx.requester_id}),
-            )
-        ).all()
-    )
+    proof = request_proof(s)
+    batch_read(s, Artifact, [UUID(str(read["artifact_id"])) for read in reads])
+    writing = any(entry["locked"] for entry in proof.authority.values())
+
     values, private, lines = {}, False, {}
     for read in reads:
         source = source_for(
@@ -177,32 +174,30 @@ def _sources(s, ctx, product_id, reads, references=()):
             source.content
         ):
             raise DomainError("INTEGRITY_MISMATCH", "来源内容摘要无法核对。")
-        private |= source.visibility == "private"
+        private |= source.visibility != "category"
         lines[str(source.id)] = source.content.splitlines()
         ref = SnapshotRef(
             source_id=f"artifact:{source.id}",
             version=str(source.revision),
             sha256=source.content_hash,
             captured_at=source.created_at,
-            valid_until=expiry,
             state="current",
         )
         values[ref.source_id] = ref
         if source.original_id is not None:
-            original = require_original(s, ctx, product_id, source.original_id, lock=True)
+            original = require_original(s, ctx, product_id, source.original_id, lock=writing)
             if original.tenant_id != ctx.tenant_id or original.status != "parsed":
                 raise DomainError("SOURCE_UNAVAILABLE", "来源原件的解析状态不可用。")
             try:
                 object_reference(original)
             except (TypeError, ValueError, AttributeError):
                 raise DomainError("INTEGRITY_MISMATCH", "来源原件私有对象身份无法核对。") from None
-            private |= original.visibility == "private"
+            private |= original.visibility != "category"
             ref = SnapshotRef(
                 source_id=f"original:{original.id}",
                 version=str(original.revision),
                 sha256=original.content_hash,
                 captured_at=max(source.created_at, original.created_at),
-                valid_until=expiry,
                 state="current",
             )
             values[ref.source_id] = ref
@@ -296,7 +291,6 @@ def _proposed(data, bound, refs, snapshot_id, captured_at, previous):
         "binding": binding.model_dump(mode="json"),
         "sources": [refs[key].model_dump(mode="json") for key in sorted(refs)],
     }
-    expires = min(ref.valid_until for ref in refs.values() if ref.valid_until is not None)
     result = SnapshotDTO(
         snapshot_id=str(snapshot_id),
         revision=revision,
@@ -307,7 +301,6 @@ def _proposed(data, bound, refs, snapshot_id, captured_at, previous):
             version=str(revision),
             sha256=content_digest(raw),
             captured_at=captured_at,
-            valid_until=expires,
             state="current",
         ),
         previous_snapshot_id=str(previous.id) if previous is not None else None,
@@ -343,12 +336,12 @@ def _read_evidence(s, ctx, product_id, row):
     state = _source_state(s, ctx, product_id, row.required_source_read_set)
     for read in row.required_source_read_set:
         source = s.get(Artifact, UUID(read["artifact_id"]))
-        if row.visibility == "product" and source.visibility == "private":
+        if row.visibility == "category" and source.visibility != "category":
             state = "needs_recheck"
         if source.original_id is not None:
             original = require_original(s, ctx, product_id, source.original_id)
             if original.status != "parsed" or (
-                row.visibility == "product" and original.visibility == "private"
+                row.visibility == "category" and original.visibility != "category"
             ):
                 state = "needs_recheck"
     return state
@@ -373,8 +366,6 @@ def _capture_view(s, ctx, product_id, row):
         "visibility": row.visibility,
         "status": row.status,
         "created_at": row.created_at.isoformat(),
-        "expires_at": row.expires_at.isoformat(),
-        "expired": row.expires_at <= now(),
         "applied_snapshot_id": str(applied) if applied is not None else None,
         "reason": row.reason,
         "input_snapshot": deepcopy(row.input_snapshot),
@@ -405,20 +396,10 @@ def _normalized_input(data):
 
 
 def prepare_capture(s, ctx, product_id, data: SupplyCaptureInput):
+    from pdos_next.database import require_context
     from pdos_next.service import digest as request_digest
 
-    product = s.scalar(
-        select(Product)
-        .where(
-            Product.id == product_id,
-            Product.tenant_id == ctx.tenant_id,
-        )
-        .with_for_update()
-    )
-    if product is None:
-        raise DomainError("FORBIDDEN_SCOPE", "供给来源不在当前授权产品范围。", 403)
-    _human(s, ctx, product_id, write=True)
-    build = _build(s, ctx, product_id, data.build_id, write=True)
+    require_context(s, ctx)
     raw = _normalized_input(data)
     data = SupplyCaptureInput.model_validate(raw)
     references = _references(data)
@@ -432,11 +413,29 @@ def prepare_capture(s, ctx, product_id, data: SupplyCaptureInput):
         )
     )
     if existing is not None:
+        _human(s, ctx, product_id)
         if existing.request_sha256 != fingerprint:
             raise DomainError("DUPLICATE_INTENT_CONFLICT", "相同捕获编号对应了不同内容。")
-        _, private = _sources(s, ctx, product_id, existing.required_source_read_set, references)
-        if build.visibility == "product" and private:
-            raise DomainError("FORBIDDEN_SCOPE", "私人来源须使用相符的私人试制范围。", 403)
+        view = _capture_view(s, ctx, product_id, existing)
+        return {
+            "capture": view,
+            "snapshot_record_payload": view["snapshot_record_payload"],
+            "required_source_read_set": view["required_source_read_set"],
+        }
+    product = s.scalar(select(Product).where(Product.id == product_id).with_for_update())
+    _human(s, ctx, product_id, write=True)
+    build = _build(s, ctx, product_id, data.build_id, write=True)
+    existing = s.scalar(
+        select(SupplyCapture).where(
+            SupplyCapture.tenant_id == ctx.tenant_id,
+            SupplyCapture.product_id == product_id,
+            SupplyCapture.owner_id == ctx.requester_id,
+            SupplyCapture.capture_key == data.capture_key,
+        )
+    )
+    if existing is not None:
+        if existing.request_sha256 != fingerprint:
+            raise DomainError("DUPLICATE_INTENT_CONFLICT", "相同捕获编号对应了不同内容。")
         view = _capture_view(s, ctx, product_id, existing)
         return {
             "capture": view,
@@ -455,7 +454,7 @@ def prepare_capture(s, ctx, product_id, data: SupplyCaptureInput):
         planned_reads, references, previous.required_source_read_set if previous is not None else []
     )
     refs, private = _sources(s, ctx, product_id, reads, references)
-    if build.visibility == "product" and private:
+    if build.visibility == "category" and private:
         raise DomainError("FORBIDDEN_SCOPE", "私人来源须先建立相符的私人试制范围。", 403)
     if previous is not None:
         _rule(require_scope, bound.scope, _snapshot(previous).scope)
@@ -486,7 +485,6 @@ def prepare_capture(s, ctx, product_id, data: SupplyCaptureInput):
         request_sha256=fingerprint,
         snapshot_id=snapshot_id,
         created_at=captured_at,
-        expires_at=captured_at + timedelta(minutes=30),
         input_snapshot=raw,
         bound_demand=bound.model_dump(mode="json"),
         proposed_snapshot=proposed.model_dump(mode="json"),
@@ -506,7 +504,7 @@ def prepare_capture(s, ctx, product_id, data: SupplyCaptureInput):
 def _inputs(s, ctx, command, product, payload):
     _human(s, ctx, product.id, write=True)
     if command.product_id != product.id or product.tenant_id != ctx.tenant_id:
-        raise DomainError("FORBIDDEN_SCOPE", "供给命令不在当前产品范围。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "供给命令不在当前型号范围。", 403)
     if isinstance(payload, SnapshotRecordPayload):
         row, build = _row(s, ctx, product.id, SupplyCapture, payload.capture_id, write=True)
     else:
@@ -519,8 +517,8 @@ def _inputs(s, ctx, command, product, payload):
         if supplied.get(ref["artifact_id"]) != ref["expected_revision"]:
             raise DomainError("MISSING_REQUIRED_EVIDENCE", "需要供给与双配置的全部固定来源。")
     _, private = _sources(s, ctx, product.id, row.required_source_read_set, row.sources)
-    if build.visibility == "product" and private:
-        raise DomainError("FORBIDDEN_SCOPE", "私人来源不能扩大到产品共享试制范围。", 403)
+    if build.visibility == "category" and private:
+        raise DomainError("FORBIDDEN_SCOPE", "私人来源不能扩大到品类共享试制范围。", 403)
     return row, build
 
 
@@ -541,8 +539,6 @@ def _new_write(s, ctx, command, product, payload, row, build):
     ):
         raise DomainError("VERSION_CONFLICT", "产品或试制版本已变化，请重新读取。")
     as_of = now()
-    if isinstance(payload, SnapshotRecordPayload) and row.expires_at <= as_of:
-        raise DomainError("CAPTURE_EXPIRED", "来源草稿已过期，请明确建立新的捕获草稿。")
     pointer, previous = _current(s, ctx, product.id, build.id, lock=True)
     if isinstance(payload, SnapshotRecordPayload):
         if (
@@ -831,7 +827,6 @@ def list_supply(s, ctx, product_id):
             .where(
                 model.tenant_id == ctx.tenant_id,
                 model.product_id == product_id,
-                (model.visibility == "product") | (model.owner_id == ctx.requester_id),
             )
             .order_by(model.created_at.desc(), model.id)
             .limit(101)

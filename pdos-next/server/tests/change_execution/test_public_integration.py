@@ -6,11 +6,15 @@ import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from types import SimpleNamespace
+from uuid import UUID as CategoryUUID
 from uuid import uuid4
 
 import httpx
 import psycopg
 import pytest
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session
+
 from pdos_next import change_completion_adapter as completion
 from pdos_next import change_order_integration as order
 from pdos_next import change_order_service as owner
@@ -29,8 +33,6 @@ from pdos_next.domain.change_execution import service as old
 from pdos_next.errors import DomainError
 from pdos_next.models import Base
 from pdos_next.service import Context
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session
 
 from . import kernel_helpers as helper
 
@@ -49,7 +51,7 @@ def no_connections(monkeypatch):
 def rejected(code, callback):
     with pytest.raises(DomainError) as error:
         callback()
-    assert error.value.code == code
+    assert error.value.reason == code
 
 
 @pytest.mark.parametrize(
@@ -103,7 +105,7 @@ def test_real_approval_mutation_preview_preserves_old_clocks_and_labels_only_new
 
 
 def test_selection_delegates_one_atom_to_real_shared_receipt_tail(monkeypatch):
-    row = SimpleNamespace(visibility="product")
+    row = SimpleNamespace(visibility="category")
     seen = []
     monkeypatch.setattr(
         selection.owner,
@@ -113,14 +115,14 @@ def test_selection_delegates_one_atom_to_real_shared_receipt_tail(monkeypatch):
     proof_pair = (object(), object())
     assert selection.apply_prepared_write(
         None, None, None, None, None, None, consumption=proof_pair
-    ) == (row, "change_selection_fact", "product")
+    ) == (row, "change_selection_fact", "category")
     assert seen == [proof_pair]
 
 
 def test_same_semantic_replay_returns_actual_row_for_common_receipt_lookup(monkeypatch):
     identity = uuid4()
     row = SimpleNamespace(id=identity)
-    ctx = Context(uuid4(), uuid4(), uuid4())
+    ctx = Context(uuid4(), uuid4(), uuid4(), category_id=CategoryUUID(int=1000000))
     product = SimpleNamespace(id=uuid4())
     monkeypatch.setattr(selection.owner, "replay_subject", lambda *a: identity)
     seen = []
@@ -139,6 +141,7 @@ def test_prepare_preview_checks_real_product_watermark_before_owner_io(monkeypat
         product_id=product.id,
         expected_revision=2,
         payload={},
+        category_id=CategoryUUID(int=1000000),
     )
     monkeypatch.setattr(owner, "read_phase", lambda *a, **k: pytest.fail("Unexpected owner IO"))
     rejected("VERSION_CONFLICT", lambda: order.prepare_preview(None, None, command, product, None))
@@ -158,7 +161,12 @@ def test_default_startup_does_not_create_publisher_or_qualification(monkeypatch)
 
 
 def occurrence_work():
-    ctx = Context(helper.SCOPE.tenant_id, helper.uid("executor"), helper.uid("executor"))
+    ctx = Context(
+        helper.SCOPE.tenant_id,
+        helper.uid("executor"),
+        helper.uid("executor"),
+        category_id=CategoryUUID(int=1000000),
+    )
     binding = SimpleNamespace(
         action_id=helper.uid("action"), action_sha256="a" * 64, executor_id=ctx.requester_id
     )
@@ -307,9 +315,9 @@ def test_fixed_reader_keeps_actual_order_chain_but_old_preparation_boundary_rema
     rejected("INTEGRITY_MISMATCH", lambda: old._snapshot(row))
 
 
-def test_actual_migration27_matches_exact_eight_tables_and_preserves_old_guards():
+def test_archived_migration27_retains_frozen_eight_tables_and_old_guards():
     server = Path(__file__).resolve().parents[2]
-    path = server / "migrations/versions/0027_controlled_change_orders.py"
+    path = server / "migrations/archive/pre-s0/versions/0027_controlled_change_orders.py"
     source = path.read_text()
     constants = {}
     for node in ast.parse(source).body:

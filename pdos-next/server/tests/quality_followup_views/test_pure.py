@@ -39,7 +39,7 @@ def work(monkeypatch):
         capa_id=uuid4(),
         purpose="Exact investigation purpose",
         owner_id=owner,
-        visibility="product",
+        visibility="category",
         nature="synthetic",
         requirement=EffectivenessRequirement(
             method="Independent new Run",
@@ -58,20 +58,54 @@ def work(monkeypatch):
     )
     basis = basis.model_copy(update={"basis_sha256": views.owners._basis_digest(basis)})
     ctx = SimpleNamespace(
-        tenant_id=scope.tenant_id, requester_id=owner, actor_id=owner, run_id=None
+        tenant_id=scope.tenant_id,
+        requester_id=owner,
+        actor_id=owner,
+        run_id=None,
+        category_id=uuid4(),
     )
     authority = {
         "authorized": True,
         "qualified": True,
         "roles": ["quality"],
-        "valid_until": (AT + timedelta(hours=1)).isoformat(),
+        "valid_until": None,
+        "operation": views.followup.ROOT_CAUSE,
+        "purpose": basis.purpose,
+        "synthetic": True,
         "required_source_read_set": [],
-        "fact_refs": [{"epoch": 1}],
+        "fact_refs": [
+            {
+                "id": str(uuid4()),
+                "revision": 1,
+                "epoch": 1,
+                "state": "active",
+                "nature": "synthetic",
+                "kind": kind,
+                "role": "quality",
+                "qualified": True,
+                "operations": list(views.OPERATIONS),
+                "purposes": [basis.purpose],
+                "valid_from": (AT - timedelta(hours=1)).isoformat(),
+                "valid_until": (AT + timedelta(hours=1)).isoformat(),
+            }
+            for kind in ("duty", "qualification")
+        ],
         "reason_codes": [],
     }
     published = {
         "valid_until": authority["valid_until"],
         "facts_revision": "e" * 64,
+        "id": "policy-id",
+        "revision": 1,
+        "source_basis": [
+            {
+                "id": "policy-id",
+                "revision": 1,
+                "state": "active",
+                "valid_from": (AT - timedelta(hours=1)).isoformat(),
+                "valid_until": (AT + timedelta(hours=1)).isoformat(),
+            }
+        ],
         "required_source_read_set": [],
     }
     selected = {
@@ -83,7 +117,7 @@ def work(monkeypatch):
         "is_current": True,
         "source_status": "current",
         "owner_id": str(owner),
-        "visibility": "product",
+        "visibility": "category",
         "issue": {"title": "Original failure", "status": "actioning"},
         "followup_basis": basis.model_dump(mode="json"),
         "authority": {
@@ -128,10 +162,15 @@ def work(monkeypatch):
             return engine
 
         def execute(self, query):
-            fields = {part.left.name: part.right.value for part in query._where_criteria}
+            fields = {
+                part.left.name: ctx.category_id
+                if getattr(part.right, "name", None) == "category_for_product"
+                else part.right.value
+                for part in query._where_criteria
+            }
             assert fields == {
                 "tenant_id": ctx.tenant_id,
-                "product_id": scope.product_id,
+                "category_id": ctx.category_id,
                 "principal_id": owner,
             }
             return SimpleNamespace(
@@ -185,7 +224,7 @@ def read(work, **kwargs):
 def error(code, callback):
     with pytest.raises(DomainError) as rejected:
         callback()
-    assert rejected.value.code == code
+    assert rejected.value.reason == code
 
 
 def test_single_issue_once_with_explicit_missing_and_no_candidate_or_effectiveness(work):
@@ -260,7 +299,7 @@ def test_write_grant_recheck_and_expiry_disable_prepare_not_only_submit(work):
     assert "PRODUCT_WRITE_REQUIRED" in result["operations"][views.followup.COMPLETE]["reason_codes"]
     assert result["actions"][0]["can_prepare_completion"] is False
     work.state["write"] = True
-    work.authority["valid_until"] = AT.isoformat()
+    work.authority["fact_refs"][1]["valid_until"] = AT.isoformat()
     work.selected["authority"] = {
         op: deepcopy(work.authority) for op in (views.followup.ROOT_CAUSE, views.followup.COMPLETE)
     }
@@ -292,7 +331,7 @@ def option(work, *, snapshot=None):
     return OutputReading(
         ref=OutputRef(kind="build", id=uuid4(), revision=1),
         owner_id=work.owner,
-        visibility="product",
+        visibility="category",
         project_id=work.scope.project_id,
         title="Real fixed output",
         status="planned",
@@ -316,7 +355,7 @@ def test_option_callback_cannot_supply_label_qualification_or_scope_facts(work):
 def test_options_ref_bounds_and_duplicate_identity_do_not_silently_truncate(work):
     value = option(work).ref
     views.configure_output_options(work.engine, lambda *args: [value] * 21)
-    error("INTEGRATION_REQUIRED", lambda: read(work))
+    error("INTEGRITY_MISMATCH", lambda: read(work))
     views.configure_output_options(work.engine, lambda *args: [value, value])
     error("INTEGRITY_MISMATCH", lambda: read(work))
 
@@ -329,7 +368,7 @@ def test_option_uses_exact_receipt_and_registered_sample_allocation_proof(work, 
         requester_id=work.owner,
         actor_id=work.owner,
         run_id=None,
-        visibility="product",
+        visibility="category",
         result={"id": str(value.ref.id), "revision": 1},
     )
     session = SimpleNamespace(scalar=lambda query: receipt)
@@ -368,7 +407,7 @@ def test_series_owner_is_not_mistaken_for_this_version_named_writer(work, monkey
         requester_id=other,
         actor_id=other,
         run_id=None,
-        visibility="product",
+        visibility="category",
         result={"id": str(reading.ref.id), "revision": 2},
     )
     monkeypatch.setattr(views.owners, "_read_output", lambda *args: (reading, None))
@@ -403,7 +442,9 @@ def test_paired_option_uses_its_actual_common_receipt_without_a_direct_formal_fa
         output=reading,
         receipt_id=receipt_id,
         pair_read=SimpleNamespace(material=SimpleNamespace(receipt=SimpleNamespace(id=receipt_id))),
-        host_gate=SimpleNamespace(valid_until=AT + timedelta(minutes=1)),
+        host_gate=SimpleNamespace(
+            time_constraints=(), needs_review=False, valid_until=AT + timedelta(minutes=1)
+        ),
     )
     monkeypatch.setattr(views.owners, "_read_output", lambda *args: (reading, paired))
     monkeypatch.setattr(views, "_receipt", lambda *args, **kwargs: pytest.fail("No draft fallback"))
@@ -431,7 +472,11 @@ def test_paired_option_uses_its_actual_common_receipt_without_a_direct_formal_fa
 def test_paired_gate_must_remain_unexpired_after_final_consumer_permission_io(work, monkeypatch):
     value = option(work)
     views.configure_output_options(work.engine, lambda *args: [value.ref])
-    paired = SimpleNamespace(host_gate=SimpleNamespace(valid_until=AT + timedelta(seconds=1)))
+    paired = SimpleNamespace(
+        host_gate=SimpleNamespace(
+            time_constraints=(), needs_review=False, valid_until=AT + timedelta(seconds=1)
+        )
+    )
 
     def load(*args, paired_reads=None):
         paired_reads.append(paired)
@@ -540,7 +585,7 @@ def test_full_output_source_union_cannot_be_truncated_to_twenty(work, monkeypatc
             value,
         ),
     )
-    error("MISSING_REQUIRED_EVIDENCE", lambda: read(work))
+    assert len(read(work)["required_source_read_set"]) == 21
 
 
 def link_row(work):
@@ -549,7 +594,7 @@ def link_row(work):
         basis=work.basis,
         action_id=work.basis.actions[0].action_id,
         outputs=(output,),
-        visibility="product",
+        visibility="category",
         owner_id=work.owner,
         required_source_read_set=work.basis.required_source_read_set,
         source_basis_sha256="a" * 64,
@@ -579,7 +624,7 @@ def link_row(work):
         resolution_sha256=resolved.resolution_sha256,
         owner_id=work.owner,
         writer_id=work.owner,
-        visibility="product",
+        visibility="category",
         created_at=AT - timedelta(minutes=3),
         sources=[],
         required_source_read_set=[
@@ -609,7 +654,7 @@ def test_private_link_is_hidden_and_stale_visible_link_is_explicit_not_current(w
     session = SimpleNamespace(scalars=lambda query: [row])
     values, proofs, meta = REAL_LINKS(session, work.ctx, work.scope.product_id, work.selected)
     assert values == proofs == [] and meta["unavailable_count"] == 1
-    row.visibility, row.owner_id = "product", work.owner
+    row.visibility, row.owner_id = "category", work.owner
     monkeypatch.setattr(
         views,
         "_receipt",

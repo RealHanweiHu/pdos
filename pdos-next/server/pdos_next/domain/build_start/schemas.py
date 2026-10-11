@@ -76,14 +76,14 @@ class ProfessionalApplicability(FrozenDTO):
         "output_disposition_applicability",
     ]
     status: Literal["applicable", "unknown", "blocked"]
-    sources: tuple[DefinitionReference, ...] = Field(default=(), max_length=20)
-    valid_until: AwareDatetime
+    sources: tuple[DefinitionReference, ...] = Field(default=())
+    valid_until: AwareDatetime | None = None
     reason: Text
 
     @field_validator("valid_until")
     @classmethod
     def utc(cls, value):
-        return value.astimezone(UTC)
+        return value.astimezone(UTC) if value is not None else None
 
 
 class BuildAuthorizationPayload(FrozenDTO):
@@ -93,19 +93,17 @@ class BuildAuthorizationPayload(FrozenDTO):
     action: Literal["approve", "revoke"]
     previous_decision_id: UUID | None = None
     expected_previous_revision: PreviousRevision = 0
-    valid_until: AwareDatetime
-    professional_assessments: tuple[ProfessionalApplicability, ...] = Field(
-        default=(), max_length=4
-    )
-    accepted_controls: tuple[Control, ...] = Field(default=(), max_length=4)
-    sources: tuple[DefinitionReference, ...] = Field(min_length=1, max_length=20)
+    valid_until: AwareDatetime | None = None
+    professional_assessments: tuple[ProfessionalApplicability, ...] = Field(default=())
+    accepted_controls: tuple[Control, ...] = Field(default=())
+    sources: tuple[DefinitionReference, ...] = Field(min_length=1)
     reason: Text
     approval_token: str | None = Field(default=None, min_length=20, max_length=128)
 
     @field_validator("valid_until")
     @classmethod
     def utc(cls, value):
-        return value.astimezone(UTC)
+        return value.astimezone(UTC) if value is not None else None
 
     @model_validator(mode="after")
     def previous(self) -> Self:

@@ -57,7 +57,7 @@ class ReportBinding(DTO):
     report: SourceRef
     original: OriginalRef
     security_epoch: Annotated[int, Field(strict=True, ge=0)]
-    pairs: tuple[SampleItemBinding, ...] = Field(min_length=1, max_length=10000)
+    pairs: tuple[SampleItemBinding, ...] = Field(min_length=1)
     execution_plan: ExecutionPlan | None = None
     parser_version: Literal["pdos-measurement-jsonl-v1"] = FORMAT_VERSION
 
@@ -79,7 +79,7 @@ class ReportBinding(DTO):
 class ObservationSelection(DTO):
     """An explicit real row selection; there is no reading or expected-value input."""
 
-    line: Annotated[int, Field(strict=True, ge=1, le=10000)]
+    line: Annotated[int, Field(strict=True, ge=1)]
     sample_id: UUID
     item_id: Key
 

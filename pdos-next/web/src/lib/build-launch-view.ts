@@ -17,7 +17,7 @@ export const launchReads = handoffReads;
 export const launchRefKey = handoffRefKey;
 export const launchReference = (source: DefinitionSource, line: number, quote: string): DefinitionReference => exactHandoffRef(source, line, quote);
 export const launchRefReads = (refs: DefinitionReference[]): SourceRead[] => launchReads(refs.map(ref => ({ artifact_id: ref.artifact_id, expected_revision: ref.expected_revision })));
-export const launchRefs = (value: unknown): value is DefinitionReference[] => Array.isArray(value) && value.length <= 20 && value.every(validHandoffRef);
+export const launchRefs = (value: unknown): value is DefinitionReference[] => Array.isArray(value) && value.every(validHandoffRef);
 export const launchRevision = (value: unknown): value is number => Number.isSafeInteger(value) && Number(value) > 0;
 export const launchHash = (value: unknown): value is string => typeof value === "string" && /^[0-9a-f]{64}$/.test(value);
 export function launchReason(value: string): string { const reason = value.trim(); if (!reason || reason.length > 2000) throw new Error("请填写本次具名核对原因，最多 2000 字。"); return reason; }
@@ -65,7 +65,7 @@ export type LaunchCommand = { command_id: string; idempotency_key: string; produ
 export type PendingLaunch = { stage: "inputs" | "preview" | "execute"; command: LaunchCommand };
 export type LaunchPreview = { command: LaunchCommand; expires_at: string; review: Record<string, unknown> & { before: unknown; after: Record<string, unknown>; effect: string } };
 export function makeLaunchCommand(product: { id: string; revision: number }, operation: LaunchOperation, payload: Record<string, unknown>, reads: SourceRead[], commandId: string, key: string): LaunchCommand {
-  if (!launchOperations.includes(operation) || !product.id || !launchRevision(product.revision) || !commandId || !key) throw new Error("操作、产品范围或原请求标识尚不完整。");
+  if (!launchOperations.includes(operation) || !product.id || !launchRevision(product.revision) || !commandId || !key) throw new Error("操作、型号范围或原请求标识尚不完整。");
   return { command_id: commandId, idempotency_key: key, product_id: product.id, expected_revision: product.revision, operation, payload, source_read_set: launchReads(reads) };
 }
 function normalizedPayload(value: unknown, field = ""): unknown {
@@ -113,7 +113,7 @@ export function launchFactMatches(request: LaunchRequest, fact: LaunchResourceFa
 }
 export function launchPlanPayload(request: LaunchRequest, fact: LaunchResourceFact, reason: string, sources: DefinitionReference[]): Record<string, unknown> {
   if (!request.is_current || request.source_status !== "current" || !launchFactMatches(request, fact) || typeof fact.binding.run_id !== "string" || !fact.binding.run_id) throw new Error("当前正式请求、完整已接收范围或资源事实绑定已变化，请刷新重核。");
-  if (!launchRefs(sources)) throw new Error("本次精确来源范围不完整或超过 20 条。");
+  if (!launchRefs(sources)) throw new Error("本次精确来源范围不完整。");
   return { request_id: request.request_id, expected_request_revision: request.revision, run_id: fact.binding.run_id, coverage: launchExactCoverage(request.accepted_coverage), execution_plan: launchFactPlan(fact), sources: sources.map(ref => ({ ...ref })), reason: launchReason(reason) };
 }
 export function launchRunPayload(request: LaunchRequest, run: LaunchRun, at: LaunchEvent, reason: string, sources: DefinitionReference[]): Record<string, unknown> {
@@ -131,7 +131,7 @@ export function restoreLaunch(value: unknown, productId: string, principalId: st
     const pending = value.pending;
     if (!launchRecord(pending) || !["inputs", "preview", "execute"].includes(String(pending.stage)) || !launchRecord(pending.command)) return null;
     const command = pending.command;
-    if (command.product_id !== productId || !launchOperations.includes(command.operation as LaunchOperation) || typeof command.command_id !== "string" || !command.command_id || typeof command.idempotency_key !== "string" || !command.idempotency_key || !launchRevision(command.expected_revision) || !Array.isArray(command.source_read_set) || command.source_read_set.length > 20 || command.source_read_set.some(row => !launchRecord(row) || typeof row.artifact_id !== "string" || !launchRevision(row.expected_revision)) || !launchRecord(command.payload)) return null;
+    if (command.product_id !== productId || !launchOperations.includes(command.operation as LaunchOperation) || typeof command.command_id !== "string" || !command.command_id || typeof command.idempotency_key !== "string" || !command.idempotency_key || !launchRevision(command.expected_revision) || !Array.isArray(command.source_read_set) || command.source_read_set.some(row => !launchRecord(row) || typeof row.artifact_id !== "string" || !launchRevision(row.expected_revision)) || !launchRecord(command.payload)) return null;
     const payload = command.payload;
     if (typeof payload.request_id !== "string" || !launchRevision(payload.expected_request_revision) || typeof payload.run_id !== "string" || typeof payload.reason !== "string" || !payload.reason.trim() || !launchRefs(payload.sources)) return null;
     if (command.operation === "test.run.plan") { try { launchExactCoverage(payload.coverage); } catch { return null; } if (!validLaunchPlan(payload.execution_plan)) return null; }

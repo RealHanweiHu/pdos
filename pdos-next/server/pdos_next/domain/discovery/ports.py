@@ -23,7 +23,7 @@ class Authority(DTO):
     product_id: UUID | None = None
     product_revision: int | None = Field(default=None, ge=1)
     purpose: str
-    audience: Literal["private", "product"]
+    audience: Literal["private", "category", "audience"]
     authorized: bool
     # OEM completeness criteria are server policy, not model-supplied proof.
     required_categories: tuple[str, ...] = ()

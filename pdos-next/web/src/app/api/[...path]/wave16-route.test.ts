@@ -6,6 +6,8 @@ import { runInNewContext } from "node:vm";
 import { ModuleKind, ScriptTarget, transpileModule } from "typescript";
 import type { NextRequest } from "next/server";
 
+const category = "dededede-dede-4ded-8ded-dededededede";
+const scoped = (path: string) => path.startsWith("v1/categories/") || path === "v1/session" ? path : path.replace(/^v1\//, `v1/categories/${category}/`);
 const product = "abcdefab-2222-4333-8444-555555555555";
 const issue = "12345678-1234-4123-8123-123456789abc";
 const artifact = "abcdefab-cdef-4abc-8def-abcdefabcdef";
@@ -14,7 +16,7 @@ const actor = "23232323-2323-4232-8232-232323232323";
 const action = "34343434-3434-4343-8343-343434343434";
 const capa = "45454545-4545-4454-8454-454545454545";
 const formalVersion = "56565656-5656-4565-8565-565656565656";
-const endpoint = `v1/products/${product}/quality-followup`;
+const endpoint = `v1/categories/${category}/products/${product}/quality-followup`;
 const operations = [
   "quality.issue.root_cause.decide",
   "quality.capa.actions.complete",
@@ -104,6 +106,7 @@ function harness(configuration: {
     const method = value.method ?? "GET";
     const headers = new Headers({ host: value.host ?? "localhost:3000" });
     if (value.origin !== null) headers.set("origin", value.origin ?? "http://localhost:3000");
+    path = scoped(path);
     const request = new Request(
       `http://localhost:3000/api/${path}${value.query ? `?${value.query}` : ""}`,
       { method, headers, body: value.body },
@@ -329,12 +332,12 @@ for (const operation of operations) {
     }
   });
 
-  test(`${operation} 读集1至20条唯一fixed Artifact版本，不补空读集或合并重复`, async () => {
-    const reads = Array.from({ length: 20 }, (_, index) => ({
+  test(`${operation} 完整唯一fixed Artifact读集，包括超过20条，不补空读集或合并重复`, async () => {
+    const reads = Array.from({ length: 21 }, (_, index) => ({
       artifact_id: `aaaaaaaa-bbbb-4ccc-8ddd-${(index + 1).toString(16).padStart(12, "0")}`,
       expected_revision: index + 1,
     }));
-    for (const set of [[reads[0]], reads]) {
+    for (const set of [[reads[0]], reads, [...reads, { artifact_id: "99999999-aaaa-4bbb-8ccc-dddddddddddd", expected_revision: 1 }]]) {
       const h = harness();
       const body = JSON.stringify({ ...command(operation), source_read_set: set });
       const result = await h.send(`${endpoint}/inputs`, { method: "POST", body });
@@ -343,7 +346,7 @@ for (const operation of operations) {
       assertForwarded(h, body);
     }
     for (const set of [
-      null, {}, [], [...reads, { artifact_id: artifact, expected_revision: 1 }],
+      null, {}, [],
       [reads[0], reads[0]],
       [reads[0], { ...reads[0], artifact_id: reads[0].artifact_id.toUpperCase() }],
       [reads[0], { ...reads[0], expected_revision: reads[0].expected_revision + 1 }],
@@ -379,7 +382,7 @@ for (const operation of operations) {
       const { response, reads } = await h.send(path, { method: "POST", body });
       assert.equal(response.status, 200);
       assert.equal(reads, 1);
-      assert.equal(h.calls[0].url, `http://synthetic-api.invalid/${path}`);
+      assert.equal(h.calls[0].url, `http://synthetic-api.invalid/${scoped(path)}`);
       assertForwarded(h, body);
     });
   }
@@ -395,7 +398,7 @@ test("inputs拒非对象与非法JSON，共同命令非法JSON仍交领域按旧
   }
   const body = '{"operation":"quality.capa.actions.complete",';
   const h = harness({ response: async () => Response.json(
-    { code: "INVALID_PAYLOAD" }, { status: 422 },
+    { code: "VALIDATION_FAILED" }, { status: 422 },
   ) });
   const { response, reads } = await h.send("v1/commands", { method: "POST", body });
   assert.equal(response.status, 422);
@@ -411,12 +414,12 @@ test("payload政策/资格事实由领域拒绝，BFF不根据它们生成批准
     completions: [], qualified: true, action_fulfilled: true, effective: true,
   } });
   const h = harness({ response: async () => Response.json(
-    { code: "INVALID_PAYLOAD", message: "未接收客户端政策事实" }, { status: 422 },
+    { code: "VALIDATION_FAILED", message: "未接收客户端政策事实" }, { status: 422 },
   ) });
   const { response, reads } = await h.send(`${endpoint}/inputs`, { method: "POST", body });
   assert.equal(response.status, 422);
   assert.equal(reads, 1);
-  assert.equal((await response.json()).code, "INVALID_PAYLOAD");
+  assert.equal((await response.json()).code, "VALIDATION_FAILED");
   assertForwarded(h, body);
 });
 
@@ -425,7 +428,7 @@ test("共同命令保留JSON字面原值，BFF不会解析后再序列化或替�
   const body = JSON.stringify(value).replace('"text":"合成根因提议，原文 11.0000"',
     '"text":"合成根因提议，原文 11.0000","transport_probe":9007199254740993');
   const h = harness({ response: async () => Response.json(
-    { code: "INVALID_PAYLOAD" }, { status: 422 },
+    { code: "VALIDATION_FAILED" }, { status: 422 },
   ) });
   const { response, reads } = await h.send("v1/commands/preview", { method: "POST", body });
   assert.equal(response.status, 422, "The domain still rejects extra payload fields");
@@ -491,7 +494,7 @@ test("未知写结果只回RESULT_UNKNOWN，保留原命令且一次fetch无隐�
     const { response, reads } = await h.send(path, { method: "POST", body });
     assert.equal(response.status, 503);
     const value = await response.json();
-    assert.equal(value.code, "RESULT_UNKNOWN");
+    assert.equal(value.code, "EXTERNAL_OUTCOME_UNKNOWN");
     assert.equal(JSON.stringify(value).includes("private"), false);
     assert.equal(reads, 1);
     assertForwarded(h, body);
@@ -502,7 +505,7 @@ test("GET失败只读失能，显式重新读取才发下一次fetch", async () 
   const h = harness({ response: async () => { throw new Error("private read detail"); } });
   const first = await h.send(endpoint, { query: `issue_id=${issue}` });
   assert.equal(first.response.status, 503);
-  assert.equal((await first.response.json()).code, "READ_UNAVAILABLE");
+  assert.equal((await first.response.json()).code, "SOURCE_UNAVAILABLE");
   assert.equal(first.reads, 0);
   assert.equal(h.calls.length, 1);
   const second = await h.send(endpoint, { query: `issue_id=${issue}` });
@@ -517,7 +520,7 @@ test("正文读取或回包流失败不重发不重建审批材料", async () =>
     method: "POST", body, textFailure: true,
   });
   assert.equal(failed.response.status, 503);
-  assert.equal((await failed.response.json()).code, "RESULT_UNKNOWN");
+  assert.equal((await failed.response.json()).code, "EXTERNAL_OUTCOME_UNKNOWN");
   assert.equal(failed.reads, 1);
   assert.equal(unread.calls.length, 0);
   const stream = harness({ response: async () => new Response(new ReadableStream({
@@ -525,7 +528,7 @@ test("正文读取或回包流失败不重发不重建审批材料", async () =>
   })) });
   const lost = await stream.send("v1/commands", { method: "POST", body });
   assert.equal(lost.response.status, 503);
-  assert.equal((await lost.response.json()).code, "RESULT_UNKNOWN");
+  assert.equal((await lost.response.json()).code, "EXTERNAL_OUTCOME_UNKNOWN");
   assert.equal(lost.reads, 1);
   assertForwarded(stream, body);
 });

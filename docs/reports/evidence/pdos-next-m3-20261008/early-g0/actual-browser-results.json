@@ -1,0 +1,32 @@
+{
+  "synthetic_only": true,
+  "owner_ui_submit_and_edit": true,
+  "read_only_product_manager_ui_approval": true,
+  "native_definition_v1_sealed": true,
+  "unknown_value_and_unit_remain_null": true,
+  "boolean_and_confirmed_state_preserved": true,
+  "project_task_and_risk_assigned_to_outside_expert": true,
+  "question_carried": true,
+  "result_ids": {
+    "product_id": "a0190b86-9f06-403c-85c8-98862df493f5",
+    "definition_id": "a401312a-2340-40fe-b7d7-f31bfe8c118a",
+    "project_id": "8140b7c8-b661-49cf-9ccd-72cc9b3a0518"
+  },
+  "bff_rejections": [
+    {
+      "path": "/proposals/b09cf9e0-0969-43e4-93ed-6bdbc7da775b",
+      "method": "POST",
+      "status": 405
+    },
+    {
+      "path": "/proposals?page_size=0",
+      "method": "GET",
+      "status": 422
+    },
+    {
+      "path": "/proposals?include_history=unexpected",
+      "method": "GET",
+      "status": 422
+    }
+  ]
+}

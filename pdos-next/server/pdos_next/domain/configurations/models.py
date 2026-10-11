@@ -23,7 +23,7 @@ def scope_constraints():
         UniqueConstraint("tenant_id", "product_id", "id", "revision"),
         ForeignKeyConstraint(["tenant_id", "product_id"], ["products.tenant_id", "products.id"]),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
-        CheckConstraint("visibility IN ('private','product') AND status = 'draft'"),
+        CheckConstraint("visibility IN ('private','category','audience') AND status = 'draft'"),
     )
 
 
@@ -119,14 +119,17 @@ class EngineeringConfiguration(_Revision, Base):
         ForeignKeyConstraint(
             ["tenant_id", "product_id", "definition_id"],
             [
-                "definition_revisions.tenant_id", "definition_revisions.product_id",
+                "definition_revisions.tenant_id",
+                "definition_revisions.product_id",
                 "definition_revisions.id",
             ],
         ),
         ForeignKeyConstraint(
             ["tenant_id", "product_id", "bom_id", "bom_revision"],
             [
-                "bom_revisions.tenant_id", "bom_revisions.product_id", "bom_revisions.id",
+                "bom_revisions.tenant_id",
+                "bom_revisions.product_id",
+                "bom_revisions.id",
                 "bom_revisions.revision",
             ],
         ),
@@ -147,8 +150,10 @@ class ProcessRevision(_Revision, Base):
         ForeignKeyConstraint(
             ["tenant_id", "product_id", "engineering_configuration_id", "engineering_revision"],
             [
-                "engineering_configurations.tenant_id", "engineering_configurations.product_id",
-                "engineering_configurations.id", "engineering_configurations.revision",
+                "engineering_configurations.tenant_id",
+                "engineering_configurations.product_id",
+                "engineering_configurations.id",
+                "engineering_configurations.revision",
             ],
         ),
         CheckConstraint("engineering_revision > 0"),

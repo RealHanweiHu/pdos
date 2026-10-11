@@ -24,6 +24,7 @@ from pdos_next.models import Artifact, Audit, Confirmation, Grant, Outbox, Recei
 
 def cmd(setup, operation, payload, source=None):
     return {
+        "category_id": str(setup.category),
         "command_id": str(uuid4()),
         "idempotency_key": str(uuid4()),
         "operation": operation,
@@ -36,7 +37,9 @@ def cmd(setup, operation, payload, source=None):
 
 def post(setup, command, preview=False):
     return setup.client.post(
-        "/v1/commands" + ("/preview" if preview else ""), headers=setup.headers, json=command
+        f"/v1/categories/{setup.category}/commands" + ("/preview" if preview else ""),
+        headers=setup.headers,
+        json=command,
     )
 
 
@@ -174,11 +177,20 @@ def test_project_needs_material_once_confirmation_and_fixed_link(setup, definiti
     refused = post(setup, command)
     assert refused.status_code == 409 and refused.json()["code"] == "CONFIRMATION_REQUIRED"
     receipt, prepared = accepted(setup, command)
+    assert receipt["result"]["transition_entry"] == "S0–M3 人工 T1；G0 落地后收紧为 T2"
+    assert receipt["result"]["tier"] == "T1"
+    assert receipt["result"]["created_by"] == str(setup.human)
     replay = post(setup, prepared)
     assert replay.status_code == 200 and replay.json()["id"] == receipt["id"]
     new_key = {**prepared, "idempotency_key": str(uuid4()), "command_id": str(uuid4())}
     assert post(setup, new_key).json()["id"] == receipt["id"]
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.scalar(select(func.count()).select_from(Project)) == 1
         link = s.scalar(select(ProjectProductLink))
         assert str(link.definition_id) == definition[1] and link.definition_revision == 1
@@ -202,9 +214,17 @@ def test_confirmation_cannot_authorize_changed_scope(setup, definition, change):
         prepared["expected_revision"] = 2
     else:
         headers = {"Authorization": f"Bearer {setup.tokens[setup.peer]}"}
-    response = setup.client.post("/v1/commands", headers=headers, json=prepared)
+    response = setup.client.post(
+        f"/v1/categories/{setup.category}/commands", headers=headers, json=prepared
+    )
     assert response.status_code in {403, 409}
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.scalar(select(func.count()).select_from(Project)) == 0
         assert s.scalar(select(Confirmation)).consumed is False
 
@@ -222,7 +242,7 @@ def test_current_expiry_permission_and_source_rechecked_after_preview(setup, def
         elif condition == "grant":
             s.execute(
                 update(Grant)
-                .where(Grant.product_id == setup.product, Grant.principal_id == setup.human)
+                .where(Grant.category_id == setup.category, Grant.principal_id == setup.human)
                 .values(can_write=False)
             )
         else:
@@ -244,7 +264,7 @@ def test_current_expiry_permission_and_source_rechecked_after_preview(setup, def
 
 def test_private_definition_cannot_expand_into_shared_project(setup, definition):
     command = project_command(setup, definition)
-    command["payload"]["visibility"] = "product"
+    command["payload"]["visibility"] = "category"
     refused = post(setup, command, True)
     assert refused.status_code == 403
 
@@ -252,7 +272,9 @@ def test_private_definition_cannot_expand_into_shared_project(setup, definition)
 def test_first_plan_preserves_four_independent_time_facts(setup, definition, project, proposal):
     receipt, prepared = accepted(setup, application(setup, definition, project, proposal))
     assert len(receipt["result"]["task_ids"]) == len(receipt["result"]["work_package_ids"]) == 2
-    result = setup.client.get(f"/v1/products/{setup.product}/projects", headers=setup.headers)
+    result = setup.client.get(
+        f"/v1/categories/{setup.category}/products/{setup.product}/projects", headers=setup.headers
+    )
     assert result.status_code == 200, result.text
     view = result.json()["items"][0]
     assert view["revision"] == 2 and view["definition"]["status"] == "draft"
@@ -264,7 +286,21 @@ def test_first_plan_preserves_four_independent_time_facts(setup, definition, pro
     assert tasks["npi"]["unknown_reasons"] and tasks["npi"]["duration_min_minutes"] is None
     assert timeline["forecast"]["calendar_ref"]["timezone_rules_sha256"]
     assert post(setup, prepared).json()["id"] == receipt["id"]
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with Session(setup.admin) as s:
+        confirmed = s.scalar(
+            select(Confirmation).where(
+                Confirmation.operation == "work.plan.apply",
+                Confirmation.category_id == setup.category,
+            )
+        )
+        assert confirmed.subject_type == "proposal" and confirmed.subject_id == UUID(proposal)
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.scalar(select(func.count()).select_from(ProjectTask)) == 2
         assert s.scalar(select(func.count()).select_from(TaskDependency)) == 1
 
@@ -283,8 +319,14 @@ def test_plan_failure_rolls_back_all_members_and_confirmation(
 
     monkeypatch.setattr(commands, "append_receipt", fail)
     response = post(setup, prepared)
-    assert response.status_code == 409
-    with tenant_session(setup.engine, setup.tenant) as s:
+    assert response.status_code == 500
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         for model in (PlanRevision, ProjectWorkPackage, ProjectTask, TaskDependency):
             assert s.scalar(select(func.count()).select_from(model)) == 0
         row = s.get(Project, UUID(project))
@@ -303,7 +345,13 @@ def test_concurrent_same_application_has_one_atomic_group(setup, definition, pro
         responses = list(pool.map(lambda _: post(setup, prepared), range(2)))
     assert all(response.status_code == 200 for response in responses)
     assert responses[0].json()["id"] == responses[1].json()["id"]
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.scalar(select(func.count()).select_from(PlanRevision)) == 1
         assert s.scalar(select(func.count()).select_from(ProjectTask)) == 2
 
@@ -320,7 +368,13 @@ def test_invalid_schedule_never_persists_a_proposal(setup, definition, project, 
         tasks[0].pop("estimate_source")
     response = post(setup, command)
     assert response.status_code == 422, response.text
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.scalar(select(func.count()).select_from(PlanProposal)) == 0
 
 
@@ -328,7 +382,7 @@ def test_plan_scope_and_snapshots_are_private_and_immutable(setup, definition, p
     accepted(setup, application(setup, definition, project, proposal))
     for principal in (setup.peer, setup.other_human):
         response = setup.client.get(
-            f"/v1/products/{setup.product}/projects",
+            f"/v1/categories/{setup.category}/products/{setup.product}/projects",
             headers={"Authorization": f"Bearer {setup.tokens[principal]}"},
         )
         assert (
@@ -361,7 +415,13 @@ def test_named_baseline_approval_is_not_opened_by_a_plan_preview(setup, definiti
     command["operation"] = "work.baseline.approve"
     refused = post(setup, command, True)
     assert refused.status_code == 403
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert (
             s.scalar(
                 select(func.count())
@@ -383,7 +443,7 @@ def test_calendar_version_cannot_silently_change_across_candidates(
     response = post(setup, command)
     assert response.status_code == 200, response.text
     listed = setup.client.get(
-        f"/v1/products/{setup.product}/projects", headers=setup.headers
+        f"/v1/categories/{setup.category}/products/{setup.product}/projects", headers=setup.headers
     ).json()
     versions = listed["items"][0]["proposals"]
     assert versions[0]["input_snapshot"]["calendar"]["holidays"] == ["2026-10-02"]
@@ -401,7 +461,7 @@ def test_shared_project_semantics_include_the_accountable_owner(setup):
                 "title": "Synthetic shared development source",
                 "content": "Synthetic shared requirement",
                 "source_label": "Synthetic fixture",
-                "visibility": "product",
+                "visibility": "category",
             },
         ),
     ).json()["subject_id"]
@@ -413,7 +473,7 @@ def test_shared_project_semantics_include_the_accountable_owner(setup):
             {
                 "title": "Shared fixed draft",
                 "purpose": "Verify trusted project owner binding",
-                "visibility": "product",
+                "visibility": "category",
                 "use_cases": ["Synthetic development"],
                 "change_reason": "Draft",
                 "sources": [
@@ -429,15 +489,25 @@ def test_shared_project_semantics_include_the_accountable_owner(setup):
         ),
     ).json()["subject_id"]
     command = project_command(setup, (source, defined))
-    command["payload"]["visibility"] = "product"
+    command["payload"]["visibility"] = "category"
     first, _ = accepted(setup, command)
     second_request = {**command, "command_id": str(uuid4()), "idempotency_key": str(uuid4())}
     headers = {"Authorization": f"Bearer {setup.tokens[setup.peer]}"}
-    preview = setup.client.post("/v1/commands/preview", headers=headers, json=second_request)
+    preview = setup.client.post(
+        f"/v1/categories/{setup.category}/commands/preview", headers=headers, json=second_request
+    )
     assert preview.status_code == 200, preview.text
-    second = setup.client.post("/v1/commands", headers=headers, json=preview.json()["command"])
+    second = setup.client.post(
+        f"/v1/categories/{setup.category}/commands", headers=headers, json=preview.json()["command"]
+    )
     assert second.status_code == 200, second.text
     assert first["subject_id"] != second.json()["subject_id"]
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.get(Project, UUID(first["subject_id"])).owner_id == setup.human
         assert s.get(Project, UUID(second.json()["subject_id"])).owner_id == setup.peer

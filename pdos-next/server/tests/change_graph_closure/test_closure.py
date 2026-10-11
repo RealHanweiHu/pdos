@@ -6,7 +6,7 @@ from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from types import SimpleNamespace
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import pytest
 from sqlalchemy import create_engine, select
@@ -28,7 +28,7 @@ def case(monkeypatch):
     engine = create_engine("postgresql+psycopg://invalid/never_connected")
     s = Session(bind=engine)
     s.begin()
-    ctx = Context(uuid4(), uuid4(), uuid4())
+    ctx = Context(uuid4(), uuid4(), uuid4(), category_id=UUID(int=1000000))
     scope = Scope(tenant_id=ctx.tenant_id, product_id=uuid4(), project_id=uuid4())
     audience = (f"product:{scope.product_id}",)
     root = Ref(id=uuid4(), revision=1, kind="engineering_configuration")
@@ -37,12 +37,14 @@ def case(monkeypatch):
     now = datetime.now(UTC)
     product = {
         "id": scope.product_id,
+        "category_id": ctx.category_id,
         "tenant_id": ctx.tenant_id,
         "created_at": now,
         "name": "fixed-product",
         "purpose": "fixed-purpose",
         "revision": 1,
         "status": "draft",
+        "visibility": "category",
         "owner_id": ctx.requester_id,
     }
     state = SimpleNamespace(
@@ -117,6 +119,7 @@ def case(monkeypatch):
     )
     state.reader_count = 0
     command = Command(
+        category_id=ctx.category_id,
         command_id=uuid4(),
         idempotency_key="closure-original-request",
         operation="change.order.approve",
@@ -155,6 +158,7 @@ def run(case, **kwargs):
         roots=case.graph.roots,
         expected_closure=case.expected,
         valid_until=case.valid_until,
+        complete_recheck=True,
     )
     values.update(kwargs)
     return c.recheck_graph_closure(case.s, case.ctx, case.command, **values)
@@ -164,12 +168,12 @@ def rejected(case, **kwargs):
     before = tuple(case.s.dispatch.do_orm_execute)
     with pytest.raises(DomainError) as error:
         run(case, **kwargs)
-    assert error.value.code == "RECHECK_REQUIRED"
+    assert error.value.reason == "RECHECK_REQUIRED"
     assert tuple(case.s.dispatch.do_orm_execute) == before
     return error.value
 
 
-def test_actual_bfs_same_call_two_passes_original_graph_retained(case):
+def test_actual_t2_bfs_once_retains_original_graph_and_watermarks(case):
     before = tuple(case.s.dispatch.do_orm_execute)
     result = run(case)
     assert result.graph is case.graph
@@ -178,7 +182,7 @@ def test_actual_bfs_same_call_two_passes_original_graph_retained(case):
     assert result.required_source_read_set == (
         {"artifact_id": str(case.source.id), "expected_revision": 1},
     )
-    assert case.state.reader_count == 2 and case.state.stamp_count == 3
+    assert case.state.reader_count == 1 and case.state.stamp_count == 2
     assert tuple(case.s.dispatch.do_orm_execute) == before
     assert datetime.now(UTC) >= result.checked_at
 
@@ -219,7 +223,7 @@ def test_clock_aba_visible_graph_identical_still_rejects(case):
     rejected(case)
 
 
-@pytest.mark.parametrize("when", [1, 2, 3])
+@pytest.mark.parametrize("when", [1, 2])
 def test_clock_changes_before_or_after_each_complete_pass(case, when):
     def drift(count):
         if count == when:
@@ -347,7 +351,7 @@ def test_trusted_complete_callback_can_preserve_exact_coverage_for_offline_contr
         return graph.coverage
 
     result = run(case, coverage_refresh=callback)
-    assert len(calls) == 2 and calls[0] is not calls[1]
+    assert len(calls) == 1
     assert result.authority_attested is False  # Substitute grants no real qualification.
 
 
@@ -385,7 +389,8 @@ def test_never_promotes_unknown_from_a_callback(case):
 
 def test_owner_material_change_between_passes_even_if_visible_graph_same(case):
     def drift(count):
-        if count == 2:
+        if count == 1:
+            case.state.epoch += 1
             case.state.views[case.root.identity] = {"other_material": "changed"}
 
     case.state.before_reader = drift
@@ -394,7 +399,8 @@ def test_owner_material_change_between_passes_even_if_visible_graph_same(case):
 
 def test_same_call_owner_reads_change_between_passes(case):
     def drift(count):
-        if count == 2:
+        if count == 1:
+            case.state.epoch += 1
             case.state.reads[case.root.identity] = [
                 {"artifact_id": str(uuid4()), "expected_revision": 1}
             ]
@@ -403,11 +409,12 @@ def test_same_call_owner_reads_change_between_passes(case):
     rejected(case)
 
 
-def test_21_unique_artifact_sources_fail_closed(case):
+def test_21_unique_artifact_sources_remain_complete(case):
     case.state.reads[case.root.identity] = [
         {"artifact_id": str(uuid4()), "expected_revision": 1} for _ in range(20)
     ]
-    rejected(case)  # One additional saved graph source makes 21.
+    result = run(case)
+    assert len(result.required_source_read_set) == 21
 
 
 def test_conflicting_fixed_revision_for_same_artifact_rejects(case):
@@ -471,7 +478,9 @@ def test_current_same_call_bindings_must_close_after_owner_io(case, mutation):
     case.state.in_load = drift
     with pytest.raises(DomainError):
         run(case)
-    assert not tuple(case.s.dispatch.do_orm_execute)
+    assert all(
+        hook.__name__ == "_discard_direct_mutation_reads" for hook in case.s.dispatch.do_orm_execute
+    )
 
 
 def test_same_root_and_savepoint_required_after_callback(case):
@@ -481,7 +490,9 @@ def test_same_root_and_savepoint_required_after_callback(case):
 
     with pytest.raises(DomainError):
         run(case, coverage_refresh=callback)
-    assert not tuple(case.s.dispatch.do_orm_execute)
+    assert all(
+        hook.__name__ == "_discard_direct_mutation_reads" for hook in case.s.dispatch.do_orm_execute
+    )
 
 
 def test_expired_graph_or_current_qualification_deadline(case):
@@ -574,13 +585,15 @@ def test_listener_finally_cleanup_on_owner_exception(case):
     case.state.in_load = broken
     with pytest.raises(RuntimeError):
         run(case)
-    assert not tuple(case.s.dispatch.do_orm_execute)
+    assert all(
+        hook.__name__ == "_discard_direct_mutation_reads" for hook in case.s.dispatch.do_orm_execute
+    )
 
 
-def test_dedicated_clock_table_set_matches_actual_migration_candidate():
+def test_dedicated_clock_table_set_matches_archived_clock_contract():
     source = (
         Path(__file__).resolve().parents[3]
-        / "server/migrations/versions/0030_change_dependency_clock.py"
+        / "server/migrations/archive/pre-s0/versions/0030_change_dependency_clock.py"
     )
     module = ast.parse(source.read_text())
     actual = next(

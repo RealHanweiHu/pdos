@@ -53,6 +53,7 @@ export function readinessText(reading: ReadinessReading | null): string {
     return "基础条件已核对，仍须取得本次材料和调用授权";
   }
   const text: Record<string, string> = {
+    RUN_CHECK_REQUIRED: "每次调用前会核对当前配置、授权、资格和预算。",
     MODEL_RUNTIME_PORTS_MISSING: "模型配置与当前授权尚未就绪，仍可手动办理",
     MODEL_UNAVAILABLE: "当前模型不可用",
     MODEL_NOT_CONFIGURED: "尚未配置模型", MODEL_DISABLED: "模型已停用",

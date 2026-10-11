@@ -1,0 +1,300 @@
+"""M2-owned metadata and work references; Agent role has no direct DML grants."""
+
+from datetime import datetime
+from uuid import UUID, uuid4
+
+from sqlalchemy import (
+    Boolean,
+    CheckConstraint,
+    DateTime,
+    ForeignKeyConstraint,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.orm import Mapped, mapped_column
+
+from pdos_next.clock import now
+from pdos_next.models import Base
+
+from .execution_schema import SHAPE
+
+
+class KernelRow:
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class AgentSession(KernelRow, Base):
+    __tablename__ = "agent_sessions"
+    category_id: Mapped[UUID | None] = mapped_column(index=True)
+    product_id: Mapped[UUID | None]
+    proposal_id: Mapped[UUID | None]
+    owner_id: Mapped[UUID]
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id"], ["categories.tenant_id", "categories.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "product_id"],
+            ["products.tenant_id", "products.category_id", "products.id"],
+        ),
+        ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
+    )
+
+
+class AgentRun(KernelRow, Base):
+    __tablename__ = "agent_runs"
+    category_id: Mapped[UUID | None] = mapped_column(index=True)
+    product_id: Mapped[UUID | None]
+    proposal_id: Mapped[UUID | None]
+    session_id: Mapped[UUID]
+    requester_id: Mapped[UUID]
+    writer_id: Mapped[UUID]
+    trigger: Mapped[str] = mapped_column(String(40))
+    goal: Mapped[str] = mapped_column(Text)
+    intent_key: Mapped[str] = mapped_column(String(160))
+    intent_digest: Mapped[str] = mapped_column(String(64))
+    cancel_epoch: Mapped[int] = mapped_column(Integer, default=0)
+    state: Mapped[str] = mapped_column(String(32), default="queued")
+    private_context: Mapped[bool] = mapped_column(Boolean, default=False)
+    data_categories: Mapped[list] = mapped_column(JSONB, default=list)
+    customer_identities: Mapped[list] = mapped_column(JSONB, default=list)
+    versions: Mapped[dict] = mapped_column(JSONB, default=dict)
+    read_sources: Mapped[list] = mapped_column(JSONB, default=list)
+    token_limit: Mapped[int] = mapped_column(Integer, default=100000)
+    validation_budget_id: Mapped[UUID | None]
+    held_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    used_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    result: Mapped[dict | None] = mapped_column(JSONB)
+    error_code: Mapped[str | None] = mapped_column(String(80))
+    reverted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    reverted_by: Mapped[UUID | None]
+    revert_receipt_id: Mapped[UUID | None]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "category_id", "id", name="uq_agent_runs_category_identity"),
+        UniqueConstraint("tenant_id", "requester_id", "intent_key"),
+        ForeignKeyConstraint(
+            ["tenant_id", "session_id"], ["agent_sessions.tenant_id", "agent_sessions.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id"], ["categories.tenant_id", "categories.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "product_id"],
+            ["products.tenant_id", "products.category_id", "products.id"],
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "requester_id"], ["principals.tenant_id", "principals.id"]
+        ),
+        ForeignKeyConstraint(["tenant_id", "writer_id"], ["principals.tenant_id", "principals.id"]),
+        ForeignKeyConstraint(
+            ["tenant_id", "validation_budget_id"],
+            ["agent_validation_budgets.tenant_id", "agent_validation_budgets.id"],
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "reverted_by"], ["principals.tenant_id", "principals.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "revert_receipt_id"], ["action_receipts.tenant_id", "action_receipts.id"],
+            name="kernel_revert_receipt_fk", use_alter=True,
+        ),
+    )
+
+
+class AgentToolCall(KernelRow, Base):
+    __tablename__ = "agent_tool_calls"
+    run_id: Mapped[UUID]
+    call_key: Mapped[str] = mapped_column(String(200))
+    tool: Mapped[str] = mapped_column(String(160))
+    input_digest: Mapped[str] = mapped_column(String(64))
+    execution_binding: Mapped[dict] = mapped_column(
+        JSONB, default=lambda: {"kind": "unbound"}
+    )
+    state: Mapped[str] = mapped_column(String(32), default="started")
+    result: Mapped[dict | None] = mapped_column(JSONB)
+    receipt_id: Mapped[UUID | None]
+    error_code: Mapped[str | None] = mapped_column(String(80))
+    reserved_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    charged_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    provider_request_id: Mapped[str | None] = mapped_column(String(200))
+    cost_pricing: Mapped[dict] = mapped_column(JSONB, default=dict)
+    cost_state: Mapped[str] = mapped_column(String(32), default="unmetered")
+    cost_reserved_micro_usd: Mapped[int] = mapped_column(Integer, default=0)
+    cost_charged_micro_usd: Mapped[int] = mapped_column(Integer, default=0)
+    input_token_reservation: Mapped[int] = mapped_column(Integer, default=0)
+    output_token_reservation: Mapped[int] = mapped_column(Integer, default=0)
+    actual_input_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    actual_output_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    __table_args__ = (
+        CheckConstraint(SHAPE, name="kernel_execution_binding_shape"),
+        UniqueConstraint("tenant_id", "run_id", "call_key"),
+        ForeignKeyConstraint(["tenant_id", "run_id"], ["agent_runs.tenant_id", "agent_runs.id"]),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"], ["action_receipts.tenant_id", "action_receipts.id"]
+        ),
+    )
+
+
+class AgentEvent(KernelRow, Base):
+    __tablename__ = "agent_run_events"
+    run_id: Mapped[UUID]
+    sequence: Mapped[int] = mapped_column(Integer)
+    body: Mapped[dict] = mapped_column(JSONB)
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "run_id", "sequence"),
+        ForeignKeyConstraint(["tenant_id", "run_id"], ["agent_runs.tenant_id", "agent_runs.id"]),
+    )
+
+
+class TenantAdministrator(KernelRow, Base):
+    __tablename__ = "tenant_administrators"
+    principal_id: Mapped[UUID]
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "principal_id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "principal_id"], ["principals.tenant_id", "principals.id"]
+        ),
+    )
+
+
+class ProviderDataAgreement(KernelRow, Base):
+    __tablename__ = "provider_data_agreements"
+    provider: Mapped[str] = mapped_column(String(160))
+    revision: Mapped[int] = mapped_column(Integer)
+    signed_on: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    data_categories: Mapped[list] = mapped_column(JSONB)
+    retention_terms: Mapped[str] = mapped_column(Text)
+    training_terms: Mapped[str] = mapped_column(Text)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    registered_by: Mapped[UUID]
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    receipt_id: Mapped[UUID | None]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "provider", "revision"),
+        ForeignKeyConstraint(
+            ["tenant_id", "registered_by"], ["principals.tenant_id", "principals.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"], ["action_receipts.tenant_id", "action_receipts.id"]
+        ),
+    )
+
+
+class TenantSkillEnablement(KernelRow, Base):
+    __tablename__ = "tenant_skill_enablements"
+    skill_key: Mapped[str] = mapped_column(String(160))
+    enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    pilot: Mapped[bool] = mapped_column(Boolean, default=False)
+    qualified_skill_version: Mapped[str | None] = mapped_column(String(160))
+    qualified_model_version: Mapped[str | None] = mapped_column(String(160))
+    review_case_refs: Mapped[list] = mapped_column(JSONB, default=list)
+    reviewed_by: Mapped[UUID | None]
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    qualification_revoked: Mapped[bool] = mapped_column(Boolean, default=False)
+    __table_args__ = (UniqueConstraint("tenant_id", "skill_key"),)
+
+
+class McpConnector(KernelRow, Base):
+    __tablename__ = "mcp_connectors"
+    key: Mapped[str] = mapped_column(String(160))
+    endpoint: Mapped[str] = mapped_column(String(1000))
+    secret_ref: Mapped[str] = mapped_column(String(200))
+    admitted_by: Mapped[UUID]
+    active: Mapped[bool] = mapped_column(Boolean, default=False)
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    tools: Mapped[dict] = mapped_column(JSONB)
+    __table_args__ = (UniqueConstraint("tenant_id", "key"), UniqueConstraint("tenant_id", "id"))
+
+
+class McpToolGrant(KernelRow, Base):
+    __tablename__ = "mcp_tool_grants"
+    connector_id: Mapped[UUID]
+    tool: Mapped[str] = mapped_column(String(160))
+    skill_key: Mapped[str | None] = mapped_column(String(160))
+    automation_rule_id: Mapped[UUID | None]
+    explicit_external_write: Mapped[bool] = mapped_column(Boolean, default=False)
+    authorized_by: Mapped[UUID]
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "connector_id"], ["mcp_connectors.tenant_id", "mcp_connectors.id"]
+        ),
+    )
+
+
+class PublicWebSnapshot(KernelRow, Base):
+    __tablename__ = "public_web_snapshots"
+    category_id: Mapped[UUID] = mapped_column(index=True)
+    owner_id: Mapped[UUID]
+    visibility: Mapped[str] = mapped_column(String(16), default="category")
+    url: Mapped[str] = mapped_column(Text)
+    final_url: Mapped[str] = mapped_column(Text)
+    title: Mapped[str] = mapped_column(Text)
+    summary: Mapped[str] = mapped_column(Text)
+    retrieved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    markdown: Mapped[str] = mapped_column(Text)
+    content_hash: Mapped[str] = mapped_column(String(64))
+    provider: Mapped[str] = mapped_column(String(160))
+    credibility: Mapped[str] = mapped_column(String(40))
+    status: Mapped[str] = mapped_column(String(32))
+    registered_by_run_id: Mapped[UUID]
+    receipt_id: Mapped[UUID]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "category_id", "id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id"], ["categories.tenant_id", "categories.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "registered_by_run_id"], ["agent_runs.tenant_id", "agent_runs.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"], ["action_receipts.tenant_id", "action_receipts.id"]
+        ),
+    )
+
+
+class AgentInput(KernelRow, Base):
+    __tablename__ = "agent_run_inputs"
+    run_id: Mapped[UUID]
+    requester_id: Mapped[UUID]
+    idempotency_key: Mapped[str] = mapped_column(String(160))
+    payload_digest: Mapped[str] = mapped_column(String(64))
+    answers: Mapped[dict] = mapped_column(JSONB)
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "run_id", "idempotency_key"),
+        ForeignKeyConstraint(["tenant_id", "run_id"], ["agent_runs.tenant_id", "agent_runs.id"]),
+        ForeignKeyConstraint(
+            ["tenant_id", "requester_id"], ["principals.tenant_id", "principals.id"]
+        ),
+    )
+
+
+class ValidationBudget(KernelRow, Base):
+    __tablename__ = "agent_validation_budgets"
+    requester_id: Mapped[UUID]
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    limit_micro_usd: Mapped[int] = mapped_column(Integer)
+    input_token_limit: Mapped[int] = mapped_column(Integer)
+    output_token_limit: Mapped[int] = mapped_column(Integer)
+    call_limit: Mapped[int] = mapped_column(Integer)
+    calls: Mapped[int] = mapped_column(Integer, default=0)
+    held_micro_usd: Mapped[int] = mapped_column(Integer, default=0)
+    spent_micro_usd: Mapped[int] = mapped_column(Integer, default=0)
+    held_input_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    used_input_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    held_output_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    used_output_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "requester_id"], ["principals.tenant_id", "principals.id"]
+        ),
+    )

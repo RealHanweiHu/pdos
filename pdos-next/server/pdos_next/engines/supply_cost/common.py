@@ -51,6 +51,9 @@ class FrozenDTO(BaseModel):
     @classmethod
     def no_binary_floats(cls, value: Any) -> Any:
         def visit(item: Any) -> None:
+            kind = type(item)
+            if item is None or kind is str or kind is bool or kind is int:
+                return
             if isinstance(item, float):
                 raise ValueError("Use decimal strings or Decimal, never binary floats")
             if isinstance(item, dict):

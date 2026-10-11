@@ -44,7 +44,12 @@ from verification_handoff.fixtures import (
 
 
 def count(work):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         return {
             model.__tablename__: session.scalar(select(func.count()).select_from(model))
             for model in (
@@ -83,7 +88,7 @@ def test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one
     before = current(work)
     assert before["documents_ready"] and before["status"] == "draft"
     scoped = work.quality.client.get(
-        f"/v1/products/{work.quality.product}/verification-handoff",
+        f"/v1/categories/{work.quality.category}/products/{work.quality.product}/verification-handoff",
         headers=work.quality.headers,
         params={"build_id": work.build_id},
     )
@@ -130,7 +135,12 @@ def test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one
     )
     history = listing(work)
     assert len(history["requests"]) == 4 and not history["runs"]
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         for model in (Audit, Outbox):
             assert (
                 session.scalar(
@@ -167,7 +177,9 @@ def test_planned_positive_never_substitutes_actual_method_unknown(handoff_work):
         work, operation="verification.handoff.accept", coverage=row["offered_coverage"]
     )
     refused = post(work.quality, command, True)
-    assert refused.status_code == 409 and refused.json()["code"] == "ACTUAL_METHOD_UNKNOWN"
+    assert (
+        refused.status_code == 409 and refused.json()["detail"]["reason"] == "ACTUAL_METHOD_UNKNOWN"
+    )
     assert current(work)["status"] == "offered" and not current(work)["acceptances"]
 
 
@@ -200,7 +212,7 @@ def test_hold_after_accept_review_invalidates_confirmation_and_preserves_scope(h
     response = post(work.quality, prepared)
     # The old command lacks the new hold's exact source read set, so that current
     # evidence boundary may reject before availability is evaluated.
-    assert response.status_code == 409 and response.json()["code"] in {
+    assert response.status_code == 409 and response.json()["detail"]["reason"] in {
         "MISSING_REQUIRED_EVIDENCE",
         "SAMPLE_UNAVAILABLE",
     }
@@ -209,9 +221,14 @@ def test_hold_after_accept_review_invalidates_confirmation_and_preserves_scope(h
         work, operation="verification.handoff.accept", coverage=row["offered_coverage"]
     )["source_read_set"]
     result = post(work.quality, refreshed)
-    assert result.status_code == 409 and result.json()["code"] == "SAMPLE_UNAVAILABLE"
+    assert result.status_code == 409 and result.json()["detail"]["reason"] == "SAMPLE_UNAVAILABLE"
     assert current(work)["status"] == "offered"
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         confirmation = session.scalar(
             select(Confirmation).where(
                 Confirmation.token_hash == digest(prepared["payload"]["confirmation_token"])
@@ -225,11 +242,14 @@ def test_bad_actual_configuration_and_event_source_locator_are_rejected(handoff_
     data = actual_method(work)
     data["payload"]["assessments"][0]["sample"]["actual_configuration"]["id"] = str(uuid4())
     result = post(work.quality, data, True)
-    assert result.status_code == 409 and result.json()["code"] == "SOURCE_CHANGED"
+    assert result.status_code == 409 and result.json()["detail"]["reason"] == "SOURCE_CHANGED"
     offer = handoff(work)
     offer["payload"]["at"]["source"]["position"] = "line:999;quote_sha256:invented"
     result = post(work.engineer, offer, True)
-    assert result.status_code == 409 and result.json()["code"] == "MISSING_REQUIRED_EVIDENCE"
+    assert (
+        result.status_code == 409
+        and result.json()["detail"]["reason"] == "MISSING_REQUIRED_EVIDENCE"
+    )
 
 
 def test_method_pair_concurrent_cas_has_one_batch_and_one_common_receipt(handoff_work):
@@ -244,7 +264,7 @@ def test_method_pair_concurrent_cas_has_one_batch_and_one_common_receipt(handoff
         replies = list(pool.map(lambda value: post(work.quality, value), prepared))
     assert sorted(response.status_code for response in replies) == [200, 409]
     rejected = next(response for response in replies if response.status_code == 409)
-    assert rejected.json()["code"] in {"VERSION_CONFLICT", "CONFIRMATION_SCOPE_CHANGED"}
+    assert rejected.json()["detail"]["reason"] in {"VERSION_CONFLICT", "CONFIRMATION_SCOPE_CHANGED"}
     after = count(work)
     assert (
         after["verification_actual_method_batches"]
@@ -280,9 +300,10 @@ def test_terminal_common_receipt_failure_rolls_back_actual_facts_pointer_and_con
     assert result.status_code == 200, result.text
 
 
-def test_source_withdrawal_blocks_receipt_replay_without_erasing_history(handoff_work):
+def test_source_withdrawal_keeps_saved_receipt_replay_and_blocks_new_material(handoff_work):
     work = handoff_work
     receipt, prepared = methods(work)
+    fresh_command = actual_method(work)
     before = count(work)
     with Session(work.setup.admin) as session, session.begin():
         session.execute(
@@ -291,29 +312,46 @@ def test_source_withdrawal_blocks_receipt_replay_without_erasing_history(handoff
             .values(status="withdrawn")
         )
     result = post(work.quality, prepared)
-    assert result.status_code == 409 and result.json()["code"] == "SOURCE_UNAVAILABLE"
+    assert result.status_code == 200 and result.json()["id"] == receipt["id"], result.text
+    fresh = post(work.quality, fresh_command, True)
+    assert fresh.status_code == 409 and fresh.json()["detail"]["reason"] == "SOURCE_UNAVAILABLE", (
+        fresh.text
+    )
     assert count(work) == before
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         assert session.get(ActualMethodBatch, UUID(receipt["subject_id"])) is not None
 
 
 def test_quality_and_engineering_roles_not_interchangeable_and_cross_tenant_hidden(handoff_work):
     work = handoff_work
     result = post(work.engineer, actual_method(work), True)
-    assert result.status_code == 403 and result.json()["code"] == "QUALIFICATION_REQUIRED"
+    assert (
+        result.status_code == 403 and result.json()["detail"]["reason"] == "QUALIFICATION_REQUIRED"
+    )
     response = work.setup.client.get(
-        f"/v1/products/{work.setup.product}/verification-handoff",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/verification-handoff",
         headers={"Authorization": f"Bearer {work.setup.tokens[work.setup.other_human]}"},
     )
     assert response.status_code == 403
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         with pytest.raises(DomainError) as error:
             execute(
                 session,
                 Context(work.setup.tenant, work.setup.agent, work.setup.agent),
                 Command.model_validate(actual_method(work)),
             )
-        assert error.value.code == "FORBIDDEN_SCOPE"
+        assert error.value.reason == "FORBIDDEN_SCOPE"
 
 
 def test_actual_fact_immutable_rls_agent_zero_write_and_current_pointer_cannot_backtrack(
@@ -324,7 +362,12 @@ def test_actual_fact_immutable_rls_agent_zero_write_and_current_pointer_cannot_b
     values = listing(work)["actual_methods"]
     row = values[0]
     with pytest.raises(DBAPIError, match="permission denied"):
-        with tenant_session(work.setup.engine, work.setup.tenant) as session:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.setup.human,
+            category_id=work.setup.category,
+        ) as session:
             session.execute(
                 update(ActualMethodApplicability)
                 .where(ActualMethodApplicability.id == UUID(row["id"]))
@@ -354,7 +397,7 @@ def test_actual_fact_immutable_rls_agent_zero_write_and_current_pointer_cannot_b
 
 def test_stale_actual_qualification_keeps_real_pair_pointer_and_can_be_renewed(handoff_work):
     work = handoff_work
-    _, old_command = methods(work)
+    old_receipt, old_command = methods(work)
     old = work.extra_authority[("quality", "qualification")]
     operations = [
         "verification.request.create",
@@ -414,7 +457,17 @@ def test_stale_actual_qualification_keeps_real_pair_pointer_and_can_be_renewed(h
     assert {pointer["revision"] for pointer in data["method_current_by_pair"]} == {2}
     assert sum(row["current"] for row in data["actual_methods"]) == 2
     replay = post(work.quality, old_command)
-    assert replay.status_code == 409 and replay.json()["code"] == "SOURCE_STALE"
+    assert replay.status_code == 200 and replay.json()["id"] == old_receipt["id"], replay.text
+    before = count(work)
+    fresh = deepcopy(old_command)
+    fresh["command_id"], fresh["idempotency_key"] = str(uuid4()), str(uuid4())
+    fresh["payload"].pop("confirmation_token", None)
+    fresh["payload"]["reason"] += "; new attempt against the old method version"
+    denied = post(work.quality, fresh, True)
+    assert denied.status_code == 409 and denied.json()["detail"]["reason"] == "SOURCE_STALE", (
+        denied.text
+    )
+    assert count(work) == before
 
 
 def test_withdrawn_new_same_plan_actual_observation_blocks_acceptance(handoff_work):
@@ -444,10 +497,15 @@ def test_withdrawn_new_same_plan_actual_observation_blocks_acceptance(handoff_wo
     result = post(work.quality, prepared)
     # The complete command read set contains the new observation's source, so
     # common current-source validation rejects before the Build proof is read.
-    assert result.status_code == 409 and result.json()["code"] == "SOURCE_UNAVAILABLE"
+    assert result.status_code == 409 and result.json()["detail"]["reason"] == "SOURCE_UNAVAILABLE"
     assert count(work) == before
     assert current(work)["status"] == "offered"
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         confirmation = session.scalar(
             select(Confirmation).where(
                 Confirmation.token_hash == digest(prepared["payload"]["confirmation_token"])

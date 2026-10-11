@@ -1,0 +1,3 @@
+[
+  "tests/verification_launch/test_transactions.py::test_fixed_full_accepted_plan_promise_and_atomic_actual_start_leave_old_history"
+]

@@ -13,76 +13,22 @@ from temporalio.worker import Worker
 from pdos_next.database import configured_engines, tenant_session
 from pdos_next.dispatch.outbox import dispatch_once
 from pdos_next.errors import DomainError
-from pdos_next.models import WorkRequest
 from pdos_next.original_security import configure, queue_uploaded, scan_requested
 from pdos_next.original_store import OriginalStore
 from pdos_next.originals import parse_uploaded
-from pdos_next.runtime import resume
-from pdos_next.service import Context
 from pdos_next.workflows.definitions import (
     OriginalLifecycle,
     ParseOriginal,
     QueueOriginalSecurity,
     SecureOriginal,
-    SourceWork,
     UploadTerminal,
 )
 from pdos_next.workflows.transport import TemporalSender
 
 
 class Activities:
-    def __init__(self, engine, store, checkpoint_url, *, provider_factory=None):
-        from pdos_next.agent_execution import configured_provider_factory
-
+    def __init__(self, engine, store, checkpoint_url):
         self.engine, self.store, self.checkpoint_url = engine, store, checkpoint_url
-        self.provider_factory = provider_factory or configured_provider_factory(engine)
-
-    @activity.defn(name="advance_source_work")
-    def advance(self, reference: dict):
-        tenant, product, work_id = (
-            UUID(reference[k]) for k in ("tenant_id", "product_id", "subject_id")
-        )
-        with tenant_session(self.engine, tenant) as s:
-            work = s.get(WorkRequest, work_id)
-            if not work or work.product_id != product:
-                raise ApplicationError(
-                    "Work unavailable", type="FORBIDDEN_SCOPE", non_retryable=True
-                )
-            ctx = Context(tenant, work.accountable_owner_id, work.accountable_owner_id)
-            if work.status == "cancelled":
-                return {"status": "cancelled"}
-            completed = work.status == "completed"
-        try:
-            from pdos_agent_runtime.graph import execute_graph
-
-            from pdos_next.agent_execution import selected_provider
-
-            def execute(_):
-                try:
-                    if completed:
-                        value = resume(
-                            self.engine, ctx, work_id, None, checkpoint_url=self.checkpoint_url
-                        )
-                    else:
-                        with selected_provider(self.provider_factory, ctx, work_id) as provider:
-                            value = resume(
-                                self.engine,
-                                ctx,
-                                work_id,
-                                provider,
-                                checkpoint_url=self.checkpoint_url,
-                            )
-                except DomainError as error:
-                    if not error.code.startswith("MODEL_"):
-                        raise
-                    from pdos_next.runtime import model_unavailable
-
-                    value = model_unavailable(self.engine, ctx, work_id, error.code)
-                return {"value": value}
-
-            return execute_graph(execute, {}, thread_id=f"pdos-next:{tenant}:{work_id}")["value"]
-        except DomainError as exc:
-            raise ApplicationError(exc.message, type=exc.code, non_retryable=True) from None
 
     @activity.defn(name="parse_uploaded_original")
     def parse(self, reference: dict):
@@ -119,17 +65,26 @@ class Activities:
 
     @activity.defn(name="reconcile_upload_terminal")
     def terminal_upload(self, reference: dict):
+        from pdos_next.dispatch.context import event_context
         from pdos_next.models import UploadAttempt
         from pdos_next.object_storage import StorageFailure
         from pdos_next.upload_lifecycle import reconcile_terminal
 
         tenant, pid, oid = (UUID(reference[k]) for k in ("tenant_id", "product_id", "subject_id"))
+        ctx = event_context(reference)
         try:
-            with tenant_session(self.engine, tenant) as s:
+            with tenant_session(
+                self.engine,
+                tenant,
+                actor_id=ctx.actor_id,
+                requester_id=ctx.requester_id,
+                category_id=ctx.category_id,
+            ) as s:
                 row = s.get(UploadAttempt, oid)
                 if not row or row.product_id != pid:
                     raise DomainError("SOURCE_UNAVAILABLE", "上传登记不可用。", 403)
-                ctx = Context(tenant, row.owner_id, row.owner_id)
+                if row.owner_id != ctx.requester_id:
+                    raise DomainError("FORBIDDEN_SCOPE", "上传信封与具名登记不符。", 403)
                 reconcile_terminal(s, ctx, pid, oid, self.store)
                 return {"status": row.status}
         except (DomainError, StorageFailure) as exc:
@@ -138,12 +93,27 @@ class Activities:
             ) from None
 
 
-async def main(*, model_runtime_ports=None):
+async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
     engine, auth = configured_engines()
-    if model_runtime_ports is not None:
-        from pdos_next.agent_execution import configure_model_runtime
+    from pdos_next.database import engine_for
 
-        configure_model_runtime(engine, model_runtime_ports)
+    dispatch_engine = engine_for(os.environ["DISPATCH_DATABASE_URL"])
+    from pdos_next.agent_kernel.activities import KernelActivities, configure_agent_kernel
+    from pdos_next.workflows.xiaopai import XiaopaiWork
+
+    if agent_kernel_adapters is not None:
+        configure_agent_kernel(engine, agent_kernel_adapters)
+    else:
+        from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
+
+        configure_agent_kernel(
+            engine, Bootstrap(engine, ports=agent_runtime_ports or RuntimePorts()).adapters()
+        )
+    kernel_activities = KernelActivities(
+        engine,
+        checkpoint_url=os.environ["PDOS_CHECKPOINT_DATABASE_URL"],
+        technical_engine=dispatch_engine,
+    )
     store = OriginalStore(os.environ["PDOS_OBJECT_ROOT"])
     from pdos_next.lifecycle_worker import configure_lifecycle
 
@@ -157,12 +127,16 @@ async def main(*, model_runtime_ports=None):
     )
     activities = Activities(engine, store, os.environ["PDOS_CHECKPOINT_DATABASE_URL"])
     sender = TemporalSender(client)
+    from pdos_next.agent_kernel.temporal_port import TemporalPort, dispatch_pending_runs
+
+    kernel_sender = TemporalPort(client, task_queue=sender.task_queue)
     stop = asyncio.Event()
 
     async def deliver():
         while not stop.is_set():
             for tenant in tenants:
-                await dispatch_once(engine, tenant, sender)
+                await dispatch_once(dispatch_engine, tenant, sender)
+                await dispatch_pending_runs(dispatch_engine, tenant, kernel_sender)
             try:
                 await asyncio.wait_for(stop.wait(), 1)
             except TimeoutError:
@@ -173,7 +147,7 @@ async def main(*, model_runtime_ports=None):
             client,
             task_queue=sender.task_queue,
             workflows=[
-                SourceWork,
+                XiaopaiWork,
                 ParseOriginal,
                 QueueOriginalSecurity,
                 SecureOriginal,
@@ -181,7 +155,7 @@ async def main(*, model_runtime_ports=None):
                 UploadTerminal,
             ],
             activities=[
-                activities.advance,
+                kernel_activities.advance,
                 activities.parse,
                 activities.queue,
                 activities.scan,

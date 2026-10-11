@@ -6,6 +6,7 @@ from uuid import UUID, uuid4
 
 from sqlalchemy import func, or_, select
 
+from pdos_next.database import category_for_product
 from pdos_next.domain.configurations.service import (
     _merge_reads,
     _source_state,
@@ -14,6 +15,7 @@ from pdos_next.domain.configurations.service import (
 )
 from pdos_next.errors import DomainError
 from pdos_next.models import Grant, Principal, now
+from pdos_next.request_proof import snapshot_get, snapshot_scalar
 
 from .comparison import compare_configurations
 from .models import ActualConfiguration, BuildLot, SampleAllocation, SampleUnit
@@ -40,18 +42,22 @@ def _human(s, ctx, product_id, *, write=False):
 
 
 def _row(s, ctx, product_id, model, identity, *, write=False):
-    row = s.scalar(
+    if not write:
+        row = snapshot_get(s, model, identity, scope_id=product_id)
+        if row is None or row.tenant_id != ctx.tenant_id or row.product_id != product_id:
+            raise DomainError("FORBIDDEN_SCOPE", "实物记录不在当前可见型号范围。", 403)
+        return row
+    row = snapshot_scalar(
+        s,
+        (model, product_id, identity),
         select(model).where(
             model.id == identity,
             model.product_id == product_id,
             model.tenant_id == ctx.tenant_id,
-        )
+        ),
+        scope_id=product_id,
     )
-    if (
-        not row
-        or (row.visibility == "private" and row.owner_id != ctx.requester_id)
-        or (write and row.owner_id != ctx.requester_id)
-    ):
+    if not row or (write and row.owner_id != ctx.requester_id):
         raise DomainError("FORBIDDEN_SCOPE", "本轮观察或样件不在当前可用范围。", 403)
     return row
 
@@ -68,20 +74,17 @@ def _visibility(s, ctx, product_id, rows, reads):
     from pdos_next.models import Artifact
 
     private = any(
-        row.visibility == "private" if not isinstance(row, dict) else row["visibility"] == "private"
+        row.visibility != "category"
+        if not isinstance(row, dict)
+        else row["visibility"] != "category"
         for row in rows
     )
     for read in reads:
         source = s.get(Artifact, UUID(read["artifact_id"]))
-        if (
-            not source
-            or source.product_id != product_id
-            or source.tenant_id != ctx.tenant_id
-            or (source.visibility == "private" and source.owner_id != ctx.requester_id)
-        ):
+        if not source or source.product_id != product_id or source.tenant_id != ctx.tenant_id:
             raise DomainError("SOURCE_UNAVAILABLE", "固定来源权限需要重核。", 403)
-        private |= source.visibility == "private"
-    return "private" if private else "product"
+        private |= source.visibility != "category"
+    return "private" if private else "category"
 
 
 def _comparison(s, ctx, product_id, build_id, engineering_id, manufacturing_id, *, write=False):
@@ -410,7 +413,7 @@ def _checked_inputs(s, ctx, command, product, payload):
 
     _human(s, ctx, product.id, write=True)
     if command.product_id != product.id or product.tenant_id != ctx.tenant_id:
-        raise DomainError("FORBIDDEN_SCOPE", "产出观察不在当前产品范围。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "产出观察不在当前型号范围。", 403)
     value = _inputs(s, ctx, product.id, payload)
     supplied = {str(read.artifact_id): read.expected_revision for read in command.source_read_set}
     lines = {}
@@ -450,15 +453,13 @@ def _duplicate(s, ctx, product_id, model, condition, code, message):
             condition,
         )
     ).all()
-    if any(row.visibility == "private" and row.owner_id != ctx.requester_id for row in rows):
-        raise DomainError("FORBIDDEN_SCOPE", "本次实物身份无法办理，请核对授权与来源范围。", 403)
     if rows:
         raise DomainError(code, message)
 
 
 def _new_write(s, ctx, command, product, payload, value):
     if command.expected_revision != product.revision:
-        raise DomainError("VERSION_CONFLICT", "产品范围已变化，请重新读取。")
+        raise DomainError("VERSION_CONFLICT", "型号范围已变化，请重新读取。")
     if isinstance(payload, ActualConfigurationPayload):
         _version(value["build"], payload.expected_build_revision)
         _version(value["engineering_row"], payload.expected_actual_engineering_revision)
@@ -526,9 +527,9 @@ def _new_write(s, ctx, command, product, payload, value):
                 select(Grant)
                 .where(
                     Grant.tenant_id == ctx.tenant_id,
-                    Grant.product_id == product.id,
+                    Grant.category_id == category_for_product(product.id),
                     Grant.principal_id == sample.custodian_id,
-                    Grant.expires_at > now(),
+                    (Grant.expires_at.is_(None) | (Grant.expires_at > now())),
                 )
                 .with_for_update()
             )
@@ -539,7 +540,7 @@ def _new_write(s, ctx, command, product, payload, value):
                 or principal.kind != "human"
                 or not grant
             ):
-                raise DomainError("FORBIDDEN_SCOPE", "本系统保管者须为当前产品有效人类成员。", 403)
+                raise DomainError("FORBIDDEN_SCOPE", "本系统保管者须为当前型号有效人类成员。", 403)
 
 
 def semantic(payload):
@@ -809,17 +810,15 @@ def list_execution(s, ctx, product_id):
             .where(
                 model.tenant_id == ctx.tenant_id,
                 model.product_id == product_id,
-                (model.visibility == "product") | (model.owner_id == ctx.requester_id),
             )
             .order_by(model.created_at.desc(), model.id)
-            .limit(101)
         ).all()
-        result["has_more"] |= len(rows) > 100
-        for row in rows[:100]:
+
+        for row in rows:
             try:
                 result[key].append(getter(s, ctx, product_id, row.id)[1])
             except DomainError as error:
-                if error.code not in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE", "SOURCE_STALE"}:
+                if error.reason not in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE", "SOURCE_STALE"}:
                     raise
                 result["unavailable_count"] += 1
     return result

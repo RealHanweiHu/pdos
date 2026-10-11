@@ -23,7 +23,7 @@ from pdos_next.service import Context, digest
 def code(expected, callback):
     with pytest.raises(DomainError) as error:
         callback()
-    assert error.value.code == expected
+    assert error.value.reason == expected
 
 
 @pytest.fixture
@@ -139,7 +139,21 @@ def work(monkeypatch):
         artifact=artifact,
         profile=profile,
         state=state,
-        policy={"nature": "synthetic", "valid_until": (NOW + timedelta(minutes=5)).isoformat()},
+        policy={
+            "nature": "synthetic",
+            "id": "policy-id",
+            "revision": 1,
+            "valid_until": None,
+            "source_basis": [
+                {
+                    "id": "policy-id",
+                    "revision": 1,
+                    "state": "active",
+                    "valid_from": (NOW - timedelta(hours=1)).isoformat(),
+                    "valid_until": (NOW + timedelta(hours=1)).isoformat(),
+                }
+            ],
+        },
     )
 
 
@@ -208,7 +222,10 @@ def test_exact_source_publication_and_real_observation_produce_full_typed_host_a
     assert isinstance(value, bootstrap.SyntheticCompletionAssessment)
     assert value.classification == "investigation" and value.nature == "synthetic"
     assert value.allowed is True and value.current is True and value.owner_proofs == ()
-    assert value.valid_until.isoformat() == work.policy["valid_until"]
+    assert value.valid_until is None
+    assert value.time_constraints == (
+        bootstrap.CompletionProfile.model_validate(work.profile).entries[0].valid_until,
+    )
     assert value.classification_source_basis[0].registration.receipt_id == work.state.receipt_id
     assert value.proof_sha256 == digest(value.model_dump(mode="json", exclude={"proof_sha256"}))
     assert value.profile_sha256 == digest(
@@ -320,7 +337,7 @@ def test_deadline_is_fixed_not_renewed_by_now_and_offset_source_is_same_instant(
     work.state.at += timedelta(minutes=1)
     second = assess(work, verifier)
     assert second == first and second.valid_until == first.valid_until
-    work.state.at = first.valid_until
+    work.state.at = min(first.time_constraints)
     code("ACTION_COMPLETION_UNVERIFIED", lambda: assess(work, verifier))
 
 

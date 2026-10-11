@@ -95,7 +95,7 @@ class FormalVerificationRequest(Row, Base):
         CheckConstraint(
             "status IN ('draft','offered','accepted','scheduled','executing',"
             "'reported','disposed') "
-            "AND visibility IN ('private','product')"
+            "AND visibility IN ('private','category','audience')"
         ),
         CheckConstraint(
             "operation IN ('verification.request.create',"
@@ -223,7 +223,7 @@ class MethodApplicability(Row, Base):
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint("revision = 1 AND request_revision > 0"),
         CheckConstraint("status IN ('applicable','not_applicable','unknown')"),
-        CheckConstraint("visibility IN ('private','product')"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
         CheckConstraint(
             "engineering_configuration_revision > 0 AND manufacturing_configuration_revision > 0"
         ),
@@ -256,5 +256,5 @@ class VerificationWindowProposal(Row, Base):
         request_fk(project=True),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint("revision = 1 AND request_revision > 0 AND occupancy = 0"),
-        CheckConstraint("status = 'tentative' AND visibility IN ('private','product')"),
+        CheckConstraint("status = 'tentative' AND visibility IN ('private','category','audience')"),
     )

@@ -7,7 +7,7 @@ The caller owns scope, source validity and the immutable server-supplied as_of.
 """
 
 from datetime import datetime
-from typing import Annotated, Literal
+from typing import Literal
 
 from pydantic import ConfigDict, Field, JsonValue, field_validator
 
@@ -66,7 +66,7 @@ class _Line(FrozenDTO):
 
 
 class _Bom(_Versioned):
-    lines: Annotated[tuple[_Line, ...], Field(max_length=2000)] = ()
+    lines: tuple[_Line, ...] = ()
 
 
 class _Engineering(_Versioned):
@@ -82,7 +82,7 @@ class _Operation(FrozenDTO):
 
 
 class _Manufacturing(_Versioned):
-    operations: Annotated[tuple[_Operation, ...], Field(max_length=2000)] = ()
+    operations: tuple[_Operation, ...] = ()
 
 
 class _Input(FrozenDTO):

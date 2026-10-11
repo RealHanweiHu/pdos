@@ -38,7 +38,7 @@ export function editorIntent(draft: Draft, request: ChangeRequest | null, contex
   if (draft.operation === "change.order.prepare") {
     const plan = context.planCandidates.find(value => value.key === draft.planKey);
     if (!plan?.current || !sameRef(plan.assessment, request.impact) || !plan.plan.scopes.length || !plan.plan.intents.length || !text) return reject("选择匹配本次固定影响版本的完整生效计划并填写说明。");
-    if (plan.commandPlan.id !== plan.plan.id || !plan.commandPlan.items.length || !Number.isFinite(Date.parse(plan.commandPlan.expires_at))) return reject("原始生效候选载荷与显示范围不匹配，须重新核对。");
+    if (plan.commandPlan.id !== plan.plan.id || !plan.commandPlan.items.length || (plan.commandPlan.expires_at !== null && !Number.isFinite(Date.parse(plan.commandPlan.expires_at)))) return reject("原始生效候选载荷与显示范围不匹配，须重新核对。");
     return { intent: { ...target, operation: draft.operation, assessment: plan.assessment, plan: plan.commandPlan, text }, problem: null };
   }
   const order = request.order;

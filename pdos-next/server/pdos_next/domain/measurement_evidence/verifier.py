@@ -46,14 +46,12 @@ REQUIRED_METADATA = (
 @dataclass(frozen=True, slots=True)
 class VerifierLimits:
     max_input_bytes: int = 2_000_000
-    max_rows: int = 10000
     max_line_bytes: int = 32768
     max_depth: int = 6
 
     def __post_init__(self):
         for name, ceiling in (
             ("max_input_bytes", 10_000_000),
-            ("max_rows", 10000),
             ("max_line_bytes", 131072),
             ("max_depth", 8),
         ):
@@ -324,8 +322,6 @@ def extract_observations(
         _failure("UNSUPPORTED_REPORT_LINE_BREAK", "原报告含不能与现有行定位一致的分隔符或BOM。")
     # LF and CRLF are supported without rewriting original content or offsets.
     physical_lines = text.splitlines(keepends=True)
-    if len(physical_lines) > limits.max_rows:
-        _failure("REPORT_ROW_LIMIT", "原报告行数超过有界核验范围。", 413)
     allowed = {(pair.sample.id, pair.item_id): pair.sample for pair in binding.pairs}
     rows, seen = {}, set()
     byte_offset = 0

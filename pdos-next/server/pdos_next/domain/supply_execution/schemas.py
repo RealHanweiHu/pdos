@@ -14,7 +14,7 @@ class SupplyRecordInput(FrozenDTO):
     material_id: UUID
     quantity: Quantity | None = None
     unit: str | None = Field(default=None, min_length=1, max_length=80)
-    sources: list[DefinitionReference] = Field(min_length=1, max_length=20)
+    sources: list[DefinitionReference] = Field(min_length=1)
     source_system: str | None = Field(default=None, min_length=1, max_length=100)
     pool_id: str | None = Field(default=None, min_length=1, max_length=200)
     supplier_id: str | None = Field(default=None, min_length=1, max_length=200)
@@ -57,7 +57,7 @@ class SupplyCaptureInput(FrozenDTO):
     build_id: UUID
     expected_build_revision: int = Field(ge=1, strict=True)
     reason: str = Field(min_length=3, max_length=2000)
-    records: list[SupplyRecordInput] = Field(min_length=1, max_length=500)
+    records: list[SupplyRecordInput] = Field(min_length=1)
 
     @model_validator(mode="after")
     def unique_records(self) -> Self:

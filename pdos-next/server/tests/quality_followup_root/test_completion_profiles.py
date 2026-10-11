@@ -111,7 +111,7 @@ def invoke(host, *, scope=None, ctx=None, session=None, product_id=None):
 def assert_error(code, call):
     with pytest.raises(DomainError) as error:
         call()
-    assert error.value.code == code
+    assert error.value.reason == code
 
 
 def test_integration_and_bootstrap_use_one_actual_package_namespace():
@@ -154,9 +154,9 @@ def test_plural_requires_nonempty_bounded_explicit_valid_list_before_registratio
     assert not hasattr(host.engine, "_pdos_quality_completion_profiles")
 
 
-def test_plural_more_than_twenty_is_rejected_before_registration(host):
+def test_duplicate_scope_is_rejected_even_in_large_configuration(host):
     assert_error(
-        "COMPLETION_PROFILE_CONFIG_INVALID",
+        "COMPLETION_PROFILE_CONFLICT",
         lambda: integration.configure_integration(
             host.engine, synthetic_completion_profiles=[profile(host.scope)] * 21
         ),
@@ -371,14 +371,14 @@ def test_multi_profile_does_not_enable_any_professional_synthetic_switch(host):
     assert not hasattr(host.engine, "_pdos_professional_issuers")
 
 
-def test_plural_exact_twenty_distinct_scopes_is_allowed_and_last_scope_dispatches(host):
+def test_plural_more_than_twenty_distinct_scopes_dispatches_complete_set(host):
     scopes = [host.scope] + [
-        host.scope.model_copy(update={"project_id": uuid4()}) for _ in range(19)
+        host.scope.model_copy(update={"project_id": uuid4()}) for _ in range(20)
     ]
     integration.configure_integration(
         host.engine, synthetic_completion_profiles=[profile(scope) for scope in scopes]
     )
-    assert len(host.engine._pdos_quality_completion_profiles) == 20
+    assert len(host.engine._pdos_quality_completion_profiles) == 21
     assert bootstrap._scope(invoke(host, scope=scopes[-1]).actual_configured.data) == (
         scopes[-1].tenant_id,
         scopes[-1].product_id,

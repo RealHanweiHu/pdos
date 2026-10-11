@@ -65,11 +65,13 @@ def _constraints():
         ),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         ForeignKeyConstraint(["tenant_id", "writer_id"], ["principals.tenant_id", "principals.id"]),
-        CheckConstraint("revision=1 AND issue_revision>0 AND visibility IN ('private','product')"),
+        CheckConstraint(
+            "revision=1 AND issue_revision>0 AND visibility IN ('private','category','audience')"
+        ),
         CheckConstraint("nature IN ('real','synthetic')"),
         CheckConstraint(
             "COALESCE(jsonb_typeof(required_source_read_set)='array' "
-            "AND jsonb_array_length(required_source_read_set) BETWEEN 1 AND 20,false)"
+            "AND jsonb_array_length(required_source_read_set)>0,false)"
         ),
         CheckConstraint(
             "COALESCE(basis_snapshot->>'issue_id'=issue_id::text "

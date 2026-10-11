@@ -1,0 +1,6 @@
+{
+  "change_count": 1,
+  "changes": [
+    "[('modify_nullable', None, 'change_implementation_records', 'proof_expires_at', {'existing_type': TIMESTAMP(timezone=True), 'existing_server_default': False, 'existing_comment': None}, False, True)]"
+  ]
+}

@@ -32,7 +32,13 @@ def _baseline(work, prepared):
     """Verify the precondition instead of claiming a fault against a replayed Run."""
     command = Command.model_validate(prepared)
     assert command.operation == "test.run.start"
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         assert (
             session.scalar(
                 select(TestResourceReservation.id).where(
@@ -56,7 +62,13 @@ def _baseline(work, prepared):
 
 
 def _unchanged(work, baseline):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         assert snapshot(session, work.setup.tenant) == baseline
 
 
@@ -65,16 +77,20 @@ def one_api_fault_and_lawful_retry(work, prepared, monkeypatch):
     command, baseline = _baseline(work, prepared)
     with fail_after_final_common_flush(monkeypatch, command) as trace:
         failed = work.quality.client.post(
-            "/v1/commands", json=deepcopy(prepared), headers=work.quality.headers
+            f"/v1/categories/{work.setup.category}/commands",
+            json=deepcopy(prepared),
+            headers=work.quality.headers,
         )
     assert failed.status_code == 409, failed.text
-    assert failed.json()["code"] == FAULT_CODE
+    assert failed.json()["detail"]["reason"] == FAULT_CODE
     assert trace == {"attached": True, "armed": True, "fired": True, "flushed_common_rows": 4}
     _unchanged(work, baseline)
     # Same command/idempotency/read set/token/actual event. No fresh preview,
     # renewed grant, advanced clock, extra Start or new future-window fixture.
     retried = work.quality.client.post(
-        "/v1/commands", json=deepcopy(prepared), headers=work.quality.headers
+        f"/v1/categories/{work.setup.category}/commands",
+        json=deepcopy(prepared),
+        headers=work.quality.headers,
     )
     assert retried.status_code == 200, retried.text
     return retried.json(), deepcopy(prepared), trace
@@ -90,13 +106,25 @@ def deferred_negatives_before_retry(work, prepared, monkeypatch):
     command, baseline = _baseline(work, prepared)
     with require_deferred_atom_before_common_key(monkeypatch, command) as missing:
         with pytest.raises(DBAPIError, match=MISSING_GROUP_MESSAGE):
-            with tenant_session(work.setup.engine, work.setup.tenant) as session:
+            with tenant_session(
+                work.setup.engine,
+                work.setup.tenant,
+                actor_id=work.quality.ctx.actor_id,
+                requester_id=work.quality.ctx.requester_id,
+                category_id=work.setup.category,
+            ) as session:
                 execute(session, work.quality.ctx, command)
     assert missing["fired"]
     _unchanged(work, baseline)
     with mismatch_pending_original_start_proof(monkeypatch, command) as wrong:
         with pytest.raises(DBAPIError, match=WRONG_PROOF_MESSAGE):
-            with tenant_session(work.setup.engine, work.setup.tenant) as session:
+            with tenant_session(
+                work.setup.engine,
+                work.setup.tenant,
+                actor_id=work.quality.ctx.actor_id,
+                requester_id=work.quality.ctx.requester_id,
+                category_id=work.setup.category,
+            ) as session:
                 execute(session, work.quality.ctx, command)
                 session.execute(text("SET CONSTRAINTS test_resource_dependency_required IMMEDIATE"))
     assert wrong["fired"]

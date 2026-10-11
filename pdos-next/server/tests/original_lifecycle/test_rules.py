@@ -86,7 +86,7 @@ def test_terminal_failure_grace_and_extended_retention_are_both_required():
     )
 
 
-def test_future_and_old_snapshots_do_not_authorize_lifecycle_changes():
+def test_future_facts_are_invalid_but_old_observation_time_is_not_a_material_deadline():
     clock, store, _, service, _ = fixture()
     for changed in (
         replace(store.original, created_at=clock.now() + timedelta(days=1)),
@@ -95,10 +95,7 @@ def test_future_and_old_snapshots_do_not_authorize_lifecycle_changes():
         decision = evaluate_quarantine(changed, store.refs, service.policy, clock.now())
         assert not decision.eligible and DecisionReason.FACT_TIME_INVALID in decision.reasons
     refs = replace(store.refs, observed_at=clock.now() - timedelta(hours=1))
-    assert (
-        DecisionReason.FACTS_STALE
-        in evaluate_quarantine(store.original, refs, service.policy, clock.now()).reasons
-    )
+    assert evaluate_quarantine(store.original, refs, service.policy, clock.now()).eligible
 
 
 def test_exact_object_and_tenant_product_binding_cannot_be_mixed():
@@ -175,6 +172,6 @@ def test_request_cannot_inject_permission_fields_and_naive_times_fail():
     with pytest.raises(ValueError, match="timezone"):
         replace(store.original, observed_at=store.original.observed_at.replace(tzinfo=None))
     with pytest.raises(ValueError, match="bounded"):
-        replace(service.policy, preview_ttl=timedelta(days=1))
+        replace(service.policy, effect_timeout=timedelta(days=1))
     with pytest.raises(ValueError, match="positive"):
         replace(service.policy, failed_upload_grace=timedelta(0))

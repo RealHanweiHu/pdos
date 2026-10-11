@@ -1,12 +1,14 @@
 """Direct route query guards reject ambiguity before any tenant UOW opens."""
 
 from contextlib import contextmanager
+from uuid import UUID as CategoryUUID
 from uuid import uuid4
 
 import pytest
 from fastapi import Depends, FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
+
 from pdos_next.contracts import Command
 from pdos_next.domain.change_execution import api, service
 from pdos_next.errors import DomainError
@@ -18,14 +20,14 @@ def route(monkeypatch):
     app = FastAPI()
     opened = []
     actor, tenant, product = uuid4(), uuid4(), uuid4()
-    ctx = Context(tenant, actor, actor)
+    ctx = Context(tenant, actor, actor, category_id=CategoryUUID(int=1000000))
 
     @app.exception_handler(DomainError)
     async def error_handler(request, error):
         return JSONResponse({"code": error.code}, status_code=error.status)
 
     @contextmanager
-    def session(engine, tenant_id):
+    def session(engine, tenant_id, **scope):
         opened.append(tenant_id)
         yield object()
 
@@ -39,19 +41,23 @@ def route(monkeypatch):
 @pytest.mark.parametrize("key", ["unknown", "project_id"])
 def test_unknown_get_query_is_rejected_before_uow(route, key):
     client, product, opened = route
-    response = client.get(f"/v1/products/{product}/change-execution", params={key: str(uuid4())})
-    assert response.status_code == 422 and response.json()["code"] == "INVALID_PAYLOAD"
+    response = client.get(
+        f"/v1/categories/{CategoryUUID(int=1000000)}/products/{product}/change-execution",
+        params={key: str(uuid4())},
+    )
+    assert response.status_code == 422 and response.json()["code"] == "VALIDATION_FAILED"
     assert opened == []
 
 
-@pytest.mark.parametrize("key", ["issue_id", "change_id"])
+@pytest.mark.parametrize("key", ["issue_id", "change_id", "history_cursor", "capture_cursor"])
 def test_duplicate_get_selection_is_rejected_before_uow(route, key):
     client, product, opened = route
     value = str(uuid4())
     response = client.get(
-        f"/v1/products/{product}/change-execution", params=[(key, value), (key, value)]
+        f"/v1/categories/{CategoryUUID(int=1000000)}/products/{product}/change-execution",
+        params=[(key, value), (key, value)],
     )
-    assert response.status_code == 422 and response.json()["code"] == "INVALID_PAYLOAD"
+    assert response.status_code == 422 and response.json()["code"] == "VALIDATION_FAILED"
     assert opened == []
 
 
@@ -69,12 +75,13 @@ def test_inputs_query_is_rejected_before_handler_or_uow(route):
             "content": "Synthetic",
             "visibility": "private",
         },
+        category_id=CategoryUUID(int=1000000),
     )
     response = client.post(
-        f"/v1/products/{product}/change-execution/inputs?unexpected=1",
+        f"/v1/categories/{CategoryUUID(int=1000000)}/products/{product}/change-execution/inputs?unexpected=1",
         json=command.model_dump(mode="json"),
     )
-    assert response.status_code == 422 and response.json()["code"] == "INVALID_PAYLOAD"
+    assert response.status_code == 422 and response.json()["code"] == "VALIDATION_FAILED"
     assert opened == []
 
 
@@ -82,6 +89,9 @@ def test_inputs_query_is_rejected_before_handler_or_uow(route):
 def test_single_explicit_selection_reaches_original_reader(route, key):
     client, product, opened = route
     selection = str(uuid4())
-    response = client.get(f"/v1/products/{product}/change-execution", params={key: selection})
+    response = client.get(
+        f"/v1/categories/{CategoryUUID(int=1000000)}/products/{product}/change-execution",
+        params={key: selection},
+    )
     assert response.status_code == 200 and response.json()["selection"][key] == selection
     assert len(opened) == 1

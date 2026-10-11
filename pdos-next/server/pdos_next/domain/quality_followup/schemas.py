@@ -33,12 +33,12 @@ class CompletionTime(EventTime):
 
 
 class Completion(Containment):
-    evidence: tuple[ExactSource, ...] = Field(min_length=1, max_length=20)
+    evidence: tuple[ExactSource, ...] = Field(min_length=1)
     at: CompletionTime
 
 
 class RootCausePayload(IssueTarget, RootCauseDecide):
-    sources: tuple[ExactSource, ...] = Field(min_length=1, max_length=20)
+    sources: tuple[ExactSource, ...] = Field(min_length=1)
     approval_token: Token | None = None
 
     @field_validator("sources")
@@ -51,7 +51,7 @@ class RootCausePayload(IssueTarget, RootCauseDecide):
 
 
 class ActionsCompletePayload(IssueTarget, ActionsComplete):
-    completions: tuple[Completion, ...] = Field(min_length=1, max_length=1000)
+    completions: tuple[Completion, ...] = Field(min_length=1)
     confirmation_token: Token | None = None
 
     @field_validator("completions")
@@ -127,10 +127,11 @@ class CompletionAssessment(DTO):
     classification: Literal["investigation", "formal_change", "unknown"]
     nature: Literal["real", "synthetic"]
     reason_codes: tuple[str, ...] = ()
-    sources: tuple[ExactSource, ...] = Field(min_length=1, max_length=20)
+    sources: tuple[ExactSource, ...] = Field(min_length=1)
     owner_proofs: tuple[OwnerImplementationProof, ...] = ()
-    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
-    valid_until: AwareDatetime
+    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1)
+    valid_until: AwareDatetime | None = None
+    time_constraints: tuple[AwareDatetime, ...] = ()
     proof_sha256: Sha256
 
 

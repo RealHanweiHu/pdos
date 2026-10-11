@@ -114,7 +114,7 @@ def test_one_material_load_exact_review_and_final_fresh_owners_before_actual_sav
 
     work.clock[0] += timedelta(seconds=1)
     row, subject, visibility = apply(work, prepared)
-    assert (subject, visibility) == ("capa_remediation_link", "product")
+    assert (subject, visibility) == ("capa_remediation_link", "category")
     assert work.counts == {"load": 1, "new_write": 1, "refresh": 3, "proof": 1}
     assert row.created_at == NOW + timedelta(seconds=1)
     assert row.input_snapshot["shared_proof"] == {"id": str(proof.id), "tier": "T1"}
@@ -150,7 +150,7 @@ def test_no_actual_consumed_marker_blocks_and_failed_phase_cannot_be_reused(work
     prepared, _ = prepare(work)
     with pytest.raises(DomainError) as rejected:
         apply(work, prepared)
-    assert rejected.value.code == "NAMED_APPROVAL_REQUIRED"
+    assert rejected.value.reason == "NAMED_APPROVAL_REQUIRED"
     assert not work.s.new
     with pytest.raises(DomainError, match="失败后也不能"):
         apply(work, prepared)
@@ -167,7 +167,7 @@ def test_callback_uuid_or_boolean_never_replaces_actual_same_uow_consumption(wor
     consume(work, review)
     with pytest.raises(DomainError) as rejected:
         apply(work, prepared)
-    assert rejected.value.code in {"INTEGRATION_REQUIRED", "NAMED_APPROVAL_REQUIRED"}
+    assert rejected.value.reason in {"INTEGRATION_REQUIRED", "NAMED_APPROVAL_REQUIRED"}
     assert not work.s.new
 
 
@@ -178,7 +178,7 @@ def test_real_marker_different_material_review_is_not_prepared_write_review(work
     consume(work, review, snapshot=changed)
     with pytest.raises(DomainError) as rejected:
         apply(work, prepared)
-    assert rejected.value.code == "CONFIRMATION_SCOPE_CHANGED"
+    assert rejected.value.reason == "CONFIRMATION_SCOPE_CHANGED"
 
 
 @pytest.mark.parametrize(
@@ -275,7 +275,7 @@ def test_expiry_after_final_owner_io_rejects_instead_of_backdating_save(
     consume(work, review)
     with pytest.raises(DomainError) as rejected:
         apply(work, prepared)
-    assert rejected.value.code in {"SOURCE_STALE", "NAMED_APPROVAL_REQUIRED"}
+    assert rejected.value.reason in {"SOURCE_STALE", "NAMED_APPROVAL_REQUIRED"}
     assert not work.s.new
 
 
@@ -290,7 +290,7 @@ def test_consumed_proof_expiry_during_last_database_read_is_finally_rechecked(wo
     work.scalar_hook = after_actual_read
     with pytest.raises(DomainError) as rejected:
         apply(work, prepared)
-    assert rejected.value.code == "NAMED_APPROVAL_REQUIRED"
+    assert rejected.value.reason == "NAMED_APPROVAL_REQUIRED"
     assert not work.s.new
 
 
@@ -409,7 +409,7 @@ def test_wrong_phase_type_never_becomes_a_write_proof(work):
     for value in (None, {"accepted": True}, uuid4(), old):
         with pytest.raises(DomainError) as rejected:
             apply(work, value)
-        assert rejected.value.code == "INTEGRATION_REQUIRED"
+        assert rejected.value.reason == "INTEGRATION_REQUIRED"
 
 
 def test_write_phase_cannot_be_constructed_copied_or_serialized(work):
@@ -427,7 +427,7 @@ def test_original_link_uses_existing_current_guarded_common_replay_not_new_mater
     work.bound = replace(work.bound, original=RemediationLinkRecord(id=uuid4()))
     with pytest.raises(DomainError) as rejected:
         prepare(work)
-    assert rejected.value.code == "REPLAY_REQUIRED"
+    assert rejected.value.reason == "REPLAY_REQUIRED"
     assert work.counts["new_write"] == 0
 
 
@@ -450,4 +450,4 @@ def test_missing_token_or_actual_loader_never_has_a_positive_default(work, monke
     monkeypatch.setattr(phase.link, "_load", missing)
     with pytest.raises(DomainError) as rejected:
         prepare(work)
-    assert rejected.value.code == "INTEGRATION_REQUIRED"
+    assert rejected.value.reason == "INTEGRATION_REQUIRED"

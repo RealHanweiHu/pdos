@@ -14,7 +14,7 @@ export async function runMpRequest(
   onStage: (next: MpPending) => void,
   isActive: () => boolean,
 ): Promise<MpRequestResult | null> {
-  if (!["inputs", "preview", "execute"].includes(waiting.stage) || !validMpCommand(waiting.command) || waiting.command.product_id !== productId || (waiting.stage !== "execute" && waiting.command.payload.confirmation_token !== undefined) || (waiting.stage === "execute" && !waiting.command.payload.confirmation_token)) throw new Error("原命令阶段或固定产品不一致，不能继续办理。");
+  if (!["inputs", "preview", "execute"].includes(waiting.stage) || !validMpCommand(waiting.command) || waiting.command.product_id !== productId || (waiting.stage !== "execute" && waiting.command.payload.confirmation_token !== undefined) || (waiting.stage === "execute" && !waiting.command.payload.confirmation_token)) throw new Error("原命令阶段或固定型号不一致，不能继续办理。");
   if (!isActive()) return null;
   let stage = waiting;
   if (stage.stage === "inputs") {

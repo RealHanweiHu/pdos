@@ -56,7 +56,7 @@ class SourceDelta(DTO):
     policy: tuple[SourceRef, ...]
     professional: tuple[SourceRef, ...]
     approval: tuple[SourceRef, ...]
-    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
+    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1)
 
     def sources(self):
         return canonical_sources(
@@ -95,7 +95,7 @@ class ReceiptEvidence(DTO):
     subject_type: Literal["quality_issue"]
     subject_id: UUID  # next immutable version UUID
     subject_revision: Revision
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     request_digest: Sha256
     intent_digest: Sha256  # common intent; never equate it to domain intent
     run_id: None
@@ -501,7 +501,7 @@ class IssueLineageProof(DTO):
     schema_version: Literal["capa-lineage-proof-v1"] = "capa-lineage-proof-v1"
     anchor_sha256: Sha256
     current_ref: VersionRef
-    step_proof_sha256s: tuple[Sha256, ...] = Field(max_length=2)
+    step_proof_sha256s: tuple[Sha256, ...] = Field()
     material_sha256: Sha256
     stable_failure_material_sha256: Sha256
     origin_source_basis_sha256: Sha256

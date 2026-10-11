@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="59.794" timestamp="2026-10-09T13:26:20.705723-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tools.checkpoints.b8_recovery" name="test_final_restore_keeps_configuration_to_handoff_and_started_run[launch_work0]" time="59.289"><failure message="AssertionError: assert 's0_0726' == 's0_0725'&#10;  &#10;  - s0_0725&#10;  ?       ^&#10;  + s0_0726&#10;  ?       ^">../tools/checkpoints/b8_recovery.py:53: in test_final_restore_keeps_configuration_to_handoff_and_started_run
+    assert evidence["head"] == "s0_0725"
+E   AssertionError: assert 's0_0726' == 's0_0725'
+E     
+E     - s0_0725
+E     ?       ^
+E     + s0_0726
+E     ?       ^</failure></testcase></testsuite></testsuites>

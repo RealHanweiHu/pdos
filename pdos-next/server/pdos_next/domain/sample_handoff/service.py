@@ -12,6 +12,8 @@ from uuid import NAMESPACE_URL, UUID, uuid5
 
 from sqlalchemy import select
 
+from pdos_next.request_proof import snapshot_get, snapshot_scalar
+
 # Bootstrap the host's registered metadata before importing individual child models.
 # isort: off
 from pdos_next.models import Artifact, OriginalSecurity, now
@@ -20,7 +22,7 @@ from pdos_next.models import Artifact, OriginalSecurity, now
 from pdos_next.domain.build_execution.models import SampleUnit
 from pdos_next.domain.build_execution.service import _lot_context, sample_view
 from pdos_next.domain.build_start.models import BuildStart
-from pdos_next.domain.build_start.service import _row as execution_row
+from pdos_next.domain.build_start.service import _validated_row as execution_row
 from pdos_next.domain.build_start.service import execution_projection
 from pdos_next.domain.configurations.service import _merge_reads
 from pdos_next.domain.professional_authority.service import assess, recheck_snapshot
@@ -31,7 +33,7 @@ from pdos_next.domain.supply_execution.service import (
     _sources,
 )
 from pdos_next.errors import DomainError
-from pdos_next.service import Context, digest
+from pdos_next.service import digest
 
 from .models import SampleReadinessCurrent, SampleReadinessFact
 from .rules import availability, require_manufacturing, validate_event, validate_time
@@ -64,7 +66,7 @@ def semantic(payload):
 
 
 def _visible(row, ctx):
-    return row.visibility == "product" or row.owner_id == ctx.requester_id
+    return row.visibility in {"category", "audience"} or row.owner_id == ctx.requester_id
 
 
 class ReadContext:
@@ -80,7 +82,14 @@ class ReadContext:
 
     @staticmethod
     def _scope(ctx, product_id):
-        return (ctx.tenant_id, product_id, ctx.actor_id, ctx.requester_id, ctx.run_id)
+        return (
+            ctx.tenant_id,
+            product_id,
+            ctx.actor_id,
+            ctx.requester_id,
+            ctx.run_id,
+            ctx.agent_run_id,
+        )
 
     def check(self, s, ctx, product_id, *, write=False):
         if (
@@ -123,81 +132,50 @@ class ReadContext:
             *values,
         )
 
-    @staticmethod
-    def _deadline(value, at):
-        boundaries = []
-        expired = False
-
-        def visit(item):
-            nonlocal expired
-            if isinstance(item, dict):
-                for key, child in item.items():
-                    if key in {
-                        "valid_from",
-                        "valid_until",
-                        "expires_at",
-                        "window_start",
-                        "window_end",
-                        "start",
-                        "finish",
-                    } and isinstance(child, str):
-                        try:
-                            bound = datetime.fromisoformat(child.replace("Z", "+00:00"))
-                            if bound.tzinfo:
-                                if (
-                                    key in {"valid_until", "expires_at", "window_end", "finish"}
-                                    and bound <= at
-                                ):
-                                    expired = True
-                                elif bound > at:
-                                    boundaries.append(bound)
-                        except ValueError:
-                            pass
-                    visit(child)
-            elif isinstance(item, (list, tuple)):
-                for child in item:
-                    visit(child)
-
-        visit(value)
-        return at if expired or not boundaries else min(boundaries)
-
     def projection(self, s, ctx, product_id, start, build_id):
         self.check(s, ctx, product_id)
         key = (build_id, start.id, start.snapshot_sha256, start.owner_id)
-        stamp, at = self._runtime(s), now()
+        stamp = self._runtime(s)
         saved = self.projections.get(key)
-        if saved and saved[0] == stamp and at < saved[1]:
-            if isinstance(saved[2], tuple):
-                raise DomainError(*saved[2])
-            return deepcopy(saved[2])
-        maker = Context(ctx.tenant_id, start.owner_id, start.owner_id)
+        if saved and saved[0] == stamp:
+            if isinstance(saved[1], tuple):
+                raise DomainError(*saved[1])
+            return deepcopy(saved[1])
         try:
-            value = execution_projection(s, maker, product_id, build_id)
+            value = execution_projection(s, ctx, product_id, build_id)
         except DomainError as error:
             # Reusing a failure cannot grant access; its memo lives only in this GET.
-            from datetime import timedelta
-
-            self.projections[key] = (
-                stamp,
-                at + timedelta(seconds=1),
-                (error.code, error.message, error.status),
-            )
+            self.projections[key] = (stamp, (error.reason, error.message, error.status))
             raise
-        self.projections[key] = (stamp, self._deadline(value, now()), deepcopy(value))
+        self.projections[key] = (stamp, deepcopy(value))
         return value
+
+
+def read_context_for(s, ctx, product_id):
+    """One explicit read-only snapshot shares its physical projection owners."""
+    if not getattr(s, "info", {}).get("read_snapshot"):
+        return None
+    from pdos_next.request_proof import request_proof
+
+    proof = request_proof(s)
+    key = ("physical-read-context", ReadContext._scope(ctx, product_id))
+    if key not in proof.read_rows:
+        proof.read_rows[key] = ReadContext(s, ctx, product_id)
+    result = proof.read_rows[key]
+    result.check(s, ctx, product_id)
+    return result
 
 
 def _chain(s, ctx, product_id, sample_id, *, write=False):
     _human(s, ctx, product_id, write=write)
-    identity = s.scalar(
-        select(SampleUnit).where(
-            SampleUnit.tenant_id == ctx.tenant_id,
-            SampleUnit.product_id == product_id,
-            SampleUnit.id == sample_id,
-        )
-    )
-    if identity is None or not _visible(identity, ctx):
-        raise DomainError("FORBIDDEN_SCOPE", "样件不在当前可见产品范围。", 403)
+    identity = snapshot_get(s, SampleUnit, sample_id, scope_id=product_id)
+    if (
+        identity is None
+        or identity.tenant_id != ctx.tenant_id
+        or identity.product_id != product_id
+        or not _visible(identity, ctx)
+    ):
+        raise DomainError("FORBIDDEN_SCOPE", "样件不在当前可见型号范围。", 403)
     # Product is the common serialization gate. Immutable Build/Sample rows have
     # no UPDATE privilege and must never be SELECT FOR UPDATE'd as mutable rows.
     # One complete existing authority chain replaces three identical getter passes.
@@ -287,24 +265,28 @@ def _physical(chain):
 
 
 def _start_context(s, ctx, product_id, chain, *, read_context=None, retained_at=None):
+    if read_context is None and retained_at is None:
+        read_context = read_context_for(s, ctx, product_id)
     build = chain["build"]
-    start = s.scalar(
+    start = snapshot_scalar(
+        s,
+        (BuildStart, "by-build", product_id, build.id),
         select(BuildStart).where(
             BuildStart.tenant_id == ctx.tenant_id,
             BuildStart.product_id == product_id,
             BuildStart.build_id == build.id,
-        )
+        ),
+        scope_id=product_id,
     )
     if start is None:
         raise DomainError("BUILD_NOT_STARTED", "该轮次尚无真实开工事实，不能记录可交样。")
     if not _visible(start, ctx):
         raise DomainError("SOURCE_UNAVAILABLE", "当前开工事实不在可见范围。", 403)
-    start = execution_row(s, ctx, product_id, BuildStart, start.id)
+    start = execution_row(s, ctx, product_id, start)
     # The original Start signer's authority determines execution qualification.
     # A quality reader does not have to impersonate a current manufacturing actor.
     if read_context is None:
-        maker = Context(ctx.tenant_id, start.owner_id, start.owner_id)
-        projection = execution_projection(s, maker, product_id, build.id, retained_at=retained_at)
+        projection = execution_projection(s, ctx, product_id, build.id, retained_at=retained_at)
     else:
         projection = read_context.projection(s, ctx, product_id, start, build.id)
     if (
@@ -364,16 +346,318 @@ def _evidence(s, ctx, product_id, reads, references=()):
     return {"refs": source_refs, "security": security}, private
 
 
+def preload_current(s, ctx, product_id, sample_ids):
+    """Read only the selected samples' pointers/facts in their held RR scope."""
+    if not s.info.get("read_snapshot"):
+        return
+    from pdos_next.request_proof import batch_read, request_proof
+
+    proof = request_proof(s)
+    sample_ids = set(sample_ids)
+    missing = {
+        key for key in sample_ids if ("readiness-current", product_id, key) not in proof.read_rows
+    }
+    if not missing:
+        return
+    rows = s.scalars(
+        select(SampleReadinessCurrent).where(
+            SampleReadinessCurrent.tenant_id == ctx.tenant_id,
+            SampleReadinessCurrent.product_id == product_id,
+            SampleReadinessCurrent.sample_id.in_(missing),
+        )
+    ).all()
+    pointers = {row.sample_id: row for row in rows}
+    batch_read(s, SampleReadinessFact, {row.readiness_id for row in rows})
+    proof.read_rows.update(
+        {("readiness-current", product_id, key): pointers.get(key) for key in missing}
+    )
+
+
+def _pointer_pair_scope(s, ctx, product_id, current_model, fact_model):
+    """A fresh pair uses this real single-connection UOW, never a borrowed marker."""
+    from sqlalchemy.engine import Connection, Engine
+    from sqlalchemy.orm import Session, SessionTransaction
+
+    from pdos_next.database import require_context
+    from pdos_next.models import Product
+    from pdos_next.request_proof import request_proof
+
+    if (
+        not isinstance(s, Session)
+        or s.is_active is not True
+        or not s.in_transaction()
+        or s.new
+        or s.dirty
+        or s.deleted
+    ):
+        return None
+    scope = (ctx.tenant_id, ctx.actor_id, ctx.requester_id, ctx.category_id)
+    if any(not isinstance(value, UUID) for value in scope):
+        return None
+    require_context(s, ctx)
+    if s.info.get("scope") != scope:
+        return None
+    proof = request_proof(s)
+    rr = s.info.get("read_snapshot") is True
+    if not rr and product_id not in proof.scope_locks:
+        return None
+    chain, seen = [], set()
+    node = s._transaction
+    while node is not None:
+        if (
+            not isinstance(node, SessionTransaction)
+            or node.session is not s
+            or node.is_active is not True
+            or id(node) in seen
+            or len(chain) >= 128
+        ):
+            return None
+        seen.add(id(node))
+        chain.append(node)
+        node = node.parent
+    if not chain or chain[-1] is not proof.transaction:
+        return None
+    if s.get_nested_transaction() is not next((node for node in chain if node.nested), None):
+        return None
+    try:
+        bind = s.get_bind()
+        if not isinstance(bind, (Engine, Connection)) or any(
+            s.get_bind(mapper=model) is not bind for model in (Product, current_model, fact_model)
+        ):
+            return None
+    except Exception:
+        return None
+    # Do not call s.connection(): that could enlist a changed bind and borrow
+    # an earlier Product marker. Inspect the already enlisted root only.
+    enlisted = getattr(proof.transaction, "_connections", None)
+    if not isinstance(enlisted, dict) or bind not in enlisted:
+        return None
+    entry = enlisted[bind]
+    if not isinstance(entry, tuple) or len(entry) != 4:
+        return None
+    connection, transaction = entry[:2]
+    if (
+        not isinstance(connection, Connection)
+        or connection.closed
+        or connection.invalidated
+        or connection.dialect.name != "postgresql"
+        or getattr(transaction, "is_active", False) is not True
+        or not connection.in_transaction()
+        or connection.get_transaction() is not transaction
+        or set(enlisted) != {connection, connection.engine}
+        or any(
+            not isinstance(value, tuple)
+            or len(value) != 4
+            or value[0] is not connection
+            or value[1] is not transaction
+            for value in enlisted.values()
+        )
+        or (isinstance(bind, Engine) and connection.engine is not bind)
+        or (isinstance(bind, Connection) and connection is not bind)
+        or (rr and connection.get_execution_options().get("isolation_level") != "REPEATABLE READ")
+    ):
+        return None
+    return (
+        digest(vars(ctx)),
+        scope,
+        tuple(chain),
+        proof.transaction,
+        proof.mutation_epoch,
+        bind,
+        connection,
+        transaction,
+        rr,
+    )
+
+
+def _fresh_pointer_pair(
+    s,
+    ctx,
+    product_id,
+    current_model,
+    fact_model,
+    query,
+    pointer_key,
+    pointer_column,
+    logical_scope,
+    *,
+    read_key=None,
+):
+    """One uncached adjacent Current/id-only Fact read; no new packet cache.
+
+    LATERAL/OFFSET 0 keeps the Fact lookup dependent on an actual Current row.
+    Canonical SELECT grants are a prerequisite: parse/ACL checks cannot be
+    conditionally skipped. Runtime RLS/error order still needs PG validation.
+    """
+    from sqlalchemy import func, inspect, true
+    from sqlalchemy.orm import aliased
+
+    from pdos_next.request_proof import request_proof
+
+    token = _pointer_pair_scope(s, ctx, product_id, current_model, fact_model)
+    if token is None:
+        return None
+    proof = request_proof(s)
+    scalar_key = ("scope-scalar", product_id, pointer_key)
+    if scalar_key in proof.scalar_rows or (read_key is not None and read_key in proof.read_rows):
+        return None
+    rr = token[-1]
+    for key, saved in proof.scalar_rows.items():
+        if (
+            isinstance(key, tuple)
+            and len(key) == 3
+            and key[0] == "scope-scalar"
+            and isinstance(key[2], tuple)
+            and key[2]
+            and key[2][0] is fact_model
+        ):
+            # Writer snapshot_get may reuse any original Fact key. Its id is
+            # not known until Current is read: conservatively keep that path.
+            if not rr or saved[1] is None:
+                return None
+            state = inspect(saved[1])
+            if (
+                not state.persistent
+                or state.session is not s
+                or state.expired
+                or state.unloaded
+                or s.identity_map.get(state.key) is not saved[1]
+            ):
+                return None
+    if rr:
+        for value in s.identity_map.values():
+            state = inspect(value)
+            if state.mapper.class_ is fact_model and (state.expired or state.unloaded):
+                return None
+            if state.mapper.class_ is current_model:
+                # The original Current SELECT refreshes a loaded pointer. A
+                # fresh pair must not turn that into an identity-map hit.
+                if any(name not in state.dict for name in logical_scope) or all(
+                    state.dict[name] == expected for name, expected in logical_scope.items()
+                ):
+                    return None
+    current_table, fact_table = current_model.__table__, fact_model.__table__
+    mapped_current = {
+        column for prop in current_model.__mapper__.column_attrs for column in prop.columns
+    }
+    mapped_fact = {column for prop in fact_model.__mapper__.column_attrs for column in prop.columns}
+    fixed = (
+        select(fact_table)
+        .where(fact_table.c.id == getattr(current_model, pointer_column))
+        .correlate(current_table)
+        .offset(0)
+        .lateral("owner_fixed_fact")
+    )
+    fact = aliased(fact_model, fixed)
+    # Keep DB-only columns in the SQL/RLS read without inventing mapped fields.
+    extra = [column for column in current_table.c if column not in mapped_current]
+    extra += [fixed.c[column.key] for column in fact_table.c if column not in mapped_fact]
+    gucs = [
+        func.current_setting(name, True)
+        for name in ("pdos.tenant_id", "pdos.actor_id", "pdos.requester_id", "pdos.category_id")
+    ]
+    statement = (
+        select(
+            current_model,
+            fact,
+            *extra,
+            *gucs,
+            func.current_setting("transaction_isolation", True),
+            func.current_setting("transaction_read_only", True),
+        )
+        .select_from(current_table)
+        .outerjoin(fixed, true())
+        .where(query.whereclause)
+        .execution_options(populate_existing=not rr, autoflush=False)
+    )
+    with s.no_autoflush:
+        rows = s.execute(statement).all()
+    if (
+        token != _pointer_pair_scope(s, ctx, product_id, current_model, fact_model)
+        or request_proof(s) is not proof
+    ):
+        raise DomainError("SOURCE_STALE", "实际当前事实读取的事务范围已变化。")
+    if not rows:
+        pointer, row = None, None
+    elif len(rows) == 1:
+        value = rows[0]
+        pointer, row = value[:2]
+        try:
+            actual_scope = tuple(UUID(v) for v in value[-6:-2])
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise DomainError("FORBIDDEN_SCOPE", "请求身份与数据库范围不符。", 403) from exc
+        if actual_scope != token[1]:
+            raise DomainError("FORBIDDEN_SCOPE", "请求身份与数据库范围不符。", 403)
+        if rr and (value[-2] != "repeatable read" or value[-1] != "on"):
+            raise DomainError("INVALID_READ_CONTEXT", "读取快照的实际事务模式不符。")
+    else:
+        # No ordered retry may reuse ORM rows after a failed pair read.
+        raise DomainError("SOURCE_STALE", "实际当前事实读取返回了不唯一的范围。")
+    # Only the original raw keys are populated after all UOW checks. No
+    # authority/qualification/source/terminal result is retained here.
+    proof.scalar_rows[scalar_key] = (False, pointer)
+    if read_key is not None:
+        proof.read_rows[read_key] = pointer
+    if pointer is not None:
+        fact_key = (
+            "scope-scalar",
+            product_id,
+            (fact_model, product_id, getattr(pointer, pointer_column)),
+        )
+        proof.scalar_rows.setdefault(fact_key, (False, row))
+    return pointer, row
+
+
 def _current(s, ctx, product_id, sample_id, *, lock=False):
     query = select(SampleReadinessCurrent).where(
         SampleReadinessCurrent.tenant_id == ctx.tenant_id,
         SampleReadinessCurrent.product_id == product_id,
         SampleReadinessCurrent.sample_id == sample_id,
     )
-    pointer = s.scalar(query.with_for_update() if lock else query)
-    if pointer is None:
-        return None, None
-    row = s.get(SampleReadinessFact, pointer.readiness_id)
+    pair = (
+        None
+        if lock
+        else _fresh_pointer_pair(
+            s,
+            ctx,
+            product_id,
+            SampleReadinessCurrent,
+            SampleReadinessFact,
+            query,
+            (SampleReadinessCurrent, product_id, sample_id),
+            "readiness_id",
+            {"tenant_id": ctx.tenant_id, "product_id": product_id, "sample_id": sample_id},
+            read_key=("readiness-current", product_id, sample_id)
+            if s.info.get("read_snapshot")
+            else None,
+        )
+    )
+    if pair is None:
+        if s.info.get("read_snapshot") and not lock:
+            from pdos_next.request_proof import request_proof
+
+            proof = request_proof(s)
+            key = ("readiness-current", product_id, sample_id)
+            if key not in proof.read_rows:
+                proof.read_rows[key] = snapshot_scalar(
+                    s, (SampleReadinessCurrent, product_id, sample_id), query, scope_id=product_id
+                )
+            pointer = proof.read_rows[key]
+        else:
+            pointer = snapshot_scalar(
+                s,
+                (SampleReadinessCurrent, product_id, sample_id),
+                query,
+                lock=lock,
+                scope_id=product_id,
+            )
+        if pointer is None:
+            return None, None
+        row = snapshot_get(s, SampleReadinessFact, pointer.readiness_id, scope_id=product_id)
+    else:
+        pointer, row = pair
+        if pointer is None:
+            return None, None
     if row is None or (
         row.tenant_id,
         row.product_id,
@@ -507,8 +791,8 @@ def _inputs(s, ctx, command, product, payload, at):
     try:
         basis, private = _evidence(s, ctx, product.id, reads, references)
     except DomainError as error:
-        if error.code == "MISSING_REQUIRED_EVIDENCE":
-            raise DomainError(error.code, "实物依据必须在指定原文行精确定位。", 422) from None
+        if error.reason == "MISSING_REQUIRED_EVIDENCE":
+            raise DomainError(error.reason, "实物依据必须在指定原文行精确定位。", 422) from None
         raise
     source = s.get(Artifact, payload.event_source.artifact_id)
     lines = source.content.splitlines()
@@ -532,9 +816,9 @@ def _inputs(s, ctx, command, product, payload, at):
     visibility = (
         "private"
         if private
-        or any(chain[key].visibility == "private" for key in ("sample", "lot", "actual", "build"))
-        or (previous and previous.visibility == "private")
-        else "product"
+        or any(chain[key].visibility != "category" for key in ("sample", "lot", "actual", "build"))
+        or (previous and previous.visibility != "category")
+        else "category"
     )
     return {
         "chain": chain,
@@ -797,7 +1081,7 @@ def _inspect(
         pointer={"id": str(pointer.id), "revision": pointer.readiness_revision},
         fact={"id": str(row.id), "revision": row.revision, "sha256": row.snapshot_sha256},
     )
-    current, deadlines = True, []
+    current = True
     try:
         expected = deepcopy(row.fixed_snapshot)
         expected.pop("start", None)
@@ -808,10 +1092,9 @@ def _inspect(
         objective["sources"] = basis
         if basis != row.source_basis:
             raise DomainError("SAMPLE_SOURCE_CHANGED", "实物依据的固定版本或安全epoch变化。")
-        maker = Context(ctx.tenant_id, row.owner_id, row.owner_id)
         proof = recheck_snapshot(
             s,
-            maker,
+            ctx,
             product_id,
             row.project_id,
             row.authority_snapshot,
@@ -824,8 +1107,6 @@ def _inspect(
         if not proof["current"]:
             raise DomainError("SAMPLE_AUTHORITY_CHANGED", "实物签发人的当前制造资格或授权已变化。")
         require_manufacturing(proof["assessment"])
-        if proof["assessment"]["valid_until"]:
-            deadlines.append(datetime.fromisoformat(proof["assessment"]["valid_until"]))
         if row.status == "ready":
             start, projection = _start_context(
                 s, ctx, product_id, chain, read_context=read_context, retained_at=retained_at
@@ -861,10 +1142,10 @@ def _inspect(
             base["reason_codes"].append("SAMPLE_PURPOSE_NOT_READY")
     except DomainError as error:
         current = False
-        base["reason_codes"].append(error.code)
-        objective["invalid"] = error.code
+        base["reason_codes"].append(error.reason)
+        objective["invalid"] = error.reason
     base["availability"] = availability(row.status, row.purpose, purpose, current=current)
-    base["valid_until"] = min(deadlines).isoformat() if deadlines else None
+    base["valid_until"] = None
     base["facts_revision"] = digest(objective)
     return base
 
@@ -934,7 +1215,7 @@ def _caps(s, ctx, product_id, chain, purpose, current, *, read_context=None):
                 current.revision,
             )
         except DomainError as error:
-            blockers.append({"code": error.code, "detail": "当前实物事实不在可见范围。"})
+            blockers.append({"code": error.reason, "detail": "当前实物事实不在可见范围。"})
             return cap
     try:
         from pdos_next.service import require_access
@@ -952,7 +1233,7 @@ def _caps(s, ctx, product_id, chain, purpose, current, *, read_context=None):
         )
         cap["ready"] = True
     except DomainError as error:
-        blockers.append({"code": error.code, "detail": error.message})
+        blockers.append({"code": error.reason, "detail": error.message})
     return cap
 
 

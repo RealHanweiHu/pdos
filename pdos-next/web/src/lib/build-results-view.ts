@@ -1,3 +1,4 @@
+import { proofClockCurrent } from "./proof-clock";
 import { sourceLines, type DefinitionReference, type DefinitionSource } from "./product-view";
 import type { SourceRead } from "./project-plan-view";
 import type { Build } from "./build-preparation-view";
@@ -20,7 +21,7 @@ export function resultsReference(source: DefinitionSource, line: number, quote: 
   if (source.status !== "active" || !Number.isSafeInteger(line) || line < 1 || !quote.trim() || quote.length > 4000 || !sourceLines(source.content)[line - 1]?.includes(quote)) throw new Error("请选择当前有效原文行，并保留可精确核对的摘录。");
   return { artifact_id: source.id, expected_revision: source.revision, line, quote };
 }
-export const resultsRefs = (value: unknown): value is DefinitionReference[] => Array.isArray(value) && value.length <= 20 && value.every(validHandoffRef);
+export const resultsRefs = (value: unknown): value is DefinitionReference[] => Array.isArray(value) && value.every(validHandoffRef);
 export const resultsRefReads = (refs: DefinitionReference[]): SourceRead[] => resultsReads(refs.map(ref => ({ artifact_id: ref.artifact_id, expected_revision: ref.expected_revision })));
 export const resultsCapability = (value: unknown, key: string): boolean => resultsRecord(value) && value[key] === true;
 export const resultsCapabilityKeys: Record<ResultsOperation, string> = { "test.results.import": "results_import", "test.result.compute": "result_compute", "test.run.review": "run_review", "test.disposition.decide": "disposition_decide" };
@@ -40,9 +41,9 @@ export async function resultsEvent(draft: ResultsEventDraft, now = Date.now()): 
   return { occurred_at: occurred, original_timezone: handoffZone(draft.timezone), source: await handoffEventSource(draft.reference), effective_at: null };
 }
 export type ResultsCommand = { command_id: string; idempotency_key: string; product_id: string; expected_revision: number; operation: ResultsOperation; payload: Record<string, unknown>; source_read_set: SourceRead[] };
-export type ResultsPreview = { command: ResultsCommand; expires_at: string; write_tier?: "T1" | "T2"; confirmation_token?: string; approval_token?: string; review: Record<string, unknown> & { before: unknown; after: unknown; effect: string } };
+export type ResultsPreview = { command: ResultsCommand; expires_at: string | null; write_tier?: "T1" | "T2"; confirmation_token?: string; approval_token?: string; review: Record<string, unknown> & { before: unknown; after: unknown; effect: string } };
 export function makeResultsCommand(product: { id: string; revision: number }, operation: ResultsOperation, payload: Record<string, unknown>, reads: SourceRead[], id: string, key: string): ResultsCommand {
-  if (!product.id || !resultsRevision(product.revision) || !resultsOperations.includes(operation) || !id || !key) throw new Error("产品、固定版本或原请求标识尚不完整。");
+  if (!product.id || !resultsRevision(product.revision) || !resultsOperations.includes(operation) || !id || !key) throw new Error("型号、固定版本或原请求标识尚不完整。");
   return { command_id: id, idempotency_key: key, product_id: product.id, expected_revision: product.revision, operation, payload, source_read_set: resultsReads(reads) };
 }
 function normalizedPayload(value: unknown, field = ""): unknown {
@@ -52,7 +53,7 @@ function normalizedPayload(value: unknown, field = ""): unknown {
 }
 function intentPayload(value: Record<string, unknown>): unknown { const { confirmation_token: _confirmation, approval_token: _approval, ...intent } = value; void _confirmation; void _approval; return normalizedPayload(intent); }
 export function validResultsPreview(value: unknown, original: ResultsCommand, now = Date.now()): value is ResultsPreview {
-  if (resultsTier(original.operation) === "T0" || !resultsRecord(value) || !resultsRecord(value.command) || !resultsRecord(value.command.payload) || !resultsRecord(value.review) || !("before" in value.review) || !("after" in value.review) || typeof value.review.effect !== "string" || !value.review.effect || !handoffTime(value.expires_at) || Date.parse(String(value.expires_at)) <= now) return false;
+  if (resultsTier(original.operation) === "T0" || !resultsRecord(value) || !resultsRecord(value.command) || !resultsRecord(value.command.payload) || !resultsRecord(value.review) || !("before" in value.review) || !("after" in value.review) || typeof value.review.effect !== "string" || !value.review.effect || !proofClockCurrent(resultsTier(original.operation), value.expires_at, now)) return false;
   const command = value.command, payload = command.payload as Record<string, unknown>, tier = resultsTier(original.operation), token = tier === "T2" ? "approval_token" : "confirmation_token";
   if (!(["command_id", "idempotency_key", "product_id", "expected_revision", "operation"].every(key => command[key] === original[key as keyof ResultsCommand])
     && typeof payload[token] === "string" && payload[token].length >= 20
@@ -93,7 +94,7 @@ export function resultsPairs(run: ResultsRun): ResultsPair[] {
 }
 export type ObservationSelection = { line: number; sample_id: string; item_id: string };
 export type ResultsCaptureInput = { capture_key: string; expected_product_revision: number; request_id: string; expected_request_revision: number; run_id: string; expected_run_revision: number; report_artifact_id: string; expected_report_revision: number; selections: ObservationSelection[]; reason: string };
-export type ResultsCapture = ResultsRow & { request_id: string; run_id: string; observations: Record<string, unknown>[]; sources: DefinitionReference[]; results_import_payload: Record<string, unknown>; expired?: boolean; expires_at?: string; input_snapshot?: ResultsCaptureInput };
+export type ResultsCapture = ResultsRow & { request_id: string; run_id: string; observations: Record<string, unknown>[]; sources: DefinitionReference[]; results_import_payload: Record<string, unknown>; input_snapshot?: ResultsCaptureInput };
 export type PreparedResults = { capture: ResultsCapture; results_import_payload: Record<string, unknown>; required_source_read_set: SourceRead[] };
 export type ResultsReport = { artifact_id: string; artifact_revision: number; title: string; source_status: string; original_id: string; original_revision: number; security_epoch: number; lines: { original_line: number; fragment: string }[]; verification: "original_bytes_integrity_checked_format_not_verified"; derived_line_not_assumed: true; has_more: boolean };
 export type ResultsList = { requests: ResultsRequest[]; runs: ResultsRun[]; captures: ResultsCapture[]; measurements: Record<string, unknown>[]; projections: Record<string, unknown>[]; actions: Record<string, unknown>[]; current_by_request: Record<string, { request_version_id: string; revision: number }>; current_by_run: Record<string, { run_version_id: string; revision: number }>; reference_samples: Record<string, unknown>[]; report_sources: ResultsReport[]; next_owners: { id: string; label: string }[]; capabilities: Record<string, unknown>; has_more: boolean; unavailable_count: number };
@@ -137,8 +138,8 @@ function currentResultsBinding(request: ResultsRequest, run: ResultsRun): Record
 }
 export function captureResultsInput(productRevision: number, request: ResultsRequest, run: ResultsRun, report: ResultsReport, selections: ObservationSelection[], reason: string, key: string): ResultsCaptureInput {
   const binding = currentResultsBinding(request, run), pairs = new Set(resultsPairs(run).map(resultsPairKey));
-  if (run.status !== "running" || report.source_status !== "current" || report.verification !== "original_bytes_integrity_checked_format_not_verified" || report.derived_line_not_assumed !== true || !resultsRevision(report.artifact_revision) || !resultsRevision(productRevision) || key.length < 8 || key.length > 200 || !selections.length || selections.length > 10000) throw new Error("请选择已经实际开测的当前运行、有效原报告和明确原件位置。");
-  if (selections.some(row => !Number.isSafeInteger(row.line) || row.line < 1 || row.line > 10000 || !report.lines.some(line => line.original_line === row.line && line.fragment.trim()) || !pairs.has(resultsPairKey(row))) || new Set(selections.map(resultsPairKey)).size !== selections.length || new Set(selections.map(row => row.line)).size !== selections.length) throw new Error("每个原报告位置须对应唯一固定样件/测试项，不能超出、重复或把派生文本行号当原件位置。");
+  if (run.status !== "running" || report.source_status !== "current" || report.verification !== "original_bytes_integrity_checked_format_not_verified" || report.derived_line_not_assumed !== true || !resultsRevision(report.artifact_revision) || !resultsRevision(productRevision) || key.length < 8 || key.length > 200 || !selections.length) throw new Error("请选择已经实际开测的当前运行、有效原报告和明确原件位置。");
+  if (selections.some(row => !Number.isSafeInteger(row.line) || row.line < 1 || !report.lines.some(line => line.original_line === row.line && line.fragment.trim()) || !pairs.has(resultsPairKey(row))) || new Set(selections.map(resultsPairKey)).size !== selections.length || new Set(selections.map(row => row.line)).size !== selections.length) throw new Error("每个原报告位置须对应唯一固定样件/测试项，不能超出、重复或把派生文本行号当原件位置。");
   return { ...(binding as Pick<ResultsCaptureInput, "request_id" | "expected_request_revision" | "run_id" | "expected_run_revision">), capture_key: key, expected_product_revision: productRevision, report_artifact_id: report.artifact_id, expected_report_revision: report.artifact_revision, selections: selections.map(row => ({ line: row.line, sample_id: row.sample_id, item_id: row.item_id })), reason: resultsReason(reason) };
 }
 export function checkPreparedResults(value: unknown, request: ResultsCaptureInput): value is PreparedResults {
@@ -152,12 +153,12 @@ export const blankResultsWork = (): ResultsWork => ({ reportId: "", selections: 
 export async function importResultsPayload(request: ResultsRequest, run: ResultsRun, capture: ResultsCapture | undefined, work: ResultsWork, nextOwners: { id: string }[]): Promise<Record<string, unknown>> {
   const binding = currentResultsBinding(request, run), at = await resultsEvent(work.returned), actualEnd = work.final ? await resultsEvent(work.ended) : null;
   if (run.status !== "running" || !work.final && !capture) throw new Error("部分返回必须选择本运行的原报告候选，不能用空记录补造返回。");
-  if (capture && (capture.run_id !== run.run_id || capture.expired || capture.source_status !== "current" || capture.results_import_payload.expected_run_revision !== run.revision || capture.results_import_payload.expected_request_revision !== request.revision)) throw new Error("所选原报告候选已过期、来源失效或固定版本发生变化，请重新核对原位置。");
+  if (capture && (capture.run_id !== run.run_id || capture.source_status !== "current" || capture.results_import_payload.expected_run_revision !== run.revision || capture.results_import_payload.expected_request_revision !== request.revision)) throw new Error("所选原报告候选来源失效或固定版本发生变化，请重新核对原位置。");
   const incomplete = work.incompleteReason.trim(), owner = work.nextOwnerId;
   if (!work.final && (!incomplete || !owner || !nextOwners.some(row => row.id === owner))) throw new Error("部分返回须明确尚未完成原因和服务器列出的下一责任人。");
   if (actualEnd && Date.parse(actualEnd.occurred_at) > Date.parse(at.occurred_at)) throw new Error("实际结束不得晚于本次结果返回时间，两者分别取真实出处。");
   const refs = [...work.references, ...(work.returned.reference ? [work.returned.reference] : []), ...(work.final && work.ended.reference ? [work.ended.reference] : [])];
-  const sources = [...new Map(refs.map(ref => [resultsRefKey(ref), ref])).values()]; if (!resultsRefs(sources)) throw new Error("本次精确来源不完整或超过 20 条。");
+  const sources = [...new Map(refs.map(ref => [resultsRefKey(ref), ref])).values()]; if (!resultsRefs(sources)) throw new Error("本次精确来源不完整。");
   return { ...binding, capture_id: capture?.id ?? null, expected_capture_revision: capture?.revision ?? null, final: work.final, at, actual_end: actualEnd, incomplete_reason: work.final ? null : resultsReason(incomplete), next_owner_id: work.final ? null : owner, sources, reason: resultsReason(work.importReason) };
 }
 export function computeResultsPayload(request: ResultsRequest, run: ResultsRun, reason: string): Record<string, unknown> { return { ...currentResultsBinding(request, run), expected_basis_sha256: run.basis_sha256, reason: resultsReason(reason) }; }
@@ -166,7 +167,7 @@ export async function professionalResultsPayload(request: ResultsRequest, run: R
   if (!projection || !resultsRevision(projection.revision) || projection.basis_sha256 !== run.basis_sha256) throw new Error("当前固定结果投影或完整依据摘要需重新核对，不能沿用旧批准。");
   const draft = operation === "test.run.review" ? work.reviewed : work.disposed, at = await resultsEvent(draft), text = (operation === "test.run.review" ? work.reviewText : work.dispositionText).trim();
   if (!text || text.length > 2000) throw new Error("请明确填写独立专业结论或处置意见，最多 2000 字。");
-  const sources = [...new Map([...work.references, ...(draft.reference ? [draft.reference] : [])].map(ref => [resultsRefKey(ref), ref])).values()]; if (!resultsRefs(sources)) throw new Error("本次具名批准的精确来源超过 20 条。");
+  const sources = [...new Map([...work.references, ...(draft.reference ? [draft.reference] : [])].map(ref => [resultsRefKey(ref), ref])).values()]; if (!resultsRefs(sources)) throw new Error("本次具名批准的精确来源不完整。");
   return { ...binding, projection_id: projection.id, expected_projection_revision: projection.revision, expected_basis_sha256: run.basis_sha256, text, at, sources, reason: resultsReason(operation === "test.run.review" ? work.reviewReason : work.dispositionReason) };
 }
 export function validResultsReceipt(value: unknown, command: ResultsCommand): value is { id: string; subject_id: string; subject_type: string; operation: ResultsOperation } { return resultsRecord(value) && typeof value.id === "string" && !!value.id && typeof value.subject_id === "string" && !!value.subject_id && value.operation === command.operation && value.subject_type === (command.operation === "test.result.compute" ? "test_result_projection" : "test_run"); }
@@ -176,7 +177,7 @@ export const blankLocalResults = (): LocalResults => ({ selectedBuildId: "", sel
 function validEventDraft(value: unknown): boolean { return resultsRecord(value) && typeof value.occurredAt === "string" && typeof value.timezone === "string" && (value.reference === null || validHandoffRef(value.reference)); }
 export function restoreResults(value: unknown, productId: string, principalId: string): LocalResults | null {
   if (!resultsRecord(value) || value.schema_version !== 1 || value.product_id !== productId || value.principal_id !== principalId || !["selectedBuildId", "selectedRunId", "selectedRunVersionId"].every(key => typeof value[key] === "string") || !resultsRecord(value.drafts)) return null;
-  for (const draft of Object.values(value.drafts)) if (!resultsRecord(draft) || !["reportId", "captureReason", "captureId", "incompleteReason", "nextOwnerId", "importReason", "computeReason", "reviewText", "reviewReason", "dispositionText", "dispositionReason"].every(key => typeof draft[key] === "string") || typeof draft.final !== "boolean" || !["returned", "ended", "reviewed", "disposed"].every(key => validEventDraft(draft[key])) || !resultsRefs(draft.references) || !Array.isArray(draft.selections) || draft.selections.length > 10000 || draft.selections.some(row => !resultsRecord(row) || !Number.isSafeInteger(row.line) || Number(row.line) < 0 || typeof row.sample_id !== "string" || typeof row.item_id !== "string")) return null;
+  for (const draft of Object.values(value.drafts)) if (!resultsRecord(draft) || !["reportId", "captureReason", "captureId", "incompleteReason", "nextOwnerId", "importReason", "computeReason", "reviewText", "reviewReason", "dispositionText", "dispositionReason"].every(key => typeof draft[key] === "string") || typeof draft.final !== "boolean" || !["returned", "ended", "reviewed", "disposed"].every(key => validEventDraft(draft[key])) || !resultsRefs(draft.references) || !Array.isArray(draft.selections) || draft.selections.some(row => !resultsRecord(row) || !Number.isSafeInteger(row.line) || Number(row.line) < 0 || typeof row.sample_id !== "string" || typeof row.item_id !== "string")) return null;
   if (value.pending != null) {
     const pending = value.pending; if (!resultsRecord(pending)) return null;
     if (pending.stage === "capture") { const input = pending.request; if (!resultsRecord(input) || input.run_id !== value.selectedRunId || typeof input.capture_key !== "string" || input.capture_key.length < 8 || typeof input.report_artifact_id !== "string" || !resultsRevision(input.expected_product_revision) || !resultsRevision(input.expected_run_revision) || !resultsRevision(input.expected_request_revision) || !resultsRevision(input.expected_report_revision) || !Array.isArray(input.selections) || !input.selections.length || input.selections.some(row => !resultsRecord(row) || !Number.isSafeInteger(row.line) || Number(row.line) < 1 || typeof row.sample_id !== "string" || typeof row.item_id !== "string")) return null; }

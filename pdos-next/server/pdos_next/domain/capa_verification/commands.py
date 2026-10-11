@@ -1,7 +1,6 @@
 """Unregistered T1 follow-up link handler; the host owns proofs and transaction."""
 
 from dataclasses import dataclass
-from datetime import datetime
 from uuid import UUID, uuid4
 
 from sqlalchemy import select
@@ -68,16 +67,10 @@ def _authority(s, ctx, product_id, basis):
 
 def _deadlines(authority, published):
     checked_at = owners.now()
-    for value in (authority, published):
-        raw = value.get("valid_until")
-        try:
-            expiry = datetime.fromisoformat(raw)
-        except (TypeError, ValueError):
-            raise DomainError(
-                "INTEGRATION_REQUIRED", "当前专业或政策缺少可核对有效期。", 503
-            ) from None
-        if expiry.tzinfo is None or expiry.utcoffset() is None or expiry <= checked_at:
-            raise DomainError("SOURCE_STALE", "读取期间专业资格或政策已到期。")
+    if not professional.authority_time_current(
+        authority, checked_at
+    ) or not policy.policy_time_current(published, checked_at):
+        raise DomainError("SOURCE_STALE", "读取期间实际专业资格或政策条件已失效。")
 
 
 @dataclass(frozen=True)
@@ -124,7 +117,7 @@ def _guard_saved(row, payload, bound):
 def _load(s, ctx, command, product, payload, *, require_reads=True):
     payload = FollowupLinkPayload.model_validate(payload)
     if command.operation != OPERATION or command.product_id != product.id:
-        raise DomainError("FORBIDDEN_SCOPE", "回链命令不在当前操作产品范围。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "回链命令不在当前操作型号范围。", 403)
     owners.quality._human(s, ctx, product.id, write=True)
     callback = getattr(s.get_bind(), "_pdos_capa_link_consumed_proof", None)
     if not callable(callback):
@@ -162,7 +155,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
     visibility = (
         "private"
         if private or published["private"] or resolved.visibility == "private"
-        else "product"
+        else resolved.visibility
     )
     if require_reads:
         supplied = {str(r.artifact_id): r.expected_revision for r in command.source_read_set}
@@ -230,7 +223,7 @@ def validate(s, ctx, command, product, payload):
 
 def _new_write(s, ctx, command, product, payload, bound):
     if command.expected_revision != product.revision:
-        raise DomainError("VERSION_CONFLICT", "产品范围已变化，请重新核对。")
+        raise DomainError("VERSION_CONFLICT", "型号范围已变化，请重新核对。")
     owners.load_followup_basis(
         s, ctx, product.id, payload.issue_id, payload.expected_issue_revision, write=True
     )
@@ -297,7 +290,7 @@ def inputs(s, ctx, product_id, command):
 
     product = s.get(Product, product_id)
     if product is None or product.tenant_id != ctx.tenant_id or command.product_id != product_id:
-        raise DomainError("FORBIDDEN_SCOPE", "回链输入不在当前产品范围。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "回链输入不在当前型号范围。", 403)
     payload = FollowupLinkPayload.model_validate(command.payload)
     bound = _load(s, ctx, command, product, payload, require_reads=False)
     _new_write(s, ctx, command, product, payload, bound)

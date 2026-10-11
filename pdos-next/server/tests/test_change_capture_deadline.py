@@ -70,7 +70,7 @@ def boundary(monkeypatch):
         trace=[],
         read_graphs=[],
         owner_returns=[],
-        mutate_second=None,
+        access_fault=None,
         flush_fault=None,
         version=row,
         runtime="fixed-runtime",
@@ -104,6 +104,22 @@ def boundary(monkeypatch):
         resolve=lambda value: SimpleNamespace(current=True),
     )
     authority = {
+        "operation": "change.impact.compute",
+        "purpose": "pure-purpose",
+        "roles": ["quality"],
+        "fact_refs": [
+            {
+                "kind": kind,
+                "role": "quality",
+                "nature": "synthetic",
+                "state": "active",
+                "operations": ["change.impact.compute"],
+                "purposes": ["pure-purpose"],
+                "valid_from": (at - timedelta(hours=1)).isoformat(),
+                "valid_until": (at + timedelta(minutes=30)).isoformat(),
+            }
+            for kind in ("duty", "qualification")
+        ],
         "valid_until": (at + timedelta(minutes=30)).isoformat(),
         "synthetic": True,
         "required_source_read_set": reads,
@@ -139,7 +155,7 @@ def boundary(monkeypatch):
                 "id": str(graph.id),
                 "revision": graph.revision,
                 "captured_at": graph.captured_at.isoformat(),
-                "expires_at": graph.expires_at.isoformat(),
+                "expires_at": graph.expires_at.isoformat() if graph.expires_at else None,
             },
             "binding": {
                 "current_id": "fixed-current",
@@ -157,7 +173,7 @@ def boundary(monkeypatch):
         # Deliberately no real CoverageRead/token: this is an explicit IO substitute.
         value = SimpleNamespace(
             source_basis=basis,
-            valid_until=min(state.until, graph.expires_at),
+            valid_until=min(state.until, graph.expires_at) if graph.expires_at else state.until,
             coverage=tuple(
                 Coverage(node=ref, facet=facet, status="complete", source=source)
                 for facet in get_args(Facet)
@@ -165,8 +181,6 @@ def boundary(monkeypatch):
             sources=(source,),
             required_source_read_set=tuple(reads),
         )
-        if len(state.read_graphs) == 2 and state.mutate_second is not None:
-            state.mutate_second(value)
         state.owner_returns.append(value)
         return value
 
@@ -174,9 +188,8 @@ def boundary(monkeypatch):
         state.trace.append("full_owner_refresh")
         if bound.coverage is not None:
             assert (
-                bound.graph.expires_at.isoformat()
-                == bound.coverage.source_basis["graph"]["expires_at"]
-            )
+                bound.graph.expires_at.isoformat() if bound.graph.expires_at else None
+            ) == bound.coverage.source_basis["graph"]["expires_at"]
             assert bound.coverage is state.owner_returns[-1]
         candidate._valid_at(bound, state.at)
 
@@ -187,6 +200,8 @@ def boundary(monkeypatch):
     def late_access(*args, **kwargs):
         state.trace.append("late_access")
         assert "full_flush" in state.trace
+        if state.access_fault is not None:
+            state.access_fault()
         return state.until
 
     real_response = candidate._capture_response
@@ -236,42 +251,46 @@ def boundary(monkeypatch):
     return state
 
 
-def test_new_window_uses_second_owner_read_for_final_full_graph(boundary):
+def test_new_capture_reads_owner_once_and_keeps_fact_interval_separate(boundary):
     value = boundary.call()["capture"]
-    assert len(boundary.read_graphs) == 2
-    first, final = boundary.read_graphs
-    assert first.expires_at == first.captured_at + timedelta(minutes=10)
-    assert final.id == first.id and final.captured_at == first.captured_at
-    assert final.expires_at == boundary.until
+    assert len(boundary.read_graphs) == 1
+    final = boundary.read_graphs[0]
+    assert final.expires_at is None
+    assert boundary.owner_returns[0].valid_until == boundary.until
     saved = boundary.s.rows[-1]
     assert saved.expires_at == final.expires_at
     assert value["graph"]["expires_at"] == final.model_dump(mode="json")["expires_at"]
     assert saved.source_basis["coverage"] == boundary.owner_returns[-1].source_basis
-    assert saved.source_basis["coverage"]["graph"]["expires_at"] == saved.expires_at.isoformat()
-    assert (
-        boundary.owner_returns[0].source_basis["graph"]["expires_at"]
-        == first.expires_at.isoformat()
-    )
-    assert boundary.trace.index("full_flush") < boundary.trace.index("fresh_current")
-    assert boundary.trace.index("fresh_current") < boundary.trace.index("late_access")
+    assert saved.source_basis["coverage"]["graph"]["expires_at"] is None
+    assert boundary.trace.index("full_flush") < boundary.trace.index("late_access")
+    assert boundary.trace.index("late_access") < boundary.trace.index("fresh_current")
     assert boundary.trace[-1] == "return_capture"
 
 
-@pytest.mark.parametrize("drift", ["source", "publisher", "deadline"])
-def test_final_graph_read_cannot_adopt_changed_original_basis(boundary, drift):
-    def mutate(value):
-        if drift == "source":
-            value.source_basis["material_sha256"] = "c" * 64
-        elif drift == "publisher":
-            value.source_basis["publisher_access_sha256"] = "c" * 64
+@pytest.mark.parametrize("drift", ["current", "clock", "coverage_interval"])
+def test_final_access_sql_cannot_hide_changed_current_watermark_or_fact_interval(boundary, drift):
+    def mutate():
+        if drift == "current":
+            boundary.version = SimpleNamespace(id=uuid4(), revision=2)
+        elif drift == "clock":
+            boundary.clock_stamp["epoch"] += 1
         else:
-            value.valid_until -= timedelta(seconds=1)
+            boundary.at = boundary.until
 
-    boundary.mutate_second = mutate
+    boundary.access_fault = mutate
     with pytest.raises(DomainError) as failure:
         boundary.call()
-    assert failure.value.code == "SOURCE_STALE"
-    assert not boundary.s.rows and "full_flush" not in boundary.trace and boundary.responded == 0
+    assert (
+        failure.value.reason
+        == {
+            "current": "VERSION_CONFLICT",
+            "clock": "RECHECK_REQUIRED",
+            "coverage_interval": "COVERAGE_OWNER_STALE",
+        }[drift]
+    )
+    assert "full_flush" in boundary.trace and "late_access" in boundary.trace
+    assert boundary.responded == 0
+    # This no-I/O adapter cannot demonstrate rollback; real PG tests cover it.
 
 
 def test_longer_material_does_not_add_an_unnecessary_preliminary_graph_read(boundary):
@@ -282,7 +301,7 @@ def test_longer_material_does_not_add_an_unnecessary_preliminary_graph_read(boun
         value["graph"]["expires_at"]
         == boundary.read_graphs[0].model_dump(mode="json")["expires_at"]
     )
-    assert boundary.s.rows[-1].expires_at == boundary.at + timedelta(minutes=10)
+    assert boundary.s.rows[-1].expires_at is None
     assert boundary.trace.index("full_flush") < boundary.trace.index("late_access")
 
 
@@ -291,7 +310,7 @@ def test_absent_owner_keeps_new_unknown_capture_window(boundary, monkeypatch):
     value = boundary.call()["capture"]
     assert not boundary.read_graphs and "late_access" not in boundary.trace
     assert all(row["status"] == "unknown" for row in value["graph"]["coverage"])
-    assert boundary.s.rows[-1].expires_at == boundary.at + timedelta(minutes=10)
+    assert boundary.s.rows[-1].expires_at is None
     assert "coverage" not in boundary.s.rows[-1].source_basis
 
 
@@ -360,12 +379,8 @@ def test_post_full_flush_failure_cannot_return_a_capture(boundary, monkeypatch, 
 
 
 def test_final_source_read_rejection_occurs_before_staging(boundary, monkeypatch):
-    preliminary_read = owner.read
-
     def stale_read(*args, **kwargs):
-        if boundary.read_graphs:
-            raise DomainError("COVERAGE_OWNER_STALE", "Pure source withdrawal during shrink")
-        return preliminary_read(*args, **kwargs)
+        raise DomainError("COVERAGE_OWNER_STALE", "Pure source withdrawal during owner read")
 
     monkeypatch.setattr(owner, "read", stale_read)
     with pytest.raises(DomainError):

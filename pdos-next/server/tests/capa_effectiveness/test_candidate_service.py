@@ -43,8 +43,10 @@ def world(monkeypatch):
     s = Session(bind=engine)
     s.begin()
     ctx = Context(uuid4(), uuid4(), uuid4())
-    ctx = Context(ctx.tenant_id, ctx.actor_id, ctx.actor_id)
-    product = attach(s, Product(id=uuid4(), tenant_id=ctx.tenant_id, revision=7))
+    ctx = Context(ctx.tenant_id, ctx.actor_id, ctx.actor_id, category_id=uuid4())
+    product = attach(
+        s, Product(id=uuid4(), tenant_id=ctx.tenant_id, category_id=ctx.category_id, revision=7)
+    )
     read = SourceRead(artifact_id=uuid4(), expected_revision=1)
     selected_reads = [read]
     payload = commands.CandidateRecordPayload(
@@ -59,6 +61,7 @@ def world(monkeypatch):
         command_id=uuid4(),
         idempotency_key="candidate-service-original-key",
         operation=service.OPERATION,
+        category_id=ctx.category_id,
         product_id=product.id,
         expected_revision=7,
         source_read_set=[read],
@@ -124,6 +127,8 @@ def world(monkeypatch):
         Confirmation(
             id=uuid4(),
             tenant_id=ctx.tenant_id,
+            category_id=ctx.category_id,
+            subject_type="product",
             product_id=product.id,
             actor_id=ctx.actor_id,
             subject_id=product.id,
@@ -275,14 +280,14 @@ def test_validate_checks_current_gates_without_product_cas_before_replay(world):
     assert world.trace == ["owner_prepare", "owner_clock"]
     with pytest.raises(DomainError) as error:
         preview(world)
-    assert error.value.code == "VERSION_CONFLICT"
+    assert error.value.reason == "VERSION_CONFLICT"
 
 
 def test_missing_complete_source_read_set_is_rejected(world):
     command = world.command.model_copy(update={"source_read_set": []})
     with pytest.raises(DomainError) as error:
         service.validate(world.s, world.ctx, command, world.product, world.payload)
-    assert error.value.code == "MISSING_REQUIRED_EVIDENCE"
+    assert error.value.reason == "MISSING_REQUIRED_EVIDENCE"
 
 
 def test_same_reads_reordered_still_change_exact_command_phase(world):
@@ -355,7 +360,7 @@ def test_record_requires_actual_false_true_before_any_owner_io(world):
             world.proof,
             binding,
         )
-    assert error.value.code == "FACT_ACTUAL_FALSE_TRUE_REQUIRED"
+    assert error.value.reason == "FACT_ACTUAL_FALSE_TRUE_REQUIRED"
     assert world.trace == before
 
 
@@ -373,7 +378,7 @@ def test_write_rejects_forged_marker_and_never_enters_fallback(world):
         )
     with pytest.raises(DomainError) as error:
         service.apply(world.s, world.ctx, world.command, world.product, world.payload)
-    assert error.value.code == "INTEGRATION_REQUIRED"
+    assert error.value.reason == "INTEGRATION_REQUIRED"
 
 
 def test_failed_writer_cannot_reuse_its_phase(world, monkeypatch):
@@ -394,7 +399,7 @@ def test_failed_writer_cannot_reuse_its_phase(world, monkeypatch):
             phase,
             consumption=markers,
         )
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
     with pytest.raises(DomainError) as error:
         service.apply_prepared_write(
             world.s,
@@ -405,7 +410,7 @@ def test_failed_writer_cannot_reuse_its_phase(world, monkeypatch):
             phase,
             consumption=markers,
         )
-    assert error.value.code == "CANDIDATE_COMMON_PHASE_REQUIRED"
+    assert error.value.reason == "CANDIDATE_COMMON_PHASE_REQUIRED"
 
 
 def test_runtime_replacement_during_owner_write_is_rejected(world, monkeypatch):
@@ -469,4 +474,4 @@ def test_origin_selector_is_exact_current_and_private_caller(world, monkeypatch)
     row.owner_id = uuid4()
     with pytest.raises(DomainError) as error:
         actual(world.s, world.ctx, world.product.id, world.payload)
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"

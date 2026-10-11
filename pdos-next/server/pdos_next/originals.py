@@ -12,6 +12,7 @@ from sqlalchemy import select
 
 from pdos_next.contracts import ArtifactPayload, Command
 from pdos_next.database import tenant_session
+from pdos_next.dispatch.context import event_context
 from pdos_next.errors import DomainError
 from pdos_next.evidence_processing import ParseFailure, ParseLimits
 from pdos_next.models import (
@@ -24,7 +25,7 @@ from pdos_next.models import (
     UploadedOriginal,
 )
 from pdos_next.object_storage import ObjectRef, StorageFailure
-from pdos_next.service import Context, append_receipt, digest, receipt_view, require_access
+from pdos_next.service import append_receipt, digest, receipt_view, require_access
 
 MEDIA = {
     ".txt": "text/plain",
@@ -38,22 +39,31 @@ def object_reference(row):
     return ObjectRef(row.id, 1, row.content_hash, row.byte_count, row.media_type, row.storage_key)
 
 
-def read_registered_bytes(store, reference, tenant_id, product_id):
+def read_registered_bytes(store, reference, tenant_id, product_id, category_id=None):
     if hasattr(store, "read_registered"):
         from pdos_next.object_journal import JournalScope
 
-        return store.read_registered(reference, JournalScope(tenant_id, product_id))
+        return store.read_registered(
+            reference,
+            JournalScope(tenant_id, product_id, category_id if product_id is None else None),
+        )
     return store.read_original(reference)
 
 
 def require_original(s, ctx, product_id, original_id, *, lock=False):
-    require_access(s, ctx, product_id)
+    from pdos_next.request_proof import scoped_rows
+
+    scope = require_access(s, ctx, product_id)
     query = select(UploadedOriginal).where(
         UploadedOriginal.id == original_id,
-        UploadedOriginal.product_id == product_id,
+        UploadedOriginal.category_id == scope.category_id,
+        UploadedOriginal.product_id.is_(None) | (UploadedOriginal.product_id == product_id),
     )
-    row = s.scalar(query.with_for_update() if lock else query)
-    if not row or (row.visibility == "private" and row.owner_id != ctx.requester_id):
+    rows = scoped_rows(
+        s, (UploadedOriginal, scope.category_id, product_id, original_id), query, lock=lock
+    )
+    row = rows[0] if rows else None
+    if not row:
         raise DomainError("SOURCE_UNAVAILABLE", "原件不在当前授权范围。", 403)
     return row
 
@@ -87,12 +97,7 @@ def upload_contents(data):
 
 
 def upload(s, ctx, product_id, data, store, *, attempt=None):
-    product = s.scalar(select(Product).where(Product.id == product_id).with_for_update())
-    if not product:
-        raise DomainError("FORBIDDEN_SCOPE", "产品范围不可用。", 403)
-    require_access(s, ctx, product_id, write=True, lock=True)
-    if s.get(Principal, ctx.actor_id).kind != "human" or ctx.run_id:
-        raise DomainError("FORBIDDEN_SCOPE", "此入口只接收人员授权上传。", 403)
+    product = require_access(s, ctx, product_id)
     content, media, request, fingerprint = upload_contents(data)
     key = s.scalar(
         select(RequestKey).where(
@@ -110,14 +115,21 @@ def upload(s, ctx, product_id, data, store, *, attempt=None):
         ):
             raise DomainError("DUPLICATE_INTENT_CONFLICT", "原上传请求对应了不同文件。")
         return receipt_view(receipt)
-    intent = digest(["evidence.original.upload", product.id, ctx.requester_id, request])
+    intent = digest(
+        ["evidence.original.upload", ctx.category_id, product.id, ctx.requester_id, request]
+    )
     previous = s.scalar(
-        select(Receipt).where(Receipt.product_id == product.id, Receipt.intent_digest == intent)
+        select(Receipt).where(
+            Receipt.category_id == ctx.category_id,
+            Receipt.product_id == product.id,
+            Receipt.intent_digest == intent,
+        )
     )
     if previous:
         s.add(
             RequestKey(
                 tenant_id=ctx.tenant_id,
+                category_id=ctx.category_id,
                 actor_id=ctx.actor_id,
                 key=data.idempotency_key,
                 digest=fingerprint,
@@ -125,8 +137,13 @@ def upload(s, ctx, product_id, data, store, *, attempt=None):
             )
         )
         return receipt_view(previous)
+    product = require_access(s, ctx, product_id, write=True, lock=True)
+    if product_id is not None:
+        product = s.scalar(select(Product).where(Product.id == product_id).with_for_update())
+    if s.get(Principal, ctx.actor_id).kind != "human" or ctx.run_id or ctx.agent_run_id:
+        raise DomainError("FORBIDDEN_SCOPE", "此入口只接收人员授权上传。", 403)
     if product.revision != data.expected_revision:
-        raise DomainError("VERSION_CONFLICT", "产品范围已变化，请读取当前版本。")
+        raise DomainError("VERSION_CONFLICT", "型号范围已变化，请读取当前版本。")
     if attempt is not None:
         from pdos_next.upload_lifecycle import require_reserved
 
@@ -137,6 +154,7 @@ def upload(s, ctx, product_id, data, store, *, attempt=None):
             media_type=media,
             tenant_id=ctx.tenant_id,
             product_id=product.id,
+            category_id=ctx.category_id,
             requester_id=ctx.requester_id,
             upload_id=attempt.id if attempt is not None else uuid4(),
         )
@@ -149,6 +167,7 @@ def upload(s, ctx, product_id, data, store, *, attempt=None):
     subject = UploadedOriginal(
         id=reference.id,
         tenant_id=ctx.tenant_id,
+        category_id=ctx.category_id,
         product_id=product.id,
         owner_id=ctx.requester_id,
         title=data.title,
@@ -162,13 +181,21 @@ def upload(s, ctx, product_id, data, store, *, attempt=None):
     )
     s.add(subject)
     s.flush()
-    s.add(OriginalSecurity(tenant_id=ctx.tenant_id, product_id=product.id, original_id=subject.id))
+    s.add(
+        OriginalSecurity(
+            tenant_id=ctx.tenant_id,
+            category_id=ctx.category_id,
+            product_id=product.id,
+            original_id=subject.id,
+        )
+    )
     if attempt is not None:
         from pdos_next.models import now
 
         attempt.status, attempt.terminal_at = "committed", now()
         attempt.revision += 1
     command = Command(
+        category_id=ctx.category_id,
         command_id=uuid4(),
         idempotency_key=data.idempotency_key,
         operation="evidence.original.upload",
@@ -217,15 +244,20 @@ def original_view(s, row, ctx=None, store=None):
 def parse_uploaded(engine, reference: dict, store):
     from pdos_next.original_security import require_safe, runtime_for
 
-    tenant, product_id, original_id = (
-        UUID(reference[k]) for k in ("tenant_id", "product_id", "subject_id")
-    )
-    with tenant_session(engine, tenant) as s:
-        s.scalar(select(Product).where(Product.id == product_id).with_for_update())
+    ctx = event_context(reference)
+    tenant, original_id = UUID(reference["tenant_id"]), UUID(reference["subject_id"])
+    product_id = UUID(reference["product_id"]) if reference.get("product_id") else None
+    with tenant_session(
+        engine,
+        tenant,
+        actor_id=ctx.actor_id,
+        requester_id=ctx.requester_id,
+        category_id=ctx.category_id,
+    ) as s:
+        require_access(s, ctx, product_id)
         row = s.get(UploadedOriginal, original_id)
         if not row or row.product_id != product_id:
             raise DomainError("SOURCE_UNAVAILABLE", "待处理原件不可用。", 403)
-        ctx = Context(tenant, row.owner_id, row.owner_id)
         row = require_original(s, ctx, product_id, original_id)
         safety_basis = require_safe(s, ctx, row)
         runtime = runtime_for(s)
@@ -235,7 +267,7 @@ def parse_uploaded(engine, reference: dict, store):
         # Keep current product/ACL protection through the bounded byte read.
         error_code, content = None, None
         try:
-            content = read_registered_bytes(store, object_ref, tenant, product_id)
+            content = read_registered_bytes(store, object_ref, tenant, product_id, ctx.category_id)
         except StorageFailure as failure:
             error_code = failure.code
     # Object access and isolated parsing occur outside the domain transaction.
@@ -252,9 +284,14 @@ def parse_uploaded(engine, reference: dict, store):
             raise ParseFailure("TEXT_OUTPUT_TOO_LARGE", "解析文本超过当前来源大小限制。")
     except (ParseFailure, StorageFailure) as failure:
         error_code = failure.code
-    with tenant_session(engine, tenant) as s:
-        product = s.scalar(select(Product).where(Product.id == product_id).with_for_update())
-        require_access(s, ctx, product_id, write=True, lock=True)
+    with tenant_session(
+        engine,
+        tenant,
+        actor_id=ctx.actor_id,
+        requester_id=ctx.requester_id,
+        category_id=ctx.category_id,
+    ) as s:
+        product = require_access(s, ctx, product_id, write=True, lock=True)
         row = require_original(s, ctx, product_id, original_id, lock=True)
         if require_safe(s, ctx, row) != safety_basis:
             raise DomainError("SOURCE_STALE", "解析期间安全依据已变化，未提交派生资料。")
@@ -275,6 +312,7 @@ def parse_uploaded(engine, reference: dict, store):
             )
             artifact = Artifact(
                 tenant_id=tenant,
+                category_id=ctx.category_id,
                 product_id=product_id,
                 owner_id=ctx.requester_id,
                 original_id=row.id,
@@ -318,6 +356,7 @@ def parse_uploaded(engine, reference: dict, store):
             row.locator_map = locations
         s.flush()
         command = Command(
+            category_id=ctx.category_id,
             command_id=uuid4(),
             idempotency_key=f"parse:{row.id}:{safety_basis[1]}",
             operation="evidence.original.parse",

@@ -1,7 +1,7 @@
 """Stage reversible lifecycle commands through server ports; never commit or delete."""
 
 from dataclasses import replace
-from datetime import UTC, datetime
+from datetime import datetime
 from uuid import UUID, uuid4
 
 from pdos_next.object_storage.types import ObjectRef
@@ -28,7 +28,9 @@ from .types import (
 
 class SystemClock:
     def now(self) -> datetime:
-        return datetime.now(UTC)
+        from pdos_next.clock import now
+
+        return now()
 
 
 def candidate_digest(candidate: OrphanCandidate) -> str:
@@ -40,7 +42,6 @@ def candidate_digest(candidate: OrphanCandidate) -> str:
             candidate.references,
             candidate.decision,
             candidate.captured_at,
-            candidate.expires_at,
             candidate.policy_digest,
         ]
     )
@@ -68,7 +69,7 @@ class LifecycleService:
             authorization.reference != original.reference
             or authorization.scope != original.scope
             or authorization.action != action
-            or authorization.expires_at <= now
+            or (authorization.expires_at is not None and authorization.expires_at <= now)
         ):
             raise LifecycleFailure("FORBIDDEN_SCOPE", "Current server authorization does not bind")
         return authorization
@@ -145,7 +146,6 @@ class LifecycleService:
             references,
             decision,
             now,
-            now + self.policy.preview_ttl,
             digest(self.policy),
             "0" * 64,
         )
@@ -222,8 +222,8 @@ class LifecycleService:
                 ),
             )
             return previous_intent
-        if candidate.expires_at <= now or candidate.captured_at > now:
-            raise LifecycleFailure("PREVIEW_EXPIRED", "Lifecycle preview expired")
+        if candidate.captured_at > now:
+            raise LifecycleFailure("FACT_TIME_INVALID", "Candidate capture cannot be in the future")
         if not candidate.decision.eligible:
             raise LifecycleFailure("RETENTION_PROTECTED", "Preview protects this original")
         references = self.references.read_under_fence(fence)
@@ -236,8 +236,8 @@ class LifecycleService:
         ):
             raise LifecycleFailure("NAMED_CONFIRMATION_REQUIRED", "A current named human confirms")
         authorization = final_authorization
-        if candidate.expires_at <= now or candidate.captured_at > now:
-            raise LifecycleFailure("PREVIEW_EXPIRED", "Lifecycle preview expired")
+        if candidate.captured_at > now:
+            raise LifecycleFailure("FACT_TIME_INVALID", "Candidate capture cannot be in the future")
         if facts_digest(original, references) != facts_digest(
             candidate.original, candidate.references
         ):
@@ -356,7 +356,9 @@ class LifecycleService:
             reference_read_version=references.read_version,
             policy_digest=digest(self.policy),
             issued_at=now,
-            expires_at=min(now + self.policy.effect_timeout, authorization.expires_at),
+            expires_at=min(now + self.policy.effect_timeout, authorization.expires_at)
+            if authorization.expires_at
+            else now + self.policy.effect_timeout,
         )
         updated = replace(
             intent,
@@ -473,11 +475,7 @@ class LifecycleService:
             current_refs = self.references.read_under_fence(fence)
         now = self.clock.now()
         self._effect_authority(context, fence, intent, now, reconcile=True)
-        if (
-            receipt.observed_at < intent.permit.issued_at
-            or receipt.observed_at > now
-            or (now - receipt.observed_at > self.policy.max_snapshot_age)
-        ):
+        if receipt.observed_at < intent.permit.issued_at or receipt.observed_at > now:
             raise LifecycleFailure(
                 "EFFECT_OBSERVATION_STALE", "Require current authoritative observation"
             )

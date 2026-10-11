@@ -1,0 +1,3 @@
+[
+  "tests/test_category_scope.py::test_membership_revocation_removes_owner_access"
+]

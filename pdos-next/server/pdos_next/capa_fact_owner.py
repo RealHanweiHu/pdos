@@ -207,11 +207,11 @@ class ActualFactOwner:
             "QUALIFICATION_REQUIRED",
             403,
         )
-        require(value.get("fact_refs") and value.get("valid_until") and value.get("facts_revision"))
+        require(value.get("fact_refs") and value.get("facts_revision"))
         require(
             origin.nature == "synthetic" or value.get("synthetic") is False, "NATURE_MISMATCH", 403
         )
-        sources, bounds = [], [instant(value["valid_until"])]
+        sources = []
         for ref in value["fact_refs"]:
             row = guards._one(
                 s,
@@ -231,9 +231,11 @@ class ActualFactOwner:
                     [DefinitionReference.model_validate(value) for value in row.sources],
                 )
             )
-            if row.state == "active":
-                bounds.extend(t for t in (row.valid_from, row.valid_until) if t > at)
-        value["valid_until"] = min(bounds).isoformat()
+        require(
+            professional.authority_time_current(value, datetime.now(UTC)),
+            "QUALIFICATION_REQUIRED",
+            403,
+        )
         return value, tuple(a.canonical_sources(sources))
 
     def _anchor(self, s, ctx, pid, saved):
@@ -533,7 +535,7 @@ class ActualFactOwner:
         require(
             active_policy.get("nature") == origin.nature
             and active_policy.get("facts_revision")
-            and active_policy.get("valid_until")
+            and policy.policy_time_current(active_policy, datetime.now(UTC))
         )
         if kind == "rule":
             body_extra["policy_sha256"] = digest(active_policy)
@@ -596,17 +598,16 @@ class ActualFactOwner:
             authority_snapshot=authority,
             policy_snapshot=active_policy,
             inspection=inspection,
-            valid_until=min(
-                fact_deadline,
-                instant(authority["valid_until"]),
-                instant(active_policy["valid_until"]),
-            ),
+            time_constraints=(fact_deadline,),
         )
         # A complete fresh pass runs in FactWriteHost after this read, and again
         # after consumption. Any later source IO invalidates the earlier basis.
         guards._same_uow(s, uow, ctx, caller)
         require(
-            stamp == self.runtime_stamp(s) and datetime.now(UTC) < value.valid_until,
+            stamp == self.runtime_stamp(s)
+            and datetime.now(UTC) < fact_deadline
+            and professional.authority_time_current(authority, datetime.now(UTC))
+            and policy.policy_time_current(active_policy, datetime.now(UTC)),
             "SOURCE_STALE",
             409,
         )

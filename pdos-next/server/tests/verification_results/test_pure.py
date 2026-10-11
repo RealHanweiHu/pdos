@@ -244,7 +244,7 @@ def test_original_read_failure_does_not_expose_storage_path(work, monkeypatch):
     monkeypatch.setattr(service, "read_registered_bytes", unavailable)
     with pytest.raises(DomainError) as error:
         service._read_bytes(object(), object(), work.run.scope.tenant_id, work.run.scope.product_id)
-    assert error.value.code == "STORAGE_UNAVAILABLE"
+    assert error.value.reason == "STORAGE_UNAVAILABLE"
     assert "private-root" not in error.value.message and "Sensitive" not in error.value.message
 
 
@@ -268,7 +268,7 @@ def test_report_binding_uses_real_original_bytes_and_security_epoch(work, tmp_pa
     monkeypatch.setattr(service, "source_for", lambda *_: artifact)
     monkeypatch.setattr(service, "require_original", lambda *_, **__: original)
     monkeypatch.setattr(service, "object_reference", lambda _: reference)
-    monkeypatch.setattr(service, "require_safe", lambda *_: (7, {}))
+    monkeypatch.setattr(service, "require_safe", lambda *_, **kwargs: (7, {}))
     ctx = Context(work.run.scope.tenant_id, work.actor, work.actor)
     read, binding, _ = service._read_report(
         None, ctx, work.run.scope.product_id, work.run, work.plan, artifact.id, 1, store
@@ -276,12 +276,12 @@ def test_report_binding_uses_real_original_bytes_and_security_epoch(work, tmp_pa
     assert read == content and binding.original.sha256 == hashlib.sha256(content).hexdigest()
     assert binding.security_epoch == 7 and binding.report.id == artifact.id
     epochs = iter((7, 8))
-    monkeypatch.setattr(service, "require_safe", lambda *_: (next(epochs), {}))
+    monkeypatch.setattr(service, "require_safe", lambda *_, **kwargs: (next(epochs), {}))
     with pytest.raises(DomainError) as error:
         service._read_report(
             None, ctx, work.run.scope.product_id, work.run, work.plan, artifact.id, 1, store
         )
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 def test_final_empty_batch_uses_all_previously_verified_readings(work):
@@ -343,7 +343,7 @@ def test_missing_actual_proof_or_authority_blocks_before_record(work, condition,
     )
     with pytest.raises(DomainError) as error:
         execute(work, import_payload(work, measurements, True), "test.results.import", **kwargs)
-    assert error.value.code == code and not work.recorded
+    assert error.value.reason == code and not work.recorded
 
 
 def test_duplicate_pair_cannot_replace_original_reading_or_new_id(work):
@@ -355,7 +355,7 @@ def test_duplicate_pair_cannot_replace_original_reading_or_new_id(work):
     work.proved.append(replacement.id)
     with pytest.raises(DomainError) as error:
         execute(work, import_payload(work, (replacement,)), "test.results.import")
-    assert error.value.code == "MEASUREMENT_ALREADY_RECORDED" and work.run == before
+    assert error.value.reason == "MEASUREMENT_ALREADY_RECORDED" and work.run == before
 
 
 def test_final_must_cover_all_fixed_pairs_even_if_request_partially_accepted(work):
@@ -363,7 +363,7 @@ def test_final_must_cover_all_fixed_pairs_even_if_request_partially_accepted(wor
     work.proved = [m.id for m in measurements]
     with pytest.raises(DomainError) as error:
         execute(work, import_payload(work, measurements[:1], True), "test.results.import")
-    assert error.value.code == "INCOMPLETE_FINAL_SCOPE" and not work.recorded
+    assert error.value.reason == "INCOMPLETE_FINAL_SCOPE" and not work.recorded
 
 
 def test_retained_port_never_reserves_or_releases():
@@ -371,7 +371,7 @@ def test_retained_port_never_reserves_or_releases():
     for method in (port.inspect, port.reserve):
         with pytest.raises(DomainError) as error:
             method()
-        assert error.value.code == "INVALID_OPERATION"
+        assert error.value.reason == "INVALID_OPERATION"
 
 
 def test_capture_selects_source_values_and_not_request_defaults(work):
@@ -430,7 +430,7 @@ def test_source_event_rejects_naive_or_duplicate_fields(bad):
     )
     with pytest.raises(DomainError) as error:
         service._parse_event(line)
-    assert error.value.code == "INVALID_EVENT_EVIDENCE"
+    assert error.value.reason == "INVALID_EVENT_EVIDENCE"
 
 
 def test_equivalent_event_offsets_compare_same_instant():
@@ -458,7 +458,7 @@ def test_new_capture_requires_both_current_version_pointers(work, monkeypatch, c
     if changed:
         with pytest.raises(DomainError) as error:
             service._capture_current(None, None, work.run.scope.product_id, request_row, run_row)
-        assert error.value.code == "VERSION_CONFLICT"
+        assert error.value.reason == "VERSION_CONFLICT"
     else:
         service._capture_current(None, None, work.run.scope.product_id, request_row, run_row)
 
@@ -549,7 +549,7 @@ def test_original_store_callback_epoch_drift_is_rejected_before_proof_use(
             service._refresh_phase_proofs(
                 None, ctx, work.run.scope.product_id, "test.results.import", bound
             )
-        assert error.value.code == "SOURCE_STALE" and not work.recorded
+        assert error.value.reason == "SOURCE_STALE" and not work.recorded
     else:
         service._refresh_phase_proofs(
             None, ctx, work.run.scope.product_id, "test.results.import", bound

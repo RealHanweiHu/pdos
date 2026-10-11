@@ -2,10 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowClockwise, Archive, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
+import type { WorkspaceTransport } from "@/lib/workspace-api";
 import { Button } from "@/components/ui/button";
 import { awareTimestamp, dispositionNames, intentStateNames, isRecord, lifecycleActionNames, lifecycleCommand, lifecycleFailure, lifecycleParseNames, lifecycleReason, lifecycleScope, lifecycleTime, lifecycleUploadNames, normalizeInventory, validLifecycleCandidate, validLifecyclePreview, validLifecycleReceipt, type LifecycleAction, type LifecycleCandidate, type LifecycleCommand, type LifecycleInventory, type LifecycleItem, type LifecyclePending, type LifecyclePreview } from "@/lib/original-lifecycle";
 
-type Props = { productId: string; productRevision: number; onCommitted: () => Promise<void> };
+type Props = { productId: string; productRevision: number; onCommitted: () => Promise<void>; api: WorkspaceTransport };
 type Selection = { itemId: string; action: LifecycleAction | "cancel" | "protection" | "abandon"; intentId?: string };
 type PreviewState = { value: LifecyclePreview; item: LifecycleItem; scope: string };
 const fieldNames: Record<string, string> = {
@@ -16,12 +17,6 @@ const fieldNames: Record<string, string> = {
   upload_attempt_revision: "上传登记版本", registration_state: "登记状态", byte_status: "字节核对状态", upload_terminal_at: "上传终态时点", pending_intent_id: "待核对意图", object_id: "固定原件", id: "固定原件与上传登记", intent_id: "固定意图", candidate_id: "固定候选", attempt_id: "固定上传登记", upload_attempt_id: "固定上传登记",
 };
 const hiddenReviewFields = new Set(["digest", "content_sha256", "policy_digest", "inventory_revision", "reference_read_version", "storage_key", "server_storage_key", "confirmation_token"]);
-async function api<T>(path: string, body?: unknown): Promise<T> {
-  const response = await fetch(`/api/${path}`, { method: body === undefined ? "GET" : "POST", headers: { "Accept": "application/json", ...(body === undefined ? {} : { "Content-Type": "application/json" }) }, body: body === undefined ? undefined : JSON.stringify(body), cache: "no-store" });
-  let value: unknown; try { value = await response.json(); } catch { throw { status: response.ok ? 502 : response.status }; }
-  if (!response.ok) throw { status: response.status, code: isRecord(value) && typeof value.code === "string" ? value.code : undefined };
-  return value as T;
-}
 function ReviewFields({ value, item, field = "" }: { value: unknown; item: LifecycleItem; field?: string }) {
   if (value === null || value === undefined) return <span>尚未核实 · 保持保护</span>;
   if (Array.isArray(value)) return value.length ? <ul className="space-y-1">{value.map((entry, index) => <li key={index}><ReviewFields value={entry} item={item} field={field}/></li>)}</ul> : <span>服务器未列出此项</span>;
@@ -47,7 +42,7 @@ function ReviewFields({ value, item, field = "" }: { value: unknown; item: Lifec
 function statusLabel(value: string): string { return ({ registered: "已登记", unregistered: "尚未登记", unknown: "尚未知", intact: "已核实字节完整 · 扫描安全另行核对", corrupt: "字节校验不符 · 不可视为完整", present: "已核实字节存在", verified: "本次字节已核实", missing: "本次未取得字节 · 不推定删除", available: "本次字节可核对", unavailable: "本次字节核对不可用", written: "字节写入已记", inaccessible: "当前位置不可访问", active: "正常访问位置", quarantined: "隔离访问位置", prepared: "登记准备已记", bytes_written: "字节写入已记", aborted: "上传终止已记", not_registered: "尚未登记" } as Record<string, string>)[value] ?? "状态待核对"; }
 
 export function OriginalLifecycle(props: Props) { return <LifecyclePanel key={props.productId} {...props}/>; }
-function LifecyclePanel({ productId, productRevision, onCommitted }: Props) {
+function LifecyclePanel({ productId, productRevision, onCommitted, api }: Props) {
   const [inventory, setInventory] = useState<LifecycleInventory | null>(null), [loading, setLoading] = useState(true), [busy, setBusy] = useState(false);
   const [selection, setSelection] = useState<Selection | null>(null), [reason, setReason] = useState(""), [hold, setHold] = useState("unknown"), [retention, setRetention] = useState("");
   const [candidate, setCandidate] = useState<{ value: LifecycleCandidate; scope: string } | null>(null), [preview, setPreview] = useState<PreviewState | null>(null), [pending, setPending] = useState<LifecyclePending | null>(null);
@@ -66,8 +61,8 @@ function LifecyclePanel({ productId, productRevision, onCommitted }: Props) {
     void Promise.resolve().then(() => { if (active && alive.current) { setLoading(true); setBusy(false); setInventory(null); setSelection(null); setCandidate(null); setPreview(null); setPending(null); setReason(""); setHold("unknown"); setRetention(""); } });
     api<unknown>(`v1/products/${productId}/original-lifecycle`).then(value => { const result = normalizeInventory(value); if (active && alive.current && requestScope.current === scope) { setInventory(result); setError(""); } }).catch(failure => { if (active && alive.current) setError(lifecycleFailure(failure).message); }).finally(() => { if (active && alive.current) setLoading(false); });
     return () => { active = false; };
-  }, [productId, productRevision]);
-  useEffect(() => { if (currentPreview) { if (!dialog.current?.open) dialog.current?.showModal(); } else { dialog.current?.close(); if (preview) void Promise.resolve().then(() => { if (alive.current) { setPreview(null); setNotice("库存、保护事实或产品范围已变化；旧预览已废弃，请重新核对。"); } }); } }, [currentPreview, preview]);
+  }, [api, productId, productRevision]);
+  useEffect(() => { if (currentPreview) { if (!dialog.current?.open) dialog.current?.showModal(); } else { dialog.current?.close(); if (preview) void Promise.resolve().then(() => { if (alive.current) { setPreview(null); setNotice("库存、保护事实或型号范围已变化；旧预览已废弃，请重新核对。"); } }); } }, [currentPreview, preview]);
   function waiting(value: LifecyclePending | null) { pendingRef.current = value; setPending(value); }
   function closePreview() { if (lock.current || pendingRef.current) return; setPreview(null); dialog.current?.close(); trigger.current?.focus(); }
   async function readInventory() { const scope = `${productId}:${productRevision}`, result = normalizeInventory(await api<unknown>(`v1/products/${productId}/original-lifecycle`)); if (alive.current && requestScope.current === scope) setInventory(result); }
@@ -111,7 +106,7 @@ function LifecyclePanel({ productId, productRevision, onCommitted }: Props) {
     let command: LifecycleCommand;
     const make = (operation: LifecycleCommand["operation"], fields: Parameters<typeof lifecycleCommand>[4]) => lifecycleCommand(productId, productRevision, selected, operation, fields, reason, crypto.randomUUID(), crypto.randomUUID());
     if (selection.action === "quarantine" || selection.action === "restore") {
-      if (!currentCandidate?.eligible || Date.parse(currentCandidate.expires_at) <= Date.now() || currentCandidate.not_before && Date.parse(currentCandidate.not_before) > Date.now()) throw new Error("当前候选不适用或已过期，请先核对新的服务器候选。");
+      if (!currentCandidate?.eligible || currentCandidate.not_before && Date.parse(currentCandidate.not_before) > Date.now()) throw new Error("当前候选不适用，请先核对新的服务器候选。");
       command = make(`evidence.lifecycle.${selection.action}`, { candidate_id: currentCandidate.candidate_id, digest: currentCandidate.digest });
     } else if (selection.action === "cancel") {
       if (!selectedIntent?.can_cancel) throw new Error("服务器当前不允许取消此意图。");
@@ -156,11 +151,11 @@ function LifecyclePanel({ productId, productRevision, onCommitted }: Props) {
       {selection.action === "protection" && <><label>人工暂缓处理<select required value={hold} onChange={event => setHold(event.target.value)}><option value="unknown">尚未核对 · 请明确选择</option><option value="hold">有暂缓要求，保持保留</option><option value="no_hold">已具名核对，无人工暂缓要求</option></select></label><label>保留至（必须包含时区）<input required type="text" value={retention} maxLength={80} onChange={event => setRetention(event.target.value)} placeholder="2026-10-10T17:00:00-07:00"/><span className="subtle">填写完整日期、时间和时区偏移。输入更早日期也不能绕过服务器最小保留期与其他保护。</span></label></>}
       {selection.action === "abandon" && <p className="text-sm">仅终止尚未登记的未完成上传；服务器将核对迟到上传与当前登记事实。原件字节继续按保留政策保护，不执行删除。</p>}
       {selection.action === "cancel" && <p className="text-sm">仅取消从未尝试执行且服务器当前允许取消的意图，不撤销已执行动作。</p>}
-      {(selection.action === "quarantine" || selection.action === "restore") && <div className="space-y-3"><p className="subtle">先取得当前库存、引用与保留政策绑定的服务器候选，再读取完整的一次确认预览。</p><Button type="button" variant="outline" onClick={requestCandidate}>读取{selection.action === "quarantine" ? "隔离" : "恢复"}候选</Button>{currentCandidate && <div className="space-y-2 rounded-lg border border-border p-3 text-sm"><p className="font-medium">{currentCandidate.eligible ? "服务器候选符合当前规则 · 尚未执行" : "当前候选不适用 · 保持保护"}</p>{currentCandidate.reasons.map(entry => <p key={entry}>{lifecycleReason(entry)}</p>)}<p>有效至：{lifecycleTime(currentCandidate.expires_at)}</p>{currentCandidate.not_before && <p>最早允许时点：{lifecycleTime(currentCandidate.not_before)}</p>}<p className="subtle">政策版本：{currentCandidate.policy_version ?? selected.policy_version ?? "尚未取得"}</p></div>}</div>}
+      {(selection.action === "quarantine" || selection.action === "restore") && <div className="space-y-3"><p className="subtle">先取得当前库存、引用与保留政策绑定的服务器候选，再读取完整的一次确认预览。</p><Button type="button" variant="outline" onClick={requestCandidate}>读取{selection.action === "quarantine" ? "隔离" : "恢复"}候选</Button>{currentCandidate && <div className="space-y-2 rounded-lg border border-border p-3 text-sm"><p className="font-medium">{currentCandidate.eligible ? "服务器候选符合当前规则 · 尚未执行" : "当前候选不适用 · 保持保护"}</p>{currentCandidate.reasons.map(entry => <p key={entry}>{lifecycleReason(entry)}</p>)}<p>事实核对时点：{lifecycleTime(currentCandidate.captured_at)}</p>{currentCandidate.not_before && <p>最早允许时点：{lifecycleTime(currentCandidate.not_before)}</p>}<p className="subtle">政策版本：{currentCandidate.policy_version ?? selected.policy_version ?? "尚未取得"}</p></div>}</div>}
       <label>本次具名核对原因<textarea required minLength={selection.action === "abandon" ? 4 : 1} maxLength={2000} value={reason} onChange={event => setReason(event.target.value)}/>{selection.action === "abandon" && <span className="subtle">至少四字，说明为什么终止这次未完成上传。</span>}</label><div className="flex flex-wrap gap-2"><Button type="submit" disabled={(selection.action === "quarantine" || selection.action === "restore") && !currentCandidate?.eligible}>读取一次确认预览</Button><Button type="button" variant="outline" onClick={() => { setSelection(null); setCandidate(null); }}>取消准备</Button></div>
     </fieldset></form>}
     <dialog ref={dialog} aria-label="原件生命周期具名操作的一次确认" className="!w-[min(680px,calc(100vw-32px))] max-h-[90vh] overflow-auto" onCancel={event => { event.preventDefault(); if (!busy) closePreview(); }}>
-      {currentPreview && <div className="min-w-0 space-y-4 [&_*]:min-w-0"><h3 className="text-lg font-semibold">一次确认：{currentPreview.item.title}</h3><p className="text-sm whitespace-pre-wrap [overflow-wrap:anywhere]">{currentPreview.value.review.effect}</p><div className="grid gap-4 sm:grid-cols-2"><div className="rounded-lg border border-border p-3 text-sm"><h4 className="mb-3 font-semibold">当前固定事实</h4><ReviewFields value={currentPreview.value.review.before} item={currentPreview.item}/></div><div className="rounded-lg border border-border p-3 text-sm"><h4 className="mb-3 font-semibold">本次将记录</h4><ReviewFields value={currentPreview.value.review.after} item={currentPreview.item}/></div></div><p className="subtle">确认有效至 {lifecycleTime(currentPreview.value.expires_at)}。库存、引用、保留、权限或产品范围变化后，须重新核对。意图回执不等于实际字节动作成功。</p><div className="flex flex-wrap justify-end gap-2"><Button variant="outline" disabled={busy || !!pending} onClick={closePreview}>返回编辑</Button><Button disabled={busy || !!pending} onClick={() => { if (Date.parse(currentPreview.value.expires_at) <= Date.now()) { closePreview(); setError("预览已过期，请读取当前事实后重新核对。"); return; } void perform(() => ({ stage: "execute", command: currentPreview.value.command, itemId: currentPreview.item.id, scope: currentPreview.scope })); }}>确认本次具名记录</Button></div></div>}
+      {currentPreview && <div className="min-w-0 space-y-4 [&_*]:min-w-0"><h3 className="text-lg font-semibold">一次确认：{currentPreview.item.title}</h3><p className="text-sm whitespace-pre-wrap [overflow-wrap:anywhere]">{currentPreview.value.review.effect}</p><div className="grid gap-4 sm:grid-cols-2"><div className="rounded-lg border border-border p-3 text-sm"><h4 className="mb-3 font-semibold">当前固定事实</h4><ReviewFields value={currentPreview.value.review.before} item={currentPreview.item}/></div><div className="rounded-lg border border-border p-3 text-sm"><h4 className="mb-3 font-semibold">本次将记录</h4><ReviewFields value={currentPreview.value.review.after} item={currentPreview.item}/></div></div><p className="subtle">确认有效至 {lifecycleTime(currentPreview.value.expires_at)}。库存、引用、保留、权限或型号范围变化后，须重新核对。意图回执不等于实际字节动作成功。</p><div className="flex flex-wrap justify-end gap-2"><Button variant="outline" disabled={busy || !!pending} onClick={closePreview}>返回编辑</Button><Button disabled={busy || !!pending} onClick={() => { if (Date.parse(currentPreview.value.expires_at) <= Date.now()) { closePreview(); setError("预览已过期，请读取当前事实后重新核对。"); return; } void perform(() => ({ stage: "execute", command: currentPreview.value.command, itemId: currentPreview.item.id, scope: currentPreview.scope })); }}>确认本次具名记录</Button></div></div>}
     </dialog>
   </section>;
 }

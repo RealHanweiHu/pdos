@@ -5,12 +5,15 @@ The host verifies its environment before explicitly enabling the synthetic profi
 """
 
 from datetime import UTC, datetime
+from types import SimpleNamespace
 from uuid import UUID, uuid4
 
-from sqlalchemy import inspect, select
+from sqlalchemy import inspect, select, true
+from sqlalchemy.orm import Session, aliased
 
+from pdos_next.database import category_for_product
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Grant, OriginalSecurity, Principal, Product, now
+from pdos_next.models import Artifact, Grant, Principal, Product, now
 from pdos_next.original_lifecycle.rules import digest
 
 from .models import ProfessionalCurrent, ProfessionalFact
@@ -58,8 +61,6 @@ OPERATION_ROLES = {
     "change.request.create": frozenset({"quality", "engineering", "manufacturing"}),
     "change.impact.compute": frozenset({"quality", "engineering", "manufacturing"}),
 }
-MAX_FACTS = 100
-MAX_PROFILES = 20
 _CAPABILITY = object()
 
 
@@ -229,8 +230,8 @@ def configure_local_synthetic_profiles(engine, profiles, *, enabled=False):
     """
     if enabled is not True:
         raise ValueError("Synthetic professional authority requires explicit host enablement")
-    if type(profiles) is not list or not 1 <= len(profiles) <= MAX_PROFILES:
-        raise ValueError("Trusted profiles require an explicit list of 1..20 scopes")
+    if type(profiles) is not list or not profiles:
+        raise ValueError("Trusted profiles require a nonempty explicit scope list")
     required = {"tenant_id", "product_id", "key", "version"}
     configurations = []
     for profile_value in profiles:
@@ -313,32 +314,46 @@ def _issuer(engine, issuer, tenant_id, product_id, project_id):
 
 def _project(s, ctx, product_id, project_id, *, write=False):
     from pdos_next.domain.projects.models import Project
+    from pdos_next.request_proof import scoped_rows, snapshot_get
     from pdos_next.service import require_access
 
     query = select(Product).where(Product.id == product_id, Product.tenant_id == ctx.tenant_id)
-    product = s.scalar(query.with_for_update() if write else query)
-    if product is None:
-        raise DomainError("FORBIDDEN_SCOPE", "专业权威不在当前产品范围。", 403)
-    require_access(s, ctx, product_id, write=True, lock=write)
+    snapshot = s.info.get("read_snapshot") and not write
+    if snapshot:
+        product = snapshot_get(s, Product, product_id, scope_id=product_id)
+    else:
+        products = scoped_rows(s, (Product, product_id), query, lock=write)
+        product = products[0] if products else None
+    if product is None or product.tenant_id != ctx.tenant_id:
+        raise DomainError("FORBIDDEN_SCOPE", "专业权威不在当前型号范围。", 403)
+    require_access(s, ctx, product_id, write=write, lock=write)
     actor = s.get(Principal, ctx.requester_id)
-    if (
+    if write and (
         ctx.actor_id != ctx.requester_id
         or ctx.run_id is not None
         or actor is None
         or actor.kind != "human"
     ):
         raise DomainError("NAMED_PERSON_REQUIRED", "专业职责由当前具名人员承担。", 403)
-    project = s.scalar(
-        select(Project).where(
-            Project.id == project_id,
-            Project.product_id == product_id,
-            Project.tenant_id == ctx.tenant_id,
+    if snapshot:
+        project = snapshot_get(s, Project, project_id, scope_id=product_id)
+    else:
+        projects = scoped_rows(
+            s,
+            (Project, project_id),
+            select(Project).where(
+                Project.id == project_id,
+                Project.product_id == product_id,
+                Project.tenant_id == ctx.tenant_id,
+            ),
+            lock=write,
         )
-    )
+        project = projects[0] if projects else None
     if (
         project is None
         or project.status != "active"
-        or (project.visibility == "private" and project.owner_id != ctx.requester_id)
+        or project.tenant_id != ctx.tenant_id
+        or project.product_id != product_id
     ):
         raise DomainError("FORBIDDEN_SCOPE", "专业权威不在当前可读项目范围。", 403)
     return product, project
@@ -352,11 +367,193 @@ def _reads(sources):
         if identity in values and values[identity] != revision:
             raise DomainError("SOURCE_STALE", "同一来源不能绑定不同版本。")
         values[identity] = revision
-    if len(values) > 20:
-        raise DomainError("AUTHORITY_EVIDENCE_LIMIT", "专业权威来源超出完整读集上限。")
     return [
         {"artifact_id": key, "expected_revision": value} for key, value in sorted(values.items())
     ]
+
+
+def _current_fact_refresh_safe(s, selected=None):
+    if any(isinstance(row, ProfessionalFact) for row in (*s.new, *s.dirty, *s.deleted)):
+        return False
+    for row in s.identity_map.values():
+        if not isinstance(row, ProfessionalFact):
+            continue
+        values = inspect(row).dict
+        if "id" not in values:
+            return False
+        if selected is not None and values["id"] not in selected:
+            continue
+        if not {*_HASH_FIELDS, "fact_sha256"} <= values.keys():
+            return False
+        try:
+            unchanged = digest(_material(row)) == row.fact_sha256
+        except (TypeError, ValueError, AttributeError):
+            unchanged = False
+        if not unchanged:
+            return False
+    return True
+
+
+def _current_fact_writer_owner(s, ctx, product_id):
+    """Pure provenance of the existing Product gate, with no connection enlistment."""
+    from sqlalchemy.engine import Connection, Engine
+    from sqlalchemy.orm import SessionTransaction
+
+    from pdos_next.database import require_context
+    from pdos_next.request_proof import request_proof
+
+    if (
+        not isinstance(s, Session)
+        or s.is_active is not True
+        or not s.in_transaction()
+        or s.info.get("read_snapshot")
+        or s.new
+        or s.dirty
+        or s.deleted
+    ):
+        return None
+    require_context(s, ctx)
+    scope = (ctx.tenant_id, ctx.actor_id, ctx.requester_id, ctx.category_id)
+    if s.info.get("scope") != scope:
+        return None
+    proof = request_proof(s)
+    if product_id not in proof.scope_locks or s.get_transaction() is not proof.transaction:
+        return None
+    chain, seen = [], set()
+    node = s._transaction
+    while node is not None:
+        if (
+            not isinstance(node, SessionTransaction)
+            or node.session is not s
+            or node.is_active is not True
+            or id(node) in seen
+            or len(chain) >= 128
+        ):
+            return None
+        seen.add(id(node))
+        chain.append(node)
+        node = node.parent
+    if not chain or chain[-1] is not proof.transaction:
+        return None
+    if s.get_nested_transaction() is not next((node for node in chain if node.nested), None):
+        return None
+    try:
+        bind = s.get_bind()
+        if (
+            not isinstance(bind, (Engine, Connection))
+            or bind.dialect.name != "postgresql"
+            or any(
+                s.get_bind(mapper=model) is not bind
+                for model in (Product, ProfessionalCurrent, ProfessionalFact)
+            )
+        ):
+            return None
+    except Exception:
+        # Unknown/routed bindings keep the original ordered domain reader.
+        return None
+    # Only inspect the Connection already enlisted by the Product FOR UPDATE.
+    # s.connection() here could enlist a new bind while keeping the old marker.
+    enlisted = getattr(proof.transaction, "_connections", None)
+    if not isinstance(enlisted, dict) or bind not in enlisted:
+        return None
+    entry = enlisted[bind]
+    if not isinstance(entry, tuple) or len(entry) != 4:
+        return None
+    connection, transaction = entry[:2]
+    if (
+        not isinstance(connection, Connection)
+        or connection.closed
+        or connection.invalidated
+        or getattr(transaction, "is_active", False) is not True
+        or not connection.in_transaction()
+        or connection.get_transaction() is not transaction
+        or set(enlisted) != {connection, connection.engine}
+        or any(
+            not isinstance(value, tuple)
+            or len(value) != 4
+            or value[0] is not connection
+            or value[1] is not transaction
+            for value in enlisted.values()
+        )
+        or (isinstance(bind, Engine) and connection.engine is not bind)
+        or (isinstance(bind, Connection) and connection is not bind)
+    ):
+        return None
+    return (
+        tuple(sorted(vars(ctx).items())),
+        scope,
+        tuple(chain),
+        proof.transaction,
+        proof.mutation_epoch,
+        bind,
+        connection,
+        transaction,
+    )
+
+
+def _joined_current_fact_rows(s, ctx, product_id, project_id, subject_id, query, *, write):
+    """Collapse an uncached writer's adjacent raw reads; never cache an assessment.
+
+    The canonical application schema grants SELECT on both referenced tables.
+    LATERAL/OFFSET prevents runtime Fact evaluation without an outer Current;
+    SQL privilege checks still precede rows and are not conditional on Current.
+    """
+    if not write:
+        return None
+    owner = _current_fact_writer_owner(s, ctx, product_id)
+    if owner is None:
+        return None
+    from pdos_next.request_proof import request_proof
+
+    proof = request_proof(s)
+    key = ("query", (ProfessionalCurrent, product_id, project_id, subject_id))
+    saved = proof.read_rows.get(key)
+    if saved is not None and saved[0]:
+        # The old path needs at most its missing Fact read, not another Current.
+        return None
+    if saved is not None and not saved[1]:
+        return None
+    if any(
+        isinstance(key, tuple) and len(key) == 2 and key[0] is ProfessionalFact
+        for key in proof.read_rows
+    ):
+        # Fresh pointers may differ from the old nonlocking Current cache. Keep
+        # all existing Fact cache hits on the original zero/one-query path.
+        return None
+    if not _current_fact_refresh_safe(s):
+        # Actual selected IDs are only known after this read. Check every loaded
+        # Fact so populate_existing cannot erase an untracked JSON mutation.
+        return None
+    fact_query = (
+        select(ProfessionalFact)
+        .where(ProfessionalFact.id == ProfessionalCurrent.fact_id)
+        .correlate(ProfessionalCurrent)
+        .offset(0)
+        .lateral()
+    )
+    fact = aliased(ProfessionalFact, fact_query)
+    packed = (
+        query.with_only_columns(ProfessionalCurrent, fact)
+        .outerjoin(fact, true())
+        .with_for_update(of=ProfessionalCurrent)
+        .execution_options(populate_existing=True, autoflush=False)
+    )
+    # A DBAPI failure already aborts the original reader; there is no retry or
+    # SAVEPOINT overhead that would turn its two reads into three roundtrips.
+    with s.no_autoflush:
+        rows = list(s.execute(packed))
+    if (
+        _current_fact_writer_owner(s, ctx, product_id) != owner
+        or request_proof(s) is not proof
+    ):
+        raise DomainError("SOURCE_STALE", "专业原始行读取期间事务或范围已变化。")
+    pointers = [pointer for pointer, _ in rows]
+    facts = {pointer.fact_id: row for pointer, row in rows}
+    if pointers:
+        proof.read_rows[key] = (True, pointers)
+    # These are the original exact raw-row keys, including a hidden Fact's None.
+    proof.read_rows.update({(ProfessionalFact, key): row for key, row in facts.items()})
+    return pointers, facts
 
 
 def _current_fact_rows(s, pointers):
@@ -368,31 +565,13 @@ def _current_fact_rows(s, pointers):
     identities = tuple(dict.fromkeys(pointer.fact_id for pointer in pointers))
     if not identities:
         return {}
-    selected = set(identities)
-    pending = any(isinstance(row, ProfessionalFact) for row in (*s.new, *s.dirty, *s.deleted))
-    if not pending:
-        for row in s.identity_map.values():
-            if not isinstance(row, ProfessionalFact):
-                continue
-            state = inspect(row)
-            values = state.dict
-            if "id" not in values:
-                pending = True
-                break
-            if values["id"] not in selected:
-                continue
-            if not {*_HASH_FIELDS, "fact_sha256"} <= values.keys():
-                pending = True
-                break
-            try:
-                unchanged = digest(_material(row)) == row.fact_sha256
-            except (TypeError, ValueError, AttributeError):
-                unchanged = False
-            if not unchanged:
-                pending = True
-                break
-    if pending:
+    if not _current_fact_refresh_safe(s, set(identities)):
         return None
+    if isinstance(s, Session):
+        from pdos_next.request_proof import batch_read
+
+        with s.no_autoflush:
+            return batch_read(s, ProfessionalFact, identities)
     query = (
         select(ProfessionalFact)
         .where(ProfessionalFact.id.in_(identities))
@@ -406,18 +585,22 @@ def _evidence(s, ctx, product_id, sources):
     from pdos_next.domain.supply_execution.service import _sources
 
     reads = _reads(sources)
-    refs, private = _sources(s, ctx, product_id, reads, references=sources)
+    refs, private = _sources(
+        s,
+        ctx,
+        product_id,
+        reads,
+        references=[ref for ref in sources if "line" in ref and "quote" in ref],
+    )
     epochs = []
     for read in reads:
         source = s.get(Artifact, UUID(read["artifact_id"]))
         if source.original_id is not None:
-            safety = s.scalar(
-                select(OriginalSecurity).where(
-                    OriginalSecurity.original_id == source.original_id,
-                    OriginalSecurity.tenant_id == ctx.tenant_id,
-                    OriginalSecurity.product_id == product_id,
-                )
-            )
+            from pdos_next.original_security import security_row
+            from pdos_next.originals import require_original
+
+            original = require_original(s, ctx, product_id, source.original_id)
+            safety = security_row(s, original, lock=False)
             epochs.append(
                 {
                     "original_id": str(source.original_id),
@@ -477,6 +660,13 @@ def _fact_view(row, epoch):
         "nature": row.nature,
         "issuer_key": row.issuer_key,
         "issuer_version": row.issuer_version,
+        "series_id": str(row.series_id),
+        "fact_sha256": row.fact_sha256,
+        "state": row.state,
+        "operations": list(row.operations),
+        "purposes": list(row.purposes),
+        "valid_from": row.valid_from.isoformat(),
+        "valid_until": row.valid_until.isoformat(),
     }
 
 
@@ -502,7 +692,7 @@ def trusted_import(s, ctx, issuer, payload):
         raise DomainError("AUTHORITY_OPERATION_MISMATCH", "职责和资格须明确覆盖本专业操作。", 422)
     sources = [ref.model_dump(mode="json") for ref in value.sources]
     reads, private, evidence = _evidence(s, ctx, value.product_id, sources)
-    private |= project.visibility == "private"
+    private |= project.visibility != "category"
     query = select(ProfessionalCurrent).where(
         ProfessionalCurrent.tenant_id == ctx.tenant_id,
         ProfessionalCurrent.product_id == value.product_id,
@@ -552,7 +742,7 @@ def trusted_import(s, ctx, issuer, payload):
             or previous.operations != value.operations
             or previous.purposes != value.purposes
             or previous.nature != issuer.nature
-            or (previous.visibility == "product" and private)
+            or (previous.visibility == "category" and private)
         ):
             raise DomainError(
                 "AUTHORITY_SERIES_MISMATCH", "续版不能更换专业、用途或扩大来源受众。", 403
@@ -567,7 +757,7 @@ def trusted_import(s, ctx, issuer, payload):
         project_id=value.project_id,
         subject_id=value.subject_id,
         owner_id=ctx.requester_id,
-        visibility=previous.visibility if previous else "private" if private else "product",
+        visibility=previous.visibility if previous else "private" if private else "category",
         kind=value.kind,
         role=value.role,
         nature=issuer.nature,
@@ -673,10 +863,95 @@ def _reduce(facts, operation, purpose, at, *, synthetic_enabled):
     return sorted(roles), qualified, sorted(set(reasons))
 
 
+def _subject_access(s, ctx, product_id, subject_id):
+    if isinstance(s, Session):
+        from pdos_next.request_proof import request_proof
+
+        proof = request_proof(s)
+        for entry in proof.authority.values():
+            for principal, grant in entry["rows"]:
+                if principal.id == subject_id:
+                    return principal, grant
+        key = ("professional-subject", product_id, subject_id)
+        if key not in proof.read_rows:
+            proof.read_rows[key] = s.execute(
+                select(Principal, Grant)
+                .join(
+                    Grant,
+                    (Grant.tenant_id == Principal.tenant_id) & (Grant.principal_id == Principal.id),
+                )
+                .where(
+                    Principal.tenant_id == ctx.tenant_id,
+                    Principal.id == subject_id,
+                    Grant.category_id == category_for_product(product_id),
+                )
+            ).first()
+        return proof.read_rows[key] or (None, None)
+    return s.get(Principal, subject_id), s.scalar(
+        select(Grant).where(
+            Grant.category_id == category_for_product(product_id),
+            Grant.tenant_id == ctx.tenant_id,
+            Grant.principal_id == subject_id,
+        )
+    )
+
+
+def _summary_row(pointer):
+    """The database fills this projection from the exact immutable imported fact."""
+    values = dict(pointer.summary)
+    for key in (
+        "id",
+        "tenant_id",
+        "category_id",
+        "product_id",
+        "project_id",
+        "subject_id",
+        "owner_id",
+        "series_id",
+    ):
+        values[key] = UUID(values[key])
+    for key in ("valid_from", "valid_until"):
+        values[key] = datetime.fromisoformat(values[key])
+    values["sources"] = values["required_source_read_set"]
+    return SimpleNamespace(**values)
+
+
+def _check_current(pointer, row, ctx, product_id, project_id, subject_id, summary):
+    if not summary:
+        return _check_pointer(pointer, row, ctx.tenant_id, product_id, project_id, subject_id)
+    if (
+        (row.tenant_id, row.product_id, row.project_id, row.subject_id, row.id)
+        != (ctx.tenant_id, product_id, project_id, subject_id, pointer.fact_id)
+        or (row.series_id, row.kind, row.issuer_key, row.external_id, row.revision)
+        != (
+            pointer.series_id,
+            pointer.kind,
+            pointer.issuer_key,
+            pointer.external_id,
+            pointer.fact_revision,
+        )
+        or pointer.epoch != pointer.fact_revision
+    ):
+        raise DomainError("AUTHORITY_INTEGRITY_UNKNOWN", "专业 Current 摘要范围无法核对。")
+
+
 def assess(
-    s, ctx, product_id, project_id, operation, purpose, at, write=False, *, retained_fact_refs=None
+    s,
+    ctx,
+    product_id,
+    project_id,
+    operation,
+    purpose,
+    at,
+    write=False,
+    *,
+    retained_fact_refs=None,
+    subject_id=None,
 ):
     at = _aware(at)
+    subject_id = subject_id or ctx.requester_id
+    if write and subject_id != ctx.requester_id:
+        raise DomainError("NAMED_PERSON_REQUIRED", "具名写入不能借用受提名人员的身份。", 403)
     retained_ids = None
     if retained_fact_refs is not None:
         if (
@@ -701,7 +976,7 @@ def assess(
             "product_id": str(product_id),
             "project_id": str(project_id),
         },
-        "subject_id": str(ctx.requester_id),
+        "subject_id": str(subject_id),
         "operation": operation,
         "purpose": purpose,
         "authorized": False,
@@ -714,22 +989,18 @@ def assess(
         "synthetic": False,
         "required_source_read_set": [],
     }
-    basis, facts, sources, deadlines = [], [], [], []
+    basis, facts, sources = [], [], []
     blocked = False
     try:
         _project(s, ctx, product_id, project_id, write=write)
     except DomainError as error:
         blocked = True
-        result["reason_codes"].append(error.code)
+        result["reason_codes"].append(error.reason)
 
-    identity = s.get(Principal, ctx.requester_id)
-    grant = s.scalar(
-        select(Grant).where(
-            Grant.product_id == product_id,
-            Grant.tenant_id == ctx.tenant_id,
-            Grant.principal_id == ctx.requester_id,
-        )
-    )
+    identity, grant = _subject_access(s, ctx, product_id, subject_id)
+    if identity is None or grant is None or not identity.active:
+        blocked = True
+        result["reason_codes"].append("PROFESSIONAL_ACCESS_EXPIRED")
     basis.append(
         {
             "actor_id": str(ctx.actor_id),
@@ -741,15 +1012,13 @@ def assess(
                 str(grant.id),
                 grant.access_epoch,
                 grant.can_write,
-                grant.expires_at.isoformat(),
+                grant.expires_at.isoformat() if grant.expires_at else None,
             ]
             if grant
             else None,
         }
     )
-    if grant and grant.expires_at > at:
-        deadlines.append(grant.expires_at)
-    elif grant:
+    if grant and grant.expires_at is not None and grant.expires_at <= at:
         blocked = True
         result["reason_codes"].append("PROFESSIONAL_ACCESS_EXPIRED")
 
@@ -759,14 +1028,23 @@ def assess(
             ProfessionalCurrent.tenant_id == ctx.tenant_id,
             ProfessionalCurrent.product_id == product_id,
             ProfessionalCurrent.project_id == project_id,
-            ProfessionalCurrent.subject_id == ctx.requester_id,
+            ProfessionalCurrent.subject_id == subject_id,
         )
         .order_by(ProfessionalCurrent.id)
     )
-    pointers = list(s.scalars((query.with_for_update() if write else query).limit(MAX_FACTS + 1)))
-    if len(pointers) > MAX_FACTS:
-        blocked = True
-        result["reason_codes"].append("AUTHORITY_FACT_LIMIT")
+    joined = _joined_current_fact_rows(
+        s, ctx, product_id, project_id, subject_id, query, write=write
+    )
+    if joined is not None:
+        pointers, joined_facts = joined
+    elif isinstance(s, Session):
+        from pdos_next.request_proof import scoped_rows
+
+        pointers = scoped_rows(
+            s, (ProfessionalCurrent, product_id, project_id, subject_id), query, lock=write
+        )
+    else:
+        pointers = list(s.scalars(query.with_for_update() if write else query))
     registry = getattr(engine, "_pdos_professional_issuers", {})
     if not registry:
         blocked = True
@@ -775,7 +1053,18 @@ def assess(
     # Build the entire bounded current epoch basis before any source/visibility failure.
     # Negative or inaccessible facts still invalidate a saved review; no facts are exposed.
     current_rows = []
-    current_facts = _current_fact_rows(s, pointers)
+    summary_read = (
+        isinstance(s, Session)
+        and not write
+        and not any(isinstance(row, ProfessionalFact) for row in (*s.new, *s.dirty, *s.deleted))
+    )
+    current_facts = (
+        {pointer.fact_id: _summary_row(pointer) for pointer in pointers}
+        if summary_read
+        else joined_facts
+        if joined is not None
+        else _current_fact_rows(s, pointers)
+    )
     for pointer in pointers:
         row = (
             s.get(ProfessionalFact, pointer.fact_id)
@@ -796,7 +1085,7 @@ def assess(
             # snapshot's entire original set (including negative facts), relevant
             # additions and every original Current/issuer/source epoch still bind
             # the historical fingerprint. Missing original references cannot match.
-            _check_pointer(pointer, row, ctx.tenant_id, product_id, project_id, ctx.requester_id)
+            _check_current(pointer, row, ctx, product_id, project_id, subject_id, summary_read)
             continue
         entry = {
             "pointer_id": str(pointer.id),
@@ -818,10 +1107,10 @@ def assess(
         entry["issuer_available"] = usable
         entry["issuer_epoch"] = configured.epoch if isinstance(configured, IssuerContext) else None
         basis.append(entry)
-        current_rows.append((pointer, row, entry, usable))
-    for pointer, row, entry, usable in current_rows:
+        current_rows.append((pointer, row, entry, usable, configured))
+    for pointer, row, entry, usable, configured in current_rows:
         try:
-            _check_pointer(pointer, row, ctx.tenant_id, product_id, project_id, ctx.requester_id)
+            _check_current(pointer, row, ctx, product_id, project_id, subject_id, summary_read)
             if not usable:
                 blocked = True
                 result["reason_codes"].append("TRUSTED_ISSUER_UNAVAILABLE")
@@ -829,8 +1118,6 @@ def assess(
                 blocked = True
                 result["reason_codes"].append("SYNTHETIC_AUTHORITY_NOT_ALLOWED")
             result["synthetic"] |= row.nature == "synthetic"
-            if row.visibility == "private" and row.owner_id != ctx.requester_id:
-                raise DomainError("AUTHORITY_SOURCE_UNAVAILABLE", "专业依据不在当前可见范围。", 403)
             # Current access failure must not invoke source reads, while the complete
             # pointer basis above remains available for detecting authority changes.
             if (
@@ -843,41 +1130,34 @@ def assess(
                 raise DomainError("AUTHORITY_INTEGRITY_UNKNOWN", "专业权威来源读集不完整。")
             entry["evidence"] = evidence
             sources.extend(row.sources)
-            result["fact_refs"].append(_fact_view(row, pointer.epoch))
+            result["fact_refs"].append(
+                {
+                    **_fact_view(row, pointer.epoch),
+                    "issuer_epoch": configured.epoch if usable else None,
+                }
+            )
             if usable:
                 facts.append(row)
         except DomainError as error:
             blocked = True
-            entry["error"] = error.code
-            result["reason_codes"].append(error.code)
+            entry["error"] = error.reason
+            result["reason_codes"].append(error.reason)
     try:
         result["required_source_read_set"] = _reads(sources)
     except DomainError as error:
         blocked = True
-        result["reason_codes"].append(error.code)
+        result["reason_codes"].append(error.reason)
     roles, qualified, reasons = _reduce(
         facts, operation, purpose, at, synthetic_enabled=synthetic_enabled
     )
     result["roles"], result["qualified"] = roles, qualified
     result["reason_codes"].extend(reasons)
-    # Only effective applicable facts delimit successful authority, while every
-    # current fact (including expired/withdrawn/revoked) remains in its fingerprint.
-    for fact in facts:
-        if (
-            fact.role in roles
-            and operation in fact.operations
-            and purpose in fact.purposes
-            and fact.state == "active"
-            and fact.valid_from <= at < fact.valid_until
-        ):
-            deadlines.append(fact.valid_until)
     if blocked:
         result["authorized"], result["roles"], result["qualified"] = False, [], None
         result["fact_refs"], result["required_source_read_set"] = [], []
     else:
         result["authorized"] = bool(result["roles"]) and result["qualified"] is True
     result["reason_codes"] = sorted(set(result["reason_codes"]))
-    result["valid_until"] = min(deadlines).isoformat() if deadlines else None
     result["facts_revision"] = digest(
         {
             "scope": result["scope"],
@@ -885,7 +1165,7 @@ def assess(
             "operation": operation,
             "purpose": purpose,
             "synthetic_enabled": synthetic_enabled,
-            "complete": len(pointers) <= MAX_FACTS,
+            "complete": True,
             "facts": basis,
             "authorized": result["authorized"],
             "roles": result["roles"],
@@ -896,62 +1176,218 @@ def assess(
     return result
 
 
-def recheck_snapshot(s, ctx, product_id, project_id, snapshot, at, write=False, *, retained=False):
-    """Host may reconstruct the immutable historical reviewer context for reading only.
+def authority_time_current(value, at):
+    try:
+        facts = []
+        for reference in value.get("fact_refs", ()):
+            row = dict(reference)
+            row["valid_from"] = datetime.fromisoformat(row["valid_from"])
+            row["valid_until"] = datetime.fromisoformat(row["valid_until"])
+            if row["valid_from"].tzinfo is None or row["valid_until"].tzinfo is None:
+                return False
+            facts.append(SimpleNamespace(**row))
+        roles, qualified, _ = _reduce(
+            facts,
+            value["operation"],
+            value["purpose"],
+            at,
+            synthetic_enabled=value.get("synthetic") is True,
+        )
+        return qualified is True and bool(set(roles) & set(value.get("roles", ())))
+    except (KeyError, TypeError, ValueError):
+        return False
 
-    Actual command authority for the current actor must be checked separately.
+
+def _historical_facts(s, ctx, product_id, project_id, subject_id, identities):
+    if not isinstance(s, Session):
+        return {identity: s.get(ProfessionalFact, identity) for identity in identities}
+    from pdos_next.request_proof import request_proof
+
+    proof = request_proof(s)
+    key = ("professional-signature", product_id, project_id, subject_id, frozenset(identities))
+    if key not in proof.read_rows:
+        fields = (
+            "id",
+            "tenant_id",
+            "product_id",
+            "project_id",
+            "subject_id",
+            "series_id",
+            "revision",
+            "kind",
+            "role",
+            "nature",
+            "issuer_key",
+            "issuer_version",
+            "operations",
+            "purposes",
+            "state",
+            "valid_from",
+            "valid_until",
+            "fact_sha256",
+        )
+        rows = s.execute(
+            select(*(getattr(ProfessionalFact, key) for key in fields)).where(
+                ProfessionalFact.id.in_(identities),
+                ProfessionalFact.tenant_id == ctx.tenant_id,
+                ProfessionalFact.product_id == product_id,
+                ProfessionalFact.project_id == project_id,
+                ProfessionalFact.subject_id == subject_id,
+            )
+        ).mappings()
+        proof.read_rows[key] = {row["id"]: SimpleNamespace(**row) for row in rows}
+    return proof.read_rows[key]
+
+
+def _signature_currents(s, ctx, product_id, project_id, subject_id, *, write=False):
+    query = (
+        select(ProfessionalCurrent)
+        .where(
+            ProfessionalCurrent.tenant_id == ctx.tenant_id,
+            ProfessionalCurrent.product_id == product_id,
+            ProfessionalCurrent.project_id == project_id,
+            ProfessionalCurrent.subject_id == subject_id,
+        )
+        .order_by(ProfessionalCurrent.id)
+    )
+    if isinstance(s, Session):
+        from pdos_next.request_proof import scoped_rows
+
+        return scoped_rows(
+            s, (ProfessionalCurrent, product_id, project_id, subject_id), query, lock=write
+        )
+    return list(s.scalars(query))
+
+
+def _rr_signature_facts(s, ctx, product_id, project_id, subject_id, identities, pointers):
+    """Reuse only exact immutable facts proved by Current's complete RLS policy."""
+    rows = {}
+    for pointer in pointers:
+        if pointer.fact_id not in identities:
+            continue
+        row = _summary_row(pointer)
+        _check_current(pointer, row, ctx, product_id, project_id, subject_id, True)
+        rows[row.id] = row
+    missing = identities - rows.keys()
+    if missing:
+        # Replaced or inaccessible Current rows must still read the real frozen
+        # history under RLS; a Current summary never manufactures an older fact.
+        rows.update(_historical_facts(s, ctx, product_id, project_id, subject_id, missing))
+    return rows
+
+
+def recheck_snapshot(s, ctx, product_id, project_id, snapshot, at, write=False, *, retained=False):
+    """Read a frozen signature under the reader's scope, then compare Current watermarks.
+
+    A later personnel change marks review and blocks new dependent actions. It
+    does not erase the recorded signature or impersonate its original signer.
+    The current command independently assesses its own named actor at signing.
     """
-    if retained and (
-        not isinstance(snapshot, dict)
-        or not isinstance(snapshot.get("fact_refs"), list)
-        or not snapshot.get("fact_refs")
-    ):
-        return {
-            "current": False,
-            "assessment": None,
-            "reason_codes": ["AUTHORITY_SNAPSHOT_INVALID"],
-        }
-    if (
-        not isinstance(snapshot, dict)
-        or snapshot.get("subject_id") != str(ctx.requester_id)
-        or snapshot.get("scope")
-        != {
-            "tenant_id": str(ctx.tenant_id),
-            "product_id": str(product_id),
-            "project_id": str(project_id),
-        }
-    ):
-        return {"current": False, "assessment": None, "reason_codes": ["AUTHORITY_SCOPE_MISMATCH"]}
-    if (
-        not isinstance(snapshot.get("operation"), str)
-        or not isinstance(snapshot.get("purpose"), str)
-        or not snapshot["purpose"].strip()
-    ):
-        return {
-            "current": False,
-            "assessment": None,
-            "reason_codes": ["AUTHORITY_SNAPSHOT_INVALID"],
-        }
-    current = assess(
-        s,
-        ctx,
-        product_id,
-        project_id,
-        snapshot.get("operation"),
-        snapshot.get("purpose"),
-        at,
-        write=write,
-        retained_fact_refs=snapshot.get("fact_refs") if retained else None,
-    )
-    matches = (
-        current["authorized"]
-        and current["qualified"] is True
-        and snapshot.get("authorized") is True
-        and snapshot.get("qualified") is True
-        and current["facts_revision"] == snapshot.get("facts_revision")
-    )
-    return {
-        "current": bool(matches),
-        "assessment": current,
-        "reason_codes": [] if matches else ["PROFESSIONAL_AUTHORITY_CHANGED"],
+    invalid = {
+        "current": False,
+        "historical_valid": False,
+        "needs_review": True,
+        "assessment": None,
+        "reason_codes": ["AUTHORITY_SNAPSHOT_INVALID"],
     }
+    if not isinstance(snapshot, dict) or snapshot.get("scope") != {
+        "tenant_id": str(ctx.tenant_id),
+        "product_id": str(product_id),
+        "project_id": str(project_id),
+    }:
+        return {**invalid, "reason_codes": ["AUTHORITY_SCOPE_MISMATCH"]}
+    try:
+        subject = UUID(snapshot["subject_id"])
+        refs = snapshot["fact_refs"]
+        operation, purpose = snapshot["operation"], snapshot["purpose"]
+        if (
+            not isinstance(refs, list)
+            or not refs
+            or not isinstance(operation, str)
+            or not isinstance(purpose, str)
+            or not purpose.strip()
+            or snapshot.get("authorized") is not True
+            or snapshot.get("qualified") is not True
+        ):
+            return invalid
+        identities = {UUID(ref["id"]) for ref in refs}
+        if len(identities) != len(refs):
+            return invalid
+        _project(s, ctx, product_id, project_id, write=False)
+        pointers = None
+        if (
+            isinstance(s, Session)
+            and s.info.get("read_snapshot") is True
+            and not write
+            and not (s.new or s.dirty or s.deleted)
+        ):
+            pointers = _signature_currents(s, ctx, product_id, project_id, subject)
+            rows = _rr_signature_facts(
+                s, ctx, product_id, project_id, subject, identities, pointers
+            )
+        else:
+            rows = _historical_facts(s, ctx, product_id, project_id, subject, identities)
+        if set(rows) != identities:
+            return invalid
+        for ref in refs:
+            row = rows[UUID(ref["id"])]
+            if (
+                row is None
+                or (row.tenant_id, row.product_id, row.project_id, row.subject_id)
+                != (ctx.tenant_id, product_id, project_id, subject)
+                or row.revision != ref["revision"]
+                or ref["epoch"] != row.revision
+                or row.fact_sha256 != ref["fact_sha256"]
+                or str(row.series_id) != ref["series_id"]
+            ):
+                return invalid
+        roles = {
+            row.role
+            for row in rows.values()
+            if row.kind == "duty"
+            and row.state == "active"
+            and operation in row.operations
+            and purpose in row.purposes
+        }
+        qualified = {
+            row.role
+            for row in rows.values()
+            if row.kind == "qualification"
+            and row.state == "active"
+            and operation in row.operations
+            and purpose in row.purposes
+        }
+        if not set(snapshot.get("roles", ())) or not set(snapshot["roles"]) <= roles & qualified:
+            return invalid
+        if pointers is None:
+            pointers = _signature_currents(
+                s, ctx, product_id, project_id, subject, write=write
+            )
+        current = {
+            pointer.series_id: (pointer.fact_id, pointer.fact_revision, pointer.epoch)
+            for pointer in pointers
+        }
+        changed = any(
+            current.get(row.series_id) != (row.id, row.revision, row.revision)
+            for row in rows.values()
+        )
+        registry = getattr(s.get_bind(), "_pdos_professional_issuers", {})
+        changed |= any(
+            not isinstance(registry.get(ref["issuer_key"]), IssuerContext)
+            or registry[ref["issuer_key"]].version != ref["issuer_version"]
+            or registry[ref["issuer_key"]].epoch != ref["issuer_epoch"]
+            for ref in refs
+        )
+        # This is a factual eligibility boundary for a new action, not a snapshot TTL.
+        changed |= not authority_time_current(snapshot, _aware(at))
+        return {
+            "current": bool(retained or not changed),
+            "historical_valid": True,
+            "needs_review": bool(changed),
+            "assessment": snapshot,
+            "reason_codes": ["PROFESSIONAL_AUTHORITY_CHANGED"] if changed else [],
+        }
+    except (KeyError, TypeError, ValueError, AttributeError):
+        return invalid
+    except DomainError as error:
+        return {**invalid, "reason_codes": [error.reason]}

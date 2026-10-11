@@ -5,6 +5,9 @@ It is not suitable for a PostgreSQL READ ONLY transaction. Nothing here begins,
 flushes, commits, consumes a proof, configures an issuer or opens a connection.
 """
 
+from pdos_next.database import category_for_product
+
+
 # Initialize the actual registry before staged domain imports.
 # ruff: noqa: I001
 from copy import deepcopy
@@ -14,9 +17,9 @@ from uuid import UUID
 
 from pdos_next.service import Context, digest
 
-from . import anchor as a  
-from . import anchor_storage as storage  
-from . import fact_atom_storage as guards  
+from . import anchor as a
+from . import anchor_storage as storage
+from . import fact_atom_storage as guards
 from pdos_next.domain.quality_execution import evidence
 from pdos_next.domain.quality_execution.ports import FixedQualityResult
 from pdos_next.errors import DomainError
@@ -78,7 +81,7 @@ def _proof(ctx, product_id, origin, failure, value, stamp):
     )
     if value.visibility == "private" and value.owner_id != ctx.requester_id:
         raise DomainError("FORBIDDEN_SCOPE", "不能借原作者身份读取私有原失败。", 403)
-    if origin.visibility == "product" and value.visibility == "private":
+    if origin.visibility == "category" and value.visibility == "private":
         raise DomainError("FORBIDDEN_SCOPE", "私有原失败不能扩大原调查受众。", 403)
     # Keep an independent complete byte-read proof before subsequent owner IO.
     return a.OriginalFailureProof.model_validate(proof.model_dump(mode="json"))
@@ -109,12 +112,12 @@ def _sources(s, ctx, product_id, origin, failures):
             "MISSING_REQUIRED_EVIDENCE",
             "人工判断出处不能缺少原完整读集中的固定版本。",
         )
-        if private and origin.visibility == "product":
+        if private and origin.visibility == "category":
             raise DomainError("FORBIDDEN_SCOPE", "人工判断私有出处不能扩大调查受众。", 403)
     raw, private = evidence.source_basis(s, ctx, product_id, reads)
     raw = deepcopy(raw)  # Sparse actual JSON is never padded with typed nulls.
     basis = a.canonical_basis(raw, reads)
-    if private and origin.visibility == "product":
+    if private and origin.visibility == "category":
         raise DomainError("FORBIDDEN_SCOPE", "完整原锚来源不能扩大私有受众。", 403)
     mapped = {b.id: b for b in basis}
     _require(
@@ -188,7 +191,7 @@ def read_anchor_from_actual_owner(
             final_raw == raw_basis,
             message="全部失败重核后原来源闭包或安全 epoch 已变化。",
         )
-        if private and origin.visibility == "product":
+        if private and origin.visibility == "category":
             raise DomainError("FORBIDDEN_SCOPE", "末端来源受众不能扩大。", 403)
         _phase(s, ctx, uow, caller, stamp, bridge, refresh)
         # Finish the pure anchor work before the final caller/source IO/clock.
@@ -204,7 +207,7 @@ def read_anchor_from_actual_owner(
         # refresh. Read the complete sparse closure once more after that reader.
         final_raw, private = evidence.source_basis(s, ctx, product_id, reads)
         _require(final_raw == raw_basis, message="末端实际来源/安全闭包已经变化。")
-        if private and origin.visibility == "product":
+        if private and origin.visibility == "category":
             raise DomainError("FORBIDDEN_SCOPE", "末端来源受众不能扩大。", 403)
         final_row, final_issue = storage._version(
             s, ctx, product_id, issue_id, origin.ref, origin.scope.project_id
@@ -222,12 +225,16 @@ def read_anchor_from_actual_owner(
             s,
             Grant,
             Grant.tenant_id == ctx.tenant_id,
-            Grant.product_id == product_id,
+            Grant.category_id == category_for_product(product_id),
             Grant.principal_id == ctx.actor_id,
         )
         _phase(s, ctx, uow, caller, stamp, bridge, refresh)
         checked_at = guards.datetime.now(UTC)
-        if person.kind != "human" or person.active is not True or grant.expires_at <= checked_at:
+        if (
+            person.kind != "human"
+            or person.active is not True
+            or (grant.expires_at is not None and grant.expires_at <= checked_at)
+        ):
             raise DomainError("FORBIDDEN_SCOPE", "全部 IO/构造完成时本人读取授权已到期。", 403)
         _require(checked_at >= origin.created_at, message="最终实际读取时钟早于原保存事实。")
     return ActualAnchorRead(

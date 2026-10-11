@@ -51,9 +51,9 @@ class PolicyMaterial(Exact):
     scope: Scope
     purpose: Text
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     publisher_id: UUID
-    required_disciplines: tuple[Discipline, ...] = Field(min_length=2, max_length=4)
+    required_disciplines: tuple[Discipline, ...] = Field(min_length=2)
     valid_from: AwareDatetime
     valid_until: AwareDatetime
     nature: Literal["real", "synthetic"]
@@ -100,7 +100,7 @@ class SelectionPayload(Target, Exact):
     action: ActionTarget
     status: Literal["applicable", "not_applicable", "unknown"]
     source: SourceRef
-    valid_until: AwareDatetime
+    valid_until: AwareDatetime | None = None
     reason: Text
     expected_previous_id: UUID | None = None
     expected_previous_revision: int | None = Field(default=None, strict=True, ge=1)

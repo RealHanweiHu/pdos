@@ -93,9 +93,10 @@
 
 | 文档 | 状态 |
 |---|---|
-| [2026-10-08-pdos-next-s0-refactoring-plan.md](2026-10-08-pdos-next-s0-refactoring-plan.md) | **已按审阅意见修订（2026-10-08），待批准开始 B0**。M1/S0 整体重构：B0 限时基线（慢路径引用旧证据、短路径实测）、B1–B8 分批与回归、迁移链一次性重置不留兼容层（决策 P1）、建项目过渡入口（P2）、性能分档（P3）、品类为第一键的 RLS、施工合同整体标为已取代。代码未开始。 |
+| [2026-10-08-m2-skill-tool-delivery-proposal.md](2026-10-08-m2-skill-tool-delivery-proposal.md) | **待评审，仅文档，未实施。** M2 主循环 106 个工具与约 167 KB 定义的下发审查；建议固定窄入口与按技能追加 schema，具备资格时采用原生工具追加；包含缓存边界、可信调用证明、恢复及验证方案，未改 v1.1 冻结条款。 |
+| [2026-10-08-pdos-next-s0-refactoring-plan.md](2026-10-08-pdos-next-s0-refactoring-plan.md) | **用户 2026-10-08 已批准执行**。M1/S0 整体重构：B0 限时基线（慢路径引用旧证据、短路径实测）、B1–B8 分批与回归、迁移链一次性重置不留兼容层（决策 P1）、建项目过渡入口（P2）、性能分档（P3）、M2 在 B3 后与 B4–B6 并行并在 B7 汇合（P4）、品类为第一键的 RLS、施工合同整体标为已取代。活动状态以唯一清单为准。 |
 | [2026-10-07-xiaopai-single-agent-runtime-plan.md](2026-10-07-xiaopai-single-agent-runtime-plan.md) | **已被设计确认稿与 v1.1 取代（2026-10-08）**，保留作决策记录。单 Agent 小Pai、工具/MCP（§4.3）、技能包（§5.1）等内容已并入 v1.1 §06；其施工清单（§11、§14）以原工程为对象，不再执行。 |
-| [2026-10-07-xiaopai-product-execution-plan.md](2026-10-07-xiaopai-product-execution-plan.md) | **已按 v1.1 改写（2026-10-08）**。pdos-next 的里程碑排序：M0 停用与冻结 → M1 S0 整体重构 → M2 小Pai 内核与公开研究 → M3 品类到立项闭环 → 后续。活动状态以唯一清单为准。 |
+| [2026-10-07-xiaopai-product-execution-plan.md](2026-10-07-xiaopai-product-execution-plan.md) | **已按 v1.1 与确认稿 P4 同步（2026-10-08）**。pdos-next 的依赖：M0 → M1 的 B0–B3 → 并行【B4–B6 ‖ M2 小Pai 内核与公开研究】→ B7 → B8 → M3 品类到立项闭环 → 后续。活动状态以唯一清单为准。 |
 | [2026-10-08-pdos-next-design-confirmation.md](2026-10-08-pdos-next-design-confirmation.md) | **已全部确认（2026-10-08）**。原工程停用、主线改为 pdos-next 后的设计冻结前确认稿：已定决定 K1–K9；待拍板 C1–C14（范围根、提案/定义关系、研究类对象去留、第一闭环、一致性与性能规则、形式化收敛、Agent 拓扑写回、试点资格、出站、术语、派生、数据迁移、复用范围、文档清理）；原工程复用清单与停用步骤 S1–S7。全部确认后并入目标架构 v1.1 冻结。 |
 | [2026-10-08-pdos-complete-target-architecture-v1.1.md](2026-10-08-pdos-complete-target-architecture-v1.1.md) | **已批准并冻结（2026-10-08），pdos-next 现行设计依据**。完整目标架构 v1.1：并入设计确认稿 K1–K9、C1–C14（品类为范围根、立项提案与 G0、规格字典与共用规格条目、研究方法改技能包、§06 单 Agent 小Pai 整体改写、§08.11 一致性与性能规则、错误码收敛、服务商数据协议、试点资格、术语 S0–S5/ConfirmationBatch/AutomationRule、建设顺序）；新增不变量 I21–I24、ADR A21–A30、操作与验收 AT-49–63。取代 v1.0。 |
 

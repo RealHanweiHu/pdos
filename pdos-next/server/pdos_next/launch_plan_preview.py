@@ -6,12 +6,13 @@ Plan.  Calling its separate validate first repeats that entire traversal without
 introducing a later guard.  This seam calls the unchanged owner preview once.
 """
 
-from datetime import UTC, datetime
 
 from sqlalchemy import inspect
 from sqlalchemy.orm import Session, SessionTransaction
 
+from pdos_next.clock import now
 from pdos_next.contracts import Command
+from pdos_next.domain.professional_authority.service import authority_time_current
 from pdos_next.domain.verification_launch import service as launch
 from pdos_next.domain.verification_launch.schemas import PlanPayload
 from pdos_next.errors import DomainError
@@ -23,7 +24,7 @@ OPERATION = "test.run.plan"
 
 
 def _now():
-    return datetime.now(UTC)
+    return now()
 
 
 def _uow(s):
@@ -61,7 +62,7 @@ def _binding(s, ctx, command, product, payload):
     if checked.operation != OPERATION or PlanPayload.model_validate(checked.payload) != payload:
         raise DomainError("FORBIDDEN_OPERATION", "本入口仅核对精确的Run计划。", 403)
     if type(product) is not Product:
-        raise DomainError("INTEGRATION_REQUIRED", "计划预览缺少实际产品对象。", 503)
+        raise DomainError("INTEGRATION_REQUIRED", "计划预览缺少实际型号对象。", 503)
     state = inspect(product)
     if state.session is not s or state.persistent is not True:
         raise DomainError("INTEGRATION_REQUIRED", "产品必须是本Session已保存对象。", 503)
@@ -109,13 +110,7 @@ def preview_once(s, ctx, command, product, payload):
         # Sample fresh time after all owner/source/professional/ORM I/O.  Do not
         # serialize a new event or shift the supplied plan window to make it pass.
         final_at = _now()
-        try:
-            authority_until = datetime.fromisoformat(review["authority"]["valid_until"])
-            if authority_until.tzinfo is None or authority_until.utcoffset() is None:
-                raise ValueError("Unaware owner authority deadline")
-        except (KeyError, TypeError, ValueError):
-            raise DomainError("SOURCE_STALE", "计划预览缺少可核对的本人资格期限。") from None
-        if final_at >= authority_until:
+        if not authority_time_current(review["authority"], final_at):
             raise DomainError("SOURCE_STALE", "本人专业资格在计划核对期间已到期。")
         if payload.execution_plan.window.start < final_at:
             raise DomainError("INVALID_EVENT_TIME", "计划窗口在核对期间已开始，请重新读取。", 422)

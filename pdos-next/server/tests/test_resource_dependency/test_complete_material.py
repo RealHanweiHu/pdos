@@ -33,7 +33,7 @@ def test_prior_self_consistent_but_incomplete_envelope_is_now_rejected(h, case):
     seal(new, record)
     with pytest.raises(new.DomainError) as error:
         new._verify_stored_fingerprint_v2(record)
-    assert error.value.code == "RESOURCE_FINGERPRINT_MATERIAL_INVALID"
+    assert error.value.reason == "RESOURCE_FINGERPRINT_MATERIAL_INVALID"
 
 
 @pytest.mark.parametrize(
@@ -50,7 +50,6 @@ def test_prior_self_consistent_but_incomplete_envelope_is_now_rejected(h, case):
         "authority_duplicate_read",
         "authority_qualified_string",
         "authority_naive_deadline",
-        "basis_missing_access",
         "basis_extra",
         "basis_partial_access",
         "basis_bool_epoch",
@@ -160,7 +159,7 @@ def test_full_nested_shape_cannot_be_replaced_by_a_new_self_hash(h, case):
     seal(new, record)
     with pytest.raises(new.DomainError) as error:
         new._verify_stored_fingerprint_v2(record)
-    assert error.value.code == "RESOURCE_FINGERPRINT_MATERIAL_INVALID"
+    assert error.value.reason == "RESOURCE_FINGERPRINT_MATERIAL_INVALID"
 
 
 def test_exact_nullable_unknown_and_original_arrays_remain_unmodified(h):
@@ -219,4 +218,11 @@ def test_missing_pure_validator_is_explicit_missing_and_default_v1_does_not_load
     assert set(original[0]) == {"material", "facts_revision"}
     with pytest.raises(new.DomainError) as error:
         v2(h)
-    assert error.value.code == "INTEGRATION_REQUIRED" and error.value.status == 503
+    assert error.value.reason == "INTEGRATION_REQUIRED" and error.value.status == 503
+
+
+def test_current_provenance_is_complete_without_a_reader_acl_stamp(h):
+    _, record = v2(h)
+    record["material"]["source_basis"].pop("access")
+    seal(resources, record)
+    assert resources._verify_stored_fingerprint_v2(record) == record

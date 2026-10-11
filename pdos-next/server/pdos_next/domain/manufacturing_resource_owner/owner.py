@@ -21,6 +21,7 @@ from pdos_next.change_graph_closure import (
     closure_stamp,
     lock_dependency_clock,
 )
+from pdos_next.clock import deadline_current, earliest_deadline
 from pdos_next.domain.build_operational_facts import service as operational
 from pdos_next.domain.build_operational_facts.models import BuildOperationalFact, OperationalAsset
 from pdos_next.domain.build_operational_facts.schemas import FactInput
@@ -72,7 +73,7 @@ class ResourceRead:
     _runtime: str
     _stamp: dict
     _people: tuple
-    _deadline: datetime
+    _deadline: datetime | None
     _basis: dict
     _hash: str
     _token: object
@@ -120,7 +121,7 @@ def _lock_product(s, ctx, product_id):
         )
     )
     if len(rows) != 1 or rows[0].tenant_id != ctx.tenant_id or rows[0].id != product_id:
-        raise DomainError("FORBIDDEN_SCOPE", "资源读取不在当前产品范围。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "资源读取不在当前型号范围。", 403)
     return rows[0]
 
 
@@ -128,8 +129,8 @@ def _read_assets(s, ctx, specifications):
     """Exact existing mirror SELECT, never a reservation/create/write or tuple lock.
 
     Before this helper, inspect holds the actual Scope Clock SHARE until UOW
-    end. Effective 0030 triggers advance every tenant Clock for every Asset
-    INSERT/UPDATE/DELETE, so a concurrent Asset writer cannot commit first.
+    end. The trigger advances only clocks of actual physical references, so
+    a concurrent writer of a referenced asset cannot commit first.
     Ordinary MVCC SELECT can read its prior committed mirror without waiting
     on that writer's tuple. Full identity/hash/current checks stay unchanged.
     The shared trigger/0014 identity/DDL ACL contract is a deployment prerequisite;
@@ -381,16 +382,15 @@ def _material(s, ctx, request, *, io, pin):
         and operational._sources(data) == fact.sources
     )
     people, people_until = _people_nowait(s, ctx, pid, fact.owner_id)
-    owner = Context(ctx.tenant_id, fact.owner_id, fact.owner_id)
     evidence_reads, private, source_basis = operational._evidence_basis(
-        s, owner, pid, fact.sources, build_reads
+        s, ctx, pid, fact.sources, build_reads
     )
     reads = _merge_reads(build_reads, evidence_reads)
     require(reads == fact.required_source_read_set)
     # Caller independently needs every reference; publisher access never widens it.
     operational._evidence(s, ctx, pid, fact.sources)
     bytes_basis, caller_private, _ = change._evidence(s, ctx, pid, reads, io=io)
-    require(fact.visibility != "product" or not (private or caller_private))
+    require(fact.visibility != "category" or not (private or caller_private))
     specs = operational._assets(data, ctx.tenant_id)
     assets = _read_assets(s, ctx, specs)
     asset_basis, assets_current = [], True
@@ -423,11 +423,13 @@ def _material(s, ctx, request, *, io, pin):
         and fact.state == "active"
         and issuer_current
         and assets_current
-        and source_basis == fact.source_basis
+        and operational.evidence_watermark(source_basis)
+        == operational.evidence_watermark(fact.source_basis)
         and eng["source_status"] == process["source_status"] == "current"
-        and fact.valid_from <= clock() < fact.valid_until
+        and fact.valid_from <= clock()
+        and deadline_current(fact.valid_until, clock())
         and fact.valid_from <= execution.window.start
-        and fact.valid_until >= execution.window.finish
+        and (fact.valid_until is None or fact.valid_until >= execution.window.finish)
         and clock() < execution.window.finish
     )
     basis.update(
@@ -498,7 +500,7 @@ def inspect_resource(s, ctx, product_id, *, request):
         except DomainError as error:
             # Caller access was already positively locked above. Hidden discovered
             # dependencies supply only a generic unknown; no ID/readset is emitted.
-            if error.status != 403 and error.code not in {
+            if error.status != 403 and error.reason not in {
                 "OPERATIONAL_ASSET_MISSING",
                 "SOURCE_UNAVAILABLE",
                 "SOURCE_STALE",
@@ -518,9 +520,11 @@ def inspect_resource(s, ctx, product_id, *, request):
         basis = deepcopy(basis)
         # Historical access may outlive the immutable fact's application window;
         # it has no current relations/rights and exposes the original deadline.
-        deadline = min(caller_until, until or caller_until)
+        deadline = earliest_deadline(caller_until, until)
         if current and fact is not None:
-            deadline = min(deadline, fact.valid_until, request.execution.window.finish)
+            deadline = earliest_deadline(
+                deadline, fact.valid_until, request.execution.window.finish
+            )
         # Full concrete metadata pass after the only byte IO, without rereading
         # bytes. Row locks and the real dependency clock remain until UOW end.
         if fact is not None:
@@ -536,7 +540,7 @@ def inspect_resource(s, ctx, product_id, *, request):
         view = _view(request, basis, fact, data, reads, deadline, current)
         require(change._runtime_stamp(s) == runtime)
         require(fact is None or _issuer(s, ctx, request, fact)[1] == basis["issuer"])
-        require(clock() < deadline)
+        require(deadline_current(deadline, clock()))
         result = ResourceRead(
             view,
             deepcopy(sources),
@@ -553,7 +557,7 @@ def inspect_resource(s, ctx, product_id, *, request):
             _READ_TOKEN,
         )
         result = replace(result, _hash=_read_hash(result))
-        require(clock() < deadline)
+        require(deadline_current(deadline, clock()))
         return result
 
 
@@ -562,7 +566,10 @@ def refresh_resource(s, ctx, product_id, previous):
     require(type(previous) is ResourceRead and previous._token is _READ_TOKEN)
     require(_read_hash(previous) == previous._hash)
     _same_uow(s, previous._uow, ctx, previous._caller)
-    require(clock() < previous._deadline and change._runtime_stamp(s) == previous._runtime)
+    require(
+        deadline_current(previous._deadline, clock())
+        and change._runtime_stamp(s) == previous._runtime
+    )
     current = inspect_resource(s, ctx, product_id, request=previous.view.request)
     require(
         current._basis == previous._basis
@@ -573,7 +580,7 @@ def refresh_resource(s, ctx, product_id, previous):
     )
     _same_uow(s, previous._uow, ctx, previous._caller)
     require(change._runtime_stamp(s) == previous._runtime)
-    require(clock() < previous._deadline)
+    require(deadline_current(previous._deadline, clock()))
     return current
 
 

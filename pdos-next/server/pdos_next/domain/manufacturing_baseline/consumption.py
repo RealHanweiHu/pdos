@@ -83,6 +83,7 @@ def _material(ctx, command, payload, module):
     common_intent = digest(
         {
             "operation": command.operation,
+            "category": command.category_id,
             "product": command.product_id,
             "payload": semantic,
             "named_actor": ctx.requester_id,

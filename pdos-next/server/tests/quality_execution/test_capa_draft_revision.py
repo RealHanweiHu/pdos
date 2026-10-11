@@ -63,7 +63,7 @@ def host(old_host, monkeypatch):  # noqa: F811 - pytest resolves the registered 
 def reject(code, operation):
     with pytest.raises(DomainError) as error:
         operation()
-    assert error.value.code == code
+    assert error.value.reason == code
 
 
 def draft_for(issue):

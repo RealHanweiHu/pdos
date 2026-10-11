@@ -9,17 +9,19 @@ from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from types import SimpleNamespace
+from uuid import UUID as CategoryUUID
 from uuid import uuid4
 
 import pytest
 from fastapi import Depends, FastAPI
+from pydantic import ValidationError
+from sqlalchemy import ForeignKeyConstraint, UniqueConstraint, inspect
+from sqlalchemy.orm import make_transient_to_detached
+
 from pdos_next import command_handlers, contracts, lifecycle_catalog, models
 from pdos_next import service as common
 from pdos_next.domain.manufacturing_baseline import api, rules, schema_proposal, schemas, service
 from pdos_next.errors import DomainError
-from pydantic import ValidationError
-from sqlalchemy import ForeignKeyConstraint, UniqueConstraint, inspect
-from sqlalchemy.orm import make_transient_to_detached
 
 from .test_preparation import frame
 
@@ -66,7 +68,12 @@ CANONICAL_SCHEMA_BASELINE_JSON = (
 def phase_frame(monkeypatch, operation="npi.work_instruction.record"):
     f = frame(operation)
     product = models.Product(
-        id=f.pid, tenant_id=f.tenant, owner_id=f.actor, name="pure", revision=4
+        id=f.pid,
+        tenant_id=f.tenant,
+        owner_id=f.actor,
+        name="pure",
+        revision=4,
+        category_id=CategoryUUID(int=1000000),
     )
     make_transient_to_detached(product)
     f.s.add(product)
@@ -108,7 +115,7 @@ def test_canonical_pilot_still_unconnected_and_draft_never_authorizes_it():
     assert "npi.pilot.create" not in command_handlers.T1_OPERATIONS
     with pytest.raises(DomainError) as error:
         service.qualified_pilot_baseline()
-    assert (error.value.status, error.value.code) == (
+    assert (error.value.status, error.value.reason) == (
         503,
         "MANUFACTURING_BASELINE_RELEASE_REQUIRED",
     )
@@ -221,9 +228,15 @@ def test_api_registers_selected_read_and_only_common_command_inputs_no_write_rou
     routes = [r for r in app.routes if "manufacturing-preparations" in r.path]
     assert len(routes) == 3
     assert [(r.path, r.methods) for r in routes] == [
-        ("/v1/products/{product_id}/manufacturing-preparations", {"GET"}),
-        ("/v1/products/{product_id}/manufacturing-preparations/{kind}/{object_id}", {"GET"}),
-        ("/v1/products/{product_id}/manufacturing-preparations/inputs", {"POST"}),
+        ("/v1/categories/{category_id}/products/{product_id}/manufacturing-preparations", {"GET"}),
+        (
+            "/v1/categories/{category_id}/products/{product_id}/manufacturing-preparations/{kind}/{object_id}",
+            {"GET"},
+        ),
+        (
+            "/v1/categories/{category_id}/products/{product_id}/manufacturing-preparations/inputs",
+            {"POST"},
+        ),
     ]
     with pytest.raises(DomainError):
         from starlette.requests import Request
@@ -269,8 +282,8 @@ def test_new_atom_reciprocal_scoped_proof_and_family_receipt_does_not_replace_ol
     )
 
 
-def test_actual_migration28_is_numbered_retention_safe_and_static_embedded_sql():
-    path = SERVER / "migrations/versions/0028_manufacturing_preparation.py"
+def test_archived_migration28_retains_static_frozen_sql():
+    path = SERVER / "migrations/archive/pre-s0/versions/0028_manufacturing_preparation.py"
     spec = importlib.util.spec_from_file_location("owned_manufacturing_migration28", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -321,8 +334,10 @@ def test_all_physical_fks_point_to_existing_exact_unique_columns():
 def test_actual_common_preview_dispatch_uses_once_hooks_and_returned_command(monkeypatch):
     f, product, bound = phase_frame(monkeypatch)
     f.s.scalar = lambda q: product
-    f.s.get = lambda *a: SimpleNamespace(kind="human")
+    f.s.get = lambda *a: SimpleNamespace(kind="human", id=f.command.category_id)
     monkeypatch.setattr(common, "require_access", lambda *a, **k: None)
+    monkeypatch.setattr(common, "command_scope", lambda *a, **k: product)
+    monkeypatch.setattr(common, "prove_sources", lambda *a, **k: None)
     monkeypatch.setattr(common, "source_for", lambda *a: None)
     calls = []
     original_prepare = service.prepare_preview
@@ -352,13 +367,30 @@ def test_actual_common_preview_dispatch_uses_once_hooks_and_returned_command(mon
     assert proofs[0].operation == f.command.operation
 
 
-def test_index_width_and_common_canonical_specs_unchanged_from_baseline():
+def test_unchanged_canonical_specs_retain_baseline_and_s0_changes_are_explicit():
     import hashlib
     import json
 
     baseline = json.loads(CANONICAL_SCHEMA_BASELINE_JSON)
     source = SERVER
-    specs = [p for p in baseline if p.startswith("pdos_next/schemas/")]
+    approved_s0_changes = {
+        "pdos_next/schemas/change_control/contracts.py",
+        "pdos_next/schemas/discovery/contracts.py",
+        "pdos_next/schemas/manufacturing_trials/contracts.py",
+        "pdos_next/schemas/planning/plan.py",
+        "pdos_next/schemas/products/definitions.py",
+        "pdos_next/schemas/products/variants.py",
+        "pdos_next/schemas/quality_issues/contracts.py",
+        "pdos_next/schemas/resource_readiness/contracts.py",
+        "pdos_next/schemas/supply_cost/dto.py",
+        "pdos_next/schemas/verification/contracts.py",
+    }
+    specs = [
+        p for p in baseline if p.startswith("pdos_next/schemas/") and p not in approved_s0_changes
+    ]
+    from pdos_next.schemas.change_control.contracts import GraphSnapshot
+
+    assert GraphSnapshot.model_fields["expires_at"].default is None
     assert specs
     assert all(hashlib.sha256((source / p).read_bytes()).hexdigest() == baseline[p] for p in specs)
 

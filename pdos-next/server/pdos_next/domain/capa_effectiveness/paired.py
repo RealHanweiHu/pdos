@@ -118,12 +118,12 @@ class FormalRow(Closed):
     owner_id: UUID
     # Derived from this row's saved authority.subject_id, not a nonexistent ORM column.
     authority_actor_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     operation: Text
     snapshot: VerificationRequest
     snapshot_sha256: Sha256
     domain_intent: Sha256
-    reads: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
+    reads: tuple[SourceRead, ...] = Field(min_length=1)
     created_at: AwareDatetime
 
 
@@ -133,14 +133,14 @@ class RunRow(Closed):
     origin_request: FixedRef
     owner_id: UUID
     writer_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     operation: Text
     snapshot: TestRun
     snapshot_sha256: Sha256
     plan: ExecutionPlan
     plan_sha256: Sha256
     domain_intent: Sha256
-    reads: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
+    reads: tuple[SourceRead, ...] = Field(min_length=1)
     created_at: AwareDatetime
 
 
@@ -153,11 +153,11 @@ class FactBase(Closed):
     request_before: FixedRef
     next_request: FixedRef
     actor_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     operation: Operation
     input_snapshot: dict[str, JsonValue]
     domain_intent: Sha256
-    reads: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
+    reads: tuple[SourceRead, ...] = Field(min_length=1)
     created_at: AwareDatetime
 
 
@@ -191,7 +191,7 @@ class ProjectionRow(Closed):
     rules_sha256: Sha256
     result: Literal["pass", "fail", "indeterminate"]
     computed_results: tuple[ComputedResult, ...]
-    reads: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
+    reads: tuple[SourceRead, ...] = Field(min_length=1)
 
 
 class ReceiptResult(Closed):
@@ -209,6 +209,7 @@ class CommonIntentMaterial(Closed):
 
     handler: Literal["verification_launch", "verification_results"]
     operation: Operation
+    category: UUID
     product: UUID
     payload: dict[str, JsonValue]
     named_actor: UUID
@@ -226,7 +227,7 @@ class ReceiptRow(Closed):
     operation: Operation
     subject_type: Literal["verification_request", "test_run"]
     subject: FixedRef
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     request_digest: Sha256
     common_intent: Sha256
     run_id: UUID | None
@@ -263,8 +264,8 @@ class PairedMaterial(Closed):
     run_current: FixedRef | None
     fact: Annotated[LaunchFact | ResultAction, Field(discriminator="kind")] | None
     receipt: ReceiptRow | None
-    audits: tuple[AuditRow, ...] = Field(max_length=10)
-    outbox: tuple[OutboxRow, ...] = Field(max_length=10)
+    audits: tuple[AuditRow, ...] = Field()
+    outbox: tuple[OutboxRow, ...] = Field()
     common_material: CommonIntentMaterial | None
     projection: ProjectionRow | None = None
     projection_run: RunRow | None = None
@@ -326,11 +327,6 @@ def _merged_reads(groups):
             if ref.artifact_id in reads and reads[ref.artifact_id] != ref.expected_revision:
                 raise DomainError("SOURCE_STALE", "One source cannot bind conflicting versions.")
             reads[ref.artifact_id] = ref.expected_revision
-    _require(
-        len(reads) <= 20,
-        "MISSING_REQUIRED_EVIDENCE",
-        "Full pair sources exceed 20; never truncate.",
-    )
     return tuple(
         SourceRead(artifact_id=k, expected_revision=v)
         for k, v in sorted(reads.items(), key=lambda item: item[0].bytes)
@@ -1243,6 +1239,8 @@ class HostGateProof:
     stamps: tuple[GateStamp, ...]
     checked_at: datetime
     valid_until: datetime | None
+    time_constraints: tuple[datetime, ...] = ()
+    needs_review: bool = False
 
 
 @dataclass(frozen=True)
@@ -1325,8 +1323,10 @@ def _validate_gate(reader, s, ctx, read, structure, gate, started_at, at):
         return Missing(
             code="LIVE_HOST_GATE_UNBOUND", detail="Actual gate fingerprints are missing."
         )
-    if not started_at <= _instant(gate.checked_at) <= at or (
-        gate.valid_until is not None and _instant(gate.valid_until) <= at
+    if (
+        not started_at <= _instant(gate.checked_at) <= at
+        or (gate.valid_until is not None and _instant(gate.valid_until) <= at)
+        or any(_instant(value) <= at for value in gate.time_constraints)
     ):
         return Missing(
             code="LIVE_HOST_GATE_EXPIRED",
@@ -1420,7 +1420,13 @@ def read_paired_formal_output(
         if missing:
             return PairedReadOutcome(check.proof, None, (missing,))
         stamps = tuple(sorted((v.kind, v.basis_sha256) for v in gate.stamps))
-        current = (check.proof.material_sha256, stamps, gate.valid_until)
+        current = (
+            check.proof.material_sha256,
+            stamps,
+            gate.valid_until,
+            gate.time_constraints,
+            gate.needs_review,
+        )
         if phase == 1:
             _require(
                 current == previous_stamps,

@@ -1578,6 +1578,7 @@ S0～S5是新工程交付建议，不是旧项目任务编号。顺序（v1.1 �
 | `evidence.artifact.register` | T0 | 需资格与授权 | artifact.registered |
 | `evidence.claim.record` | T0 | 需资格与授权 | claim.recorded |
 | `evidence.link.create` | T0 | 需资格与授权 | evidence.linked |
+| `evidence.claim.withdraw`（v1.1，确认稿决策 P9：单条撤回 Claim，已被签署决定消费的不可撤回） | T1 | 一次确认后 | claim.withdrawn |
 | `evidence.source.withdraw` | T2 | 仅准备/不可代决定 | source.withdrawn |
 | `research.snapshot.register`（v1.1，取代 `product.research.start`） | T0 | 需资格与授权 | research.snapshot_registered |
 | `category.create`（v1.1） | T1 | 一次确认后 | category.created |

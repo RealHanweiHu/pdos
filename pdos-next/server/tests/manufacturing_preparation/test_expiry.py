@@ -3,10 +3,10 @@
 from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
+from uuid import UUID as CategoryUUID
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import make_transient_to_detached
 from sqlalchemy.orm.attributes import set_committed_value
 
@@ -20,7 +20,12 @@ from .test_preparation import frame
 def phase_frame(monkeypatch):
     f = frame()
     product = Product(
-        id=f.pid, tenant_id=f.tenant, owner_id=f.actor, name="no-connect substitute", revision=4
+        id=f.pid,
+        tenant_id=f.tenant,
+        owner_id=f.actor,
+        name="no-connect substitute",
+        revision=4,
+        category_id=CategoryUUID(int=1000000),
     )
     make_transient_to_detached(product)
     f.s.add(product)
@@ -32,7 +37,11 @@ def phase_frame(monkeypatch):
         {"status": "draft"},
         [],
         {"explicit_owner_substitute": True},
-        {"valid_until": (datetime.now(UTC) + timedelta(minutes=2)).isoformat()},
+        authority_result(
+            f,
+            SimpleNamespace(id=f.payload.project_id, purpose="precise source-bound purpose"),
+            datetime.now(UTC),
+        ),
         None,
         {},
         "test-runtime",
@@ -61,83 +70,79 @@ def authority_result(f, project, at):
         "valid_until": (at + timedelta(hours=1)).isoformat(),
         "required_source_read_set": [],
         "facts_revision": "unchanged actual owner material",
+        "synthetic": True,
+        "fact_refs": [
+            dict(
+                kind=kind,
+                role="manufacturing",
+                nature="synthetic",
+                state="active",
+                operations=[f.command.operation],
+                purposes=[project.purpose],
+                valid_from=(at - timedelta(minutes=1)).isoformat(),
+                valid_until=(at + timedelta(hours=1)).isoformat(),
+            )
+            for kind in ("duty", "qualification")
+        ],
     }
 
 
-@pytest.mark.parametrize("boundary", ["valid_from", "valid_until"])
-def test_future_scope_boundary_is_retained_without_rewriting_actual_assessment(
-    monkeypatch, boundary
-):
+def test_unrelated_future_scope_fact_does_not_create_capture_deadline(monkeypatch):
     f = frame()
     project = SimpleNamespace(id=f.payload.project_id, purpose="actual purpose")
     at = datetime.now(UTC)
-    expected = at + timedelta(seconds=2)
     value = authority_result(f, project, at)
-    fact = SimpleNamespace(
-        valid_from=at - timedelta(minutes=1), valid_until=at + timedelta(hours=2)
-    )
-    setattr(fact, boundary, expected)
     monkeypatch.setattr(service, "now", lambda: at)
     monkeypatch.setattr(service.professional, "assess", lambda *a, **k: value)
-    queries = []
 
-    def rows(query):
-        queries.append(str(query.compile(dialect=postgresql.dialect())))
-        return [fact]
+    def unexpected_history_query(*args):
+        raise AssertionError("A current assessment must not scan unrelated history")
 
-    f.s.scalars = rows  # No database; explicit complete scope owner substitute.
+    f.s.scalars = unexpected_history_query
     result, deadline = service._authority(f.s, f.ctx, f.command, project)
-    assert result is value and result["valid_until"] == (at + timedelta(hours=1)).isoformat()
-    assert deadline == expected
-    assert (
-        "subject_id" in queries[0] and "project_id IS NULL" in queries[0] and "LIMIT" in queries[0]
-    )
-    with pytest.raises(DomainError) as error:
-        service._deadline(result, expected, deadline)
-    assert error.value.code == "SOURCE_STALE"
+    assert result is value and deadline is None
+    service._deadline(result, at + timedelta(seconds=2), deadline)
 
 
-def test_future_negative_activation_crossed_during_actual_scope_query_is_rejected(monkeypatch):
+def test_selected_authority_expiry_crossed_during_owner_io_is_rejected(monkeypatch):
     f = frame()
     project = SimpleNamespace(id=f.payload.project_id, purpose="actual purpose")
     clock = [datetime.now(UTC)]
     initial = clock[0]
     value = authority_result(f, project, initial)
-    fact = SimpleNamespace(
-        valid_from=initial + timedelta(seconds=1), valid_until=initial + timedelta(hours=2)
-    )
+    for fact in value["fact_refs"]:
+        fact["valid_until"] = (initial + timedelta(seconds=1)).isoformat()
     monkeypatch.setattr(service, "now", lambda: clock[0])
-    monkeypatch.setattr(service.professional, "assess", lambda *a, **k: value)
 
-    def owner_io(query):
+    def owner_io(*args, **kwargs):
         clock[0] = initial + timedelta(seconds=2)
-        return [fact]
+        return value
 
-    f.s.scalars = owner_io
+    monkeypatch.setattr(service.professional, "assess", owner_io)
     with pytest.raises(DomainError) as error:
         service._authority(f.s, f.ctx, f.command, project)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
-@pytest.mark.parametrize("fault", ["limit", "naive"])
-def test_scope_deadline_cannot_be_unbounded_or_naive(monkeypatch, fault):
+@pytest.mark.parametrize("fault", ["many", "naive"])
+def test_actual_complete_authority_matrix_remains_uncapped_and_aware(monkeypatch, fault):
     f = frame()
     project = SimpleNamespace(id=f.payload.project_id, purpose="actual purpose")
     at = datetime.now(UTC)
+    value = authority_result(f, project, at)
     monkeypatch.setattr(service, "now", lambda: at)
-    monkeypatch.setattr(
-        service.professional, "assess", lambda *a, **k: authority_result(f, project, at)
-    )
-    fact = SimpleNamespace(
-        valid_from=at.replace(tzinfo=None) if fault == "naive" else at,
-        valid_until=at + timedelta(hours=2),
-    )
-    f.s.scalars = lambda q: [fact] * (1001 if fault == "limit" else 1)
-    with pytest.raises(DomainError) as error:
-        service._authority(f.s, f.ctx, f.command, project)
-    assert error.value.code == (
-        "PROFESSIONAL_SCOPE_LIMIT" if fault == "limit" else "INTEGRITY_MISMATCH"
-    )
+    if fault == "many":
+        value["fact_refs"] = value["fact_refs"] * 501
+    else:
+        for fact in value["fact_refs"]:
+            fact["valid_from"] = at.replace(tzinfo=None).isoformat()
+    monkeypatch.setattr(service.professional, "assess", lambda *a, **k: value)
+    if fault == "many":
+        assert service._authority(f.s, f.ctx, f.command, project) == (value, None)
+    else:
+        with pytest.raises(DomainError) as error:
+            service._authority(f.s, f.ctx, f.command, project)
+        assert error.value.reason == "SOURCE_STALE"
 
 
 def test_source_io_cannot_pass_previously_active_authority_after_future_boundary(monkeypatch):
@@ -184,7 +189,7 @@ def test_source_io_cannot_pass_previously_active_authority_after_future_boundary
     monkeypatch.setattr(service.evidence, "_evidence", source_io)
     with pytest.raises(DomainError) as error:
         service._load_fixed(f.s, f.ctx, f.command, product, f.payload)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
     assert not any(isinstance(v, service.PreparationVersion) for v in f.s.new)
 
 
@@ -201,7 +206,11 @@ def test_previous_current_io_precedes_last_live_clock_and_no_write_on_drift(monk
     bound = replace(
         original,
         previous=previous,
-        authority={"valid_until": (clock[0] + timedelta(hours=2)).isoformat()},
+        authority=authority_result(
+            f,
+            SimpleNamespace(id=f.payload.project_id, purpose="precise source-bound purpose"),
+            clock[0],
+        ),
         authority_deadline=until,
     )
     monkeypatch.setattr(service, "_refresh", lambda *a: bound)
@@ -242,7 +251,7 @@ def test_previous_current_io_precedes_last_live_clock_and_no_write_on_drift(monk
         )
     assert events[0] == "pointer_io"
     assert (
-        error.value.code
+        error.value.reason
         == {
             "confirmation": "CONFIRMATION_REQUIRED",
             "authority": "SOURCE_STALE",

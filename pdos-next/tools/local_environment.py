@@ -22,7 +22,7 @@ sys.path.insert(0, str(SERVER))
 
 from pdos_next.contracts import Command  # noqa: E402
 from pdos_next.database import engine_for, tenant_session  # noqa: E402
-from pdos_next.models import Grant, LoginSession, Principal, Product, now  # noqa: E402
+from pdos_next.models import Category, Grant, LoginSession, Principal, Product, now  # noqa: E402
 from pdos_next.service import Context, digest, execute  # noqa: E402
 
 
@@ -52,6 +52,7 @@ def environment(state):
         **os.environ,
         "DATABASE_URL": state["app_url"],
         "AUTH_DATABASE_URL": state["auth_url"],
+        "DISPATCH_DATABASE_URL": state["dispatch_url"],
         "MIGRATION_DATABASE_URL": state["admin_url"],
         "TEST_DATABASE_URL": state["admin_url"],
         "TEST_DATABASE_MARKER": state["marker"],
@@ -75,6 +76,7 @@ def verified(state):
 
 
 def seed(state):
+    verified(state)
     admin = engine_for(state["admin_url"])
     tenant, person = uuid4(), uuid4()
     token = secrets.token_urlsafe(32)
@@ -89,9 +91,15 @@ def seed(state):
                 expires_at=now() + timedelta(days=7),
             )
         )
+        category = Category(
+            id=uuid4(), tenant_id=tenant, name="汽车充气泵", purpose="合成品类范围", owner_id=person
+        )
+        s.add(category)
+        s.flush()
         product = Product(
             id=uuid4(),
             tenant_id=tenant,
+            category_id=category.id,
             name="合成资料演练",
             purpose="验证来源记录与工作恢复，不代表真实产品定义。",
             owner_id=person,
@@ -101,21 +109,28 @@ def seed(state):
         s.add(
             Grant(
                 tenant_id=tenant,
-                product_id=product.id,
+                category_id=category.id,
                 principal_id=person,
                 can_write=True,
                 expires_at=now() + timedelta(days=7),
             )
         )
-        product_id = product.id
-    with tenant_session(engine_for(state["app_url"]), tenant) as s:
+        product_id, category_id = product.id, category.id
+    with tenant_session(
+        engine_for(state["app_url"]),
+        tenant,
+        actor_id=person,
+        requester_id=person,
+        category_id=category_id,
+    ) as s:
         execute(
             s,
-            Context(tenant, person, person),
+            Context(tenant, person, person, category_id=category_id),
             Command(
                 command_id=uuid4(),
                 idempotency_key=f"preview-source:{uuid4()}",
                 operation="evidence.artifact.register",
+                category_id=category_id,
                 product_id=product_id,
                 expected_revision=1,
                 payload={
@@ -129,6 +144,7 @@ def seed(state):
                 },
             ),
         )
+    state["preview_category_id"] = str(category_id)
     state["preview_token"] = token
     state["preview_product_id"] = str(product_id)
     state["preview_tenant_id"] = str(tenant)
@@ -143,7 +159,7 @@ def create():
     marker = str(uuid4())
     name = f"pdos-next-test-20261002-{marker[:8]}"
     password = secrets.token_hex(20)
-    app_password, auth_password = secrets.token_hex(20), secrets.token_hex(20)
+    app_password, auth_password, dispatch_password = (secrets.token_hex(20) for _ in range(3))
     container_id = docker(
         "run",
         "-d",
@@ -174,6 +190,7 @@ def create():
         "admin_url": f"postgresql+psycopg://postgres:{password}@127.0.0.1:{port}/pdos_test",
         "app_url": f"postgresql+psycopg://pdos_next_app:{app_password}@127.0.0.1:{port}/pdos_test",
         "auth_url": f"postgresql+psycopg://pdos_next_auth:{auth_password}@127.0.0.1:{port}/pdos_test",
+        "dispatch_url": f"postgresql+psycopg://pdos_next_dispatch:{dispatch_password}@127.0.0.1:{port}/pdos_test",
     }
     # Preserve interrupted bootstrap state to avoid creating another container.
     save(state)
@@ -192,6 +209,7 @@ def create():
         for role, role_password in [
             ("pdos_next_app", app_password),
             ("pdos_next_auth", auth_password),
+            ("pdos_next_dispatch", dispatch_password),
         ]:
             conn.execute(
                 sql.SQL("CREATE ROLE {} LOGIN NOSUPERUSER NOBYPASSRLS PASSWORD {}").format(
@@ -199,10 +217,13 @@ def create():
                 )
             )
         conn.execute("CREATE ROLE pdos_agent NOLOGIN NOSUPERUSER NOBYPASSRLS")
+        conn.execute(
+            "CREATE ROLE pdos_next_owner NOLOGIN NOSUPERUSER NOBYPASSRLS NOCREATEROLE NOCREATEDB"
+        )
         conn.execute("REVOKE CREATE ON SCHEMA public FROM PUBLIC")
         conn.execute("CREATE TABLE environment_guard(marker uuid PRIMARY KEY)")
         conn.execute("INSERT INTO environment_guard VALUES (%s)", (UUID(marker),))
-        conn.execute("GRANT SELECT ON environment_guard TO pdos_next_app")
+        conn.execute("GRANT SELECT ON environment_guard TO pdos_next_app,pdos_next_dispatch")
     verified(state)
     bootstrap_report = REPORT.parent / f"pdos-next-bootstrap-{marker[:8]}"
     bootstrap_report.mkdir(parents=True, exist_ok=True)
@@ -244,8 +265,12 @@ def local_profile_environment(directory, state):
         result[single_key] = result[plural_key] = "null"
         if plural.exists():
             value = json.loads(plural.read_text())
-            if type(value) is not list or not 1 <= len(value) <= 20:
-                raise RuntimeError(f"Invalid finite {family} host profile list")
+            if (
+                type(value) is not list
+                or not value
+                or any(type(item) is not dict for item in value)
+            ):
+                raise RuntimeError(f"Invalid nonempty {family} host profile list of mappings")
             result[plural_key] = json.dumps(value)
         elif family == "PROFESSIONAL":
             result[single_key] = json.dumps(

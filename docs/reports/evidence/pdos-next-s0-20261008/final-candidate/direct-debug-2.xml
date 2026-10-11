@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="49.385" timestamp="2026-10-09T18:07:46.732696-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.verification_launch.test_transactions" name="test_fixed_full_accepted_plan_promise_and_atomic_actual_start_leave_old_history" time="49.091"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;服务器预览资源材料未绑定本次完整Run。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;INTEGRITY_MISMATCH&quot;}}&#10;assert 409 == 200&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">tests/verification_launch/test_transactions.py:137: in test_fixed_full_accepted_plan_promise_and_atomic_actual_start_leave_old_history
+    start_receipt, prepared = accepted(work.quality, actual)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_project_first_plan.py:108: in accepted
+    assert result.status_code == 200, result.text
+E   AssertionError: {"code":"VALIDATION_FAILED","message":"服务器预览资源材料未绑定本次完整Run。","detail":{"reason":"INTEGRITY_MISMATCH"}}
+E   assert 409 == 200
+E    +  where 409 = &lt;Response [409 Conflict]&gt;.status_code</failure></testcase></testsuite></testsuites>

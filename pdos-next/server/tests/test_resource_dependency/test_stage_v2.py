@@ -6,6 +6,7 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
+from sqlalchemy.orm import Session
 
 from pdos_next.domain.test_resources import service as resources
 
@@ -147,6 +148,59 @@ def test_every_fresh_call_owns_its_empty_list_and_full_record(staging):
     assert ports.latest_record is not state.sinks[-1][0]
 
 
+def test_held_scope_port_reuses_only_same_real_transaction_and_mutation_epoch(staging):
+    from pdos_next.request_proof import request_proof
+
+    state = staging
+    # A real SQLAlchemy transaction without database IO. Full resource loading
+    # is substituted by this fixture; this does not attest real qualification.
+    with Session(bind=state.h.engine) as session, session.begin():
+        state.session = session
+        proof = request_proof(session)
+        proof.scope_locks.add(state.h.pid)
+        ports = state.ports()
+        first = ports.fresh()
+        assert ports.fresh() is first and state.load_count == 1
+        proof.mutation_epoch += 1
+        ports.fresh()
+        assert state.load_count == 2
+        with session.begin_nested():
+            ports.fresh()
+            assert state.load_count == 3
+        ports.fresh()
+        assert state.load_count == 4
+        state.h.engine._pdos_test_resource_issuer_epochs["unrelated-other-scope"] += 1
+        ports.fresh()
+        assert state.load_count == 5
+
+
+@pytest.mark.parametrize("boundary", ["qualification", "window"])
+def test_held_scope_port_checks_actual_deadline_on_each_cache_hit(staging, boundary):
+    from pdos_next.request_proof import request_proof
+
+    state = staging
+    if boundary == "qualification":
+        state.current = (
+            state.current[0].model_copy(
+                update={"valid_until": state.h.clock + timedelta(seconds=1)}
+            ),
+            *state.current[1:],
+        )
+    with Session(bind=state.h.engine) as session, session.begin():
+        state.session = session
+        request_proof(session).scope_locks.add(state.h.pid)
+        ports = state.ports()
+        ports.fresh()
+        state.h.clock = (
+            state.current[0].valid_until
+            if boundary == "qualification"
+            else state.h.binding.window.finish
+        )
+        with pytest.raises(state.new.DomainError) as error:
+            ports.fresh()
+        assert error.value.reason == "SOURCE_STALE" and state.load_count == 1
+
+
 def test_stage_writes_identical_full_record_to_owner_before_single_caller_result(staging):
     state = staging
     sink = []
@@ -189,7 +243,7 @@ def test_runtime_changes_during_fresh_owner_io_are_rejected(staging):
     )
     with pytest.raises(state.new.DomainError) as error:
         state.ports().fresh()
-    assert error.value.code == "SOURCE_STALE" and state.added == []
+    assert error.value.reason == "SOURCE_STALE" and state.added == []
 
 
 def test_current_io_after_material_collection_still_guards_runtime_before_effects(
@@ -206,7 +260,7 @@ def test_current_io_after_material_collection_still_guards_runtime_before_effect
     sink = []
     with pytest.raises(state.new.DomainError) as error:
         state.start(sink)
-    assert error.value.code == "SOURCE_STALE" and sink == [] and (state.added == [])
+    assert error.value.reason == "SOURCE_STALE" and sink == [] and (state.added == [])
 
 
 @pytest.mark.parametrize("change", ["runtime", "proof", "window", "qualification", "collector"])

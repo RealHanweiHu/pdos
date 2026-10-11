@@ -93,9 +93,9 @@ test("unknown facet or node reference is never silently accepted", () => {
   const other = fixture(); record(other.capture.graph.coverage[0].node).id = id(90); assert.equal(readChangeCoverage(other, now).needsReview, true);
 });
 test("legacy graph without complete coverage array stays pending", () => { const input = fixture(); delete record(input.capture.graph).coverage; assert.equal(readChangeCoverage(input, now).nodeCount, null); });
-test("the graph DTO node bound is rejected without truncating the supplied graph", () => {
+test("graphs over the previous node bound retain every node and facet", () => {
   const input = fixture(5001), size = input.capture.graph.nodes.length, view = readChangeCoverage(input, now);
-  assert.equal(view.nodeCount, null); assert.equal(view.needsReview, true); assert.equal(input.capture.graph.nodes.length, size); assert.equal(input.capture.graph.coverage.length, 40008);
+  assert.equal(view.nodeCount, size); assert.equal(view.needsReview, false); assert.equal(input.capture.graph.nodes.length, size); assert.equal(input.capture.graph.coverage.length, 40008);
 });
 test("invalid graph source and unavailable exact source read set stay pending", () => {
   const input = fixture(); input.capture.graph.sources[0].position = "model quote"; assert.equal(readChangeCoverage(input, now).needsReview, true);
@@ -104,9 +104,18 @@ test("invalid graph source and unavailable exact source read set stay pending", 
 test("conflicting or duplicate Source read versions cannot be summarized as complete", () => {
   const input = fixture(); input.capture.required_source_read_set.push({ ...input.capture.required_source_read_set[0], expected_revision: 3 }); assert.equal(readChangeCoverage(input, now).needsReview, true);
 });
-test("more than 20 sources is flagged without shrinking the read set", () => {
+test("more than 20 sources retains the complete read set", () => {
   const input = fixture(); for (let i = 0; i < 20; i++) input.capture.required_source_read_set.push({ artifact_id: id(100 + i), expected_revision: 1 });
-  const before = structuredClone(input), view = readChangeCoverage(input, now); assert.equal(view.needsReview, true); assert.equal(view.facets[0].listed, 0); assert.deepEqual(input, before);
+  const before = structuredClone(input), view = readChangeCoverage(input, now); assert.equal(view.needsReview, false); assert.equal(view.facets[0].listed, 2); assert.deepEqual(input, before);
+});
+test("ordinary captures rely on Current without a manufactured deadline", () => {
+  const input = fixture(); record(input.capture).expires_at = null; record(input.capture.graph).expires_at = null;
+  const view = readChangeCoverage(input, now);
+  assert.equal(view.needsReview, false); assert.equal(view.snapshot.expired, false); assert.equal(view.snapshot.current, true);
+  input.capture.current = false; input.capture.source_status = "needs_recheck";
+  assert.equal(readChangeCoverage(input, now).snapshot.current, false);
+  record(input.capture).expires_at = until;
+  assert.equal(readChangeCoverage(input, now).nodeCount, null);
 });
 test("malformed and duplicate edges stay pending", () => {
   const input = fixture(), edge = { id: "edge-1", origin: input.capture.graph.nodes[0].ref, target: input.capture.graph.nodes[1].ref, source: input.capture.graph.nodes[0].source, relation: "关联" };

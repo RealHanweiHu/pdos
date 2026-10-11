@@ -47,7 +47,12 @@ from pdos_next.domain.quality_execution.models import (
 )
 from pdos_next.domain.verification_results.models import MeasurementRecord
 from pdos_next.models import Audit, Confirmation, Outbox, Receipt, now
-from pdos_next.quality_result_bridge import fixed_failure_result, recheck_fixed_failure_result
+from pdos_next.quality_result_bridge import (
+    fixed_failure_result,
+    fixed_failure_scope,
+    read_failure_batch,
+    recheck_fixed_failure_result,
+)
 from pdos_next.service import digest
 
 
@@ -70,7 +75,13 @@ def quality_work(results_work):
     )
     work.failure_run = fixed.run
     work.failure_run_version_id = fixed.row.id
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         work.failure_event = session.scalar(
             select(Outbox.id).where(Outbox.receipt_id == UUID(work.result_receipt["id"]))
         )
@@ -93,9 +104,15 @@ def quality_work(results_work):
     previous = (
         getattr(engine, "_pdos_quality_result_bridge", None),
         getattr(engine, "_pdos_quality_result_refresh", None),
+        getattr(engine, "_pdos_quality_result_scope", None),
+        getattr(engine, "_pdos_quality_result_read_batch", None),
     )
     service.configure_result_bridge(
-        engine, fixed_failure_result, refresh=recheck_fixed_failure_result
+        engine,
+        fixed_failure_result,
+        refresh=recheck_fixed_failure_result,
+        scope=fixed_failure_scope,
+        read_batch=read_failure_batch,
     )
     work.policy_issuer = policy.configure_local_synthetic(
         engine,
@@ -109,7 +126,9 @@ def quality_work(results_work):
     try:
         yield work
     finally:
-        service.configure_result_bridge(engine, previous[0], refresh=previous[1])
+        service.configure_result_bridge(
+            engine, previous[0], refresh=previous[1], scope=previous[2], read_batch=previous[3]
+        )
         policy.disable_issuer(engine, work.policy_issuer.key)
 
 
@@ -148,7 +167,13 @@ def publish_policy(work, *, previous=None, risk="high", independent=True, state=
         "sources": [reference],
         "reason": "Explicit synthetic scoped policy publication",
     }
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         receipt = import_quality_policy_fact(
             session,
             work.quality.ctx,
@@ -188,7 +213,7 @@ def payload_create(work, index=0, *, event_id=None, title="Synthetic definite fa
 def command(work, operation, payload):
     value = cmd(work.quality, operation, deepcopy(payload))
     response = work.quality.client.post(
-        f"/v1/products/{work.setup.product}/quality-execution/inputs",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/quality-execution/inputs",
         headers=work.quality.headers,
         json=value,
     )
@@ -209,7 +234,7 @@ def create_issue(work, index=0, **changes):
 
 def listing(work):
     response = work.quality.client.get(
-        f"/v1/products/{work.setup.product}/quality-execution",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/quality-execution",
         headers=work.quality.headers,
         params={"run_id": str(work.failure_run.id), "build_id": work.build_id},
     )
@@ -224,7 +249,13 @@ def issue_current(work, issue_id):
 
 
 def counts(work):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         return {
             cls.__tablename__: session.scalar(select(func.count()).select_from(cls))
             for cls in (
@@ -243,7 +274,13 @@ def counts(work):
 
 
 def unconsumed(work, token):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         assert (
             session.scalar(
                 select(Confirmation.consumed).where(Confirmation.token_hash == digest(token))

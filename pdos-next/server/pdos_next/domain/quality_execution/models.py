@@ -66,7 +66,7 @@ class QualityIssueVersion(Row, Base):
         issue_fk("previous_issue_version_id", "previous_revision"),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         ForeignKeyConstraint(["tenant_id", "writer_id"], ["principals.tenant_id", "principals.id"]),
-        CheckConstraint("revision>0 AND visibility IN ('private','product')"),
+        CheckConstraint("revision>0 AND visibility IN ('private','category','audience')"),
         CheckConstraint("status IN ('open','triaged','actioning','awaiting_verification')"),
         CheckConstraint(
             "operation IN ('quality.issue.create','quality.issue.merge','quality.issue.triage',"
@@ -75,7 +75,7 @@ class QualityIssueVersion(Row, Base):
         ),
         CheckConstraint(
             "jsonb_typeof(required_source_read_set)='array' "
-            "AND jsonb_array_length(required_source_read_set) BETWEEN 1 AND 20"
+            "AND jsonb_array_length(required_source_read_set)>0"
         ),
         CheckConstraint(
             "(revision=1 AND previous_issue_version_id IS NULL AND previous_revision IS NULL) "
@@ -230,7 +230,7 @@ class QualityEventFailureLink(Row, Base):
         ),
         CheckConstraint(
             "jsonb_typeof(required_source_read_set)='array' "
-            "AND jsonb_array_length(required_source_read_set) BETWEEN 1 AND 20"
+            "AND jsonb_array_length(required_source_read_set)>0"
         ),
     )
 
@@ -301,7 +301,7 @@ class QualityPolicyFact(Row, Base):
         ),
         CheckConstraint(
             "revision>0 AND issuer_epoch>0 AND valid_until>valid_from "
-            "AND visibility IN ('private','product')"
+            "AND visibility IN ('private','category','audience')"
         ),
         CheckConstraint(
             "(revision=1 AND previous_id IS NULL AND previous_revision IS NULL AND series_id=id) "
@@ -310,7 +310,7 @@ class QualityPolicyFact(Row, Base):
         ),
         CheckConstraint(
             "jsonb_typeof(required_source_read_set)='array' "
-            "AND jsonb_array_length(required_source_read_set) BETWEEN 1 AND 20"
+            "AND jsonb_array_length(required_source_read_set)>0"
         ),
     )
 

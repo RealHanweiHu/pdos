@@ -1,0 +1,4057 @@
+{
+  "mapping": {
+    "ACCEPTED_SCOPE_FROZEN": "VERSION_CONFLICT",
+    "ACTIONS_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "ACTION_COMPLETION_UNVERIFIED": "MISSING_REQUIRED_EVIDENCE",
+    "ACTION_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "ACTUAL_END_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "ACTUAL_FIXED_DTO_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "ACTUAL_METHOD_UNKNOWN": "MISSING_REQUIRED_EVIDENCE",
+    "ACTUAL_OUTPUT_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "ACTUAL_SAMPLE_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "ACTUAL_SCOPE_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "AGENT_LANGGRAPH_ENTRY_REQUIRED": "INTERNAL_ERROR",
+    "AGENT_TEMPORAL_REQUIRED": "INTERNAL_ERROR",
+    "ALREADY_ACCEPTED": "VERSION_CONFLICT",
+    "APPROVAL_ALREADY_RECORDED": "VERSION_CONFLICT",
+    "APPROVAL_EXPIRY_INVALID": "VALIDATION_FAILED",
+    "ASSESSMENT_EXPIRED": "SOURCE_STALE",
+    "ASSESSMENT_MISMATCH": "SOURCE_STALE",
+    "ASSESSMENT_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "AUDIENCE_USE_FORBIDDEN": "FORBIDDEN_SCOPE",
+    "AUTHORITY_EVIDENCE_LIMIT": "VALIDATION_FAILED",
+    "AUTHORITY_INTEGRITY_UNKNOWN": "SOURCE_UNAVAILABLE",
+    "AUTHORITY_OPERATION_MISMATCH": "QUALIFICATION_REQUIRED",
+    "AUTHORITY_SERIES_MISMATCH": "QUALIFICATION_REQUIRED",
+    "AUTHORITY_SOURCE_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "AUTHORITY_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "AUTHORITY_WINDOW_NOT_COVERED": "QUALIFICATION_REQUIRED",
+    "AUTHORIZATION_EXPIRED": "SOURCE_STALE",
+    "AUTHORIZATION_NOT_CURRENT": "SOURCE_STALE",
+    "AUTHORIZATION_SCOPE_MISMATCH": "FORBIDDEN_SCOPE",
+    "AUTHORIZATION_VALIDITY_EXCEEDED": "QUALIFICATION_REQUIRED",
+    "AUTHORIZATION_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "AUTHORIZATION_WINDOW_NOT_COVERED": "QUALIFICATION_REQUIRED",
+    "BINDING_MISMATCH": "VALIDATION_FAILED",
+    "BUILD_ALREADY_RESERVED": "VERSION_CONFLICT",
+    "BUILD_ALREADY_STARTED": "VERSION_CONFLICT",
+    "BUILD_EXECUTION_NOT_CURRENT": "SOURCE_STALE",
+    "BUILD_NOT_READY": "MISSING_REQUIRED_EVIDENCE",
+    "BUILD_NOT_REVIEWABLE": "MISSING_REQUIRED_EVIDENCE",
+    "BUILD_NOT_STARTED": "VERSION_CONFLICT",
+    "BUILD_OPERATIONAL_NOT_READY": "MISSING_REQUIRED_EVIDENCE",
+    "BUILD_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "CALLER_UOW_CHANGED": "VERSION_CONFLICT",
+    "CANCELLED_RUN": "CANCELLED_RUN",
+    "CANDIDATE_ACTUAL_BINDING_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "CANDIDATE_AUDIENCE_MISMATCH": "FORBIDDEN_SCOPE",
+    "CANDIDATE_CURRENT_REVISION_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "CANDIDATE_JSON_INVALID": "VALIDATION_FAILED",
+    "CANDIDATE_REQUEST_BINDING_MISMATCH": "FORBIDDEN_SCOPE",
+    "CANDIDATE_REVIEW_SNAPSHOT_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "CANDIDATE_TYPED_MATERIAL_INVALID": "VALIDATION_FAILED",
+    "CAPABILITY_DISABLED": "SOURCE_UNAVAILABLE",
+    "CAPTURE_ALREADY_APPLIED": "VERSION_CONFLICT",
+    "CAPTURE_EXPIRED": "SOURCE_STALE",
+    "CAPTURE_SCOPE_MISMATCH": "FORBIDDEN_SCOPE",
+    "CHANGE_COMMON_PHASE_REQUIRED": "INTERNAL_ERROR",
+    "CLOSURE_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "COMPLETION_PROFILE_CONFIG_INVALID": "INTERNAL_ERROR",
+    "COMPLETION_PROFILE_CONFLICT": "INTERNAL_ERROR",
+    "COMPLETION_PROFILE_SCOPE_MISSING": "INTERNAL_ERROR",
+    "CONDITION_MISMATCH": "VALIDATION_FAILED",
+    "CONFIGURATION_DIFFERENCE_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "CONFIGURATION_MISMATCH": "VALIDATION_FAILED",
+    "CONFIRMATION_REQUIRED": "CONFIRMATION_REQUIRED",
+    "CONFIRMATION_SCOPE_CHANGED": "CONFIRMATION_REQUIRED",
+    "CONTROLLED_SELECTION_PHASE_REQUIRED": "INTERNAL_ERROR",
+    "COUNT_CONFLICT": "VERSION_CONFLICT",
+    "COVERAGE_DEPENDENCY_UNRESOLVED": "MISSING_REQUIRED_EVIDENCE",
+    "COVERAGE_OWNER_STALE": "SOURCE_STALE",
+    "CURRENT_EXECUTION_WINDOW_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "DEMAND_SNAPSHOT_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "DESTRUCTIVE_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "DUPLICATE_HISTORY": "VERSION_CONFLICT",
+    "DUPLICATE_INTENT_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "DUPLICATE_PART_IDENTITY": "VALIDATION_FAILED",
+    "EFFECTIVENESS_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "EFFECTIVITY_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "EFFECTIVITY_OUTPUT_MISMATCH": "VALIDATION_FAILED",
+    "EFFECTIVITY_RECONCILE_REQUIRED": "EXTERNAL_OUTCOME_UNKNOWN",
+    "EFFECTIVITY_SCOPE_MISMATCH": "VALIDATION_FAILED",
+    "EMPTY_SCOPE": "VALIDATION_FAILED",
+    "EXECUTION_BEFORE_APPROVAL": "NAMED_DECISION_REQUIRED",
+    "EXECUTION_CONTROLS_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "EXECUTION_SCOPE_MISMATCH": "FORBIDDEN_SCOPE",
+    "EXTERNAL_OUTCOME_UNKNOWN": "EXTERNAL_OUTCOME_UNKNOWN",
+    "FACT_BINDING_MISMATCH": "VALIDATION_FAILED",
+    "FACT_COMMON_PHASE_REQUIRED": "INTERNAL_ERROR",
+    "FACT_ID_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "FACT_KIND_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "FACT_NATURE_MISMATCH": "VALIDATION_FAILED",
+    "FACT_RULE_HOST_ONLY": "FORBIDDEN_SCOPE",
+    "FACT_TYPED_PAYLOAD_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "FAILURE_CONTEXT_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "FAILURE_EVENT_CHANGED": "SOURCE_STALE",
+    "FAILURE_EVENT_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "FILE_TOO_LARGE": "VALIDATION_FAILED",
+    "FIXED_DENOMINATOR_CHANGED": "SOURCE_STALE",
+    "FIXED_REFERENCE_MISMATCH": "SOURCE_STALE",
+    "FIXED_SCOPE_CHANGED": "SOURCE_STALE",
+    "FIXED_UNITS_CHANGED": "SOURCE_STALE",
+    "FOLLOWUP_CONFIRMATION_EXPIRED": "CONFIRMATION_REQUIRED",
+    "FORBIDDEN": "FORBIDDEN_SCOPE",
+    "FORBIDDEN_DISCIPLINE": "FORBIDDEN_SCOPE",
+    "FORBIDDEN_ISSUER_SCOPE": "FORBIDDEN_SCOPE",
+    "FORBIDDEN_OPERATION": "FORBIDDEN_SCOPE",
+    "FORBIDDEN_SCOPE": "FORBIDDEN_SCOPE",
+    "FUTURE_ACTUAL": "VALIDATION_FAILED",
+    "FUTURE_OBSERVATION": "VALIDATION_FAILED",
+    "GRAPH_CAPTURE_EXPIRED": "SOURCE_STALE",
+    "GRAPH_LIMIT_EXCEEDED": "VALIDATION_FAILED",
+    "IDEMPOTENCY_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "IMPACT_DISPOSITION_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "IMPACT_ROOT_MISMATCH": "VALIDATION_FAILED",
+    "IMPACT_UNKNOWN": "MISSING_REQUIRED_EVIDENCE",
+    "IMPLEMENTATION_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "IMPLEMENTATION_RECONCILE_REQUIRED": "EXTERNAL_OUTCOME_UNKNOWN",
+    "INAPPLICABLE_CONFIGURATION": "VALIDATION_FAILED",
+    "INCOMPATIBLE_SCOPE": "VALIDATION_FAILED",
+    "INCOMPLETE_FINAL_SCOPE": "MISSING_REQUIRED_EVIDENCE",
+    "INCOMPLETE_HISTORY": "MISSING_REQUIRED_EVIDENCE",
+    "INCOMPLETE_VERIFICATION": "MISSING_REQUIRED_EVIDENCE",
+    "INDEPENDENCE_REQUIRED": "QUALIFICATION_REQUIRED",
+    "INDEPENDENT_VERIFIER_REQUIRED": "QUALIFICATION_REQUIRED",
+    "INTEGRATION_REQUIRED": "INTERNAL_ERROR",
+    "INTEGRITY_MISMATCH": "VALIDATION_FAILED",
+    "INTENT_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "INTENT_MISMATCH": "DUPLICATE_INTENT_CONFLICT",
+    "INTERNAL_ERROR": "INTERNAL_ERROR",
+    "INVALID_ACTION": "VALIDATION_FAILED",
+    "INVALID_ASSIGNEE": "QUALIFICATION_REQUIRED",
+    "INVALID_AUTHORITY": "QUALIFICATION_REQUIRED",
+    "INVALID_AUTHORITY_PURPOSE": "QUALIFICATION_REQUIRED",
+    "INVALID_AUTHORITY_TIME": "VALIDATION_FAILED",
+    "INVALID_CAPA_REVISION": "VALIDATION_FAILED",
+    "INVALID_CAPA_SCOPE": "VALIDATION_FAILED",
+    "INVALID_COVERAGE": "VALIDATION_FAILED",
+    "INVALID_EFFECTIVITY_ITEM": "VALIDATION_FAILED",
+    "INVALID_EVENT_EVIDENCE": "VALIDATION_FAILED",
+    "INVALID_EVENT_TIME": "VALIDATION_FAILED",
+    "INVALID_FIXED_DEFINITION": "VALIDATION_FAILED",
+    "INVALID_MEASUREMENT_SCOPE": "VALIDATION_FAILED",
+    "INVALID_OPERATION": "VALIDATION_FAILED",
+    "INVALID_OPERATIONAL_INTENT": "VALIDATION_FAILED",
+    "INVALID_OPERATIONAL_TIME": "VALIDATION_FAILED",
+    "INVALID_OPERATION_PAYLOAD": "VALIDATION_FAILED",
+    "INVALID_PAYLOAD": "VALIDATION_FAILED",
+    "INVALID_POLICY": "VALIDATION_FAILED",
+    "INVALID_READ_CONTEXT": "INTERNAL_ERROR",
+    "INVALID_RECONCILIATION": "VALIDATION_FAILED",
+    "INVALID_REQUEST": "VALIDATION_FAILED",
+    "INVALID_RESOURCE_TIME": "VALIDATION_FAILED",
+    "INVALID_RETAINED_AUTHORITY": "QUALIFICATION_REQUIRED",
+    "INVALID_SAMPLE_OBSERVATION_TIME": "VALIDATION_FAILED",
+    "INVALID_SAMPLE_POLICY": "VALIDATION_FAILED",
+    "INVALID_SAMPLE_PURPOSE": "VALIDATION_FAILED",
+    "INVALID_SCOPE": "VALIDATION_FAILED",
+    "INVALID_SELECTION": "VALIDATION_FAILED",
+    "INVALID_SERVER_FACT": "INTERNAL_ERROR",
+    "INVALID_STATE": "VALIDATION_FAILED",
+    "INVALID_TARGET": "VALIDATION_FAILED",
+    "INVALID_TEST_START": "VALIDATION_FAILED",
+    "INVALID_TIME": "VALIDATION_FAILED",
+    "INVALID_VERIFICATION": "VALIDATION_FAILED",
+    "INVENTORY_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "LIFECYCLE_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "LOT_LIMIT": "VALIDATION_FAILED",
+    "MANUFACTURING_AUTHORITY_REQUIRED": "QUALIFICATION_REQUIRED",
+    "MANUFACTURING_BASELINE_RELEASE_REQUIRED": "NAMED_DECISION_REQUIRED",
+    "MATERIAL_HOLD_PRECISION_UNKNOWN": "MISSING_REQUIRED_EVIDENCE",
+    "MATERIAL_HOLD_UNRECONCILED": "EXTERNAL_OUTCOME_UNKNOWN",
+    "MEASUREMENT_ALREADY_RECORDED": "VERSION_CONFLICT",
+    "MEASUREMENT_WITHOUT_EXECUTION": "VALIDATION_FAILED",
+    "MERGED_ALIAS": "VERSION_CONFLICT",
+    "MERGE_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "METHOD_EVIDENCE_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "MISSING_REQUIRED_EVIDENCE": "MISSING_REQUIRED_EVIDENCE",
+    "MODEL_BUDGET_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "MODEL_BUDGET_EXCEEDED": "RATE_LIMITED",
+    "MODEL_BUDGET_INVALID": "VALIDATION_FAILED",
+    "MODEL_BUDGET_REQUIRED": "RATE_LIMITED",
+    "MODEL_CALL_ALREADY_ATTEMPTED": "VERSION_CONFLICT",
+    "MODEL_CALL_IN_FLIGHT": "VERSION_CONFLICT",
+    "MODEL_EGRESS_DENIED": "FORBIDDEN_SCOPE",
+    "MODEL_INPUT_INVALID": "VALIDATION_FAILED",
+    "MODEL_OUTPUT_INVALID": "VALIDATION_FAILED",
+    "MODEL_PERMIT_BINDING_MISMATCH": "VALIDATION_FAILED",
+    "MODEL_RESULT_UNKNOWN": "EXTERNAL_OUTCOME_UNKNOWN",
+    "MODEL_RUNTIME_PORTS_MISSING": "SOURCE_UNAVAILABLE",
+    "MODEL_RUN_NOT_ACTIVE": "CANCELLED_RUN",
+    "MODEL_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "NAMED_APPROVAL_REQUIRED": "NAMED_DECISION_REQUIRED",
+    "NAMED_DECISION_REQUIRED": "NAMED_DECISION_REQUIRED",
+    "NAMED_EXECUTOR_REQUIRED": "NAMED_DECISION_REQUIRED",
+    "NAMED_HUMAN_REQUIRED": "NAMED_DECISION_REQUIRED",
+    "NAMED_PERSON_REQUIRED": "NAMED_DECISION_REQUIRED",
+    "NATURE_MISMATCH": "VALIDATION_FAILED",
+    "NOT_ACTUAL_FAILURE": "VALIDATION_FAILED",
+    "NOT_EFFECTIVE": "VALIDATION_FAILED",
+    "NOT_FOUND": "NOT_FOUND",
+    "NO_CHANGES": "VERSION_CONFLICT",
+    "OBSERVATION_PENDING": "MISSING_REQUIRED_EVIDENCE",
+    "OPERATIONAL_ASSET_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "OPERATIONAL_ASSET_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "OPERATIONAL_FACTS_CHANGED": "SOURCE_STALE",
+    "OPERATIONAL_IDENTITY_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "OPERATIONAL_SCOPE_MISMATCH": "FORBIDDEN_SCOPE",
+    "OPERATION_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "ORDER_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "ORIGINAL_BYTES_OWNER_REQUIRED": "SOURCE_UNAVAILABLE",
+    "ORIGINAL_FAILURE_RUN": "EXTERNAL_OUTCOME_UNKNOWN",
+    "ORIGINAL_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "ORIGINAL_REWRITE_FORBIDDEN": "FORBIDDEN_SCOPE",
+    "ORIGINAL_SECURITY_BLOCKED": "SOURCE_UNAVAILABLE",
+    "ORIGINAL_SECURITY_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "ORIGIN_DECLARED_BASIS_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "ORIGIN_PROOF_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "ORIGIN_SEMANTIC_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "ORIGIN_SNAPSHOT_INVALID": "VALIDATION_FAILED",
+    "OUTPUT_QUANTITY_EXCEEDED": "VERSION_CONFLICT",
+    "OVERLAPPING_SCOPE": "VERSION_CONFLICT",
+    "PAIR_CURRENT_MISMATCH": "SOURCE_STALE",
+    "PAIR_FACT_MISMATCH": "SOURCE_STALE",
+    "PAIR_ORIGINAL_SEMANTIC_MISMATCH": "SOURCE_STALE",
+    "PAIR_SCOPE_MISMATCH": "VALIDATION_FAILED",
+    "PAIR_STORAGE_INVALID": "INTERNAL_ERROR",
+    "PAIR_WRITER_MISMATCH": "FORBIDDEN_SCOPE",
+    "PARAMETER_SOURCE_MISMATCH": "VALIDATION_FAILED",
+    "PARTIAL_REASON_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "PARTIAL_RESPONSIBILITY_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "PARTICIPANT_SOURCE_SHAPE_INVALID": "VALIDATION_FAILED",
+    "PAYLOAD_DIGEST_MISMATCH": "VALIDATION_FAILED",
+    "PHASED_COMMON_INTEGRATION_REQUIRED": "INTERNAL_ERROR",
+    "PLAN_DISCIPLINE_MISMATCH": "VALIDATION_FAILED",
+    "PLAN_EXPIRED": "SOURCE_STALE",
+    "PLAN_SCOPE_MISMATCH": "FORBIDDEN_SCOPE",
+    "PORT_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "PORT_UNCONNECTED": "SOURCE_UNAVAILABLE",
+    "PREVIEW_CHANGED": "SOURCE_STALE",
+    "PRIVATE_SOURCE_SCOPE": "FORBIDDEN_SCOPE",
+    "PROCESS_MAPPING_MISMATCH": "VALIDATION_FAILED",
+    "PROCESS_MAPPING_UNCONNECTED": "MISSING_REQUIRED_EVIDENCE",
+    "PRODUCT_BINDING_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "PROFESSIONAL_AUTHORITY_CHANGED": "SOURCE_STALE",
+    "PROFESSIONAL_AUTHORITY_REQUIRED": "QUALIFICATION_REQUIRED",
+    "PROFESSIONAL_OPERATION_NOT_CONFIGURED": "QUALIFICATION_REQUIRED",
+    "PROFESSIONAL_REVIEW_EXPIRED": "SOURCE_STALE",
+    "PROFESSIONAL_REVIEW_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "PROFESSIONAL_REVIEW_NOT_APPLICABLE": "SOURCE_STALE",
+    "QUALIFICATION_REQUIRED": "QUALIFICATION_REQUIRED",
+    "RATE_LIMITED": "RATE_LIMITED",
+    "RECEIPT_IDENTITY_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "RECHECK_NOT_REQUIRED": "VERSION_CONFLICT",
+    "RECHECK_REQUIRED": "SOURCE_STALE",
+    "RECONCILIATION_ALREADY_RECORDED": "VERSION_CONFLICT",
+    "REGISTERED_ORIGINAL": "VERSION_CONFLICT",
+    "REPLAY_REQUIRED": "EXTERNAL_OUTCOME_UNKNOWN",
+    "REPORT_LIMIT_EXCEEDED": "VALIDATION_FAILED",
+    "REQUEST_RUN_SCOPE_FIXED": "FORBIDDEN_SCOPE",
+    "RESERVATION_PROOF_MISMATCH": "SOURCE_STALE",
+    "RESERVATION_PROOF_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "RESOURCE_FACTS_CHANGED": "SOURCE_STALE",
+    "RESOURCE_FACT_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "RESOURCE_FINGERPRINT_MATERIAL_INVALID": "VALIDATION_FAILED",
+    "RESOURCE_FINGERPRINT_MATERIAL_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "RESOURCE_FINGERPRINT_VERSION_UNSUPPORTED": "VALIDATION_FAILED",
+    "RESOURCE_NOT_READY": "MISSING_REQUIRED_EVIDENCE",
+    "RESOURCE_PEOPLE_NOWAIT_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "RESOURCE_PURPOSE_LIMIT": "VALIDATION_FAILED",
+    "RESOURCE_RECHECK_REQUIRED": "SOURCE_STALE",
+    "RESOURCE_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "RESULT_BASIS_CHANGED": "SOURCE_STALE",
+    "RETAINED_EXECUTION_CHANGED": "SOURCE_STALE",
+    "RETAINED_EXECUTION_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "REVISION_CONFLICT": "VERSION_CONFLICT",
+    "RUN_CANCELLED": "CANCELLED_RUN",
+    "RUN_INTENT_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "RUN_IN_PROGRESS": "VERSION_CONFLICT",
+    "RUN_LEASE_EXPIRED": "VERSION_CONFLICT",
+    "RUN_NOT_STARTED": "VERSION_CONFLICT",
+    "RUN_RESERVATION_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "RUN_RESERVATION_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "RUN_SAMPLE_USAGE_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "RUN_START_PROOF_INVALID": "VALIDATION_FAILED",
+    "SAMPLE_AUTHORITY_CHANGED": "SOURCE_STALE",
+    "SAMPLE_CHAIN_MISMATCH": "VALIDATION_FAILED",
+    "SAMPLE_EVENT_BEFORE_OUTPUT": "VALIDATION_FAILED",
+    "SAMPLE_EVENT_BEFORE_START": "VALIDATION_FAILED",
+    "SAMPLE_EVENT_IN_FUTURE": "VALIDATION_FAILED",
+    "SAMPLE_EVENT_MISMATCH": "VALIDATION_FAILED",
+    "SAMPLE_EVENT_NOT_NEWER": "VALIDATION_FAILED",
+    "SAMPLE_READINESS_INTEGRITY_UNKNOWN": "SOURCE_UNAVAILABLE",
+    "SAMPLE_READINESS_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "SAMPLE_SOURCE_CHANGED": "SOURCE_STALE",
+    "SAMPLE_START_CHANGED": "SOURCE_STALE",
+    "SAMPLE_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "SAMPLE_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "SCANNER_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "SCAN_BASIS_CHANGED": "SOURCE_STALE",
+    "SCOPE_BINDING_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "SELF_APPROVAL_FORBIDDEN": "FORBIDDEN_SCOPE",
+    "SNAPSHOT_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "SOURCE_CHANGED": "SOURCE_STALE",
+    "SOURCE_MAPPING_LIMIT": "VALIDATION_FAILED",
+    "SOURCE_STALE": "SOURCE_STALE",
+    "SOURCE_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "START_EVENT_MISMATCH": "VALIDATION_FAILED",
+    "START_OUTSIDE_WINDOW": "QUALIFICATION_REQUIRED",
+    "START_PRECEDES_AUTHORIZATION": "QUALIFICATION_REQUIRED",
+    "STORAGE_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "STORED_ATOM_MISMATCH": "SOURCE_STALE",
+    "SYNTHETIC_AUTHORITY_NOT_ALLOWED": "FORBIDDEN_SCOPE",
+    "TEST_PLAN_SCOPE_MISMATCH": "VALIDATION_FAILED",
+    "TEST_RESOURCES_NOT_READY": "MISSING_REQUIRED_EVIDENCE",
+    "TOO_MANY_REQUIRED_EVIDENCE": "VALIDATION_FAILED",
+    "TRUSTED_ISSUER_REQUIRED": "QUALIFICATION_REQUIRED",
+    "UNAUTHENTICATED": "FORBIDDEN_SCOPE",
+    "UNDO_BLOCKED_BY_DEPENDENCY": "UNDO_BLOCKED_BY_DEPENDENCY",
+    "UNIT_MISMATCH": "VALIDATION_FAILED",
+    "UNSUPPORTED_MEDIA_TYPE": "VALIDATION_FAILED",
+    "UNSUPPORTED_REPORT": "VALIDATION_FAILED",
+    "UPLOAD_CLOSED": "VERSION_CONFLICT",
+    "VALIDATION_FAILED": "VALIDATION_FAILED",
+    "VERIFICATION_ALREADY_RECORDED": "VERSION_CONFLICT",
+    "VERIFICATION_INSUFFICIENT": "MISSING_REQUIRED_EVIDENCE",
+    "VERIFICATION_OUTPUT_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "VERIFICATION_SCOPE_MISMATCH": "VALIDATION_FAILED",
+    "VERIFICATION_TOO_EARLY": "VALIDATION_FAILED",
+    "VERSION_CONFLICT": "VERSION_CONFLICT"
+  },
+  "locations": {
+    "FORBIDDEN_SCOPE": [
+      "pdos-next/server/pdos_next/quality_followup_views.py:106",
+      "pdos-next/server/pdos_next/quality_followup_views.py:251",
+      "pdos-next/server/pdos_next/quality_followup_views.py:397",
+      "pdos-next/server/pdos_next/originals.py:92",
+      "pdos-next/server/pdos_next/originals.py:95",
+      "pdos-next/server/pdos_next/service.py:162",
+      "pdos-next/server/pdos_next/service.py:164",
+      "pdos-next/server/pdos_next/service.py:189",
+      "pdos-next/server/pdos_next/service.py:197",
+      "pdos-next/server/pdos_next/service.py:337",
+      "pdos-next/server/pdos_next/service.py:354",
+      "pdos-next/server/pdos_next/service.py:417",
+      "pdos-next/server/pdos_next/service.py:429",
+      "pdos-next/server/pdos_next/service.py:492",
+      "pdos-next/server/pdos_next/service.py:496",
+      "pdos-next/server/pdos_next/service.py:649",
+      "pdos-next/server/pdos_next/service.py:651",
+      "pdos-next/server/pdos_next/service.py:169",
+      "pdos-next/server/pdos_next/service.py:452",
+      "pdos-next/server/pdos_next/service.py:644",
+      "pdos-next/server/pdos_next/service.py:447",
+      "pdos-next/server/pdos_next/service.py:681",
+      "pdos-next/server/pdos_next/service.py:683",
+      "pdos-next/server/pdos_next/service.py:859",
+      "pdos-next/server/pdos_next/capa_rule_import.py:32",
+      "pdos-next/server/pdos_next/launch_plan_preview.py:69",
+      "pdos-next/server/pdos_next/lifecycle_access.py:85",
+      "pdos-next/server/pdos_next/quality_followup_api.py:48",
+      "pdos-next/server/pdos_next/quality_followup_integration.py:35",
+      "pdos-next/server/pdos_next/quality_followup_integration.py:132",
+      "pdos-next/server/pdos_next/quality_followup_integration.py:236",
+      "pdos-next/server/pdos_next/operational_import.py:31",
+      "pdos-next/server/pdos_next/runtime.py:217",
+      "pdos-next/server/pdos_next/runtime.py:245",
+      "pdos-next/server/pdos_next/runtime.py:136",
+      "pdos-next/server/pdos_next/test_resource_import.py:31",
+      "pdos-next/server/pdos_next/api.py:1041",
+      "pdos-next/server/pdos_next/api.py:1277",
+      "pdos-next/server/pdos_next/api.py:314",
+      "pdos-next/server/pdos_next/quality_policy_import.py:34",
+      "pdos-next/server/pdos_next/quality_followup_host.py:429",
+      "pdos-next/server/pdos_next/quality_followup_host.py:484",
+      "pdos-next/server/pdos_next/original_security.py:292",
+      "pdos-next/server/pdos_next/original_security.py:299",
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:203",
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:214",
+      "pdos-next/server/pdos_next/upload_lifecycle.py:42",
+      "pdos-next/server/pdos_next/capa_fact_api.py:375",
+      "pdos-next/server/pdos_next/agent_execution.py:63",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:89",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:272",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:80",
+      "pdos-next/server/pdos_next/professional_import.py:27",
+      "pdos-next/server/pdos_next/category_scope.py:61",
+      "pdos-next/server/pdos_next/category_scope.py:224",
+      "pdos-next/server/pdos_next/category_scope.py:230",
+      "pdos-next/server/pdos_next/model_gateway/reconciliation.py:47",
+      "pdos-next/server/pdos_next/model_gateway/reconciliation.py:68",
+      "pdos-next/server/pdos_next/model_gateway/reconciliation.py:80",
+      "pdos-next/server/pdos_next/model_gateway/reconciliation.py:159",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:166",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:173",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:176",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:209",
+      "pdos-next/server/pdos_next/domain/verification_execution/service.py:117",
+      "pdos-next/server/pdos_next/domain/verification_execution/service.py:120",
+      "pdos-next/server/pdos_next/domain/verification_execution/service.py:217",
+      "pdos-next/server/pdos_next/domain/verification_execution/service.py:229",
+      "pdos-next/server/pdos_next/domain/verification_execution/service.py:257",
+      "pdos-next/server/pdos_next/domain/verification_execution/service.py:283",
+      "pdos-next/server/pdos_next/domain/verification_execution/service.py:233",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:44",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:281",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:359",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:428",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:312",
+      "pdos-next/server/pdos_next/domain/manufacturing_resource_owner/owner.py:123",
+      "pdos-next/server/pdos_next/domain/manufacturing_resource_owner/owner.py:307",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py:155",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_owner.py:83",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_owner.py:85",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_owner.py:121",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_owner.py:145",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_owner.py:116",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_owner.py:195",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_owner.py:211",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_owner.py:234",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py:152",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py:232",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py:137",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py:139",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py:128",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py:275",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py:119",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py:160",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py:181",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py:212",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:96",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:99",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:420",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:460",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:510",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:516",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:524",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:615",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:440",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:466",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:179",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:278",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:408",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:449",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:454",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:838",
+      "pdos-next/server/pdos_next/domain/products/definitions.py:46",
+      "pdos-next/server/pdos_next/domain/products/definitions.py:58",
+      "pdos-next/server/pdos_next/domain/products/definitions.py:90",
+      "pdos-next/server/pdos_next/domain/products/definitions.py:94",
+      "pdos-next/server/pdos_next/domain/products/definitions.py:80",
+      "pdos-next/server/pdos_next/domain/products/variants.py:163",
+      "pdos-next/server/pdos_next/domain/products/variants.py:177",
+      "pdos-next/server/pdos_next/domain/products/variants.py:211",
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:200",
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:451",
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:466",
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:570",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:110",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:434",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:596",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:1389",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:1395",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:1455",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:871",
+      "pdos-next/server/pdos_next/domain/verification_launch/adapters.py:30",
+      "pdos-next/server/pdos_next/domain/verification_launch/adapters.py:35",
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:322",
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:344",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:56",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:414",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:455",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:389",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:543",
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:227",
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/read_models.py:39",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:105",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:251",
+      "pdos-next/server/pdos_next/domain/quality_issues/read_models.py:56",
+      "pdos-next/server/pdos_next/domain/quality_issues/read_models.py:64",
+      "pdos-next/server/pdos_next/domain/projects/service.py:61",
+      "pdos-next/server/pdos_next/domain/projects/service.py:76",
+      "pdos-next/server/pdos_next/domain/projects/service.py:93",
+      "pdos-next/server/pdos_next/domain/projects/service.py:112",
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:47",
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:61",
+      "pdos-next/server/pdos_next/domain/discovery/sources.py:68",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:73",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:123",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:325",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:389",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:604",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:545",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:341",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:365",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:754",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:951",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:385",
+      "pdos-next/server/pdos_next/domain/quality_followup/adapters.py:22",
+      "pdos-next/server/pdos_next/domain/quality_followup/adapters.py:37",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:118",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:132",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:222",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:832",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:838",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:843",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:194",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:76",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:105",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:214",
+      "pdos-next/server/pdos_next/domain/change_execution/api.py:55",
+      "pdos-next/server/pdos_next/domain/change_execution/adapters.py:29",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:113",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:165",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:297",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:314",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:749",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:987",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:1122",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:1226",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:246",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:418",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:1051",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:1061",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:1118",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:311",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:501",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:271",
+      "pdos-next/server/pdos_next/domain/quality_execution/policy.py:304",
+      "pdos-next/server/pdos_next/domain/quality_execution/api.py:52",
+      "pdos-next/server/pdos_next/domain/quality_execution/adapters.py:23",
+      "pdos-next/server/pdos_next/domain/quality_execution/adapters.py:38",
+      "pdos-next/server/pdos_next/domain/quality_execution/adapters.py:44",
+      "pdos-next/server/pdos_next/domain/quality_execution/adapters.py:75",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:142",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:152",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:162",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:173",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:54",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:221",
+      "pdos-next/server/pdos_next/domain/builds/service.py:31",
+      "pdos-next/server/pdos_next/domain/builds/service.py:92",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:168",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:328",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:391",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:641",
+      "pdos-next/server/pdos_next/domain/verification_front/adapters.py:67",
+      "pdos-next/server/pdos_next/domain/verification_front/adapters.py:96",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:151",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:159",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:168",
+      "pdos-next/server/pdos_next/domain/verification/rules.py:46",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:111",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:144",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:154",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:213",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:458",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1149",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1173",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:306",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:347",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:392",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:398",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:406",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:603",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:152",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:161",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:164",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:326",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:179",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:133",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:222",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:510",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1994",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:284",
+      "pdos-next/server/pdos_next/domain/manufacturing_baseline/api.py:81",
+      "pdos-next/server/pdos_next/domain/manufacturing_baseline/api.py:83",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:143",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:239",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:255",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:261",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:529",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:621",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:828",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:1326",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:1332",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:1536",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:1630",
+      "pdos-next/server/pdos_next/domain/verification_results/adapters.py:26",
+      "pdos-next/server/pdos_next/domain/verification_results/adapters.py:31",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:175",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:183",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:216",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:357",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:398",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:400",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:403",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:509",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:587",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:589",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:614",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:703",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:734",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:816",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:1073",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:408",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:646",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:800",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:980",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:985",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:127",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:141",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:300",
+      "pdos-next/server/pdos_next/domain/capa_verification/preview_phase.py:87",
+      "pdos-next/server/pdos_next/domain/capa_verification/preview_phase.py:94"
+    ],
+    "INTEGRITY_MISMATCH": [
+      "pdos-next/server/pdos_next/quality_followup_views.py:109",
+      "pdos-next/server/pdos_next/quality_followup_views.py:234",
+      "pdos-next/server/pdos_next/quality_followup_views.py:281",
+      "pdos-next/server/pdos_next/quality_followup_views.py:400",
+      "pdos-next/server/pdos_next/quality_followup_views.py:407",
+      "pdos-next/server/pdos_next/quality_followup_views.py:149",
+      "pdos-next/server/pdos_next/quality_followup_views.py:158",
+      "pdos-next/server/pdos_next/quality_followup_views.py:166",
+      "pdos-next/server/pdos_next/quality_followup_views.py:328",
+      "pdos-next/server/pdos_next/originals.py:301",
+      "pdos-next/server/pdos_next/capa_rule_import.py:86",
+      "pdos-next/server/pdos_next/operational_import.py:58",
+      "pdos-next/server/pdos_next/operational_import.py:68",
+      "pdos-next/server/pdos_next/test_resource_import.py:59",
+      "pdos-next/server/pdos_next/test_resource_import.py:69",
+      "pdos-next/server/pdos_next/quality_policy_import.py:78",
+      "pdos-next/server/pdos_next/quality_followup_host.py:163",
+      "pdos-next/server/pdos_next/quality_followup_host.py:275",
+      "pdos-next/server/pdos_next/quality_followup_host.py:376",
+      "pdos-next/server/pdos_next/quality_followup_host.py:417",
+      "pdos-next/server/pdos_next/quality_followup_host.py:420",
+      "pdos-next/server/pdos_next/quality_followup_host.py:176",
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:177",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:140",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:77",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:84",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:87",
+      "pdos-next/server/pdos_next/professional_import.py:55",
+      "pdos-next/server/pdos_next/professional_import.py:65",
+      "pdos-next/server/pdos_next/domain/verification_execution/service.py:149",
+      "pdos-next/server/pdos_next/domain/verification_execution/service.py:177",
+      "pdos-next/server/pdos_next/domain/manufacturing_resource_owner/owner.py:166",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:139",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:150",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:793",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:180",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:556",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:199",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:159",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:555",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:560",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:932",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:133",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:183",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:188",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:215",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:401",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:427",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:577",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:981",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:926",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:1025",
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:76",
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:139",
+      "pdos-next/server/pdos_next/domain/discovery/sources.py:74",
+      "pdos-next/server/pdos_next/domain/discovery/sources.py:77",
+      "pdos-next/server/pdos_next/domain/discovery/sources.py:79",
+      "pdos-next/server/pdos_next/domain/discovery/sources.py:94",
+      "pdos-next/server/pdos_next/domain/discovery/sources.py:96",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:94",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:109",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:272",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:350",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:644",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:647",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:679",
+      "pdos-next/server/pdos_next/domain/quality_followup/adapters.py:27",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:147",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:171",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:460",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:363",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:394",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:94",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:123",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:134",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:149",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:512",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:1071",
+      "pdos-next/server/pdos_next/domain/quality_execution/policy.py:302",
+      "pdos-next/server/pdos_next/domain/quality_execution/policy.py:310",
+      "pdos-next/server/pdos_next/domain/quality_execution/evidence.py:39",
+      "pdos-next/server/pdos_next/domain/quality_execution/adapters.py:28",
+      "pdos-next/server/pdos_next/domain/quality_execution/adapters.py:104",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:219",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:245",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:99",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:155",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:259",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:265",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:568",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:746",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:276",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:347",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:574",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:952",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:969",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:670",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:689",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:693",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1147",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1156",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:320",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:435",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:704",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1255",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:60",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:71",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:84",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:785",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:140",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:142",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:228",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:311",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:498",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:256",
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:51",
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:194",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:493",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:633",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:998",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1908",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:996",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1373",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1858",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1980",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1763",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:174",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:312",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:494",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:523",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:318",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:500",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:889",
+      "pdos-next/server/pdos_next/domain/verification_results/adapters.py:33",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:71",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:73",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:76",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:165",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:177",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:369",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:621",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:714",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:785",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:1067",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:1078",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:1086",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:775"
+    ],
+    "INTEGRATION_REQUIRED": [
+      "pdos-next/server/pdos_next/quality_followup_views.py:146",
+      "pdos-next/server/pdos_next/quality_followup_views.py:231",
+      "pdos-next/server/pdos_next/quality_followup_views.py:195",
+      "pdos-next/server/pdos_next/service.py:578",
+      "pdos-next/server/pdos_next/service.py:590",
+      "pdos-next/server/pdos_next/launch_plan_preview.py:31",
+      "pdos-next/server/pdos_next/launch_plan_preview.py:34",
+      "pdos-next/server/pdos_next/launch_plan_preview.py:51",
+      "pdos-next/server/pdos_next/launch_plan_preview.py:64",
+      "pdos-next/server/pdos_next/launch_plan_preview.py:67",
+      "pdos-next/server/pdos_next/quality_followup_integration.py:42",
+      "pdos-next/server/pdos_next/quality_followup_host.py:129",
+      "pdos-next/server/pdos_next/quality_followup_host.py:132",
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:168",
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:216",
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:230",
+      "pdos-next/server/pdos_next/change_completion_adapter.py:108",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:231",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/service.py:366",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py:373",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py:241",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_owner.py:66",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/lineage.py:575",
+      "pdos-next/server/pdos_next/domain/verification_handoff/adapters.py:58",
+      "pdos-next/server/pdos_next/domain/verification_launch/adapters.py:46",
+      "pdos-next/server/pdos_next/domain/verification_launch/adapters.py:51",
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:71",
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/pilot_result_ports.py:74",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:76",
+      "pdos-next/server/pdos_next/domain/quality_issues/read_models.py:44",
+      "pdos-next/server/pdos_next/domain/quality_issues/read_models.py:46",
+      "pdos-next/server/pdos_next/domain/quality_issues/read_models.py:50",
+      "pdos-next/server/pdos_next/domain/quality_issues/read_models.py:90",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:66",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:178",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:209",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:235",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:438",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:803",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:234",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:292",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:309",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:319",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:359",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:63",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:323",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:335",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:333",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:248",
+      "pdos-next/server/pdos_next/domain/change_execution/adapters.py:10",
+      "pdos-next/server/pdos_next/domain/change_execution/adapters.py:36",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:76",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:362",
+      "pdos-next/server/pdos_next/domain/quality_execution/policy.py:285",
+      "pdos-next/server/pdos_next/domain/quality_execution/evidence.py:111",
+      "pdos-next/server/pdos_next/domain/quality_execution/adapters.py:153",
+      "pdos-next/server/pdos_next/domain/quality_execution/adapters.py:90",
+      "pdos-next/server/pdos_next/domain/quality_execution/adapters.py:119",
+      "pdos-next/server/pdos_next/domain/quality_execution/adapters.py:145",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:129",
+      "pdos-next/server/pdos_next/domain/verification_front/adapters.py:79",
+      "pdos-next/server/pdos_next/domain/verification_front/adapters.py:82",
+      "pdos-next/server/pdos_next/domain/verification_front/adapters.py:108",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:82",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:108",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:79",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:187",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:212",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:937",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1650",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1574",
+      "pdos-next/server/pdos_next/domain/test_resources/retained.py:273",
+      "pdos-next/server/pdos_next/domain/test_resources/retained.py:276",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:156",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:277",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:430",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:320",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:355",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:461",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:887",
+      "pdos-next/server/pdos_next/domain/capa_verification/ports.py:40",
+      "pdos-next/server/pdos_next/domain/capa_verification/write_phase.py:141",
+      "pdos-next/server/pdos_next/domain/capa_verification/write_phase.py:192",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:63",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:131",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:323",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:76",
+      "pdos-next/server/pdos_next/domain/capa_verification/preview_phase.py:68",
+      "pdos-next/server/pdos_next/domain/capa_verification/preview_phase.py:71",
+      "pdos-next/server/pdos_next/domain/capa_verification/preview_phase.py:73",
+      "pdos-next/server/pdos_next/domain/capa_verification/preview_phase.py:89",
+      "pdos-next/server/pdos_next/domain/capa_verification/preview_phase.py:92",
+      "pdos-next/server/pdos_next/domain/capa_verification/preview_phase.py:134",
+      "pdos-next/server/pdos_next/domain/capa_verification/preview_phase.py:150",
+      "pdos-next/server/pdos_next/domain/capa_verification/preview_phase.py:246"
+    ],
+    "INVALID_PAYLOAD": [
+      "pdos-next/server/pdos_next/quality_followup_views.py:391",
+      "pdos-next/server/pdos_next/originals.py:67",
+      "pdos-next/server/pdos_next/originals.py:74",
+      "pdos-next/server/pdos_next/original_actions.py:30",
+      "pdos-next/server/pdos_next/api.py:1267",
+      "pdos-next/server/pdos_next/upload_lifecycle.py:151",
+      "pdos-next/server/pdos_next/domain/verification_execution/service.py:210",
+      "pdos-next/server/pdos_next/domain/manufacturing_resource_owner/api.py:36",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:404",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:79",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:81",
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:146",
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:84",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:904",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:901",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:81",
+      "pdos-next/server/pdos_next/domain/change_execution/api.py:19",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:131",
+      "pdos-next/server/pdos_next/domain/verification_front/adapters.py:25",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:139",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:646",
+      "pdos-next/server/pdos_next/domain/manufacturing_baseline/api.py:19",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:90",
+      "pdos-next/server/pdos_next/domain/original_lifecycle_execution/service.py:153"
+    ],
+    "SOURCE_STALE": [
+      "pdos-next/server/pdos_next/quality_followup_views.py:405",
+      "pdos-next/server/pdos_next/quality_followup_views.py:516",
+      "pdos-next/server/pdos_next/quality_followup_views.py:524",
+      "pdos-next/server/pdos_next/quality_followup_views.py:528",
+      "pdos-next/server/pdos_next/quality_followup_views.py:532",
+      "pdos-next/server/pdos_next/quality_followup_views.py:537",
+      "pdos-next/server/pdos_next/quality_followup_views.py:498",
+      "pdos-next/server/pdos_next/quality_followup_views.py:514",
+      "pdos-next/server/pdos_next/quality_followup_views.py:468",
+      "pdos-next/server/pdos_next/quality_followup_views.py:476",
+      "pdos-next/server/pdos_next/quality_followup_views.py:488",
+      "pdos-next/server/pdos_next/quality_followup_views.py:508",
+      "pdos-next/server/pdos_next/capa_review_context.py:201",
+      "pdos-next/server/pdos_next/originals.py:260",
+      "pdos-next/server/pdos_next/service.py:226",
+      "pdos-next/server/pdos_next/service.py:675",
+      "pdos-next/server/pdos_next/capa_rule_import.py:114",
+      "pdos-next/server/pdos_next/launch_plan_preview.py:49",
+      "pdos-next/server/pdos_next/launch_plan_preview.py:44",
+      "pdos-next/server/pdos_next/launch_plan_preview.py:104",
+      "pdos-next/server/pdos_next/launch_plan_preview.py:108",
+      "pdos-next/server/pdos_next/launch_plan_preview.py:119",
+      "pdos-next/server/pdos_next/launch_plan_preview.py:117",
+      "pdos-next/server/pdos_next/capa_candidate_api.py:63",
+      "pdos-next/server/pdos_next/capa_candidate_api.py:144",
+      "pdos-next/server/pdos_next/capa_candidate_api.py:147",
+      "pdos-next/server/pdos_next/capa_candidate_api.py:82",
+      "pdos-next/server/pdos_next/capa_candidate_api.py:209",
+      "pdos-next/server/pdos_next/capa_candidate_api.py:214",
+      "pdos-next/server/pdos_next/capa_candidate_api.py:203",
+      "pdos-next/server/pdos_next/quality_followup_integration.py:245",
+      "pdos-next/server/pdos_next/quality_followup_integration.py:260",
+      "pdos-next/server/pdos_next/runtime.py:255",
+      "pdos-next/server/pdos_next/runtime.py:351",
+      "pdos-next/server/pdos_next/quality_followup_host.py:301",
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:149",
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:267",
+      "pdos-next/server/pdos_next/capa_fact_api.py:517",
+      "pdos-next/server/pdos_next/capa_fact_api.py:527",
+      "pdos-next/server/pdos_next/capa_fact_api.py:533",
+      "pdos-next/server/pdos_next/capa_fact_api.py:482",
+      "pdos-next/server/pdos_next/capa_fact_api.py:500",
+      "pdos-next/server/pdos_next/paired_output_bridge.py:184",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:142",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:145",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:210",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:228",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:313",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:104",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:202",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:55",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py:327",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:280",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:347",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:515",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:569",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:573",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:373",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:626",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:314",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:750",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:761",
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:354",
+      "pdos-next/server/pdos_next/domain/discovery/sources.py:72",
+      "pdos-next/server/pdos_next/domain/discovery/sources.py:87",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:435",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:461",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:463",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:491",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:494",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:504",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:458",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:475",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:502",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:642",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:719",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:815",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:821",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:823",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:812",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:819",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:602",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:627",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:645",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:664",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:710",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:594",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:757",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:994",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:1042",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:397",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:378",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:387",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:371",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:375",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:398",
+      "pdos-next/server/pdos_next/domain/quality_execution/policy.py:206",
+      "pdos-next/server/pdos_next/domain/quality_execution/evidence.py:27",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:59",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:200",
+      "pdos-next/server/pdos_next/domain/builds/service.py:53",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:577",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:698",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:802",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:807",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:809",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:843",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1383",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:525",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:819",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1864",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1983",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:196",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1760",
+      "pdos-next/server/pdos_next/domain/test_resources/retained.py:398",
+      "pdos-next/server/pdos_next/domain/test_resources/retained.py:408",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:177",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:284",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:474",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:477",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:683",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:1465",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:578",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:677",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:765",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:1462",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:120",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:386",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:522",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:525",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:732",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:749",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:757",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:763",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:766",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:1031",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:349",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:1028",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:119",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:201",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:222",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:80",
+      "pdos-next/server/pdos_next/domain/capa_verification/preview_phase.py:63"
+    ],
+    "SOURCE_UNAVAILABLE": [
+      "pdos-next/server/pdos_next/originals.py:57",
+      "pdos-next/server/pdos_next/originals.py:227",
+      "pdos-next/server/pdos_next/service.py:222",
+      "pdos-next/server/pdos_next/service.py:224",
+      "pdos-next/server/pdos_next/lifecycle_access.py:110",
+      "pdos-next/server/pdos_next/lifecycle_access.py:106",
+      "pdos-next/server/pdos_next/lifecycle_worker.py:166",
+      "pdos-next/server/pdos_next/runtime.py:323",
+      "pdos-next/server/pdos_next/api.py:1182",
+      "pdos-next/server/pdos_next/original_security.py:191",
+      "pdos-next/server/pdos_next/original_security.py:304",
+      "pdos-next/server/pdos_next/original_security.py:383",
+      "pdos-next/server/pdos_next/original_security.py:409",
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:172",
+      "pdos-next/server/pdos_next/upload_lifecycle.py:140",
+      "pdos-next/server/pdos_next/workflows/worker.py:131",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:85",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:195",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:557",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:876",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:1288",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:846",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:586",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:850",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:855",
+      "pdos-next/server/pdos_next/domain/products/definitions.py:243",
+      "pdos-next/server/pdos_next/domain/products/variants.py:379",
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:301",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:891",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:715",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:877",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:83",
+      "pdos-next/server/pdos_next/domain/projects/service.py:32",
+      "pdos-next/server/pdos_next/domain/discovery/sources.py:70",
+      "pdos-next/server/pdos_next/domain/discovery/sources.py:82",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:382",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:1112",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:366",
+      "pdos-next/server/pdos_next/domain/change_execution/adapters.py:72",
+      "pdos-next/server/pdos_next/domain/change_execution/adapters.py:70",
+      "pdos-next/server/pdos_next/domain/quality_execution/evidence.py:59",
+      "pdos-next/server/pdos_next/domain/quality_execution/evidence.py:86",
+      "pdos-next/server/pdos_next/domain/quality_execution/evidence.py:96",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:239",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:571",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:647",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:585",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:652",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:700",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:345",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:867",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:166",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:851"
+    ],
+    "UNSUPPORTED_MEDIA_TYPE": [
+      "pdos-next/server/pdos_next/originals.py:70"
+    ],
+    "FILE_TOO_LARGE": [
+      "pdos-next/server/pdos_next/originals.py:76"
+    ],
+    "VERSION_CONFLICT": [
+      "pdos-next/server/pdos_next/originals.py:129",
+      "pdos-next/server/pdos_next/service.py:405",
+      "pdos-next/server/pdos_next/service.py:756",
+      "pdos-next/server/pdos_next/service.py:449",
+      "pdos-next/server/pdos_next/service.py:843",
+      "pdos-next/server/pdos_next/service.py:873",
+      "pdos-next/server/pdos_next/runtime.py:272",
+      "pdos-next/server/pdos_next/runtime.py:102",
+      "pdos-next/server/pdos_next/original_actions.py:28",
+      "pdos-next/server/pdos_next/original_actions.py:35",
+      "pdos-next/server/pdos_next/original_actions.py:39",
+      "pdos-next/server/pdos_next/original_actions.py:55",
+      "pdos-next/server/pdos_next/original_actions.py:59",
+      "pdos-next/server/pdos_next/quality_followup_host.py:352",
+      "pdos-next/server/pdos_next/quality_followup_host.py:464",
+      "pdos-next/server/pdos_next/original_security.py:316",
+      "pdos-next/server/pdos_next/upload_lifecycle.py:96",
+      "pdos-next/server/pdos_next/upload_lifecycle.py:157",
+      "pdos-next/server/pdos_next/category_scope.py:58",
+      "pdos-next/server/pdos_next/model_gateway/reconciliation.py:97",
+      "pdos-next/server/pdos_next/domain/verification_execution/service.py:134",
+      "pdos-next/server/pdos_next/domain/verification_execution/service.py:271",
+      "pdos-next/server/pdos_next/domain/verification_execution/service.py:274",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:211",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:245",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:276",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:399",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:404",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:168",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_commands.py:107",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:450",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:543",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:553",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:604",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:636",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:657",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:696",
+      "pdos-next/server/pdos_next/domain/products/definitions.py:48",
+      "pdos-next/server/pdos_next/domain/products/definitions.py:119",
+      "pdos-next/server/pdos_next/domain/products/definitions.py:92",
+      "pdos-next/server/pdos_next/domain/products/variants.py:90",
+      "pdos-next/server/pdos_next/domain/products/variants.py:165",
+      "pdos-next/server/pdos_next/domain/products/variants.py:187",
+      "pdos-next/server/pdos_next/domain/products/variants.py:260",
+      "pdos-next/server/pdos_next/domain/products/variants.py:206",
+      "pdos-next/server/pdos_next/domain/products/variants.py:279",
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:560",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:147",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:792",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:799",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:823",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:443",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:462",
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:232",
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:257",
+      "pdos-next/server/pdos_next/domain/projects/service.py:35",
+      "pdos-next/server/pdos_next/domain/projects/service.py:87",
+      "pdos-next/server/pdos_next/domain/projects/service.py:193",
+      "pdos-next/server/pdos_next/domain/projects/service.py:195",
+      "pdos-next/server/pdos_next/domain/projects/service.py:236",
+      "pdos-next/server/pdos_next/domain/projects/service.py:210",
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:115",
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:181",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:509",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:523",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:673",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:1048",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:1082",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:677",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:683",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:465",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:482",
+      "pdos-next/server/pdos_next/domain/quality_execution/policy.py:211",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:139",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:175",
+      "pdos-next/server/pdos_next/domain/builds/service.py:118",
+      "pdos-next/server/pdos_next/domain/builds/service.py:141",
+      "pdos-next/server/pdos_next/domain/builds/service.py:173",
+      "pdos-next/server/pdos_next/domain/builds/service.py:145",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:182",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:413",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:417",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:419",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:334",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:161",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:170",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:286",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:289",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:375",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:406",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:446",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:337",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:426",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:436",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:477",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:818",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:883",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:531",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:300",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:365",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:775",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:779",
+      "pdos-next/server/pdos_next/domain/original_lifecycle_execution/service.py:165",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:162",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:218",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:233"
+    ],
+    "DUPLICATE_INTENT_CONFLICT": [
+      "pdos-next/server/pdos_next/originals.py:111",
+      "pdos-next/server/pdos_next/service.py:641",
+      "pdos-next/server/pdos_next/capa_rule_import.py:79",
+      "pdos-next/server/pdos_next/operational_import.py:54",
+      "pdos-next/server/pdos_next/test_resource_import.py:54",
+      "pdos-next/server/pdos_next/api.py:451",
+      "pdos-next/server/pdos_next/api.py:1289",
+      "pdos-next/server/pdos_next/quality_policy_import.py:65",
+      "pdos-next/server/pdos_next/original_security.py:313",
+      "pdos-next/server/pdos_next/upload_lifecycle.py:66",
+      "pdos-next/server/pdos_next/upload_lifecycle.py:81",
+      "pdos-next/server/pdos_next/professional_import.py:50",
+      "pdos-next/server/pdos_next/category_scope.py:54",
+      "pdos-next/server/pdos_next/category_scope.py:153",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:437",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:323",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:296"
+    ],
+    "RECHECK_REQUIRED": [
+      "pdos-next/server/pdos_next/change_graph_closure.py:68",
+      "pdos-next/server/pdos_next/change_graph_closure.py:430",
+      "pdos-next/server/pdos_next/capa_candidate_api.py:113",
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:273",
+      "pdos-next/server/pdos_next/change_publication_finalization.py:27",
+      "pdos-next/server/pdos_next/capa_fact_api.py:83",
+      "pdos-next/server/pdos_next/capa_fact_api.py:266",
+      "pdos-next/server/pdos_next/capa_fact_api.py:302",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:120",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:256",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:497",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:192",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:219",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:315",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:393",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:759",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:1032",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:1084",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:1092",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:509",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:614",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:947",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:486",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:482",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:96",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:718",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:321",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:1086",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:1096",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:1112",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:292",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:1032",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:796",
+      "pdos-next/server/pdos_next/domain/quality_execution/policy.py:338",
+      "pdos-next/server/pdos_next/domain/quality_execution/policy.py:308",
+      "pdos-next/server/pdos_next/domain/quality_execution/policy.py:313",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:130",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:241",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:270",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:368",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:275",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:366",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:380",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:378",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:417",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:422",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:461",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:420",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:471",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:490",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:500",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:742",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:62",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:193",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:203",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:728",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:843",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:897",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:135",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:294",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:380"
+    ],
+    "CANCELLED_RUN": [
+      "pdos-next/server/pdos_next/service.py:339",
+      "pdos-next/server/pdos_next/runtime.py:250"
+    ],
+    "MODEL_BUDGET_EXCEEDED": [
+      "pdos-next/server/pdos_next/service.py:341",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:295",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:230"
+    ],
+    "NAMED_DECISION_REQUIRED": [
+      "pdos-next/server/pdos_next/service.py:350",
+      "pdos-next/server/pdos_next/service.py:356",
+      "pdos-next/server/pdos_next/service.py:500",
+      "pdos-next/server/pdos_next/lifecycle_access.py:89",
+      "pdos-next/server/pdos_next/operational_import.py:22",
+      "pdos-next/server/pdos_next/original_actions.py:21",
+      "pdos-next/server/pdos_next/test_resource_import.py:22",
+      "pdos-next/server/pdos_next/quality_followup_host.py:138",
+      "pdos-next/server/pdos_next/quality_followup_host.py:157",
+      "pdos-next/server/pdos_next/upload_lifecycle.py:46",
+      "pdos-next/server/pdos_next/professional_import.py:20",
+      "pdos-next/server/pdos_next/category_scope.py:45",
+      "pdos-next/server/pdos_next/model_gateway/reconciliation.py:38",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:32",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:80",
+      "pdos-next/server/pdos_next/domain/products/definitions.py:44",
+      "pdos-next/server/pdos_next/domain/products/variants.py:231",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:739",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:40",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:92",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:487",
+      "pdos-next/server/pdos_next/domain/projects/service.py:85",
+      "pdos-next/server/pdos_next/domain/builds/service.py:77",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:94",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:614",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:818"
+    ],
+    "QUALIFICATION_REQUIRED": [
+      "pdos-next/server/pdos_next/service.py:387",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:212",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:479",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:704",
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:82",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:89",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:320",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:236",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:953",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:277",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:100",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:99",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:745",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:65"
+    ],
+    "CONFIRMATION_REQUIRED": [
+      "pdos-next/server/pdos_next/service.py:403",
+      "pdos-next/server/pdos_next/category_scope.py:143",
+      "pdos-next/server/pdos_next/domain/verification_handoff/adapters.py:24",
+      "pdos-next/server/pdos_next/domain/products/variants.py:96",
+      "pdos-next/server/pdos_next/domain/verification_launch/adapters.py:26",
+      "pdos-next/server/pdos_next/domain/quality_followup/adapters.py:45",
+      "pdos-next/server/pdos_next/domain/quality_execution/adapters.py:60",
+      "pdos-next/server/pdos_next/domain/verification_front/adapters.py:72",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1624",
+      "pdos-next/server/pdos_next/domain/verification_results/adapters.py:22",
+      "pdos-next/server/pdos_next/domain/capa_verification/write_phase.py:108"
+    ],
+    "UNDO_BLOCKED_BY_DEPENDENCY": [
+      "pdos-next/server/pdos_next/service.py:420",
+      "pdos-next/server/pdos_next/service.py:422"
+    ],
+    "CONFIRMATION_SCOPE_CHANGED": [
+      "pdos-next/server/pdos_next/service.py:586",
+      "pdos-next/server/pdos_next/quality_followup_host.py:449",
+      "pdos-next/server/pdos_next/domain/capa_verification/write_phase.py:172"
+    ],
+    "VALIDATION_FAILED": [
+      "pdos-next/server/pdos_next/service.py:245",
+      "pdos-next/server/pdos_next/api.py:296",
+      "pdos-next/server/pdos_next/category_scope.py:63"
+    ],
+    "MISSING_REQUIRED_EVIDENCE": [
+      "pdos-next/server/pdos_next/service.py:672",
+      "pdos-next/server/pdos_next/service.py:679",
+      "pdos-next/server/pdos_next/capa_rule_import.py:76",
+      "pdos-next/server/pdos_next/change_implementation_owner.py:117",
+      "pdos-next/server/pdos_next/quality_followup_host.py:432",
+      "pdos-next/server/pdos_next/quality_followup_host.py:480",
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:196",
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:186",
+      "pdos-next/server/pdos_next/change_completion_adapter.py:63",
+      "pdos-next/server/pdos_next/change_controlled_owner.py:71",
+      "pdos-next/server/pdos_next/domain/verification_execution/service.py:240",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:366",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:375",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:347",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:216",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:521",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:458",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:1233",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:700",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:841",
+      "pdos-next/server/pdos_next/domain/products/definitions.py:52",
+      "pdos-next/server/pdos_next/domain/products/definitions.py:56",
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:504",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:642",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:1322",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:600",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:421",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:432",
+      "pdos-next/server/pdos_next/domain/projects/service.py:103",
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:130",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:395",
+      "pdos-next/server/pdos_next/domain/quality_followup/evidence.py:54",
+      "pdos-next/server/pdos_next/domain/quality_followup/evidence.py:36",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:220",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:567",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:192",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:424",
+      "pdos-next/server/pdos_next/domain/change_execution/adapters.py:67",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:323",
+      "pdos-next/server/pdos_next/domain/quality_execution/policy.py:131",
+      "pdos-next/server/pdos_next/domain/quality_execution/evidence.py:30",
+      "pdos-next/server/pdos_next/domain/quality_execution/evidence.py:114",
+      "pdos-next/server/pdos_next/domain/quality_execution/evidence.py:119",
+      "pdos-next/server/pdos_next/domain/quality_execution/evidence.py:132",
+      "pdos-next/server/pdos_next/domain/builds/service.py:56",
+      "pdos-next/server/pdos_next/domain/builds/service.py:87",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:384",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:644",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:260",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:456",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1178",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:403",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:381",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:202",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:123",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:1210",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:625",
+      "pdos-next/server/pdos_next/domain/capa_verification/commands.py:170"
+    ],
+    "FOLLOWUP_CONFIRMATION_EXPIRED": [
+      "pdos-next/server/pdos_next/service.py:571"
+    ],
+    "FACT_RULE_HOST_ONLY": [
+      "pdos-next/server/pdos_next/capa_rule_import.py:21",
+      "pdos-next/server/pdos_next/capa_rule_import.py:24"
+    ],
+    "NAMED_PERSON_REQUIRED": [
+      "pdos-next/server/pdos_next/launch_plan_preview.py:57",
+      "pdos-next/server/pdos_next/quality_policy_import.py:27",
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:331",
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:496",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:88",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:117",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:217",
+      "pdos-next/server/pdos_next/domain/capa_verification/preview_phase.py:79"
+    ],
+    "INVALID_REQUEST": [
+      "pdos-next/server/pdos_next/launch_plan_preview.py:59",
+      "pdos-next/server/pdos_next/capa_candidate_api.py:280",
+      "pdos-next/server/pdos_next/quality_followup_api.py:29",
+      "pdos-next/server/pdos_next/quality_followup_api.py:56",
+      "pdos-next/server/pdos_next/capa_fact_api.py:551",
+      "pdos-next/server/pdos_next/capa_fact_api.py:570",
+      "pdos-next/server/pdos_next/capa_fact_api.py:576",
+      "pdos-next/server/pdos_next/domain/capa_verification/preview_phase.py:81"
+    ],
+    "FORBIDDEN_OPERATION": [
+      "pdos-next/server/pdos_next/launch_plan_preview.py:62",
+      "pdos-next/server/pdos_next/quality_followup_host.py:123",
+      "pdos-next/server/pdos_next/quality_followup_host.py:374",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:486",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:709",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:87",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:94",
+      "pdos-next/server/pdos_next/domain/quality_issues/read_models.py:53",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:322",
+      "pdos-next/server/pdos_next/domain/quality_followup/adapters.py:50",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:238",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:471",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:92",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:97",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:336",
+      "pdos-next/server/pdos_next/domain/change_control/read_models.py:45",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:748"
+    ],
+    "SOURCE_CHANGED": [
+      "pdos-next/server/pdos_next/launch_plan_preview.py:106",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:202",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:422",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:867",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:480",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:535",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:472",
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:320",
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:280",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:361",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:146",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:173",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:179",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:200",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:147",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:841"
+    ],
+    "INVALID_EVENT_TIME": [
+      "pdos-next/server/pdos_next/launch_plan_preview.py:121",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:470",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:690",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:692",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:814",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:830",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:468",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:485",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:129",
+      "pdos-next/server/pdos_next/domain/quality_followup/evidence.py:58",
+      "pdos-next/server/pdos_next/domain/quality_execution/policy.py:173",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:137",
+      "pdos-next/server/pdos_next/domain/builds/demand.py:133",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:535",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:114",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:612",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:425",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:639",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:453",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:654",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:670",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:673",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:713",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:723",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:460",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:268",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:338",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:181"
+    ],
+    "INVENTORY_INCOMPLETE": [
+      "pdos-next/server/pdos_next/lifecycle_access.py:409"
+    ],
+    "INVALID_STATE": [
+      "pdos-next/server/pdos_next/capa_candidate_api.py:52",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:812",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:825",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:828",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:836",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:305",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:370",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:374",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:384",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:399",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:434",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:455",
+      "pdos-next/server/pdos_next/domain/quality_followup/evidence.py:40",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:460",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:343",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:377",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:601",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:413",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:636",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:444",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:711",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:721",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:547",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:557",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:568",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:256",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:250",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:801",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:807",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:782"
+    ],
+    "LIFECYCLE_UNAVAILABLE": [
+      "pdos-next/server/pdos_next/lifecycle_worker.py:161",
+      "pdos-next/server/pdos_next/domain/original_lifecycle_execution/service.py:48",
+      "pdos-next/server/pdos_next/domain/original_lifecycle_execution/service.py:54"
+    ],
+    "COMPLETION_PROFILE_CONFIG_INVALID": [
+      "pdos-next/server/pdos_next/quality_followup_integration.py:146",
+      "pdos-next/server/pdos_next/quality_followup_integration.py:273",
+      "pdos-next/server/pdos_next/quality_followup_integration.py:159"
+    ],
+    "COMPLETION_PROFILE_CONFLICT": [
+      "pdos-next/server/pdos_next/quality_followup_integration.py:164",
+      "pdos-next/server/pdos_next/quality_followup_integration.py:171",
+      "pdos-next/server/pdos_next/quality_followup_integration.py:175",
+      "pdos-next/server/pdos_next/quality_followup_integration.py:188",
+      "pdos-next/server/pdos_next/quality_followup_integration.py:208"
+    ],
+    "COMPLETION_PROFILE_SCOPE_MISSING": [
+      "pdos-next/server/pdos_next/quality_followup_integration.py:240"
+    ],
+    "TRUSTED_ISSUER_REQUIRED": [
+      "pdos-next/server/pdos_next/operational_import.py:20",
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:303",
+      "pdos-next/server/pdos_next/domain/quality_execution/policy.py:85",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:200",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:172",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:863"
+    ],
+    "CONTROLLED_SELECTION_PHASE_REQUIRED": [
+      "pdos-next/server/pdos_next/change_selection_service.py:608",
+      "pdos-next/server/pdos_next/change_selection_service.py:429"
+    ],
+    "MODEL_RESULT_UNKNOWN": [
+      "pdos-next/server/pdos_next/runtime.py:121"
+    ],
+    "RUN_IN_PROGRESS": [
+      "pdos-next/server/pdos_next/runtime.py:270"
+    ],
+    "RUN_LEASE_EXPIRED": [
+      "pdos-next/server/pdos_next/runtime.py:348"
+    ],
+    "UNAUTHENTICATED": [
+      "pdos-next/server/pdos_next/api.py:286",
+      "pdos-next/server/pdos_next/api.py:291",
+      "pdos-next/server/pdos_next/api.py:309"
+    ],
+    "STORAGE_UNAVAILABLE": [
+      "pdos-next/server/pdos_next/api.py:1062",
+      "pdos-next/server/pdos_next/api.py:1084",
+      "pdos-next/server/pdos_next/api.py:1134",
+      "pdos-next/server/pdos_next/api.py:1218",
+      "pdos-next/server/pdos_next/api.py:1239",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:387"
+    ],
+    "AGENT_TEMPORAL_REQUIRED": [
+      "pdos-next/server/pdos_next/api.py:1258"
+    ],
+    "NAMED_APPROVAL_REQUIRED": [
+      "pdos-next/server/pdos_next/quality_followup_host.py:170",
+      "pdos-next/server/pdos_next/quality_followup_host.py:228",
+      "pdos-next/server/pdos_next/quality_followup_host.py:251",
+      "pdos-next/server/pdos_next/quality_followup_host.py:290",
+      "pdos-next/server/pdos_next/quality_followup_host.py:303",
+      "pdos-next/server/pdos_next/quality_followup_host.py:321",
+      "pdos-next/server/pdos_next/quality_followup_host.py:340",
+      "pdos-next/server/pdos_next/quality_followup_host.py:348",
+      "pdos-next/server/pdos_next/quality_followup_host.py:333",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:629",
+      "pdos-next/server/pdos_next/domain/quality_followup/adapters.py:48",
+      "pdos-next/server/pdos_next/domain/capa_verification/write_phase.py:146",
+      "pdos-next/server/pdos_next/domain/capa_verification/write_phase.py:162",
+      "pdos-next/server/pdos_next/domain/capa_verification/write_phase.py:186"
+    ],
+    "CHANGE_COMMON_PHASE_REQUIRED": [
+      "pdos-next/server/pdos_next/change_order_integration.py:134",
+      "pdos-next/server/pdos_next/change_order_integration.py:101"
+    ],
+    "ORIGINAL_SECURITY_UNAVAILABLE": [
+      "pdos-next/server/pdos_next/original_security.py:106"
+    ],
+    "ORIGINAL_SECURITY_BLOCKED": [
+      "pdos-next/server/pdos_next/original_security.py:200"
+    ],
+    "SCANNER_UNAVAILABLE": [
+      "pdos-next/server/pdos_next/original_security.py:117"
+    ],
+    "SCAN_BASIS_CHANGED": [
+      "pdos-next/server/pdos_next/original_security.py:443"
+    ],
+    "COVERAGE_OWNER_STALE": [
+      "pdos-next/server/pdos_next/change_coverage_binding.py:11",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:714",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:662"
+    ],
+    "ACTION_COMPLETION_UNVERIFIED": [
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:242",
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:262",
+      "pdos-next/server/pdos_next/quality_followup_bootstrap.py:277",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:280"
+    ],
+    "UPLOAD_CLOSED": [
+      "pdos-next/server/pdos_next/upload_lifecycle.py:133",
+      "pdos-next/server/pdos_next/upload_lifecycle.py:83"
+    ],
+    "REGISTERED_ORIGINAL": [
+      "pdos-next/server/pdos_next/upload_lifecycle.py:159",
+      "pdos-next/server/pdos_next/upload_lifecycle.py:191"
+    ],
+    "BINDING_MISMATCH": [
+      "pdos-next/server/pdos_next/upload_lifecycle.py:187"
+    ],
+    "MODEL_RUNTIME_PORTS_MISSING": [
+      "pdos-next/server/pdos_next/agent_execution.py:49"
+    ],
+    "AGENT_LANGGRAPH_ENTRY_REQUIRED": [
+      "pdos-next/server/pdos_next/agent_execution.py:90"
+    ],
+    "MODEL_PERMIT_BINDING_MISMATCH": [
+      "pdos-next/server/pdos_next/agent_execution.py:105"
+    ],
+    "FAILURE_EVENT_UNAVAILABLE": [
+      "pdos-next/server/pdos_next/quality_result_bridge.py:73"
+    ],
+    "FAILURE_CONTEXT_MISSING": [
+      "pdos-next/server/pdos_next/quality_result_bridge.py:148",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:134",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:160",
+      "pdos-next/server/pdos_next/domain/quality_issues/rules.py:50",
+      "pdos-next/server/pdos_next/domain/quality_issues/rules.py:68",
+      "pdos-next/server/pdos_next/domain/quality_issues/rules.py:70",
+      "pdos-next/server/pdos_next/domain/quality_issues/rules.py:75",
+      "pdos-next/server/pdos_next/domain/quality_issues/rules.py:81",
+      "pdos-next/server/pdos_next/domain/quality_issues/rules.py:85",
+      "pdos-next/server/pdos_next/domain/quality_issues/rules.py:87",
+      "pdos-next/server/pdos_next/domain/quality_issues/rules.py:62"
+    ],
+    "RESULT_BASIS_CHANGED": [
+      "pdos-next/server/pdos_next/quality_result_bridge.py:182",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:291",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:618",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:612",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:667"
+    ],
+    "FAILURE_EVENT_CHANGED": [
+      "pdos-next/server/pdos_next/quality_result_bridge.py:131",
+      "pdos-next/server/pdos_next/quality_result_bridge.py:297"
+    ],
+    "MODEL_BUDGET_CONFLICT": [
+      "pdos-next/server/pdos_next/model_gateway/reconciliation.py:99",
+      "pdos-next/server/pdos_next/model_gateway/reconciliation.py:124",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:105",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:112",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:115",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:311",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:322",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:314",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:316"
+    ],
+    "MODEL_CALL_IN_FLIGHT": [
+      "pdos-next/server/pdos_next/model_gateway/reconciliation.py:114"
+    ],
+    "MODEL_EGRESS_DENIED": [
+      "pdos-next/server/pdos_next/model_gateway/claim.py:67",
+      "pdos-next/server/pdos_next/model_gateway/claim.py:74",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:57"
+    ],
+    "MODEL_UNAVAILABLE": [
+      "pdos-next/server/pdos_next/model_gateway/claim.py:72"
+    ],
+    "MODEL_BUDGET_REQUIRED": [
+      "pdos-next/server/pdos_next/model_gateway/claim.py:76"
+    ],
+    "MODEL_INPUT_INVALID": [
+      "pdos-next/server/pdos_next/model_gateway/claim.py:80"
+    ],
+    "MODEL_CALL_ALREADY_ATTEMPTED": [
+      "pdos-next/server/pdos_next/model_gateway/claim.py:91",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:221",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:251"
+    ],
+    "MODEL_BUDGET_INVALID": [
+      "pdos-next/server/pdos_next/model_gateway/claim.py:103",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:68",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:75",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:79",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:94",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:97",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:125",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:133",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:154",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:189",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:269",
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:254"
+    ],
+    "MODEL_OUTPUT_INVALID": [
+      "pdos-next/server/pdos_next/model_gateway/claim.py:154"
+    ],
+    "MODEL_RUN_NOT_ACTIVE": [
+      "pdos-next/server/pdos_next/model_gateway/persistent_budget.py:206"
+    ],
+    "TOO_MANY_REQUIRED_EVIDENCE": [
+      "pdos-next/server/pdos_next/domain/configurations/service.py:58"
+    ],
+    "DUPLICATE_PART_IDENTITY": [
+      "pdos-next/server/pdos_next/domain/configurations/service.py:414",
+      "pdos-next/server/pdos_next/domain/configurations/service.py:430"
+    ],
+    "RESOURCE_VERSION_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/manufacturing_resource_owner/relations.py:32",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:433"
+    ],
+    "RESOURCE_RECHECK_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/manufacturing_resource_owner/owner.py:59",
+      "pdos-next/server/pdos_next/domain/manufacturing_resource_owner/owner.py:185"
+    ],
+    "RESOURCE_PEOPLE_NOWAIT_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/manufacturing_resource_owner/owner.py:180"
+    ],
+    "OPERATIONAL_ASSET_MISSING": [
+      "pdos-next/server/pdos_next/domain/manufacturing_resource_owner/owner.py:150",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:316"
+    ],
+    "OPERATIONAL_IDENTITY_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/manufacturing_resource_owner/owner.py:160",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:318"
+    ],
+    "INVALID_TIME": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py:434",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py:278",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py:314",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:32",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:34"
+    ],
+    "PROFESSIONAL_OPERATION_NOT_CONFIGURED": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py:185"
+    ],
+    "NATURE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py:225",
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:250",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:950"
+    ],
+    "CANDIDATE_AUDIENCE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py:278",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py:471"
+    ],
+    "CANDIDATE_JSON_INVALID": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py:129"
+    ],
+    "CANDIDATE_TYPED_MATERIAL_INVALID": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py:148"
+    ],
+    "FACT_COMMON_PHASE_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_service.py:259"
+    ],
+    "PARTICIPANT_SOURCE_SHAPE_INVALID": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py:109"
+    ],
+    "CALLER_UOW_CHANGED": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py:95"
+    ],
+    "PAIR_FACT_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py:194",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py:201"
+    ],
+    "PAIR_WRITER_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py:240"
+    ],
+    "PAIR_SCOPE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py:319",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py:362",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py:473"
+    ],
+    "PAIR_CURRENT_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py:332",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py:352",
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py:568"
+    ],
+    "PAIR_STORAGE_INVALID": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py:584"
+    ],
+    "CANDIDATE_REVIEW_SNAPSHOT_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py:215"
+    ],
+    "PAIR_ORIGINAL_SEMANTIC_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py:365"
+    ],
+    "ORIGIN_SNAPSHOT_INVALID": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py:145"
+    ],
+    "ORIGIN_SEMANTIC_MISSING": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py:257"
+    ],
+    "ORIGIN_DECLARED_BASIS_MISSING": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py:347"
+    ],
+    "ORIGIN_PROOF_MISSING": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py:460"
+    ],
+    "FACT_KIND_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_commands.py:235"
+    ],
+    "FACT_TYPED_PAYLOAD_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_commands.py:242"
+    ],
+    "ORIGINAL_BYTES_OWNER_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py:216"
+    ],
+    "CANDIDATE_CURRENT_REVISION_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_commands.py:103"
+    ],
+    "CANDIDATE_REQUEST_BINDING_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_commands.py:122"
+    ],
+    "CANDIDATE_ACTUAL_BINDING_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_commands.py:112"
+    ],
+    "CAPTURE_EXPIRED": [
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:546",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:429",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:784"
+    ],
+    "SNAPSHOT_VERSION_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:566",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:572",
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:606",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:447",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:451",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:479"
+    ],
+    "CAPTURE_ALREADY_APPLIED": [
+      "pdos-next/server/pdos_next/domain/supply_execution/service.py:583",
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:462"
+    ],
+    "ACTUAL_METHOD_UNKNOWN": [
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:368",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:532",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:575",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:1384",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:1400",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:523",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:380"
+    ],
+    "ACTUAL_SAMPLE_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:512",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:524",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:503",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:153"
+    ],
+    "INVALID_ASSIGNEE": [
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:671",
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:677"
+    ],
+    "REQUEST_RUN_SCOPE_FIXED": [
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:647"
+    ],
+    "ACCEPTED_SCOPE_FROZEN": [
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:691",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:391"
+    ],
+    "SAMPLE_UNAVAILABLE": [
+      "pdos-next/server/pdos_next/domain/verification_handoff/service.py:594",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:721",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:216"
+    ],
+    "SAMPLE_CHAIN_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:215",
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:806"
+    ],
+    "BUILD_NOT_STARTED": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:299"
+    ],
+    "BUILD_EXECUTION_NOT_CURRENT": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:316"
+    ],
+    "SAMPLE_READINESS_INTEGRITY_UNKNOWN": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:392",
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:439"
+    ],
+    "SAMPLE_VERSION_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:469",
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:739"
+    ],
+    "SAMPLE_READINESS_VERSION_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:480",
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:566"
+    ],
+    "INVALID_SAMPLE_OBSERVATION_TIME": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:707"
+    ],
+    "INVALID_SAMPLE_PURPOSE": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:729",
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:965"
+    ],
+    "INVALID_READ_CONTEXT": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:79",
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:95"
+    ],
+    "SAMPLE_SOURCE_CHANGED": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:810"
+    ],
+    "SAMPLE_AUTHORITY_CHANGED": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:825"
+    ],
+    "SAMPLE_START_CHANGED": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/service.py:852"
+    ],
+    "SAMPLE_EVENT_IN_FUTURE": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/rules.py:62"
+    ],
+    "SAMPLE_EVENT_BEFORE_OUTPUT": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/rules.py:64"
+    ],
+    "SAMPLE_EVENT_BEFORE_START": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/rules.py:68"
+    ],
+    "SAMPLE_EVENT_NOT_NEWER": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/rules.py:70"
+    ],
+    "MANUFACTURING_AUTHORITY_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/rules.py:89"
+    ],
+    "SAMPLE_EVENT_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/sample_handoff/rules.py:53"
+    ],
+    "INVALID_COVERAGE": [
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:232",
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:529",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:605",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:380",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:417",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:448",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:467",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:469",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:572",
+      "pdos-next/server/pdos_next/domain/verification/rules.py:35",
+      "pdos-next/server/pdos_next/domain/verification/rules.py:39",
+      "pdos-next/server/pdos_next/domain/verification/rules.py:44"
+    ],
+    "RESOURCE_FINGERPRINT_MATERIAL_INVALID": [
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:320",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:384",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:368",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:958",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:972",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:980",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:976"
+    ],
+    "RESOURCE_FACTS_CHANGED": [
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:323",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:581",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:781",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1827",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1971",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1311",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1580",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1666"
+    ],
+    "RUN_START_PROOF_INVALID": [
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:334",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:1245",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:339",
+      "pdos-next/server/pdos_next/domain/test_resources/retained.py:356",
+      "pdos-next/server/pdos_next/domain/test_resources/retained.py:368",
+      "pdos-next/server/pdos_next/domain/test_resources/retained.py:372"
+    ],
+    "RUN_RESERVATION_MISSING": [
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:362",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:1225",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:1272",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1397",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1438",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1887",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1905",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1939",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1850"
+    ],
+    "RESOURCE_FINGERPRINT_VERSION_UNSUPPORTED": [
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:376",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:991",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1006",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1119",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1503"
+    ],
+    "TEST_PLAN_SCOPE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:490",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:235",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:239",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:244",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:258",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:333",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:538",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:331",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:356",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1594"
+    ],
+    "INVALID_EVENT_EVIDENCE": [
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:686",
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:674",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:711",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:718",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:721",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:733",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:704"
+    ],
+    "RESOURCE_NOT_READY": [
+      "pdos-next/server/pdos_next/domain/verification_launch/service.py:726"
+    ],
+    "INVALID_AUTHORITY_TIME": [
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:292",
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:498"
+    ],
+    "FORBIDDEN_ISSUER_SCOPE": [
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:309"
+    ],
+    "SYNTHETIC_AUTHORITY_NOT_ALLOWED": [
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:311"
+    ],
+    "AUTHORITY_EVIDENCE_LIMIT": [
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:357"
+    ],
+    "AUTHORITY_OPERATION_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:503"
+    ],
+    "AUTHORITY_INTEGRITY_UNKNOWN": [
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:641",
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:539",
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:844"
+    ],
+    "INVALID_AUTHORITY_PURPOSE": [
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:695"
+    ],
+    "AUTHORITY_VERSION_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:550",
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:562"
+    ],
+    "AUTHORITY_SERIES_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:558"
+    ],
+    "INVALID_RETAINED_AUTHORITY": [
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:689",
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:693"
+    ],
+    "AUTHORITY_SOURCE_UNAVAILABLE": [
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py:834"
+    ],
+    "CONFIGURATION_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:99",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:176",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:269",
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:522",
+      "pdos-next/server/pdos_next/domain/builds/service.py:40",
+      "pdos-next/server/pdos_next/domain/builds/service.py:42"
+    ],
+    "CONFIGURATION_DIFFERENCE_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:472"
+    ],
+    "UNIT_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:481"
+    ],
+    "OUTPUT_QUANTITY_EXCEEDED": [
+      "pdos-next/server/pdos_next/domain/build_execution/service.py:506"
+    ],
+    "COVERAGE_DEPENDENCY_UNRESOLVED": [
+      "pdos-next/server/pdos_next/domain/change_coverage_owner/registry.py:109"
+    ],
+    "FORBIDDEN": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:78"
+    ],
+    "RUN_CANCELLED": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:80",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:83",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:90",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:89"
+    ],
+    "OPERATION_UNAVAILABLE": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:86"
+    ],
+    "INVALID_SERVER_FACT": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:322"
+    ],
+    "INTENT_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:335"
+    ],
+    "PARAMETER_SOURCE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:104",
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:241"
+    ],
+    "INVALID_TARGET": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:107",
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:186",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:248"
+    ],
+    "INCOMPATIBLE_SCOPE": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:248",
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/rules.py:170"
+    ],
+    "FUTURE_OBSERVATION": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:255"
+    ],
+    "LOT_LIMIT": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:261"
+    ],
+    "FIXED_SCOPE_CHANGED": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:268"
+    ],
+    "FIXED_DENOMINATOR_CHANGED": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:273"
+    ],
+    "FIXED_UNITS_CHANGED": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:277"
+    ],
+    "COUNT_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/rules.py:40"
+    ],
+    "INVALID_SAMPLE_POLICY": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/rules.py:101"
+    ],
+    "EMPTY_SCOPE": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/rules.py:143"
+    ],
+    "OVERLAPPING_SCOPE": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/rules.py:150"
+    ],
+    "ACTUAL_FIXED_DTO_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/pilot_result_rules.py:122"
+    ],
+    "DUPLICATE_HISTORY": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/read_models.py:41"
+    ],
+    "INCOMPLETE_HISTORY": [
+      "pdos-next/server/pdos_next/domain/manufacturing_trials/read_models.py:44"
+    ],
+    "INVALID_AUTHORITY": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:81",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:88"
+    ],
+    "INVALID_OPERATION": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:99",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:310",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:231",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:746",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:84",
+      "pdos-next/server/pdos_next/domain/verification_results/adapters.py:54",
+      "pdos-next/server/pdos_next/domain/verification_results/adapters.py:57"
+    ],
+    "NAMED_EXECUTOR_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:125",
+      "pdos-next/server/pdos_next/domain/quality_followup/evidence.py:43",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:298"
+    ],
+    "ACTIONS_INCOMPLETE": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:137"
+    ],
+    "OBSERVATION_PENDING": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:140",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:171"
+    ],
+    "INVALID_VERIFICATION": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:146",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:167",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:169",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:173",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:177",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:181"
+    ],
+    "INDEPENDENCE_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:154",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:183",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:188"
+    ],
+    "INCOMPLETE_VERIFICATION": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:194"
+    ],
+    "NOT_EFFECTIVE": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:196",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:198"
+    ],
+    "PAYLOAD_DIGEST_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:230",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:808"
+    ],
+    "REVISION_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:301",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:320"
+    ],
+    "MERGED_ALIAS": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:303"
+    ],
+    "MERGE_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:316",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:330",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:338",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:322",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:328"
+    ],
+    "ACTION_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:377",
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:443",
+      "pdos-next/server/pdos_next/domain/quality_followup/service.py:238"
+    ],
+    "INVALID_CAPA_SCOPE": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:417"
+    ],
+    "INVALID_CAPA_REVISION": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:409"
+    ],
+    "NO_CHANGES": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:413"
+    ],
+    "EFFECTIVENESS_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/quality_issues/handlers.py:483"
+    ],
+    "NOT_ACTUAL_FAILURE": [
+      "pdos-next/server/pdos_next/domain/quality_issues/rules.py:52",
+      "pdos-next/server/pdos_next/domain/quality_issues/rules.py:54",
+      "pdos-next/server/pdos_next/domain/quality_issues/rules.py:57",
+      "pdos-next/server/pdos_next/domain/quality_issues/rules.py:66"
+    ],
+    "FIXED_REFERENCE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/quality_issues/read_models.py:81",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:217",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:494",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:82",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:250",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:140",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:143",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:161",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:168",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:177",
+      "pdos-next/server/pdos_next/domain/change_execution/adapters.py:59",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:1009",
+      "pdos-next/server/pdos_next/domain/quality_execution/service.py:1116",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:117",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:441"
+    ],
+    "PORT_UNAVAILABLE": [
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:42"
+    ],
+    "SCOPE_BINDING_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:49"
+    ],
+    "CAPABILITY_DISABLED": [
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:51"
+    ],
+    "PRODUCT_BINDING_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:183"
+    ],
+    "INVALID_SELECTION": [
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:189",
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:215"
+    ],
+    "PARTIAL_REASON_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:193"
+    ],
+    "SOURCE_MAPPING_LIMIT": [
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:300"
+    ],
+    "PREVIEW_CHANGED": [
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:354"
+    ],
+    "IDEMPOTENCY_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/discovery/handlers.py:132",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:934"
+    ],
+    "AUDIENCE_USE_FORBIDDEN": [
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:532",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:1005",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:66",
+      "pdos-next/server/pdos_next/domain/change_execution/adapters.py:46",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:445"
+    ],
+    "GRAPH_CAPTURE_EXPIRED": [
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:622",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:712",
+      "pdos-next/server/pdos_next/domain/change_execution/service.py:1045"
+    ],
+    "GRAPH_LIMIT_EXCEEDED": [
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:269",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:319",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:352",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py:476"
+    ],
+    "DEMAND_SNAPSHOT_INCOMPLETE": [
+      "pdos-next/server/pdos_next/domain/builds/demand.py:45",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1115"
+    ],
+    "PORT_UNCONNECTED": [
+      "pdos-next/server/pdos_next/domain/builds/demand.py:185"
+    ],
+    "METHOD_EVIDENCE_INCOMPLETE": [
+      "pdos-next/server/pdos_next/domain/verification_front/service.py:437"
+    ],
+    "INVALID_OPERATION_PAYLOAD": [
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:248",
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:593"
+    ],
+    "INTENT_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:253"
+    ],
+    "DESTRUCTIVE_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:623"
+    ],
+    "MEASUREMENT_ALREADY_RECORDED": [
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:642",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:788"
+    ],
+    "ALREADY_ACCEPTED": [
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:450"
+    ],
+    "INCOMPLETE_FINAL_SCOPE": [
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:660"
+    ],
+    "ACTUAL_END_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:664"
+    ],
+    "PARTIAL_RESPONSIBILITY_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/verification/handlers.py:473",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:797"
+    ],
+    "INAPPLICABLE_CONFIGURATION": [
+      "pdos-next/server/pdos_next/domain/verification/rules.py:48"
+    ],
+    "INVALID_MEASUREMENT_SCOPE": [
+      "pdos-next/server/pdos_next/domain/verification/rules.py:113"
+    ],
+    "NAMED_HUMAN_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:102"
+    ],
+    "INVALID_POLICY": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:128"
+    ],
+    "ORDER_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:245"
+    ],
+    "INVALID_EFFECTIVITY_ITEM": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:251"
+    ],
+    "FACT_BINDING_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:260"
+    ],
+    "FACT_NATURE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:262",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:326"
+    ],
+    "ORIGINAL_REWRITE_FORBIDDEN": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:280"
+    ],
+    "ACTUAL_OUTPUT_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:294"
+    ],
+    "EXECUTION_BEFORE_APPROVAL": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:296"
+    ],
+    "ASSESSMENT_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:311",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:480"
+    ],
+    "VERIFICATION_SCOPE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:322"
+    ],
+    "VERIFICATION_INSUFFICIENT": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:328"
+    ],
+    "INDEPENDENT_VERIFIER_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:332"
+    ],
+    "VERIFICATION_TOO_EARLY": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:345"
+    ],
+    "VERIFICATION_OUTPUT_MISSING": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:356"
+    ],
+    "CONDITION_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:301"
+    ],
+    "EFFECTIVITY_SCOPE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:303"
+    ],
+    "ACTUAL_SCOPE_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:305"
+    ],
+    "IMPACT_ROOT_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:443"
+    ],
+    "PLAN_EXPIRED": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:484"
+    ],
+    "IMPACT_DISPOSITION_MISSING": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:487"
+    ],
+    "PLAN_SCOPE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:493"
+    ],
+    "PLAN_DISCIPLINE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:497"
+    ],
+    "IMPACT_UNKNOWN": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:524"
+    ],
+    "FORBIDDEN_DISCIPLINE": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:530"
+    ],
+    "SELF_APPROVAL_FORBIDDEN": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:532"
+    ],
+    "APPROVAL_ALREADY_RECORDED": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:534"
+    ],
+    "APPROVAL_EXPIRY_INVALID": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:536"
+    ],
+    "IMPLEMENTATION_RECONCILE_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:593"
+    ],
+    "INVALID_RECONCILIATION": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:577",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:653"
+    ],
+    "RECONCILIATION_ALREADY_RECORDED": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:584",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:659"
+    ],
+    "FACT_ID_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:600",
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:695"
+    ],
+    "IMPLEMENTATION_INCOMPLETE": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:624"
+    ],
+    "EFFECTIVITY_OUTPUT_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:633"
+    ],
+    "EFFECTIVITY_RECONCILE_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:679"
+    ],
+    "RECEIPT_IDENTITY_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:689"
+    ],
+    "EFFECTIVITY_INCOMPLETE": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:714"
+    ],
+    "VERIFICATION_ALREADY_RECORDED": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:717"
+    ],
+    "CLOSURE_INCOMPLETE": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:739"
+    ],
+    "RECHECK_NOT_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/change_control/handlers.py:755"
+    ],
+    "INVALID_OPERATIONAL_TIME": [
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:178",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:181",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:412"
+    ],
+    "OPERATIONAL_SCOPE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:221",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:410",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:453"
+    ],
+    "INVALID_OPERATIONAL_INTENT": [
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1349"
+    ],
+    "OPERATIONAL_FACTS_CHANGED": [
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1352",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1546",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:437",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:442",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:462"
+    ],
+    "BUILD_OPERATIONAL_NOT_READY": [
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1354"
+    ],
+    "RESERVATION_PROOF_MISSING": [
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1482"
+    ],
+    "RESERVATION_PROOF_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1496",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1503",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1522",
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1492"
+    ],
+    "OPERATIONAL_ASSET_VERSION_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:466"
+    ],
+    "BUILD_ALREADY_RESERVED": [
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1363"
+    ],
+    "MATERIAL_HOLD_PRECISION_UNKNOWN": [
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1368"
+    ],
+    "MATERIAL_HOLD_UNRECONCILED": [
+      "pdos-next/server/pdos_next/domain/build_operational_facts/service.py:1320"
+    ],
+    "PROCESS_MAPPING_UNCONNECTED": [
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:167"
+    ],
+    "PROCESS_MAPPING_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/cost_execution/service.py:169"
+    ],
+    "PROFESSIONAL_AUTHORITY_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/build_start/service.py:238"
+    ],
+    "AUTHORITY_WINDOW_NOT_COVERED": [
+      "pdos-next/server/pdos_next/domain/build_start/service.py:245"
+    ],
+    "PROFESSIONAL_AUTHORITY_CHANGED": [
+      "pdos-next/server/pdos_next/domain/build_start/service.py:267"
+    ],
+    "PRIVATE_SOURCE_SCOPE": [
+      "pdos-next/server/pdos_next/domain/build_start/service.py:388",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:1010",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:1131"
+    ],
+    "ASSESSMENT_VERSION_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/build_start/service.py:405",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:418",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:654"
+    ],
+    "AUTHORIZATION_NOT_CURRENT": [
+      "pdos-next/server/pdos_next/domain/build_start/service.py:479"
+    ],
+    "AUTHORIZATION_SCOPE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/build_start/service.py:485",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:671"
+    ],
+    "AUTHORIZATION_EXPIRED": [
+      "pdos-next/server/pdos_next/domain/build_start/service.py:489"
+    ],
+    "AUTHORIZATION_VERSION_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/build_start/service.py:532",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:665"
+    ],
+    "START_EVENT_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/build_start/service.py:574",
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:238"
+    ],
+    "BUILD_VERSION_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/build_start/service.py:685",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:1000"
+    ],
+    "BUILD_ALREADY_STARTED": [
+      "pdos-next/server/pdos_next/domain/build_start/service.py:687",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:732",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:940",
+      "pdos-next/server/pdos_next/domain/build_start/service.py:551"
+    ],
+    "AUTHORIZATION_WINDOW_NOT_COVERED": [
+      "pdos-next/server/pdos_next/domain/build_start/service.py:594"
+    ],
+    "AUTHORIZATION_VALIDITY_EXCEEDED": [
+      "pdos-next/server/pdos_next/domain/build_start/service.py:601"
+    ],
+    "BUILD_NOT_REVIEWABLE": [
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:145"
+    ],
+    "EXECUTION_CONTROLS_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:156"
+    ],
+    "PROFESSIONAL_REVIEW_INCOMPLETE": [
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:161"
+    ],
+    "EXECUTION_SCOPE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:185"
+    ],
+    "BUILD_NOT_READY": [
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:196"
+    ],
+    "ASSESSMENT_EXPIRED": [
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:201"
+    ],
+    "CURRENT_EXECUTION_WINDOW_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:247"
+    ],
+    "FUTURE_ACTUAL": [
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:253"
+    ],
+    "START_OUTSIDE_WINDOW": [
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:255"
+    ],
+    "START_PRECEDES_AUTHORIZATION": [
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:257"
+    ],
+    "PROFESSIONAL_REVIEW_NOT_APPLICABLE": [
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:166"
+    ],
+    "PROFESSIONAL_REVIEW_EXPIRED": [
+      "pdos-next/server/pdos_next/domain/build_start/rules.py:176"
+    ],
+    "INVALID_RESOURCE_TIME": [
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:179",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:182",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:504"
+    ],
+    "RESOURCE_PURPOSE_LIMIT": [
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:215"
+    ],
+    "RESOURCE_FACT_VERSION_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:306",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1057"
+    ],
+    "RESOURCE_FINGERPRINT_MATERIAL_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1008",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1031",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1807",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1113"
+    ],
+    "RUN_INTENT_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1109",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1500"
+    ],
+    "RUN_SAMPLE_USAGE_MISSING": [
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1127",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1441",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1949",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1446",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1463",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1965"
+    ],
+    "INVALID_TEST_START": [
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1775",
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1785"
+    ],
+    "TEST_RESOURCES_NOT_READY": [
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1584"
+    ],
+    "RUN_RESERVATION_CONFLICT": [
+      "pdos-next/server/pdos_next/domain/test_resources/service.py:1639"
+    ],
+    "RUN_NOT_STARTED": [
+      "pdos-next/server/pdos_next/domain/test_resources/retained.py:347"
+    ],
+    "RETAINED_EXECUTION_CHANGED": [
+      "pdos-next/server/pdos_next/domain/test_resources/retained.py:437"
+    ],
+    "PHASED_COMMON_INTEGRATION_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py:1106"
+    ],
+    "MANUFACTURING_BASELINE_RELEASE_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py:1202"
+    ],
+    "STORED_ATOM_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py:271"
+    ],
+    "INVALID_FIXED_DEFINITION": [
+      "pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py:621"
+    ],
+    "ORIGINAL_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:159"
+    ],
+    "UNSUPPORTED_REPORT": [
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:164"
+    ],
+    "REPORT_LIMIT_EXCEEDED": [
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:168"
+    ],
+    "RETAINED_EXECUTION_UNAVAILABLE": [
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:433",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:435",
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:897"
+    ],
+    "CAPTURE_SCOPE_MISMATCH": [
+      "pdos-next/server/pdos_next/domain/verification_results/service.py:593"
+    ],
+    "INVALID_ACTION": [
+      "pdos-next/server/pdos_next/domain/original_lifecycle_execution/service.py:83"
+    ],
+    "INVALID_SCOPE": [
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:496",
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:498"
+    ],
+    "ORIGINAL_FAILURE_RUN": [
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:946"
+    ],
+    "MEASUREMENT_WITHOUT_EXECUTION": [
+      "pdos-next/server/pdos_next/domain/capa_verification/service.py:965"
+    ],
+    "REPLAY_REQUIRED": [
+      "pdos-next/server/pdos_next/domain/capa_verification/write_phase.py:111"
+    ]
+  },
+  "observed_http_statuses": {
+    "ACCEPTED_SCOPE_FROZEN": [
+      409
+    ],
+    "ACTIONS_INCOMPLETE": [
+      409
+    ],
+    "ACTION_COMPLETION_UNVERIFIED": [
+      409
+    ],
+    "ACTION_CONFLICT": [
+      409
+    ],
+    "ACTUAL_END_REQUIRED": [
+      422
+    ],
+    "ACTUAL_FIXED_DTO_REQUIRED": [
+      422
+    ],
+    "ACTUAL_METHOD_UNKNOWN": [
+      409
+    ],
+    "ACTUAL_OUTPUT_REQUIRED": [
+      409
+    ],
+    "ACTUAL_SAMPLE_REQUIRED": [
+      409
+    ],
+    "ACTUAL_SCOPE_REQUIRED": [
+      409
+    ],
+    "AGENT_LANGGRAPH_ENTRY_REQUIRED": [
+      409
+    ],
+    "AGENT_TEMPORAL_REQUIRED": [
+      409
+    ],
+    "ALREADY_ACCEPTED": [
+      409
+    ],
+    "APPROVAL_ALREADY_RECORDED": [
+      409
+    ],
+    "APPROVAL_EXPIRY_INVALID": [
+      409
+    ],
+    "ASSESSMENT_EXPIRED": [
+      409
+    ],
+    "ASSESSMENT_MISMATCH": [
+      409
+    ],
+    "ASSESSMENT_VERSION_CONFLICT": [
+      409
+    ],
+    "AUDIENCE_USE_FORBIDDEN": [
+      403
+    ],
+    "AUTHORITY_EVIDENCE_LIMIT": [
+      409
+    ],
+    "AUTHORITY_INTEGRITY_UNKNOWN": [
+      409
+    ],
+    "AUTHORITY_OPERATION_MISMATCH": [
+      422
+    ],
+    "AUTHORITY_SERIES_MISMATCH": [
+      403
+    ],
+    "AUTHORITY_SOURCE_UNAVAILABLE": [
+      403
+    ],
+    "AUTHORITY_VERSION_CONFLICT": [
+      409
+    ],
+    "AUTHORITY_WINDOW_NOT_COVERED": [
+      409
+    ],
+    "AUTHORIZATION_EXPIRED": [
+      409
+    ],
+    "AUTHORIZATION_NOT_CURRENT": [
+      409
+    ],
+    "AUTHORIZATION_SCOPE_MISMATCH": [
+      409
+    ],
+    "AUTHORIZATION_VALIDITY_EXCEEDED": [
+      409
+    ],
+    "AUTHORIZATION_VERSION_CONFLICT": [
+      409
+    ],
+    "AUTHORIZATION_WINDOW_NOT_COVERED": [
+      409
+    ],
+    "BINDING_MISMATCH": [
+      409
+    ],
+    "BUILD_ALREADY_RESERVED": [
+      409
+    ],
+    "BUILD_ALREADY_STARTED": [
+      409
+    ],
+    "BUILD_EXECUTION_NOT_CURRENT": [
+      409
+    ],
+    "BUILD_NOT_READY": [
+      409
+    ],
+    "BUILD_NOT_REVIEWABLE": [
+      409
+    ],
+    "BUILD_NOT_STARTED": [
+      409
+    ],
+    "BUILD_OPERATIONAL_NOT_READY": [
+      409
+    ],
+    "BUILD_VERSION_CONFLICT": [
+      409
+    ],
+    "CALLER_UOW_CHANGED": [
+      409
+    ],
+    "CANCELLED_RUN": [
+      409
+    ],
+    "CANDIDATE_ACTUAL_BINDING_REQUIRED": [
+      503
+    ],
+    "CANDIDATE_AUDIENCE_MISMATCH": [
+      403
+    ],
+    "CANDIDATE_CURRENT_REVISION_REQUIRED": [
+      503
+    ],
+    "CANDIDATE_JSON_INVALID": [
+      503
+    ],
+    "CANDIDATE_REQUEST_BINDING_MISMATCH": [
+      409
+    ],
+    "CANDIDATE_REVIEW_SNAPSHOT_REQUIRED": [
+      503
+    ],
+    "CANDIDATE_TYPED_MATERIAL_INVALID": [
+      503
+    ],
+    "CAPABILITY_DISABLED": [
+      403
+    ],
+    "CAPTURE_ALREADY_APPLIED": [
+      409
+    ],
+    "CAPTURE_EXPIRED": [
+      409
+    ],
+    "CAPTURE_SCOPE_MISMATCH": [
+      409
+    ],
+    "CHANGE_COMMON_PHASE_REQUIRED": [
+      503
+    ],
+    "CLOSURE_INCOMPLETE": [
+      409
+    ],
+    "COMPLETION_PROFILE_CONFIG_INVALID": [
+      422
+    ],
+    "COMPLETION_PROFILE_CONFLICT": [
+      409
+    ],
+    "COMPLETION_PROFILE_SCOPE_MISSING": [
+      503
+    ],
+    "CONDITION_MISMATCH": [
+      409
+    ],
+    "CONFIGURATION_DIFFERENCE_REQUIRED": [
+      422
+    ],
+    "CONFIGURATION_MISMATCH": [
+      409
+    ],
+    "CONFIRMATION_REQUIRED": [
+      403,
+      409
+    ],
+    "CONFIRMATION_SCOPE_CHANGED": [
+      409
+    ],
+    "CONTROLLED_SELECTION_PHASE_REQUIRED": [
+      503
+    ],
+    "COUNT_CONFLICT": [
+      422
+    ],
+    "COVERAGE_DEPENDENCY_UNRESOLVED": [
+      409
+    ],
+    "COVERAGE_OWNER_STALE": [
+      409
+    ],
+    "CURRENT_EXECUTION_WINDOW_REQUIRED": [
+      409
+    ],
+    "DEMAND_SNAPSHOT_INCOMPLETE": [
+      409
+    ],
+    "DESTRUCTIVE_CONFLICT": [
+      409
+    ],
+    "DUPLICATE_HISTORY": [
+      503
+    ],
+    "DUPLICATE_INTENT_CONFLICT": [
+      409
+    ],
+    "DUPLICATE_PART_IDENTITY": [
+      409
+    ],
+    "EFFECTIVENESS_REQUIRED": [
+      409
+    ],
+    "EFFECTIVITY_INCOMPLETE": [
+      409
+    ],
+    "EFFECTIVITY_OUTPUT_MISMATCH": [
+      409
+    ],
+    "EFFECTIVITY_RECONCILE_REQUIRED": [
+      409
+    ],
+    "EFFECTIVITY_SCOPE_MISMATCH": [
+      409
+    ],
+    "EMPTY_SCOPE": [
+      422
+    ],
+    "EXECUTION_BEFORE_APPROVAL": [
+      409
+    ],
+    "EXECUTION_CONTROLS_REQUIRED": [
+      422
+    ],
+    "EXECUTION_SCOPE_MISMATCH": [
+      409
+    ],
+    "FACT_BINDING_MISMATCH": [
+      409
+    ],
+    "FACT_COMMON_PHASE_REQUIRED": [
+      503
+    ],
+    "FACT_ID_CONFLICT": [
+      409
+    ],
+    "FACT_KIND_REQUIRED": [
+      422
+    ],
+    "FACT_NATURE_MISMATCH": [
+      409
+    ],
+    "FACT_RULE_HOST_ONLY": [
+      403
+    ],
+    "FACT_TYPED_PAYLOAD_REQUIRED": [
+      422
+    ],
+    "FAILURE_CONTEXT_MISSING": [
+      422
+    ],
+    "FAILURE_EVENT_CHANGED": [
+      409
+    ],
+    "FAILURE_EVENT_UNAVAILABLE": [
+      403
+    ],
+    "FILE_TOO_LARGE": [
+      422
+    ],
+    "FIXED_DENOMINATOR_CHANGED": [
+      409
+    ],
+    "FIXED_REFERENCE_MISMATCH": [
+      409
+    ],
+    "FIXED_SCOPE_CHANGED": [
+      409
+    ],
+    "FIXED_UNITS_CHANGED": [
+      409
+    ],
+    "FOLLOWUP_CONFIRMATION_EXPIRED": [
+      409
+    ],
+    "FORBIDDEN": [
+      403
+    ],
+    "FORBIDDEN_DISCIPLINE": [
+      403
+    ],
+    "FORBIDDEN_ISSUER_SCOPE": [
+      403
+    ],
+    "FORBIDDEN_OPERATION": [
+      403
+    ],
+    "FORBIDDEN_SCOPE": [
+      403
+    ],
+    "FUTURE_ACTUAL": [
+      422
+    ],
+    "FUTURE_OBSERVATION": [
+      422
+    ],
+    "GRAPH_CAPTURE_EXPIRED": [
+      409
+    ],
+    "GRAPH_LIMIT_EXCEEDED": [
+      422
+    ],
+    "IDEMPOTENCY_CONFLICT": [
+      409
+    ],
+    "IMPACT_DISPOSITION_MISSING": [
+      409
+    ],
+    "IMPACT_ROOT_MISMATCH": [
+      409
+    ],
+    "IMPACT_UNKNOWN": [
+      409
+    ],
+    "IMPLEMENTATION_INCOMPLETE": [
+      409
+    ],
+    "IMPLEMENTATION_RECONCILE_REQUIRED": [
+      409
+    ],
+    "INAPPLICABLE_CONFIGURATION": [
+      409
+    ],
+    "INCOMPATIBLE_SCOPE": [
+      409,
+      422
+    ],
+    "INCOMPLETE_FINAL_SCOPE": [
+      409
+    ],
+    "INCOMPLETE_HISTORY": [
+      503
+    ],
+    "INCOMPLETE_VERIFICATION": [
+      409
+    ],
+    "INDEPENDENCE_REQUIRED": [
+      403
+    ],
+    "INDEPENDENT_VERIFIER_REQUIRED": [
+      403
+    ],
+    "INTEGRATION_REQUIRED": [
+      409,
+      503
+    ],
+    "INTEGRITY_MISMATCH": [
+      403,
+      409
+    ],
+    "INTENT_CONFLICT": [
+      409
+    ],
+    "INTENT_MISMATCH": [
+      422
+    ],
+    "INVALID_ACTION": [
+      422
+    ],
+    "INVALID_ASSIGNEE": [
+      403
+    ],
+    "INVALID_AUTHORITY": [
+      503
+    ],
+    "INVALID_AUTHORITY_PURPOSE": [
+      422
+    ],
+    "INVALID_AUTHORITY_TIME": [
+      422
+    ],
+    "INVALID_CAPA_REVISION": [
+      422
+    ],
+    "INVALID_CAPA_SCOPE": [
+      422
+    ],
+    "INVALID_COVERAGE": [
+      409,
+      422
+    ],
+    "INVALID_EFFECTIVITY_ITEM": [
+      422
+    ],
+    "INVALID_EVENT_EVIDENCE": [
+      422
+    ],
+    "INVALID_EVENT_TIME": [
+      422
+    ],
+    "INVALID_FIXED_DEFINITION": [
+      503
+    ],
+    "INVALID_MEASUREMENT_SCOPE": [
+      422
+    ],
+    "INVALID_OPERATION": [
+      403,
+      409,
+      422
+    ],
+    "INVALID_OPERATIONAL_INTENT": [
+      422
+    ],
+    "INVALID_OPERATIONAL_TIME": [
+      422
+    ],
+    "INVALID_OPERATION_PAYLOAD": [
+      422
+    ],
+    "INVALID_PAYLOAD": [
+      422
+    ],
+    "INVALID_POLICY": [
+      503
+    ],
+    "INVALID_READ_CONTEXT": [
+      409
+    ],
+    "INVALID_RECONCILIATION": [
+      409
+    ],
+    "INVALID_REQUEST": [
+      400,
+      422
+    ],
+    "INVALID_RESOURCE_TIME": [
+      422
+    ],
+    "INVALID_RETAINED_AUTHORITY": [
+      403,
+      409
+    ],
+    "INVALID_SAMPLE_OBSERVATION_TIME": [
+      422
+    ],
+    "INVALID_SAMPLE_POLICY": [
+      422
+    ],
+    "INVALID_SAMPLE_PURPOSE": [
+      422
+    ],
+    "INVALID_SCOPE": [
+      422
+    ],
+    "INVALID_SELECTION": [
+      422
+    ],
+    "INVALID_SERVER_FACT": [
+      503
+    ],
+    "INVALID_STATE": [
+      409
+    ],
+    "INVALID_TARGET": [
+      422
+    ],
+    "INVALID_TEST_START": [
+      409
+    ],
+    "INVALID_TIME": [
+      422
+    ],
+    "INVALID_VERIFICATION": [
+      409
+    ],
+    "INVENTORY_INCOMPLETE": [
+      409
+    ],
+    "LIFECYCLE_UNAVAILABLE": [
+      503
+    ],
+    "LOT_LIMIT": [
+      422
+    ],
+    "MANUFACTURING_AUTHORITY_REQUIRED": [
+      403
+    ],
+    "MANUFACTURING_BASELINE_RELEASE_REQUIRED": [
+      503
+    ],
+    "MATERIAL_HOLD_PRECISION_UNKNOWN": [
+      409
+    ],
+    "MATERIAL_HOLD_UNRECONCILED": [
+      409
+    ],
+    "MEASUREMENT_ALREADY_RECORDED": [
+      409
+    ],
+    "MEASUREMENT_WITHOUT_EXECUTION": [
+      422
+    ],
+    "MERGED_ALIAS": [
+      409
+    ],
+    "MERGE_CONFLICT": [
+      409
+    ],
+    "METHOD_EVIDENCE_INCOMPLETE": [
+      422
+    ],
+    "MISSING_REQUIRED_EVIDENCE": [
+      409,
+      422
+    ],
+    "MODEL_BUDGET_CONFLICT": [
+      409
+    ],
+    "MODEL_BUDGET_EXCEEDED": [
+      409
+    ],
+    "MODEL_BUDGET_INVALID": [
+      409
+    ],
+    "MODEL_BUDGET_REQUIRED": [
+      409
+    ],
+    "MODEL_CALL_ALREADY_ATTEMPTED": [
+      409
+    ],
+    "MODEL_CALL_IN_FLIGHT": [
+      409
+    ],
+    "MODEL_EGRESS_DENIED": [
+      403
+    ],
+    "MODEL_INPUT_INVALID": [
+      409
+    ],
+    "MODEL_OUTPUT_INVALID": [
+      409
+    ],
+    "MODEL_PERMIT_BINDING_MISMATCH": [
+      403
+    ],
+    "MODEL_RESULT_UNKNOWN": [
+      409
+    ],
+    "MODEL_RUNTIME_PORTS_MISSING": [
+      409
+    ],
+    "MODEL_RUN_NOT_ACTIVE": [
+      409
+    ],
+    "MODEL_UNAVAILABLE": [
+      409
+    ],
+    "NAMED_APPROVAL_REQUIRED": [
+      409
+    ],
+    "NAMED_DECISION_REQUIRED": [
+      403
+    ],
+    "NAMED_EXECUTOR_REQUIRED": [
+      403
+    ],
+    "NAMED_HUMAN_REQUIRED": [
+      403
+    ],
+    "NAMED_PERSON_REQUIRED": [
+      403
+    ],
+    "NATURE_MISMATCH": [
+      403,
+      409,
+      422
+    ],
+    "NOT_ACTUAL_FAILURE": [
+      422
+    ],
+    "NOT_EFFECTIVE": [
+      409
+    ],
+    "NO_CHANGES": [
+      409
+    ],
+    "OBSERVATION_PENDING": [
+      409
+    ],
+    "OPERATIONAL_ASSET_MISSING": [
+      409
+    ],
+    "OPERATIONAL_ASSET_VERSION_CONFLICT": [
+      409
+    ],
+    "OPERATIONAL_FACTS_CHANGED": [
+      409
+    ],
+    "OPERATIONAL_IDENTITY_CONFLICT": [
+      409
+    ],
+    "OPERATIONAL_SCOPE_MISMATCH": [
+      409
+    ],
+    "OPERATION_UNAVAILABLE": [
+      403
+    ],
+    "ORDER_REQUIRED": [
+      409
+    ],
+    "ORIGINAL_BYTES_OWNER_REQUIRED": [
+      503
+    ],
+    "ORIGINAL_FAILURE_RUN": [
+      422
+    ],
+    "ORIGINAL_REQUIRED": [
+      409
+    ],
+    "ORIGINAL_REWRITE_FORBIDDEN": [
+      409
+    ],
+    "ORIGINAL_SECURITY_BLOCKED": [
+      409
+    ],
+    "ORIGINAL_SECURITY_UNAVAILABLE": [
+      409
+    ],
+    "ORIGIN_DECLARED_BASIS_MISSING": [
+      503
+    ],
+    "ORIGIN_PROOF_MISSING": [
+      503
+    ],
+    "ORIGIN_SEMANTIC_MISSING": [
+      503
+    ],
+    "ORIGIN_SNAPSHOT_INVALID": [
+      503
+    ],
+    "OUTPUT_QUANTITY_EXCEEDED": [
+      409
+    ],
+    "OVERLAPPING_SCOPE": [
+      422
+    ],
+    "PAIR_CURRENT_MISMATCH": [
+      409
+    ],
+    "PAIR_FACT_MISMATCH": [
+      409
+    ],
+    "PAIR_ORIGINAL_SEMANTIC_MISMATCH": [
+      409
+    ],
+    "PAIR_SCOPE_MISMATCH": [
+      403
+    ],
+    "PAIR_STORAGE_INVALID": [
+      503
+    ],
+    "PAIR_WRITER_MISMATCH": [
+      409
+    ],
+    "PARAMETER_SOURCE_MISMATCH": [
+      409
+    ],
+    "PARTIAL_REASON_REQUIRED": [
+      422
+    ],
+    "PARTIAL_RESPONSIBILITY_REQUIRED": [
+      422
+    ],
+    "PARTICIPANT_SOURCE_SHAPE_INVALID": [
+      503
+    ],
+    "PAYLOAD_DIGEST_MISMATCH": [
+      422
+    ],
+    "PHASED_COMMON_INTEGRATION_REQUIRED": [
+      503
+    ],
+    "PLAN_DISCIPLINE_MISMATCH": [
+      409
+    ],
+    "PLAN_EXPIRED": [
+      409
+    ],
+    "PLAN_SCOPE_MISMATCH": [
+      409
+    ],
+    "PORT_UNAVAILABLE": [
+      503
+    ],
+    "PORT_UNCONNECTED": [
+      409
+    ],
+    "PREVIEW_CHANGED": [
+      409
+    ],
+    "PRIVATE_SOURCE_SCOPE": [
+      403
+    ],
+    "PROCESS_MAPPING_MISMATCH": [
+      409
+    ],
+    "PROCESS_MAPPING_UNCONNECTED": [
+      409
+    ],
+    "PRODUCT_BINDING_REQUIRED": [
+      409
+    ],
+    "PROFESSIONAL_AUTHORITY_CHANGED": [
+      409
+    ],
+    "PROFESSIONAL_AUTHORITY_REQUIRED": [
+      403
+    ],
+    "PROFESSIONAL_OPERATION_NOT_CONFIGURED": [
+      503
+    ],
+    "PROFESSIONAL_REVIEW_EXPIRED": [
+      409
+    ],
+    "PROFESSIONAL_REVIEW_INCOMPLETE": [
+      422
+    ],
+    "PROFESSIONAL_REVIEW_NOT_APPLICABLE": [
+      409
+    ],
+    "QUALIFICATION_REQUIRED": [
+      403
+    ],
+    "RECEIPT_IDENTITY_CONFLICT": [
+      409
+    ],
+    "RECHECK_NOT_REQUIRED": [
+      409
+    ],
+    "RECHECK_REQUIRED": [
+      409
+    ],
+    "RECONCILIATION_ALREADY_RECORDED": [
+      409
+    ],
+    "REGISTERED_ORIGINAL": [
+      409
+    ],
+    "REPLAY_REQUIRED": [
+      409
+    ],
+    "REPORT_LIMIT_EXCEEDED": [
+      422
+    ],
+    "REQUEST_RUN_SCOPE_FIXED": [
+      409
+    ],
+    "RESERVATION_PROOF_MISMATCH": [
+      409
+    ],
+    "RESERVATION_PROOF_MISSING": [
+      409
+    ],
+    "RESOURCE_FACTS_CHANGED": [
+      409
+    ],
+    "RESOURCE_FACT_VERSION_CONFLICT": [
+      409
+    ],
+    "RESOURCE_FINGERPRINT_MATERIAL_INVALID": [
+      409
+    ],
+    "RESOURCE_FINGERPRINT_MATERIAL_REQUIRED": [
+      503
+    ],
+    "RESOURCE_FINGERPRINT_VERSION_UNSUPPORTED": [
+      503
+    ],
+    "RESOURCE_NOT_READY": [
+      409
+    ],
+    "RESOURCE_PEOPLE_NOWAIT_REQUIRED": [
+      503
+    ],
+    "RESOURCE_PURPOSE_LIMIT": [
+      422
+    ],
+    "RESOURCE_RECHECK_REQUIRED": [
+      409
+    ],
+    "RESOURCE_VERSION_CONFLICT": [
+      409
+    ],
+    "RESULT_BASIS_CHANGED": [
+      409
+    ],
+    "RETAINED_EXECUTION_CHANGED": [
+      409
+    ],
+    "RETAINED_EXECUTION_UNAVAILABLE": [
+      409
+    ],
+    "REVISION_CONFLICT": [
+      409
+    ],
+    "RUN_CANCELLED": [
+      409
+    ],
+    "RUN_INTENT_CONFLICT": [
+      409
+    ],
+    "RUN_IN_PROGRESS": [
+      409
+    ],
+    "RUN_LEASE_EXPIRED": [
+      409
+    ],
+    "RUN_NOT_STARTED": [
+      409
+    ],
+    "RUN_RESERVATION_CONFLICT": [
+      409
+    ],
+    "RUN_RESERVATION_MISSING": [
+      409
+    ],
+    "RUN_SAMPLE_USAGE_MISSING": [
+      409
+    ],
+    "RUN_START_PROOF_INVALID": [
+      409
+    ],
+    "SAMPLE_AUTHORITY_CHANGED": [
+      409
+    ],
+    "SAMPLE_CHAIN_MISMATCH": [
+      409
+    ],
+    "SAMPLE_EVENT_BEFORE_OUTPUT": [
+      422
+    ],
+    "SAMPLE_EVENT_BEFORE_START": [
+      422
+    ],
+    "SAMPLE_EVENT_IN_FUTURE": [
+      422
+    ],
+    "SAMPLE_EVENT_MISMATCH": [
+      422
+    ],
+    "SAMPLE_EVENT_NOT_NEWER": [
+      409
+    ],
+    "SAMPLE_READINESS_INTEGRITY_UNKNOWN": [
+      409
+    ],
+    "SAMPLE_READINESS_VERSION_CONFLICT": [
+      409
+    ],
+    "SAMPLE_SOURCE_CHANGED": [
+      409
+    ],
+    "SAMPLE_START_CHANGED": [
+      409
+    ],
+    "SAMPLE_UNAVAILABLE": [
+      409
+    ],
+    "SAMPLE_VERSION_CONFLICT": [
+      409
+    ],
+    "SCANNER_UNAVAILABLE": [
+      503
+    ],
+    "SCAN_BASIS_CHANGED": [
+      409
+    ],
+    "SCOPE_BINDING_REQUIRED": [
+      422
+    ],
+    "SELF_APPROVAL_FORBIDDEN": [
+      403
+    ],
+    "SNAPSHOT_VERSION_CONFLICT": [
+      409
+    ],
+    "SOURCE_CHANGED": [
+      409
+    ],
+    "SOURCE_MAPPING_LIMIT": [
+      422
+    ],
+    "SOURCE_STALE": [
+      409,
+      422
+    ],
+    "SOURCE_UNAVAILABLE": [
+      403,
+      409
+    ],
+    "START_EVENT_MISMATCH": [
+      422
+    ],
+    "START_OUTSIDE_WINDOW": [
+      409
+    ],
+    "START_PRECEDES_AUTHORIZATION": [
+      409
+    ],
+    "STORAGE_UNAVAILABLE": [
+      503
+    ],
+    "STORED_ATOM_MISMATCH": [
+      503
+    ],
+    "SYNTHETIC_AUTHORITY_NOT_ALLOWED": [
+      403
+    ],
+    "TEST_PLAN_SCOPE_MISMATCH": [
+      409
+    ],
+    "TEST_RESOURCES_NOT_READY": [
+      409
+    ],
+    "TOO_MANY_REQUIRED_EVIDENCE": [
+      422
+    ],
+    "TRUSTED_ISSUER_REQUIRED": [
+      403,
+      503
+    ],
+    "UNAUTHENTICATED": [
+      401
+    ],
+    "UNDO_BLOCKED_BY_DEPENDENCY": [
+      409
+    ],
+    "UNIT_MISMATCH": [
+      422
+    ],
+    "UNSUPPORTED_MEDIA_TYPE": [
+      422
+    ],
+    "UNSUPPORTED_REPORT": [
+      422
+    ],
+    "UPLOAD_CLOSED": [
+      409
+    ],
+    "VALIDATION_FAILED": [
+      422
+    ],
+    "VERIFICATION_ALREADY_RECORDED": [
+      409
+    ],
+    "VERIFICATION_INSUFFICIENT": [
+      409
+    ],
+    "VERIFICATION_OUTPUT_MISSING": [
+      409
+    ],
+    "VERIFICATION_SCOPE_MISMATCH": [
+      409
+    ],
+    "VERIFICATION_TOO_EARLY": [
+      409
+    ],
+    "VERSION_CONFLICT": [
+      409
+    ]
+  },
+  "public_http_rules": {
+    "FORBIDDEN_SCOPE": "401 for unauthenticated, otherwise 403",
+    "RATE_LIMITED": 429,
+    "INTERNAL_ERROR": "preserve 5xx, otherwise 500",
+    "other": "preserve explicit status"
+  },
+  "canonical_reason_catalog": {
+    "ACCEPTED_SCOPE_FROZEN": "VERSION_CONFLICT",
+    "ACTIONS_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "ACTION_COMPLETION_UNVERIFIED": "MISSING_REQUIRED_EVIDENCE",
+    "ACTION_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "ACTUAL_END_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "ACTUAL_FIXED_DTO_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "ACTUAL_METHOD_UNKNOWN": "MISSING_REQUIRED_EVIDENCE",
+    "ACTUAL_OUTPUT_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "ACTUAL_SAMPLE_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "ACTUAL_SCOPE_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "AGENT_LANGGRAPH_ENTRY_REQUIRED": "INTERNAL_ERROR",
+    "AGENT_TEMPORAL_REQUIRED": "INTERNAL_ERROR",
+    "ALREADY_ACCEPTED": "VERSION_CONFLICT",
+    "APPROVAL_ALREADY_RECORDED": "VERSION_CONFLICT",
+    "APPROVAL_EXPIRY_INVALID": "VALIDATION_FAILED",
+    "ASSESSMENT_EXPIRED": "SOURCE_STALE",
+    "ASSESSMENT_MISMATCH": "SOURCE_STALE",
+    "ASSESSMENT_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "AUDIENCE_USE_FORBIDDEN": "FORBIDDEN_SCOPE",
+    "AUTHORITY_EVIDENCE_LIMIT": "VALIDATION_FAILED",
+    "AUTHORITY_INTEGRITY_UNKNOWN": "SOURCE_UNAVAILABLE",
+    "AUTHORITY_OPERATION_MISMATCH": "QUALIFICATION_REQUIRED",
+    "AUTHORITY_SERIES_MISMATCH": "QUALIFICATION_REQUIRED",
+    "AUTHORITY_SOURCE_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "AUTHORITY_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "AUTHORITY_WINDOW_NOT_COVERED": "QUALIFICATION_REQUIRED",
+    "AUTHORIZATION_EXPIRED": "SOURCE_STALE",
+    "AUTHORIZATION_NOT_CURRENT": "SOURCE_STALE",
+    "AUTHORIZATION_SCOPE_MISMATCH": "FORBIDDEN_SCOPE",
+    "AUTHORIZATION_VALIDITY_EXCEEDED": "QUALIFICATION_REQUIRED",
+    "AUTHORIZATION_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "AUTHORIZATION_WINDOW_NOT_COVERED": "QUALIFICATION_REQUIRED",
+    "BINDING_MISMATCH": "VALIDATION_FAILED",
+    "BUILD_ALREADY_RESERVED": "VERSION_CONFLICT",
+    "BUILD_ALREADY_STARTED": "VERSION_CONFLICT",
+    "BUILD_EXECUTION_NOT_CURRENT": "SOURCE_STALE",
+    "BUILD_NOT_READY": "MISSING_REQUIRED_EVIDENCE",
+    "BUILD_NOT_REVIEWABLE": "MISSING_REQUIRED_EVIDENCE",
+    "BUILD_NOT_STARTED": "VERSION_CONFLICT",
+    "BUILD_OPERATIONAL_NOT_READY": "MISSING_REQUIRED_EVIDENCE",
+    "BUILD_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "CALLER_UOW_CHANGED": "VERSION_CONFLICT",
+    "CANCELLED_RUN": "CANCELLED_RUN",
+    "CANDIDATE_ACTUAL_BINDING_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "CANDIDATE_AUDIENCE_MISMATCH": "FORBIDDEN_SCOPE",
+    "CANDIDATE_CURRENT_REVISION_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "CANDIDATE_JSON_INVALID": "VALIDATION_FAILED",
+    "CANDIDATE_REQUEST_BINDING_MISMATCH": "FORBIDDEN_SCOPE",
+    "CANDIDATE_REVIEW_SNAPSHOT_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "CANDIDATE_TYPED_MATERIAL_INVALID": "VALIDATION_FAILED",
+    "CAPABILITY_DISABLED": "SOURCE_UNAVAILABLE",
+    "CAPTURE_ALREADY_APPLIED": "VERSION_CONFLICT",
+    "CAPTURE_EXPIRED": "SOURCE_STALE",
+    "CAPTURE_SCOPE_MISMATCH": "FORBIDDEN_SCOPE",
+    "CHANGE_COMMON_PHASE_REQUIRED": "INTERNAL_ERROR",
+    "CLOSURE_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "COMPLETION_PROFILE_CONFIG_INVALID": "INTERNAL_ERROR",
+    "COMPLETION_PROFILE_CONFLICT": "INTERNAL_ERROR",
+    "COMPLETION_PROFILE_SCOPE_MISSING": "INTERNAL_ERROR",
+    "CONDITION_MISMATCH": "VALIDATION_FAILED",
+    "CONFIGURATION_DIFFERENCE_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "CONFIGURATION_MISMATCH": "VALIDATION_FAILED",
+    "CONFIRMATION_REQUIRED": "CONFIRMATION_REQUIRED",
+    "CONFIRMATION_SCOPE_CHANGED": "CONFIRMATION_REQUIRED",
+    "CONTROLLED_SELECTION_PHASE_REQUIRED": "INTERNAL_ERROR",
+    "COUNT_CONFLICT": "VERSION_CONFLICT",
+    "COVERAGE_DEPENDENCY_UNRESOLVED": "MISSING_REQUIRED_EVIDENCE",
+    "COVERAGE_OWNER_STALE": "SOURCE_STALE",
+    "CURRENT_EXECUTION_WINDOW_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "DEMAND_SNAPSHOT_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "DESTRUCTIVE_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "DUPLICATE_HISTORY": "VERSION_CONFLICT",
+    "DUPLICATE_INTENT_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "DUPLICATE_PART_IDENTITY": "VALIDATION_FAILED",
+    "EFFECTIVENESS_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "EFFECTIVITY_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "EFFECTIVITY_OUTPUT_MISMATCH": "VALIDATION_FAILED",
+    "EFFECTIVITY_RECONCILE_REQUIRED": "EXTERNAL_OUTCOME_UNKNOWN",
+    "EFFECTIVITY_SCOPE_MISMATCH": "VALIDATION_FAILED",
+    "EMPTY_SCOPE": "VALIDATION_FAILED",
+    "EXECUTION_BEFORE_APPROVAL": "NAMED_DECISION_REQUIRED",
+    "EXECUTION_CONTROLS_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "EXECUTION_SCOPE_MISMATCH": "FORBIDDEN_SCOPE",
+    "EXTERNAL_OUTCOME_UNKNOWN": "EXTERNAL_OUTCOME_UNKNOWN",
+    "FACT_ACTIVE_SESSION_REQUIRED": "INTERNAL_ERROR",
+    "FACT_ACTIVE_TRANSACTION_REQUIRED": "INTERNAL_ERROR",
+    "FACT_BINDING_MISMATCH": "VALIDATION_FAILED",
+    "FACT_COMMON_PHASE_REQUIRED": "INTERNAL_ERROR",
+    "FACT_ID_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "FACT_KIND_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "FACT_NATURE_MISMATCH": "VALIDATION_FAILED",
+    "FACT_RULE_HOST_ONLY": "FORBIDDEN_SCOPE",
+    "FACT_TYPED_PAYLOAD_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "FAILURE_CONTEXT_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "FAILURE_EVENT_CHANGED": "SOURCE_STALE",
+    "FAILURE_EVENT_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "FILE_TOO_LARGE": "VALIDATION_FAILED",
+    "FIXED_DENOMINATOR_CHANGED": "SOURCE_STALE",
+    "FIXED_REFERENCE_MISMATCH": "SOURCE_STALE",
+    "FIXED_SCOPE_CHANGED": "SOURCE_STALE",
+    "FIXED_UNITS_CHANGED": "SOURCE_STALE",
+    "FOLLOWUP_CONFIRMATION_EXPIRED": "CONFIRMATION_REQUIRED",
+    "FORBIDDEN": "FORBIDDEN_SCOPE",
+    "FORBIDDEN_DISCIPLINE": "FORBIDDEN_SCOPE",
+    "FORBIDDEN_ISSUER_SCOPE": "FORBIDDEN_SCOPE",
+    "FORBIDDEN_OPERATION": "FORBIDDEN_SCOPE",
+    "FORBIDDEN_SCOPE": "FORBIDDEN_SCOPE",
+    "FUTURE_ACTUAL": "VALIDATION_FAILED",
+    "FUTURE_OBSERVATION": "VALIDATION_FAILED",
+    "GRAPH_CAPTURE_EXPIRED": "SOURCE_STALE",
+    "GRAPH_LIMIT_EXCEEDED": "VALIDATION_FAILED",
+    "IDEMPOTENCY_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "IMPACT_DISPOSITION_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "IMPACT_ROOT_MISMATCH": "VALIDATION_FAILED",
+    "IMPACT_UNKNOWN": "MISSING_REQUIRED_EVIDENCE",
+    "IMPLEMENTATION_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "IMPLEMENTATION_RECONCILE_REQUIRED": "EXTERNAL_OUTCOME_UNKNOWN",
+    "INAPPLICABLE_CONFIGURATION": "VALIDATION_FAILED",
+    "INCOMPATIBLE_SCOPE": "VALIDATION_FAILED",
+    "INCOMPLETE_FINAL_SCOPE": "MISSING_REQUIRED_EVIDENCE",
+    "INCOMPLETE_HISTORY": "MISSING_REQUIRED_EVIDENCE",
+    "INCOMPLETE_VERIFICATION": "MISSING_REQUIRED_EVIDENCE",
+    "INDEPENDENCE_REQUIRED": "QUALIFICATION_REQUIRED",
+    "INDEPENDENT_VERIFIER_REQUIRED": "QUALIFICATION_REQUIRED",
+    "INTEGRATION_REQUIRED": "INTERNAL_ERROR",
+    "INTEGRITY_MISMATCH": "VALIDATION_FAILED",
+    "INTENT_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "INTENT_MISMATCH": "DUPLICATE_INTENT_CONFLICT",
+    "INTERNAL_ERROR": "INTERNAL_ERROR",
+    "INVALID_ACTION": "VALIDATION_FAILED",
+    "INVALID_ASSIGNEE": "QUALIFICATION_REQUIRED",
+    "INVALID_AUTHORITY": "QUALIFICATION_REQUIRED",
+    "INVALID_AUTHORITY_PURPOSE": "QUALIFICATION_REQUIRED",
+    "INVALID_AUTHORITY_TIME": "VALIDATION_FAILED",
+    "INVALID_CAPA_REVISION": "VALIDATION_FAILED",
+    "INVALID_CAPA_SCOPE": "VALIDATION_FAILED",
+    "INVALID_COVERAGE": "VALIDATION_FAILED",
+    "INVALID_EFFECTIVITY_ITEM": "VALIDATION_FAILED",
+    "INVALID_EVENT_EVIDENCE": "VALIDATION_FAILED",
+    "INVALID_EVENT_TIME": "VALIDATION_FAILED",
+    "INVALID_FIXED_DEFINITION": "VALIDATION_FAILED",
+    "INVALID_MEASUREMENT_SCOPE": "VALIDATION_FAILED",
+    "INVALID_OPERATION": "VALIDATION_FAILED",
+    "INVALID_OPERATIONAL_INTENT": "VALIDATION_FAILED",
+    "INVALID_OPERATIONAL_TIME": "VALIDATION_FAILED",
+    "INVALID_OPERATION_PAYLOAD": "VALIDATION_FAILED",
+    "INVALID_PAYLOAD": "VALIDATION_FAILED",
+    "INVALID_POLICY": "VALIDATION_FAILED",
+    "INVALID_READ_CONTEXT": "INTERNAL_ERROR",
+    "INVALID_RECONCILIATION": "VALIDATION_FAILED",
+    "INVALID_REQUEST": "VALIDATION_FAILED",
+    "INVALID_RESOURCE_TIME": "VALIDATION_FAILED",
+    "INVALID_RETAINED_AUTHORITY": "QUALIFICATION_REQUIRED",
+    "INVALID_SAMPLE_OBSERVATION_TIME": "VALIDATION_FAILED",
+    "INVALID_SAMPLE_POLICY": "VALIDATION_FAILED",
+    "INVALID_SAMPLE_PURPOSE": "VALIDATION_FAILED",
+    "INVALID_SCOPE": "VALIDATION_FAILED",
+    "INVALID_SELECTION": "VALIDATION_FAILED",
+    "INVALID_SERVER_FACT": "INTERNAL_ERROR",
+    "INVALID_STATE": "VALIDATION_FAILED",
+    "INVALID_TARGET": "VALIDATION_FAILED",
+    "INVALID_TEST_START": "VALIDATION_FAILED",
+    "INVALID_TIME": "VALIDATION_FAILED",
+    "INVALID_VERIFICATION": "VALIDATION_FAILED",
+    "INVENTORY_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "LIFECYCLE_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "LOT_LIMIT": "VALIDATION_FAILED",
+    "MANUFACTURING_AUTHORITY_REQUIRED": "QUALIFICATION_REQUIRED",
+    "MANUFACTURING_BASELINE_RELEASE_REQUIRED": "NAMED_DECISION_REQUIRED",
+    "MATERIAL_HOLD_PRECISION_UNKNOWN": "MISSING_REQUIRED_EVIDENCE",
+    "MATERIAL_HOLD_UNRECONCILED": "EXTERNAL_OUTCOME_UNKNOWN",
+    "MEASUREMENT_ALREADY_RECORDED": "VERSION_CONFLICT",
+    "MEASUREMENT_WITHOUT_EXECUTION": "VALIDATION_FAILED",
+    "MERGED_ALIAS": "VERSION_CONFLICT",
+    "MERGE_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "METHOD_EVIDENCE_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "MISSING_REQUIRED_EVIDENCE": "MISSING_REQUIRED_EVIDENCE",
+    "MODEL_BUDGET_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "MODEL_BUDGET_EXCEEDED": "RATE_LIMITED",
+    "MODEL_BUDGET_INVALID": "VALIDATION_FAILED",
+    "MODEL_BUDGET_REQUIRED": "RATE_LIMITED",
+    "MODEL_CALL_ALREADY_ATTEMPTED": "VERSION_CONFLICT",
+    "MODEL_CALL_IN_FLIGHT": "VERSION_CONFLICT",
+    "MODEL_EGRESS_DENIED": "FORBIDDEN_SCOPE",
+    "MODEL_INPUT_INVALID": "VALIDATION_FAILED",
+    "MODEL_OUTPUT_INVALID": "VALIDATION_FAILED",
+    "MODEL_PERMIT_BINDING_MISMATCH": "VALIDATION_FAILED",
+    "MODEL_RESULT_UNKNOWN": "EXTERNAL_OUTCOME_UNKNOWN",
+    "MODEL_RUNTIME_PORTS_MISSING": "SOURCE_UNAVAILABLE",
+    "MODEL_RUN_NOT_ACTIVE": "CANCELLED_RUN",
+    "MODEL_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "NAMED_APPROVAL_REQUIRED": "NAMED_DECISION_REQUIRED",
+    "NAMED_DECISION_REQUIRED": "NAMED_DECISION_REQUIRED",
+    "NAMED_EXECUTOR_REQUIRED": "NAMED_DECISION_REQUIRED",
+    "NAMED_HUMAN_REQUIRED": "NAMED_DECISION_REQUIRED",
+    "NAMED_PERSON_REQUIRED": "NAMED_DECISION_REQUIRED",
+    "NATURE_MISMATCH": "VALIDATION_FAILED",
+    "NOT_ACTUAL_FAILURE": "VALIDATION_FAILED",
+    "NOT_EFFECTIVE": "VALIDATION_FAILED",
+    "NOT_FOUND": "NOT_FOUND",
+    "NO_CHANGES": "VERSION_CONFLICT",
+    "OBSERVATION_PENDING": "MISSING_REQUIRED_EVIDENCE",
+    "OPERATIONAL_ASSET_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "OPERATIONAL_ASSET_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "OPERATIONAL_FACTS_CHANGED": "SOURCE_STALE",
+    "OPERATIONAL_IDENTITY_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "OPERATIONAL_SCOPE_MISMATCH": "FORBIDDEN_SCOPE",
+    "OPERATION_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "ORDER_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "ORIGINAL_BYTES_OWNER_REQUIRED": "SOURCE_UNAVAILABLE",
+    "ORIGINAL_FAILURE_RUN": "EXTERNAL_OUTCOME_UNKNOWN",
+    "ORIGINAL_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "ORIGINAL_REWRITE_FORBIDDEN": "FORBIDDEN_SCOPE",
+    "ORIGINAL_SECURITY_BLOCKED": "SOURCE_UNAVAILABLE",
+    "ORIGINAL_SECURITY_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "ORIGIN_DECLARED_BASIS_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "ORIGIN_PROOF_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "ORIGIN_SEMANTIC_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "ORIGIN_SNAPSHOT_INVALID": "VALIDATION_FAILED",
+    "OUTPUT_QUANTITY_EXCEEDED": "VERSION_CONFLICT",
+    "OVERLAPPING_SCOPE": "VERSION_CONFLICT",
+    "PAIR_CURRENT_MISMATCH": "SOURCE_STALE",
+    "PAIR_FACT_MISMATCH": "SOURCE_STALE",
+    "PAIR_ORIGINAL_SEMANTIC_MISMATCH": "SOURCE_STALE",
+    "PAIR_SCOPE_MISMATCH": "VALIDATION_FAILED",
+    "PAIR_STORAGE_INVALID": "INTERNAL_ERROR",
+    "PAIR_WRITER_MISMATCH": "FORBIDDEN_SCOPE",
+    "PARAMETER_SOURCE_MISMATCH": "VALIDATION_FAILED",
+    "PARTIAL_REASON_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "PARTIAL_RESPONSIBILITY_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "PARTICIPANT_SOURCE_SHAPE_INVALID": "VALIDATION_FAILED",
+    "PAYLOAD_DIGEST_MISMATCH": "VALIDATION_FAILED",
+    "PHASED_COMMON_INTEGRATION_REQUIRED": "INTERNAL_ERROR",
+    "PLAN_DISCIPLINE_MISMATCH": "VALIDATION_FAILED",
+    "PLAN_EXPIRED": "SOURCE_STALE",
+    "PLAN_SCOPE_MISMATCH": "FORBIDDEN_SCOPE",
+    "PORT_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "PORT_UNCONNECTED": "SOURCE_UNAVAILABLE",
+    "PREVIEW_CHANGED": "SOURCE_STALE",
+    "PRIVATE_SOURCE_SCOPE": "FORBIDDEN_SCOPE",
+    "PROCESS_MAPPING_MISMATCH": "VALIDATION_FAILED",
+    "PROCESS_MAPPING_UNCONNECTED": "MISSING_REQUIRED_EVIDENCE",
+    "PRODUCT_BINDING_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "PROFESSIONAL_AUTHORITY_CHANGED": "SOURCE_STALE",
+    "PROFESSIONAL_AUTHORITY_REQUIRED": "QUALIFICATION_REQUIRED",
+    "PROFESSIONAL_OPERATION_NOT_CONFIGURED": "QUALIFICATION_REQUIRED",
+    "PROFESSIONAL_REVIEW_EXPIRED": "SOURCE_STALE",
+    "PROFESSIONAL_REVIEW_INCOMPLETE": "MISSING_REQUIRED_EVIDENCE",
+    "PROFESSIONAL_REVIEW_NOT_APPLICABLE": "SOURCE_STALE",
+    "QUALIFICATION_REQUIRED": "QUALIFICATION_REQUIRED",
+    "RATE_LIMITED": "RATE_LIMITED",
+    "RECEIPT_IDENTITY_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "RECHECK_NOT_REQUIRED": "VERSION_CONFLICT",
+    "RECHECK_REQUIRED": "SOURCE_STALE",
+    "RECONCILIATION_ALREADY_RECORDED": "VERSION_CONFLICT",
+    "REGISTERED_ORIGINAL": "VERSION_CONFLICT",
+    "REPLAY_REQUIRED": "EXTERNAL_OUTCOME_UNKNOWN",
+    "REPORT_LIMIT_EXCEEDED": "VALIDATION_FAILED",
+    "REQUEST_RUN_SCOPE_FIXED": "FORBIDDEN_SCOPE",
+    "RESERVATION_PROOF_MISMATCH": "SOURCE_STALE",
+    "RESERVATION_PROOF_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "RESOURCE_FACTS_CHANGED": "SOURCE_STALE",
+    "RESOURCE_FACT_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "RESOURCE_FINGERPRINT_MATERIAL_INVALID": "VALIDATION_FAILED",
+    "RESOURCE_FINGERPRINT_MATERIAL_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "RESOURCE_FINGERPRINT_VERSION_UNSUPPORTED": "VALIDATION_FAILED",
+    "RESOURCE_NOT_READY": "MISSING_REQUIRED_EVIDENCE",
+    "RESOURCE_PEOPLE_NOWAIT_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "RESOURCE_PURPOSE_LIMIT": "VALIDATION_FAILED",
+    "RESOURCE_RECHECK_REQUIRED": "SOURCE_STALE",
+    "RESOURCE_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "RESULT_BASIS_CHANGED": "SOURCE_STALE",
+    "RETAINED_EXECUTION_CHANGED": "SOURCE_STALE",
+    "RETAINED_EXECUTION_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "REVISION_CONFLICT": "VERSION_CONFLICT",
+    "RUN_CANCELLED": "CANCELLED_RUN",
+    "RUN_INTENT_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "RUN_IN_PROGRESS": "VERSION_CONFLICT",
+    "RUN_LEASE_EXPIRED": "VERSION_CONFLICT",
+    "RUN_NOT_STARTED": "VERSION_CONFLICT",
+    "RUN_RESERVATION_CONFLICT": "DUPLICATE_INTENT_CONFLICT",
+    "RUN_RESERVATION_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "RUN_SAMPLE_USAGE_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "RUN_START_PROOF_INVALID": "VALIDATION_FAILED",
+    "SAMPLE_AUTHORITY_CHANGED": "SOURCE_STALE",
+    "SAMPLE_CHAIN_MISMATCH": "VALIDATION_FAILED",
+    "SAMPLE_EVENT_BEFORE_OUTPUT": "VALIDATION_FAILED",
+    "SAMPLE_EVENT_BEFORE_START": "VALIDATION_FAILED",
+    "SAMPLE_EVENT_IN_FUTURE": "VALIDATION_FAILED",
+    "SAMPLE_EVENT_MISMATCH": "VALIDATION_FAILED",
+    "SAMPLE_EVENT_NOT_NEWER": "VALIDATION_FAILED",
+    "SAMPLE_READINESS_INTEGRITY_UNKNOWN": "SOURCE_UNAVAILABLE",
+    "SAMPLE_READINESS_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "SAMPLE_SOURCE_CHANGED": "SOURCE_STALE",
+    "SAMPLE_START_CHANGED": "SOURCE_STALE",
+    "SAMPLE_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "SAMPLE_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "SCANNER_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "SCAN_BASIS_CHANGED": "SOURCE_STALE",
+    "SCOPE_BINDING_REQUIRED": "MISSING_REQUIRED_EVIDENCE",
+    "SELF_APPROVAL_FORBIDDEN": "FORBIDDEN_SCOPE",
+    "SNAPSHOT_VERSION_CONFLICT": "VERSION_CONFLICT",
+    "SOURCE_CHANGED": "SOURCE_STALE",
+    "SOURCE_MAPPING_LIMIT": "VALIDATION_FAILED",
+    "SOURCE_STALE": "SOURCE_STALE",
+    "SOURCE_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "START_EVENT_MISMATCH": "VALIDATION_FAILED",
+    "START_OUTSIDE_WINDOW": "QUALIFICATION_REQUIRED",
+    "START_PRECEDES_AUTHORIZATION": "QUALIFICATION_REQUIRED",
+    "STORAGE_UNAVAILABLE": "SOURCE_UNAVAILABLE",
+    "STORED_ATOM_MISMATCH": "SOURCE_STALE",
+    "SYNTHETIC_AUTHORITY_NOT_ALLOWED": "FORBIDDEN_SCOPE",
+    "TEST_PLAN_SCOPE_MISMATCH": "VALIDATION_FAILED",
+    "TEST_RESOURCES_NOT_READY": "MISSING_REQUIRED_EVIDENCE",
+    "TOO_MANY_REQUIRED_EVIDENCE": "VALIDATION_FAILED",
+    "TRUSTED_ISSUER_REQUIRED": "QUALIFICATION_REQUIRED",
+    "UNAUTHENTICATED": "FORBIDDEN_SCOPE",
+    "UNDO_BLOCKED_BY_DEPENDENCY": "UNDO_BLOCKED_BY_DEPENDENCY",
+    "UNIT_MISMATCH": "VALIDATION_FAILED",
+    "UNSUPPORTED_MEDIA_TYPE": "VALIDATION_FAILED",
+    "UNSUPPORTED_REPORT": "VALIDATION_FAILED",
+    "UPLOAD_CLOSED": "VERSION_CONFLICT",
+    "VALIDATION_FAILED": "VALIDATION_FAILED",
+    "VERIFICATION_ALREADY_RECORDED": "VERSION_CONFLICT",
+    "VERIFICATION_INSUFFICIENT": "MISSING_REQUIRED_EVIDENCE",
+    "VERIFICATION_OUTPUT_MISSING": "MISSING_REQUIRED_EVIDENCE",
+    "VERIFICATION_SCOPE_MISMATCH": "VALIDATION_FAILED",
+    "VERIFICATION_TOO_EARLY": "VALIDATION_FAILED",
+    "VERSION_CONFLICT": "VERSION_CONFLICT"
+  }
+}

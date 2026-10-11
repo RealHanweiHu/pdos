@@ -49,8 +49,8 @@ def canonical_reads(values):
         if read.artifact_id in refs and refs[read.artifact_id] != read.expected_revision:
             reject("One artifact cannot have conflicting source revisions.")
         refs[read.artifact_id] = read.expected_revision
-    if not 1 <= len(refs) <= 20:
-        reject("Complete source closure requires 1..20 artifacts; never truncate.")
+    if not refs:
+        reject("Complete source closure requires evidence; never truncate.")
     return tuple(
         SourceRead(artifact_id=k, expected_revision=refs[k]) for k in sorted(refs, key=str)
     )
@@ -90,7 +90,7 @@ class SourceSafety(DTO):
     hash: Sha256
     status: Literal["active"]
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     source_kind: Literal["registered_native_text", "uploaded_original"]
     registration: NativeRegistration | None = None
     original: OriginalSafety | None = None
@@ -135,19 +135,20 @@ class IssueVersionEvidence(DTO):
     ref: VersionRef
     previous_ref: VersionRef | None
     scope: Scope
+    category_id: UUID
     issue_id: UUID  # logical identity
     purpose: Text
     owner_id: UUID
     writer_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     nature: Nature
     operation: Text
     domain_intent_sha256: Sha256
     created_at: AwareDatetime
     issue: Issue
     sources: tuple[SourceRef, ...]
-    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
-    source_basis: tuple[SourceSafety, ...] = Field(min_length=1, max_length=20)
+    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1)
+    source_basis: tuple[SourceSafety, ...] = Field(min_length=1)
     # Complete original persisted provenance remains opaque, untouched and hashed.
     input_snapshot: dict[str, JsonValue]
     authority_snapshot: dict[str, JsonValue]
@@ -170,10 +171,10 @@ class IssueVersionEvidence(DTO):
         audience = (
             f"private:{self.owner_id}"
             if self.visibility == "private"
-            else f"product:{self.scope.product_id}",
+            else f"category:{self.category_id}",
         )
         if self.issue.audience != audience:
-            raise ValueError("Audience must retain the actual private owner/product scope")
+            raise ValueError("Audience must retain the actual private owner/category scope")
         if self.previous_ref and self.previous_ref.revision + 1 != self.ref.revision:
             raise ValueError("A persisted predecessor is exactly one version earlier")
         source_closure(self.sources, self.required_source_read_set, self.source_basis)
@@ -182,7 +183,7 @@ class IssueVersionEvidence(DTO):
             saved, self.required_source_read_set
         ) != canonical_basis(self.source_basis, self.required_source_read_set):
             raise ValueError("Typed safety must match the complete actual persisted source basis")
-        if self.visibility == "product" and any(
+        if self.visibility == "category" and any(
             b.visibility == "private" for b in self.source_basis
         ):
             raise ValueError("Shared investigation cannot expand a private source audience")
@@ -245,8 +246,8 @@ class StableCapaAnchor(DTO):
     origin: IssueVersionEvidence
     failures: tuple[OriginalFailureProof, ...] = Field(min_length=1)
     origin_sources: tuple[SourceRef, ...]
-    origin_required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
-    origin_source_basis: tuple[SourceSafety, ...] = Field(min_length=1, max_length=20)
+    origin_required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1)
+    origin_source_basis: tuple[SourceSafety, ...] = Field(min_length=1)
     material_sha256: Sha256
     full_failure_proofs_sha256: Sha256
     stable_failure_material_sha256: Sha256
@@ -329,7 +330,7 @@ def _check_origin(origin, failures):
             reject("Original failure scope/purpose/value/identity does not match.")
         if proof.result.verified.nature != origin.nature:
             reject("No synthetic/real promotion or mixed failure basis.")
-        if origin.visibility == "product" and proof.result.visibility == "private":
+        if origin.visibility == "category" and proof.result.visibility == "private":
             reject("Private original result cannot be expanded into a shared investigation.")
     required_sources = (
         *issue_sources(issue),
@@ -397,8 +398,8 @@ class CurrentAuthorizationClosure(DTO):
     audience: tuple[Text, ...] = Field(min_length=1)
     authority: Authority
     sources: tuple[SourceRef, ...]
-    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
-    source_basis: tuple[SourceSafety, ...] = Field(min_length=1, max_length=20)
+    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1)
+    source_basis: tuple[SourceSafety, ...] = Field(min_length=1)
     # Exact complete host snapshots, not lossy bool/has_ref summaries.
     professional_proof: dict[str, JsonValue] = Field(min_length=1)
     policy_proof: dict[str, JsonValue] = Field(min_length=1)

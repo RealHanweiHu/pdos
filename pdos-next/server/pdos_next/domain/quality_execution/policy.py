@@ -1,15 +1,17 @@
 """Explicit host-only synthetic risk publications. Production publication unconnected."""
 
 import json
-from datetime import datetime
+from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
 from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from pdos_next.domain.professional_authority.schemas import ApprovalBasis
 from pdos_next.domain.professional_authority.service import _project
 from pdos_next.errors import DomainError
 from pdos_next.models import now
+from pdos_next.request_proof import batch_read, snapshot_rows
 from pdos_next.service import digest, source_for
 
 from .evidence import merge_reads, refs_from_exact, source_basis
@@ -221,7 +223,7 @@ def trusted_import(s, ctx, issuer, payload):
         previous_id=data.previous_id,
         previous_revision=data.expected_previous_revision or None,
         owner_id=ctx.requester_id,
-        visibility="private" if private or project.visibility == "private" else "product",
+        visibility="private" if private or project.visibility == "private" else project.visibility,
         status=data.state,
         risk=data.risk,
         independent_verification=data.independent_verification,
@@ -268,24 +270,29 @@ def trusted_import(s, ctx, issuer, payload):
 
 
 def assess(s, ctx, pid, project_id, purpose):
-    pointers = list(
-        s.scalars(
-            select(QualityPolicyCurrent)
-            .where(
-                QualityPolicyCurrent.tenant_id == ctx.tenant_id,
-                QualityPolicyCurrent.product_id == pid,
-                QualityPolicyCurrent.project_id == project_id,
-                QualityPolicyCurrent.purpose == purpose,
-            )
-            .order_by(QualityPolicyCurrent.id)
-            .limit(101)
+    pointers = snapshot_rows(
+        s,
+        ("quality-policy-current", ctx.tenant_id, project_id, purpose),
+        select(QualityPolicyCurrent)
+        .where(
+            QualityPolicyCurrent.tenant_id == ctx.tenant_id,
+            QualityPolicyCurrent.product_id == pid,
+            QualityPolicyCurrent.project_id == project_id,
+            QualityPolicyCurrent.purpose == purpose,
         )
+        .order_by(QualityPolicyCurrent.id),
+        scope_id=pid,
     )
-    if not pointers or len(pointers) > 100:
+    if not pointers:
         raise DomainError("INTEGRATION_REQUIRED", "当前完整风险政策发布接口待接入。", 503)
+    rows = (
+        batch_read(s, QualityPolicyFact, (v.fact_id for v in pointers))
+        if isinstance(s, Session)
+        else {v.fact_id: s.get(QualityPolicyFact, v.fact_id) for v in pointers}
+    )
     checked, refs, basis, reads, private = [], [], [], [], False
     for pointer in pointers:
-        row = s.get(QualityPolicyFact, pointer.fact_id)
+        row = rows[pointer.fact_id]
         if (
             row is None
             or row.fact_sha256 != digest(_material(row))
@@ -321,6 +328,9 @@ def assess(s, ctx, pid, project_id, purpose):
                 "epoch": pointer.epoch,
                 "sha256": row.fact_sha256,
                 "issuer_epoch": issuer.epoch,
+                "state": row.status,
+                "valid_from": row.valid_from.isoformat(),
+                "valid_until": row.valid_until.isoformat(),
             }
         )
         checked.append((row, issuer))
@@ -337,23 +347,40 @@ def assess(s, ctx, pid, project_id, purpose):
     if len(candidates) != 1:
         raise DomainError("RECHECK_REQUIRED", "风险政策未知、到期或存在冲突，不能默认低风险。")
     row = candidates[0]
-    deadline = min(
-        boundary
-        for checked_row, _ in checked
-        if checked_row.status == "active"
-        for boundary in (checked_row.valid_from, checked_row.valid_until)
-        if boundary > at
-    )
     return {
         "id": str(row.id),
         "revision": row.revision,
         "risk": row.risk,
         "independent_verification": row.independent_verification,
         "nature": row.nature,
-        "valid_until": deadline.isoformat(),
+        "valid_until": None,
         "facts_revision": digest(basis),
         "sources": refs,
         "required_source_read_set": merge_reads(reads),
         "source_basis": basis,
         "private": private,
     }
+
+
+def policy_time_current(value, at):
+    """Check actual policy intervals without turning the capture into a TTL."""
+    try:
+        if not isinstance(at, datetime) or at.utcoffset() is None:
+            return False
+        facts = value["source_basis"]
+        if not isinstance(facts, list) or not facts:
+            return False
+        active = []
+        for fact in facts:
+            start = datetime.fromisoformat(fact["valid_from"].replace("Z", "+00:00"))
+            end = datetime.fromisoformat(fact["valid_until"].replace("Z", "+00:00"))
+            if start.utcoffset() is None or end.utcoffset() is None or end <= start:
+                return False
+            if fact["state"] == "active" and start <= at.astimezone(UTC) < end:
+                active.append(fact)
+        return len(active) == 1 and (active[0]["id"], active[0]["revision"]) == (
+            value["id"],
+            value["revision"],
+        )
+    except (KeyError, TypeError, ValueError, AttributeError):
+        return False

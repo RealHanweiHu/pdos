@@ -58,7 +58,7 @@ class Parameter(Closed):
     lower: Decimal | None = None
     upper: Decimal | None = None
     unit: Annotated[str, Field(min_length=1, max_length=80)] | None = None
-    sources: tuple[Source, ...] = Field(default=(), max_length=20)
+    sources: tuple[Source, ...] = Field(default=())
 
     @field_validator("nominal", "lower", "upper", mode="before")
     @classmethod
@@ -93,9 +93,9 @@ class Parameter(Closed):
 class InstructionStep(Closed):
     key: Key
     text: Text
-    parameters: tuple[Parameter, ...] = Field(default=(), max_length=50)
+    parameters: tuple[Parameter, ...] = Field(default=())
     safety_notes: Text | None = None
-    sources: tuple[Source, ...] = Field(min_length=1, max_length=20)
+    sources: tuple[Source, ...] = Field(min_length=1)
 
     @model_validator(mode="after")
     def unique_parameters(self):
@@ -113,7 +113,7 @@ class ControlCheck(Closed):
     sampling_method: Text | None = None
     reaction_plan: Text | None = None
     responsible_role: Text | None = None
-    sources: tuple[Source, ...] = Field(min_length=1, max_length=20)
+    sources: tuple[Source, ...] = Field(min_length=1)
 
 
 class BasePayload(Closed):
@@ -122,9 +122,9 @@ class BasePayload(Closed):
     title: Annotated[str, Field(min_length=2, max_length=200)]
     previous_id: UUID | None = None
     expected_previous_revision: Revision | None = None
-    visibility: Literal["private", "product"] = "private"
+    visibility: Literal["private", "category", "audience"] = "private"
     reason: Text
-    sources: tuple[Source, ...] = Field(min_length=1, max_length=20)
+    sources: tuple[Source, ...] = Field(min_length=1)
     confirmation_token: Annotated[str, Field(min_length=20, max_length=128)] | None = None
 
     @model_validator(mode="after")
@@ -140,7 +140,7 @@ class BasePayload(Closed):
 class InstructionPayload(BasePayload):
     operation_key: Key
     conditions: Text | None = None
-    steps: tuple[InstructionStep, ...] = Field(min_length=1, max_length=200)
+    steps: tuple[InstructionStep, ...] = Field(min_length=1)
 
     @model_validator(mode="after")
     def unique_steps(self):
@@ -151,7 +151,7 @@ class InstructionPayload(BasePayload):
 
 class ControlPlanPayload(BasePayload):
     operation_key: Key
-    checks: tuple[ControlCheck, ...] = Field(min_length=1, max_length=200)
+    checks: tuple[ControlCheck, ...] = Field(min_length=1)
 
     @model_validator(mode="after")
     def unique_checks(self):
@@ -175,7 +175,7 @@ class OperationDocuments(Closed):
 
 
 class BaselinePayload(BasePayload):
-    operations: tuple[OperationDocuments, ...] = Field(min_length=1, max_length=500)
+    operations: tuple[OperationDocuments, ...] = Field(min_length=1)
     risk_notes: Text | None = None
     packaging_label_basis: Text | None = None
 
@@ -222,7 +222,7 @@ class PreparationView(Closed):
     series_id: UUID
     project_id: UUID
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     title: str
     status: Literal["draft"]
     purpose: str
@@ -233,7 +233,7 @@ class PreparationView(Closed):
     created_at: str
     is_current: Annotated[bool, Field(strict=True)]
     source_status: Literal["current", "needs_recheck"]
-    required_source_read_set: Annotated[list[RequiredRead], Field(max_length=20)]
+    required_source_read_set: Annotated[list[RequiredRead], Field()]
     body: dict
     sources: list[Source]
     receipt_id: UUID
@@ -245,6 +245,7 @@ class PreparationView(Closed):
 class PreparationReading(Closed):
     schema_version: Literal["pdos-manufacturing-preparation-v1"]
     versions: list[PreparationView]
+    history_page: dict[str, str | None] = {"next_cursor": None}
     has_more: Annotated[bool, Field(strict=True)]
     unavailable_count: Annotated[int, Field(ge=0, strict=True)]
     qualification: Literal["unknown"]

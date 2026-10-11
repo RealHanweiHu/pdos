@@ -67,7 +67,7 @@ def work(materials, monkeypatch):
         run_id=binding.run_id,
         intent_digest="original-intent",
         writer_id=binding.executor_id,
-        visibility="product",
+        visibility="category",
     )
     reservation = SimpleNamespace(
         id=binding.run_id,
@@ -77,7 +77,7 @@ def work(materials, monkeypatch):
         build_id=binding.build_id,
         run_id=binding.run_id,
         owner_id=binding.executor_id,
-        visibility="product",
+        visibility="category",
         state="formal",
         fact_id=uid(13),
         fact_revision=1,
@@ -89,7 +89,7 @@ def work(materials, monkeypatch):
     )
     s = Session(bind=create_engine("sqlite://"))
     s.begin()
-    ctx = Context(fixed.tenant_id, binding.executor_id, binding.executor_id)
+    ctx = Context(fixed.tenant_id, binding.executor_id, binding.executor_id, category_id=uid(97))
     clock = [datetime(2026, 10, 3, 12, 1, tzinfo=UTC)]
     bound = SimpleNamespace(
         fingerprint_version=codec._FINGERPRINT_V2,
@@ -98,11 +98,14 @@ def work(materials, monkeypatch):
         reservation=result,
         binding=binding,
         resources=SimpleNamespace(
-            facts_revision=proof["facts_revision"], valid_until=clock[0] + timedelta(hours=1)
+            facts_revision=proof["facts_revision"],
+            valid_until=clock[0] + timedelta(hours=1),
+            expiry_boundaries=(),
+            authority_basis=None,
         ),
         physical=SimpleNamespace(
-            authority={"valid_until": (clock[0] + timedelta(hours=1)).isoformat()},
-            visibility="product",
+            authority=deepcopy(proof["material"]["authority"]),
+            visibility="category",
         ),
         plan=SimpleNamespace(resource_fact_id=uid(13), expected_resource_fact_revision=1),
         fingerprint_runtime=None,
@@ -156,7 +159,7 @@ def test_explicit_partial_start_never_uses_v1(work, key):
     del w.original.input_snapshot[key]
     with pytest.raises(DomainError) as exc:
         launch._saved_start_fingerprint(w.s, w.ctx, w.pid, w.original)
-    assert exc.value.code == "RESOURCE_FINGERPRINT_VERSION_UNSUPPORTED"
+    assert exc.value.reason == "RESOURCE_FINGERPRINT_VERSION_UNSUPPORTED"
 
 
 @pytest.mark.parametrize("value", [None, "test-resource-dependency-v1", "future-v3", True, 2])
@@ -165,7 +168,7 @@ def test_explicit_version_never_guessed_or_downgraded(work, value):
     w.original.input_snapshot["resource_fingerprint_version"] = value
     with pytest.raises(DomainError) as exc:
         launch._saved_start_fingerprint(w.s, w.ctx, w.pid, w.original)
-    assert exc.value.code == "RESOURCE_FINGERPRINT_VERSION_UNSUPPORTED"
+    assert exc.value.reason == "RESOURCE_FINGERPRINT_VERSION_UNSUPPORTED"
 
 
 def test_only_two_absent_start_keys_and_two_null_owner_cols_are_legacy(work):
@@ -191,7 +194,7 @@ def test_unversioned_start_cannot_infer_owner_version(work, column, value):
     setattr(w.row, column, value)
     with pytest.raises(DomainError) as exc:
         launch._saved_start_fingerprint(w.s, w.ctx, w.pid, w.original)
-    assert exc.value.code == "RESOURCE_FINGERPRINT_MATERIAL_INVALID"
+    assert exc.value.reason == "RESOURCE_FINGERPRINT_MATERIAL_INVALID"
 
 
 @pytest.mark.parametrize(
@@ -213,7 +216,7 @@ def test_saved_start_wrong_actual_owner_or_triple_fp_rejected(work, owner, value
     setattr(w.row, owner, value)
     with pytest.raises(DomainError) as exc:
         launch._saved_start_fingerprint(w.s, w.ctx, w.pid, w.original)
-    assert exc.value.code == "RUN_RESERVATION_MISSING"
+    assert exc.value.reason == "RUN_RESERVATION_MISSING"
 
 
 @pytest.mark.parametrize("position", ["start", "result", "material", "column"])
@@ -245,7 +248,7 @@ def test_resealed_but_different_complete_material_rejected(work, position):
         w.row.dependency_proof = other
     with pytest.raises(DomainError) as exc:
         launch._start_reservation_proof(w.s, w.ctx, w.command, w.pid, w.payload, w.bound)
-    assert exc.value.code == "INTEGRITY_MISMATCH"
+    assert exc.value.reason == "INTEGRITY_MISMATCH"
 
 
 @pytest.mark.parametrize(
@@ -268,7 +271,7 @@ def test_new_start_cannot_replay_partial_or_save_another_result(work, field, val
 def test_collector_requires_exact_single_fresh_producer_result(sink):
     with pytest.raises(DomainError) as exc:
         launch._collected_resource_proof(resources, sink, "b" * 64)
-    assert exc.value.code == "RESOURCE_FINGERPRINT_MATERIAL_INVALID"
+    assert exc.value.reason == "RESOURCE_FINGERPRINT_MATERIAL_INVALID"
 
 
 def test_collector_full_codec_and_expected_digest_are_both_checked(work):
@@ -278,7 +281,7 @@ def test_collector_full_codec_and_expected_digest_are_both_checked(work):
     )
     with pytest.raises(DomainError) as exc:
         launch._collected_resource_proof(resources, [w.proof], "b" * 64)
-    assert exc.value.code == "RESOURCE_FACTS_CHANGED"
+    assert exc.value.reason == "RESOURCE_FACTS_CHANGED"
 
 
 def capture(w, monkeypatch):
@@ -313,7 +316,7 @@ def test_root_savepoint_engine_and_actual_caller_changes_fail_closed(work, monke
         object.__setattr__(w.ctx, "requester_id", uid(99))
     with pytest.raises(DomainError) as exc:
         launch._close_start_boundary(w.s, w.ctx, w.bound)
-    assert exc.value.code == "FACT_CALLER_UOW_CHANGED"
+    assert exc.value.reason == "FACT_CALLER_UOW_CHANGED"
 
 
 @pytest.mark.parametrize("deadline", ["resource", "authority"])
@@ -323,10 +326,10 @@ def test_actual_clock_final_expiry_after_all_owner_io_rejects(work, monkeypatch,
     if deadline == "resource":
         w.bound.resources.valid_until = w.clock[0]
     else:
-        w.bound.physical.authority["valid_until"] = w.clock[0].isoformat()
+        w.bound.physical.authority["fact_refs"][0]["valid_until"] = w.clock[0].isoformat()
     with pytest.raises(DomainError) as exc:
         launch._close_start_boundary(w.s, w.ctx, w.bound)
-    assert exc.value.code == "SOURCE_STALE"
+    assert exc.value.reason == "SOURCE_STALE"
 
 
 def test_unrelated_registry_mutation_during_whole_launch_owner_io_rejected(work, monkeypatch):
@@ -339,12 +342,15 @@ def test_unrelated_registry_mutation_during_whole_launch_owner_io_rejected(work,
     monkeypatch.setattr(resources, "_same_fingerprint_runtime", changed)
     with pytest.raises(DomainError) as exc:
         launch._close_start_boundary(w.s, w.ctx, w.bound)
-    assert exc.value.code == "SOURCE_STALE"
+    assert exc.value.reason == "SOURCE_STALE"
 
 
 def owner_load(w, monkeypatch, *, original=False, verify_event=True):
+    """Real direct loader/UOW with explicit SQL, source and qualification transports."""
+    from pdos_next import source_current
     from pdos_next.contracts import Command
-    from pdos_next.domain.verification_launch.models import VerificationLaunchFact
+    from pdos_next.domain.professional_authority import service as professional
+    from pdos_next.domain.quality_execution import evidence
     from pdos_next.domain.verification_launch.schemas import ExecutionPlan, StartPayload
     from pdos_next.schemas.verification.contracts import Coverage
 
@@ -370,121 +376,136 @@ def owner_load(w, monkeypatch, *, original=False, verify_event=True):
             "original_timezone": "UTC",
             "source": {"id": uid(30), "revision": 1, "kind": "artifact", "position": "line:1"},
         },
-        reason="Explicit isolated owner substitute",
+        reason="Explicit isolated direct-owner transports",
     )
     command = Command(
         command_id=uid(81),
         idempotency_key="isolated-start-material-owner",
         operation="test.run.start",
+        category_id=w.ctx.category_id,
         product_id=w.pid,
         expected_revision=1,
         source_read_set=[{"artifact_id": uid(30), "expected_revision": 1}],
         payload=payload.model_dump(mode="json"),
     )
-    product = SimpleNamespace(id=w.pid, tenant_id=w.ctx.tenant_id)
+    product = SimpleNamespace(
+        id=w.pid, tenant_id=w.ctx.tenant_id, category_id=w.ctx.category_id, revision=1
+    )
     build = SimpleNamespace(id=binding.build_id, project_id=binding.project_id)
     request = SimpleNamespace(
         id=binding.request_id,
         build=build,
-        scope=SimpleNamespace(project_id=binding.project_id),
         purpose=binding.purpose,
+        scope=SimpleNamespace(product_id=w.pid, project_id=binding.project_id),
         samples=[binding.pairs[0].sample],
+        documents=[],
+        items=[],
     )
     prior = SimpleNamespace(
-        id=binding.accepted_request_id,
-        revision=5,
-        sources=[],
-        required_source_read_set=[],
-        visibility="product",
+        id=binding.accepted_request_id, revision=5, snapshot_sha256="a" * 64, visibility="category"
     )
     run_row = SimpleNamespace(
+        id=uid(73),
+        revision=1,
+        snapshot_sha256="b" * 64,
         input_snapshot={"plan_binding": binding.model_dump(mode="json")},
-        sources=[],
-        required_source_read_set=[],
         plan_sha256=payload.expected_plan_sha256,
     )
     fixed_run = SimpleNamespace(
+        id=binding.run_id,
+        revision=1,
         request_id=request.id,
         build=build,
         coverage=[Coverage(sample_id=binding.pairs[0].sample.id, item_id=binding.pairs[0].item_id)],
     )
-    fact = SimpleNamespace(
-        revision=1,
-        binding=binding.model_dump(mode="json"),
-        sources=[],
-        required_source_read_set=[],
-        visibility="product",
-    )
-    method = SimpleNamespace(
-        id=binding.pairs[0].method_id,
-        revision=1,
-        snapshot_sha256=binding.pairs[0].method_sha256,
-        sources=[],
-        required_source_read_set=[],
-    )
-    authority = {
-        "valid_until": (w.clock[0] + timedelta(hours=1)).isoformat(),
-        "required_source_read_set": [],
-    }
-    original_fact = (
-        SimpleNamespace(intent_digest=w.original.intent_digest, run_version_id=uid(75))
-        if original
-        else None
-    )
+    authority = deepcopy(w.proof["material"]["authority"])
     calls = []
+    if not verify_event:
+        w.s.info["read_snapshot"] = True
     monkeypatch.setattr(launch, "_human", lambda *a, **k: None)
+    monkeypatch.setattr(launch, "require_access", lambda *a, **k: product)
     monkeypatch.setattr(launch.front, "_version", lambda *a: prior)
     monkeypatch.setattr(launch.front, "_snapshot", lambda *a: request)
-    monkeypatch.setattr(launch.front, "_current", lambda *a, **k: (None, None))
-    monkeypatch.setattr(launch, "_current", lambda *a, **k: (None, None))
     monkeypatch.setattr(launch.front, "_build", lambda *a: build)
-    monkeypatch.setattr(launch.front, "_linked", lambda *a: (None, None, None, []))
     monkeypatch.setattr(launch.front, "_assess", lambda *a, **k: authority)
     monkeypatch.setattr(launch, "_version", lambda *a: run_row)
     monkeypatch.setattr(launch, "_snapshot", lambda *a: (fixed_run, plan))
     monkeypatch.setattr(launch, "_full_coverage", lambda *a: None)
     monkeypatch.setattr(
-        launch, "_row", lambda *a: w.original if a[3].__name__ == "VerificationRunVersion" else fact
+        launch,
+        "_direct_start_references",
+        lambda *a: ([binding.equipment.model_dump(mode="json")], [payload.at.source]),
     )
-    monkeypatch.setattr(resources, "lock_binding_assets", lambda *a, **k: None)
+    monkeypatch.setattr(evidence, "refs_from_exact", lambda *a: (payload.at.source,))
+
+    def direct_sources(*args):
+        calls.append(("source", args[-1]))
+        return [], False
+
+    monkeypatch.setattr(source_current, "direct_source_basis", direct_sources)
     monkeypatch.setattr(
-        launch.physical,
-        "_inspect",
-        lambda *a, **k: {
-            "source_refs": [],
-            "required_source_read_set": [],
-            "visibility": "product",
-        },
-    )
-    monkeypatch.setattr(launch.physical, "_method_pointer", lambda *a: (None, method))
-    monkeypatch.setattr(launch.front, "_row", lambda *a: prior)
-    monkeypatch.setattr(launch, "_binding", lambda *a: binding)
-    monkeypatch.setattr(launch, "_event", lambda *a, **k: calls.append(("event", k)))
-    monkeypatch.setattr(launch.physical, "_basis", lambda *a: ({}, False))
-    monkeypatch.setattr(resources, "_fingerprint_runtime", lambda *a: object(), raising=False)
-    monkeypatch.setattr(resources, "_same_fingerprint_runtime", lambda *a: None, raising=False)
-    monkeypatch.setattr(
-        w.s,
-        "scalar",
-        lambda query: (
-            original_fact
-            if query.column_descriptions[0]["entity"] is VerificationLaunchFact
-            else None
+        launch,
+        "_direct_start_summaries",
+        lambda *a, **k: (
+            {binding.pairs[0].sample.id: {"visibility": "category"}},
+            {},
+            {"samples": [], "methods": []},
         ),
     )
+    monkeypatch.setattr(launch, "_direct_authority_stamp", lambda *a: ("selected-executor",))
+    monkeypatch.setattr(
+        professional,
+        "_subject_access",
+        lambda *a: (
+            SimpleNamespace(active=True, kind="human"),
+            SimpleNamespace(can_write=True, expires_at=None),
+        ),
+    )
+    monkeypatch.setattr(
+        launch, "_new_write", lambda *a: (SimpleNamespace(id=uid(71)), SimpleNamespace(id=uid(72)))
+    )
+    monkeypatch.setattr(launch, "_event", lambda *a, **k: calls.append(("event", k)))
 
-    def bundle(*args, **kwargs):
-        calls.append(("load", kwargs.copy()))
-        if "_fingerprint_collector" in kwargs:
-            kwargs["_fingerprint_collector"].append(deepcopy(w.proof))
-        return SimpleNamespace(
+    def forbidden_full_owner(*args, **kwargs):
+        pytest.fail("A direct Start must not reload the historical upstream closure")
+
+    for owner, name in (
+        (resources, "load_bundle"),
+        (resources, "_fingerprint_runtime"),
+        (launch.front, "_linked"),
+        (launch.physical, "_inspect"),
+    ):
+        monkeypatch.setattr(owner, name, forbidden_full_owner)
+
+    def prepare(*args, **kwargs):
+        calls.append(("prepare_direct", kwargs.copy()))
+        bundle = resources.BoundTestResources(
             binding=binding,
             facts_revision=w.proof["facts_revision"],
-            required_source_read_set=(),
-            valid_until=w.clock[0] + timedelta(hours=1),
+            nature="synthetic",
+            report={
+                "status": "READY",
+                "capacity_status": "checked",
+                "checks": [],
+                "fixed_resources": [],
+                "input_digest": "c" * 64,
+                "checked_at": w.clock[0],
+            },
+            required_source_read_set=kwargs["reads"],
         )
+        return {
+            "bundle": bundle.model_dump(mode="json"),
+            "dependency_proof": deepcopy(w.proof),
+            "watermark": {"resource": [str(uid(13)), 1, 1]},
+            "visibility": "category",
+        }
 
-    monkeypatch.setattr(resources, "load_bundle", bundle)
+    monkeypatch.setattr(resources, "prepare_start_direct", prepare)
+    if original:
+        # A completed legacy owner remains a fixed codec reader, rather than
+        # becoming a new Start's upstream qualification or resource Current.
+        version, proof = launch._saved_start_fingerprint(w.s, w.ctx, w.pid, w.original)
+        assert version == codec._FINGERPRINT_V2 and proof == w.proof
     bound = launch._load(w.s, w.ctx, command, product, payload, verify_event=verify_event)
     return bound, calls
 
@@ -493,48 +514,49 @@ def test_actual_loader_new_start_chooses_v2_before_source_owner_io_without_effec
     work, monkeypatch
 ):
     bound, calls = owner_load(work, monkeypatch)
-    resource_call = next(value for kind, value in calls if kind == "load")
-    assert resource_call["_fingerprint_version"] == codec._FINGERPRINT_V2
-    assert resource_call["_fingerprint_collector"] == [work.proof]
-    assert resource_call["write"] is False and "own_intent" not in resource_call
+    resource_call = next(value for kind, value in calls if kind == "prepare_direct")
     assert resource_call["verified_actual_start"].occurred_at == work.binding.window.start
-    assert bound.dependency_proof == work.proof and bound.fingerprint_runtime is not None
+    assert resource_call["reads"] == [{"artifact_id": str(uid(30)), "expected_revision": 1}]
+    assert bound.direct_contract and bound.fingerprint_version == codec._FINGERPRINT_V2
+    assert bound.dependency_proof == work.proof and bound.direct_authority_stamp
+    assert bound.caller_uow[0][-1] is work.s.get_transaction()
     assert not work.s.new and not work.s.dirty and not work.s.deleted
 
 
 def test_read_only_capability_still_uses_new_start_v2_but_no_actual_event_claim(work, monkeypatch):
     bound, calls = owner_load(work, monkeypatch, verify_event=False)
-    resource_call = next(value for kind, value in calls if kind == "load")
-    assert resource_call["_fingerprint_version"] == codec._FINGERPRINT_V2
-    assert "verified_actual_start" not in resource_call
+    resource_call = next(value for kind, value in calls if kind == "prepare_direct")
+    assert resource_call["verified_actual_start"] is None
     assert not any(kind == "event" for kind, value in calls)
-    assert bound.dependency_proof == work.proof and not work.s.new
+    assert work.s.info["read_snapshot"] is True
+    assert bound.direct_contract and bound.dependency_proof == work.proof
+    assert not work.s.new and not work.s.dirty and not work.s.deleted
 
 
 def test_actual_loader_saved_v2_owner_dispatch_preserves_exact_original_and_current_uow(
     work, monkeypatch
 ):
+    saved_input, saved_owner = (
+        deepcopy(work.original.input_snapshot),
+        deepcopy(work.row.dependency_proof),
+    )
     bound, calls = owner_load(work, monkeypatch, original=True)
-    resource_call = next(value for kind, value in calls if kind == "load")
-    assert resource_call["_fingerprint_version"] == codec._FINGERPRINT_V2
-    assert resource_call["own_intent"] == work.original.intent_digest
-    assert bound.saved_start is work.original and bound.dependency_proof == work.proof
-    assert bound.fingerprint_runtime is not None and not work.s.new
+    assert len([kind for kind, value in calls if kind == "prepare_direct"]) == 1
+    assert bound.dependency_proof == work.proof and bound.saved_start is None
+    assert work.original.input_snapshot == saved_input and work.row.dependency_proof == saved_owner
+    assert bound.caller_uow[0][-1] is work.s.get_transaction()
+    assert not work.s.new and not work.s.dirty and not work.s.deleted
 
 
-def test_actual_loader_unversioned_real_owner_keeps_v1_and_avoids_new_material_claim(
-    work, monkeypatch
-):
-    w = work
-    del w.original.input_snapshot["resource_fingerprint_version"]
-    del w.original.input_snapshot["resource_dependency_proof"]
-    w.row.fingerprint_version, w.row.dependency_proof = None, None
-    bound, calls = owner_load(w, monkeypatch, original=True)
-    resource_call = next(value for kind, value in calls if kind == "load")
-    assert resource_call["_fingerprint_version"] == codec._FINGERPRINT_V1
-    assert "_fingerprint_collector" not in resource_call
-    assert bound.dependency_proof is None and bound.fingerprint_runtime is None
-    assert not work.s.new
+def test_saved_unversioned_owner_keeps_v1_and_avoids_new_material_claim(work):
+    del work.original.input_snapshot["resource_fingerprint_version"]
+    del work.original.input_snapshot["resource_dependency_proof"]
+    work.row.fingerprint_version, work.row.dependency_proof = None, None
+    saved = deepcopy(work.original.input_snapshot)
+    version, proof = launch._saved_start_fingerprint(work.s, work.ctx, work.pid, work.original)
+    assert version == codec._FINGERPRINT_V1 and proof is None
+    assert work.original.input_snapshot == saved
+    assert not work.s.new and not work.s.dirty and not work.s.deleted
 
 
 def record_work(w, monkeypatch):
@@ -578,7 +600,7 @@ def record_work(w, monkeypatch):
         authority={"valid_until": (w.clock[0] + timedelta(hours=1)).isoformat()},
         references=[],
         reads=[],
-        visibility="product",
+        visibility="category",
     )
     w.bound.plan = ExecutionPlan(
         window=binding.window,
@@ -664,7 +686,7 @@ def test_record_full_group_flush_io_registry_change_is_detected_before_owner_ret
             (None, pointer),
             mutation,
         )
-    assert exc.value.code == "SOURCE_STALE"
+    assert exc.value.reason == "SOURCE_STALE"
     # No connection was opened. The real common caller owns rollback of this staged UOW.
     assert len(w.s.new) == 2
     w.s.rollback()
@@ -701,10 +723,8 @@ def effect_rows(w, monkeypatch):
     monkeypatch.setattr(
         w.s,
         "scalars",
-        lambda q: SimpleNamespace(
-            all=lambda: (
-                [occupied] if q.column_descriptions[0]["entity"] is ResourceOccupancy else [usage]
-            )
+        lambda q: (
+            [occupied] if q.column_descriptions[0]["entity"] is ResourceOccupancy else [usage]
         ),
     )
     monkeypatch.setattr(launch, "_version", lambda *args: w.original)
@@ -736,7 +756,7 @@ def test_later_version_cannot_replace_v2_original_start_identity(work, monkeypat
     row.input_snapshot[field] = None
     with pytest.raises(DomainError) as exc:
         launch._saved_effects(work.s, work.ctx, work.pid, row)
-    assert exc.value.code == "RUN_START_PROOF_INVALID"
+    assert exc.value.reason == "RUN_START_PROOF_INVALID"
 
 
 @pytest.mark.parametrize("field", ["resource_fingerprint_version", "resource_dependency_proof"])
@@ -749,7 +769,7 @@ def test_later_legacy_result_cannot_introduce_even_null_explicit_version(work, m
     row.input_snapshot[field] = None
     with pytest.raises(DomainError) as exc:
         launch._saved_effects(w.s, w.ctx, w.pid, row)
-    assert exc.value.code == "RUN_START_PROOF_INVALID"
+    assert exc.value.reason == "RUN_START_PROOF_INVALID"
 
 
 @pytest.mark.parametrize(
@@ -769,7 +789,7 @@ def test_new_start_requires_actual_row_writer_visibility_formal_state_and_fixed_
     setattr(w.row, owner, value)
     with pytest.raises(DomainError) as exc:
         launch._start_reservation_proof(w.s, w.ctx, w.command, w.pid, w.payload, w.bound)
-    assert exc.value.code == "INTEGRITY_MISMATCH"
+    assert exc.value.reason == "INTEGRITY_MISMATCH"
 
 
 def test_new_load_does_not_convert_unknown_qualification_into_clock_parse_error(work, monkeypatch):

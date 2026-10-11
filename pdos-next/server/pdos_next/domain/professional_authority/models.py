@@ -9,6 +9,7 @@ from sqlalchemy import (
     String,
     Text,
     UniqueConstraint,
+    text,
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
@@ -106,7 +107,8 @@ class ProfessionalFact(Row, Base):
             "AND nature IN ('real','synthetic')"
         ),
         CheckConstraint(
-            "visibility IN ('private','product') AND valid_until > valid_from AND revision > 0"
+            "visibility IN ('private','category','audience') AND "
+            "valid_until > valid_from AND revision > 0"
         ),
         CheckConstraint(
             "(kind='duty' AND state IN ('active','withdrawn')) OR "
@@ -141,6 +143,7 @@ class ProfessionalCurrent(Row, Base):
     fact_id: Mapped[UUID]
     fact_revision: Mapped[int] = mapped_column(Integer)
     epoch: Mapped[int] = mapped_column(Integer)
+    summary: Mapped[dict] = mapped_column(JSONB, server_default=text("'{}'::jsonb"))
     __table_args__ = (
         UniqueConstraint(
             "tenant_id",

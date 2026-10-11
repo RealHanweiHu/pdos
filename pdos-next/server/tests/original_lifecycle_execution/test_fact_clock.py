@@ -53,21 +53,18 @@ def test_actually_future_reference_observation_remains_protected(monkeypatch):
     assert DecisionReason.FACT_TIME_INVALID in candidate.decision.reasons
 
 
-def test_confirmation_expiring_during_fact_read_is_rechecked_after_read(monkeypatch):
+def test_candidate_has_no_material_deadline_after_authoritative_read(monkeypatch):
     clock, store, _, service, _ = fixture()
     candidate = preview(store, service)
     read = service.references.read_under_fence
 
     def expires(fence):
         result = read(fence)
-        clock.value = candidate.expires_at
+        clock.value = candidate.captured_at + timedelta(minutes=30)
         return result
 
     monkeypatch.setattr(service.references, "read_under_fence", expires)
-    with pytest.raises(LifecycleFailure) as error:
-        confirm(store, service, candidate)
-    assert error.value.code == "PREVIEW_EXPIRED"
-    assert not store.intents
+    assert confirm(store, service, candidate).state.value == "pending"
 
 
 def test_current_authority_is_rechecked_after_fact_read(monkeypatch):

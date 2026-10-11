@@ -90,6 +90,7 @@ def test_t2_named_root_cause_uses_actual_common_uuid_and_atomic_shared_receipt(
     assert result.status_code == 200, result.text
     receipt = result.json()
     proof = proof_row(work, approved)
+    assert proof.expires_at is None
     assert proof.consumed is True and captured == [(proof.id, proof.id)]
     row = fixed_issue(work)
     assert row.revision == old.revision + 1 and row.previous_issue_version_id == old.id
@@ -102,7 +103,13 @@ def test_t2_named_root_cause_uses_actual_common_uuid_and_atomic_shared_receipt(
     after = counts(work)
     for cls in (QualityIssueVersion, Receipt, Audit, Outbox):
         assert after[cls.__tablename__] == before[cls.__tablename__] + 1
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         assert (
             s.scalar(select(Outbox.type).where(Outbox.receipt_id == UUID(receipt["id"])))
             == "issue.root_cause_decided"
@@ -123,7 +130,13 @@ def test_real_consumption_marker_requires_no_sql_gap_and_cannot_cross_transactio
     event.listen(work.setup.engine, "before_cursor_execute", sql)
     try:
         with pytest.raises(RuntimeError, match="rollback-provenance-probe"):
-            with tenant_session(work.setup.engine, work.setup.tenant) as s:
+            with tenant_session(
+                work.setup.engine,
+                work.setup.tenant,
+                actor_id=work.quality.ctx.actor_id,
+                requester_id=work.quality.ctx.requester_id,
+                category_id=work.setup.category,
+            ) as s:
                 row = s.scalar(
                     select(Confirmation)
                     .where(Confirmation.token_hash == digest(payload.approval_token))
@@ -142,10 +155,16 @@ def test_real_consumption_marker_requires_no_sql_gap_and_cannot_cross_transactio
                 )
                 raise RuntimeError("rollback-provenance-probe")
         assert proof_row(work, approved).consumed is False
-        with tenant_session(work.setup.engine, work.setup.tenant) as another:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.ctx.actor_id,
+            requester_id=work.quality.ctx.requester_id,
+            category_id=work.setup.category,
+        ) as another:
             with pytest.raises(DomainError) as error:
                 host.require_consumed_proof(another, work.quality.ctx, checked, payload, tier="T2")
-            assert error.value.code == "NAMED_APPROVAL_REQUIRED"
+            assert error.value.reason == "NAMED_APPROVAL_REQUIRED"
     finally:
         event.remove(work.setup.engine, "before_cursor_execute", sql)
 
@@ -200,7 +219,7 @@ def test_partial_then_all_complete_keeps_real_event_clocks_history_and_original_
     assert saved_execution.run == work.original_result.run
     assert saved_execution.request.id == work.original_result.request.id
     response = work.quality.client.get(
-        f"/v1/products/{work.setup.product}/{PATH}",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/{PATH}",
         headers=work.quality.headers,
         params={"issue_id": str(work.issue_id)},
     )
@@ -254,7 +273,10 @@ def test_exact_nine_fields_and_named_executor_cannot_change_after_review(followu
         expected = "MISSING_REQUIRED_EVIDENCE"
     result = post(work.quality, altered)
     assert result.status_code == (403 if change == "executor" else 422), result.text
-    assert result.json()["code"] == expected
+    assert result.json()["code"] == (
+        "NAMED_DECISION_REQUIRED" if change == "executor" else expected
+    )
+    assert result.json()["detail"]["reason"] == expected
     no_effect(work, before, approved, old)
 
 
@@ -270,7 +292,13 @@ def test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_an
 
         from pdos_next.models import UploadedOriginal
 
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.ctx.actor_id,
+            requester_id=work.quality.ctx.requester_id,
+            category_id=work.setup.category,
+        ) as s:
             artifact = s.get(Artifact, work.completion_artifact_id)
             original = s.get(UploadedOriginal, artifact.original_id)
             security = s.scalar(
@@ -293,7 +321,13 @@ def test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_an
         assert work.report_store.read_original(ref) == raw
     else:
         # A current terminal source withdrawal is real scoped DB state, not content mutation.
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.ctx.actor_id,
+            requester_id=work.quality.ctx.requester_id,
+            category_id=work.setup.category,
+        ) as s:
             s.execute(
                 update(Artifact)
                 .where(Artifact.id == work.classification_artifact_id)
@@ -379,7 +413,10 @@ def test_mid_phase_aba_versions_are_rechecked_after_completion_assessment(follow
     result = post(work.quality, approved)
     assert len(calls) >= 2
     expected = "ORIGINAL_SECURITY_BLOCKED" if changed == "original_epoch" else "SOURCE_STALE"
-    assert result.status_code == 409 and result.json()["code"] == expected, result.text
+    assert result.status_code == 409 and result.json()["code"] == (
+        "SOURCE_UNAVAILABLE" if changed == "original_epoch" else expected
+    ), result.text
+    assert result.json()["detail"]["reason"] == expected
     no_effect(work, before, approved, old)
 
 
@@ -388,7 +425,13 @@ def test_link_t1_preserves_issue_pointer_and_records_exact_scoped_owner_output(f
     old, before = fixed_issue(work), counts(work)
     receipt, approved = accepted(work.quality, link_command(work))
     assert receipt["subject_type"] == "capa_remediation_link"
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         row = s.get(RemediationLinkRecord, UUID(receipt["subject_id"]))
         assert (row.issue_id, row.issue_version_id, row.issue_revision, row.capa_id) == (
             work.issue_id,

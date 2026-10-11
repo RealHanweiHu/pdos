@@ -1,0 +1,12 @@
+[
+  "tests/quality_execution/test_direct_confirmation.py",
+  "tests/test_source_current.py",
+  "tests/quality_issues/test_quality_issues.py",
+  "tests/quality_issues/test_temporal_and_nature.py",
+  "tests/verification_launch/test_pure.py",
+  "tests/verification_launch_v2/test_start_versioned_owner.py",
+  "tests/test_fingerprint_compatibility.py",
+  "tests/test_retained_fingerprint_compatibility.py",
+  "tests/test_retained_versioned_fingerprint.py",
+  "tests/test_resources/test_rules.py"
+]

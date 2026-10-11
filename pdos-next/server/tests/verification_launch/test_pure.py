@@ -187,7 +187,7 @@ def test_kernel_blocks_unknown_or_hold_or_inapplicable_before_plan(work, availab
         launch(work, availability=availability, applicable=applicable).execute(
             invocation(work.request, payload, "test.run.plan"), payload
         )
-    assert error.value.code == "SAMPLE_UNAVAILABLE"
+    assert error.value.reason == "SAMPLE_UNAVAILABLE"
     assert not work.reserved and not work.recorded
 
 
@@ -210,7 +210,7 @@ def test_common_confirmation_required_before_any_effect(work):
 def test_current_actor_must_be_fixed_executor(work):
     with pytest.raises(DomainError) as error:
         started(work, actor=uuid4())
-    assert error.value.code == "NAMED_DECISION_REQUIRED"
+    assert error.value.reason == "NAMED_DECISION_REQUIRED"
     assert not work.reserved
 
 
@@ -236,7 +236,7 @@ def test_public_plan_rejects_trusted_field_injection(work, field):
 def test_full_coverage_cannot_hide_accepted_sample(work):
     with pytest.raises(DomainError) as error:
         service._full_coverage(work.request, work.request.acceptances[0].coverage[:1])
-    assert error.value.code == "INVALID_COVERAGE"
+    assert error.value.reason == "INVALID_COVERAGE"
     service._full_coverage(work.request, work.request.acceptances[0].coverage)
 
 
@@ -505,7 +505,7 @@ def test_snapshot_hash_and_execution_conditions_are_exact(work):
     row.execution_plan = {**row.execution_plan, "conditions": "tampered"}
     with pytest.raises(DomainError) as error:
         service._snapshot(row)
-    assert error.value.code == "INTEGRITY_MISMATCH"
+    assert error.value.reason == "INTEGRITY_MISMATCH"
 
 
 @pytest.mark.parametrize("source_time", ["iso", "z", "offset"])
@@ -569,7 +569,7 @@ def test_event_checks_current_exact_artifact_and_whole_fixed_json(work, monkeypa
             [reference],
             actual=True,
         )
-    assert error.value.code == "INVALID_EVENT_EVIDENCE"
+    assert error.value.reason == "INVALID_EVENT_EVIDENCE"
 
 
 @pytest.mark.parametrize("invalid", ["naive", "duplicate", "missing", "extra"])
@@ -621,7 +621,7 @@ def test_event_rejects_ambiguous_or_unaware_source_clock(work, monkeypatch, inva
             [work.plan.equipment.model_dump(mode="json")],
             actual=True,
         )
-    assert error.value.code == "INVALID_EVENT_EVIDENCE"
+    assert error.value.reason == "INVALID_EVENT_EVIDENCE"
 
 
 def test_inputs_return_complete_sources_and_never_call_apply_or_effect(work, monkeypatch):
@@ -652,6 +652,7 @@ def test_inputs_return_complete_sources_and_never_call_apply_or_effect(work, mon
         command_id=uuid4(),
         idempotency_key="read-only-input-test",
         operation="test.run.plan",
+        category_id=uuid4(),
         product_id=product.id,
         expected_revision=1,
         payload=payload.model_dump(mode="json"),
@@ -676,11 +677,15 @@ def test_scoped_get_checks_authoritative_linked_reads_before_queries(work, monke
         raise DomainError("SOURCE_UNAVAILABLE", "Authoritative linked source withdrawn")
 
     monkeypatch.setattr(service, "_sources", guard)
-    s = SimpleNamespace(scalar=lambda _: SimpleNamespace(id=work.request.scope.product_id))
+    s = SimpleNamespace(
+        scalar=lambda _: SimpleNamespace(
+            id=work.request.scope.product_id, tenant_id=work.request.scope.tenant_id
+        )
+    )
     ctx = Context(work.request.scope.tenant_id, work.actor, work.actor)
     with pytest.raises(DomainError) as error:
         service.list_launch(s, ctx, work.request.scope.product_id, build_id=work.request.build.id)
-    assert error.value.code == "SOURCE_UNAVAILABLE" and calls == [["fixed-linked-reads"]]
+    assert error.value.reason == "SOURCE_UNAVAILABLE" and calls == [["fixed-linked-reads"]]
 
 
 @pytest.mark.parametrize("mutate", ["expired", "unqualified", "wrong_subject"])
@@ -704,4 +709,4 @@ def test_host_current_qualification_guard_precedes_physical_and_effect(work, mon
     ctx = Context(work.request.scope.tenant_id, work.actor, work.actor)
     with pytest.raises(DomainError) as error:
         service._guards(None, ctx, None, None, public_plan(work), bound)
-    assert error.value.code == "QUALIFICATION_REQUIRED"
+    assert error.value.reason == "QUALIFICATION_REQUIRED"

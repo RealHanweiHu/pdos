@@ -7,12 +7,11 @@ saved common Receipts still verify every returned option in this same Session.
 
 from copy import deepcopy
 from dataclasses import dataclass
-from datetime import datetime
-from itertools import islice
 from uuid import UUID
 
 from sqlalchemy import select
 
+from pdos_next.database import category_for_product
 from pdos_next.domain.capa_verification import service as owners
 from pdos_next.domain.capa_verification.models import RemediationLinkRecord
 from pdos_next.domain.capa_verification.schemas import (
@@ -77,20 +76,23 @@ def _writable(s, ctx, pid):
     grant = s.execute(
         select(Grant.can_write, Grant.expires_at).where(
             Grant.tenant_id == ctx.tenant_id,
-            Grant.product_id == pid,
+            Grant.category_id == category_for_product(pid),
             Grant.principal_id == ctx.requester_id,
         )
     ).one_or_none()
-    return grant is not None and grant.can_write is True and grant.expires_at > now()
+    return (
+        grant is not None
+        and grant.can_write is True
+        and (grant.expires_at is None or grant.expires_at > now())
+    )
 
 
 def _unexpired(value):
-    raw = value.get("valid_until") if value else None
-    try:
-        expiry = datetime.fromisoformat(raw)
-    except (TypeError, ValueError):
+    if not value:
         return False
-    return expiry.tzinfo is not None and expiry.utcoffset() is not None and expiry > now()
+    if "operation" in value and "fact_refs" in value:
+        return professional.authority_time_current(value, now())
+    return policy.policy_time_current(value, now())
 
 
 def _current(s, ctx, pid, issue_id):
@@ -225,9 +227,7 @@ def _option(s, ctx, pid, basis, ref, *, paired_reads=None):
 
 
 def _options(s, ctx, pid, basis, runtime, *, paired_reads=None):
-    refs = tuple(islice(iter(runtime.output_options(s, ctx, pid, basis)), LIMIT + 1))
-    if len(refs) > LIMIT:
-        raise DomainError("INTEGRATION_REQUIRED", "输出候选超过20项，宿主须缩小明确范围。", 503)
+    refs = tuple(runtime.output_options(s, ctx, pid, basis))
     refs = tuple(OutputRef.model_validate(ref) for ref in refs)
     if len({(r.kind, r.id, r.revision, r.key) for r in refs}) != len(refs):
         raise DomainError("INTEGRITY_MISMATCH", "输出候选重复，不能猜测去重。")
@@ -333,7 +333,7 @@ def _links(s, ctx, pid, selected):
             except DomainError as exc:
                 if exc.status == 403:
                     raise
-                state, reasons = "needs_recheck", [exc.code]
+                state, reasons = "needs_recheck", [exc.reason]
             value = saved.model_dump(mode="json")
             value.update(source_status=state, reason_codes=reasons, receipt_id=str(receipt.id))
             values.append(value)
@@ -527,7 +527,11 @@ def list_quality_followup(s, ctx, pid, *, issue_id, revision=None):
         raise DomainError("SOURCE_STALE", "输出读取期间当前问题版已推进。")
     writable = _writable(s, ctx, pid)
     # Every live gate remains valid after the final Current and permission IO.
-    if any(value.host_gate.valid_until <= now() for value in paired_reads):
+    if any(
+        (value.host_gate.valid_until is not None and value.host_gate.valid_until <= now())
+        or any(bound <= now() for bound in value.host_gate.time_constraints)
+        for value in paired_reads
+    ):
         raise DomainError("SOURCE_STALE", "配对输出门栓在完整读取完成前已过期。")
     if (
         getattr(s.get_bind(), "_pdos_paired_followup_owner", None) is not paired_runtime

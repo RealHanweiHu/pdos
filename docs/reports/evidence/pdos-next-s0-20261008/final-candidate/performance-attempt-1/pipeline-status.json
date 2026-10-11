@@ -1,0 +1,49 @@
+{
+  "synthetic_only": true,
+  "llm_calls": 0,
+  "results": [
+    {
+      "step": "short",
+      "started_at": "2026-10-09T15:11:27.963147+00:00",
+      "finished_at": "2026-10-09T15:12:04.457895+00:00",
+      "exit_code": 0,
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/tools/s0_performance.py",
+        "--b8"
+      ]
+    },
+    {
+      "step": "b4",
+      "started_at": "2026-10-09T15:12:04.458603+00:00",
+      "finished_at": "2026-10-09T15:35:31.716759+00:00",
+      "exit_code": 0,
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/tools/s0_profile_checkpoint.py",
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s0-20261008/final-candidate/performance/b4-launch.json",
+        "-q",
+        "--tb=short",
+        "--maxfail=1",
+        "--junitxml=/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s0-20261008/final-candidate/performance/b4-junit.xml",
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/tools/checkpoints/b4_performance.py"
+      ]
+    },
+    {
+      "step": "b5",
+      "started_at": "2026-10-09T15:35:31.718197+00:00",
+      "finished_at": "2026-10-09T15:41:15.717808+00:00",
+      "exit_code": 2,
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/tools/s0_profile_checkpoint.py",
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s0-20261008/final-candidate/performance/b5-quality.json",
+        "-q",
+        "--tb=short",
+        "--maxfail=1",
+        "--junitxml=/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s0-20261008/final-candidate/performance/b5-junit.xml",
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/tools/checkpoints/b5_performance.py"
+      ]
+    }
+  ]
+}

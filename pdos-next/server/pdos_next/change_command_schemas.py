@@ -16,7 +16,7 @@ from pdos_next.schemas.verification.contracts import DTO, SourceRef
 class Target(DTO):
     change_id: UUID
     expected_change_revision: int = Field(strict=True, ge=1)
-    visibility: Literal["private", "product"] = "private"
+    visibility: Literal["private", "category", "audience"] = "private"
 
     @model_validator(mode="before")
     @classmethod
@@ -42,7 +42,7 @@ class OrderPreparePayload(Target, OrderPrepare):
 
 
 class OrderApprovePayload(Target, OrderApprove):
-    sources: tuple[SourceRef, ...] = Field(min_length=1, max_length=20)
+    sources: tuple[SourceRef, ...] = Field(min_length=1)
     approval_token: str | None = Field(default=None, min_length=16, max_length=512)
 
     @model_validator(mode="after")
@@ -71,7 +71,7 @@ class ControlledPolicy(DTO):
     scope: dict
     purpose: str
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     nature: Literal["real", "synthetic"]
     source: SourceRef
     required_disciplines: tuple[
@@ -80,7 +80,7 @@ class ControlledPolicy(DTO):
     valid_from: AwareDatetime
     valid_until: AwareDatetime
     epoch: int = Field(strict=True, ge=1)
-    required_source_read_set: tuple[dict, ...] = Field(min_length=1, max_length=20)
+    required_source_read_set: tuple[dict, ...] = Field(min_length=1)
     source_basis: dict
     owner_proof: dict  # Actual publisher's immutable group, not an input bool.
 
@@ -90,8 +90,8 @@ class SelectionProof(DTO):
     item_sha256: str = Field(pattern="^[0-9a-f]{64}$")
     nature: Literal["real", "synthetic"]
     applicable: Literal[True]
-    valid_until: AwareDatetime
-    sources: tuple[SourceRef, ...] = Field(min_length=1, max_length=20)
-    required_source_read_set: tuple[dict, ...] = Field(min_length=1, max_length=20)
+    valid_until: AwareDatetime | None = None
+    sources: tuple[SourceRef, ...] = Field(min_length=1)
+    required_source_read_set: tuple[dict, ...] = Field(min_length=1)
     source_basis: dict
     owner_proof: dict

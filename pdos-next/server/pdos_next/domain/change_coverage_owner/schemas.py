@@ -13,13 +13,12 @@ OPERATION = "change.coverage.import"
 EVENT = "change.coverage_imported"
 FAMILY = "change_coverage_fact"
 FACETS = get_args(Facet)
-MAX_NODES = 250
 
 
 class FacetClosure(Exact):
     facet: Facet
     # Explicit fixed enumeration from the approved whole original, never SELECT=0.
-    nodes: tuple[Ref, ...] = Field(min_length=1, max_length=MAX_NODES)
+    nodes: tuple[Ref, ...] = Field(min_length=1)
     statement: Text
 
 
@@ -31,11 +30,11 @@ class CoverageMaterial(Exact):
     origin_version_id: UUID
     origin_revision: int = Field(strict=True, ge=1)
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     publisher_id: UUID
-    roots: tuple[Ref, ...] = Field(min_length=1, max_length=100)
-    nodes: tuple[Ref, ...] = Field(min_length=1, max_length=MAX_NODES)
-    units: tuple[UnitBinding, ...] = Field(min_length=1, max_length=MAX_NODES)
+    roots: tuple[Ref, ...] = Field(min_length=1)
+    nodes: tuple[Ref, ...] = Field(min_length=1)
+    units: tuple[UnitBinding, ...] = Field(min_length=1)
     facets: tuple[FacetClosure, ...] = Field(min_length=8, max_length=8)
     closure_sha256: str = Field(pattern="^[0-9a-f]{64}$")
     valid_from: AwareDatetime

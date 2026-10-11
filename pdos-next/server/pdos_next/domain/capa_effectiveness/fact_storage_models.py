@@ -129,7 +129,7 @@ def _bound_constraints():
             ("tenant_id", "product_id", "project_id", "issue_id", "id", "revision"),
         ),
         CheckConstraint(
-            "origin_issue_revision>0 AND visibility IN ('private','product') "
+            "origin_issue_revision>0 AND visibility IN ('private','category','audience') "
             "AND nature IN ('real','synthetic') AND length(purpose) BETWEEN 1 AND 2000 "
             "AND purpose=btrim(purpose)"
         ),
@@ -161,9 +161,11 @@ def _fact_constraints(kind, operation, tier, status):
         "AND proof_consumed_at IS NULL AND token_sha256 IS NULL AND material_sha256 IS NULL"
         if tier == "host_import"
         else "shared_proof_id IS NOT NULL AND shared_proof_revision IS NOT NULL "
-        "AND shared_proof_revision>0 AND proof_expires_at IS NOT NULL "
+        "AND shared_proof_revision>0 "
         "AND proof_consumed_at IS NOT NULL AND proof_consumed_at<=created_at "
-        "AND created_at<proof_expires_at AND token_sha256 IS NOT NULL "
+        + ("AND (proof_expires_at IS NULL OR created_at<proof_expires_at) "
+           if tier == "T2" else "AND proof_expires_at IS NOT NULL AND created_at<proof_expires_at ")
+        + "AND token_sha256 IS NOT NULL "
         "AND material_sha256 IS NOT NULL AND token_sha256 ~ '^[0-9a-f]{64}$' "
         "AND material_sha256 ~ '^[0-9a-f]{64}$'"
     )
@@ -208,9 +210,9 @@ def _fact_constraints(kind, operation, tier, status):
         ),
         CheckConstraint(
             "COALESCE(jsonb_typeof(required_source_read_set)='array' "
-            "AND jsonb_array_length(required_source_read_set) BETWEEN 1 AND 20 "
+            "AND jsonb_array_length(required_source_read_set)>0 "
             "AND jsonb_typeof(source_basis)='array' "
-            "AND jsonb_array_length(source_basis) BETWEEN 1 AND 20 "
+            "AND jsonb_array_length(source_basis)>0 "
             "AND jsonb_typeof(sources)='array' AND jsonb_array_length(sources)>0 "
             f"AND required_source_read_set={BODY}->'required_source_read_set' "
             f"AND source_basis={BODY}->'source_basis' AND sources={BODY}->'sources',false)"
@@ -423,7 +425,7 @@ class NamedReviewRecord(_Fact, Row, Base):
     rule_revision: Mapped[int] = mapped_column(Integer)
     rule_sha256: Mapped[str] = mapped_column(String(64))
     reviewer_id: Mapped[UUID]
-    valid_until: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    valid_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     __table_args__ = (
         *_fact_constraints("review", "quality.capa.verification.review", "T2", "reviewed"),
         _fk(SCOPE + ("candidate_id",), CapaVerificationEvidence.__tablename__, SCOPE + ("id",)),
@@ -435,7 +437,8 @@ class NamedReviewRecord(_Fact, Row, Base):
         _fk(("tenant_id", "reviewer_id"), "principals", ("tenant_id", "id")),
         CheckConstraint(
             "revision=1 AND candidate_revision=1 AND rule_revision>0 AND reviewer_id=writer_id "
-            "AND valid_until>created_at AND candidate_sha256 ~ '^[0-9a-f]{64}$' "
+            "AND (valid_until IS NULL OR valid_until>created_at) "
+            "AND candidate_sha256 ~ '^[0-9a-f]{64}$' "
             "AND rule_sha256 ~ '^[0-9a-f]{64}$'"
         ),
         CheckConstraint(
@@ -450,7 +453,7 @@ class NamedReviewRecord(_Fact, Row, Base):
             f"AND {BODY}->>'reviewer_id'=reviewer_id::text "
             f"AND {BODY}->'authority_snapshot'=authority_snapshot "
             f"AND {BODY}->'policy_snapshot'=policy_snapshot "
-            f"AND ({BODY}->>'valid_until')::timestamptz=valid_until,false)"
+            f"AND (({BODY}->>'valid_until')::timestamptz IS NOT DISTINCT FROM valid_until),false)"
         ),
     )
 

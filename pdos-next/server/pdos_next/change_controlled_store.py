@@ -40,7 +40,9 @@ def _scope():
             ["projects.tenant_id", "projects.product_id", "projects.id"],
         ),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
-        CheckConstraint("visibility IN ('private','product') AND revision > 0 AND epoch > 0"),
+        CheckConstraint(
+            "visibility IN ('private','category','audience') AND revision > 0 AND epoch > 0"
+        ),
     )
 
 
@@ -78,7 +80,7 @@ class _Fact(Row):
     source_basis: Mapped[dict] = mapped_column(JSONB)
     authority_snapshot: Mapped[dict] = mapped_column(JSONB)
     input_snapshot: Mapped[dict] = mapped_column(JSONB)
-    valid_until: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    valid_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 def _continuous():
@@ -90,6 +92,7 @@ def _continuous():
 
 
 class ChangePolicyFact(_Fact, Base):
+    valid_until: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     __tablename__ = "controlled_change_policy_facts"
     valid_from: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     __table_args__ = (
@@ -104,7 +107,7 @@ class ChangePolicyFact(_Fact, Base):
         CheckConstraint(
             "operation='change.policy.import' AND status='published' AND valid_from<valid_until"
         ),
-        CheckConstraint("jsonb_array_length(required_source_read_set) BETWEEN 1 AND 20"),
+        CheckConstraint("jsonb_array_length(required_source_read_set)>0"),
     )
 
 
@@ -130,7 +133,7 @@ class ChangeSelectionFact(_Fact, Base):
     shared_proof_id: Mapped[UUID]
     shared_proof_revision: Mapped[int] = mapped_column(Integer)
     proof_consumed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
-    proof_expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    proof_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     token_sha256: Mapped[str] = mapped_column(String(64))
     confirmation_material_sha256: Mapped[str] = mapped_column(String(64))
     read_set_sha256: Mapped[str] = mapped_column(String(64))
@@ -200,10 +203,11 @@ class ChangeSelectionFact(_Fact, Base):
             "('applicable','not_applicable','unknown') AND change_revision>0 AND issue_revision>0"
         ),
         CheckConstraint(
-            "proof_consumed_at<=created_at AND created_at<proof_expires_at "
-            "AND valid_until>created_at"
+            "proof_consumed_at<=created_at AND "
+            "(proof_expires_at IS NULL OR created_at<proof_expires_at) "
+            "AND (valid_until IS NULL OR valid_until>created_at)"
         ),
-        CheckConstraint("jsonb_array_length(required_source_read_set) BETWEEN 1 AND 20"),
+        CheckConstraint("jsonb_array_length(required_source_read_set)>0"),
     )
 
 

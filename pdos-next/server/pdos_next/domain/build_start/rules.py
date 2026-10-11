@@ -168,14 +168,12 @@ def validate_professional_review(payload, role, scope, at):
                 "未知或阻塞的专业适用项不能批准，须提供精确适用依据。",
                 409,
             )
-        if (
-            review.valid_until <= at
-            or review.valid_until < scope.window_end
-            or review.valid_until < payload.valid_until
+        if review.valid_until is not None and (
+            review.valid_until <= at or review.valid_until < scope.window_end
         ):
             raise DomainError(
                 "PROFESSIONAL_REVIEW_EXPIRED",
-                "逐项专业适用结论必须有效并覆盖完整执行与批准期限。",
+                "明确限定期限的专业适用结论须有效并覆盖固定执行范围。",
                 409,
             )
 
@@ -196,9 +194,6 @@ def require_ready(result, at):
         raise DomainError(
             "BUILD_NOT_READY", "执行评估有阻塞、未知或未批准的限定条件，不能批准或开工。", 409
         )
-    expiry = result.get("valid_until")
-    if expiry is None or datetime.fromisoformat(expiry).astimezone(UTC) <= at:
-        raise DomainError("ASSESSMENT_EXPIRED", "执行评估缺少当前有效期或已失效，请重新评估。", 409)
 
 
 def _unique_object(pairs):

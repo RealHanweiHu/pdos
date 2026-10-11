@@ -20,21 +20,26 @@ def evidence(monkeypatch, *, tamper=False, no_original=False, too_large=False):
     content = "  exact original line  \n第二行\n"
     raw = content.encode()
     pid, tenant, actor, identity, original_id = (uuid4() for _ in range(5))
+    category = uuid4()
     source = SimpleNamespace(
+        category_id=category,
+        product_id=pid,
         id=identity,
         revision=1,
         content=content,
         content_hash=common.digest(content),
         original_id=None if no_original else original_id,
-        visibility="product",
+        visibility="category",
         owner_id=actor,
     )
     original = SimpleNamespace(
+        category_id=category,
+        product_id=pid,
         id=original_id,
         revision=1,
         status="parsed",
         content_hash=hashlib.sha256(raw).hexdigest(),
-        visibility="product",
+        visibility="category",
         owner_id=actor,
     )
     ref = ObjectRef(
@@ -55,13 +60,17 @@ def evidence(monkeypatch, *, tamper=False, no_original=False, too_large=False):
 
     store = Store()
     session = SimpleNamespace(
-        get_bind=lambda: SimpleNamespace(_pdos_change_store=store), scalars=lambda _query: ()
+        info={},
+        get_bind=lambda: SimpleNamespace(_pdos_change_store=store),
+        scalars=lambda _query: (),
     )
-    ctx = SimpleNamespace(tenant_id=tenant, actor_id=actor, requester_id=actor)
+    ctx = SimpleNamespace(
+        tenant_id=tenant, actor_id=actor, requester_id=actor, category_id=category
+    )
     monkeypatch.setattr(common, "source_for", lambda *args: source)
     monkeypatch.setattr(originals, "require_original", lambda *args, **kwargs: original)
     monkeypatch.setattr(originals, "object_reference", lambda value: ref)
-    monkeypatch.setattr(original_security, "require_safe", lambda *args: (7, None))
+    monkeypatch.setattr(original_security, "require_safe", lambda *args, **kwargs: (7, None))
     read = [{"artifact_id": str(identity), "expected_revision": 1}]
     exact = SourceRef(
         id=identity,
@@ -94,21 +103,21 @@ def test_client_position_or_substring_hash_cannot_prove_full_line(monkeypatch, p
     selected = source.model_copy(update={"position": position})
     with pytest.raises(DomainError) as error:
         service._evidence(session, ctx, pid, reads, (selected,))
-    assert error.value.code == "MISSING_REQUIRED_EVIDENCE"
+    assert error.value.reason == "MISSING_REQUIRED_EVIDENCE"
 
 
 def test_tampered_original_rejected_before_staging(monkeypatch):
     session, ctx, pid, reads, source, _ = evidence(monkeypatch, tamper=True)
     with pytest.raises(DomainError) as error:
         service._evidence(session, ctx, pid, reads, (source,))
-    assert error.value.code == "INTEGRITY_MISMATCH"
+    assert error.value.reason == "INTEGRITY_MISMATCH"
 
 
 def test_unproven_native_text_is_integration_required_not_a_positive_stub(monkeypatch):
     session, ctx, pid, reads, source, store = evidence(monkeypatch, no_original=True)
     with pytest.raises(DomainError) as error:
         service._evidence(session, ctx, pid, reads, (source,))
-    assert error.value.status == 503 and error.value.code == "INTEGRATION_REQUIRED"
+    assert error.value.status == 503 and error.value.reason == "INTEGRATION_REQUIRED"
     assert store.calls == 0
 
 
@@ -116,7 +125,7 @@ def test_bounded_original_size_is_checked_before_io(monkeypatch):
     session, ctx, pid, reads, source, store = evidence(monkeypatch, too_large=True)
     with pytest.raises(DomainError) as error:
         service._evidence(session, ctx, pid, reads, (source,))
-    assert error.value.code == "SOURCE_UNAVAILABLE" and store.calls == 0
+    assert error.value.reason == "SOURCE_UNAVAILABLE" and store.calls == 0
 
 
 def test_metadata_refresh_does_not_repeat_storage_effect(monkeypatch):
@@ -160,7 +169,7 @@ def test_capture_can_add_sourced_hypothesis_without_ignoring_old_security_epoch(
     bound.source_basis["evidence"]["old"] = {"security_epoch": 8}
     with pytest.raises(DomainError) as error:
         service._capture_valid(object(), object(), work.scope.product_id, bound)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 def test_capture_end_exclusive_expiry_never_extended(monkeypatch):
@@ -168,7 +177,7 @@ def test_capture_end_exclusive_expiry_never_extended(monkeypatch):
     monkeypatch.setattr(service, "now", lambda: work.snapshot.expires_at)
     with pytest.raises(DomainError) as error:
         service._capture_valid(object(), object(), work.scope.product_id, bound)
-    assert error.value.code == "GRAPH_CAPTURE_EXPIRED"
+    assert error.value.reason == "GRAPH_CAPTURE_EXPIRED"
 
 
 def test_capture_authority_operation_and_epoch_must_match(monkeypatch):
@@ -177,13 +186,37 @@ def test_capture_authority_operation_and_epoch_must_match(monkeypatch):
     bound.authority = {"operation": "change.request.create", "qualified": True}
     with pytest.raises(DomainError) as error:
         service._capture_valid(object(), object(), work.scope.product_id, bound)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 def test_positive_qualification_cannot_survive_expiry_at_final_staging_boundary():
-    bound = SimpleNamespace(authority={"valid_until": AT.isoformat()}, graph=None, coverage=None)
+    operation, purpose = "change.impact.compute", "synthetic change scope"
+    bound = SimpleNamespace(
+        authority={
+            "operation": operation,
+            "purpose": purpose,
+            "roles": ["engineering"],
+            "synthetic": True,
+            "fact_refs": [
+                dict(
+                    kind=kind,
+                    role="engineering",
+                    nature="synthetic",
+                    state="active",
+                    operations=[operation],
+                    purposes=[purpose],
+                    valid_from=(AT - timedelta(hours=1)).isoformat(),
+                    valid_until=AT.isoformat(),
+                )
+                for kind in ("duty", "qualification")
+            ],
+        },
+        graph=None,
+        coverage=None,
+    )
     with pytest.raises(DomainError) as error:
         service._valid_at(bound, AT)
-    assert error.value.code == "SOURCE_STALE"
-    bound.authority["valid_until"] = (AT + timedelta(seconds=1)).isoformat()
+    assert error.value.reason == "SOURCE_STALE"
+    for fact in bound.authority["fact_refs"]:
+        fact["valid_until"] = (AT + timedelta(seconds=1)).isoformat()
     service._valid_at(bound, AT)

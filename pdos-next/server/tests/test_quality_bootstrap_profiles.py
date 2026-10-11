@@ -66,7 +66,7 @@ def test_actual_policy_domain_issuer_requires_every_scope_component(monkeypatch,
         policy._issuer(
             engine, issuer, values["tenant_id"], values["product_id"], values["project_id"]
         )
-    assert error.value.code == "TRUSTED_ISSUER_REQUIRED"
+    assert error.value.reason == "TRUSTED_ISSUER_REQUIRED"
 
 
 @pytest.mark.parametrize(
@@ -175,12 +175,12 @@ def test_marker_failure_prevents_every_valid_policy_registration(monkeypatch):
     assert state(engine) == {k: {} for k in state(engine)}
 
 
-def test_maximum_list_has_only_named_explicit_scopes(monkeypatch):
+def test_more_than_twenty_has_only_named_explicit_scopes(monkeypatch):
     marker(monkeypatch)
     engine = SimpleNamespace()
-    profiles = [profile(f"policy-{i}") for i in range(20)]
+    profiles = [profile(f"policy-{i}") for i in range(21)]
     values = bootstrap.configure_local_profiles(engine, profiles)
-    assert len(values) == 20
+    assert len(values) == 21
     assert set(engine._pdos_quality_policy_issuers) == {v["issuer_key"] for v in profiles}
 
 

@@ -2,7 +2,7 @@
   "provenance": {
     "kind": "derived_from_consolidated_markdown",
     "source": "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md",
-    "sha256": "9e7dfbf6711f26c41beb00e513271d1479c8f244d67d6341ba08b473f70ddda7",
+    "sha256": "2820b72159622c2131774b9b0a0b548d63b44fa948af882aa795c26e231246f4",
     "original_contract_package_received": false,
     "revision": "v1.1 (approved 2026-10-08)",
     "previous_source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
@@ -20,6 +20,13 @@
       "operation": "evidence.claim.record",
       "stage": "S0",
       "schema_version": 1
+    },
+    {
+      "type": "claim.withdrawn",
+      "operation": "evidence.claim.withdraw",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
     },
     {
       "type": "evidence.linked",

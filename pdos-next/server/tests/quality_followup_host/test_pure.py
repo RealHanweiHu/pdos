@@ -75,7 +75,9 @@ class Session:
 @pytest.fixture
 def work(monkeypatch):
     issue = fixed_issue()
-    ctx = Context(issue.scope.tenant_id, uid("executor"), uid("executor"))
+    ctx = Context(
+        issue.scope.tenant_id, uid("executor"), uid("executor"), category_id=uid("category")
+    )
     session = Session(ctx)
     monkeypatch.setattr(host, "now", lambda: NOW)
     # This pure fake is explicitly not an actual ORM consumption or PG proof.
@@ -107,6 +109,7 @@ def work(monkeypatch):
         command_id=uuid4(),
         idempotency_key="synthetic-host-key",
         operation=followup.ROOT_CAUSE,
+        category_id=ctx.category_id,
         product_id=issue.scope.product_id,
         expected_revision=8,
         source_read_set=[{"artifact_id": ref.id, "expected_revision": ref.revision}],
@@ -115,6 +118,7 @@ def work(monkeypatch):
     confirmation = Confirmation(
         id=uuid4(),
         tenant_id=ctx.tenant_id,
+        category_id=ctx.category_id,
         product_id=command.product_id,
         actor_id=ctx.actor_id,
         subject_id=command.product_id,
@@ -151,7 +155,7 @@ def require(work, tier="T2"):
 def code(expected, callback):
     with pytest.raises(DomainError) as error:
         callback()
-    assert error.value.code == expected
+    assert error.value.reason == expected
 
 
 def test_historical_consumed_bool_without_real_marker_cannot_be_used(work):
@@ -176,6 +180,14 @@ def test_repeat_assertion_returns_same_actual_uuid_without_consumption_or_previe
     assert identity == work.confirmation.id == require(work) == require(work)
     assert work.confirmation.consumed is True
     assert work.s.added == [] and work.s.flushes == 0
+
+
+def test_named_t2_consumption_without_deadline_retains_the_same_transaction_binding(work):
+    work.confirmation.expires_at = None
+    identity = record(work)
+    assert require(work) == identity
+    work.s.transaction = SimpleNamespace(is_active=True)
+    code("NAMED_APPROVAL_REQUIRED", lambda: require(work))
 
 
 @pytest.mark.parametrize("mode", ["transaction", "inactive", "nested", "another_session"])

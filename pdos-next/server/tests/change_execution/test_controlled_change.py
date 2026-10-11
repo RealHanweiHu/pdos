@@ -5,11 +5,17 @@ import json
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
+from uuid import UUID as CategoryUUID
 from uuid import uuid4
 
 import httpx
 import psycopg
 import pytest
+from pydantic import ValidationError
+from sqlalchemy import ForeignKeyConstraint
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session, make_transient_to_detached
+
 from pdos_next import change_controlled_owner as owner
 from pdos_next import change_controlled_store as store
 from pdos_next import change_selection_service as service
@@ -22,10 +28,6 @@ from pdos_next.models import Confirmation, Product
 from pdos_next.schemas.verification.contracts import SourceRef
 from pdos_next.service import Context, material_digest
 from pdos_next.service import digest as common_digest
-from pydantic import ValidationError
-from sqlalchemy import ForeignKeyConstraint
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session, make_transient_to_detached
 
 from . import kernel_helpers as helper
 
@@ -43,7 +45,7 @@ def no_connection(monkeypatch):
 def rejected(code, callback):
     with pytest.raises(DomainError) as caught:
         callback()
-    assert caught.value.code == code
+    assert caught.value.reason == code
 
 
 def proposal():
@@ -67,7 +69,7 @@ def proposal():
     return store.SelectionPayload(
         change_id=helper.uid("request"),
         expected_change_revision=2,
-        visibility="product",
+        visibility="category",
         item=item,
         action=store.ActionTarget(
             issue_id=helper.uid("issue"),
@@ -116,7 +118,7 @@ def test_native_complete_policy_does_not_register_or_grant_publish_authority(mon
         scope=helper.SCOPE.model_dump(mode="json"),
         purpose="actual synthetic change",
         owner_id=str(helper.uid("maker")),
-        visibility="product",
+        visibility="category",
         publisher_id=str(helper.uid("publisher")),
         required_disciplines=["engineering", "manufacturing"],
         valid_from=(datetime.now(UTC) - timedelta(minutes=1)).isoformat(),
@@ -281,7 +283,12 @@ def test_canonical_typed_semantic_preserves_full_material_not_token_or_hash():
 
 def actual_consumption():
     p = proposal().model_copy(update={"approval_token": "selection-token-1234567890"})
-    ctx = Context(helper.SCOPE.tenant_id, helper.uid("engineer"), helper.uid("engineer"))
+    ctx = Context(
+        helper.SCOPE.tenant_id,
+        helper.uid("engineer"),
+        helper.uid("engineer"),
+        category_id=CategoryUUID(int=1000000),
+    )
     cmd = Command(
         command_id=uuid4(),
         idempotency_key="exact-selection-key",
@@ -290,6 +297,7 @@ def actual_consumption():
         expected_revision=8,
         source_read_set=[{"artifact_id": helper.SOURCE.id, "expected_revision": 1}],
         payload=p.model_dump(mode="json"),
+        category_id=CategoryUUID(int=1000000),
     )
     s = Session(bind=SimpleNamespace())
     s.begin()
@@ -346,7 +354,12 @@ def test_real_named_uuid_capture_is_first_action_no_sql_and_not_historical_true(
 
 def read_work(monkeypatch):
     p = proposal()
-    ctx = Context(helper.SCOPE.tenant_id, helper.uid("engineer"), helper.uid("engineer"))
+    ctx = Context(
+        helper.SCOPE.tenant_id,
+        helper.uid("engineer"),
+        helper.uid("engineer"),
+        category_id=CategoryUUID(int=1000000),
+    )
     s = Session(bind=SimpleNamespace())
     s.begin()
     service.configure(s.get_bind())
@@ -355,7 +368,7 @@ def read_work(monkeypatch):
         change_id=p.change_id,
         project_id=helper.SCOPE.project_id,
         owner_id=helper.uid("maker"),
-        visibility="product",
+        visibility="category",
         revision=2,
         request_sha256="b" * 64,
         required_source_read_set=[],
@@ -447,6 +460,7 @@ def read_work(monkeypatch):
         expected_revision=8,
         source_read_set=[{"artifact_id": helper.SOURCE.id, "expected_revision": 1}],
         payload=p.model_dump(mode="json"),
+        category_id=CategoryUUID(int=1000000),
     )
     return SimpleNamespace(
         s=s,
@@ -614,7 +628,12 @@ def test_future_professional_activation_during_sql_cannot_cross_end_clock(monkey
             now[0] += timedelta(seconds=2)
             return [future]
 
-    ctx = Context(helper.SCOPE.tenant_id, helper.uid("engineer"), helper.uid("engineer"))
+    ctx = Context(
+        helper.SCOPE.tenant_id,
+        helper.uid("engineer"),
+        helper.uid("engineer"),
+        category_id=CategoryUUID(int=1000000),
+    )
     rejected(
         "SOURCE_STALE",
         lambda: owner.authority(

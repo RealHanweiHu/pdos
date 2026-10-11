@@ -130,7 +130,7 @@ class TestItem(DTO):
     unit: Key | None = None
     conditions: Text | None = None
     material: Text | None = None
-    sample_count: int = Field(ge=1, le=10000)
+    sample_count: int = Field(ge=1)
     cavities: tuple[Key, ...] = ()
     destructive: bool = False
 
@@ -192,7 +192,7 @@ class VerificationRequest(DTO):
     build: BuildRef
     title: Text
     purpose: Text
-    items: tuple[TestItem, ...] = Field(min_length=1, max_length=100)
+    items: tuple[TestItem, ...] = Field(min_length=1)
     documents: tuple[DocumentRequirement, ...] = ()
     expected_at: datetime | None = None
     expected_timezone: Key | None = None
@@ -324,7 +324,7 @@ class RequestCreate(DTO):
     expected_build_revision: Revision
     title: Text
     purpose: Text
-    items: tuple[TestItem, ...] = Field(min_length=1, max_length=100)
+    items: tuple[TestItem, ...] = Field(min_length=1)
     documents: tuple[DocumentRequirement, ...] = ()
     expected_at: datetime | None = None
     expected_timezone: Key | None = None
@@ -348,19 +348,19 @@ class RequestCreate(DTO):
 
 
 class MethodPrepare(DTO):
-    items: tuple[TestItem, ...] = Field(min_length=1, max_length=100)
+    items: tuple[TestItem, ...] = Field(min_length=1)
     documents: tuple[DocumentRequirement, ...] = ()
     tentative_start: EventTime | None = None
 
 
 class HandoffOffer(DTO):
-    samples: tuple[SampleRef, ...] = Field(min_length=1, max_length=1000)
-    coverage: tuple[Coverage, ...] = Field(min_length=1, max_length=10000)
+    samples: tuple[SampleRef, ...] = Field(min_length=1)
+    coverage: tuple[Coverage, ...] = Field(min_length=1)
     at: EventTime
 
 
 class HandoffAccept(DTO):
-    coverage: tuple[Coverage, ...] = Field(min_length=1, max_length=10000)
+    coverage: tuple[Coverage, ...] = Field(min_length=1)
     returned_coverage: tuple[Coverage, ...] = ()
     reason: Text | None = None
     next_owner_id: UUID | None = None
@@ -393,7 +393,7 @@ class RunStart(DTO):
 
 
 class ResultsSubmit(DTO):
-    measurements: tuple[Measurement, ...] = Field(max_length=10000)
+    measurements: tuple[Measurement, ...] = Field()
     at: EventTime
     final: bool = False
     actual_end: EventTime | None = None

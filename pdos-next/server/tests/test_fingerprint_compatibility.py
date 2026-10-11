@@ -132,7 +132,33 @@ def materials():
                     "nature": "synthetic",
                     "issuer_key": "professional",
                     "issuer_version": "v1",
-                }
+                    "series_id": str(uid(15)),
+                    "fact_sha256": "9" * 64,
+                    "issuer_epoch": 1,
+                    "state": "active",
+                    "operations": ["test.run.start"],
+                    "purposes": ["fixed-purpose"],
+                    "valid_from": "2026-10-03T10:00:00Z",
+                    "valid_until": "2026-10-03T15:00:00Z",
+                },
+                {
+                    "id": str(uid(16)),
+                    "revision": 1,
+                    "epoch": 1,
+                    "kind": "qualification",
+                    "role": "quality",
+                    "nature": "synthetic",
+                    "issuer_key": "professional",
+                    "issuer_version": "v1",
+                    "series_id": str(uid(16)),
+                    "fact_sha256": "9" * 64,
+                    "issuer_epoch": 1,
+                    "state": "active",
+                    "operations": ["test.run.start"],
+                    "purposes": ["fixed-purpose"],
+                    "valid_from": "2026-10-03T10:00:00Z",
+                    "valid_until": "2026-10-03T15:00:00Z",
+                },
             ],
             "facts_revision": "6" * 64,
             "valid_until": "2026-10-03T15:00:00Z",
@@ -209,7 +235,7 @@ def compare(materials, *, current=None, fixed=None, owner=lambda _: None, old=No
 def error_code(expected, call):
     with pytest.raises(DomainError) as error:
         call()
-    assert error.value.code == expected
+    assert error.value.reason == expected
     return error.value
 
 

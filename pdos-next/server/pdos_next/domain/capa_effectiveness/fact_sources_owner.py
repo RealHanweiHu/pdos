@@ -2,8 +2,11 @@
 
 Source selections are independently checked under the actual caller. Stored
 source declarations and booleans never replace current ACL/security or bytes.
-Existing source locks remain in this UOW; business read-only is not PG READ ONLY.
+Commands hold source locks in their UOW; GET uses its actual read snapshot.
 """
+
+from pdos_next.database import category_for_product
+
 
 # Initialize the common registry before domain children.
 # ruff: noqa: I001
@@ -46,10 +49,11 @@ class FactSourcesRead:
     policy_material: dict
     material_sha256: str
     checked_at: datetime
-    valid_until: datetime
+    valid_until: datetime | None
     missing: tuple[str, ...]
     current_evidence_authorized: bool = False
     same_uow_consumption_attested: bool = False
+    time_constraints: tuple[datetime, ...] = ()
 
 
 def _require(value, code="SOURCE_STALE", status=409):
@@ -93,7 +97,7 @@ def _row(s, ctx, pid, read):
     row = source_for(s, ctx, pid, read.artifact_id, read.expected_revision)
     _require(
         row.tenant_id == ctx.tenant_id
-        and row.product_id == pid
+        and row.product_id in (None, pid)
         and row.content_hash == digest(row.content),
         "INTEGRITY_MISMATCH",
     )
@@ -108,13 +112,17 @@ def _deadline(s, ctx, pid, extra):
         s,
         Grant,
         Grant.tenant_id == ctx.tenant_id,
-        Grant.product_id == pid,
+        Grant.category_id == category_for_product(pid),
         Grant.principal_id == ctx.actor_id,
     )
     at = datetime.now(UTC)
-    if person.kind != "human" or person.active is not True or grant.expires_at <= at:
+    if (
+        person.kind != "human"
+        or person.active is not True
+        or (grant.expires_at is not None and grant.expires_at <= at)
+    ):
         raise DomainError("FORBIDDEN_SCOPE", "末端真实本人读取期限已失效。", 403)
-    bounds = [grant.expires_at, *extra]
+    bounds = [value for value in (grant.expires_at, *extra) if value is not None]
     _require(
         all(
             isinstance(v, datetime) and v.tzinfo is not None and v.utcoffset() is not None
@@ -123,7 +131,7 @@ def _deadline(s, ctx, pid, extra):
         "INVALID_TIME",
     )
     _require(all(v > at for v in bounds), "SOURCE_STALE")
-    return at, min(bounds)
+    return at, tuple(bounds)
 
 
 def read_source_closure(
@@ -149,7 +157,7 @@ def read_source_closure(
     _require(
         scope.tenant_id == ctx.tenant_id
         and scope.product_id == product_id
-        and visibility in ("product", "private"),
+        and visibility in ("category", "private", "audience"),
         "FORBIDDEN_SCOPE",
         403,
     )
@@ -174,7 +182,7 @@ def read_source_closure(
         basis = a.canonical_basis(initial, reads)
         actual = {v.id: v for v in basis}
         _require(all(actual.get(v.id) == v for v in expected_basis), "SOURCE_STALE")
-        if visibility == "product" and private:
+        if visibility == "category" and private:
             raise DomainError("FORBIDDEN_SCOPE", "私有来源不能扩大事实受众。", 403)
         for ref in sources:
             if ref.kind == "artifact":
@@ -197,18 +205,27 @@ def read_source_closure(
                 )
                 continue
             _require(store is not None, "ORIGINAL_BYTES_OWNER_REQUIRED", 503)
-            original = require_original(s, ctx, product_id, source.original_id, lock=True)
-            epoch, _ = require_safe(s, ctx, original)
+            source_lock = not getattr(s, "info", {}).get("read_snapshot", False)
+            original = require_original(
+                s,
+                ctx,
+                product_id,
+                source.original_id,
+                lock=source_lock,
+            )
+            epoch, _ = require_safe(s, ctx, original, lock=source_lock)
             reference = object_reference(original)
             _require(
                 original.status == "parsed" and reference.size_bytes <= MAX_BYTES,
                 "ORIGINAL_BYTES_OWNER_REQUIRED",
                 503,
             )
-            if visibility == "product" and original.visibility == "private":
+            if visibility == "category" and original.visibility == "private":
                 raise DomainError("FORBIDDEN_SCOPE", "私有原件不能扩大事实受众。", 403)
             try:
-                content = read_registered_bytes(store, reference, ctx.tenant_id, product_id)
+                content = read_registered_bytes(
+                    store, reference, ctx.tenant_id, original.product_id, original.category_id
+                )
             except StorageFailure:
                 raise DomainError(
                     "ORIGINAL_BYTES_OWNER_REQUIRED", "原件有界字节读取失败。", 503
@@ -219,7 +236,7 @@ def read_source_closure(
                 and sha256(content).hexdigest() == reference.content_sha256,
                 "INTEGRITY_MISMATCH",
             )
-            latest, _ = require_safe(s, ctx, original)
+            latest, _ = require_safe(s, ctx, original, lock=source_lock)
             _require(latest == epoch)
             _phase(s, ctx, uow, caller, runtime, store)
             bytes_material.append(
@@ -237,13 +254,13 @@ def read_source_closure(
         final, private = evidence.source_basis(
             s, ctx, product_id, [v.model_dump(mode="json") for v in reads]
         )
-        _require(final == initial and (visibility != "product" or not private))
+        _require(final == initial and (visibility != "category" or not private))
         _require(anchor_storage._project(s, ctx, product_id, scope.project_id) == project)
         # Final source pass catches a later owner callback changing an earlier source.
         final, private = evidence.source_basis(
             s, ctx, product_id, [v.model_dump(mode="json") for v in reads]
         )
-        _require(final == initial and (visibility != "product" or not private))
+        _require(final == initial and (visibility != "category" or not private))
         _phase(s, ctx, uow, caller, runtime, store)
         material = {
             "scope": scope.model_dump(mode="json"),
@@ -257,7 +274,7 @@ def read_source_closure(
             "runtime": runtime,
         }
         material_hash = digest(material)
-        checked, valid_until = _deadline(s, ctx, product_id, boundaries)
+        checked, time_constraints = _deadline(s, ctx, product_id, boundaries)
         _phase(s, ctx, uow, caller, runtime, store)
     return FactSourcesRead(
         scope,
@@ -269,17 +286,21 @@ def read_source_closure(
         {},
         material_hash,
         checked,
-        valid_until,
+        None,
         tuple(sorted(missing)),
+        time_constraints=time_constraints,
     )
 
 
 def _current_context(s, ctx, pid, scope, purpose, nature, operations):
-    authorities, bounds = {}, []
+    authorities = {}
     policy_value = deepcopy(policy.assess(s, ctx, pid, scope.project_id, purpose))
     _require(policy_value.get("nature") == nature, "SOURCE_FACT_NATURE_MISMATCH")
-    _require(policy_value.get("valid_until") is not None, "CURRENT_POLICY_OWNER_REQUIRED", 503)
-    bounds.append(datetime.fromisoformat(policy_value["valid_until"]))
+    _require(
+        policy.policy_time_current(policy_value, datetime.now(UTC)),
+        "CURRENT_POLICY_OWNER_REQUIRED",
+        503,
+    )
     for operation in operations:
         at = datetime.now(UTC)
         value = deepcopy(professional.assess(s, ctx, pid, scope.project_id, operation, purpose, at))
@@ -300,7 +321,7 @@ def _current_context(s, ctx, pid, scope, purpose, nature, operations):
         )
         refs = value.get("fact_refs")
         _require(
-            isinstance(refs, list) and bool(refs) and len(refs) <= professional.MAX_FACTS,
+            isinstance(refs, list) and bool(refs),
             "CURRENT_AUTHORITY_OWNER_REQUIRED",
             503,
         )
@@ -330,10 +351,11 @@ def _current_context(s, ctx, pid, scope, purpose, nature, operations):
                     "reads": deepcopy(row.required_source_read_set),
                 }
             )
-            if row.state == "active":
-                bounds.extend(v for v in (row.valid_from, row.valid_until) if v > at)
-        _require(value.get("valid_until") is not None, "CURRENT_AUTHORITY_OWNER_REQUIRED", 503)
-        bounds.append(datetime.fromisoformat(value["valid_until"]))
+        _require(
+            professional.authority_time_current(value, datetime.now(UTC)),
+            "QUALIFICATION_REQUIRED",
+            403,
+        )
         # The full real assessment is compared by hash; the raw source reader
         # deliberately exports no qualification/authorization verdict. Root must
         # invoke the professional owner independently to attest that gate.
@@ -343,7 +365,7 @@ def _current_context(s, ctx, pid, scope, purpose, nature, operations):
             "assessment_sha256": digest(value),
             "source_material": fixed,
         }
-    return authorities, policy_value, bounds
+    return authorities, policy_value, ()
 
 
 def read_fact_sources(
@@ -452,7 +474,7 @@ def read_fact_sources(
                 "origin": descriptor.current.model_dump(mode="json"),
             }
         )
-        checked, deadline = _deadline(s, ctx, product_id, late_bounds)
+        checked, time_constraints = _deadline(s, ctx, product_id, late_bounds)
         guards._same_uow(s, uow, ctx, caller)
         _require(_runtime(s) == stamp)
     return FactSourcesRead(
@@ -465,8 +487,9 @@ def read_fact_sources(
         policy_value,
         result_hash,
         checked,
-        deadline,
+        None,
         tuple(sorted(set(final.missing) | {"PAIRED_SOURCE_OWNER_REQUIRED"})),
+        time_constraints=time_constraints,
     )
 
 

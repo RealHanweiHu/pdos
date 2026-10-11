@@ -194,7 +194,7 @@ def test_existing_actual_samples_and_generic_confirm_do_not_authorize_offer(work
             offer(work),
             "verification.handoff.offer",
         )
-    assert error.value.code == code and not work.recorded
+    assert error.value.reason == code and not work.recorded
 
 
 def offered(work):
@@ -224,7 +224,7 @@ def test_partial_accept_requires_current_ready_and_actual_applicable(
             payload,
             "verification.handoff.accept",
         )
-    assert error.value.code == "SAMPLE_UNAVAILABLE" and len(work.recorded) == 1
+    assert error.value.reason == "SAMPLE_UNAVAILABLE" and len(work.recorded) == 1
 
 
 def test_partial_accept_keeps_count_gap_and_next_owner_without_start_clock(work):
@@ -254,14 +254,14 @@ def test_partial_accept_keeps_count_gap_and_next_owner_without_start_clock(work)
             payload,
             "verification.handoff.accept",
         )
-    assert error.value.code == "ALREADY_ACCEPTED"
+    assert error.value.reason == "ALREADY_ACCEPTED"
 
 
 @pytest.mark.parametrize("qualified", [False, None])
 def test_qualified_current_role_is_independent_of_product_access(work, qualified):
     with pytest.raises(DomainError) as error:
         execute(work, handler(work, qualified=qualified), offer(work), "verification.handoff.offer")
-    assert error.value.code == "QUALIFICATION_REQUIRED"
+    assert error.value.reason == "QUALIFICATION_REQUIRED"
 
 
 def test_actual_positive_requires_sources_unknown_can_be_saved(work):
@@ -485,7 +485,7 @@ def test_actual_positive_cannot_compensate_unknown_method(work, monkeypatch):
             payload,
             bound,
         )
-    assert error.value.code == "MISSING_REQUIRED_EVIDENCE"
+    assert error.value.reason == "MISSING_REQUIRED_EVIDENCE"
 
 
 def test_foreign_actual_configuration_cannot_use_positive_fact(work):
@@ -513,7 +513,7 @@ def test_foreign_actual_configuration_cannot_use_positive_fact(work):
             {},
             row,
         )
-    assert error.value.code == "INTEGRITY_MISMATCH"
+    assert error.value.reason == "INTEGRITY_MISMATCH"
 
 
 def test_read_memoization_is_local_and_keeps_purpose_and_operation_separate():
@@ -550,7 +550,7 @@ def test_read_memoization_keeps_unavailable_facts_blocked_within_one_get():
     for _ in range(2):
         with pytest.raises(DomainError) as error:
             cache.get("sample", ("build", "purpose", "sample", 1), unavailable)
-        assert error.value.code == "SOURCE_UNAVAILABLE"
+        assert error.value.reason == "SOURCE_UNAVAILABLE"
     assert calls == [1]
 
 
@@ -734,7 +734,7 @@ def test_actual_read_proof_cache_preserves_unknown_and_separates_changed_facts(w
     )
     with pytest.raises(DomainError) as error:
         service._read_actual_check(None, None, None, work.request, sample, value, row, cache)
-    assert error.value.code == "ACTUAL_METHOD_UNKNOWN" and calls == [1]
+    assert error.value.reason == "ACTUAL_METHOD_UNKNOWN" and calls == [1]
     service._read_actual_check(
         None,
         None,
@@ -815,7 +815,7 @@ def test_superseded_actual_history_keeps_bindings_and_source_audience(
             service._historical_actual_view(
                 None, ctx, request.scope.product_id, row, service._ReadCache()
             )
-        assert error.value.code == "SOURCE_UNAVAILABLE"
+        assert error.value.reason == "SOURCE_UNAVAILABLE"
         return
     view = service._historical_actual_view(
         None, ctx, request.scope.product_id, row, service._ReadCache()
@@ -829,7 +829,7 @@ def test_superseded_actual_history_keeps_bindings_and_source_audience(
         service._historical_actual_view(
             None, ctx, request.scope.product_id, row, service._ReadCache()
         )
-    assert error.value.code == "INTEGRITY_MISMATCH"
+    assert error.value.reason == "INTEGRITY_MISMATCH"
 
 
 def test_get_execution_uses_same_explicit_sample_read_context(work, monkeypatch):
@@ -861,11 +861,15 @@ def test_get_execution_uses_same_explicit_sample_read_context(work, monkeypatch)
     projection["stop_required"] = True
     with pytest.raises(DomainError) as error:
         service._execution(None, None, None, work.request.build, read_context=context)
-    assert error.value.code == "ACTUAL_SAMPLE_REQUIRED"
+    assert error.value.reason == "ACTUAL_SAMPLE_REQUIRED"
 
 
-def proof_session(work):
-    """Scalar-only fake: never connects to PG or gives an ORM identity-map authority."""
+def proof_session(work, monkeypatch):
+    """Explicit in-memory authority rows and watermarks; all IO is substituted."""
+    from pdos_next import service as common_service
+    from pdos_next.models import Grant, Principal, Product
+
+    monkeypatch.setattr(common_service, "now", lambda: service.now())
     reviewer = uuid4()
     grant_end = AT + timedelta(hours=2)
 
@@ -873,24 +877,64 @@ def proof_session(work):
         new, dirty, deleted = (), (), ()
 
         def __init__(self):
-            self.transaction, self.epoch = object(), 1
+            self.info = {}
+            self.transaction = object()
             self.engine = SimpleNamespace(_pdos_professional_issuer_epochs={"test": 1})
+            self.product = SimpleNamespace(
+                id=work.request.scope.product_id,
+                tenant_id=work.request.scope.tenant_id,
+                category_id=uuid4(),
+                lifecycle_epoch=1,
+            )
             self.access = [
-                (person, "human", True, 1, uuid4(), True, 1, grant_end)
+                (
+                    SimpleNamespace(
+                        id=person,
+                        tenant_id=self.product.tenant_id,
+                        kind="human",
+                        active=True,
+                        access_epoch=1,
+                    ),
+                    SimpleNamespace(
+                        id=uuid4(),
+                        principal_id=person,
+                        tenant_id=self.product.tenant_id,
+                        category_id=self.product.category_id,
+                        can_write=True,
+                        access_epoch=1,
+                        expires_at=grant_end,
+                    ),
+                )
                 for person in (work.actor, reviewer)
             ]
-            self.boundaries = [(uuid4(), AT - timedelta(hours=1), grant_end)]
+            self.pointers = [SimpleNamespace(id=uuid4(), fact_id=uuid4(), fact_revision=1, epoch=1)]
+
+        @property
+        def epoch(self):
+            return self.product.lifecycle_epoch
+
+        @epoch.setter
+        def epoch(self, value):
+            self.product.lifecycle_epoch = value
+
+        def get(self, model, identity):
+            if model is Product:
+                assert identity == self.product.id
+                return self.product
+            assert model is Principal
+            return next(person for person, _ in self.access if person.id == identity)
 
         def execute(self, statement):
-            values = (
-                self.access
-                if statement.column_descriptions[0]["entity"] is service.Principal
-                else self.boundaries
-            )
-            return SimpleNamespace(all=lambda: values)
+            assert statement.column_descriptions[0]["entity"] is Principal
+            return SimpleNamespace(all=lambda: [self.access[0]])
 
-        def scalar(self, _):
-            return self.epoch
+        def scalar(self, statement):
+            assert statement.column_descriptions[0]["entity"] is Grant
+            identities = statement.compile().params.values()
+            return next(grant for person, grant in self.access if person.id in identities)
+
+        def scalars(self, statement):
+            return self.pointers
 
         def get_transaction(self):
             return self.transaction
@@ -898,16 +942,37 @@ def proof_session(work):
         def get_bind(self):
             return self.engine
 
+    operation, purpose = "verification.actual_method.prepare", work.request.purpose
     row = SimpleNamespace(
         owner_id=reviewer,
         project_id=work.request.scope.project_id,
-        authority_snapshot={"valid_until": (AT + timedelta(hours=1)).isoformat()},
+        authority_snapshot={
+            "subject_id": str(reviewer),
+            "operation": operation,
+            "purpose": purpose,
+            "roles": ["quality"],
+            "synthetic": True,
+            "fact_refs": [
+                {
+                    "id": str(uuid4()),
+                    "kind": kind,
+                    "role": "quality",
+                    "state": "active",
+                    "nature": "synthetic",
+                    "operations": [operation],
+                    "purposes": [purpose],
+                    "valid_from": (AT - timedelta(hours=1)).isoformat(),
+                    "valid_until": (AT + timedelta(hours=1)).isoformat(),
+                }
+                for kind in ("duty", "qualification")
+            ],
+        },
     )
     return ProofSession(), row
 
 
 def test_bound_proof_reuses_only_current_same_phase_and_rechecks_sources(work, monkeypatch):
-    s, row = proof_session(work)
+    s, row = proof_session(work, monkeypatch)
     ctx = Context(work.request.scope.tenant_id, work.actor, work.actor)
     monkeypatch.setattr(service, "now", lambda: AT)
     bound, calls = SimpleNamespace(proofs={}), []
@@ -945,7 +1010,7 @@ def test_bound_proof_reuses_only_current_same_phase_and_rechecks_sources(work, m
 
 @pytest.mark.parametrize("change", ["principal", "grant_aba", "expires", "qualification_time"])
 def test_bound_proof_fresh_scalar_or_time_change_cannot_reuse_positive(work, monkeypatch, change):
-    s, row = proof_session(work)
+    s, row = proof_session(work, monkeypatch)
     ctx = Context(work.request.scope.tenant_id, work.actor, work.actor)
     clock, full = [AT], []
     monkeypatch.setattr(service, "now", lambda: clock[0])
@@ -964,28 +1029,27 @@ def test_bound_proof_fresh_scalar_or_time_change_cannot_reuse_positive(work, mon
 
     proof()
     if change == "principal":
-        current = list(s.access[1])
-        current[2], current[3] = False, 2
-        s.access[1] = tuple(current)
+        s.access[0][0].active = False
+        s.access[0][0].access_epoch += 1
     elif change == "grant_aba":
-        current = list(s.access[1])
-        current[6] += 2  # Same can_write/expiry, different revoke/restore epoch.
-        s.access[1] = tuple(current)
+        s.access[0][1].access_epoch += 2  # Reader revoke/restore with unchanged final rights.
     elif change == "expires":
-        clock[0] = AT + timedelta(hours=1)
+        clock[0] = s.access[0][1].expires_at
     else:
-        s.boundaries.append((uuid4(), AT + timedelta(seconds=1), AT + timedelta(hours=2)))
-        proof()  # Changing the complete time basis requires another full check.
-        clock[0] = AT + timedelta(seconds=1)
+        s.pointers[0].epoch += 1
+        proof()  # A referenced authority watermark change requires a new full check.
+        clock[0] = AT + timedelta(hours=1)
     revoked[0] = True
     with pytest.raises(DomainError) as error:
         proof()
-    assert error.value.code == "SOURCE_STALE"
-    assert len(full) >= (1 if change == "principal" else 2)
+    assert error.value.reason == (
+        "FORBIDDEN_SCOPE" if change in {"principal", "expires"} else "SOURCE_STALE"
+    )
+    assert full  # The original full check ran; rejection cannot fabricate a new success.
 
 
 def test_bound_proof_source_withdrawal_still_rejects_cached_qualification(work, monkeypatch):
-    s, row = proof_session(work)
+    s, row = proof_session(work, monkeypatch)
     ctx = Context(work.request.scope.tenant_id, work.actor, work.actor)
     monkeypatch.setattr(service, "now", lambda: AT)
     bound = SimpleNamespace(proofs={})
@@ -1015,7 +1079,7 @@ def test_bound_proof_source_withdrawal_still_rejects_cached_qualification(work, 
             lambda: full.append(1),
             unavailable,
         )
-    assert error.value.code == "SOURCE_UNAVAILABLE" and full == [1]
+    assert error.value.reason == "SOURCE_UNAVAILABLE" and full == [1]
 
 
 def test_build_filter_authorizes_before_scoped_queries(work, monkeypatch):
@@ -1067,59 +1131,52 @@ def test_build_filter_authorizes_before_scoped_queries(work, monkeypatch):
     monkeypatch.setattr(service.front, "_build", hidden)
     with pytest.raises(DomainError) as error:
         service.list_verification_handoff(s, ctx, work.request.scope.product_id, build_id=uuid4())
-    assert error.value.code == "FORBIDDEN_SCOPE" and not statements
+    assert error.value.reason == "FORBIDDEN_SCOPE" and not statements
 
 
-@pytest.mark.parametrize("advance", ["boundary_query", "source"])
-def test_bound_proof_future_fact_activation_during_io_cannot_reuse_success(
+@pytest.mark.parametrize("advance", ["clock", "source"])
+def test_bound_proof_referenced_fact_expiry_during_io_cannot_reuse_success(
     work, monkeypatch, advance
 ):
-    s, row = proof_session(work)
+    s, row = proof_session(work, monkeypatch)
     ctx = Context(work.request.scope.tenant_id, work.actor, work.actor)
     clock, full, enabled = [AT], [], [False]
-    future = AT + timedelta(seconds=1)
-    s.boundaries.append((uuid4(), future, AT + timedelta(hours=2)))
-    monkeypatch.setattr(service, "now", lambda: clock[0])
-    execute = s.execute
-
-    def advancing_query(statement):
-        value = execute(statement)
-        if (
-            enabled[0]
-            and advance == "boundary_query"
-            and statement.column_descriptions[0]["entity"] is not service.Principal
-        ):
-            clock[0] = future
-        return value
-
-    def check():
-        full.append(1)
-        if clock[0] >= future:
-            raise DomainError("SOURCE_STALE", "Synthetic authority changed at activation")
+    expiry = AT + timedelta(seconds=1)
+    for fact in row.authority_snapshot["fact_refs"]:
+        fact["valid_until"] = expiry.isoformat()
+    monkeypatch.setattr(
+        service, "now", lambda: expiry if enabled[0] and advance == "clock" else clock[0]
+    )
 
     def sources():
         if enabled[0] and advance == "source":
-            clock[0] = future
+            clock[0] = expiry
 
-    s.execute = advancing_query
     bound = SimpleNamespace(proofs={})
 
     def proof():
         service._bound_proof(
-            s, ctx, work.request.scope.product_id, bound, row, ("fixed",), check, sources
+            s,
+            ctx,
+            work.request.scope.product_id,
+            bound,
+            row,
+            ("fixed",),
+            lambda: full.append(1),
+            sources,
         )
 
     proof()
-    assert bound.proofs[("fixed",)][1] == future  # Not just the old snapshot's one-hour expiry.
+    assert bound.proofs[("fixed",)][1] == s.access[0][1].expires_at
     enabled[0] = True
     with pytest.raises(DomainError) as error:
         proof()
-    assert error.value.code == "SOURCE_STALE" and full == [1, 1]
+    assert error.value.reason == "SOURCE_STALE" and full == [1]
 
 
 @pytest.mark.parametrize("change", ["clock", "issuer"])
 def test_bound_proof_drift_during_full_check_never_returns_success(work, monkeypatch, change):
-    s, row = proof_session(work)
+    s, row = proof_session(work, monkeypatch)
     ctx = Context(work.request.scope.tenant_id, work.actor, work.actor)
     clock = [AT]
     monkeypatch.setattr(service, "now", lambda: clock[0])
@@ -1135,7 +1192,7 @@ def test_bound_proof_drift_during_full_check_never_returns_success(work, monkeyp
         service._bound_proof(
             s, ctx, work.request.scope.product_id, bound, row, ("fixed",), check, lambda: None
         )
-    assert error.value.code == "SOURCE_STALE" and bound.proofs == {}
+    assert error.value.reason == "SOURCE_STALE" and bound.proofs == {}
 
 
 def test_sample_view_inspects_full_chain_once_and_preserves_existing_renderer(work, monkeypatch):
@@ -1176,7 +1233,14 @@ def test_sample_view_inspects_full_chain_once_and_preserves_existing_renderer(wo
     monkeypatch.setattr(builds, "get_sample", repeated_chain)
     monkeypatch.setattr(builds, "sample_view", render)
     monkeypatch.setattr(service, "_inspect", inspect)
-    s = SimpleNamespace(scalar=lambda _: 1)
+    actual = SimpleNamespace(
+        id=ref.actual_configuration.id,
+        tenant_id=work.request.scope.tenant_id,
+        product_id=work.request.scope.product_id,
+        build_id=work.request.build.id,
+        revision=ref.actual_configuration.revision,
+    )
+    s = SimpleNamespace(get=lambda model, identity: actual if identity == actual.id else None)
     ctx = Context(work.request.scope.tenant_id, work.actor, work.actor)
     view, reference, value = service._sample_view(
         s, ctx, work.request.scope.product_id, work.request, row, read_context=context

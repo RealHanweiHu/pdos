@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="1.804" timestamp="2026-10-10T17:55:53.688393-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname=".local.s0-capa-performance-checkpoint" name="test_failed_candidate_read_and_inputs" time="0.248"><error message="failed on setup with &quot;file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/.local/s0-capa-performance-checkpoint.py, line 119&#10;  def test_failed_candidate_read_and_inputs(candidate_work):&#10;file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/.local/s0-capa-performance-checkpoint.py, line 84&#10;  @pytest.fixture&#10;  def candidate_work(request):&#10;file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/quality_followup_transactions/fixtures.py, line 247&#10;  @pytest.fixture&#10;  def followup_work(quality_work):&#10;file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/quality_execution/fixtures.py, line 59&#10;  @pytest.fixture&#10;  def quality_work(results_work):&#10;file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/verification_results/fixtures.py, line 82&#10;  @pytest.fixture&#10;  def results_work(launch_work, monkeypatch, tmp_path):&#10;file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/verification_results/fixtures.py, line 53&#10;  @pytest.fixture&#10;  def launch_work(accepted_work, request, monkeypatch):&#10;file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/verification_results/fixtures.py, line 36&#10;  @pytest.fixture&#10;  def accepted_work(ready_work, monkeypatch):&#10;file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/verification_launch/fixtures.py, line 37&#10;  @pytest.fixture&#10;  def ready_work(operational_work, request, monkeypatch):&#10;file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/build_operational_facts/fixtures.py, line 187&#10;  @pytest.fixture&#10;  def operational_work(setup, known_configuration):&#10;file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/conftest.py, line 38&#10;  @pytest.fixture&#10;  def setup(engines):&#10;E       fixture 'engines' not found&#10;&gt;       available fixtures: accepted_work, anyio_backend, anyio_backend_name, anyio_backend_options, cache, candidate_work, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, followup_integration_contract, followup_work, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, known_configuration, launch_work, monkeypatch, operational_work, pytestconfig, quality_work, ready_work, record_property, record_testsuite_property, record_xml_attribute, recwarn, results_work, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;/Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/conftest.py:38&quot;">file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/.local/s0-capa-performance-checkpoint.py, line 119
+  def test_failed_candidate_read_and_inputs(candidate_work):
+file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/.local/s0-capa-performance-checkpoint.py, line 84
+  @pytest.fixture
+  def candidate_work(request):
+file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/quality_followup_transactions/fixtures.py, line 247
+  @pytest.fixture
+  def followup_work(quality_work):
+file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/quality_execution/fixtures.py, line 59
+  @pytest.fixture
+  def quality_work(results_work):
+file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/verification_results/fixtures.py, line 82
+  @pytest.fixture
+  def results_work(launch_work, monkeypatch, tmp_path):
+file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/verification_results/fixtures.py, line 53
+  @pytest.fixture
+  def launch_work(accepted_work, request, monkeypatch):
+file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/verification_results/fixtures.py, line 36
+  @pytest.fixture
+  def accepted_work(ready_work, monkeypatch):
+file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/verification_launch/fixtures.py, line 37
+  @pytest.fixture
+  def ready_work(operational_work, request, monkeypatch):
+file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/build_operational_facts/fixtures.py, line 187
+  @pytest.fixture
+  def operational_work(setup, known_configuration):
+file /Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/conftest.py, line 38
+  @pytest.fixture
+  def setup(engines):
+E       fixture 'engines' not found
+&gt;       available fixtures: accepted_work, anyio_backend, anyio_backend_name, anyio_backend_options, cache, candidate_work, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, followup_integration_contract, followup_work, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, known_configuration, launch_work, monkeypatch, operational_work, pytestconfig, quality_work, ready_work, record_property, record_testsuite_property, record_xml_attribute, recwarn, results_work, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/conftest.py:38</error></testcase></testsuite></testsuites>

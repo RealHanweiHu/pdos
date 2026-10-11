@@ -73,14 +73,16 @@ def planned(setup, configuration):  # noqa: F811 - imported pytest fixture
 
 
 def count(setup, model):
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as session:
         return session.scalar(select(func.count()).select_from(model))
 
 
 def request(setup, operation, payload, source, *, headers=None, preview=False):
     command = cmd(setup, operation, deepcopy(payload), source)
     return setup.client.post(
-        "/v1/commands" + ("/preview" if preview else ""),
+        f"/v1/categories/{setup.category}/commands" + ("/preview" if preview else ""),
         headers=headers or setup.headers,
         json=command,
     )
@@ -94,7 +96,8 @@ def prepared(setup, command):
 
 def execution_view(setup, *, headers=None):
     response = setup.client.get(
-        f"/v1/products/{setup.product}/build-execution", headers=headers or setup.headers
+        f"/v1/categories/{setup.category}/products/{setup.product}/build-execution",
+        headers=headers or setup.headers,
     )
     assert response.status_code == 200, response.text
     return response.json()
@@ -194,11 +197,19 @@ def command_for(setup, planned, actual, lot, operation):
     return allocation_command(setup, planned, lot["receipt"])
 
 
-def confirmation(setup, command):
-    with tenant_session(setup.engine, setup.tenant) as session:
+def confirmation(setup, command, *, physical=False):
+    transaction = (
+        Session(setup.admin)
+        if physical
+        else tenant_session(
+            setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+        )
+    )
+    with transaction as session:
         row = session.scalar(
             select(Confirmation).where(
-                Confirmation.token_hash == digest(command["payload"]["confirmation_token"])
+                Confirmation.tenant_id == setup.tenant,
+                Confirmation.token_hash == digest(command["payload"]["confirmation_token"]),
             )
         )
         assert row is not None
@@ -206,7 +217,9 @@ def confirmation(setup, command):
 
 
 def assert_atomic_receipt(setup, receipt):
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as session:
         stored = session.get(Receipt, UUID(receipt["id"]))
         assert stored.subject_id == UUID(receipt["subject_id"])
         for model in (Audit, Outbox):
@@ -268,7 +281,8 @@ def test_unknown_preparation_does_not_enable_start_or_quality_execution(setup, p
         else 403
     ), response.text
     if response.status_code == 422:
-        assert response.json()["code"] == "INVALID_PAYLOAD"
+        assert response.json()["code"] == "VALIDATION_FAILED"
+        assert response.json()["detail"]["reason"] == "INVALID_PAYLOAD"
     assert_plan_unchanged(setup, planned)
 
 
@@ -382,7 +396,7 @@ def alternate_configurations(setup, planned):
 
 def actual_comparison(setup, planned, engineering, process):
     response = setup.client.get(
-        f"/v1/products/{setup.product}/build-execution/compare",
+        f"/v1/categories/{setup.category}/products/{setup.product}/build-execution/compare",
         headers=setup.headers,
         params={
             "build_id": planned["build"]["subject_id"],
@@ -487,7 +501,8 @@ def test_actual_engineering_and_manufacturing_must_be_a_linked_pair(setup, plann
         ),
         True,
     )
-    assert response.status_code == 409 and response.json()["code"] == "CONFIGURATION_MISMATCH"
+    assert response.status_code == 409 and response.json()["code"] == "VALIDATION_FAILED"
+    assert response.json()["detail"]["reason"] == "CONFIGURATION_MISMATCH"
     assert count(setup, ActualConfiguration) == 0
 
 
@@ -530,7 +545,8 @@ def test_actual_confirmation_binds_the_substantive_payload(setup, planned, actua
     }[operation]
     changed["payload"][field[0]] = field[1]
     response = post(setup, changed)
-    assert response.status_code == 409 and response.json()["code"] == "CONFIRMATION_SCOPE_CHANGED"
+    assert response.status_code == 409 and response.json()["code"] == "CONFIRMATION_REQUIRED"
+    assert response.json()["detail"]["reason"] == "CONFIRMATION_SCOPE_CHANGED"
     assert confirmation(setup, reviewed) is False
     assert {model: count(setup, model) for model in MODELS} == before
 
@@ -550,7 +566,7 @@ def test_actual_confirmation_rechecks_current_sources_authority_and_expiry(
             if change == "grant":
                 session.execute(
                     update(Grant)
-                    .where(Grant.product_id == setup.product, Grant.principal_id == setup.human)
+                    .where(Grant.category_id == setup.category, Grant.principal_id == setup.human)
                     .values(expires_at=now() - timedelta(seconds=1))
                 )
             elif change == "expiry":
@@ -569,15 +585,33 @@ def test_actual_confirmation_rechecks_current_sources_authority_and_expiry(
                         **({"status": "withdrawn"} if change == "withdrawn" else {"revision": 2})
                     )
                 )
-    result = setup.client.post("/v1/commands", headers=headers, json=reviewed)
+    result = setup.client.post(
+        f"/v1/categories/{setup.category}/commands", headers=headers, json=reviewed
+    )
     assert result.status_code in {403, 409}, result.text
     assert count(setup, SampleAllocation) == count(setup, SampleUnit) == 0
-    assert confirmation(setup, reviewed) is False
+    if change == "grant":
+        with tenant_session(
+            setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+        ) as session:
+            assert (
+                session.scalar(
+                    select(Confirmation).where(
+                        Confirmation.tenant_id == setup.tenant,
+                        Confirmation.token_hash
+                        == digest(reviewed["payload"]["confirmation_token"]),
+                    )
+                )
+                is None
+            )
+    # The revoked caller cannot inspect the private proof. Only this isolated
+    # fixture's admin checks the physical token atom remained unconsumed.
+    assert confirmation(setup, reviewed, physical=(change == "grant")) is False
 
 
 @pytest.mark.parametrize("operation", OPERATIONS)
 @pytest.mark.parametrize("change", ["grant", "source"])
-def test_current_access_and_sources_are_checked_even_for_committed_fact_replay(
+def test_saved_fact_replay_keeps_receipt_after_source_drift_and_requires_current_read_access(
     setup, planned, actual, lot, operation, change
 ):
     receipt, reviewed = accepted(setup, command_for(setup, planned, actual, lot, operation))
@@ -585,7 +619,7 @@ def test_current_access_and_sources_are_checked_even_for_committed_fact_replay(
         if change == "grant":
             session.execute(
                 update(Grant)
-                .where(Grant.product_id == setup.product, Grant.principal_id == setup.human)
+                .where(Grant.category_id == setup.category, Grant.principal_id == setup.human)
                 .values(expires_at=now() - timedelta(seconds=1))
             )
         else:
@@ -595,8 +629,28 @@ def test_current_access_and_sources_are_checked_even_for_committed_fact_replay(
                 .values(status="withdrawn")
             )
     response = post(setup, reviewed)
-    assert response.status_code in {403, 409}, response.text
-    assert_atomic_receipt(setup, receipt)
+    if change == "grant":
+        assert response.status_code == 403 and response.json()["code"] == "FORBIDDEN_SCOPE", (
+            response.text
+        )
+    else:
+        assert response.status_code == 200 and response.json()["id"] == receipt["id"], response.text
+    with Session(setup.admin) as session:
+        stored = session.scalar(
+            select(Receipt).where(
+                Receipt.tenant_id == setup.tenant, Receipt.id == UUID(receipt["id"])
+            )
+        )
+        assert stored.subject_id == UUID(receipt["subject_id"])
+        for model in (Audit, Outbox):
+            assert (
+                session.scalar(
+                    select(func.count())
+                    .select_from(model)
+                    .where(model.tenant_id == setup.tenant, model.receipt_id == stored.id)
+                )
+                == 1
+            )
 
 
 @pytest.mark.parametrize("actor,run", [("agent", False), ("human", True)])
@@ -604,8 +658,20 @@ def test_recording_physical_facts_requires_the_current_named_human_without_agent
     setup, planned, actor, run
 ):
     command = Command.model_validate(actual_command(setup, planned))
-    context = Context(setup.tenant, getattr(setup, actor), setup.human, uuid4() if run else None)
-    with tenant_session(setup.engine, setup.tenant) as session:
+    context = Context(
+        setup.tenant,
+        getattr(setup, actor),
+        setup.human,
+        uuid4() if run else None,
+        category_id=setup.category,
+    )
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=context.actor_id,
+        requester_id=context.requester_id,
+        category_id=setup.category,
+    ) as session:
         with pytest.raises(DomainError) as refused:
             handler(command.operation).validate(
                 session,
@@ -647,7 +713,8 @@ def test_end_of_transaction_failure_rolls_back_all_facts_and_t1_consumption(
 
     monkeypatch.setattr(commands, "append_receipt", fail_after_facts)
     failed = post(setup, reviewed)
-    assert failed.status_code == 409 and failed.json()["code"] == "SYNTHETIC_RECEIPT_FAILURE"
+    assert failed.status_code == 500 and failed.json()["code"] == "INTERNAL_ERROR"
+    assert failed.json()["detail"]["reason"] == "UNREGISTERED_REASON"
     assert {model: count(setup, model) for model in before} == before
     assert confirmation(setup, reviewed) is False
     monkeypatch.setattr(commands, "append_receipt", original)
@@ -721,7 +788,7 @@ def test_private_facts_and_samples_are_hidden_from_peer_and_other_tenant(setup, 
         for key in ("actual_configurations", "lots", "allocations", "samples")
     )
     outsider = setup.client.get(
-        f"/v1/products/{setup.product}/build-execution",
+        f"/v1/categories/{setup.category}/products/{setup.product}/build-execution",
         headers={"Authorization": f"Bearer {setup.tokens[setup.other_human]}"},
     )
     assert outsider.status_code == 403
@@ -758,36 +825,37 @@ def test_actual_facts_cannot_cross_product_even_with_a_current_grant(setup, plan
             Product(
                 id=other_product,
                 tenant_id=setup.tenant,
+                category_id=setup.category,
                 owner_id=setup.human,
                 name="Other isolated synthetic product",
                 purpose="Verify actual objects stay within their fixed product",
             )
         )
         session.flush()
-        session.add(
-            Grant(
-                tenant_id=setup.tenant,
-                product_id=other_product,
-                principal_id=setup.human,
-                can_write=True,
-                expires_at=now() + timedelta(hours=1),
-            )
-        )
+        # Existing category membership covers both models, while object facts
+        # remain bound to the model where their actual configuration was saved.
     command = output_command(setup, planned, actual["receipt"])
     command["product_id"] = str(other_product)
     response = post(setup, command, True)
     assert response.status_code == 403, response.text
     assert count(setup, BuildLot) == 0
-    with tenant_session(setup.engine, setup.tenant) as session:
-        original = session.get(ActualConfiguration, UUID(actual["receipt"]["subject_id"]))
-        values = {
-            column.name: getattr(original, column.name)
-            for column in ActualConfiguration.__table__.columns
-        }
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as session:
+        values = dict(
+            session.execute(
+                select(ActualConfiguration.__table__).where(
+                    ActualConfiguration.id == UUID(actual["receipt"]["subject_id"]),
+                    ActualConfiguration.tenant_id == setup.tenant,
+                )
+            )
+            .mappings()
+            .one()
+        )
     values.update(id=uuid4(), product_id=other_product)
     with pytest.raises(DBAPIError), Session(setup.admin) as session, session.begin():
-        session.add(ActualConfiguration(**values))
-        session.flush()
+        session.execute(ActualConfiguration.__table__.insert().values(**values))
+    assert count(setup, ActualConfiguration) == 1
 
 
 def test_unknown_sample_availability_cannot_be_substituted_with_client_readiness(
@@ -849,8 +917,8 @@ def test_all_actual_tables_are_forced_scoped_immutable_and_agent_has_zero_write(
             )
 
 
-@pytest.mark.parametrize("count_value", [0, -1, True, 1.0, "2", 1000001])
-def test_observed_output_count_must_be_a_positive_bounded_discrete_integer(
+@pytest.mark.parametrize("count_value", [0, -1, True, 1.0, "2"])
+def test_observed_output_count_must_be_a_positive_strict_integer(
     setup, planned, actual, count_value
 ):
     response = post(
@@ -858,6 +926,17 @@ def test_observed_output_count_must_be_a_positive_bounded_discrete_integer(
     )
     assert response.status_code == 422, response.text
     assert count(setup, BuildLot) == 0
+
+
+def test_observed_output_count_has_no_arbitrary_million_unit_cap(setup, planned, actual):
+    saved, _ = accepted(setup, output_command(setup, planned, actual["receipt"], units=1000001))
+    recorded = next(
+        item for item in execution_view(setup)["lots"] if item["id"] == saved["subject_id"]
+    )
+    assert recorded["observed_unit_count"] == 1000001
+    assert recorded["identified_count"] == 0
+    assert recorded["remaining_unit_count"] == 1000001
+    assert count(setup, SampleUnit) == count(setup, SampleAllocation) == 0
 
 
 @pytest.mark.parametrize(

@@ -42,7 +42,12 @@ from verification_front.fixtures import (
 
 
 def count(work, model, *conditions):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         return session.scalar(select(func.count()).select_from(model).where(*conditions))
 
 
@@ -64,7 +69,7 @@ def test_fixed_preparation_and_new_server_clock_never_inherit_document_completio
     changed["payload"]["preparation_sha256"] = "0" * 64
     changed["idempotency_key"] = str(uuid4())
     response = send(work, changed)
-    assert response.status_code == 409 and response.json()["code"] == "VERSION_CONFLICT"
+    assert response.status_code == 409 and response.json()["detail"]["reason"] == "VERSION_CONFLICT"
     assert count(work, FormalVerificationRequest) == 1
 
 
@@ -77,7 +82,7 @@ def test_current_issuer_configuration_and_not_product_grant_controls_formal_acti
     assert prep["capabilities"]["request_create"] is False
     response = send(work, command)
     assert response.status_code == 403
-    assert response.json()["code"] in {"FORBIDDEN_OPERATION", "QUALIFICATION_REQUIRED"}
+    assert response.json()["detail"]["reason"] in {"FORBIDDEN_OPERATION", "QUALIFICATION_REQUIRED"}
     assert count(work, FormalVerificationRequest) == 0
 
 
@@ -109,7 +114,12 @@ def test_positive_method_once_common_receipt_old_intent_replay_and_immutable_his
     assert response.status_code == 200 and response.json() == receipt
     assert count(work, FormalVerificationRequest) == 2
     assert count(work, Receipt, Receipt.operation == "verification.method.prepare") == 1
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         identifier = UUID(receipt["id"])
         assert session.scalar(select(Audit.id).where(Audit.receipt_id == identifier))
         assert session.scalar(select(Outbox.id).where(Outbox.receipt_id == identifier))
@@ -133,7 +143,7 @@ def test_revoked_original_reviewer_qualification_invalidates_current_milestone_n
     assert row["capabilities"]["method_prepare"] is False
 
 
-def test_t1_preview_binds_professional_epoch_and_replay_requires_current_authority(front_work):
+def test_t1_preview_binds_professional_epoch_and_saved_replay_requires_only_read_access(front_work):
     work = front_work
     _, row, _ = created(work)
     prepared = reviewed(work, method_command(work, row))
@@ -144,14 +154,19 @@ def test_t1_preview_binds_professional_epoch_and_replay_requires_current_authori
         reason="Synthetic renewed qualification changes fixed epoch",
     )
     response = send(work, prepared)
-    assert response.status_code == 409 and response.json()["code"] == "CONFIRMATION_SCOPE_CHANGED"
+    assert (
+        response.status_code == 409
+        and response.json()["detail"]["reason"] == "CONFIRMATION_SCOPE_CHANGED"
+    )
     assert count(work, MethodApplicability) == 0
-    _, result, committed = method_saved(work, row)
+    receipt, result, committed = method_saved(work, row)
     import_fact(work, "qualification", previous=new, state="revoked")
     response = send(work, committed)
-    # Revocation makes current authority unauthorized; the existing kernel
-    # rejects that before its separate qualified=True check.
-    assert response.status_code == 403 and response.json()["code"] == "FORBIDDEN_OPERATION"
+    assert response.status_code == 200 and response.json()["id"] == receipt["id"], response.text
+    fresh = send(work, method_command(work, result), preview=True)
+    assert fresh.status_code == 403 and fresh.json()["detail"]["reason"] == "FORBIDDEN_OPERATION", (
+        fresh.text
+    )
     assert count(work, FormalVerificationRequest) == result["revision"]
 
 
@@ -253,7 +268,12 @@ def test_private_scope_rls_immutability_and_agent_zero_direct_write(front_work):
             ).one() == (True, True)
     with (
         pytest.raises(DomainError) as error,
-        tenant_session(work.setup.engine, work.setup.tenant) as session,
+        tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.setup.human,
+            category_id=work.setup.category,
+        ) as session,
     ):
         execute(
             session,
@@ -262,4 +282,4 @@ def test_private_scope_rls_immutability_and_agent_zero_direct_write(front_work):
         )
     # The common guard rejects an agent without a server-bound Run before the
     # professional handler can assess named human duties or qualifications.
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"

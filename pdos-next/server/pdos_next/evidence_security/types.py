@@ -136,19 +136,24 @@ class ScanBinding:
 
     object_ref: ObjectRef
     tenant_id: UUID
-    product_id: UUID
+    product_id: UUID | None
     requester_id: UUID
     original_revision: int
     access_revision: str
     audience_revision: str
     source_active: bool
+    category_id: UUID | None = None
 
     def __post_init__(self):
         if not isinstance(self.object_ref, ObjectRef) or any(
             not isinstance(value, UUID)
-            for value in (self.tenant_id, self.product_id, self.requester_id)
+            for value in (self.tenant_id, self.requester_id)
         ):
             raise ValueError("Exact object and server scope UUIDs required")
+        if ((self.product_id is not None and not isinstance(self.product_id, UUID))
+            or (self.category_id is not None and not isinstance(self.category_id, UUID))
+            or (self.product_id is None and self.category_id is None)):
+            raise ValueError("A category must bind a pre-model original")
         if type(self.object_ref.version) is not int or type(self.object_ref.size_bytes) is not int:
             raise ValueError("Object versions and byte sizes must be exact integers")
         if type(self.original_revision) is not int or self.original_revision < 1:

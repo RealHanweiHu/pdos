@@ -1,0 +1,15 @@
+{
+  "step": "b5",
+  "label": "quality_containment_confirmation",
+  "successful_samples_observed": 2,
+  "expected_samples": 30,
+  "observed_over_limit": 2,
+  "limit_seconds": 2,
+  "over_limit_seconds": [
+    2.560184667003341,
+    2.159035249998851
+  ],
+  "conclusive_threshold_failure": true,
+  "partial_p95_computed": false,
+  "reason": "Two completed successful observations exceed the limit; complete30 nearest-rank p95 cannot pass. Candidate interrupted; incomplete evidence retained."
+}

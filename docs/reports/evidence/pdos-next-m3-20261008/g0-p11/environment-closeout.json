@@ -1,0 +1,9 @@
+{
+  "purpose": "m3-early-g0",
+  "marker": "bfcfb45f-4eaa-4a65-a038-c1da6b98f8af",
+  "port": 52693,
+  "backup_bytes": 3229883,
+  "container_stopped": true,
+  "fixture_retained": true,
+  "other_environments_touched": false
+}

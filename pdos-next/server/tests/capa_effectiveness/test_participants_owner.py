@@ -61,9 +61,34 @@ class RawSession(Session):
         self.queries.append(statement)
         table = statement.get_final_froms()[0]
         rows = list(self.rows.get(table.name, ()))
+        from sqlalchemy.sql import operators
+
+        def matches(row, expression):
+            if expression.operator is operators.or_:
+                return any(matches(row, part) for part in expression.clauses)
+            if expression.operator is operators.and_:
+                return all(matches(row, part) for part in expression.clauses)
+            key = expression.left.name
+            if (
+                key == "category_id"
+                and getattr(expression.right, "name", None) == "category_for_product"
+            ):
+                product_id = next(iter(expression.right.clauses)).value
+                value = next(
+                    row["category_id"]
+                    for row in self.rows[Product.__tablename__]
+                    if row["id"] == product_id
+                )
+            else:
+                value = getattr(expression.right, "value", None)
+            if expression.operator in (operators.eq, operators.is_, operators.is_not_distinct_from):
+                return row[key] == value
+            if expression.operator is operators.in_op:
+                return row[key] in value
+            raise AssertionError(f"Unsupported owner predicate: {expression.operator}")
+
         for expression in statement._where_criteria:
-            key, value = expression.left.name, expression.right.value
-            rows = [v for v in rows if v[key] == value]
+            rows = [row for row in rows if matches(row, expression)]
         if statement._limit_clause is not None:
             rows = rows[: statement._limit_clause.value]
         selected = [deepcopy(v) for v in rows]
@@ -98,16 +123,16 @@ def work():
 
     s = RawSession(engine)
     s.begin()
-    tenant, product, project, actor = (uuid4() for _ in range(4))
-    ctx = common.Context(tenant, actor, actor)
+    tenant, category, product, project, actor = (uuid4() for _ in range(5))
+    ctx = common.Context(tenant, actor, actor, category_id=category)
     scope = Scope(tenant_id=tenant, product_id=product, project_id=project)
-    s.seed(Product, id=product, tenant_id=tenant, owner_id=actor)
+    s.seed(Product, id=product, tenant_id=tenant, category_id=category, owner_id=actor)
     s.seed(Principal, id=actor, tenant_id=tenant, kind="human", active=True, access_epoch=1)
     grant = s.seed(
         Grant,
         id=uuid4(),
         tenant_id=tenant,
-        product_id=product,
+        category_id=category,
         principal_id=actor,
         expires_at=datetime.now(UTC) + timedelta(hours=1),
         access_epoch=1,
@@ -118,7 +143,7 @@ def work():
         pid=product,
         scope=scope,
         actor=actor,
-        origin=SimpleNamespace(scope=scope, visibility="product"),
+        origin=SimpleNamespace(scope=scope, visibility="category"),
         grant=grant,
     )
     yield value
@@ -132,7 +157,7 @@ def reader(work):
 
 def saved_group(work, *, operation="quality.capa.actions.complete", family="quality_issue"):
     now = datetime.now(UTC)
-    subject = {"id": uuid4(), "revision": 6, "operation": operation, "visibility": "product"}
+    subject = {"id": uuid4(), "revision": 6, "operation": operation, "visibility": "category"}
     receipt = work.s.seed(
         Receipt,
         id=uuid4(),
@@ -145,7 +170,7 @@ def saved_group(work, *, operation="quality.capa.actions.complete", family="qual
         subject_type=family,
         subject_id=subject["id"],
         subject_revision=6,
-        visibility="product",
+        visibility="category",
         run_id=None,
         request_digest=common.digest("original request"),
         intent_digest=common.digest("common intent"),
@@ -207,7 +232,7 @@ def test_wrong_atomic_outbox_never_proves_participant(work, field):
         reader(work).group(
             subject, "quality_issue", work.actor, common.EVENTS[subject["operation"]]
         )
-    assert error.value.code == "PARTICIPANT_ATOMIC_GROUP_MISMATCH"
+    assert error.value.reason == "PARTICIPANT_ATOMIC_GROUP_MISMATCH"
 
 
 @pytest.mark.parametrize(
@@ -247,7 +272,7 @@ def test_alias_does_not_replace_original_request_association(work):
         reader(work).group(
             subject, "quality_issue", work.actor, common.EVENTS[subject["operation"]]
         )
-    assert error.value.code == "PARTICIPANT_REQUEST_ASSOCIATION_MISSING"
+    assert error.value.reason == "PARTICIPANT_REQUEST_ASSOCIATION_MISSING"
     work.s.seed(
         RequestKey,
         id=uuid4(),
@@ -272,7 +297,7 @@ def test_private_raw_owner_cannot_be_read_with_peer_product_grant(work):
     )
     with pytest.raises(DomainError) as error:
         reader(work).one(Artifact.__table__, revision=1)
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"
 
 
 def test_report_registrant_is_saved_participant_not_inferred_instrument_executor(work):
@@ -288,7 +313,7 @@ def test_report_registrant_is_saved_participant_not_inferred_instrument_executor
         tenant_id=work.ctx.tenant_id,
         product_id=work.pid,
         owner_id=work.actor,
-        visibility="product",
+        visibility="category",
         revision=1,
         original_id=None,
         status="active",
@@ -312,7 +337,7 @@ def test_final_raw_reread_detects_owner_changed_after_later_io(work):
     audit["actor_id"] = uuid4()
     with pytest.raises(DomainError) as error:
         raw.finish()
-    assert error.value.code == "PARTICIPANT_OWNER_CHANGED"
+    assert error.value.reason == "PARTICIPANT_OWNER_CHANGED"
 
 
 def test_session_nested_replacement_and_inactive_uow_are_rejected(work, monkeypatch):
@@ -340,7 +365,7 @@ def test_final_grant_query_clock_expiry_is_rechecked(work):
     work.s.after_query = expire
     with pytest.raises(DomainError) as error:
         raw.finish_clock()
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"
 
 
 def test_missing_report_and_missing_independence_are_not_positive(work):
@@ -407,7 +432,7 @@ def test_saved_row_exact_references_use_actual_full_line_conversion_without_rewr
         product_id=work.pid,
         project_id=work.scope.project_id,
         owner_id=work.actor,
-        visibility="product",
+        visibility="category",
         sources=deepcopy(original_sources),
         required_source_read_set=[
             {"artifact_id": exact["artifact_id"], "expected_revision": exact["expected_revision"]}
@@ -453,7 +478,7 @@ def test_raw_quote_change_is_detected_even_when_derived_full_line_ref_is_unchang
         product_id=work.pid,
         project_id=work.scope.project_id,
         owner_id=work.actor,
-        visibility="product",
+        visibility="category",
         sources=[deepcopy(exact)],
         required_source_read_set=[],
     )
@@ -463,7 +488,7 @@ def test_raw_quote_change_is_detected_even_when_derived_full_line_ref_is_unchang
     assert raw.source_refs(row["sources"]) == (normalized,)
     with pytest.raises(DomainError) as error:
         raw.finish()
-    assert error.value.code == "PARTICIPANT_OWNER_CHANGED"
+    assert error.value.reason == "PARTICIPANT_OWNER_CHANGED"
     assert raw.rows[0]["value"]["sources"] == [exact]
 
 
@@ -474,7 +499,7 @@ def test_exact_reference_still_requires_its_actual_line_and_current_source_acces
     wrong_line = {**exact, "line": 1}
     with pytest.raises(DomainError) as error:
         reader(work).person(work.actor, "original_test", (wrong_line,))
-    assert error.value.code == "MISSING_REQUIRED_EVIDENCE"
+    assert error.value.reason == "MISSING_REQUIRED_EVIDENCE"
     assert len(calls) == 1
 
     def withdrawn(*_args):
@@ -483,7 +508,7 @@ def test_exact_reference_still_requires_its_actual_line_and_current_source_acces
     monkeypatch.setattr(owner.evidence, "source_for", withdrawn)
     with pytest.raises(DomainError) as error:
         reader(work).source_refs((exact,))
-    assert error.value.code == "FORBIDDEN_SCOPE" and error.value.status == 403
+    assert error.value.reason == "FORBIDDEN_SCOPE" and error.value.status == 403
 
 
 @pytest.mark.parametrize(
@@ -506,7 +531,7 @@ def test_invalid_saved_source_shape_is_missing_and_never_silently_skipped(work, 
     raw = reader(work)
     with pytest.raises(DomainError) as error:
         raw.person(work.actor, "original_test", (invalid,))
-    assert error.value.code == "PARTICIPANT_SOURCE_SHAPE_INVALID"
+    assert error.value.reason == "PARTICIPANT_SOURCE_SHAPE_INVALID"
     assert not raw.people and not raw.refs
 
 
@@ -518,13 +543,13 @@ def test_missing_saved_sources_array_is_not_treated_as_empty_material(work):
         product_id=work.pid,
         project_id=work.scope.project_id,
         owner_id=work.actor,
-        visibility="product",
+        visibility="category",
         sources=None,
         required_source_read_set=[],
     )
     with pytest.raises(DomainError) as error:
         reader(work).one(VerificationRunVersion.__table__, id=row["id"])
-    assert error.value.code == "PARTICIPANT_SOURCE_SHAPE_INVALID"
+    assert error.value.reason == "PARTICIPANT_SOURCE_SHAPE_INVALID"
 
 
 def test_report_exact_reference_retains_real_registration_participant(work, monkeypatch):
@@ -540,7 +565,7 @@ def test_report_exact_reference_retains_real_registration_participant(work, monk
         tenant_id=work.ctx.tenant_id,
         product_id=work.pid,
         owner_id=work.actor,
-        visibility="product",
+        visibility="category",
         revision=3,
         original_id=None,
         status="active",
@@ -723,7 +748,7 @@ def writer_shaped_run_history(work, monkeypatch):
             "build_id": build_id,
             "request_id": request_id,
             "run_id": run_id,
-            "visibility": "product",
+            "visibility": "category",
             "operation": operation,
             "sources": deepcopy(atom["sources"]),
             "required_source_read_set": [
@@ -857,7 +882,7 @@ def test_real_writer_fact_actor_intent_scope_or_lineage_mismatch_is_rejected(
     history.facts[revision - 1][field] = value
     with pytest.raises(DomainError) as error:
         reader(work).run(history.run_id, revision, "original_test")
-    assert error.value.code == "PARTICIPANT_RUN_FACT_MISMATCH"
+    assert error.value.reason == "PARTICIPANT_RUN_FACT_MISMATCH"
 
 
 @pytest.mark.parametrize("revision", [2, 3])
@@ -870,7 +895,7 @@ def test_whole_aggregate_cannot_be_substituted_for_the_actual_action_atom(
     )
     with pytest.raises(DomainError) as error:
         reader(work).run(history.run_id, revision, "original_test")
-    assert error.value.code == "PARTICIPANT_RUN_FACT_MISMATCH"
+    assert error.value.reason == "PARTICIPANT_RUN_FACT_MISMATCH"
 
 
 def test_result_input_cannot_be_matched_to_retained_launch_input(work, monkeypatch):
@@ -879,7 +904,7 @@ def test_result_input_cannot_be_matched_to_retained_launch_input(work, monkeypat
     row["input_snapshot"]["result_input"] = deepcopy(row["input_snapshot"]["launch_input"])
     with pytest.raises(DomainError) as error:
         reader(work).run(history.run_id, 3, "original_test")
-    assert error.value.code == "PARTICIPANT_RUN_FACT_MISMATCH"
+    assert error.value.reason == "PARTICIPANT_RUN_FACT_MISMATCH"
 
 
 def test_final_raw_reread_does_not_project_away_retained_reservation_material(work, monkeypatch):
@@ -889,7 +914,7 @@ def test_final_raw_reread_does_not_project_away_retained_reservation_material(wo
     history.rows[-1]["input_snapshot"]["reservation"]["retained"] = False
     with pytest.raises(DomainError) as error:
         raw.finish()
-    assert error.value.code == "PARTICIPANT_OWNER_CHANGED"
+    assert error.value.reason == "PARTICIPANT_OWNER_CHANGED"
 
 
 def test_fixed_run_origin_cannot_change_across_saved_result_lineage(work, monkeypatch):
@@ -897,7 +922,7 @@ def test_fixed_run_origin_cannot_change_across_saved_result_lineage(work, monkey
     history.rows[2]["request_version_id"] = uuid4()
     with pytest.raises(DomainError) as error:
         reader(work).run(history.run_id, 3, "original_test")
-    assert error.value.code == "PARTICIPANT_RUN_CHAIN_INVALID"
+    assert error.value.reason == "PARTICIPANT_RUN_CHAIN_INVALID"
 
 
 def parsed_original_report(work, *, parsed_revision=2):
@@ -914,7 +939,7 @@ def parsed_original_report(work, *, parsed_revision=2):
         tenant_id=work.ctx.tenant_id,
         product_id=work.pid,
         owner_id=work.actor,
-        visibility="product",
+        visibility="category",
         revision=parsed_revision,
         status="parsed",
         content_hash=sha256(content.encode()).hexdigest(),
@@ -927,7 +952,7 @@ def parsed_original_report(work, *, parsed_revision=2):
         tenant_id=work.ctx.tenant_id,
         product_id=work.pid,
         owner_id=work.actor,
-        visibility="product",
+        visibility="category",
         revision=1,
         original_id=original_id,
         status="active",
@@ -1059,4 +1084,4 @@ def test_actual_parse_group_changed_after_read_fails_final_reread(work):
     report.groups["evidence.original.parse"][1]["actor_id"] = uuid4()
     with pytest.raises(DomainError) as error:
         raw.finish()
-    assert error.value.code == "PARTICIPANT_OWNER_CHANGED"
+    assert error.value.reason == "PARTICIPANT_OWNER_CHANGED"

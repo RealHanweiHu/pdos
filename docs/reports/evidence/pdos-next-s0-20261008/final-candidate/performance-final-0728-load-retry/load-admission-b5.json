@@ -1,0 +1,15 @@
+{
+  "step": "b5",
+  "policy": "load1-not-above-logical-cpus",
+  "started_at_utc": "2026-10-11T00:31:36.372103+00:00",
+  "timeout_seconds": 7200,
+  "admitted": true,
+  "logical_cpu_count": 10,
+  "load_averages": {
+    "1min": 6.6962890625,
+    "5min": 7.6416015625,
+    "15min": 16.390625
+  },
+  "wait_seconds": 2.745899837464094e-05,
+  "observed_at_utc": "2026-10-11T00:31:36.372142+00:00"
+}

@@ -54,7 +54,7 @@ class ResourceRelation(DTO):
     units: Positive
     relation: Literal["operation_uses_resource"] = "operation_uses_resource"
     relation_source: SourceRef
-    relation_originals: tuple[DefinitionReference, ...] = Field(min_length=1, max_length=20)
+    relation_originals: tuple[DefinitionReference, ...] = Field(min_length=1)
 
 
 class ResourceView(DTO):
@@ -66,7 +66,7 @@ class ResourceView(DTO):
     nature: Literal["unknown", "real", "synthetic"] = "unknown"
     resources: tuple[ResourceProjection, ...] = ()
     relations: tuple[ResourceRelation, ...] = ()
-    required_source_read_set: tuple[SourceRead, ...] = Field(default=(), max_length=20)
+    required_source_read_set: tuple[SourceRead, ...] = Field(default=())
     facts_revision: Hash
     valid_until: AwareDatetime | None = None
     fact_valid_until: AwareDatetime | None = None

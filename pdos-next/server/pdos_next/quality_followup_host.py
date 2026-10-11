@@ -11,6 +11,7 @@ from uuid import UUID, uuid4
 
 from sqlalchemy import inspect, select
 
+from pdos_next.clock import proof_deadline_current
 from pdos_next.domain.quality_execution.evidence import merge_reads, union_sources
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
 from pdos_next.domain.quality_followup import service as followup
@@ -87,7 +88,7 @@ def expired_confirmation_recovery(s, ctx, command, product, payload, module):
     if (
         proof is None
         or proof.consumed is not False
-        or proof.expires_at > now()
+        or proof_deadline_current(OP_TIERS[command.operation], proof.expires_at, now())
         or proof.revision != product.revision
         or proof.payload_digest != material_digest(ctx, command, payload, module)
     ):
@@ -221,9 +222,7 @@ def _check_confirmation(row, ctx, command, token_hash, material):
         or row.payload_digest != material
         or row.consumed is not True
         or not isinstance(row.snapshot, dict)
-        or row.expires_at is None
-        or row.expires_at.utcoffset() is None
-        or row.expires_at <= now()
+        or not proof_deadline_current(OP_TIERS[command.operation], row.expires_at, now())
     ):
         raise DomainError("NAMED_APPROVAL_REQUIRED", "共同实际已消费证明绑定或有效期不能核对。")
 
@@ -299,7 +298,7 @@ def _locked_confirmation(s, marker):
     )
     if row is None or digest(_confirmation_material(row)) != marker.confirmation_digest:
         raise DomainError("SOURCE_STALE", "共同实际证明记录已改变。")
-    if row.expires_at <= now():
+    if not proof_deadline_current(marker.tier, row.expires_at, now()):
         raise DomainError("NAMED_APPROVAL_REQUIRED", "共同实际证明已过有效期。")
     return row
 

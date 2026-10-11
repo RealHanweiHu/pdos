@@ -1,11 +1,9 @@
 """Immutable observation/result records. Root owns registration, RLS and migrations."""
 
-from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy import (
     CheckConstraint,
-    DateTime,
     ForeignKeyConstraint,
     Integer,
     String,
@@ -38,7 +36,7 @@ def base_constraints():
         UniqueConstraint("tenant_id", "product_id", "id"),
         UniqueConstraint("tenant_id", "product_id", "run_id", "id", "revision"),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
-        CheckConstraint("revision = 1 AND visibility IN ('private','product')"),
+        CheckConstraint("revision = 1 AND visibility IN ('private','category','audience')"),
     )
 
 
@@ -57,7 +55,6 @@ class MeasurementImportCapture(ResultScope, Row, Base):
     sources: Mapped[list] = mapped_column(JSONB)
     required_source_read_set: Mapped[list] = mapped_column(JSONB)
     source_basis: Mapped[dict] = mapped_column(JSONB)
-    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     reason: Mapped[str] = mapped_column(Text)
     __table_args__ = (
         *base_constraints(),
@@ -66,7 +63,6 @@ class MeasurementImportCapture(ResultScope, Row, Base):
         UniqueConstraint("tenant_id", "product_id", "run_id", "id"),
         UniqueConstraint("tenant_id", "product_id", "owner_id", "capture_key"),
         CheckConstraint("status = 'prepared' AND run_revision >= 2 AND request_revision > 0"),
-        CheckConstraint("expires_at > created_at"),
     )
 
 

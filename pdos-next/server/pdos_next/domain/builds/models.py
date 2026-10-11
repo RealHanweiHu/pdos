@@ -50,8 +50,12 @@ class Build(Row, Base):
         UniqueConstraint("tenant_id", "product_id", "id"),
         UniqueConstraint("tenant_id", "product_id", "project_id", "id"),
         UniqueConstraint(
-            "tenant_id", "product_id", "project_id", "id",
-            "engineering_configuration_id", "manufacturing_configuration_id",
+            "tenant_id",
+            "product_id",
+            "project_id",
+            "id",
+            "engineering_configuration_id",
+            "manufacturing_configuration_id",
             name="uq_build_fixed_plan_scope",
         ),
         scoped_fk("project_id", "projects"),
@@ -76,7 +80,7 @@ class Build(Row, Base):
         ),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint("revision > 0 AND project_revision > 0 AND planned_quantity > 0"),
-        CheckConstraint("visibility IN ('private','product') AND status = 'planned'"),
+        CheckConstraint("visibility IN ('private','category','audience') AND status = 'planned'"),
         CheckConstraint("type IN ('prototype','tool_trial','pilot')"),
         CheckConstraint(
             "planned_end IS NULL OR planned_start IS NULL OR planned_end >= planned_start"
@@ -101,6 +105,6 @@ class BuildReadiness(Row, Base):
         scoped_fk("build_id", "builds"),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint("revision > 0 AND build_revision > 0 AND status = 'blocked'"),
-        CheckConstraint("visibility IN ('private','product')"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
         CheckConstraint("jsonb_typeof(result) = 'object'"),
     )

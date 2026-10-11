@@ -33,7 +33,7 @@ export type EffectivityPlan = Ref & { scopes: readonly EffectivityScope[]; inten
 export type CommandSource = Pick<Source, "id" | "revision" | "kind" | "position">;
 /** Exact server-owned candidate payload; presentation scopes never reconstruct unit tokens. */
 export type CommandPlan = {
-  id: string; expires_at: string; dispositions: readonly Disposition[];
+  id: string; expires_at: string | null; dispositions: readonly Disposition[];
   items: readonly {
     id: string; discipline: "engineering" | "manufacturing" | "customer" | "regulatory";
     selection: { objects: readonly Ref[]; units: readonly string[]; conditions: readonly string[]; sources: readonly CommandSource[] };

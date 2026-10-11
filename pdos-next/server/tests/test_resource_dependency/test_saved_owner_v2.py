@@ -5,6 +5,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from pdos_next.domain.test_resources import fingerprint_compatibility as dependency
 from pdos_next.domain.test_resources import service as resources
 
 from .harness import load, v2
@@ -86,10 +87,109 @@ def test_saved_v2_decoder_returns_complete_deep_copy_without_qualification(h):
     new = resources
     _, record = v2(h)
     saved = owner(h, record)
+    before = deepcopy(record)
     version, decoded = new._reservation_fingerprint(saved)
     assert version == new._FINGERPRINT_V2 and decoded == record
+    second_version, second = new._reservation_fingerprint(saved)
+    assert second_version == version and second == before
     decoded["material"]["authority"]["qualified"] = True
+    decoded["material"]["checks"][0]["detail"] = "Changed only in the first returned copy"
+    decoded["material"]["source_basis"]["refs"][0]["state"] = "withdrawn"
+    assert saved.dependency_proof == record == second == before
     assert saved.dependency_proof["material"]["authority"]["qualified"] is None
+    second["material"]["source_basis"]["refs"][0]["sha256"] = "e" * 64
+    assert (
+        decoded["material"]["source_basis"]["refs"][0]["sha256"]
+        == before["material"]["source_basis"]["refs"][0]["sha256"]
+    )
+    assert saved.dependency_proof == record == before
+    assert new._reservation_fingerprint(saved) == (version, before)
+
+
+def test_builtin_material_validation_keeps_all_nested_input_without_an_extra_clone(h, monkeypatch):
+    _, record = v2(h)
+    material = record["material"]
+    before = deepcopy(material)
+    before_sha = resources.digest(material)
+    copies = []
+
+    def observe_copy(value):
+        copies.append(value)
+        return deepcopy(value)
+
+    assert dependency.validate_material is dependency._READ_ONLY_MATERIAL_VALIDATOR[0]
+    assert dependency.validate_material.__code__ is dependency._READ_ONLY_MATERIAL_VALIDATOR[1]
+    monkeypatch.setattr(resources, "deepcopy", observe_copy)
+    resources._validate_fingerprint_v2_json(material)
+    assert copies == []
+    assert material == before and resources.digest(material) == before_sha
+    assert material["authority"]["qualified"] is None
+    assert material["source_basis"]["refs"][0]["state"] == "unknown"
+    assert material["issuer"] == before["issuer"]
+
+
+def test_same_validator_identity_with_changed_code_still_gets_deep_isolation(h, monkeypatch):
+    _, record = v2(h)
+    material = record["material"]
+    before = deepcopy(material)
+    actual = dependency.validate_material
+    copies = []
+
+    def changed_code(value):
+        from types import FunctionType
+
+        from pdos_next.domain.test_resources import fingerprint_compatibility as pure
+
+        original, original_code = pure._READ_ONLY_MATERIAL_VALIDATOR
+        result = FunctionType(original_code, original.__globals__)(value)
+        value["authority"]["reason_codes"].append("changed-code isolation probe")
+        value["source_basis"]["access"]["grant_epoch"] += 1
+        return result
+
+    def observe_copy(value):
+        copy = deepcopy(value)
+        copies.append(copy)
+        return copy
+
+    monkeypatch.setattr(actual, "__code__", changed_code.__code__)
+    monkeypatch.setattr(resources, "deepcopy", observe_copy)
+    assert actual is dependency._READ_ONLY_MATERIAL_VALIDATOR[0]
+    assert actual.__code__ is not dependency._READ_ONLY_MATERIAL_VALIDATOR[1]
+    resources._validate_fingerprint_v2_json(material)
+    assert material == before and len(copies) == 1
+    assert copies[0]["authority"]["reason_codes"][-1] == "changed-code isolation probe"
+    assert copies[0]["source_basis"]["access"]["grant_epoch"] == (
+        before["source_basis"]["access"]["grant_epoch"] + 1
+    )
+
+
+@pytest.mark.parametrize("case", ["partial-read", "tuple-assets", "non-json-check"])
+def test_builtin_validation_preserves_deep_copy_path_errors_and_input(h, monkeypatch, case):
+    _, record = v2(h)
+    material = record["material"]
+    if case == "partial-read":
+        material["authority"]["required_source_read_set"] = [
+            {"artifact_id": material["assets"][0]["id"]}
+        ]
+    elif case == "tuple-assets":
+        material["assets"] = tuple(material["assets"])
+    else:
+        material["checks"][0]["detail"] = {"not a JSON value"}
+    before = deepcopy(material)
+    actual = dependency.validate_material
+
+    def copied_port(value):
+        return actual(value)
+
+    with monkeypatch.context() as changed:
+        changed.setattr(dependency, "validate_material", copied_port)
+        with pytest.raises(TypeError) as copied_error:
+            resources._validate_fingerprint_v2_json(material)
+    with pytest.raises(TypeError) as builtin_error:
+        resources._validate_fingerprint_v2_json(material)
+    assert builtin_error.value.args == copied_error.value.args
+    assert builtin_error.value.__cause__.reason == copied_error.value.__cause__.reason
+    assert material == before
 
 
 @pytest.mark.parametrize("retained", [False, True])
@@ -210,7 +310,7 @@ def test_load_bundle_explicit_v2_cannot_reseal_a_real_legacy_row(h):
             _fingerprint_version=new._FINGERPRINT_V2,
             _fingerprint_collector=sink,
         )
-    assert error.value.code == "RESOURCE_FINGERPRINT_VERSION_UNSUPPORTED" and sink == []
+    assert error.value.reason == "RESOURCE_FINGERPRINT_VERSION_UNSUPPORTED" and sink == []
 
 
 @pytest.mark.parametrize("change", ["version", "proof", "intent"])
@@ -249,7 +349,7 @@ def test_saved_reservation_rechecks_never_bootstrap_consuming_sentinels(
         h.existing.fingerprint_version = h.existing.dependency_proof = None
     calls = []
 
-    def existing_sentinels(*args, create):
+    def existing_sentinels(*args, create, lock=False):
         calls.append(create)
         return h.sentinels
 
@@ -273,7 +373,7 @@ def test_saved_reservation_rechecks_never_bootstrap_consuming_sentinels(
 def test_only_a_new_reservation_write_may_bootstrap_sentinels(h, monkeypatch, write):
     calls = []
 
-    def new_sentinels(*args, create):
+    def new_sentinels(*args, create, lock=False):
         calls.append(create)
         return h.sentinels
 
@@ -290,7 +390,7 @@ def test_missing_saved_sentinel_fails_without_recreating_original_effects(h, mon
         h.existing.fingerprint_version = h.existing.dependency_proof = None
     calls = []
 
-    def missing_sentinels(*args, create):
+    def missing_sentinels(*args, create, lock=False):
         calls.append(create)
         return {}
 
@@ -304,6 +404,6 @@ def test_missing_saved_sentinel_fails_without_recreating_original_effects(h, mon
             _fingerprint_version=version,
             _fingerprint_collector=sink,
         )
-    assert error.value.code == "RUN_SAMPLE_USAGE_MISSING"
+    assert error.value.reason == "RUN_SAMPLE_USAGE_MISSING"
     assert calls == [False] and sink in (None, [])
     assert "complete-own-effects" not in h.calls

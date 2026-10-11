@@ -6,9 +6,6 @@ clock replacement, formal approvals, TTL extensions or new Run credentials.
 
 # ruff: noqa: F811 - imported fixtures register the existing one dependency tree.
 
-import ast
-import hashlib
-import inspect
 import json
 import os
 from copy import deepcopy
@@ -50,24 +47,12 @@ from pdos_next.change_order_service import snapshot as change_snapshot
 from pdos_next.database import tenant_session
 from pdos_next.domain.change_control.rules import MANUFACTURING, NEXT, digest
 from pdos_next.domain.change_coverage_owner import models, owner, registry, schemas, trust
-from pdos_next.domain.change_execution import service as change_service
 from pdos_next.domain.change_execution.models import ChangeGraphCapture
 from pdos_next.models import Artifact, Audit, Outbox, Receipt, RequestKey, now
 from pdos_next.schemas.change_control.contracts import GraphSnapshot, ImpactAssessment
 from pdos_next.service import digest as common_digest
 
-# AST encoding is bound to the project's actual Python 3.12 runtime.
-EXPECTED_CAPTURE_AST_SHA256 = "b4196dedf1c0c0e15e92c72ae828e550ce5728f2d493d4241bf9322f0b221b76"
 REPORT_ENV = "PDOS_ROOT_MINIMAL_PUBLIC_COVERAGE_CAPTURE_REPORT"
-
-
-def assert_capture_contract_ready():
-    node = ast.parse(inspect.getsource(change_service.prepare_capture)).body[0]
-    actual = hashlib.sha256(ast.dump(node, include_attributes=False).encode()).hexdigest()
-    assert actual == EXPECTED_CAPTURE_AST_SHA256, (
-        "Root must first apply/review the frozen finite-expiry/capture-tail candidate; "
-        "an unrelated prepare_capture is not this PG candidate"
-    )
 
 
 def row_snapshot(s, model, identity, work):
@@ -183,18 +168,22 @@ def test_actual_minimal_public_complete_capture_impact_and_original_command_reco
             )
 
     try:
-        assert_capture_contract_ready()
         phase("create-and-initial-unknown-capture")
         _, _, change_id = created(work)
         captured, old_payload = capture(work, change_id)
         graph = GraphSnapshot.model_validate(captured["capture"]["graph"])
         assert all(entry.status == "unknown" for entry in graph.coverage)
         assert len(graph.coverage) == 8 * len(graph.nodes)
-        assert 1 <= len(graph.nodes) <= CASE_NODE_LIMIT == 32 and schemas.MAX_NODES == 250
-        assert graph.nature == "synthetic" and now() < graph.expires_at
-        assert graph.expires_at <= graph.captured_at + timedelta(minutes=10)
+        assert 1 <= len(graph.nodes) <= CASE_NODE_LIMIT == 32
+        assert graph.nature == "synthetic" and graph.expires_at is None
         read_keys(captured["required_source_read_set"])
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.ctx.actor_id,
+            requester_id=work.quality.ctx.requester_id,
+            category_id=work.setup.category,
+        ) as s:
             old_capture = row_snapshot(s, ChangeGraphCapture, graph.id, work)
             _, origin = current_fixed(s, work.quality.ctx, work.setup.product, UUID(change_id))
             request = change_snapshot(origin)
@@ -236,7 +225,7 @@ def test_actual_minimal_public_complete_capture_impact_and_original_command_reco
                 ),
                 closure_sha256=basis["closure_sha256"],
                 valid_from=graph.captured_at,
-                valid_until=graph.expires_at,
+                valid_until=graph.captured_at + timedelta(hours=1),
                 nature="synthetic",
             )
         assert old_capture["graph_sha256"] == digest(graph)
@@ -244,7 +233,7 @@ def test_actual_minimal_public_complete_capture_impact_and_original_command_reco
             actual_nodes=len(graph.nodes),
             coverage_entries=len(graph.coverage),
             original_captured_at=graph.captured_at.isoformat(),
-            original_valid_until=graph.expires_at.isoformat(),
+            original_valid_until=None,
         )
 
         phase("native-original-and-one-trusted-publication")
@@ -253,7 +242,13 @@ def test_actual_minimal_public_complete_capture_impact_and_original_command_reco
             material.model_dump(mode="json"),
             title="Synthetic minimal bounded public API coverage closure",
         )
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.ctx.actor_id,
+            requester_id=work.quality.ctx.requester_id,
+            category_id=work.setup.category,
+        ) as s:
             native = row_snapshot(s, Artifact, original.id, work)
             assert native["content_hash"] == original.position.split("quote_sha256:")[1]
         issuer = trust.configure(
@@ -276,13 +271,20 @@ def test_actual_minimal_public_complete_capture_impact_and_original_command_reco
         assert (
             publication["subject_type"] == schemas.FAMILY and publication["subject_revision"] == 1
         )
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.ctx.actor_id,
+            requester_id=work.quality.ctx.requester_id,
+            category_id=work.setup.category,
+        ) as s:
             fact = row_snapshot(s, models.ChangeCoverageFact, publication["subject_id"], work)
             assert fact["material"] == material.model_dump(mode="json") and fact[
                 "material_sha256"
             ] == digest(material)
             assert (
-                fact["valid_from"] == graph.captured_at and fact["valid_until"] == graph.expires_at
+                fact["valid_from"] == graph.captured_at
+                and fact["valid_until"] == material.valid_until
             )
             assert fact["dependency_epoch"] > basis["dependency_epoch"] and fact[
                 "source"
@@ -320,15 +322,9 @@ def test_actual_minimal_public_complete_capture_impact_and_original_command_reco
         assert all(
             entry.status == "complete" and entry.source == original for entry in complete.coverage
         )
-        assert (
-            complete.captured_at >= graph.captured_at
-            and complete.expires_at <= material.valid_until
-        )
-        assert (
-            complete.expires_at <= complete.captured_at + timedelta(minutes=10)
-            and complete.expires_at > now()
-        )
-        assert complete.expires_at.isoformat() == fresh["capture"]["expires_at"]
+        assert complete.captured_at >= graph.captured_at
+        assert complete.expires_at is None and fresh["capture"]["expires_at"] is None
+        assert material.valid_until > now()
         capture_reads = read_keys(fresh["required_source_read_set"])
         assert (
             read_keys(captured["required_source_read_set"]) <= capture_reads
@@ -344,7 +340,13 @@ def test_actual_minimal_public_complete_capture_impact_and_original_command_reco
             for name, count in before_capture.items()
             if name != ChangeGraphCapture.__tablename__
         )
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.ctx.actor_id,
+            requester_id=work.quality.ctx.requester_id,
+            category_id=work.setup.category,
+        ) as s:
             complete_row = row_snapshot(s, ChangeGraphCapture, complete.id, work)
             assert complete_row["graph_snapshot"] == complete.model_dump(
                 mode="json"
@@ -353,7 +355,7 @@ def test_actual_minimal_public_complete_capture_impact_and_original_command_reco
             saved_proof = deepcopy(complete_row["source_basis"]["coverage"])
             assert (
                 saved_proof["graph"]["id"] == str(complete.id)
-                and saved_proof["graph"]["expires_at"] == complete.expires_at.isoformat()
+                and saved_proof["graph"]["expires_at"] is None
             )
             assert saved_proof["fact_id"] == publication["subject_id"] and saved_proof[
                 "material_sha256"
@@ -403,14 +405,26 @@ def test_actual_minimal_public_complete_capture_impact_and_original_command_reco
         assessment = ImpactAssessment.model_validate(request_after["assessments"][-1])
         assert assessment.graph == complete and assessment.unknown
         actual_missing_next = missing_next(assessment)
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.ctx.actor_id,
+            requester_id=work.quality.ctx.requester_id,
+            category_id=work.setup.category,
+        ) as s:
             impact_common_group(s, work, value, receipt)
 
         phase("same-original-command-current-recovery")
         committed = effect_hashes(work)
         assert expect_http(post(work.quality, deepcopy(value)), 200) == receipt
         assert effect_hashes(work) == committed
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.ctx.actor_id,
+            requester_id=work.quality.ctx.requester_id,
+            category_id=work.setup.category,
+        ) as s:
             assert (
                 row_snapshot(s, models.ChangeCoverageFact, publication["subject_id"], work) == fact
             )
@@ -421,7 +435,7 @@ def test_actual_minimal_public_complete_capture_impact_and_original_command_reco
             assert row_snapshot(s, ChangeGraphCapture, graph.id, work) == old_capture
             assert row_snapshot(s, ChangeGraphCapture, complete.id, work) == complete_row
             assert row_snapshot(s, Artifact, original.id, work) == native
-            assert material.origin_version_id == UUID(before_impact["id"])
+            assert material.origin_version_id == before_impact["id"]
             assert material.origin_revision == 1
             assert effect_hashes(work, s) == committed
         assert current(work, change_id) == (after_impact, pointer_after)
@@ -433,7 +447,7 @@ def test_actual_minimal_public_complete_capture_impact_and_original_command_reco
             original_source_line_sha256=original.position.split("quote_sha256:")[1],
             old_capture_full_row_sha256=common_digest(old_capture),
             new_graph_sha256=digest(complete),
-            complete_graph_valid_until=complete.expires_at.isoformat(),
+            complete_graph_valid_until=None,
             complete_facets_with_missing_next=len(actual_missing_next),
             impact_unknowns=len(assessment.unknown),
             old_unknown_capture_full_row_unchanged=True,

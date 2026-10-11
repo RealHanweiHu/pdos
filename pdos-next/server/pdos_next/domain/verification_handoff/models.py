@@ -42,7 +42,8 @@ def common_constraints():
         request_fk(project=True),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint(
-            "request_revision > 0 AND revision > 0 AND visibility IN ('private','product')"
+            "request_revision > 0 AND revision > 0 AND "
+            "visibility IN ('private','category','audience')"
         ),
     )
 

@@ -110,8 +110,8 @@ def failure_ref(verified: VerifiedRun, measurement_id: UUID) -> FailureRef:
     )
 
 
-def issue_sources(issue):
-    """Current judgments only; historical superseded decisions remain history."""
+def issue_sources(issue, *, distinct=False):
+    """Current judgments, optionally one occurrence per exact direct reference."""
     sources = tuple(s for c in issue.containment for s in (*c.evidence, c.at.source))
     if issue.root_cause:
         sources += issue.root_cause.sources
@@ -127,4 +127,11 @@ def issue_sources(issue):
             sources += issue.capa.effectiveness.sources
     if issue.closure:
         sources += issue.closure.sources
-    return sources
+    if not distinct:
+        # Readers and recheck preserve the raw sequence and diagnostic counts.
+        return sources
+    selected = {}
+    for source in sources:
+        key = (source.kind, source.id, source.revision, source.position)
+        selected.setdefault(key, source)
+    return tuple(selected.values())

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.393" timestamp="2026-10-10T19:38:22.487499-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.change_coverage_owner.test_owner_boundary" name="test_binding_canonical_successor_preserves_origin_and_current_identity" time="0.119"><failure message="AssertionError: Coverage owner pure checks prohibit database/network IO">tests/change_coverage_owner/test_owner_boundary.py:79: in test_binding_canonical_successor_preserves_origin_and_current_identity
+    publish(env)
+tests/change_coverage_owner/test_owner_boundary.py:548: in publish
+    return importer.trusted_import(
+pdos_next/domain/change_coverage_owner/importer.py:71: in trusted_import
+    temporal_stamp, temporal_until = owner.temporal(s, ctx, pid, scope)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/change_coverage_owner/owner.py:160: in temporal
+    facts = s.execute(
+tests/change_coverage_owner/conftest.py:13: in forbidden
+    raise AssertionError("Coverage owner pure checks prohibit database/network IO")
+E   AssertionError: Coverage owner pure checks prohibit database/network IO</failure></testcase></testsuite></testsuites>

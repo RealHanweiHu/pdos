@@ -4,6 +4,7 @@ import pytest
 
 from pdos_next.domain.verification.handlers import VerificationHandler, semantic_digest
 from pdos_next.domain.verification.ports import Invocation, Ports, SampleAvailability
+from pdos_next.error_catalog import REASONS
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import (
     Acceptance,
@@ -43,8 +44,11 @@ from .helpers import (
 
 def invocation(operation, subject, revision, payload, *, command="command"):
     return Invocation(
-        command_id=uid(command), operation=operation, subject_id=subject,
-        expected_revision=revision, semantic_digest=semantic_digest(payload),
+        command_id=uid(command),
+        operation=operation,
+        subject_id=subject,
+        expected_revision=revision,
+        semantic_digest=semantic_digest(payload),
     )
 
 
@@ -66,25 +70,33 @@ def perform(host, operation, subject, revision, payload, *, command="command", t
 def offered(host, *, partial=False, items=None, documents=None):
     refs = (sample(), sample("sample-b", "B"))
     current = request(
-        status="offered", samples=refs, offered_coverage=coverage(samples=refs),
-        timeline=request().timeline.model_copy(update={
-            "offered": fact("offered", offset=0), "sample_ready": fact("ready", offset=-5),
-        }),
+        status="offered",
+        samples=refs,
+        offered_coverage=coverage(samples=refs),
+        timeline=request().timeline.model_copy(
+            update={
+                "offered": fact("offered", offset=0),
+                "sample_ready": fact("ready", offset=-5),
+            }
+        ),
         **({"items": items} if items else {}),
         **({"documents": documents} if documents is not None else {}),
     )
     host.commands.requests[current.id] = current
     selected = current.offered_coverage[:1] if partial else current.offered_coverage
     return current, HandoffAccept(
-        coverage=selected, reason="B模穴待补" if partial else None,
-        next_owner_id=uid("production-owner") if partial else None, at=event("accepted", offset=5),
+        coverage=selected,
+        reason="B模穴待补" if partial else None,
+        next_owner_id=uid("production-owner") if partial else None,
+        at=event("accepted", offset=5),
     )
 
 
 def accepted(host, *, partial=False, destructive=False):
     current, payload = offered(host, partial=partial, items=(item(destructive=destructive),))
-    perform(host, "verification.handoff.accept", current.id, current.revision, payload,
-            command="accept")
+    perform(
+        host, "verification.handoff.accept", current.id, current.revision, payload, command="accept"
+    )
     return host.commands.requests[current.id]
 
 
@@ -105,8 +117,12 @@ def running(host, *, partial=False, destructive=False):
 
 def full_final(current, **changes):
     readings = tuple(measurement(f"m-{i}", pair=p) for i, p in enumerate(current.coverage))
-    data = dict(measurements=readings, final=True, at=event("results", offset=30),
-                actual_end=event("end", offset=27))
+    data = dict(
+        measurements=readings,
+        final=True,
+        at=event("results", offset=30),
+        actual_end=event("end", offset=27),
+    )
     data.update(changes)
     return ResultsSubmit(**data)
 
@@ -114,8 +130,13 @@ def full_final(current, **changes):
 def test_planned_build_allows_request_with_method_unknown_and_no_sample_fact(host):
     host.builds.current = host.builds.current.model_copy(update={"status": "planned"})
     payload = RequestCreate(
-        request_id=uid("new-request"), build_id=build().id, expected_build_revision=1,
-        title="试模前准备", purpose="合成验证", items=(item(method=None),), return_form="读数表",
+        request_id=uid("new-request"),
+        build_id=build().id,
+        expected_build_revision=1,
+        title="试模前准备",
+        purpose="合成验证",
+        items=(item(method=None),),
+        return_form="读数表",
     )
     handler = VerificationHandler(host)
     preview = handler.preview("verification.request.create", payload.request_id, 0, payload)
@@ -130,19 +151,26 @@ def test_planned_build_allows_request_with_method_unknown_and_no_sample_fact(hos
 
 def test_request_create_rechecks_build_revision(host):
     payload = RequestCreate(
-        request_id=uid("new-request"), build_id=build().id, expected_build_revision=2,
-        title="合成验证", purpose="尺寸", items=(item(),), return_form="读数表",
+        request_id=uid("new-request"),
+        build_id=build().id,
+        expected_build_revision=2,
+        title="合成验证",
+        purpose="尺寸",
+        items=(item(),),
+        return_form="读数表",
     )
     with pytest.raises(DomainError) as rejected:
-        VerificationHandler(host).preview("verification.request.create", payload.request_id, 0,
-                                         payload)
+        VerificationHandler(host).preview(
+            "verification.request.create", payload.request_id, 0, payload
+        )
     assert rejected.value.code == "VERSION_CONFLICT" and not host.commands.records
 
 
 def test_early_method_preparation_keeps_tentative_promise_and_actual_separate(host):
     host.builds.current = host.builds.current.model_copy(update={"status": "planned"})
-    payload = MethodPrepare(items=(item(),), documents=(document(),),
-                            tentative_start=event("tentative", offset=500))
+    payload = MethodPrepare(
+        items=(item(),), documents=(document(),), tentative_start=event("tentative", offset=500)
+    )
     perform(host, "verification.method.prepare", uid("request"), 1, payload)
     current = host.commands.requests[uid("request")]
     assert current.status == "draft" and current.tentative_start == payload.tentative_start
@@ -158,27 +186,31 @@ def test_preview_does_not_consume_proof_intent_or_create_reservation(host):
     host.commands.confirmations.clear()
     before = host.commands.requests[current.id]
     payload = RunPlan(run_id=uid("readonly-plan"), coverage=coverage())
-    preview = VerificationHandler(host).preview("test.run.plan", current.id, current.revision,
-                                               payload)
+    preview = VerificationHandler(host).preview(
+        "test.run.plan", current.id, current.revision, payload
+    )
     assert preview.allowed and before == host.commands.requests[current.id]
     assert not host.commands.records and not host.commands.command_intents
     assert not host.commands.confirmations and not host.samples.reservations
     assert payload.run_id not in host.commands.run_records
 
 
-@pytest.mark.parametrize("changes,code", [
-    ({"authorized": False}, "FORBIDDEN_OPERATION"),
-    ({"roles": ("project",)}, "FORBIDDEN_OPERATION"),
-    ({"cancelled": True}, "RUN_CANCELLED"),
-    ({"actor_kind": "ai"}, "NAMED_DECISION_REQUIRED"),
-])
+@pytest.mark.parametrize(
+    "changes,code",
+    [
+        ({"authorized": False}, "FORBIDDEN_OPERATION"),
+        ({"roles": ("project",)}, "FORBIDDEN_OPERATION"),
+        ({"cancelled": True}, "RUN_CANCELLED"),
+        ({"actor_kind": "ai"}, "NAMED_DECISION_REQUIRED"),
+    ],
+)
 def test_current_server_authority_refuses_method_action(host, changes, code):
     host.commands.authority = host.commands.authority.model_copy(update=changes)
     payload = MethodPrepare(items=(item(),))
     with pytest.raises(DomainError) as rejected:
-        VerificationHandler(host).preview("verification.method.prepare", uid("request"), 1,
-                                         payload)
-    assert rejected.value.code == code and not host.commands.records
+        VerificationHandler(host).preview("verification.method.prepare", uid("request"), 1, payload)
+    assert rejected.value.reason == code and not host.commands.records
+    assert rejected.value.code == REASONS[code]
 
 
 def test_ai_request_creation_requires_current_qualification(host):
@@ -186,12 +218,18 @@ def test_ai_request_creation_requires_current_qualification(host):
         update={"actor_kind": "ai", "qualified": False},
     )
     payload = RequestCreate(
-        request_id=uid("new-request"), build_id=build().id, expected_build_revision=1,
-        title="合成请求", purpose="尺寸", items=(item(),), return_form="读数",
+        request_id=uid("new-request"),
+        build_id=build().id,
+        expected_build_revision=1,
+        title="合成请求",
+        purpose="尺寸",
+        items=(item(),),
+        return_form="读数",
     )
     with pytest.raises(DomainError) as rejected:
-        VerificationHandler(host).preview("verification.request.create", payload.request_id, 0,
-                                         payload)
+        VerificationHandler(host).preview(
+            "verification.request.create", payload.request_id, 0, payload
+        )
     assert rejected.value.code == "QUALIFICATION_REQUIRED"
 
 
@@ -200,9 +238,9 @@ def test_missing_required_port_explicitly_blocks_success(host, port_name):
     payload = HandoffOffer(samples=(sample(),), coverage=coverage()[:1], at=event("offered"))
     setattr(host, port_name, None)
     with pytest.raises(DomainError) as rejected:
-        VerificationHandler(host).preview("verification.handoff.offer", uid("request"), 1,
-                                         payload)
-    assert rejected.value.code == "INTEGRATION_REQUIRED"
+        VerificationHandler(host).preview("verification.handoff.offer", uid("request"), 1, payload)
+    assert rejected.value.reason == "INTEGRATION_REQUIRED"
+    assert rejected.value.code == REASONS["INTEGRATION_REQUIRED"]
 
 
 def test_unknown_operation_or_mismatched_payload_is_rejected_before_begin(host):
@@ -211,7 +249,8 @@ def test_unknown_operation_or_mismatched_payload_is_rejected_before_begin(host):
         command = invocation(operation, uid("request"), 1, payload)
         with pytest.raises(DomainError) as rejected:
             VerificationHandler(host).execute(command, payload)
-        assert rejected.value.code == "INVALID_OPERATION_PAYLOAD"
+        assert rejected.value.reason == "INVALID_OPERATION_PAYLOAD"
+        assert rejected.value.code == REASONS["INVALID_OPERATION_PAYLOAD"]
     assert not host.commands.command_intents
 
 
@@ -221,7 +260,8 @@ def test_offer_keeps_missing_documents_and_sample_readiness_separate(host):
     payload = HandoffOffer(samples=(sample(),), coverage=coverage()[:1], at=event("offered"))
     command, preview = prepared(host, "verification.handoff.offer", uid("request"), 1, payload)
     assert preview.allowed and {g.code for g in preview.gaps} == {
-        "DOCUMENT_MISSING", "SAMPLE_UNAVAILABLE",
+        "DOCUMENT_MISSING",
+        "SAMPLE_UNAVAILABLE",
     }
     VerificationHandler(host).execute(command, payload)
     current = host.commands.requests[uid("request")]
@@ -247,9 +287,11 @@ def test_partial_acceptance_requires_return_reason_and_next_responsibility(host,
     current, payload = offered(host, partial=True)
     payload = payload.model_copy(update=changes)
     with pytest.raises(DomainError) as rejected:
-        VerificationHandler(host).preview("verification.handoff.accept", current.id,
-                                         current.revision, payload)
-    assert rejected.value.code == "PARTIAL_RESPONSIBILITY_REQUIRED"
+        VerificationHandler(host).preview(
+            "verification.handoff.accept", current.id, current.revision, payload
+        )
+    assert rejected.value.reason == "PARTIAL_RESPONSIBILITY_REQUIRED"
+    assert rejected.value.code == REASONS["PARTIAL_RESPONSIBILITY_REQUIRED"]
     assert not host.commands.records
 
 
@@ -258,14 +300,19 @@ def test_missing_document_for_other_item_does_not_block_selected_item(host):
     selected = coverage(samples=refs)
     other = Coverage(sample_id=refs[0].id, item_id="pressure")
     current, _ = offered(
-        host, items=(item(), item("pressure", sample_count=1, cavities=("A",))),
+        host,
+        items=(item(), item("pressure", sample_count=1, cavities=("A",))),
         documents=(document("pressure-only", items=("pressure",), present=False),),
     )
     current = current.model_copy(update={"offered_coverage": selected + (other,)})
     host.commands.requests[current.id] = current
-    payload = HandoffAccept(coverage=selected, returned_coverage=(other,),
-                            reason="压力规程待补", next_owner_id=uid("method-owner"),
-                            at=event("accepted", offset=5))
+    payload = HandoffAccept(
+        coverage=selected,
+        returned_coverage=(other,),
+        reason="压力规程待补",
+        next_owner_id=uid("method-owner"),
+        at=event("accepted", offset=5),
+    )
     _, preview = prepared(host, "verification.handoff.accept", current.id, 1, payload)
     assert preview.allowed and not preview.gaps
     perform(host, "verification.handoff.accept", current.id, 1, payload)
@@ -290,7 +337,8 @@ def test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance(host, st
     host.builds.current = host.builds.current.model_copy(update={"status": state})
     with pytest.raises(DomainError) as rejected:
         VerificationHandler(host).preview("verification.handoff.accept", current.id, 1, payload)
-    assert rejected.value.code == "ACTUAL_SAMPLE_REQUIRED" and not host.commands.records
+    assert rejected.value.reason == "ACTUAL_SAMPLE_REQUIRED" and not host.commands.records
+    assert rejected.value.code == REASONS["ACTUAL_SAMPLE_REQUIRED"]
 
 
 @pytest.mark.parametrize("condition", ["unavailable", "inapplicable"])
@@ -299,13 +347,18 @@ def test_sample_availability_and_applicability_are_rechecked_on_acceptance(host,
     getattr(host.samples, condition).add(sample().id)
     with pytest.raises(DomainError) as rejected:
         VerificationHandler(host).preview("verification.handoff.accept", current.id, 1, payload)
-    assert rejected.value.code == "SAMPLE_UNAVAILABLE" and not host.commands.records
+    assert rejected.value.reason == "SAMPLE_UNAVAILABLE" and not host.commands.records
+    assert rejected.value.code == REASONS["SAMPLE_UNAVAILABLE"]
 
 
 def test_returning_defect_records_owner_without_creating_acceptance(host):
     current, _ = offered(host)
-    payload = HandoffReturn(coverage=coverage()[:1], reason="原件待补",
-                            next_owner_id=uid("document-owner"), at=event("returned", offset=5))
+    payload = HandoffReturn(
+        coverage=coverage()[:1],
+        reason="原件待补",
+        next_owner_id=uid("document-owner"),
+        at=event("returned", offset=5),
+    )
     perform(host, "verification.handoff.return", current.id, 1, payload)
     saved = host.commands.requests[current.id]
     assert saved.status == "offered" and not saved.acceptances
@@ -317,17 +370,25 @@ def test_repeated_acceptance_under_new_intent_cannot_duplicate_business_scope(ho
     current = accepted(host)
     payload = HandoffAccept(coverage=coverage(), at=event("accept-again", offset=7))
     with pytest.raises(DomainError) as rejected:
-        VerificationHandler(host).preview("verification.handoff.accept", current.id,
-                                         current.revision, payload)
-    assert rejected.value.code == "ALREADY_ACCEPTED"
+        VerificationHandler(host).preview(
+            "verification.handoff.accept", current.id, current.revision, payload
+        )
+    assert rejected.value.reason == "ALREADY_ACCEPTED"
+    assert rejected.value.code == REASONS["ALREADY_ACCEPTED"]
     assert len(host.commands.records) == 1
 
 
 def test_promised_start_can_be_future_and_does_not_start_run(host):
     current = accepted(host)
     payload = SchedulePromise(at=event("promise", offset=500))
-    perform(host, "verification.schedule.promise", current.id, current.revision, payload,
-            command="promise")
+    perform(
+        host,
+        "verification.schedule.promise",
+        current.id,
+        current.revision,
+        payload,
+        command="promise",
+    )
     saved = host.commands.requests[current.id]
     assert saved.status == "scheduled" and saved.timeline.promised_start.occurred_at == (
         payload.at.occurred_at
@@ -340,14 +401,18 @@ def test_run_cannot_be_planned_over_unaccepted_pairs(host):
     payload = RunPlan(run_id=uid("new-run"), coverage=coverage())
     with pytest.raises(DomainError) as rejected:
         VerificationHandler(host).preview("test.run.plan", current.id, current.revision, payload)
-    assert rejected.value.code == "INVALID_COVERAGE"
+    assert rejected.value.reason == "INVALID_COVERAGE"
+    assert rejected.value.code == REASONS["INVALID_COVERAGE"]
 
 
 def test_start_requires_current_person_executor_and_no_side_effect_on_mismatch(host):
     current = planned(host)
-    payload = RunStart(at=event("start", offset=10), execution=execution().model_copy(
-        update={"executor_id": uid("other-person")},
-    ))
+    payload = RunStart(
+        at=event("start", offset=10),
+        execution=execution().model_copy(
+            update={"executor_id": uid("other-person")},
+        ),
+    )
     before = len(host.commands.records)
     with pytest.raises(DomainError) as rejected:
         VerificationHandler(host).preview("test.run.start", current.id, 1, payload)
@@ -357,9 +422,12 @@ def test_start_requires_current_person_executor_and_no_side_effect_on_mismatch(h
 
 def test_start_rejects_actual_configuration_changed_after_plan(host):
     current = planned(host)
-    host.samples.current[sample().id] = sample(actual_configuration=ConfigurationRef(
-        id=uid("actual-other"), revision=2,
-    ))
+    host.samples.current[sample().id] = sample(
+        actual_configuration=ConfigurationRef(
+            id=uid("actual-other"),
+            revision=2,
+        )
+    )
     payload = RunStart(at=event("start", offset=10), execution=execution())
     before = len(host.commands.records)
     with pytest.raises(HostRejection):
@@ -373,15 +441,21 @@ def test_handler_rejects_port_returning_a_different_actual_configuration(host):
 
     def changed(bound_scope, ref, purpose):
         state = original(bound_scope, ref, purpose)
-        return SampleAvailability(**{**state.model_dump(), "sample": ref.model_copy(
-            update={"revision": ref.revision + 1},
-        )})
+        return SampleAvailability(
+            **{
+                **state.model_dump(),
+                "sample": ref.model_copy(
+                    update={"revision": ref.revision + 1},
+                ),
+            }
+        )
 
     host.samples.inspect = changed
     payload = RunStart(at=event("start", offset=10), execution=execution())
     with pytest.raises(DomainError) as rejected:
         VerificationHandler(host).preview("test.run.start", current.id, 1, payload)
-    assert rejected.value.code == "SOURCE_CHANGED" and not host.samples.reservations
+    assert rejected.value.reason == "SOURCE_CHANGED" and not host.samples.reservations
+    assert rejected.value.code == REASONS["SOURCE_CHANGED"]
 
 
 def test_destructive_start_sends_exact_coverage_once_to_controlled_reservation(host):
@@ -395,12 +469,17 @@ def test_destructive_start_sends_exact_coverage_once_to_controlled_reservation(h
 
 def test_two_destructive_items_cannot_consume_same_sample(host):
     ref = sample()
-    selected = (Coverage(sample_id=ref.id, item_id="dimension"),
-                Coverage(sample_id=ref.id, item_id="pressure"))
+    selected = (
+        Coverage(sample_id=ref.id, item_id="dimension"),
+        Coverage(sample_id=ref.id, item_id="pressure"),
+    )
     accepted_fact = fact("accepted", offset=5)
     items = (item(destructive=True), item("pressure", destructive=True))
     current_request = request(
-        status="accepted", samples=(ref,), items=items, offered_coverage=selected,
+        status="accepted",
+        samples=(ref,),
+        items=items,
+        offered_coverage=selected,
         acceptances=(Acceptance(coverage=selected, actor_id=uid("actor"), at=accepted_fact),),
         timeline=request().timeline.model_copy(update={"accepted": accepted_fact}),
     )
@@ -410,7 +489,8 @@ def test_two_destructive_items_cannot_consume_same_sample(host):
     payload = RunStart(at=event("start", offset=10), execution=execution())
     with pytest.raises(DomainError) as rejected:
         VerificationHandler(host).preview("test.run.start", current_run.id, 1, payload)
-    assert rejected.value.code == "DESTRUCTIVE_CONFLICT" and not host.samples.reservations
+    assert rejected.value.reason == "DESTRUCTIVE_CONFLICT" and not host.samples.reservations
+    assert rejected.value.code == REASONS["DESTRUCTIVE_CONFLICT"]
 
 
 def test_reservation_port_failure_prevents_recording_started_fact(host):
@@ -451,8 +531,9 @@ def test_full_request_and_run_have_separate_clocks_and_final_state(host):
 
 def test_partial_results_keep_run_running_and_unreturned_pair_unknown(host):
     current = running(host)
-    payload = ResultsSubmit(measurements=(measurement(pair=current.coverage[0]),),
-                            at=event("partial", offset=30))
+    payload = ResultsSubmit(
+        measurements=(measurement(pair=current.coverage[0]),), at=event("partial", offset=30)
+    )
     perform(host, "test.results.import", current.id, current.revision, payload, command="partial")
     saved = host.commands.run_records[current.id]
     assert saved.status == "running" and saved.result == "indeterminate"
@@ -472,19 +553,24 @@ def test_final_unknown_reading_is_recorded_without_becoming_pass(host):
     assert all(m.raw_value is None for m in saved.measurements)
 
 
-@pytest.mark.parametrize("changes,code", [
-    ({"actual_end": None}, "ACTUAL_END_REQUIRED"),
-    ({"measurements": (measurement(),)}, "INCOMPLETE_FINAL_SCOPE"),
-    ({"actual_end": event("too-early", offset=20)}, "INVALID_EVENT_TIME"),
-])
+@pytest.mark.parametrize(
+    "changes,code",
+    [
+        ({"actual_end": None}, "ACTUAL_END_REQUIRED"),
+        ({"measurements": (measurement(),)}, "INCOMPLETE_FINAL_SCOPE"),
+        ({"actual_end": event("too-early", offset=20)}, "INVALID_EVENT_TIME"),
+    ],
+)
 def test_final_result_requires_whole_run_measurement_scope_and_actual_end(host, changes, code):
     current = running(host)
     payload = full_final(current, **changes)
     before = len(host.commands.records)
     with pytest.raises(DomainError) as rejected:
-        VerificationHandler(host).preview("test.results.import", current.id, current.revision,
-                                         payload)
-    assert rejected.value.code == code and len(host.commands.records) == before
+        VerificationHandler(host).preview(
+            "test.results.import", current.id, current.revision, payload
+        )
+    assert rejected.value.reason == code and len(host.commands.records) == before
+    assert rejected.value.code == REASONS[code]
 
 
 def test_result_configuration_drift_host_refusal_records_no_success(host):
@@ -504,12 +590,13 @@ def test_raw_measurement_cannot_be_overwritten_by_later_partial_import(host):
     first = ResultsSubmit(measurements=(measurement(),), at=event("partial", offset=30))
     perform(host, "test.results.import", current.id, current.revision, first, command="partial")
     current = host.commands.run_records[current.id]
-    changed = ResultsSubmit(measurements=(measurement(raw="9"),),
-                            at=event("correction", offset=35))
+    changed = ResultsSubmit(measurements=(measurement(raw="9"),), at=event("correction", offset=35))
     with pytest.raises(DomainError) as rejected:
-        VerificationHandler(host).preview("test.results.import", current.id, current.revision,
-                                         changed)
-    assert rejected.value.code == "MEASUREMENT_ALREADY_RECORDED"
+        VerificationHandler(host).preview(
+            "test.results.import", current.id, current.revision, changed
+        )
+    assert rejected.value.reason == "MEASUREMENT_ALREADY_RECORDED"
+    assert rejected.value.code == REASONS["MEASUREMENT_ALREADY_RECORDED"]
     assert current.measurements[0].raw_value == "10.000"
 
 
@@ -527,12 +614,17 @@ def test_source_revocation_after_preview_prevents_measurement_record(host):
 def test_build_drift_after_preview_prevents_acceptance_record(host):
     current, payload = offered(host)
     command, _ = prepared(host, "verification.handoff.accept", current.id, 1, payload)
-    host.builds.current = host.builds.current.model_copy(update={"ref": build().model_copy(
-        update={"revision": 2},
-    )})
+    host.builds.current = host.builds.current.model_copy(
+        update={
+            "ref": build().model_copy(
+                update={"revision": 2},
+            )
+        }
+    )
     with pytest.raises(DomainError) as rejected:
         VerificationHandler(host).execute(command, payload)
-    assert rejected.value.code == "SOURCE_CHANGED" and not host.commands.records
+    assert rejected.value.reason == "SOURCE_CHANGED" and not host.commands.records
+    assert rejected.value.code == REASONS["SOURCE_CHANGED"]
 
 
 @pytest.mark.parametrize("operation", ["test.run.review", "test.disposition.decide"])
@@ -551,20 +643,35 @@ def test_review_and_disposition_preserve_computed_result_and_named_actor(host):
     perform(host, "test.results.import", current.id, current.revision, final, command="final")
     current = host.commands.run_records[current.id]
     review = RunReview(text="当前固定范围满足尺寸判据", at=event("review", offset=40))
-    command, _ = prepared(host, "test.run.review", current.id, current.revision, review,
-                          command="review")
+    command, _ = prepared(
+        host, "test.run.review", current.id, current.revision, review, command="review"
+    )
     before = len(host.commands.records)
     with pytest.raises(HostRejection):
         VerificationHandler(host).execute(command, review)
     assert len(host.commands.records) == before
-    perform(host, "test.run.review", current.id, current.revision, review, command="named-review",
-            t2=True)
+    perform(
+        host,
+        "test.run.review",
+        current.id,
+        current.revision,
+        review,
+        command="named-review",
+        t2=True,
+    )
     reviewed = host.commands.run_records[current.id]
     assert reviewed.status == "reviewed" and reviewed.result == "pass"
     assert reviewed.professional_conclusion.actor_id == host.commands.authority.actor_id
     decision = RunDisposition(text="合成处置：留存样件", at=event("dispose", offset=50))
-    perform(host, "test.disposition.decide", reviewed.id, reviewed.revision, decision,
-            command="dispose", t2=True)
+    perform(
+        host,
+        "test.disposition.decide",
+        reviewed.id,
+        reviewed.revision,
+        decision,
+        command="dispose",
+        t2=True,
+    )
     disposed = host.commands.run_records[reviewed.id]
     assert disposed.status == "disposed" and disposed.result == "pass"
     assert host.commands.requests[disposed.request_id].status == "disposed"
@@ -611,7 +718,8 @@ def test_wrong_semantic_digest_is_refused_before_begin(host):
     command = command.model_copy(update={"semantic_digest": "f" * 64})
     with pytest.raises(DomainError) as rejected:
         VerificationHandler(host).execute(command, payload)
-    assert rejected.value.code == "INTENT_CONFLICT" and not host.commands.command_intents
+    assert rejected.value.reason == "INTENT_CONFLICT" and not host.commands.command_intents
+    assert rejected.value.code == REASONS["INTENT_CONFLICT"]
 
 
 def test_one_confirmation_is_bound_to_actor_and_current_preview(host):
@@ -645,17 +753,18 @@ def test_semantic_digest_uses_exact_scope_but_canonical_selection_order():
 
 def test_default_ports_never_imply_an_enabled_handler():
     with pytest.raises(DomainError) as rejected:
-        VerificationHandler(Ports()).preview("verification.method.prepare", uid("request"), 1,
-                                              MethodPrepare(items=(item(),)))
-    assert rejected.value.code == "INTEGRATION_REQUIRED"
+        VerificationHandler(Ports()).preview(
+            "verification.method.prepare", uid("request"), 1, MethodPrepare(items=(item(),))
+        )
+    assert rejected.value.reason == "INTEGRATION_REQUIRED"
+    assert rejected.value.code == REASONS["INTEGRATION_REQUIRED"]
 
 
 def test_human_quality_action_requires_current_operation_qualification(host):
     host.commands.authority = host.commands.authority.model_copy(update={"qualified": False})
     payload = MethodPrepare(items=(item(),))
     with pytest.raises(DomainError) as rejected:
-        VerificationHandler(host).preview("verification.method.prepare", uid("request"), 1,
-                                         payload)
+        VerificationHandler(host).preview("verification.method.prepare", uid("request"), 1, payload)
     assert rejected.value.code == "QUALIFICATION_REQUIRED" and not host.commands.records
 
 
@@ -663,16 +772,22 @@ def test_planned_build_cannot_offer_fictitious_sample_even_when_payload_has_samp
     host.builds.current = host.builds.current.model_copy(update={"status": "planned"})
     payload = HandoffOffer(samples=(sample(),), coverage=coverage()[:1], at=event("offered"))
     with pytest.raises(DomainError) as rejected:
-        VerificationHandler(host).preview("verification.handoff.offer", uid("request"), 1,
-                                         payload)
-    assert rejected.value.code == "ACTUAL_SAMPLE_REQUIRED" and not host.commands.records
+        VerificationHandler(host).preview("verification.handoff.offer", uid("request"), 1, payload)
+    assert rejected.value.reason == "ACTUAL_SAMPLE_REQUIRED" and not host.commands.records
+    assert rejected.value.code == REASONS["ACTUAL_SAMPLE_REQUIRED"]
 
 
 def test_cumulative_second_acceptance_needs_no_new_partial_reason_or_empty_return(host):
     current = accepted(host, partial=True)
     payload = HandoffAccept(coverage=coverage()[1:], at=event("accept-remainder", offset=30))
-    perform(host, "verification.handoff.accept", current.id, current.revision, payload,
-            command="accept-remainder")
+    perform(
+        host,
+        "verification.handoff.accept",
+        current.id,
+        current.revision,
+        payload,
+        command="accept-remainder",
+    )
     saved = host.commands.requests[current.id]
     assert len(saved.acceptances) == 2 and len(saved.returns) == 1
     assert saved.acceptances[-1].coverage == coverage()[1:]
@@ -681,15 +796,22 @@ def test_cumulative_second_acceptance_needs_no_new_partial_reason_or_empty_retur
 def test_start_cannot_precede_acceptance_of_its_specific_sample_pair(host):
     current = accepted(host, partial=True)
     payload = HandoffAccept(coverage=coverage()[1:], at=event("accept-remainder", offset=30))
-    perform(host, "verification.handoff.accept", current.id, current.revision, payload,
-            command="accept-remainder")
+    perform(
+        host,
+        "verification.handoff.accept",
+        current.id,
+        current.revision,
+        payload,
+        command="accept-remainder",
+    )
     current = host.commands.requests[current.id]
     plan = RunPlan(run_id=uid("second-run"), coverage=coverage()[1:])
     perform(host, "test.run.plan", current.id, current.revision, plan, command="second-plan")
     start = RunStart(at=event("premature-start", offset=20), execution=execution())
     with pytest.raises(DomainError) as rejected:
         VerificationHandler(host).preview("test.run.start", plan.run_id, 1, start)
-    assert rejected.value.code == "INVALID_EVENT_TIME" and not host.samples.reservations
+    assert rejected.value.reason == "INVALID_EVENT_TIME" and not host.samples.reservations
+    assert rejected.value.code == REASONS["INVALID_EVENT_TIME"]
 
 
 def test_acceptance_cannot_precede_current_selected_sample_ready_time(host):
@@ -704,7 +826,8 @@ def test_acceptance_cannot_precede_current_selected_sample_ready_time(host):
     payload = HandoffAccept(coverage=coverage(), at=event("premature-accept", offset=2))
     with pytest.raises(DomainError) as rejected:
         VerificationHandler(host).preview("verification.handoff.accept", current.id, 1, payload)
-    assert rejected.value.code == "INVALID_EVENT_TIME" and not host.commands.records
+    assert rejected.value.reason == "INVALID_EVENT_TIME" and not host.commands.records
+    assert rejected.value.code == REASONS["INVALID_EVENT_TIME"]
 
 
 def test_drift_of_unselected_sample_does_not_block_applicable_partial_acceptance(host):
@@ -720,8 +843,14 @@ def test_later_remainder_acceptance_preserves_prior_sample_ready_fact_after_cons
     prior = current.timeline.sample_ready
     host.samples.unavailable.add(sample().id)
     payload = HandoffAccept(coverage=coverage()[1:], at=event("accept-remainder", offset=30))
-    perform(host, "verification.handoff.accept", current.id, current.revision, payload,
-            command="accept-remainder")
+    perform(
+        host,
+        "verification.handoff.accept",
+        current.id,
+        current.revision,
+        payload,
+        command="accept-remainder",
+    )
     saved = host.commands.requests[current.id]
     assert saved.timeline.sample_ready == prior
     assert len(saved.acceptances) == 2
@@ -734,8 +863,12 @@ def test_complete_partial_measurements_can_finalize_without_resubmitting_raw_val
     perform(host, "test.results.import", current.id, current.revision, partial, command="partial")
     current = host.commands.run_records[current.id]
     host.evidence.measurement_calls.clear()
-    final = ResultsSubmit(measurements=(), at=event("final", offset=40), final=True,
-                          actual_end=event("end", offset=27))
+    final = ResultsSubmit(
+        measurements=(),
+        at=event("final", offset=40),
+        final=True,
+        actual_end=event("end", offset=27),
+    )
     perform(host, "test.results.import", current.id, current.revision, final, command="empty-final")
     saved = host.commands.run_records[current.id]
     assert saved.measurements == readings and saved.result == "pass"
@@ -752,25 +885,34 @@ def test_prior_partial_source_revocation_blocks_empty_final_success(host):
     perform(host, "test.results.import", current.id, current.revision, partial, command="partial")
     current = host.commands.run_records[current.id]
     host.evidence.rejected.add(current.measurements[0].source.id)
-    final = ResultsSubmit(measurements=(), at=event("final", offset=40), final=True,
-                          actual_end=event("end", offset=27))
+    final = ResultsSubmit(
+        measurements=(),
+        at=event("final", offset=40),
+        final=True,
+        actual_end=event("end", offset=27),
+    )
     before = len(host.commands.records)
     with pytest.raises(HostRejection):
-        VerificationHandler(host).preview("test.results.import", current.id, current.revision,
-                                         final)
+        VerificationHandler(host).preview(
+            "test.results.import", current.id, current.revision, final
+        )
     assert len(host.commands.records) == before and current.final_result is None
 
 
 def test_fixed_run_methods_cannot_drift_to_current_request_methods(host):
     current = running(host)
     parent = host.commands.requests[current.request_id]
-    host.commands.requests[parent.id] = parent.model_copy(update={
-        "items": (item(conditions="80 °C"),),
-    })
+    host.commands.requests[parent.id] = parent.model_copy(
+        update={
+            "items": (item(conditions="80 °C"),),
+        }
+    )
     with pytest.raises(DomainError) as rejected:
-        VerificationHandler(host).preview("test.results.import", current.id, current.revision,
-                                         full_final(current))
-    assert rejected.value.code == "SOURCE_CHANGED"
+        VerificationHandler(host).preview(
+            "test.results.import", current.id, current.revision, full_final(current)
+        )
+    assert rejected.value.reason == "SOURCE_CHANGED"
+    assert rejected.value.code == REASONS["SOURCE_CHANGED"]
 
 
 def test_run_action_mutation_binds_both_aggregate_cas_versions(host):
@@ -788,8 +930,13 @@ def test_run_action_mutation_binds_both_aggregate_cas_versions(host):
 
 def test_host_cas_refuses_overwriting_existing_request_identity(host):
     payload = RequestCreate(
-        request_id=uid("request"), build_id=build().id, expected_build_revision=1,
-        title="冲突合成请求", purpose="尺寸", items=(item(),), return_form="读数",
+        request_id=uid("request"),
+        build_id=build().id,
+        expected_build_revision=1,
+        title="冲突合成请求",
+        purpose="尺寸",
+        items=(item(),),
+        return_form="读数",
     )
     command = invocation("verification.request.create", payload.request_id, 0, payload)
     with pytest.raises(HostRejection):
@@ -827,7 +974,8 @@ def test_available_sample_without_physical_ready_fact_cannot_be_accepted(host):
     host.samples.no_ready.add(sample().id)
     with pytest.raises(DomainError) as rejected:
         VerificationHandler(host).preview("verification.handoff.accept", current.id, 1, payload)
-    assert rejected.value.code == "SAMPLE_UNAVAILABLE" and not host.commands.records
+    assert rejected.value.reason == "SAMPLE_UNAVAILABLE" and not host.commands.records
+    assert rejected.value.code == REASONS["SAMPLE_UNAVAILABLE"]
 
 
 def test_method_can_complete_unaccepted_item_without_changing_received_scope(host):
@@ -836,14 +984,19 @@ def test_method_can_complete_unaccepted_item_without_changing_received_scope(hos
     other = Coverage(sample_id=refs[0].id, item_id="pressure")
     pressure = item("pressure", sample_count=1, cavities=("A",), method=None)
     current, _ = offered(
-        host, items=(item(), pressure),
+        host,
+        items=(item(), pressure),
         documents=(document("pressure-only", items=("pressure",), present=False),),
     )
     host.commands.requests[current.id] = current.model_copy(
         update={"offered_coverage": selected + (other,)},
     )
-    accept = HandoffAccept(coverage=selected, reason="压力规程待补",
-                          next_owner_id=uid("method-owner"), at=event("accepted", offset=5))
+    accept = HandoffAccept(
+        coverage=selected,
+        reason="压力规程待补",
+        next_owner_id=uid("method-owner"),
+        at=event("accepted", offset=5),
+    )
     perform(host, "verification.handoff.accept", current.id, 1, accept, command="accept")
     current = host.commands.requests[current.id]
     prior_acceptances = current.acceptances
@@ -852,8 +1005,14 @@ def test_method_can_complete_unaccepted_item_without_changing_received_scope(hos
         items=(item(), prepared_pressure),
         documents=(document("pressure-only", items=("pressure",)),),
     )
-    perform(host, "verification.method.prepare", current.id, current.revision, prepare,
-            command="prepare-unreceived")
+    perform(
+        host,
+        "verification.method.prepare",
+        current.id,
+        current.revision,
+        prepare,
+        command="prepare-unreceived",
+    )
     saved = host.commands.requests[current.id]
     assert saved.status == "accepted" and saved.acceptances == prior_acceptances
     assert saved.items[1].method == prepared_pressure.method
@@ -863,9 +1022,11 @@ def test_method_update_cannot_change_already_received_item(host):
     current = accepted(host)
     payload = MethodPrepare(items=(item(conditions="80 °C"),), documents=current.documents)
     with pytest.raises(DomainError) as rejected:
-        VerificationHandler(host).preview("verification.method.prepare", current.id,
-                                         current.revision, payload)
-    assert rejected.value.code == "ACCEPTED_SCOPE_FROZEN"
+        VerificationHandler(host).preview(
+            "verification.method.prepare", current.id, current.revision, payload
+        )
+    assert rejected.value.reason == "ACCEPTED_SCOPE_FROZEN"
+    assert rejected.value.code == REASONS["ACCEPTED_SCOPE_FROZEN"]
 
 
 @pytest.mark.parametrize("refusal", ["raw", "locator"])
@@ -904,6 +1065,7 @@ def test_evidence_source_check_without_measurement_verifier_explicitly_blocks_im
     before = len(host.commands.records)
     with pytest.raises(DomainError) as rejected:
         VerificationHandler(host).execute(command, payload)
-    assert rejected.value.code == "INTEGRATION_REQUIRED" and rejected.value.status == 503
+    assert rejected.value.reason == "INTEGRATION_REQUIRED" and rejected.value.status == 503
+    assert rejected.value.code == REASONS["INTEGRATION_REQUIRED"]
     assert len(host.commands.records) == before
     assert host.commands.run_records[current.id].measurements == ()

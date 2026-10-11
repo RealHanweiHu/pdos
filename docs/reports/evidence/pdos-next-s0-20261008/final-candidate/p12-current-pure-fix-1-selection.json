@@ -1,0 +1,5 @@
+[
+  "tests/quality_execution/test_pure.py",
+  "tests/quality_execution/test_capa_draft_revision.py",
+  "tests/change_manufacturing_transactions/test_graph.py::test_actual_tenant_shared_asset_fence_and_rejected_roles"
+]

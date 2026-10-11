@@ -1,0 +1,12 @@
+{
+  "actual_state_files_sha256": {
+    "main": "b171ed2e9603b4e2ac63a79a23b9e30b9b1a74b26cf0e1439e8218757a5b7dbb",
+    "b8": "a085eed0a7cab13bb3b870c3485d53e5ef9f918856ef0fb1a044aa6879b0cccf",
+    "empty": "5acb9121de2c43de6284ea9328e28c845a350877e3eb82a49c8605cb851e7209",
+    "old_empty_0721": "788e160c8e834f36b7adb95b95656d05a31f8d521425d42a5070e33ba5f5d08e"
+  },
+  "historical_state_bytes_equal": true,
+  "source_unchanged": true,
+  "catalogs_unchanged": true,
+  "no_migration_or_state_write": true
+}

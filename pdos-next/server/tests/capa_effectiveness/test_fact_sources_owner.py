@@ -29,9 +29,10 @@ def native(work, *, private=False, identity=None, content="actual synthetic sour
         Artifact,
         id=identity,
         tenant_id=work.ctx.tenant_id,
+        category_id=work.ctx.category_id,
         product_id=work.pid,
         owner_id=work.actor,
-        visibility="private" if private else "product",
+        visibility="private" if private else "category",
         revision=1,
         original_id=None,
         status="active",
@@ -69,7 +70,7 @@ def project(work, *, private=False, owner_id=None):
         tenant_id=work.ctx.tenant_id,
         product_id=work.pid,
         owner_id=owner_id or work.actor,
-        visibility="private" if private else "product",
+        visibility="private" if private else "category",
         status="active",
         scope="product",
     )
@@ -82,7 +83,7 @@ def closure(work, refs, reads, **kwargs):
         work.pid,
         scope=work.scope,
         owner_id=work.actor,
-        visibility=kwargs.pop("visibility", "product"),
+        visibility=kwargs.pop("visibility", "category"),
         sources=refs,
         reads=reads,
         **kwargs,
@@ -98,7 +99,8 @@ def test_native_actual_line_registration_and_sparse_raw_basis(work):
     assert result.source_basis[0]["source_kind"] == "registered_native_text"
     assert "original" not in result.source_basis[0]
     assert result.byte_material[0]["content_hash"] == row["content_hash"]
-    assert result.checked_at < result.valid_until
+    assert result.valid_until is None
+    assert work.grant["expires_at"] in result.time_constraints
     assert result.current_evidence_authorized is False
     assert result.same_uow_consumption_attested is False
     assert "qualified" not in owner.FactSourcesRead.__dataclass_fields__
@@ -140,7 +142,7 @@ def test_current_product_grant_does_not_expand_private_project(work):
     _row, _receipt, ref, read = native(work)
     with pytest.raises(DomainError) as error:
         closure(work, [ref], [read])
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"
 
 
 def test_private_source_never_expands_product_fact_audience(work):
@@ -148,20 +150,21 @@ def test_private_source_never_expands_product_fact_audience(work):
     _row, _receipt, ref, read = native(work, private=True)
     with pytest.raises(DomainError) as error:
         closure(work, [ref], [read])
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"
     assert (
         closure(work, [ref], [read], visibility="private").source_basis[0]["visibility"]
         == "private"
     )
 
 
-def test_complete_union_accepts_twenty_and_never_silently_truncates(work):
+def test_complete_union_accepts_more_than_twenty_without_truncation(work):
     project(work)
     selected = [native(work, content=f"synthetic line {i}") for i in range(21)]
     refs, reads = [v[2] for v in selected], [v[3] for v in selected]
     assert len(closure(work, refs[:20], reads[:20]).required_source_read_set) == 20
-    with pytest.raises(DomainError):
-        closure(work, refs, reads)
+    result = closure(work, refs, reads)
+    assert set(result.required_source_read_set) == set(reads)
+    assert len(result.sources) == 21
 
 
 def test_conflicting_revision_or_omitted_actual_artifact_read_is_rejected(work):
@@ -172,7 +175,7 @@ def test_conflicting_revision_or_omitted_actual_artifact_read_is_rejected(work):
     _row2, _receipt2, _ref2, read2 = native(work)
     with pytest.raises(DomainError) as error:
         closure(work, [ref], [read2])
-    assert error.value.code == "MISSING_REQUIRED_EVIDENCE"
+    assert error.value.reason == "MISSING_REQUIRED_EVIDENCE"
 
 
 def test_domain_reference_remains_explicit_owner_missing(work):
@@ -199,7 +202,7 @@ def test_source_changes_during_later_project_read_are_rejected(work):
     work.s.after_query = after
     with pytest.raises(DomainError) as error:
         closure(work, [ref], [read])
-    assert error.value.code == "SOURCE_UNAVAILABLE"
+    assert error.value.reason == "SOURCE_UNAVAILABLE"
 
 
 def test_current_project_changes_at_last_query_do_not_reuse_old_descriptor(work):
@@ -218,7 +221,7 @@ def test_current_project_changes_at_last_query_do_not_reuse_old_descriptor(work)
     work.s.after_query = after
     with pytest.raises(DomainError) as error:
         closure(work, [ref], [read])
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"
 
 
 @pytest.mark.parametrize("boundary", ["expired", "naive", "future"])
@@ -231,7 +234,8 @@ def test_earliest_actual_boundary_controls_post_io_clock(work, boundary):
     elif boundary == "naive":
         time = time.replace(tzinfo=None)
     if boundary == "future":
-        assert closure(work, [ref], [read], boundaries=(time,)).valid_until == time
+        result = closure(work, [ref], [read], boundaries=(time,))
+        assert result.valid_until is None and time in result.time_constraints
     else:
         with pytest.raises(DomainError):
             closure(work, [ref], [read], boundaries=(time,))
@@ -240,7 +244,13 @@ def test_earliest_actual_boundary_controls_post_io_clock(work, boundary):
 def uploaded(work, monkeypatch, *, content=b"synthetic uploaded report bytes"):
     project(work)
     row, _receipt, ref, read = native(work)
-    original = SimpleNamespace(id=uuid4(), status="parsed", visibility="product")
+    original = SimpleNamespace(
+        id=uuid4(),
+        product_id=work.pid,
+        category_id=work.ctx.category_id,
+        status="parsed",
+        visibility="category",
+    )
     row["original_id"] = original.id
     expected = SimpleNamespace(size_bytes=len(content), content_sha256=sha256(content).hexdigest())
     epoch = {"value": 1}
@@ -282,7 +292,8 @@ def uploaded(work, monkeypatch, *, content=b"synthetic uploaded report bytes"):
 
     monkeypatch.setattr(owner.evidence, "source_basis", basis)
 
-    def bytes_port(actual_store, reference, tenant, product):
+    def bytes_port(actual_store, reference, tenant, product, category):
+        assert category == work.ctx.category_id
         assert actual_store is store and reference is expected
         assert (tenant, product) == (work.ctx.tenant_id, work.pid)
         store.calls += 1
@@ -343,7 +354,7 @@ def test_final_original_io_cannot_change_earlier_native_source(work, monkeypatch
     monkeypatch.setattr(owner, "read_registered_bytes", withdrawn)
     with pytest.raises(DomainError) as error:
         closure(work, [ref], [read])
-    assert error.value.code == "SOURCE_UNAVAILABLE"
+    assert error.value.reason == "SOURCE_UNAVAILABLE"
 
 
 def test_refresh_is_an_independent_actual_read_and_not_previous_boolean(work, monkeypatch):
@@ -384,40 +395,65 @@ def context_ports(work, monkeypatch, *, qualified=True):
     project(work)
     _source, _receipt, ref, read = native(work)
     now = datetime.now(UTC)
-    identity = uuid4()
     future = now + timedelta(seconds=30)
-    work.s.seed(
-        ProfessionalFact,
-        id=identity,
-        tenant_id=work.ctx.tenant_id,
-        product_id=work.pid,
-        project_id=work.scope.project_id,
-        subject_id=work.actor,
-        revision=1,
-        state="active",
-        valid_from=future,
-        valid_until=now + timedelta(hours=1),
-        sources=[
-            {
-                "artifact_id": str(ref.id),
-                "expected_revision": 1,
-                "line": 1,
-                "quote": "actual synthetic source line",
-            }
-        ],
-        required_source_read_set=[read.model_dump(mode="json")],
-    )
+    fact_refs = []
+    operation = "quality.capa.verification.review"
+    for kind, start in (
+        ("duty", now - timedelta(minutes=1)),
+        ("qualification", now - timedelta(minutes=1)),
+        ("qualification", future),
+    ):
+        identity = uuid4()
+        basis = dict(
+            id=str(identity),
+            revision=1,
+            epoch=1,
+            kind=kind,
+            role="quality",
+            nature="synthetic",
+            state="active",
+            operations=[operation],
+            purposes=["exact purpose"],
+            valid_from=start.isoformat(),
+            valid_until=(now + timedelta(hours=1)).isoformat(),
+        )
+        fact_refs.append(basis)
+        work.s.seed(
+            ProfessionalFact,
+            id=identity,
+            tenant_id=work.ctx.tenant_id,
+            product_id=work.pid,
+            project_id=work.scope.project_id,
+            subject_id=work.actor,
+            revision=1,
+            state="active",
+            kind=kind,
+            role="quality",
+            nature="synthetic",
+            valid_from=start,
+            valid_until=now + timedelta(hours=1),
+            sources=[
+                dict(
+                    artifact_id=str(ref.id),
+                    expected_revision=1,
+                    line=1,
+                    quote="actual synthetic source line",
+                )
+            ],
+            required_source_read_set=[read.model_dump(mode="json")],
+        )
     authority = {
         "scope": work.scope.model_dump(mode="json"),
         "subject_id": str(work.actor),
-        "operation": "quality.capa.review.record",
+        "operation": operation,
         "purpose": "exact purpose",
         "authorized": True,
         "qualified": qualified,
         "roles": ["quality"],
-        "fact_refs": [{"id": str(identity), "revision": 1, "epoch": 1}],
+        "synthetic": True,
+        "fact_refs": fact_refs,
         "facts_revision": common.digest("all scoped facts including future negative"),
-        "valid_until": (now + timedelta(hours=1)).isoformat(),
+        "valid_until": None,
     }
     monkeypatch.setattr(owner.professional, "assess", lambda *_a, **_k: deepcopy(authority))
     monkeypatch.setattr(
@@ -425,7 +461,18 @@ def context_ports(work, monkeypatch, *, qualified=True):
         "assess",
         lambda *_a, **_k: {
             "nature": "synthetic",
-            "valid_until": (now + timedelta(hours=1)).isoformat(),
+            "id": str(ref.id),
+            "revision": 1,
+            "valid_until": None,
+            "source_basis": [
+                dict(
+                    id=str(ref.id),
+                    revision=1,
+                    state="active",
+                    valid_from=(now - timedelta(minutes=1)).isoformat(),
+                    valid_until=(now + timedelta(hours=1)).isoformat(),
+                )
+            ],
             "facts_revision": common.digest("current policy"),
             "sources": [ref.model_dump(mode="json")],
             "required_source_read_set": [read.model_dump(mode="json")],
@@ -445,15 +492,19 @@ def test_exact_current_professional_sources_and_future_activation_preserved_with
         work.scope,
         "exact purpose",
         "synthetic",
-        ("quality.capa.review.record",),
+        ("quality.capa.verification.review",),
     )
-    saved = material["quality.capa.review.record"]
+    saved = material["quality.capa.verification.review"]
     assert saved["assessment_sha256"] == common.digest(authority)
     assert "qualified" not in saved["assessment_material"]
     assert "authorized" not in saved["assessment_material"]
     assert saved["source_material"][0]["sources"] == [ref.model_dump(mode="json")]
     assert saved["source_material"][0]["reads"] == [read.model_dump(mode="json")]
-    assert min(bounds) == future
+    assert bounds == ()
+    assert any(
+        value["valid_from"] == future.isoformat()
+        for value in saved["assessment_material"]["fact_refs"]
+    )
     assert policy_material["facts_revision"] == common.digest("current policy")
 
 
@@ -470,6 +521,6 @@ def test_failed_assessor_cannot_claim_complete_current_professional_source_closu
             work.scope,
             "exact purpose",
             "synthetic",
-            ("quality.capa.review.record",),
+            ("quality.capa.verification.review",),
         )
-    assert error.value.code == "CURRENT_AUTHORITY_OWNER_REQUIRED"
+    assert error.value.reason == "CURRENT_AUTHORITY_OWNER_REQUIRED"

@@ -42,10 +42,23 @@
         "title": "Operation",
         "type": "string"
       },
-      "product_id": {
+      "category_id": {
         "format": "uuid",
-        "title": "Product Id",
+        "title": "Category Id",
         "type": "string"
+      },
+      "product_id": {
+        "anyOf": [
+          {
+            "format": "uuid",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Product Id"
       },
       "expected_revision": {
         "minimum": 1,
@@ -56,7 +69,6 @@
         "items": {
           "$ref": "#/$defs/SourceRead"
         },
-        "maxItems": 20,
         "title": "Source Read Set",
         "type": "array"
       },
@@ -70,7 +82,7 @@
       "command_id",
       "idempotency_key",
       "operation",
-      "product_id",
+      "category_id",
       "expected_revision",
       "payload"
     ],
@@ -180,7 +192,8 @@
           "default": "private",
           "enum": [
             "private",
-            "product"
+            "category",
+            "audience"
           ],
           "title": "Visibility",
           "type": "string"
@@ -249,10 +262,38 @@
           "default": "private",
           "enum": [
             "private",
-            "product"
+            "category",
+            "audience"
           ],
           "title": "Visibility",
           "type": "string"
+        },
+        "prepared_event_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prepared Event Id"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
         }
       },
       "required": [
@@ -264,119 +305,1083 @@
       "title": "ClaimPayload",
       "type": "object"
     },
-    "ai.work.start": {
-      "$defs": {
-        "OutcomeSpec": {
-          "additionalProperties": false,
-          "properties": {
-            "object_type": {
-              "const": "claim",
-              "default": "claim",
-              "title": "Object Type",
+    "ai.run.revert": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
               "type": "string"
             },
-            "minimum_records": {
-              "const": 1,
-              "default": 1,
-              "title": "Minimum Records",
-              "type": "integer"
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Receipt Id"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
             },
-            "source_required": {
-              "const": true,
-              "default": true,
-              "title": "Source Required",
-              "type": "boolean"
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "title": "RevertPayload",
+      "type": "object"
+    },
+    "proposal.create": {
+      "$defs": {
+        "Groups": {
+          "additionalProperties": false,
+          "properties": {
+            "items": {
+              "items": {
+                "$ref": "#/$defs/ItemInput"
+              },
+              "title": "Items",
+              "type": "array"
+            },
+            "questions": {
+              "items": {
+                "$ref": "#/$defs/Question"
+              },
+              "title": "Questions",
+              "type": "array"
             }
           },
-          "title": "OutcomeSpec",
+          "title": "Groups",
+          "type": "object"
+        },
+        "ItemInput": {
+          "additionalProperties": false,
+          "properties": {
+            "item_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Item Id"
+            },
+            "kind": {
+              "enum": [
+                "section",
+                "option",
+                "risk",
+                "decision_note",
+                "difference",
+                "commercial_target",
+                "assumption",
+                "spec",
+                "question"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "content": {
+              "additionalProperties": true,
+              "title": "Content",
+              "type": "object"
+            },
+            "source_refs": {
+              "items": {
+                "$ref": "#/$defs/Reference"
+              },
+              "title": "Source Refs",
+              "type": "array"
+            }
+          },
+          "required": [
+            "kind",
+            "content"
+          ],
+          "title": "ItemInput",
+          "type": "object"
+        },
+        "Question": {
+          "additionalProperties": false,
+          "properties": {
+            "question": {
+              "minLength": 1,
+              "title": "Question",
+              "type": "string"
+            },
+            "owner_id": {
+              "format": "uuid",
+              "title": "Owner Id",
+              "type": "string"
+            },
+            "due_date": {
+              "format": "date",
+              "title": "Due Date",
+              "type": "string"
+            },
+            "related_item_ids": {
+              "items": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "title": "Related Item Ids",
+              "type": "array"
+            },
+            "status": {
+              "default": "open",
+              "enum": [
+                "open",
+                "answered",
+                "carried"
+              ],
+              "title": "Status",
+              "type": "string"
+            },
+            "answer": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Answer"
+            },
+            "supersedes_item_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Supersedes Item Id"
+            }
+          },
+          "required": [
+            "question",
+            "owner_id",
+            "due_date"
+          ],
+          "title": "Question",
+          "type": "object"
+        },
+        "Reference": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "enum": [
+                "human",
+                "artifact",
+                "original",
+                "snapshot",
+                "knowledge",
+                "parameter",
+                "definition"
+              ],
+              "title": "Type",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "version": {
+              "exclusiveMinimum": 0,
+              "title": "Version",
+              "type": "integer"
+            },
+            "line": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Line"
+            },
+            "quote": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quote"
+            },
+            "statement": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Statement"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "title": "Reference",
           "type": "object"
         }
       },
       "additionalProperties": false,
       "properties": {
-        "goal": {
-          "maxLength": 2000,
-          "minLength": 3,
-          "title": "Goal",
-          "type": "string"
+        "prepared_by_run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prepared By Run Id"
         },
-        "artifact_id": {
-          "format": "uuid",
-          "title": "Artifact Id",
-          "type": "string"
-        },
-        "source_revision": {
-          "minimum": 1,
-          "title": "Source Revision",
-          "type": "integer"
-        },
-        "outcome_spec": {
-          "$ref": "#/$defs/OutcomeSpec"
-        },
-        "max_actions": {
-          "default": 1,
-          "maximum": 3,
-          "minimum": 1,
-          "title": "Max Actions",
-          "type": "integer"
-        },
-        "stop_condition": {
-          "const": "one_sourced_claim_or_input_required",
-          "default": "one_sourced_claim_or_input_required",
-          "title": "Stop Condition",
-          "type": "string"
-        }
-      },
-      "required": [
-        "goal",
-        "artifact_id",
-        "source_revision"
-      ],
-      "title": "WorkPayload",
-      "type": "object"
-    },
-    "ai.run.revert": {
-      "additionalProperties": false,
-      "properties": {
-        "receipt_id": {
-          "format": "uuid",
-          "title": "Receipt Id",
-          "type": "string"
+        "candidate_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Digest"
         },
         "confirmation_token": {
-          "maxLength": 128,
-          "minLength": 20,
-          "title": "Confirmation Token",
-          "type": "string"
-        }
-      },
-      "required": [
-        "receipt_id",
-        "confirmation_token"
-      ],
-      "title": "RevertPayload",
-      "type": "object"
-    },
-    "ai.run.cancel": {
-      "additionalProperties": false,
-      "properties": {
-        "work_id": {
-          "format": "uuid",
-          "title": "Work Id",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
           "type": "string"
         },
-        "confirmation_token": {
-          "maxLength": 128,
-          "minLength": 20,
-          "title": "Confirmation Token",
+        "entry_kind": {
+          "enum": [
+            "customer_request",
+            "new_product",
+            "derivative"
+          ],
+          "title": "Entry Kind",
           "type": "string"
+        },
+        "target_kind": {
+          "default": "new_product",
+          "enum": [
+            "new_product",
+            "new_variant"
+          ],
+          "title": "Target Kind",
+          "type": "string"
+        },
+        "baseline_product_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Baseline Product Id"
+        },
+        "baseline_definition_revision": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Baseline Definition Revision"
+        },
+        "brief": {
+          "default": "",
+          "title": "Brief",
+          "type": "string"
+        },
+        "customer_identities": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Customer Identities",
+          "type": "array"
+        },
+        "source_refs": {
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "context_refs": {
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "title": "Context Refs",
+          "type": "array"
+        },
+        "groups": {
+          "$ref": "#/$defs/Groups"
         }
       },
       "required": [
-        "work_id",
-        "confirmation_token"
+        "title",
+        "entry_kind"
       ],
-      "title": "CancelPayload",
+      "title": "ProposalCreate",
+      "type": "object"
+    },
+    "proposal.item.patch": {
+      "$defs": {
+        "PatchOp": {
+          "additionalProperties": false,
+          "properties": {
+            "item_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Item Id"
+            },
+            "kind": {
+              "enum": [
+                "section",
+                "option",
+                "risk",
+                "decision_note",
+                "difference",
+                "commercial_target",
+                "assumption",
+                "spec",
+                "question"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "content": {
+              "additionalProperties": true,
+              "title": "Content",
+              "type": "object"
+            },
+            "source_refs": {
+              "items": {
+                "$ref": "#/$defs/Reference"
+              },
+              "title": "Source Refs",
+              "type": "array"
+            },
+            "op": {
+              "default": "upsert",
+              "enum": [
+                "upsert",
+                "remove"
+              ],
+              "title": "Op",
+              "type": "string"
+            },
+            "base_version": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Base Version"
+            }
+          },
+          "required": [
+            "kind",
+            "content"
+          ],
+          "title": "PatchOp",
+          "type": "object"
+        },
+        "Reference": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "enum": [
+                "human",
+                "artifact",
+                "original",
+                "snapshot",
+                "knowledge",
+                "parameter",
+                "definition"
+              ],
+              "title": "Type",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "version": {
+              "exclusiveMinimum": 0,
+              "title": "Version",
+              "type": "integer"
+            },
+            "line": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Line"
+            },
+            "quote": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quote"
+            },
+            "statement": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Statement"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "title": "Reference",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "prepared_by_run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prepared By Run Id"
+        },
+        "candidate_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Digest"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "proposal_id": {
+          "format": "uuid",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "ops": {
+          "items": {
+            "$ref": "#/$defs/PatchOp"
+          },
+          "minItems": 1,
+          "title": "Ops",
+          "type": "array"
+        },
+        "source_refs": {
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "title": "Source Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "ops"
+      ],
+      "title": "ItemPatch",
+      "type": "object"
+    },
+    "proposal.question.create": {
+      "additionalProperties": false,
+      "properties": {
+        "prepared_by_run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prepared By Run Id"
+        },
+        "candidate_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Digest"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "question": {
+          "minLength": 1,
+          "title": "Question",
+          "type": "string"
+        },
+        "owner_id": {
+          "format": "uuid",
+          "title": "Owner Id",
+          "type": "string"
+        },
+        "due_date": {
+          "format": "date",
+          "title": "Due Date",
+          "type": "string"
+        },
+        "related_item_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Related Item Ids",
+          "type": "array"
+        },
+        "status": {
+          "default": "open",
+          "enum": [
+            "open",
+            "answered",
+            "carried"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "answer": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Answer"
+        },
+        "supersedes_item_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Supersedes Item Id"
+        },
+        "proposal_id": {
+          "format": "uuid",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "expected_revision": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "question",
+        "owner_id",
+        "due_date",
+        "proposal_id",
+        "expected_revision"
+      ],
+      "title": "QuestionCreate",
+      "type": "object"
+    },
+    "proposal.g0.submit": {
+      "additionalProperties": false,
+      "properties": {
+        "proposal_id": {
+          "format": "uuid",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "expected_revision": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "reviewer_id": {
+          "format": "uuid",
+          "title": "Reviewer Id",
+          "type": "string"
+        },
+        "no_alternative_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "No Alternative Reason"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "expected_revision",
+        "reviewer_id"
+      ],
+      "title": "G0Submit",
+      "type": "object"
+    },
+    "proposal.g0.decide": {
+      "$defs": {
+        "Disposition": {
+          "additionalProperties": false,
+          "properties": {
+            "subject_type": {
+              "enum": [
+                "question",
+                "spec_item"
+              ],
+              "title": "Subject Type",
+              "type": "string"
+            },
+            "subject_id": {
+              "format": "uuid",
+              "title": "Subject Id",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "task",
+                "risk"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "owner_id": {
+              "format": "uuid",
+              "title": "Owner Id",
+              "type": "string"
+            },
+            "due_date": {
+              "format": "date",
+              "title": "Due Date",
+              "type": "string"
+            },
+            "note": {
+              "minLength": 1,
+              "title": "Note",
+              "type": "string"
+            }
+          },
+          "required": [
+            "subject_type",
+            "subject_id",
+            "kind",
+            "owner_id",
+            "due_date",
+            "note"
+          ],
+          "title": "Disposition",
+          "type": "object"
+        },
+        "IdentityInput": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "minLength": 1,
+              "title": "Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "title": "IdentityInput",
+          "type": "object"
+        },
+        "ProjectInput": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "minLength": 1,
+              "title": "Name",
+              "type": "string"
+            },
+            "owner_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Owner Id"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "title": "ProjectInput",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "proposal_id": {
+          "format": "uuid",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "submission_id": {
+          "format": "uuid",
+          "title": "Submission Id",
+          "type": "string"
+        },
+        "expected_revision": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "outcome": {
+          "enum": [
+            "approved",
+            "returned",
+            "rejected"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "rationale": {
+          "minLength": 1,
+          "title": "Rationale",
+          "type": "string"
+        },
+        "selected_option_item_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Selected Option Item Id"
+        },
+        "dispositions": {
+          "items": {
+            "$ref": "#/$defs/Disposition"
+          },
+          "title": "Dispositions",
+          "type": "array"
+        },
+        "project": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProjectInput"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "new_identity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IdentityInput"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "submission_id",
+        "expected_revision",
+        "outcome",
+        "rationale"
+      ],
+      "title": "G0Decide",
+      "type": "object"
+    },
+    "model.configuration.save": {
+      "$defs": {
+        "ModelMetadata": {
+          "additionalProperties": false,
+          "properties": {
+            "protocol": {
+              "enum": [
+                "openai-compatible",
+                "anthropic-native"
+              ],
+              "title": "Protocol",
+              "type": "string"
+            },
+            "base_url": {
+              "maxLength": 500,
+              "minLength": 1,
+              "title": "Base Url",
+              "type": "string"
+            },
+            "model": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Model",
+              "type": "string"
+            },
+            "model_version": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Model Version",
+              "type": "string"
+            },
+            "max_output_tokens": {
+              "default": 2048,
+              "maximum": 32768,
+              "minimum": 1,
+              "title": "Max Output Tokens",
+              "type": "integer"
+            },
+            "openai_output_parameter": {
+              "default": "max_completion_tokens",
+              "enum": [
+                "max_tokens",
+                "max_completion_tokens"
+              ],
+              "title": "Openai Output Parameter",
+              "type": "string"
+            },
+            "timeout_seconds": {
+              "default": 30.0,
+              "maximum": 90,
+              "minimum": 1,
+              "title": "Timeout Seconds",
+              "type": "number"
+            },
+            "response_bytes": {
+              "default": 1048576,
+              "maximum": 2097152,
+              "minimum": 1024,
+              "title": "Response Bytes",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "protocol",
+            "base_url",
+            "model",
+            "model_version"
+          ],
+          "title": "ModelMetadata",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "expected_revision": {
+          "minimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ModelMetadata"
+        },
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "expected_revision",
+        "metadata"
+      ],
+      "title": "SavePayload",
       "type": "object"
     },
     "product.definition.draft": {
@@ -546,7 +1551,6 @@
               "items": {
                 "type": "string"
               },
-              "maxItems": 30,
               "title": "Test Conditions",
               "type": "array"
             },
@@ -622,7 +1626,6 @@
               "items": {
                 "$ref": "#/$defs/DefinitionReference"
               },
-              "maxItems": 20,
               "minItems": 1,
               "title": "Sources",
               "type": "array"
@@ -657,7 +1660,8 @@
           "default": "private",
           "enum": [
             "private",
-            "product"
+            "category",
+            "audience"
           ],
           "title": "Visibility",
           "type": "string"
@@ -692,7 +1696,6 @@
           "items": {
             "type": "string"
           },
-          "maxItems": 50,
           "minItems": 1,
           "title": "Use Cases",
           "type": "array"
@@ -701,7 +1704,6 @@
           "items": {
             "type": "string"
           },
-          "maxItems": 100,
           "title": "Requirements",
           "type": "array"
         },
@@ -709,7 +1711,6 @@
           "items": {
             "type": "string"
           },
-          "maxItems": 100,
           "title": "Constraints",
           "type": "array"
         },
@@ -717,7 +1718,6 @@
           "items": {
             "type": "string"
           },
-          "maxItems": 100,
           "title": "Unknowns",
           "type": "array"
         },
@@ -725,7 +1725,6 @@
           "items": {
             "type": "string"
           },
-          "maxItems": 100,
           "title": "Exclusions",
           "type": "array"
         },
@@ -733,7 +1732,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "minItems": 1,
           "title": "Sources",
           "type": "array"
@@ -742,7 +1740,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionSpec"
           },
-          "maxItems": 100,
           "title": "Specs",
           "type": "array"
         },
@@ -836,7 +1833,6 @@
                   "items": {
                     "type": "string"
                   },
-                  "maxItems": 50,
                   "minItems": 1,
                   "type": "array"
                 },
@@ -853,7 +1849,6 @@
                   "items": {
                     "type": "string"
                   },
-                  "maxItems": 100,
                   "type": "array"
                 },
                 {
@@ -869,7 +1864,6 @@
                   "items": {
                     "type": "string"
                   },
-                  "maxItems": 100,
                   "type": "array"
                 },
                 {
@@ -885,7 +1879,6 @@
                   "items": {
                     "type": "string"
                   },
-                  "maxItems": 100,
                   "type": "array"
                 },
                 {
@@ -901,7 +1894,6 @@
                   "items": {
                     "type": "string"
                   },
-                  "maxItems": 100,
                   "type": "array"
                 },
                 {
@@ -917,7 +1909,6 @@
                   "items": {
                     "$ref": "#/$defs/VariantSpecOverride"
                   },
-                  "maxItems": 100,
                   "type": "array"
                 },
                 {
@@ -1062,7 +2053,6 @@
               "items": {
                 "type": "string"
               },
-              "maxItems": 30,
               "title": "Test Conditions",
               "type": "array"
             },
@@ -1138,7 +2128,6 @@
               "items": {
                 "$ref": "#/$defs/DefinitionReference"
               },
-              "maxItems": 20,
               "minItems": 1,
               "title": "Sources",
               "type": "array"
@@ -1176,7 +2165,6 @@
           "items": {
             "type": "string"
           },
-          "maxItems": 30,
           "minItems": 1,
           "title": "Applicability",
           "type": "array"
@@ -1195,7 +2183,8 @@
           "default": "private",
           "enum": [
             "private",
-            "product"
+            "category",
+            "audience"
           ],
           "title": "Visibility",
           "type": "string"
@@ -1207,7 +2196,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "minItems": 1,
           "title": "Sources",
           "type": "array"
@@ -1341,7 +2329,6 @@
           "items": {
             "$ref": "#/$defs/RebaseChoice"
           },
-          "maxItems": 200,
           "title": "Choices",
           "type": "array"
         },
@@ -1349,7 +2336,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "minItems": 1,
           "title": "Sources",
           "type": "array"
@@ -1421,7 +2407,8 @@
           "default": "private",
           "enum": [
             "private",
-            "product"
+            "category",
+            "audience"
           ],
           "title": "Visibility",
           "type": "string"
@@ -1481,7 +2468,6 @@
                 "minimum": 0,
                 "type": "integer"
               },
-              "maxItems": 7,
               "minItems": 1,
               "title": "Working Weekdays",
               "type": "array"
@@ -1490,7 +2476,6 @@
               "items": {
                 "$ref": "#/$defs/WorkInterval"
               },
-              "maxItems": 12,
               "minItems": 1,
               "title": "Intervals",
               "type": "array"
@@ -1501,7 +2486,6 @@
                 "format": "date",
                 "type": "string"
               },
-              "maxItems": 3660,
               "title": "Holidays",
               "type": "array"
             },
@@ -1555,7 +2539,6 @@
               "items": {
                 "type": "string"
               },
-              "maxItems": 100,
               "title": "Depends On",
               "type": "array"
             },
@@ -1625,7 +2608,6 @@
               "items": {
                 "$ref": "#/$defs/PlanTask"
               },
-              "maxItems": 500,
               "minItems": 1,
               "title": "Tasks",
               "type": "array"
@@ -2170,7 +3152,6 @@
               "items": {
                 "$ref": "#/$defs/ExternalDesignReference"
               },
-              "maxItems": 20,
               "title": "External Design Refs",
               "type": "array"
             }
@@ -2194,7 +3175,8 @@
           "default": "private",
           "enum": [
             "private",
-            "product"
+            "category",
+            "audience"
           ],
           "title": "Visibility",
           "type": "string"
@@ -2235,7 +3217,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "minItems": 1,
           "title": "Sources",
           "type": "array"
@@ -2258,7 +3239,6 @@
           "items": {
             "$ref": "#/$defs/BomLineInput"
           },
-          "maxItems": 500,
           "minItems": 1,
           "title": "Lines",
           "type": "array"
@@ -2396,7 +3376,8 @@
           "default": "private",
           "enum": [
             "private",
-            "product"
+            "category",
+            "audience"
           ],
           "title": "Visibility",
           "type": "string"
@@ -2437,7 +3418,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "minItems": 1,
           "title": "Sources",
           "type": "array"
@@ -2663,7 +3643,6 @@
               "items": {
                 "type": "string"
               },
-              "maxItems": 100,
               "title": "Depends On",
               "type": "array"
             },
@@ -2671,7 +3650,6 @@
               "items": {
                 "type": "string"
               },
-              "maxItems": 100,
               "title": "Bom Line Keys",
               "type": "array"
             },
@@ -2690,7 +3668,6 @@
               "items": {
                 "$ref": "#/$defs/ResourceRequirement"
               },
-              "maxItems": 50,
               "title": "Resource Requirements",
               "type": "array"
             },
@@ -2822,7 +3799,8 @@
           "default": "private",
           "enum": [
             "private",
-            "product"
+            "category",
+            "audience"
           ],
           "title": "Visibility",
           "type": "string"
@@ -2863,7 +3841,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "minItems": 1,
           "title": "Sources",
           "type": "array"
@@ -2924,7 +3901,6 @@
           "items": {
             "$ref": "#/$defs/ProcessOperation"
           },
-          "maxItems": 500,
           "minItems": 1,
           "title": "Operations",
           "type": "array"
@@ -3239,7 +4215,6 @@
               "items": {
                 "$ref": "#/$defs/DefinitionReference"
               },
-              "maxItems": 20,
               "minItems": 1,
               "title": "Sources",
               "type": "array"
@@ -3300,7 +4275,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "minItems": 1,
           "title": "Sources",
           "type": "array"
@@ -3358,7 +4332,6 @@
           "items": {
             "$ref": "#/$defs/ConfigurationDifference"
           },
-          "maxItems": 3000,
           "title": "Differences",
           "type": "array"
         }
@@ -3464,7 +4437,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "minItems": 1,
           "title": "Sources",
           "type": "array"
@@ -3510,7 +4482,6 @@
           "type": "string"
         },
         "observed_unit_count": {
-          "maximum": 1000000,
           "minimum": 1,
           "title": "Observed Unit Count",
           "type": "integer"
@@ -3697,7 +4668,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "minItems": 1,
           "title": "Sources",
           "type": "array"
@@ -3730,7 +4700,6 @@
           "items": {
             "$ref": "#/$defs/SampleIdentity"
           },
-          "maxItems": 500,
           "minItems": 1,
           "title": "Samples",
           "type": "array"
@@ -4086,7 +5055,6 @@
                 "minLength": 1,
                 "type": "string"
               },
-              "maxItems": 100,
               "minItems": 1,
               "title": "Item Ids",
               "type": "array"
@@ -4244,7 +5212,6 @@
                 "minLength": 1,
                 "type": "string"
               },
-              "maxItems": 1000,
               "title": "Cavities",
               "type": "array"
             },
@@ -4307,7 +5274,6 @@
           "items": {
             "$ref": "#/$defs/PreparationItem"
           },
-          "maxItems": 100,
           "minItems": 1,
           "title": "Items",
           "type": "array"
@@ -4317,7 +5283,6 @@
           "items": {
             "$ref": "#/$defs/PreparationDocument"
           },
-          "maxItems": 100,
           "title": "Documents",
           "type": "array"
         },
@@ -4379,7 +5344,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "minItems": 1,
           "title": "Sources",
           "type": "array"
@@ -4521,7 +5485,6 @@
                 "minLength": 1,
                 "type": "string"
               },
-              "maxItems": 50,
               "title": "Conditions",
               "type": "array"
             },
@@ -4536,7 +5499,6 @@
               "items": {
                 "$ref": "#/$defs/DefinitionReference"
               },
-              "maxItems": 20,
               "title": "Sources",
               "type": "array"
             }
@@ -4566,7 +5528,6 @@
           "items": {
             "$ref": "#/$defs/ItemAssessment"
           },
-          "maxItems": 100,
           "minItems": 1,
           "title": "Assessments",
           "type": "array"
@@ -4687,7 +5648,6 @@
               "anyOf": [
                 {
                   "exclusiveMinimum": 0.0,
-                  "maximum": 1000.0,
                   "type": "number"
                 },
                 {
@@ -4743,7 +5703,6 @@
           "items": {
             "$ref": "#/$defs/ResourceIntent"
           },
-          "maxItems": 100,
           "title": "Resource Intents",
           "type": "array"
         },
@@ -4774,7 +5733,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "title": "Sources",
           "type": "array"
         },
@@ -5038,14 +5996,21 @@
               "items": {
                 "$ref": "#/$defs/DefinitionReference"
               },
-              "maxItems": 20,
               "title": "Sources",
               "type": "array"
             },
             "valid_until": {
-              "format": "date-time",
-              "title": "Valid Until",
-              "type": "string"
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Valid Until"
             },
             "reason": {
               "maxLength": 2000,
@@ -5057,7 +6022,6 @@
           "required": [
             "rule_id",
             "status",
-            "valid_until",
             "reason"
           ],
           "title": "ProfessionalApplicability",
@@ -5109,16 +6073,23 @@
           "type": "integer"
         },
         "valid_until": {
-          "format": "date-time",
-          "title": "Valid Until",
-          "type": "string"
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid Until"
         },
         "professional_assessments": {
           "default": [],
           "items": {
             "$ref": "#/$defs/ProfessionalApplicability"
           },
-          "maxItems": 4,
           "title": "Professional Assessments",
           "type": "array"
         },
@@ -5133,7 +6104,6 @@
             ],
             "type": "string"
           },
-          "maxItems": 4,
           "title": "Accepted Controls",
           "type": "array"
         },
@@ -5141,7 +6111,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "minItems": 1,
           "title": "Sources",
           "type": "array"
@@ -5172,7 +6141,6 @@
         "expected_assessment_revision",
         "expected_assessment_sha256",
         "action",
-        "valid_until",
         "sources",
         "reason"
       ],
@@ -5242,14 +6210,21 @@
               "items": {
                 "$ref": "#/$defs/DefinitionReference"
               },
-              "maxItems": 20,
               "title": "Sources",
               "type": "array"
             },
             "valid_until": {
-              "format": "date-time",
-              "title": "Valid Until",
-              "type": "string"
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Valid Until"
             },
             "reason": {
               "maxLength": 2000,
@@ -5261,7 +6236,6 @@
           "required": [
             "rule_id",
             "status",
-            "valid_until",
             "reason"
           ],
           "title": "ProfessionalApplicability",
@@ -5313,16 +6287,23 @@
           "type": "integer"
         },
         "valid_until": {
-          "format": "date-time",
-          "title": "Valid Until",
-          "type": "string"
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid Until"
         },
         "professional_assessments": {
           "default": [],
           "items": {
             "$ref": "#/$defs/ProfessionalApplicability"
           },
-          "maxItems": 4,
           "title": "Professional Assessments",
           "type": "array"
         },
@@ -5337,7 +6318,6 @@
             ],
             "type": "string"
           },
-          "maxItems": 4,
           "title": "Accepted Controls",
           "type": "array"
         },
@@ -5345,7 +6325,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "minItems": 1,
           "title": "Sources",
           "type": "array"
@@ -5376,7 +6355,6 @@
         "expected_assessment_revision",
         "expected_assessment_sha256",
         "action",
-        "valid_until",
         "sources",
         "reason"
       ],
@@ -5608,7 +6586,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "minItems": 1,
           "title": "Sources",
           "type": "array"
@@ -5683,7 +6660,6 @@
                 "minLength": 1,
                 "type": "string"
               },
-              "maxItems": 50,
               "title": "Conditions",
               "type": "array"
             },
@@ -5698,7 +6674,6 @@
               "items": {
                 "$ref": "#/$defs/DefinitionReference"
               },
-              "maxItems": 20,
               "title": "Sources",
               "type": "array"
             }
@@ -5831,7 +6806,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "title": "Sources",
           "type": "array"
         },
@@ -5859,7 +6833,6 @@
           "items": {
             "$ref": "#/$defs/ActualItemAssessment"
           },
-          "maxItems": 1000,
           "minItems": 1,
           "title": "Assessments",
           "type": "array"
@@ -6093,7 +7066,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "title": "Sources",
           "type": "array"
         },
@@ -6121,7 +7093,6 @@
           "items": {
             "$ref": "#/$defs/SampleRef"
           },
-          "maxItems": 1000,
           "minItems": 1,
           "title": "Samples",
           "type": "array"
@@ -6130,7 +7101,6 @@
           "items": {
             "$ref": "#/$defs/Coverage"
           },
-          "maxItems": 10000,
           "minItems": 1,
           "title": "Coverage",
           "type": "array"
@@ -6303,7 +7273,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "title": "Sources",
           "type": "array"
         },
@@ -6331,7 +7300,6 @@
           "items": {
             "$ref": "#/$defs/Coverage"
           },
-          "maxItems": 10000,
           "minItems": 1,
           "title": "Coverage",
           "type": "array"
@@ -6341,7 +7309,6 @@
           "items": {
             "$ref": "#/$defs/Coverage"
           },
-          "maxItems": 10000,
           "title": "Returned Coverage",
           "type": "array"
         },
@@ -6525,7 +7492,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "title": "Sources",
           "type": "array"
         },
@@ -6553,7 +7519,6 @@
           "items": {
             "$ref": "#/$defs/Coverage"
           },
-          "maxItems": 10000,
           "minItems": 1,
           "title": "Coverage",
           "type": "array"
@@ -6736,7 +7701,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "title": "Sources",
           "type": "array"
         },
@@ -6769,7 +7733,6 @@
           "items": {
             "$ref": "#/$defs/Coverage"
           },
-          "maxItems": 10000,
           "minItems": 1,
           "title": "Coverage",
           "type": "array"
@@ -6920,7 +7883,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "title": "Sources",
           "type": "array"
         },
@@ -7107,7 +8069,6 @@
           "items": {
             "$ref": "#/$defs/DefinitionReference"
           },
-          "maxItems": 20,
           "title": "Sources",
           "type": "array"
         },
@@ -7160,6 +8121,5040 @@
         "at"
       ],
       "title": "StartPayload",
+      "type": "object"
+    },
+    "test.results.import": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "expected_request_revision": {
+          "minimum": 1,
+          "title": "Expected Request Revision",
+          "type": "integer"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "expected_run_revision": {
+          "minimum": 1,
+          "title": "Expected Run Revision",
+          "type": "integer"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "capture_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Capture Id"
+        },
+        "expected_capture_revision": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Capture Revision"
+        },
+        "final": {
+          "default": false,
+          "title": "Final",
+          "type": "boolean"
+        },
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        },
+        "actual_end": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventTime"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "incomplete_reason": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Incomplete Reason"
+        },
+        "next_owner_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Owner Id"
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_request_revision",
+        "run_id",
+        "expected_run_revision",
+        "reason",
+        "at"
+      ],
+      "title": "ImportPayload",
+      "type": "object"
+    },
+    "test.result.compute": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "expected_request_revision": {
+          "minimum": 1,
+          "title": "Expected Request Revision",
+          "type": "integer"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "expected_run_revision": {
+          "minimum": 1,
+          "title": "Expected Run Revision",
+          "type": "integer"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "expected_basis_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Expected Basis Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_request_revision",
+        "run_id",
+        "expected_run_revision",
+        "reason",
+        "expected_basis_sha256"
+      ],
+      "title": "ComputePayload",
+      "type": "object"
+    },
+    "test.run.review": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "expected_request_revision": {
+          "minimum": 1,
+          "title": "Expected Request Revision",
+          "type": "integer"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "expected_run_revision": {
+          "minimum": 1,
+          "title": "Expected Run Revision",
+          "type": "integer"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "projection_id": {
+          "format": "uuid",
+          "title": "Projection Id",
+          "type": "string"
+        },
+        "expected_projection_revision": {
+          "minimum": 1,
+          "title": "Expected Projection Revision",
+          "type": "integer"
+        },
+        "expected_basis_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Expected Basis Sha256",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_request_revision",
+        "run_id",
+        "expected_run_revision",
+        "reason",
+        "projection_id",
+        "expected_projection_revision",
+        "expected_basis_sha256",
+        "text",
+        "at"
+      ],
+      "title": "ReviewPayload",
+      "type": "object"
+    },
+    "test.disposition.decide": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "A named conclusion about this Run; no resource release or external approval.",
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "expected_request_revision": {
+          "minimum": 1,
+          "title": "Expected Request Revision",
+          "type": "integer"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "expected_run_revision": {
+          "minimum": 1,
+          "title": "Expected Run Revision",
+          "type": "integer"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "projection_id": {
+          "format": "uuid",
+          "title": "Projection Id",
+          "type": "string"
+        },
+        "expected_projection_revision": {
+          "minimum": 1,
+          "title": "Expected Projection Revision",
+          "type": "integer"
+        },
+        "expected_basis_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Expected Basis Sha256",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "request_id",
+        "expected_request_revision",
+        "run_id",
+        "expected_run_revision",
+        "reason",
+        "projection_id",
+        "expected_projection_revision",
+        "expected_basis_sha256",
+        "text",
+        "at"
+      ],
+      "title": "DispositionPayload",
+      "type": "object"
+    },
+    "quality.issue.create": {
+      "additionalProperties": false,
+      "properties": {
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "measurement_id": {
+          "format": "uuid",
+          "title": "Measurement Id",
+          "type": "string"
+        },
+        "event_id": {
+          "format": "uuid",
+          "title": "Event Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "measurement_id",
+        "event_id",
+        "title"
+      ],
+      "title": "IssueCreatePayload",
+      "type": "object"
+    },
+    "quality.issue.merge": {
+      "$defs": {
+        "Ref": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "Ref",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "issue_id": {
+          "format": "uuid",
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "expected_issue_revision": {
+          "minimum": 1,
+          "title": "Expected Issue Revision",
+          "type": "integer"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "sources",
+        "reason",
+        "issue_id",
+        "expected_issue_revision"
+      ],
+      "title": "IssueMergePayload",
+      "type": "object"
+    },
+    "quality.issue.triage": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "issue_id": {
+          "format": "uuid",
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "expected_issue_revision": {
+          "minimum": 1,
+          "title": "Expected Issue Revision",
+          "type": "integer"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "reason",
+        "issue_id",
+        "expected_issue_revision"
+      ],
+      "title": "IssueTriagePayload",
+      "type": "object"
+    },
+    "quality.issue.containment.record": {
+      "$defs": {
+        "Containment": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "executor_id": {
+              "format": "uuid",
+              "title": "Executor Id",
+              "type": "string"
+            },
+            "evidence": {
+              "items": {
+                "$ref": "#/$defs/SourceRef"
+              },
+              "minItems": 1,
+              "title": "Evidence",
+              "type": "array"
+            },
+            "at": {
+              "$ref": "#/$defs/EventTime"
+            }
+          },
+          "required": [
+            "id",
+            "text",
+            "executor_id",
+            "evidence",
+            "at"
+          ],
+          "title": "Containment",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/Containment"
+        },
+        "issue_id": {
+          "format": "uuid",
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "expected_issue_revision": {
+          "minimum": 1,
+          "title": "Expected Issue Revision",
+          "type": "integer"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "action",
+        "issue_id",
+        "expected_issue_revision"
+      ],
+      "title": "ContainmentPayload",
+      "type": "object"
+    },
+    "quality.capa.draft": {
+      "$defs": {
+        "CapaAction": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "corrective",
+                "preventive"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "executor_id": {
+              "format": "uuid",
+              "title": "Executor Id",
+              "type": "string"
+            },
+            "completion": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Containment"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "text",
+            "executor_id"
+          ],
+          "title": "CapaAction",
+          "type": "object"
+        },
+        "Containment": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "executor_id": {
+              "format": "uuid",
+              "title": "Executor Id",
+              "type": "string"
+            },
+            "evidence": {
+              "items": {
+                "$ref": "#/$defs/SourceRef"
+              },
+              "minItems": 1,
+              "title": "Evidence",
+              "type": "array"
+            },
+            "at": {
+              "$ref": "#/$defs/EventTime"
+            }
+          },
+          "required": [
+            "id",
+            "text",
+            "executor_id",
+            "evidence",
+            "at"
+          ],
+          "title": "Containment",
+          "type": "object"
+        },
+        "EffectivenessRequirement": {
+          "additionalProperties": false,
+          "properties": {
+            "method": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Method",
+              "type": "string"
+            },
+            "acceptance": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Acceptance",
+              "type": "string"
+            },
+            "observation_until": {
+              "format": "date-time",
+              "title": "Observation Until",
+              "type": "string"
+            },
+            "required_failure_ids": {
+              "items": {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "title": "Required Failure Ids",
+              "type": "array"
+            }
+          },
+          "required": [
+            "method",
+            "acceptance",
+            "observation_until",
+            "required_failure_ids"
+          ],
+          "title": "EffectivenessRequirement",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "Hypothesis": {
+          "additionalProperties": false,
+          "properties": {
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/SourceRef"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "text",
+            "sources"
+          ],
+          "title": "Hypothesis",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Hypotheses/actions only; completion and professional conclusions forbidden.",
+      "properties": {
+        "capa_id": {
+          "format": "uuid",
+          "title": "Capa Id",
+          "type": "string"
+        },
+        "hypotheses": {
+          "items": {
+            "$ref": "#/$defs/Hypothesis"
+          },
+          "minItems": 1,
+          "title": "Hypotheses",
+          "type": "array"
+        },
+        "actions": {
+          "items": {
+            "$ref": "#/$defs/CapaAction"
+          },
+          "minItems": 1,
+          "title": "Actions",
+          "type": "array"
+        },
+        "requirement": {
+          "$ref": "#/$defs/EffectivenessRequirement"
+        },
+        "issue_id": {
+          "format": "uuid",
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "expected_issue_revision": {
+          "minimum": 1,
+          "title": "Expected Issue Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "capa_id",
+        "hypotheses",
+        "actions",
+        "requirement",
+        "issue_id",
+        "expected_issue_revision"
+      ],
+      "title": "CapaDraftPayload",
+      "type": "object"
+    },
+    "change.request.create": {
+      "$defs": {
+        "Ref": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "enum": [
+                "spec",
+                "part",
+                "bom",
+                "interface",
+                "engineering_configuration",
+                "build",
+                "sample",
+                "test_run",
+                "operation",
+                "tooling",
+                "fixture",
+                "sop",
+                "work_instruction",
+                "control_plan",
+                "manufacturing_baseline",
+                "pilot_run",
+                "manufacturing_release",
+                "customer_sample",
+                "supply_commitment",
+                "inventory",
+                "wip",
+                "training",
+                "evidence",
+                "issue",
+                "capa",
+                "manufacturing_configuration",
+                "graph_snapshot"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "key": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Key"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "kind"
+          ],
+          "title": "Ref",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "roots": {
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "minItems": 1,
+          "title": "Roots",
+          "type": "array"
+        },
+        "references": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "title": "References",
+          "type": "array"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "reason",
+        "roots",
+        "sources"
+      ],
+      "title": "ChangeCreatePayload",
+      "type": "object"
+    },
+    "change.impact.compute": {
+      "$defs": {
+        "Hypothesis": {
+          "additionalProperties": false,
+          "properties": {
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/SourceRef"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "text",
+            "sources"
+          ],
+          "title": "Hypothesis",
+          "type": "object"
+        },
+        "Ref": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "enum": [
+                "spec",
+                "part",
+                "bom",
+                "interface",
+                "engineering_configuration",
+                "build",
+                "sample",
+                "test_run",
+                "operation",
+                "tooling",
+                "fixture",
+                "sop",
+                "work_instruction",
+                "control_plan",
+                "manufacturing_baseline",
+                "pilot_run",
+                "manufacturing_release",
+                "customer_sample",
+                "supply_commitment",
+                "inventory",
+                "wip",
+                "training",
+                "evidence",
+                "issue",
+                "capa",
+                "manufacturing_configuration",
+                "graph_snapshot"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "key": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Key"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "kind"
+          ],
+          "title": "Ref",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "change_id": {
+          "format": "uuid",
+          "title": "Change Id",
+          "type": "string"
+        },
+        "expected_change_revision": {
+          "minimum": 1,
+          "title": "Expected Change Revision",
+          "type": "integer"
+        },
+        "snapshot": {
+          "$ref": "#/$defs/Ref"
+        },
+        "hypotheses": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Hypothesis"
+          },
+          "title": "Hypotheses",
+          "type": "array"
+        }
+      },
+      "required": [
+        "change_id",
+        "expected_change_revision",
+        "snapshot"
+      ],
+      "title": "ImpactComputePayload",
+      "type": "object"
+    },
+    "quality.issue.root_cause.decide": {
+      "$defs": {
+        "ExactSource": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "ExactSource",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/ExactSource"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "issue_id": {
+          "format": "uuid",
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "expected_issue_revision": {
+          "minimum": 1,
+          "title": "Expected Issue Revision",
+          "type": "integer"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "text",
+        "sources",
+        "issue_id",
+        "expected_issue_revision"
+      ],
+      "title": "RootCausePayload",
+      "type": "object"
+    },
+    "quality.capa.actions.complete": {
+      "$defs": {
+        "Completion": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "executor_id": {
+              "format": "uuid",
+              "title": "Executor Id",
+              "type": "string"
+            },
+            "evidence": {
+              "items": {
+                "$ref": "#/$defs/ExactSource"
+              },
+              "minItems": 1,
+              "title": "Evidence",
+              "type": "array"
+            },
+            "at": {
+              "$ref": "#/$defs/CompletionTime"
+            }
+          },
+          "required": [
+            "id",
+            "text",
+            "executor_id",
+            "evidence",
+            "at"
+          ],
+          "title": "Completion",
+          "type": "object"
+        },
+        "CompletionTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/ExactSource"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "CompletionTime",
+          "type": "object"
+        },
+        "ExactSource": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "ExactSource",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "completions": {
+          "items": {
+            "$ref": "#/$defs/Completion"
+          },
+          "minItems": 1,
+          "title": "Completions",
+          "type": "array"
+        },
+        "issue_id": {
+          "format": "uuid",
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "expected_issue_revision": {
+          "minimum": 1,
+          "title": "Expected Issue Revision",
+          "type": "integer"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "completions",
+        "issue_id",
+        "expected_issue_revision"
+      ],
+      "title": "ActionsCompletePayload",
+      "type": "object"
+    },
+    "quality.capa.followup.link": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "OutputRef": {
+          "additionalProperties": false,
+          "description": "id always denotes the immutable owner row, never a guessed logical identity.",
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "enum": [
+                "definition",
+                "bom",
+                "engineering_configuration",
+                "manufacturing_configuration",
+                "build",
+                "actual_configuration",
+                "build_lot",
+                "sample",
+                "verification_preparation",
+                "verification_request",
+                "verification_run"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "key": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Key"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "kind"
+          ],
+          "title": "OutputRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "issue_id": {
+          "format": "uuid",
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "expected_issue_revision": {
+          "minimum": 1,
+          "title": "Expected Issue Revision",
+          "type": "integer"
+        },
+        "capa_id": {
+          "format": "uuid",
+          "title": "Capa Id",
+          "type": "string"
+        },
+        "action_id": {
+          "format": "uuid",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "output_refs": {
+          "items": {
+            "$ref": "#/$defs/OutputRef"
+          },
+          "minItems": 1,
+          "title": "Output Refs",
+          "type": "array"
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "issue_id",
+        "expected_issue_revision",
+        "capa_id",
+        "action_id",
+        "output_refs",
+        "reason"
+      ],
+      "title": "FollowupLinkPayload",
+      "type": "object"
+    },
+    "quality.capa.verification.candidate.record": {
+      "$defs": {
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "FailurePairMapping": {
+          "additionalProperties": false,
+          "properties": {
+            "failure_id": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Failure Id",
+              "type": "string"
+            },
+            "run": {
+              "$ref": "#/$defs/OutputRef"
+            },
+            "sample_id": {
+              "format": "uuid",
+              "title": "Sample Id",
+              "type": "string"
+            },
+            "sample_revision": {
+              "minimum": 1,
+              "title": "Sample Revision",
+              "type": "integer"
+            },
+            "actual_configuration_id": {
+              "format": "uuid",
+              "title": "Actual Configuration Id",
+              "type": "string"
+            },
+            "actual_configuration_revision": {
+              "minimum": 1,
+              "title": "Actual Configuration Revision",
+              "type": "integer"
+            },
+            "item_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Item Id",
+              "type": "string"
+            },
+            "measurement_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Measurement Id"
+            },
+            "projection_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Projection Id"
+            },
+            "applicability_sources": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/DefinitionReference"
+              },
+              "title": "Applicability Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "failure_id",
+            "run",
+            "sample_id",
+            "sample_revision",
+            "actual_configuration_id",
+            "actual_configuration_revision",
+            "item_id"
+          ],
+          "title": "FailurePairMapping",
+          "type": "object"
+        },
+        "FixedRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "FixedRef",
+          "type": "object"
+        },
+        "OutputRef": {
+          "additionalProperties": false,
+          "description": "id always denotes the immutable owner row, never a guessed logical identity.",
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "enum": [
+                "definition",
+                "bom",
+                "engineering_configuration",
+                "manufacturing_configuration",
+                "build",
+                "actual_configuration",
+                "build_lot",
+                "sample",
+                "verification_preparation",
+                "verification_request",
+                "verification_run"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "key": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Key"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "kind"
+          ],
+          "title": "OutputRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Business selections only; scope/anchor/proof/inspection are host facts.",
+      "properties": {
+        "issue_id": {
+          "format": "uuid",
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "expected_issue_revision": {
+          "minimum": 1,
+          "title": "Expected Issue Revision",
+          "type": "integer"
+        },
+        "capa_id": {
+          "format": "uuid",
+          "title": "Capa Id",
+          "type": "string"
+        },
+        "remediation_link_refs": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/FixedRef"
+          },
+          "title": "Remediation Link Refs",
+          "type": "array"
+        },
+        "mappings": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/FailurePairMapping"
+          },
+          "title": "Mappings",
+          "type": "array"
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DefinitionReference"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "issue_id",
+        "expected_issue_revision",
+        "capa_id",
+        "reason"
+      ],
+      "title": "CandidateRecordPayload",
+      "type": "object"
+    },
+    "quality.capa.observation.record": {
+      "$defs": {
+        "ActualEventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/ExactSource"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "ActualEventTime",
+          "type": "object"
+        },
+        "ExactSource": {
+          "additionalProperties": false,
+          "description": "Retain original SourceRef identity/position with a strict revision.",
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "ExactSource",
+          "type": "object"
+        },
+        "FactRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Sha256",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "sha256"
+          ],
+          "title": "FactRef",
+          "type": "object"
+        },
+        "JsonValue": {},
+        "ObservationRecordInput": {
+          "additionalProperties": false,
+          "properties": {
+            "target_key": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Target Key",
+              "type": "string"
+            },
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/ExactSource"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            },
+            "raw_material": {
+              "additionalProperties": {
+                "$ref": "#/$defs/JsonValue"
+              },
+              "title": "Raw Material",
+              "type": "object"
+            }
+          },
+          "required": [
+            "target_key",
+            "occurred_at",
+            "original_timezone",
+            "sources",
+            "raw_material"
+          ],
+          "title": "ObservationRecordInput",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "issue_id": {
+          "format": "uuid",
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "expected_issue_revision": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Expected Issue Revision",
+          "type": "integer"
+        },
+        "capa_id": {
+          "format": "uuid",
+          "title": "Capa Id",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/ExactSource"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "rule": {
+          "$ref": "#/$defs/FactRef"
+        },
+        "previous": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FactRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "target_keys": {
+          "items": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Target Keys",
+          "type": "array"
+        },
+        "observed_from": {
+          "format": "date-time",
+          "title": "Observed From",
+          "type": "string"
+        },
+        "observed_until": {
+          "format": "date-time",
+          "title": "Observed Until",
+          "type": "string"
+        },
+        "at": {
+          "$ref": "#/$defs/ActualEventTime"
+        },
+        "records": {
+          "items": {
+            "$ref": "#/$defs/ObservationRecordInput"
+          },
+          "minItems": 1,
+          "title": "Records",
+          "type": "array"
+        },
+        "coverage_sources": {
+          "items": {
+            "$ref": "#/$defs/ExactSource"
+          },
+          "minItems": 1,
+          "title": "Coverage Sources",
+          "type": "array"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "issue_id",
+        "expected_issue_revision",
+        "capa_id",
+        "sources",
+        "reason",
+        "rule",
+        "target_keys",
+        "observed_from",
+        "observed_until",
+        "at",
+        "records",
+        "coverage_sources"
+      ],
+      "title": "ObservationPayload",
+      "type": "object"
+    },
+    "quality.capa.verification.review": {
+      "$defs": {
+        "ActionReviewInput": {
+          "additionalProperties": false,
+          "properties": {
+            "action_id": {
+              "format": "uuid",
+              "title": "Action Id",
+              "type": "string"
+            },
+            "conclusion": {
+              "enum": [
+                "applicable",
+                "not_applicable",
+                "unknown"
+              ],
+              "title": "Conclusion",
+              "type": "string"
+            },
+            "reason": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/ExactSource"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "action_id",
+            "conclusion",
+            "reason",
+            "sources"
+          ],
+          "title": "ActionReviewInput",
+          "type": "object"
+        },
+        "ActualEventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/ExactSource"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "ActualEventTime",
+          "type": "object"
+        },
+        "DefinitionReference": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "DefinitionReference",
+          "type": "object"
+        },
+        "ExactSource": {
+          "additionalProperties": false,
+          "description": "Retain original SourceRef identity/position with a strict revision.",
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "ExactSource",
+          "type": "object"
+        },
+        "FactRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Sha256",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "sha256"
+          ],
+          "title": "FactRef",
+          "type": "object"
+        },
+        "FailurePairMapping": {
+          "additionalProperties": false,
+          "properties": {
+            "failure_id": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Failure Id",
+              "type": "string"
+            },
+            "run": {
+              "$ref": "#/$defs/OutputRef"
+            },
+            "sample_id": {
+              "format": "uuid",
+              "title": "Sample Id",
+              "type": "string"
+            },
+            "sample_revision": {
+              "minimum": 1,
+              "title": "Sample Revision",
+              "type": "integer"
+            },
+            "actual_configuration_id": {
+              "format": "uuid",
+              "title": "Actual Configuration Id",
+              "type": "string"
+            },
+            "actual_configuration_revision": {
+              "minimum": 1,
+              "title": "Actual Configuration Revision",
+              "type": "integer"
+            },
+            "item_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Item Id",
+              "type": "string"
+            },
+            "measurement_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Measurement Id"
+            },
+            "projection_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Projection Id"
+            },
+            "applicability_sources": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/DefinitionReference"
+              },
+              "title": "Applicability Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "failure_id",
+            "run",
+            "sample_id",
+            "sample_revision",
+            "actual_configuration_id",
+            "actual_configuration_revision",
+            "item_id"
+          ],
+          "title": "FailurePairMapping",
+          "type": "object"
+        },
+        "OutputRef": {
+          "additionalProperties": false,
+          "description": "id always denotes the immutable owner row, never a guessed logical identity.",
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "enum": [
+                "definition",
+                "bom",
+                "engineering_configuration",
+                "manufacturing_configuration",
+                "build",
+                "actual_configuration",
+                "build_lot",
+                "sample",
+                "verification_preparation",
+                "verification_request",
+                "verification_run"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "key": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Key"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "kind"
+          ],
+          "title": "OutputRef",
+          "type": "object"
+        },
+        "PairReviewInput": {
+          "additionalProperties": false,
+          "properties": {
+            "mapping": {
+              "$ref": "#/$defs/FailurePairMapping"
+            },
+            "method": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/ExactSource"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "criterion": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/ExactSource"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "conclusion": {
+              "enum": [
+                "applicable",
+                "not_applicable",
+                "unknown"
+              ],
+              "title": "Conclusion",
+              "type": "string"
+            },
+            "reason": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/ExactSource"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "mapping",
+            "conclusion",
+            "reason",
+            "sources"
+          ],
+          "title": "PairReviewInput",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "issue_id": {
+          "format": "uuid",
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "expected_issue_revision": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Expected Issue Revision",
+          "type": "integer"
+        },
+        "capa_id": {
+          "format": "uuid",
+          "title": "Capa Id",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/ExactSource"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "candidate": {
+          "$ref": "#/$defs/FactRef"
+        },
+        "rule": {
+          "$ref": "#/$defs/FactRef"
+        },
+        "observations": {
+          "items": {
+            "$ref": "#/$defs/FactRef"
+          },
+          "minItems": 1,
+          "title": "Observations",
+          "type": "array"
+        },
+        "at": {
+          "$ref": "#/$defs/ActualEventTime"
+        },
+        "pair_applicability": {
+          "items": {
+            "$ref": "#/$defs/PairReviewInput"
+          },
+          "minItems": 1,
+          "title": "Pair Applicability",
+          "type": "array"
+        },
+        "action_fulfillment": {
+          "items": {
+            "$ref": "#/$defs/ActionReviewInput"
+          },
+          "minItems": 1,
+          "title": "Action Fulfillment",
+          "type": "array"
+        },
+        "conclusion": {
+          "enum": [
+            "applicable",
+            "not_applicable",
+            "unknown"
+          ],
+          "title": "Conclusion",
+          "type": "string"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "issue_id",
+        "expected_issue_revision",
+        "capa_id",
+        "sources",
+        "reason",
+        "candidate",
+        "rule",
+        "observations",
+        "at",
+        "pair_applicability",
+        "action_fulfillment",
+        "conclusion"
+      ],
+      "title": "NamedReviewPayload",
+      "type": "object"
+    },
+    "change.order.prepare": {
+      "$defs": {
+        "ControlledIntent": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "new_engineering_configuration",
+                "new_manufacturing_configuration",
+                "new_build",
+                "new_test_run",
+                "erp_mes_effectivity"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "basis": {
+              "items": {
+                "$ref": "#/$defs/Ref"
+              },
+              "minItems": 1,
+              "title": "Basis",
+              "type": "array"
+            },
+            "description": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Description",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "basis",
+            "description"
+          ],
+          "title": "ControlledIntent",
+          "type": "object"
+        },
+        "Disposition": {
+          "additionalProperties": false,
+          "properties": {
+            "object": {
+              "$ref": "#/$defs/Ref"
+            },
+            "handling": {
+              "enum": [
+                "covered_by_plan",
+                "reviewed_no_change",
+                "unknown"
+              ],
+              "title": "Handling",
+              "type": "string"
+            },
+            "item_ids": {
+              "default": [],
+              "items": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "title": "Item Ids",
+              "type": "array"
+            },
+            "rationale": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Rationale",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/SourceRef"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "object",
+            "handling",
+            "rationale",
+            "sources"
+          ],
+          "title": "Disposition",
+          "type": "object"
+        },
+        "EffectivityPlan": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "items": {
+              "items": {
+                "$ref": "#/$defs/PlanItem"
+              },
+              "minItems": 1,
+              "title": "Items",
+              "type": "array"
+            },
+            "expires_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Expires At"
+            },
+            "dispositions": {
+              "items": {
+                "$ref": "#/$defs/Disposition"
+              },
+              "minItems": 1,
+              "title": "Dispositions",
+              "type": "array"
+            }
+          },
+          "required": [
+            "id",
+            "items",
+            "dispositions"
+          ],
+          "title": "EffectivityPlan",
+          "type": "object"
+        },
+        "PlanItem": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "discipline": {
+              "enum": [
+                "engineering",
+                "manufacturing",
+                "customer",
+                "regulatory"
+              ],
+              "title": "Discipline",
+              "type": "string"
+            },
+            "selection": {
+              "$ref": "#/$defs/Selection"
+            },
+            "intent": {
+              "$ref": "#/$defs/ControlledIntent"
+            },
+            "verification_requirement": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Verification Requirement",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "discipline",
+            "selection",
+            "intent",
+            "verification_requirement"
+          ],
+          "title": "PlanItem",
+          "type": "object"
+        },
+        "Ref": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "enum": [
+                "spec",
+                "part",
+                "bom",
+                "interface",
+                "engineering_configuration",
+                "build",
+                "sample",
+                "test_run",
+                "operation",
+                "tooling",
+                "fixture",
+                "sop",
+                "work_instruction",
+                "control_plan",
+                "manufacturing_baseline",
+                "pilot_run",
+                "manufacturing_release",
+                "customer_sample",
+                "supply_commitment",
+                "inventory",
+                "wip",
+                "training",
+                "evidence",
+                "issue",
+                "capa",
+                "manufacturing_configuration",
+                "graph_snapshot"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "key": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Key"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "kind"
+          ],
+          "title": "Ref",
+          "type": "object"
+        },
+        "Selection": {
+          "additionalProperties": false,
+          "properties": {
+            "objects": {
+              "items": {
+                "$ref": "#/$defs/Ref"
+              },
+              "minItems": 1,
+              "title": "Objects",
+              "type": "array"
+            },
+            "units": {
+              "items": {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "title": "Units",
+              "type": "array"
+            },
+            "conditions": {
+              "items": {
+                "maxLength": 2000,
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "title": "Conditions",
+              "type": "array"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/SourceRef"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "objects",
+            "units",
+            "conditions",
+            "sources"
+          ],
+          "title": "Selection",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "assessment_id": {
+          "format": "uuid",
+          "title": "Assessment Id",
+          "type": "string"
+        },
+        "plan": {
+          "$ref": "#/$defs/EffectivityPlan"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "change_id": {
+          "format": "uuid",
+          "title": "Change Id",
+          "type": "string"
+        },
+        "expected_change_revision": {
+          "minimum": 1,
+          "title": "Expected Change Revision",
+          "type": "integer"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 16,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "assessment_id",
+        "plan",
+        "reason",
+        "change_id",
+        "expected_change_revision"
+      ],
+      "title": "OrderPreparePayload",
+      "type": "object"
+    },
+    "change.order.approve": {
+      "$defs": {
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "discipline": {
+          "enum": [
+            "engineering",
+            "manufacturing",
+            "customer",
+            "regulatory"
+          ],
+          "title": "Discipline",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires At"
+        },
+        "change_id": {
+          "format": "uuid",
+          "title": "Change Id",
+          "type": "string"
+        },
+        "expected_change_revision": {
+          "minimum": 1,
+          "title": "Expected Change Revision",
+          "type": "integer"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 16,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "discipline",
+        "text",
+        "change_id",
+        "expected_change_revision",
+        "sources"
+      ],
+      "title": "OrderApprovePayload",
+      "type": "object"
+    },
+    "change.implementation.record": {
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "format": "uuid",
+          "title": "Item Id",
+          "type": "string"
+        },
+        "fact_id": {
+          "format": "uuid",
+          "title": "Fact Id",
+          "type": "string"
+        },
+        "change_id": {
+          "format": "uuid",
+          "title": "Change Id",
+          "type": "string"
+        },
+        "expected_change_revision": {
+          "minimum": 1,
+          "title": "Expected Change Revision",
+          "type": "integer"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 16,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "item_id",
+        "fact_id",
+        "change_id",
+        "expected_change_revision"
+      ],
+      "title": "ImplementationPayload",
+      "type": "object"
+    },
+    "change.selection.decide": {
+      "$defs": {
+        "ActionTarget": {
+          "additionalProperties": false,
+          "properties": {
+            "issue_id": {
+              "format": "uuid",
+              "title": "Issue Id",
+              "type": "string"
+            },
+            "expected_issue_revision": {
+              "minimum": 1,
+              "title": "Expected Issue Revision",
+              "type": "integer"
+            },
+            "capa_id": {
+              "format": "uuid",
+              "title": "Capa Id",
+              "type": "string"
+            },
+            "action_id": {
+              "format": "uuid",
+              "title": "Action Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "issue_id",
+            "expected_issue_revision",
+            "capa_id",
+            "action_id"
+          ],
+          "title": "ActionTarget",
+          "type": "object"
+        },
+        "ControlledIntent": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "new_engineering_configuration",
+                "new_manufacturing_configuration",
+                "new_build",
+                "new_test_run",
+                "erp_mes_effectivity"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "basis": {
+              "items": {
+                "$ref": "#/$defs/Ref"
+              },
+              "minItems": 1,
+              "title": "Basis",
+              "type": "array"
+            },
+            "description": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Description",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "basis",
+            "description"
+          ],
+          "title": "ControlledIntent",
+          "type": "object"
+        },
+        "PlanItem": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "discipline": {
+              "enum": [
+                "engineering",
+                "manufacturing",
+                "customer",
+                "regulatory"
+              ],
+              "title": "Discipline",
+              "type": "string"
+            },
+            "selection": {
+              "$ref": "#/$defs/Selection"
+            },
+            "intent": {
+              "$ref": "#/$defs/ControlledIntent"
+            },
+            "verification_requirement": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Verification Requirement",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "discipline",
+            "selection",
+            "intent",
+            "verification_requirement"
+          ],
+          "title": "PlanItem",
+          "type": "object"
+        },
+        "Ref": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "enum": [
+                "spec",
+                "part",
+                "bom",
+                "interface",
+                "engineering_configuration",
+                "build",
+                "sample",
+                "test_run",
+                "operation",
+                "tooling",
+                "fixture",
+                "sop",
+                "work_instruction",
+                "control_plan",
+                "manufacturing_baseline",
+                "pilot_run",
+                "manufacturing_release",
+                "customer_sample",
+                "supply_commitment",
+                "inventory",
+                "wip",
+                "training",
+                "evidence",
+                "issue",
+                "capa",
+                "manufacturing_configuration",
+                "graph_snapshot"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "key": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Key"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "kind"
+          ],
+          "title": "Ref",
+          "type": "object"
+        },
+        "Selection": {
+          "additionalProperties": false,
+          "properties": {
+            "objects": {
+              "items": {
+                "$ref": "#/$defs/Ref"
+              },
+              "minItems": 1,
+              "title": "Objects",
+              "type": "array"
+            },
+            "units": {
+              "items": {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "title": "Units",
+              "type": "array"
+            },
+            "conditions": {
+              "items": {
+                "maxLength": 2000,
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "title": "Conditions",
+              "type": "array"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/SourceRef"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "objects",
+            "units",
+            "conditions",
+            "sources"
+          ],
+          "title": "Selection",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "A named proposal: actual applicability is established only by T2 consumption.",
+      "properties": {
+        "change_id": {
+          "format": "uuid",
+          "title": "Change Id",
+          "type": "string"
+        },
+        "expected_change_revision": {
+          "minimum": 1,
+          "title": "Expected Change Revision",
+          "type": "integer"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "item": {
+          "$ref": "#/$defs/PlanItem"
+        },
+        "action": {
+          "$ref": "#/$defs/ActionTarget"
+        },
+        "status": {
+          "enum": [
+            "applicable",
+            "not_applicable",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/SourceRef"
+        },
+        "valid_until": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid Until"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "expected_previous_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Previous Id"
+        },
+        "expected_previous_revision": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Previous Revision"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 16,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "change_id",
+        "expected_change_revision",
+        "item",
+        "action",
+        "status",
+        "source",
+        "reason"
+      ],
+      "title": "SelectionPayload",
+      "type": "object"
+    },
+    "npi.work_instruction.record": {
+      "$defs": {
+        "InstructionStep": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maxLength": 80,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "title": "Key",
+              "type": "string"
+            },
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "parameters": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/Parameter"
+              },
+              "title": "Parameters",
+              "type": "array"
+            },
+            "safety_notes": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Safety Notes"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/Source"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "key",
+            "text",
+            "sources"
+          ],
+          "title": "InstructionStep",
+          "type": "object"
+        },
+        "Parameter": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maxLength": 80,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "title": "Key",
+              "type": "string"
+            },
+            "nominal": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Nominal"
+            },
+            "lower": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lower"
+            },
+            "upper": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Upper"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "sources": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/Source"
+              },
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "key"
+          ],
+          "title": "Parameter",
+          "type": "object"
+        },
+        "ProcessRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "ProcessRef",
+          "type": "object"
+        },
+        "Source": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "Source",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "process": {
+          "$ref": "#/$defs/ProcessRef"
+        },
+        "title": {
+          "maxLength": 200,
+          "minLength": 2,
+          "title": "Title",
+          "type": "string"
+        },
+        "previous_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Id"
+        },
+        "expected_previous_revision": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Previous Revision"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/Source"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "operation_key": {
+          "maxLength": 80,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "title": "Operation Key",
+          "type": "string"
+        },
+        "conditions": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Conditions"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/InstructionStep"
+          },
+          "minItems": 1,
+          "title": "Steps",
+          "type": "array"
+        }
+      },
+      "required": [
+        "project_id",
+        "process",
+        "title",
+        "reason",
+        "sources",
+        "operation_key",
+        "steps"
+      ],
+      "title": "InstructionPayload",
+      "type": "object"
+    },
+    "npi.control_plan.record": {
+      "$defs": {
+        "ControlCheck": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maxLength": 80,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "title": "Key",
+              "type": "string"
+            },
+            "feature": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Feature",
+              "type": "string"
+            },
+            "method": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Method"
+            },
+            "criterion": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Parameter"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "frequency": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Frequency"
+            },
+            "sampling_method": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Sampling Method"
+            },
+            "reaction_plan": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Reaction Plan"
+            },
+            "responsible_role": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Responsible Role"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/Source"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "key",
+            "feature",
+            "sources"
+          ],
+          "title": "ControlCheck",
+          "type": "object"
+        },
+        "Parameter": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maxLength": 80,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "title": "Key",
+              "type": "string"
+            },
+            "nominal": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Nominal"
+            },
+            "lower": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lower"
+            },
+            "upper": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Upper"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "sources": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/Source"
+              },
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "key"
+          ],
+          "title": "Parameter",
+          "type": "object"
+        },
+        "ProcessRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "ProcessRef",
+          "type": "object"
+        },
+        "Source": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "Source",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "process": {
+          "$ref": "#/$defs/ProcessRef"
+        },
+        "title": {
+          "maxLength": 200,
+          "minLength": 2,
+          "title": "Title",
+          "type": "string"
+        },
+        "previous_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Id"
+        },
+        "expected_previous_revision": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Previous Revision"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/Source"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "operation_key": {
+          "maxLength": 80,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "title": "Operation Key",
+          "type": "string"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/ControlCheck"
+          },
+          "minItems": 1,
+          "title": "Checks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "project_id",
+        "process",
+        "title",
+        "reason",
+        "sources",
+        "operation_key",
+        "checks"
+      ],
+      "title": "ControlPlanPayload",
+      "type": "object"
+    },
+    "npi.manufacturing_baseline.record": {
+      "$defs": {
+        "ObjectRef": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "work_instruction",
+                "control_plan",
+                "manufacturing_baseline"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "revision"
+          ],
+          "title": "ObjectRef",
+          "type": "object"
+        },
+        "OperationDocuments": {
+          "additionalProperties": false,
+          "properties": {
+            "operation_key": {
+              "maxLength": 80,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "title": "Operation Key",
+              "type": "string"
+            },
+            "work_instruction": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/ObjectRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "control_plan": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/ObjectRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "operation_key"
+          ],
+          "title": "OperationDocuments",
+          "type": "object"
+        },
+        "ProcessRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "ProcessRef",
+          "type": "object"
+        },
+        "Source": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "Source",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "process": {
+          "$ref": "#/$defs/ProcessRef"
+        },
+        "title": {
+          "maxLength": 200,
+          "minLength": 2,
+          "title": "Title",
+          "type": "string"
+        },
+        "previous_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Id"
+        },
+        "expected_previous_revision": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Previous Revision"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/Source"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "operations": {
+          "items": {
+            "$ref": "#/$defs/OperationDocuments"
+          },
+          "minItems": 1,
+          "title": "Operations",
+          "type": "array"
+        },
+        "risk_notes": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Risk Notes"
+        },
+        "packaging_label_basis": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Packaging Label Basis"
+        }
+      },
+      "required": [
+        "project_id",
+        "process",
+        "title",
+        "reason",
+        "sources",
+        "operations"
+      ],
+      "title": "BaselinePayload",
       "type": "object"
     }
   },

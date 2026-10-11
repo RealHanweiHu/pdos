@@ -113,7 +113,7 @@ class SampleReadinessFact(Row, Base):
             "AND actual_configuration_revision = 1 AND build_revision > 0"
         ),
         CheckConstraint(
-            "status IN ('ready','hold') AND visibility IN ('private','product') "
+            "status IN ('ready','hold') AND visibility IN ('private','category','audience') "
             "AND nature IN ('real','synthetic')"
         ),
         CheckConstraint("occurred_at <= received_at AND received_at = created_at"),

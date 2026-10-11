@@ -32,7 +32,7 @@ export function WorkspaceOverview({ area, data, api, navigate }: Props) {
       if (!active) return;
       const [definitions, projects, builds] = results;
       setSaved({ definitions: definitions.status === "fulfilled" ? definitions.value : null, projects: projects.status === "fulfilled" ? projects.value : null, builds: builds.status === "fulfilled" ? builds.value : null });
-      setErrors(results.flatMap((result, index) => result.status === "rejected" ? [`${["产品定义", "研发项目", "试制"][index]}读取失败：${result.reason?.message ?? "服务暂不可用"}`] : []));
+      setErrors(results.flatMap((result, index) => result.status === "rejected" ? [`${["型号定义", "研发项目", "试制"][index]}读取失败：${result.reason?.message ?? "服务暂不可用"}`] : []));
       setLoading(false);
     });
     return () => { active = false; };
@@ -47,10 +47,10 @@ export function WorkspaceOverview({ area, data, api, navigate }: Props) {
   const builds = saved.builds?.items ?? [];
   const nextSteps = area === "products" ? [
     { Icon: FileText, label: activeSources.length ? "继续整理研究资料" : "导入第一份资料", detail: activeSources.length ? `${activeSources.length} 份有效来源 · ${validClaims.length} 条有效事实` : "保留原件、定位原文，再登记有出处的事实", go: () => navigate("products", "research", "sources") },
-    { Icon: unknownClaims.length || staleClaims.length ? WarningCircle : ClipboardText, label: unknownClaims.length || staleClaims.length ? "核对未知与失效来源" : "整理产品定义与规格", detail: unknownClaims.length || staleClaims.length ? `${unknownClaims.length} 条未知或冲突 · ${staleClaims.length} 条来源失效` : saved.definitions ? `${definitions.length} 份可见定义版本，草稿与正式发布分别办理` : "从当前证据整理使用场景、规格和验收条件", go: () => navigate("products", unknownClaims.length || staleClaims.length ? "research" : "definition") },
-    { Icon: saved.projects && projects.length ? FolderSimple : GitBranch, label: saved.projects && projects.length ? "继续关联项目工作" : "派生产品或进入研发", detail: saved.projects && projects.length ? `${projects.length} 个可见项目，分别固定定义与研发范围` : "复用固定定义，保留派生差异与明确项目范围", go: () => navigate(saved.projects && projects.length ? "projects" : "products", saved.projects && projects.length ? "overview" : "variants") },
+    { Icon: unknownClaims.length || staleClaims.length ? WarningCircle : ClipboardText, label: unknownClaims.length || staleClaims.length ? "核对未知与失效来源" : "整理型号定义与规格", detail: unknownClaims.length || staleClaims.length ? `${unknownClaims.length} 条未知或冲突 · ${staleClaims.length} 条来源失效` : saved.definitions ? `${definitions.length} 份可见定义版本，草稿与正式发布分别办理` : "从当前证据整理使用场景、规格和验收条件", go: () => navigate("products", unknownClaims.length || staleClaims.length ? "research" : "definition") },
+    { Icon: saved.projects && projects.length ? FolderSimple : GitBranch, label: saved.projects && projects.length ? "继续关联项目工作" : "派生型号或进入研发", detail: saved.projects && projects.length ? `${projects.length} 个可见项目，分别固定定义与研发范围` : "复用固定定义，保留派生差异与明确项目范围", go: () => navigate(saved.projects && projects.length ? "projects" : "products", saved.projects && projects.length ? "overview" : "variants") },
   ] : [
-    { Icon: FolderSimple, label: "工作与首版计划", detail: saved.projects ? `${projects.length} 个可见项目 · ${projects.filter(item => item.plan).length} 个已保存计划` : "固定产品定义与范围，核对工作包、依赖和日历", go: () => navigate("projects", "plan") },
+    { Icon: FolderSimple, label: "工作与首版计划", detail: saved.projects ? `${projects.length} 个可见项目 · ${projects.filter(item => item.plan).length} 个已保存计划` : "固定型号定义与范围，核对工作包、依赖和日历", go: () => navigate("projects", "plan") },
     { Icon: Package, label: "试制与实际产出", detail: saved.builds ? `${builds.length} 轮可见试制，配置、准备与实际分别保存` : "从固定双配置接齐套、开工条件与产出", go: () => navigate("projects", "builds") },
     { Icon: CheckCircle, label: "测试与样件交接", detail: "从实际样件接收进入方法核对、开测与结果处置", go: () => navigate("projects", "verification") },
   ];
@@ -72,7 +72,7 @@ export function WorkspaceOverview({ area, data, api, navigate }: Props) {
         {!loading && saved.definitions && definitions.length === 0 && <p className="workspace-list-empty">尚无可见定义。整理来源后，可以保存第一版定义草稿。</p>}
         {definitions.slice(0, 6).map(item => <div className="workspace-record-row" key={item.id}><ClipboardText size={18} aria-hidden="true"/><div className="min-w-0 flex-1"><p className="truncate font-medium">{item.title}</p><p className="subtle">{item.specs.length} 项规格 · {item.sources.length} 处来源</p></div><span className="workspace-state">{item.source_status === "current" ? "草稿" : "需重核"}</span><span className="workspace-revision">v{item.revision}</span></div>)}
       </> : <>
-        {!loading && saved.projects && projects.length === 0 && <p className="workspace-list-empty">尚无可见项目。先固定一份产品定义，再明确研发范围。</p>}
+        {!loading && saved.projects && projects.length === 0 && <p className="workspace-list-empty">尚无可见项目。先固定一份型号定义，再明确研发范围。</p>}
         {projects.slice(0, 6).map(item => <div className="workspace-record-row" key={item.id}><FolderSimple size={18} aria-hidden="true"/><div className="min-w-0 flex-1"><p className="truncate font-medium">{item.name}</p><p className="subtle truncate">{item.definition.title} · 固定 v{item.definition.revision}</p></div><span className="workspace-state">{item.source_status !== "current" ? "需重核" : item.plan ? "已有计划" : "待建计划"}</span><span className="workspace-revision">v{item.revision}</span></div>)}
       </>}
       {(area === "products" ? saved.definitions?.has_more : saved.projects?.has_more) && <p className="subtle mt-3">当前显示首批可见结果，进入工作区查看其余记录。</p>}

@@ -43,6 +43,7 @@ from pdos_next.lifecycle_worker import process
 from pdos_next.models import (
     Artifact,
     Audit,
+    Claim,
     Confirmation,
     Grant,
     Inbox,
@@ -70,7 +71,13 @@ lifecycle_work = _lifecycle_work
 
 
 def intent_state(work, identity):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         return decode_intent(session.get(LifecycleIntentRecord, identity).document)
 
 
@@ -78,7 +85,7 @@ def revoke(work, can_write):
     with Session(work.setup.admin) as session, session.begin():
         grant = session.scalar(
             select(Grant).where(
-                Grant.product_id == work.setup.product,
+                Grant.category_id == work.setup.category,
                 Grant.principal_id == work.setup.human,
             )
         )
@@ -90,14 +97,20 @@ def test_registered_original_is_never_orphan_even_when_parsing_failed(lifecycle_
     work = lifecycle_work
     content = b"\xffSynthetic invalid UTF-8" if parse_failed else b"Synthetic registered original\n"
     result = work.client.post(
-        f"/v1/products/{work.setup.product}/originals",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/originals",
         headers=work.setup.headers,
         json=upload_input(content).model_dump(mode="json"),
     )
     assert result.status_code == 200, result.text
     identity = UUID(result.json()["subject_id"])
     if parse_failed:
-        with tenant_session(work.setup.engine, work.setup.tenant) as session:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.setup.human,
+            requester_id=work.setup.human,
+            category_id=work.setup.category,
+        ) as session:
             queued = request_scan(
                 session,
                 work.setup.ctx,
@@ -128,7 +141,13 @@ def test_bytes_written_registration_rollback_is_unknown_until_positive_terminal_
     journal = work.store.inspect(identity)
     assert journal.state == "bytes_written" and journal.registration_state == "unknown"
     assert journal.byte_status == "intact"
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         assert session.get(UploadedOriginal, identity) is None
         assert session.get(UploadAttempt, identity).status == "reserved"
     current = item_for(work, identity)
@@ -158,7 +177,13 @@ def test_abandon_retention_quarantine_restore_keeps_exact_bytes_and_once_receipt
     assert sha256(work.store.read_original(reference)).hexdigest() == reference.content_sha256
     assert execute(work, prepared).json()["id"] == receipt["id"]
     assert count(work, Receipt, Receipt.operation == "evidence.lifecycle.quarantine") == 1
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         receipt_id = UUID(receipt["id"])
         assert (
             session.scalar(
@@ -199,7 +224,13 @@ def test_terminal_marker_failure_keeps_committed_abandonment_and_unknown_registr
         },
     )
     assert execute(work, prepared).json()["id"] == receipt["id"]
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         assert session.get(UploadAttempt, identity).status == "abandoned"
     assert work.store.inspect(identity).registration_state == "unknown"
     assert item_for(work, identity)["registered"] is None
@@ -236,7 +267,13 @@ def test_late_registration_after_named_abandonment_is_rejected(lifecycle_work):
     work = lifecycle_work
     identity, _, data = ready_orphan(work)
     with pytest.raises(DomainError) as error:
-        with tenant_session(work.setup.engine, work.setup.tenant) as session:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.setup.human,
+            requester_id=work.setup.human,
+            category_id=work.setup.category,
+        ) as session:
             upload(
                 session,
                 work.setup.ctx,
@@ -245,8 +282,14 @@ def test_late_registration_after_named_abandonment_is_rejected(lifecycle_work):
                 work.store,
                 attempt=session.get(UploadAttempt, identity),
             )
-    assert error.value.code == "UPLOAD_CLOSED"
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    assert error.value.code == "VERSION_CONFLICT"
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         assert session.get(UploadedOriginal, identity) is None
     assert work.store.inspect(identity).registration_state == "aborted"
 
@@ -272,28 +315,29 @@ def test_current_owner_product_tenant_and_agent_cannot_be_bypassed(lifecycle_wor
                 owner_id=work.setup.human,
                 name="Other synthetic scope",
                 purpose="boundary",
+                category_id=work.setup.category,
             )
         )
         session.flush()
-        session.add(
-            Grant(
-                tenant_id=work.setup.tenant,
-                product_id=other_product,
-                principal_id=work.setup.human,
-                can_write=True,
-                expires_at=now() + timedelta(hours=1),
-            )
-        )
+
     response = work.client.post(
-        f"/v1/products/{other_product}/original-lifecycle/{identity}/candidate",
+        f"/v1/categories/{work.setup.category}/products/{other_product}/original-lifecycle/{identity}/candidate",
         headers=work.setup.headers,
         json={"action": "quarantine"},
     )
     assert response.status_code == 403
     value = candidate(work, identity)
-    agent_ctx = Context(work.setup.tenant, work.setup.agent, work.setup.agent)
+    agent_ctx = Context(
+        work.setup.tenant, work.setup.agent, work.setup.agent, category_id=work.setup.category
+    )
     with pytest.raises(DomainError) as error:
-        with tenant_session(work.setup.engine, work.setup.tenant) as session:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.setup.human,
+            requester_id=work.setup.human,
+            category_id=work.setup.category,
+        ) as session:
             domain_execute(
                 session, agent_ctx, Command.model_validate(candidate_command(work, value))
             )
@@ -311,10 +355,25 @@ def test_acl_aba_invalidates_unconsumed_preview_but_success_replay_checks_curren
     assert execute(work, old).json()["code"] == "FORBIDDEN_SCOPE"
     revoke(work, True)
     stale = execute(work, old)
-    assert stale.status_code == 409 and stale.json()["code"] == "PREVIEW_STALE"
+    assert stale.status_code == 409 and stale.json()["code"] == "VERSION_CONFLICT"
     _, receipt, prepared = request_intent(work, identity)
     revoke(work, False)
+    assert execute(work, prepared).json()["id"] == receipt["id"]
+    with Session(work.setup.admin) as session, session.begin():
+        grant = session.scalar(
+            select(Grant).where(
+                Grant.category_id == work.setup.category, Grant.principal_id == work.setup.human
+            )
+        )
+        grant.expires_at = now() - timedelta(seconds=1)
     assert execute(work, prepared).status_code == 403
+    with Session(work.setup.admin) as session, session.begin():
+        grant = session.scalar(
+            select(Grant).where(
+                Grant.category_id == work.setup.category, Grant.principal_id == work.setup.human
+            )
+        )
+        grant.expires_at = now() + timedelta(hours=1)
     revoke(work, True)
     assert execute(work, prepared).json()["id"] == receipt["id"]
     assert count(work, Receipt, Receipt.operation == "evidence.lifecycle.quarantine") == 1
@@ -358,7 +417,13 @@ def test_final_outbox_failure_rolls_back_intent_request_object_and_confirmation(
     work = lifecycle_work
     identity, _, _ = ready_orphan(work)
     prepared = preview_command(work, candidate_command(work, candidate(work, identity)))["command"]
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         before = session.get(LifecycleObject, identity).state
 
     def fail_event(_mapper, _connection, target):
@@ -371,7 +436,13 @@ def test_final_outbox_failure_rolls_back_intent_request_object_and_confirmation(
             execute(work, prepared)
     finally:
         event.remove(Outbox, "before_insert", fail_event)
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         assert session.get(LifecycleObject, identity).state == before
         confirmation = session.scalar(
             select(Confirmation).where(
@@ -432,7 +503,7 @@ def test_timeout_or_lost_reply_has_one_attempt_then_observe_only(
     assert process(work.setup.engine, worker_reference(work, intent_id))["status"] == "unknown"
     assert item_for(work, identity)["pending_intent_id"] == str(intent_id)
     blocked = work.client.post(
-        "/v1/commands/preview",
+        f"/v1/categories/{work.setup.category}/commands/preview",
         headers=work.setup.headers,
         json=make_command(
             work,
@@ -444,9 +515,9 @@ def test_timeout_or_lost_reply_has_one_attempt_then_observe_only(
             },
         ),
     )
-    assert blocked.status_code == 409 and blocked.json()["code"] == "EFFECT_ALREADY_ATTEMPTED"
+    assert blocked.status_code == 409 and blocked.json()["code"] == "EXTERNAL_OUTCOME_UNKNOWN"
     response = work.client.post(
-        f"/v1/products/{work.setup.product}/original-lifecycle/intents/{intent_id}/reconcile",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/original-lifecycle/intents/{intent_id}/reconcile",
         headers=work.setup.headers,
     )
     assert response.status_code == 200, response.text
@@ -462,7 +533,13 @@ def test_reviewed_business_write_advances_reference_epoch_and_invalidates_previe
     work = lifecycle_work
     identity, _, _ = ready_orphan(work)
     prepared = preview_command(work, candidate_command(work, candidate(work, identity)))["command"]
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         before = session.get(Product, work.setup.product).lifecycle_epoch
         session.add(
             Artifact(
@@ -476,14 +553,22 @@ def test_reviewed_business_write_advances_reference_epoch_and_invalidates_previe
                 visibility="private",
             )
         )
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         assert session.get(Product, work.setup.product).lifecycle_epoch > before
     stale = execute(work, prepared)
-    assert stale.status_code == 409 and stale.json()["code"] == "PREVIEW_STALE"
+    assert stale.status_code == 409 and stale.json()["code"] == "VERSION_CONFLICT"
     assert count(work, LifecycleIntentRecord) == 0
 
 
-@pytest.mark.parametrize("change", ["unknown_table", "unknown_column", "disabled_trigger"])
+@pytest.mark.parametrize(
+    "change", ["unknown_table", "unknown_column", "disabled_trigger", "disabled_category_trigger"]
+)
 def test_unreviewed_schema_is_unknown_and_transactional_ddl_is_always_rolled_back(
     lifecycle_work, change
 ):
@@ -498,9 +583,13 @@ def test_unreviewed_schema_is_unknown_and_transactional_ddl_is_always_rolled_bac
             )
         elif change == "unknown_column":
             session.execute(text(f'ALTER TABLE public.products ADD COLUMN "{name}" text'))
-        else:
+        elif change == "disabled_trigger":
             session.execute(
                 text("ALTER TABLE public.artifact_versions DISABLE TRIGGER lifecycle_reference")
+            )
+        else:
+            session.execute(
+                text("ALTER TABLE public.claims DISABLE TRIGGER category_lifecycle_clock")
             )
         assert schema_covered(session) is False
         refs = References(session, work.setup.ctx, work.setup.product, work.store).read_current(
@@ -510,7 +599,13 @@ def test_unreviewed_schema_is_unknown_and_transactional_ddl_is_always_rolled_bac
     finally:
         session.rollback()
         session.close()
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         assert schema_covered(session) is True
     assert item_for(work, identity)["can_quarantine"] is True
 
@@ -535,7 +630,13 @@ def test_product_fence_is_held_through_real_storage_effect(lifecycle_work, monke
         try:
             assert entered.wait(5), "Effect did not acquire its protection gate"
             with pytest.raises(DBAPIError) as locked:
-                with tenant_session(work.setup.engine, work.setup.tenant) as session:
+                with tenant_session(
+                    work.setup.engine,
+                    work.setup.tenant,
+                    actor_id=work.setup.human,
+                    requester_id=work.setup.human,
+                    category_id=work.setup.category,
+                ) as session:
                     session.execute(text("SET LOCAL lock_timeout='150ms'"))
                     session.add(
                         Artifact(
@@ -623,7 +724,7 @@ def test_api_upload_retry_same_key_and_equivalent_new_key_share_one_reservation(
     ]
     responses = [
         work.client.post(
-            f"/v1/products/{work.setup.product}/originals",
+            f"/v1/categories/{work.setup.category}/products/{work.setup.product}/originals",
             headers=work.setup.headers,
             json=body,
         )
@@ -638,7 +739,13 @@ def test_api_upload_retry_same_key_and_equivalent_new_key_share_one_reservation(
     assert count(work, RequestKey, RequestKey.receipt_id == receipt_id) == 2
     assert count(work, Audit, Audit.receipt_id == receipt_id) == 1
     assert count(work, Outbox, Outbox.receipt_id == receipt_id) == 1
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         attempt = session.get(UploadAttempt, identity)
         assert attempt.status == "committed"
         assert attempt.request_key == data.idempotency_key
@@ -650,7 +757,7 @@ def test_api_upload_same_key_cannot_replay_into_another_authorized_product(lifec
     work = lifecycle_work
     data = upload_input(b"Synthetic product-bound upload replay\n")
     first = work.client.post(
-        f"/v1/products/{work.setup.product}/originals",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/originals",
         headers=work.setup.headers,
         json=data.model_dump(mode="json"),
     )
@@ -664,20 +771,13 @@ def test_api_upload_same_key_cannot_replay_into_another_authorized_product(lifec
                 owner_id=work.setup.human,
                 name="Synthetic other upload scope",
                 purpose="same-key boundary",
+                category_id=work.setup.category,
             )
         )
         session.flush()
-        session.add(
-            Grant(
-                tenant_id=work.setup.tenant,
-                product_id=other_product,
-                principal_id=work.setup.human,
-                can_write=True,
-                expires_at=now() + timedelta(hours=1),
-            )
-        )
+
     crossed = work.client.post(
-        f"/v1/products/{other_product}/originals",
+        f"/v1/categories/{work.setup.category}/products/{other_product}/originals",
         headers=work.setup.headers,
         json=data.model_dump(mode="json"),
     )
@@ -691,15 +791,30 @@ def test_lifecycle_event_claim_and_ack_preserve_reference_epoch_before_real_effe
     work = lifecycle_work
     identity, _, _ = ready_orphan(work)
     intent_id, receipt, _ = request_intent(work, identity)
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         before = session.get(Product, work.setup.product).lifecycle_epoch
-    deliveries = claim_events(work.setup.engine, work.setup.tenant)
+    deliveries = claim_events(work.setup.dispatch, work.setup.tenant)
     target = next(
         value
         for value in deliveries
         if value.subject_id == str(intent_id) and value.event_type == "original.lifecycle_requested"
     )
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    assert target.category_id == str(work.setup.category)
+    assert target.product_id == str(work.setup.product)
+    assert target.actor_id == target.requester_id == str(work.setup.human)
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         assert session.get(Product, work.setup.product).lifecycle_epoch == before
         inbox = session.scalar(
             select(Inbox).where(
@@ -711,15 +826,21 @@ def test_lifecycle_event_claim_and_ack_preserve_reference_epoch_before_real_effe
     for delivery in deliveries:
         assert (
             acknowledge(
-                work.setup.engine,
+                work.setup.dispatch,
                 delivery,
                 workflow_id="synthetic-controlled-lifecycle" if delivery == target else None,
                 ignored=delivery != target,
             )
             is True
         )
-    assert acknowledge(work.setup.engine, target, workflow_id="duplicate-ack") is False
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    assert acknowledge(work.setup.dispatch, target, workflow_id="duplicate-ack") is False
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         assert session.get(Product, work.setup.product).lifecycle_epoch == before
         assert session.get(Outbox, UUID(target.event_id)).delivered_at is not None
         inbox = session.scalar(
@@ -735,3 +856,99 @@ def test_lifecycle_event_claim_and_ack_preserve_reference_epoch_before_real_effe
     assert item_for(work, identity)["disposition"] == "quarantined"
     assert count(work, Receipt, Receipt.operation == "evidence.lifecycle.quarantine") == 1
     assert count(work, Outbox, Outbox.receipt_id == UUID(receipt["id"])) == 1
+
+
+def test_private_consumer_blocks_cleanup_without_exposing_its_body(lifecycle_work):
+    work = lifecycle_work
+    identity, _, _ = ready_orphan(work)
+    response = execute(
+        work,
+        make_command(
+            work,
+            "evidence.artifact.register",
+            {
+                "title": "Synthetic shared reference context",
+                "source_label": "Synthetic",
+                "content": "Synthetic reference context: " + str(identity),
+                "visibility": "category",
+            },
+        ),
+    )
+    assert response.status_code == 200, response.text
+    source = response.json()
+    assert item_for(work, identity)["can_quarantine"] is True
+    value = make_command(
+        work,
+        "evidence.claim.record",
+        {
+            "artifact_id": source["subject_id"],
+            "line": 1,
+            "quote": str(identity),
+            "statement": "Synthetic peer private consuming reference",
+            "nature": "extracted",
+            "availability": "known",
+            "visibility": "private",
+        },
+    )
+    value["source_read_set"] = [{"artifact_id": source["subject_id"], "expected_revision": 1}]
+    peer_headers = {"Authorization": "Bearer " + work.setup.tokens[work.setup.peer]}
+    saved = execute(work, value, headers=peer_headers)
+    assert saved.status_code == 200, saved.text
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
+        assert session.get(Claim, UUID(saved.json()["subject_id"])) is None
+    item = item_for(work, identity)
+    assert item["can_quarantine"] is False and item["reference_count"] > 0
+    assert item["formal_history"] is True and "referenced" in item["reasons"]
+    assert "Synthetic peer private consuming reference" not in str(inventory(work))
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.peer,
+        requester_id=work.setup.peer,
+        category_id=work.setup.category,
+    ) as session:
+        result = session.execute(
+            text("SELECT * FROM lifecycle_reference_summary(:t,:c,:p,CAST(:roots AS uuid[]))"),
+            {
+                "t": work.setup.tenant,
+                "c": work.setup.category,
+                "p": work.setup.product,
+                "roots": [identity],
+            },
+        ).all()
+        assert result == []
+
+
+def test_category_original_lifecycle_with_unbounded_membership(lifecycle_work):
+    work, setup = lifecycle_work, lifecycle_work.setup
+    with Session(setup.admin) as session, session.begin():
+        grant = session.scalar(
+            select(Grant).where(
+                Grant.category_id == setup.category, Grant.principal_id == setup.human
+            )
+        )
+        grant.expires_at = None
+    data = upload_input(b"Synthetic category lifecycle retained original\n")
+    path = f"/v1/categories/{setup.category}/originals"
+    uploaded = work.client.post(path, headers=setup.headers, json=data.model_dump(mode="json"))
+    assert uploaded.status_code == 200, uploaded.text
+    identity = uploaded.json()["subject_id"]
+    response = work.client.get(
+        f"/v1/categories/{setup.category}/original-lifecycle", headers=setup.headers
+    )
+    assert response.status_code == 200, response.text
+    item = next(v for v in response.json()["items"] if v["id"] == identity)
+    assert item["registered"] and item["reference_count"] is not None
+    candidate = work.client.post(
+        f"/v1/categories/{setup.category}/original-lifecycle/{identity}/candidate",
+        headers=setup.headers,
+        json={"action": "quarantine"},
+    )
+    assert candidate.status_code == 200, candidate.text
+    assert candidate.json()["eligible"] is False

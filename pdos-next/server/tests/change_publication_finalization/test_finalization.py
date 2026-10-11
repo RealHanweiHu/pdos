@@ -66,6 +66,7 @@ def candidate(case, monkeypatch):
         proof = Confirmation(
             id=uuid4(),
             tenant_id=e.ctx.tenant_id,
+            category_id=e.ctx.category_id,
             product_id=e.pid,
             actor_id=e.ctx.actor_id,
             subject_id=e.pid,

@@ -10,7 +10,7 @@ export const reviewOperation = "quality.capa.verification.review" as const;
 export type FactOperation = typeof observationOperation | typeof reviewOperation;
 export type FactSource = { id: string; revision: number; kind: "artifact"; position: string };
 export type FactEvent = { occurred_at: string; original_timezone: string; source: FactSource; effective_at: null };
-export type FactVisibility = "private" | "product";
+export type FactVisibility = "private" | "category" | "audience";
 export type FactSourceChoice = { source: FactSource; title: string; line: number; quote: string; visibility: FactVisibility };
 export type FactRecord = { target_key: string; occurred_at: string; original_timezone: string;
   sources: FactSource[]; raw_material: JsonObject };
@@ -33,7 +33,7 @@ export type FactHost = { schema_version: typeof factWorkflowSchema; binding: Fac
   /** Older offline host fixtures may omit this. The actual panel requires server choices. */
   candidate_options?: FactCandidateChoice[];
   sources: FactSourceChoice[]; records: FactRecordChoice[]; pairs: FactPairChoice[]; actions: FactActionChoice[];
-  history: FactHistory[]; operations: Record<FactOperation, FactCapability>; missing: Missing[];
+  history: FactHistory[]; history_page?: { next_cursor: string | null }; operations: Record<FactOperation, FactCapability>; missing: Missing[];
   effectiveness_enabled: false; close_enabled: false };
 export type ObservationPayload = { issue_id: string; expected_issue_revision: number; capa_id: string;
   rule: MaterialRef; previous: MaterialRef | null; target_keys: string[]; observed_from: string; observed_until: string;
@@ -53,7 +53,7 @@ export type FactCommand = { command_id: string; idempotency_key: string; product
 /** The installed host renderer must inspect actual material; this is a read-only display projection. */
 export type FactBusinessReview = { title: string; sections: { title: string; rows: { label: string; value: string | null }[] }[];
   sources: FactSourceChoice[]; synthetic: boolean; effect: string; complete: boolean };
-export type FactPrepared = { command: FactCommand; expires_at: string; write_tier: "T1" | "T2";
+export type FactPrepared = { command: FactCommand; expires_at: string | null; write_tier: "T1" | "T2";
   named_decision: boolean; review: JsonObject };
 export type FactReceipt = { id: string; operation: FactOperation; subject_id: string; subject_revision: number;
   subject_type: "capa_observation" | "capa_named_verification_review" };
@@ -65,7 +65,7 @@ export function validFactSource(x: unknown): x is FactSource {
   return record(x) && fields(x, ["id", "revision", "kind", "position"]) && uuid(x.id) && positive(x.revision) && x.kind === "artifact" &&
     typeof x.position === "string" && /^line:[1-9]\d*;quote_sha256:[0-9a-f]{64}$/.test(x.position);
 }
-const sources = (x: unknown, minimum = 1): x is FactSource[] => Array.isArray(x) && x.length >= minimum && x.length <= 20 &&
+const sources = (x: unknown, minimum = 1): x is FactSource[] => Array.isArray(x) && x.length >= minimum &&
   x.every(validFactSource) && new Set(x.map(factSourceKey)).size === x.length;
 export function validFactEvent(x: unknown): x is FactEvent {
   return record(x) && fields(x, ["occurred_at", "original_timezone", "source", "effective_at"]) && x.effective_at === null && factInstant(x.occurred_at) !== null &&
@@ -109,7 +109,7 @@ export function sameFactPayloadSemantics(a: unknown, b: FactPayload): boolean {
 export function validFactPayload(op: FactOperation, value: unknown): value is FactPayload {
   if (!record(value) || !uuid(value.issue_id) || !positive(value.expected_issue_revision) || !uuid(value.capa_id) ||
       !validMaterial(value.rule) || !validFactEvent(value.at) || !sources(value.sources) || !text(value.reason) ||
-      !["private", "product"].includes(String(value.visibility)) || !json(value)) return false;
+      !["private", "category", "audience"].includes(String(value.visibility)) || !json(value)) return false;
   const tokenKey = op === observationOperation ? "confirmation_token" : "approval_token";
   if (Object.hasOwn(value, tokenKey) && (!text(value[tokenKey], 128) || String(value[tokenKey]).length < 20)) return false;
   const keys = op === observationOperation ? ["issue_id", "expected_issue_revision", "capa_id", "rule", "previous", "target_keys",
@@ -121,15 +121,15 @@ export function validFactPayload(op: FactOperation, value: unknown): value is Fa
     if (!Array.isArray(targets) || !Array.isArray(records)) return false;
     return (value.previous === null || validMaterial(value.previous)) && eventTime(value.observed_from) !== null && eventTime(value.observed_until) !== null &&
       increasing(value.observed_from, value.observed_until) && notAfter(value.observed_until, value.at.occurred_at) &&
-      targets.length > 0 && targets.length <= 10000 && targets.every(v => text(v)) &&
+      targets.length > 0 && targets.every(v => text(v)) &&
       new Set(targets).size === targets.length && sources(value.coverage_sources) &&
-      records.length > 0 && records.length <= 10000 && records.every(r => record(r) && fields(r, ["target_key", "occurred_at", "original_timezone", "sources", "raw_material"]) &&
+      records.length > 0 && records.every(r => record(r) && fields(r, ["target_key", "occurred_at", "original_timezone", "sources", "raw_material"]) &&
         text(r.target_key) && targets.includes(r.target_key) && eventTime(r.occurred_at) !== null && eventTimezone(r.original_timezone) !== null &&
         notAfter(value.observed_from, r.occurred_at) && notAfter(r.occurred_at, value.observed_until) &&
         sources(r.sources) && record(r.raw_material) && json(r.raw_material)) &&
       records.every((r, i) => !records.slice(0, i).some(old => same(r, old)));
   }
-  return validMaterial(value.candidate) && value.candidate.revision === 1 && Array.isArray(value.observations) && value.observations.length > 0 && value.observations.length <= 64 &&
+  return validMaterial(value.candidate) && value.candidate.revision === 1 && Array.isArray(value.observations) && value.observations.length > 0 &&
     value.observations.every(validMaterial) && new Set(value.observations.map(r => r.id)).size === value.observations.length &&
     conclusion(value.conclusion) && Array.isArray(value.pair_applicability) && value.pair_applicability.length > 0 && value.pair_applicability.every(p =>
       record(p) && fields(p, ["mapping", "method", "criterion", "conclusion", "reason", "sources"]) && record(p.mapping) && json(p.mapping) &&
@@ -151,22 +151,23 @@ export function factIdentity(host: FactHost): string | null {
 export function validFactHost(h: FactHost): boolean {
   const b = h?.binding;
   if (h?.schema_version !== factWorkflowSchema || !factIdentity(h) || !b || !record(b.current_issue) || !uuid(b.current_issue.id) ||
-      !positive(b.current_issue.revision) || !uuid(b.owner_id) || !text(b.purpose) || !["private", "product"].includes(b.visibility) ||
+      !positive(b.current_issue.revision) || !uuid(b.owner_id) || !text(b.purpose) || !["private", "category", "audience"].includes(b.visibility) ||
       !positive(h.product_revision) || !text(h.access_epoch) || h.effectiveness_enabled !== false || h.close_enabled !== false ||
       !validMissing(h.missing) || !Array.isArray(h.sources) || !h.sources.every(s => validFactSource(s.source) && text(s.title) && positive(s.line) &&
-        text(s.quote, 20000) && s.source.position.startsWith(`line:${s.line};`) && ["private", "product"].includes(s.visibility)) ||
+        text(s.quote, 20000) && s.source.position.startsWith(`line:${s.line};`) && ["private", "category", "audience"].includes(s.visibility)) ||
       new Set(h.sources.map(s => factSourceKey(s.source))).size !== h.sources.length || !Array.isArray(h.history) ||
       !h.history.every(r => validMaterial(r.ref) && ["rule", "observation", "review"].includes(r.kind) && text(r.label) && record(r.fact) && json(r.fact) && validMissing(r.missing) &&
         ["evaluated_current", "not_evaluated_historical", "unavailable"].includes(r.current_evaluation) && ["current", "needs_recheck", "unavailable"].includes(r.source_status)) ||
+      (Object.hasOwn(h, "history_page") && (!record(h.history_page) || !fields(h.history_page, ["next_cursor"]) || !(h.history_page.next_cursor === null || typeof h.history_page.next_cursor === "string"))) ||
       !Array.isArray(h.rules) || !h.rules.every(r => validMaterial(r.ref) && text(r.label) && Array.isArray(r.target_keys) &&
         r.target_keys.length > 0 && r.target_keys.every(k => text(k)) && (r.previous === null || validMaterial(r.previous))) ||
       !(h.candidate === null || validMaterial(h.candidate)) ||
       (Object.hasOwn(h, "candidate_options") && (!Array.isArray(h.candidate_options) || !h.candidate_options.every(c => record(c) &&
         validMaterial(c.ref) && text(c.label) && Number.isSafeInteger(c.mapping_count) && c.mapping_count >= 0 &&
-        ["private", "product"].includes(c.visibility)) || new Set(h.candidate_options.map(c => c.ref.id)).size !== h.candidate_options.length)) ||
+        ["private", "category", "audience"].includes(c.visibility)) || new Set(h.candidate_options.map(c => c.ref.id)).size !== h.candidate_options.length)) ||
       !Array.isArray(h.observations) || !h.observations.every(validMaterial) ||
       !Array.isArray(h.records) || !h.records.every(r => text(r.key) && text(r.label) && text(r.detail) && record(r.record) && json(r.record) &&
-        ["private", "product"].includes(r.visibility) && (!["observed_from", "observed_until", "at"].some(k => Object.hasOwn(r, k)) || factRecordTiming(r) !== null)) ||
+        ["private", "category", "audience"].includes(r.visibility) && (!["observed_from", "observed_until", "at"].some(k => Object.hasOwn(r, k)) || factRecordTiming(r) !== null)) ||
       !Array.isArray(h.pairs) || !h.pairs.every(p => text(p.key) && text(p.label) && record(p.mapping) && json(p.mapping)) ||
       !Array.isArray(h.actions) || !h.actions.every(a => uuid(a.action_id) && text(a.label))) return false;
   return [observationOperation, reviewOperation].every(op => {
@@ -221,7 +222,7 @@ export function readFactBusinessReview(host: FactHost, review: Record<string, un
   const rawRefs: FactSource[] = [...p.sources, p.at.source];
   const sections: FactBusinessReview["sections"] = [{ title: "固定问题与用途", rows: [
     { label: "用途", value: host.binding.purpose }, { label: "本次核对的问题版本", value: `当前第 ${p.expected_issue_revision} 版` },
-    { label: "受众", value: p.visibility === "private" ? "私人固定范围" : "产品共享固定范围" },
+    { label: "受众", value: p.visibility === "private" ? "私人固定范围" : "品类共享固定范围" },
     { label: "采用的规则", value: `${chosen.label} · 第 ${p.rule.revision} 版` },
   ] }, { title: "实际事件与本人说明", rows: [
     { label: "实际发生时间", value: p.at.occurred_at }, { label: "事件原时区", value: p.at.original_timezone },
@@ -340,5 +341,5 @@ export function readFactBusinessReview(host: FactHost, review: Record<string, un
   return { title: command.operation === observationOperation ? "核对本次实际观察事实" : "核对本次独立具名专业决定", sections,
     sources: visible as FactSourceChoice[], synthetic: body.nature === "synthetic" || currentAuthority.authority.synthetic,
     effect: command.operation === observationOperation ? "追加不可变观察记录与固定历史。观察完整性仍由实际规则及owner核对，未决定有效性或关闭。" :
-      "保存本人具名的逐配对、逐措施及总体专业结论。结论未知保持未知，未决定措施有效、问题关闭或产品放行。", complete: true };
+      "保存本人具名的逐配对、逐措施及总体专业结论。结论未知保持未知，未决定措施有效、问题关闭或成品放行。", complete: true };
 }

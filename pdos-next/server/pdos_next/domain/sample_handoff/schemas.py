@@ -31,7 +31,7 @@ class SampleReadinessPayload(FrozenDTO):
     occurred_at: AwareDatetime
     occurred_timezone: Key
     event_source: DefinitionReference
-    sources: tuple[DefinitionReference, ...] = Field(min_length=1, max_length=20)
+    sources: tuple[DefinitionReference, ...] = Field(min_length=1)
     reason: Text
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 

@@ -1,0 +1,5 @@
+[
+  "tests/test_resources/test_transactions.py::test_own_run_proof_rechecked_without_new_effects",
+  "tests/test_retained_execution.py::test_retained_rr_evidence_does_not_survive_source_withdrawal_between_requests",
+  "tests/test_retained_execution.py::test_retained_held_writer_read_permission_rechecks_untracked_current_after_source_io"
+]

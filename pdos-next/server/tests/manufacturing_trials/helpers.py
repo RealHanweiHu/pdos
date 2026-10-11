@@ -107,11 +107,11 @@ class FakeFacts:
 
     def check_ref(self, scope, ref, purpose):
         if ref.id in self.revoked:
-            raise DomainError("REF_WITHDRAWN", "source withdrawn")
+            raise DomainError("SOURCE_UNAVAILABLE", "source withdrawn")
 
     def source(self, scope, source, purpose):
         if self.bad_source:
-            raise DomainError("SOURCE_WITHDRAWN", "source withdrawn")
+            raise DomainError("SOURCE_UNAVAILABLE", "source withdrawn")
 
     def lot(self, scope, basis):
         return self.lot_facts
@@ -177,7 +177,7 @@ class FakeCommands:
         if not self.authority.authorized:
             raise DomainError("FORBIDDEN", "replay ACL")
         if invocation.command_id in self.keys and self.keys[invocation.command_id] != identity:
-            raise DomainError("KEY_CONFLICT", "different payload")
+            raise DomainError("DUPLICATE_INTENT_CONFLICT", "different payload")
         self.keys[invocation.command_id] = identity
         if identity in self.intents:
             outcome = self.intents[identity]
@@ -193,17 +193,17 @@ class FakeCommands:
     def confirm(self, invocation, preview, authority):
         proof = self.proofs.get(invocation.confirmation_token)
         if proof is None or proof[0] != preview.digest or proof[1] < authority.now or proof[2]:
-            raise DomainError("INVALID_CONFIRMATION", "expired/changed/consumed proof")
+            raise DomainError("CONFIRMATION_REQUIRED", "expired/changed/consumed proof")
         self.proofs[invocation.confirmation_token] = (proof[0], proof[1], True)
 
     def recheck(self, authority, preview):
         if self.revoke_at_recheck:
-            raise DomainError("QUALIFICATION_REVOKED", "current qualification withdrawn")
+            raise DomainError("QUALIFICATION_REQUIRED", "current qualification withdrawn")
 
     def record(self, invocation, mutation):
         if mutation.trial:
             if mutation.trial.id in self.trials:
-                raise DomainError("ID_CONFLICT", "insert only")
+                raise DomainError("DUPLICATE_INTENT_CONFLICT", "insert only")
             self.trials[mutation.trial.id] = mutation.trial
         if mutation.pilot:
             current = self.pilots.get(mutation.pilot.id)
@@ -213,18 +213,18 @@ class FakeCommands:
                 p.details.basis.lot == mutation.pilot.details.basis.lot
                 for p in self.pilots.values()
             ):
-                raise DomainError("LOT_EXTENSION_CONFLICT", "unique extension")
+                raise DomainError("DUPLICATE_INTENT_CONFLICT", "unique extension")
             self.pilots[mutation.pilot.id] = mutation.pilot
         if mutation.observation:
             if mutation.observation.id in self.observations:
-                raise DomainError("ID_CONFLICT", "immutable observation")
+                raise DomainError("DUPLICATE_INTENT_CONFLICT", "immutable observation")
             self.observations[mutation.observation.id] = mutation.observation
         if self.fail_at == "domain":
             raise RuntimeError("synthetic persistence failure")
         if mutation.verification_intent:
             request = mutation.verification_intent
             if request.request_id in self.verifications:
-                raise DomainError("VERIFY_CONFLICT", "unique verification owner")
+                raise DomainError("DUPLICATE_INTENT_CONFLICT", "unique verification owner")
             self.verifications[request.request_id] = request
         if self.fail_at == "verification":
             raise RuntimeError("synthetic verification failure")

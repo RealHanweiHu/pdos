@@ -21,6 +21,7 @@ from pdos_next.service import Context, digest
 
 def command(setup, operation, payload, artifact):
     return {
+        "category_id": str(setup.category),
         "command_id": str(uuid4()),
         "idempotency_key": str(uuid4()),
         "operation": operation,
@@ -33,7 +34,9 @@ def command(setup, operation, payload, artifact):
 
 def post(setup, body, *, preview=False):
     return setup.client.post(
-        "/v1/commands/preview" if preview else "/v1/commands",
+        f"/v1/categories/{setup.category}/commands/preview"
+        if preview
+        else f"/v1/categories/{setup.category}/commands",
         headers=setup.headers,
         json=body,
     )
@@ -48,7 +51,7 @@ def reference(artifact):
     }
 
 
-def source(setup, visibility="product"):
+def source(setup, visibility="category"):
     body = command(
         setup,
         "evidence.artifact.register",
@@ -70,7 +73,7 @@ def definition(setup, artifact, *, parent=None, **changes):
     body = {
         "title": "Synthetic parent definition",
         "purpose": "Synthetic product verification only",
-        "visibility": "product",
+        "visibility": "category",
         "use_cases": ["Synthetic evaluation"],
         "requirements": ["Baseline requirement"],
         "constraints": ["Baseline constraint"],
@@ -97,7 +100,10 @@ def definition(setup, artifact, *, parent=None, **changes):
         )
     result = post(setup, command(setup, "product.definition.draft", body, artifact))
     assert result.status_code == 200, result.text
-    listed = setup.client.get(f"/v1/products/{setup.product}/definitions", headers=setup.headers)
+    listed = setup.client.get(
+        f"/v1/categories/{setup.category}/products/{setup.product}/definitions",
+        headers=setup.headers,
+    )
     assert listed.status_code == 200, listed.text
     return next(
         item for item in listed.json()["items"] if item["id"] == result.json()["subject_id"]
@@ -111,7 +117,7 @@ def derive_payload(parent, artifact, **changes):
         "applicability": ["Synthetic region only"],
         "parent_definition_id": parent["id"],
         "expected_parent_revision": parent["revision"],
-        "visibility": "product",
+        "visibility": "category",
         "overrides": {"purpose": "Synthetic region-specific purpose"},
         "sources": [reference(artifact)],
         "reason": "Record explicit regional scope",
@@ -135,7 +141,8 @@ def preview(setup, body):
 
 def variants(setup, headers=None):
     result = setup.client.get(
-        f"/v1/products/{setup.product}/variants", headers=headers or setup.headers
+        f"/v1/categories/{setup.category}/products/{setup.product}/variants",
+        headers=headers or setup.headers,
     )
     assert result.status_code == 200, result.text
     return result.json()["items"]
@@ -154,7 +161,13 @@ def derive(setup, parent, artifact, **changes):
 
 
 def assert_no_variants(setup):
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.scalar(select(func.count()).select_from(Variant)) == 0
         assert s.scalar(select(func.count()).select_from(VariantRevision)) == 0
 
@@ -172,7 +185,13 @@ def test_real_preview_returned_command_round_trip_and_receipt_group(setup):
     spec = revision["effective_definition"]["specs"][0]
     assert spec["availability"] == "unknown" and spec["value"] is None
     assert spec["owner_id"] is None and spec["state"] == "needs_confirmation"
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.get(Variant, UUID(item["id"])).status == "draft"
         assert s.get(DefinitionRevision, UUID(parent["id"])).purpose == parent["purpose"]
         assert s.scalar(select(Audit.id).where(Audit.receipt_id == UUID(receipt["id"])))
@@ -198,7 +217,7 @@ def test_confirmation_required_and_bound_to_actual_payload_and_read_set(setup):
     changed = deepcopy(prepared["command"])
     changed["payload"]["applicability"] = ["Different synthetic scope"]
     rejected = post(setup, changed)
-    assert rejected.status_code == 409 and rejected.json()["code"] == "CONFIRMATION_SCOPE_CHANGED"
+    assert rejected.status_code == 409 and rejected.json()["code"] == "CONFIRMATION_REQUIRED"
     assert_no_variants(setup)
     accepted = post(setup, prepared["command"])
     assert accepted.status_code == 200, accepted.text
@@ -215,7 +234,13 @@ def test_original_and_new_key_semantic_replays_do_not_consume_twice(setup):
     new_key["payload"].pop("confirmation_token")
     semantic_replay = post(setup, new_key)
     assert semantic_replay.status_code == 200 and semantic_replay.json()["id"] == receipt["id"]
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.scalar(select(func.count()).select_from(VariantRevision)) == 1
 
 
@@ -236,7 +261,7 @@ def test_private_parent_and_private_source_never_expand_audience(setup):
 
 def test_foreign_product_parent_is_rejected_even_for_same_owner(setup):
     created = setup.client.post(
-        "/v1/products",
+        f"/v1/categories/{setup.category}/products",
         headers=setup.headers,
         json={
             "name": "Synthetic separate product",
@@ -289,7 +314,7 @@ def test_compare_never_writes_and_rebase_requires_each_conflict_choice(setup):
         requirements=["New parent requirement"],
     )
     compare = setup.client.get(
-        f"/v1/products/{setup.product}/variants/{item['id']}/compare",
+        f"/v1/categories/{setup.category}/products/{setup.product}/variants/{item['id']}/compare",
         params={"parent_definition_id": new["id"]},
         headers=setup.headers,
     )
@@ -332,7 +357,13 @@ def test_compare_never_writes_and_rebase_requires_each_conflict_choice(setup):
     assert current["effective_definition"]["requirements"] == ["New parent requirement"]
     assert current["effective_definition"]["constraints"] == ["Child constraint"]
     assert current["choices"] == body["payload"]["choices"]
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.get(DefinitionRevision, UUID(new["id"])).title == new["title"]
         assert s.get(DefinitionRevision, UUID(old["id"])).title == old["title"]
 
@@ -379,7 +410,7 @@ def test_current_guards_are_checked_again_before_confirmed_commit(setup, revocat
         elif revocation == "grant":
             grant = s.scalar(
                 select(Grant).where(
-                    Grant.product_id == setup.product, Grant.principal_id == setup.human
+                    Grant.category_id == setup.category, Grant.principal_id == setup.human
                 )
             )
             grant.expires_at = now() - timedelta(seconds=1)
@@ -414,7 +445,13 @@ def test_receipt_failure_rolls_back_variant_revision_and_confirmation(setup, mon
     with pytest.raises(RuntimeError, match="Synthetic variant receipt failure"):
         post(setup, prepared["command"])
     assert_no_variants(setup)
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         confirmation = s.scalar(
             select(Confirmation).where(
                 Confirmation.token_hash == digest(prepared["confirmation_token"])
@@ -439,7 +476,16 @@ def test_saved_variant_and_revision_are_database_immutable(setup):
         (Variant, {"name": "Changed"}),
         (VariantRevision, {"reason": "Changed"}),
     ]:
-        with pytest.raises(DBAPIError), tenant_session(setup.engine, setup.tenant) as s:
+        with (
+            pytest.raises(DBAPIError),
+            tenant_session(
+                setup.engine,
+                setup.tenant,
+                actor_id=setup.human,
+                requester_id=setup.human,
+                category_id=setup.category,
+            ) as s,
+        ):
             s.execute(update(model).values(**changes))
 
 
@@ -449,10 +495,19 @@ def test_agent_cannot_bypass_human_only_variant_validation(setup):
     body = Command.model_validate(
         command(setup, "product.variant.derive", derive_payload(parent, artifact), artifact)
     )
-    with pytest.raises(DomainError) as failed, tenant_session(setup.engine, setup.tenant) as s:
+    with (
+        pytest.raises(DomainError) as failed,
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.agent,
+            requester_id=setup.human,
+            category_id=setup.category,
+        ) as s,
+    ):
         validate(
             s,
-            Context(setup.tenant, setup.agent, setup.human),
+            Context(setup.tenant, setup.agent, setup.human, category_id=setup.category),
             body,
             s.get(Product, setup.product),
             VariantDerivePayload.model_validate(body.payload),
@@ -461,7 +516,7 @@ def test_agent_cannot_bypass_human_only_variant_validation(setup):
     assert_no_variants(setup)
 
 
-def test_source_withdrawal_preserves_history_and_blocks_even_receipt_replay(setup):
+def test_source_withdrawal_preserves_replay_and_blocks_a_new_derivation(setup):
     artifact = source(setup)
     parent = definition(setup, artifact)
     _, prepared, _ = derive(setup, parent, artifact)
@@ -471,27 +526,58 @@ def test_source_withdrawal_preserves_history_and_blocks_even_receipt_replay(setu
     assert history["source_status"] == "needs_recheck"
     assert history["effective_definition"]["purpose"] == "Synthetic region-specific purpose"
     replay = post(setup, prepared["command"])
-    assert replay.status_code == 409 and replay.json()["code"] == "SOURCE_UNAVAILABLE"
-    with tenant_session(setup.engine, setup.tenant) as s:
+    assert replay.status_code == 200
+    fresh = command(
+        setup,
+        "product.variant.derive",
+        derive_payload(parent, artifact, name="Another fresh derivation"),
+        artifact,
+    )
+    refused = post(setup, fresh, preview=True)
+    assert refused.status_code == 409 and refused.json()["code"] == "SOURCE_UNAVAILABLE"
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.scalar(select(func.count()).select_from(VariantRevision)) == 1
 
 
-def test_expired_product_read_grant_denies_entire_derived_history(setup):
+def test_expired_category_read_grant_denies_entire_derived_history(setup):
     artifact = source(setup)
     parent = definition(setup, artifact)
     derive(setup, parent, artifact)
     with Session(setup.admin) as s, s.begin():
         grant = s.scalar(
             select(Grant).where(
-                Grant.product_id == setup.product,
+                Grant.category_id == setup.category,
                 Grant.principal_id == setup.human,
             )
         )
         grant.expires_at = now() - timedelta(seconds=1)
-    listed = setup.client.get(f"/v1/products/{setup.product}/variants", headers=setup.headers)
+    listed = setup.client.get(
+        f"/v1/categories/{setup.category}/products/{setup.product}/variants", headers=setup.headers
+    )
     assert listed.status_code == 403 and listed.json()["code"] == "FORBIDDEN_SCOPE"
     assert "items" not in listed.json()
     assert "Synthetic region-specific purpose" not in listed.text
     assert "Pressure: 150 PSI" not in listed.text
-    with tenant_session(setup.engine, setup.tenant) as s:
-        assert s.scalar(select(func.count()).select_from(VariantRevision)) == 1
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
+        assert s.scalar(select(func.count()).select_from(VariantRevision)) == 0
+    with Session(setup.admin) as s:
+        assert (
+            s.scalar(
+                select(func.count())
+                .select_from(VariantRevision)
+                .where(VariantRevision.tenant_id == setup.tenant)
+            )
+            == 1
+        )

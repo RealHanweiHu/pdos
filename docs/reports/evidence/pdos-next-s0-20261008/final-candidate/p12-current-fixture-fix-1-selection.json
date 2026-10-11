@@ -1,0 +1,7 @@
+[
+  "tests/build_start/test_writer_projection.py",
+  "tests/change_coverage_transactions/test_public_capture_minimal.py::test_actual_minimal_public_complete_capture_impact_and_original_command_recovery",
+  "tests/quality_execution/test_pure.py",
+  "tests/quality_execution/test_capa_draft_revision.py",
+  "tests/change_manufacturing_transactions/test_graph.py::test_actual_tenant_shared_asset_fence_and_rejected_roles"
+]

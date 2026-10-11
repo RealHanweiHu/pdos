@@ -167,7 +167,7 @@ class IssueCreate(DTO):
 
 
 class IssueMerge(DTO):
-    sources: tuple[Ref, ...] = Field(min_length=1, max_length=30)
+    sources: tuple[Ref, ...] = Field(min_length=1)
     reason: Text
 
     @field_validator("sources")

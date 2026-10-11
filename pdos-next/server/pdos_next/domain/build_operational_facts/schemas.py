@@ -42,7 +42,7 @@ Positive = Annotated[
 ]
 Hash = Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
 Revision = Annotated[int, Field(ge=1, strict=True)]
-Refs = Annotated[tuple[DefinitionReference, ...], Field(min_length=1, max_length=20)]
+Refs = Annotated[tuple[DefinitionReference, ...], Field(min_length=1)]
 
 
 class OperationalScope(DTO):
@@ -77,7 +77,7 @@ class MaterialInput(DTO):
     unit: Key | None
     availability: Literal["available", "unavailable", "unknown"]
     quality: Literal["released", "frozen", "unknown"]
-    external_holds: tuple[ExternalMaterialHold, ...] = Field(default=(), max_length=8000)
+    external_holds: tuple[ExternalMaterialHold, ...] = Field(default=())
     external_holds_complete: bool = Field(default=False, strict=True)
     sources: Refs
 
@@ -96,7 +96,7 @@ class DecisionInput(DTO):
     valid_until: AwareDatetime | None = None
     named_decision_id: UUID | None = None
     actor_id: UUID | None = None
-    conditions: tuple[Text, ...] = Field(default=(), max_length=50)
+    conditions: tuple[Text, ...] = Field(default=())
     sources: Refs
 
     @field_validator("valid_from", "valid_until")
@@ -122,20 +122,20 @@ class MaintenanceInput(DTO):
 class ExternalOccupancy(DTO):
     reservation_id: UUID
     window: ExecutionWindow
-    units: Positive = Field(le=1000)
+    units: Positive
 
 
 class ResourceInput(DTO):
     resource: ResourceRef
-    purposes: tuple[Key, ...] = Field(min_length=1, max_length=100)
-    operation_ids: tuple[Key, ...] = Field(min_length=1, max_length=100)
+    purposes: tuple[Key, ...] = Field(min_length=1)
+    operation_ids: tuple[Key, ...] = Field(min_length=1)
     lifecycle: Literal["active", "withdrawn", "unknown"]
-    facts: tuple[DecisionInput, ...] = Field(default=(), max_length=100)
-    maintenance: tuple[MaintenanceInput, ...] | None = Field(default=None, max_length=100)
+    facts: tuple[DecisionInput, ...] = Field(default=())
+    maintenance: tuple[MaintenanceInput, ...] | None = Field(default=None)
     calendar: CalendarSnapshot | None = None
-    calendar_sources: tuple[DefinitionReference, ...] = Field(default=(), max_length=20)
-    capacity: Positive | None = Field(default=None, le=1000)
-    external_occupancies: tuple[ExternalOccupancy, ...] = Field(default=(), max_length=8000)
+    calendar_sources: tuple[DefinitionReference, ...] = Field(default=())
+    capacity: Positive | None = None
+    external_occupancies: tuple[ExternalOccupancy, ...] = Field(default=())
     external_occupancies_complete: bool = Field(default=False, strict=True)
     sources: Refs
 
@@ -154,7 +154,7 @@ class ResourceInput(DTO):
 
 class OperationRequirements(DTO):
     operation_key: Key
-    uses: tuple[ResourceUse, ...] = Field(min_length=1, max_length=100)
+    uses: tuple[ResourceUse, ...] = Field(min_length=1)
     sources: Refs
 
     @model_validator(mode="after")
@@ -173,22 +173,22 @@ class FactInput(DTO):
     expected_previous_revision: int = Field(default=0, ge=0, strict=True)
     state: Literal["active", "withdrawn"] = "active"
     valid_from: AwareDatetime
-    valid_until: AwareDatetime
+    valid_until: AwareDatetime | None = None
     materials_scope_complete: bool = Field(default=False, strict=True)
-    materials: tuple[MaterialInput, ...] = Field(default=(), max_length=4000)
-    resources: tuple[ResourceInput, ...] = Field(default=(), max_length=100)
-    requirements: tuple[OperationRequirements, ...] = Field(default=(), max_length=2000)
+    materials: tuple[MaterialInput, ...] = Field(default=())
+    resources: tuple[ResourceInput, ...] = Field(default=())
+    requirements: tuple[OperationRequirements, ...] = Field(default=())
     sources: Refs
     reason: Text
 
     @field_validator("valid_from", "valid_until")
     @classmethod
     def utc(cls, value):
-        return value.astimezone(UTC)
+        return value.astimezone(UTC) if value is not None else None
 
     @model_validator(mode="after")
     def consistent(self) -> Self:
-        if self.valid_until <= self.valid_from:
+        if self.valid_until is not None and self.valid_until <= self.valid_from:
             raise ValueError("Operational validity must be positive")
         if (self.expected_previous_id is None) != (self.expected_previous_revision == 0):
             raise ValueError("Current previous id/revision must be paired")
@@ -242,6 +242,7 @@ class OperationalBundle(DTO):
     facts_revision: Hash
     valid_until: AwareDatetime | None = None
     nature: Literal["unknown", "real", "synthetic"] = "unknown"
+    decision_watermarks: tuple[dict, ...] = ()
 
 
 class ReservationResult(DTO):

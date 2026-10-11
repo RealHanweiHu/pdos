@@ -2,7 +2,7 @@ import type { DefinitionReference, DefinitionSource } from "@/lib/product-view";
 import type { Project, SourceRead } from "@/lib/project-plan-view";
 
 export type PreparationApi = <T>(path: string, body?: unknown) => Promise<T>;
-export type Visibility = "private" | "product";
+export type Visibility = "private" | "category" | "audience";
 export type ConfigurationBase = {
   id: string; revision: number; name: string; status: "draft"; visibility: Visibility;
   owner_id: string; required_source_read_set: SourceRead[]; source_status?: string;
@@ -108,7 +108,7 @@ export function restorePreparation(value: unknown, productId: string): { draft: 
   if (!["projectId", "engineeringId", "manufacturingId", "name", "purpose", "quantity", "unit", "startUtc", "endUtc", "objectives", "disposition", "previousId"].every(key => typeof build[key] === "string") || !["prototype", "tool_trial", "pilot"].includes(String(build.type))) return null;
   if (![draft.bom, draft.engineering, draft.process].every(isRecord) || !Array.isArray(draft.references) || !draft.references.every(ref => isRecord(ref) && typeof ref.artifact_id === "string" && Number.isInteger(ref.expected_revision) && Number(ref.expected_revision) > 0 && Number.isInteger(ref.line) && Number(ref.line) > 0 && typeof ref.quote === "string")) return null;
   const revisions = [draft.bom, draft.engineering, draft.process] as Record<string, unknown>[];
-  if (!revisions.every(revision => ["name", "previousId", "reason"].every(key => typeof revision[key] === "string") && ["private", "product"].includes(String(revision.visibility)))) return null;
+  if (!revisions.every(revision => ["name", "previousId", "reason"].every(key => typeof revision[key] === "string") && ["private", "category", "audience"].includes(String(revision.visibility)))) return null;
   const bom = draft.bom as Record<string, unknown>, process = draft.process as Record<string, unknown>, engineering = draft.engineering as Record<string, unknown>;
   if (typeof engineering.definitionId !== "string" || typeof engineering.bomId !== "string" || !isRecord(engineering.designs) || !["mechanical", "electronic", "firmware"].every(key => validExternal((engineering.designs as Record<string, unknown>)[key])) || !["engineeringId", "site", "line"].every(key => typeof process[key] === "string")) return null;
   if (!Array.isArray(bom.lines) || !bom.lines.length || bom.lines.length > 200 || !bom.lines.every(line => isRecord(line) && ["key", "partId", "name", "internal", "erp", "customer", "mappingVersion", "quantity", "unit", "loss", "notes"].every(key => typeof line[key] === "string") && typeof line.critical === "boolean" && Array.isArray(line.designRefs) && line.designRefs.every(validExternal))) return null;
@@ -136,7 +136,7 @@ export function externalPayload(draft: ExternalDraft, refs: DefinitionReference[
 }
 export function revisionPayload(draft: RevisionDraft, previous: ConfigurationBase | undefined, refs: DefinitionReference[]): RevisionPayload {
   if (draft.name.trim().length < 2 || draft.reason.trim().length < 3 || !refs.length) throw new Error("请填写名称、至少 3 字的保存原因，并选择精确原文依据。");
-  if (refs.length > 20) throw new Error("本次精确原文依据最多 20 条，请核对范围并减少重复依据。");
+
   if (draft.previousId && (!previous || previous.id !== draft.previousId)) throw new Error("所选前版已不可读，请重新选择。");
   return { name: draft.name.trim(), visibility: draft.visibility, previous_id: previous?.id ?? null, expected_previous_revision: previous?.revision ?? null, reason: draft.reason.trim(), sources: refs.map(ref => ({ ...ref })) };
 }

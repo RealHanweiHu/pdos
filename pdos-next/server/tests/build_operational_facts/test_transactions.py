@@ -39,12 +39,22 @@ from .fixtures import (  # noqa: F401
 
 
 def count(work, model):
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as s:
         return s.scalar(select(func.count()).select_from(model))
 
 
 def fact(work, receipt):
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as s:
         row = s.get(BuildOperationalFact, UUID(receipt["subject_id"]))
         s.expunge(row)
         return row
@@ -80,7 +90,12 @@ def test_import_same_and_alias_key_replays_one_receipt_without_rewriting_assets(
     assert first["id"] == again["id"] == alias["id"]
     assert count(work, BuildOperationalFact) == count(work, BuildOperationalCurrent) == 1
     assert count(work, OperationalAsset) == 2
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as s:
         assert (
             s.scalar(
                 select(func.count())
@@ -108,7 +123,7 @@ def test_import_same_and_alias_key_replays_one_receipt_without_rewriting_assets(
     changed["reason"] = "Different intention"
     with pytest.raises(DomainError, match="同一导入编号") as caught:
         imported(work, changed, request_key=key)
-    assert caught.value.code == "DUPLICATE_INTENT_CONFLICT"
+    assert caught.value.reason == "DUPLICATE_INTENT_CONFLICT"
 
 
 def test_history_replay_never_rewinds_current_bundle_or_global_asset(operational_work):
@@ -118,7 +133,12 @@ def test_history_replay_never_rewinds_current_bundle_or_global_asset(operational
     second_receipt = imported(work, updated)
     replay = imported(work)
     assert replay["subject_id"] == str(first.id)
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as s:
         current = s.scalar(select(BuildOperationalCurrent))
         asset = s.scalar(select(OperationalAsset).where(OperationalAsset.kind == "material"))
         assert str(current.fact_id) == second_receipt["subject_id"] and current.fact_revision == 2
@@ -126,24 +146,26 @@ def test_history_replay_never_rewinds_current_bundle_or_global_asset(operational
     assert count(work, BuildOperationalFact) == 2
 
 
-def test_current_source_is_checked_before_import_replay_and_whole_uow_stays_unchanged(
+def test_import_replay_retains_receipt_after_source_withdrawal_and_new_intent_blocks(
     operational_work,
 ):
     work, key = operational_work, str(uuid4())
-    imported(work, request_key=key)
+    original = imported(work, request_key=key)
     with Session(work.setup.admin) as s, s.begin():
         s.execute(
             update(Artifact)
             .where(Artifact.id == UUID(work.config["source"]))
             .values(status="withdrawn", revision=2)
         )
+    assert imported(work, request_key=key)["id"] == original["id"]
+    changed = work.payload.model_copy(update={"external_id": "SYN-NEW-INTENT"})
     with pytest.raises(DomainError) as caught:
-        imported(work, request_key=key)
-    assert caught.value.code == "SOURCE_UNAVAILABLE"
+        imported(work, changed)
+    assert caught.value.reason == "SOURCE_UNAVAILABLE"
     assert count(work, BuildOperationalFact) == 1
 
 
-def test_grant_revoke_restore_epoch_and_named_decision_revoke_never_restore_old_authority(
+def test_current_acl_is_independent_of_physical_facts_and_named_decision_guard(
     operational_work,
 ):
     work = operational_work
@@ -156,17 +178,23 @@ def test_grant_revoke_restore_epoch_and_named_decision_revoke_never_restore_old_
     with Session(work.setup.admin) as s, s.begin():
         grant = s.scalar(
             select(Grant).where(
-                Grant.product_id == work.setup.product, Grant.principal_id == work.setup.human
+                Grant.category_id == work.setup.category, Grant.principal_id == work.setup.human
             )
         )
         original_expiry = grant.expires_at
         grant.expires_at = now() - timedelta(seconds=1)
-        s.flush()
-        grant.expires_at = original_expiry
-    assert bundle(work).state == "BLOCKED"
     with pytest.raises(DomainError) as caught:
-        imported(work)
-    assert caught.value.code == "OPERATIONAL_FACTS_CHANGED"
+        bundle(work)
+    assert caught.value.reason == "FORBIDDEN_SCOPE"
+    with Session(work.setup.admin) as s, s.begin():
+        s.execute(
+            update(Grant)
+            .where(Grant.category_id == work.setup.category, Grant.principal_id == work.setup.human)
+            .values(expires_at=original_expiry)
+        )
+    restored = bundle(work)
+    assert restored.state == "READY" and restored.facts_revision == old.facts_revision
+    assert imported(work)["id"] == imported(work)["id"]
 
 
 @pytest.mark.parametrize("case", ["issuer", "private_peer", "agent", "other_tenant"])
@@ -185,16 +213,20 @@ def test_opaque_scope_and_current_person_guard_without_productgrant_upgrade(oper
         else work.setup.other_human
     )
     tenant = uuid4() if case == "other_tenant" else work.setup.tenant
-    with tenant_session(work.setup.engine, tenant) as s, pytest.raises(DomainError) as caught:
+    with tenant_session(
+        work.setup.engine, tenant, actor_id=identity, category_id=work.setup.category
+    ) as s, pytest.raises(DomainError) as caught:
         load_bundle(
             s,
-            Context(tenant, identity, identity),
+            Context(tenant, identity, identity, category_id=work.setup.category),
             work.setup.product,
             UUID(work.build_id),
             work.scope,
             now(),
         )
-    assert caught.value.code == ("NAMED_PERSON_REQUIRED" if case == "agent" else "FORBIDDEN_SCOPE")
+    assert caught.value.reason == (
+        "NAMED_PERSON_REQUIRED" if case == "agent" else "FORBIDDEN_SCOPE"
+    )
 
 
 def test_same_physical_version_different_content_and_bom_quantity_shrinking_are_rejected(
@@ -205,9 +237,14 @@ def test_same_physical_version_different_content_and_bom_quantity_shrinking_are_
     changed = successor(work, first, lambda d: d["materials"][0].update(quantity="45"))
     with pytest.raises(DomainError) as caught:
         imported(work, changed)
-    assert caught.value.code == "OPERATIONAL_ASSET_VERSION_CONFLICT"
+    assert caught.value.reason == "OPERATIONAL_ASSET_VERSION_CONFLICT"
     with (
-        tenant_session(work.setup.engine, work.setup.tenant) as s,
+        tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.setup.human,
+            category_id=work.setup.category,
+        ) as s,
         pytest.raises(DomainError) as caught,
     ):
         load_bundle(
@@ -218,7 +255,7 @@ def test_same_physical_version_different_content_and_bom_quantity_shrinking_are_
             work.scope.model_copy(update={"quantity": work.scope.quantity / 2}),
             now(),
         )
-    assert caught.value.code == "OPERATIONAL_SCOPE_MISMATCH"
+    assert caught.value.reason == "OPERATIONAL_SCOPE_MISMATCH"
     assert count(work, BuildOperationalFact) == 1
 
 
@@ -228,7 +265,12 @@ def test_fact_withdrawal_changes_global_epoch_and_blocks_old_bundle(operational_
     previous = bundle(work).facts_revision
     imported(work, successor(work, first, lambda d: d.update(state="withdrawn")))
     assert bundle(work).state == "BLOCKED" and bundle(work).facts_revision != previous
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as s:
         assert set(s.scalars(select(OperationalAsset.occupancy_epoch))) == {2}
         assert all(v["state"] == "withdrawn" for v in s.scalars(select(OperationalAsset.data)))
 
@@ -244,13 +286,18 @@ def test_concurrent_successor_cas_keeps_one_complete_atomic_global_version(opera
         try:
             return imported(work, proposed)["subject_id"]
         except DomainError as error:
-            return error.code
+            return error.reason
 
     with ThreadPoolExecutor(max_workers=2) as pool:
         results = list(pool.map(attempt, ("30", "35")))
     assert results.count("VERSION_CONFLICT") == 1
     assert count(work, BuildOperationalFact) == 2
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as s:
         assert s.scalar(select(BuildOperationalCurrent.fact_revision)) == 2
 
 
@@ -274,10 +321,10 @@ def test_terminal_outbox_failure_rolls_back_facts_assets_pointer_and_requestkey(
 
     def fail(*args, **kwargs):
         original(*args, **kwargs)
-        raise DomainError("SYNTHETIC_TERMINAL_FAILURE", "Synthetic outer UOW failure")
+        raise RuntimeError("Synthetic outer UOW failure")
 
     monkeypatch.setattr(operational_import, "append_receipt", fail)
-    with pytest.raises(DomainError, match="outer UOW"):
+    with pytest.raises(RuntimeError, match="outer UOW"):
         imported(work)
     assert {model: count(work, model) for model in models} == before
 
@@ -287,7 +334,12 @@ def test_reserve_cannot_commit_without_exact_same_uow_buildstart_owner(operation
     imported(work)
     selected = bundle(work)
     with pytest.raises(DBAPIError, match="foreign key"):
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.setup.human,
+            category_id=work.setup.category,
+        ) as s:
             result = reserve(
                 s,
                 work.setup.ctx,
@@ -327,7 +379,12 @@ def test_other_private_build_is_fully_counted_but_hidden_from_public_computation
         ),
     )
     assert calculated.status_code == 200, calculated.text
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as s:
         readiness = s.get(BuildReadiness, UUID(calculated.json()["subject_id"]))
         second_config = {
             **work.config,
@@ -343,8 +400,13 @@ def test_other_private_build_is_fully_counted_but_hidden_from_public_computation
     owner = uuid4()
     # These are real staged PG rows; deliberate outer rollback avoids inventing
     # a committed BuildStart merely to test the accounting/read boundary.
-    with pytest.raises(DomainError, match="privacy check rollback"):
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with pytest.raises(RuntimeError, match="privacy check rollback"):
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.setup.human,
+            category_id=work.setup.category,
+        ) as s:
             reserve(
                 s,
                 work.setup.ctx,
@@ -366,7 +428,7 @@ def test_other_private_build_is_fully_counted_but_hidden_from_public_computation
             serialized = str(public.model_dump(mode="json"))
             assert work.build_id not in serialized and str(owner) not in serialized
             assert "occupancies" not in public.resources.model_dump(mode="json")
-            raise DomainError("SYNTHETIC_ABORT", "Synthetic privacy check rollback")
+            raise RuntimeError("Synthetic privacy check rollback")
     assert count(work, MaterialHold) == count(work, ResourceOccupancy) == 0
 
 
@@ -378,7 +440,7 @@ def test_exact_source_quote_and_final_tables_have_rls_agent_zero_and_immutable_f
     bad["sources"][0]["quote"] = "Invented released inventory"
     with pytest.raises(DomainError) as caught:
         imported(work, bad)
-    assert caught.value.code == "MISSING_REQUIRED_EVIDENCE"
+    assert caught.value.reason == "MISSING_REQUIRED_EVIDENCE"
     saved = fact(work, imported(work))
     with (
         Session(work.setup.admin) as s,

@@ -10,6 +10,7 @@ No method performs SQL, assigns consumed, flushes, commits, or creates a proof.
 
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from pdos_next.clock import proof_deadline_current
 from types import MappingProxyType
 from uuid import UUID
 
@@ -77,6 +78,7 @@ def _material(ctx, command, payload, module):
     common_intent = digest(
         {
             "operation": command.operation,
+            "category": command.category_id,
             "product": command.product_id,
             "payload": semantic,
             "named_actor": ctx.requester_id,
@@ -123,7 +125,7 @@ class LiveConsumption:
     proof_revision: int
     tier: str
     consumed_at: datetime
-    expires_at: datetime
+    expires_at: datetime | None
     token_sha256: str
     material_sha256: str
     read_set_sha256: str
@@ -254,10 +256,9 @@ class ConsumptionHost:
         )
         _require(
             isinstance(proof.created_at, datetime)
-            and isinstance(proof.expires_at, datetime)
             and proof.created_at.utcoffset() is not None
-            and proof.expires_at.utcoffset() is not None
-            and proof.created_at <= consumed_at < proof.expires_at,
+            and proof.created_at <= consumed_at
+            and proof_deadline_current(TIERS[command.operation], proof.expires_at, consumed_at),
             "FACT_CONSUMPTION_CLOCK_INVALID",
         )
         old = bucket["markers"].get(proof.id)
@@ -299,7 +300,10 @@ class ConsumptionHost:
             "FACT_ACTUAL_FALSE_TRUE_REQUIRED",
         )
         _require(
-            marker.consumed_at <= datetime.now(UTC) < proof.expires_at,
+            marker.consumed_at <= datetime.now(UTC)
+            and proof_deadline_current(
+                TIERS[command.operation], proof.expires_at, datetime.now(UTC)
+            ),
             "FACT_CONSUMPTION_CLOCK_INVALID",
         )
         storage._same_uow(s, binding.uow, ctx, binding.materials[0])

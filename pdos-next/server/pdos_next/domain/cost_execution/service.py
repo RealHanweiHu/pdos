@@ -187,7 +187,6 @@ def _proposed(data, bound, refs, input_id, captured_at, previous):
     binding = _rule(basis_binding, bound, captured_at)
     revision = previous.revision + 1 if previous is not None else 1
     raw = data.model_dump(mode="json")
-    expiry = min(ref.valid_until for ref in refs.values() if ref.valid_until is not None)
 
     def fact_ref(identity, fact, observed_at):
         # Hash the complete set of evidence, rather than choosing one quote as authority.
@@ -201,7 +200,6 @@ def _proposed(data, bound, refs, input_id, captured_at, previous):
                 }
             ),
             captured_at=observed_at,
-            valid_until=expiry,
             state="current",
         )
 
@@ -244,7 +242,6 @@ def _proposed(data, bound, refs, input_id, captured_at, previous):
                 }
             ),
             captured_at=captured_at,
-            valid_until=expiry,
             state="current",
         ),
         cost_scope=data.cost_scope,
@@ -284,8 +281,6 @@ def _capture_view(s, ctx, product_id, row):
         "build_revision": row.build_revision,
         "status": row.status,
         "created_at": row.created_at.isoformat(),
-        "expires_at": row.expires_at.isoformat(),
-        "expired": row.expires_at <= now(),
         "applied_input_id": str(applied) if applied is not None else None,
         "input_snapshot": deepcopy(row.input_snapshot),
         "source_status": state,
@@ -295,17 +290,10 @@ def _capture_view(s, ctx, product_id, row):
 
 
 def prepare_capture(s, ctx, product_id, data: CostCaptureInput):
+    from pdos_next.database import require_context
     from pdos_next.service import digest as request_digest
 
-    product = s.scalar(
-        select(Product)
-        .where(Product.id == product_id, Product.tenant_id == ctx.tenant_id)
-        .with_for_update()
-    )
-    if product is None:
-        raise DomainError("FORBIDDEN_SCOPE", "成本来源不在当前授权产品范围。", 403)
-    _human(s, ctx, product_id, write=True)
-    build = _build(s, ctx, product_id, data.build_id, write=True)
+    require_context(s, ctx)
     raw = _normalized_input(data)
     data = CostCaptureInput.model_validate(raw)
     references = _references(data)
@@ -319,11 +307,29 @@ def prepare_capture(s, ctx, product_id, data: CostCaptureInput):
         )
     )
     if existing is not None:
+        _human(s, ctx, product_id)
         if existing.request_sha256 != fingerprint:
             raise DomainError("DUPLICATE_INTENT_CONFLICT", "相同捕获编号对应了不同成本内容。")
-        _, private = _sources(s, ctx, product_id, existing.required_source_read_set, references)
-        if build.visibility == "product" and private:
-            raise DomainError("FORBIDDEN_SCOPE", "私人成本来源须使用相符的私人试制范围。", 403)
+        view = _capture_view(s, ctx, product_id, existing)
+        return {
+            "capture": view,
+            "inputs_record_payload": view["inputs_record_payload"],
+            "required_source_read_set": view["required_source_read_set"],
+        }
+    product = s.scalar(select(Product).where(Product.id == product_id).with_for_update())
+    _human(s, ctx, product_id, write=True)
+    build = _build(s, ctx, product_id, data.build_id, write=True)
+    existing = s.scalar(
+        select(CostCapture).where(
+            CostCapture.tenant_id == ctx.tenant_id,
+            CostCapture.product_id == product_id,
+            CostCapture.owner_id == ctx.requester_id,
+            CostCapture.capture_key == data.capture_key,
+        )
+    )
+    if existing is not None:
+        if existing.request_sha256 != fingerprint:
+            raise DomainError("DUPLICATE_INTENT_CONFLICT", "相同捕获编号对应了不同成本内容。")
         view = _capture_view(s, ctx, product_id, existing)
         return {
             "capture": view,
@@ -343,7 +349,7 @@ def prepare_capture(s, ctx, product_id, data: CostCaptureInput):
         planned_reads, references, previous.required_source_read_set if previous else []
     )
     refs, private = _sources(s, ctx, product_id, reads, references)
-    if build.visibility == "product" and private:
+    if build.visibility == "category" and private:
         raise DomainError("FORBIDDEN_SCOPE", "私人成本来源须先建立相符的私人试制范围。", 403)
     if previous is not None:
         _rule(require_scope, bound.scope, _input_dto(previous).scope)
@@ -365,7 +371,6 @@ def prepare_capture(s, ctx, product_id, data: CostCaptureInput):
         request_sha256=fingerprint,
         input_id=input_id,
         created_at=captured_at,
-        expires_at=captured_at + timedelta(minutes=30),
         input_snapshot=raw,
         bound_demand=bound.model_dump(mode="json"),
         proposed_inputs={
@@ -389,7 +394,7 @@ def prepare_capture(s, ctx, product_id, data: CostCaptureInput):
 def _inputs(s, ctx, command, product, payload):
     _human(s, ctx, product.id, write=True)
     if command.product_id != product.id or product.tenant_id != ctx.tenant_id:
-        raise DomainError("FORBIDDEN_SCOPE", "成本命令不在当前产品范围。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "成本命令不在当前型号范围。", 403)
     if isinstance(payload, InputsRecordPayload):
         row, build = _row(s, ctx, product.id, CostCapture, payload.capture_id, write=True)
     else:
@@ -402,8 +407,8 @@ def _inputs(s, ctx, command, product, payload):
         if supplied.get(ref["artifact_id"]) != ref["expected_revision"]:
             raise DomainError("MISSING_REQUIRED_EVIDENCE", "需要成本输入与双配置的全部固定来源。")
     _, private = _sources(s, ctx, product.id, row.required_source_read_set, row.sources)
-    if build.visibility == "product" and private:
-        raise DomainError("FORBIDDEN_SCOPE", "私人来源不能扩大到产品共享试制范围。", 403)
+    if build.visibility == "category" and private:
+        raise DomainError("FORBIDDEN_SCOPE", "私人来源不能扩大到品类共享试制范围。", 403)
     return row, build
 
 
@@ -425,8 +430,6 @@ def _new_write(s, ctx, command, product, payload, row, build):
     ):
         raise DomainError("VERSION_CONFLICT", "产品或试制版本已变化，请重新读取。")
     as_of = now()
-    if isinstance(payload, InputsRecordPayload) and row.expires_at <= as_of:
-        raise DomainError("CAPTURE_EXPIRED", "成本来源草稿已过期，请建立新的捕获草稿。")
     pointer, previous = _current(s, ctx, product.id, build.id, lock=True)
     if isinstance(payload, InputsRecordPayload):
         if (
@@ -830,7 +833,6 @@ def list_costs(s, ctx, product_id):
             .where(
                 model.tenant_id == ctx.tenant_id,
                 model.product_id == product_id,
-                (model.visibility == "product") | (model.owner_id == ctx.requester_id),
             )
             .order_by(model.created_at.desc(), model.id)
             .limit(101)

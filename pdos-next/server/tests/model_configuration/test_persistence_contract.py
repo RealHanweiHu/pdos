@@ -83,7 +83,7 @@ def test_failed_cas_never_flushes_or_appends(head):
     session = SyntheticSession([head])
     with pytest.raises(DomainError) as error:
         SessionConfigurationStore(session).append(value, expected_revision=0)
-    assert error.value.code in {
+    assert error.value.reason in {
         "MODEL_CONFIGURATION_STALE",
         "MODEL_CONFIGURATION_STORAGE_NOT_PROVISIONED",
     }
@@ -120,4 +120,4 @@ def test_reading_tenant_and_exact_head_revision_no_fallback():
     row.binding_digest = "tampered"
     with pytest.raises(DomainError) as error:
         decode(row)
-    assert error.value.code == "MODEL_CONFIGURATION_STORAGE_INVALID"
+    assert error.value.reason == "MODEL_CONFIGURATION_STORAGE_INVALID"

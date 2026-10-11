@@ -1,6 +1,7 @@
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from uuid import UUID, uuid4
+from uuid import UUID as CategoryUUID
 
 import pytest
 from pydantic import ValidationError
@@ -88,7 +89,7 @@ def fixture():
         roots=(refs["issue"],),
         references=(),
         sources=(source,),
-        visibility="product",
+        visibility="category",
     )
     return SimpleNamespace(
         scope=scope,
@@ -166,7 +167,7 @@ def test_private_source_never_expands_product_audience_but_can_stay_private():
     )
     with pytest.raises(DomainError) as error:
         graph.require_audience(work.reader.target, private)
-    assert error.value.code == "AUDIENCE_USE_FORBIDDEN"
+    assert error.value.reason == "AUDIENCE_USE_FORBIDDEN"
     graph.require_audience(graph.audience(work.scope.product_id, work.actor, "private"), private)
     with pytest.raises(DomainError):
         graph.require_audience(graph.audience(work.scope.product_id, uuid4(), "private"), private)
@@ -251,7 +252,7 @@ def test_unopened_fact_ports_are_explicitly_unavailable(method):
     work = fixture()
     with pytest.raises(DomainError) as error:
         getattr(adapters.Facts(work.reader, set()), method)(object())
-    assert error.value.code == "INTEGRATION_REQUIRED" and error.value.status == 503
+    assert error.value.reason == "INTEGRATION_REQUIRED" and error.value.status == 503
 
 
 def test_impact_does_not_turn_unknown_graph_into_approved_change():
@@ -319,7 +320,7 @@ def test_runtime_revocation_after_owner_io_is_rejected(monkeypatch):
         service._refresh(
             object(), SimpleNamespace(), work.scope.product_id, "change.impact.compute", bound
         )
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 def test_io_refresh_checks_sources_after_owner_io_not_before(monkeypatch):
@@ -474,7 +475,7 @@ def test_current_planned_run_is_not_given_retained_execution_or_plan_port(monkey
     run_ref = Ref(id=uuid4(), revision=1, kind="test_run")
     row = SimpleNamespace(
         owner_id=work.actor,
-        visibility="product",
+        visibility="category",
         revision=1,
         status="planned",
         project_id=work.scope.project_id,
@@ -494,7 +495,9 @@ def test_current_planned_run_is_not_given_retained_execution_or_plan_port(monkey
     )
     reader = graph.OwnerReader(
         session,
-        Context(work.scope.tenant_id, work.actor, work.actor),
+        Context(
+            work.scope.tenant_id, work.actor, work.actor, category_id=CategoryUUID(int=1000000)
+        ),
         work.scope.product_id,
         work.scope,
         work.reader.target,
@@ -516,7 +519,7 @@ def test_current_planned_run_is_not_given_retained_execution_or_plan_port(monkey
             sources=(work.source,),
         )
     session.close()
-    assert error.value.code == "RECHECK_REQUIRED"
+    assert error.value.reason == "RECHECK_REQUIRED"
     assert "计划所有者来源端口未接入" in error.value.message
 
 
@@ -529,7 +532,7 @@ def test_run_owner_basis_ignores_only_information_clock_and_keeps_safety_effects
     run_ref = Ref(id=uuid4(), revision=3, kind="test_run")
     row = SimpleNamespace(
         owner_id=work.actor,
-        visibility="product",
+        visibility="category",
         revision=3,
         status="results_pending",
         run_snapshot={"status": "results_pending"},
@@ -585,7 +588,7 @@ def issue_owner_fixture():
         project_id=work.scope.project_id,
         revision=1,
         owner_id=work.actor,
-        visibility="product",
+        visibility="category",
         source_basis={"sources": [{"security_epoch": 7}]},
     )
     state = {"calls": [], "policy_epoch": 1, "source_status": "current"}
@@ -646,7 +649,7 @@ def test_memo_hit_still_rejects_wrong_issue_or_capa_key(kind):
     wrong = Ref(id=host.issue.id, revision=1, kind=kind, key=str(uuid4()))
     with pytest.raises(DomainError) as error:
         reader.resolve(wrong)
-    assert error.value.code == "FIXED_REFERENCE_MISMATCH"
+    assert error.value.reason == "FIXED_REFERENCE_MISMATCH"
     assert len(host.state["calls"]) == 1
     assert reader.resolve(host.capa).current is True
 
@@ -686,7 +689,7 @@ def test_seed_local_memo_does_not_allow_another_issue_project(monkeypatch):
             host.work.scope.product_id,
             (host.issue, host.capa, another),
         )
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"
 
 
 def test_default_change_issue_loader_is_lean_and_explicit_host_port_wins():
@@ -716,6 +719,7 @@ def test_post_io_fresh_reader_rejects_policy_aba_or_invalid_owner(monkeypatch, c
     monkeypatch.setattr(service, "_issue_loader", lambda s: host.loader)
     bound = SimpleNamespace(
         coverage=None,
+        source_basis={},
         reader=first,
         scope=host.work.scope,
         target=host.work.reader.target,
@@ -728,7 +732,7 @@ def test_post_io_fresh_reader_rejects_policy_aba_or_invalid_owner(monkeypatch, c
             "change.impact.compute",
             bound,
         )
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
     assert len(host.state["calls"]) == 2
 
 
@@ -736,6 +740,7 @@ def lean_quality_fixture(monkeypatch):
     from quality_issues.helpers import fixed_run
 
     from pdos_next.domain.quality_execution import service as quality
+    from pdos_next.domain.quality_execution.direct import issue_refs
     from pdos_next.domain.quality_issues.ports import VerifiedRun
     from pdos_next.domain.quality_issues.rules import failure_ref
     from pdos_next.schemas.quality_issues.contracts import Issue
@@ -761,11 +766,12 @@ def lean_quality_fixture(monkeypatch):
         revision=1,
         status="open",
         purpose="same-fixed-purpose",
-        visibility="product",
+        visibility="category",
         owner_id=failure.executor_id,
         issue_snapshot=issue.model_dump(mode="json"),
         snapshot_sha256=saved_digest(issue.model_dump(mode="json")),
         required_source_read_set=[{"artifact_id": str(uuid4()), "expected_revision": 1}],
+        source_basis={"artifact_sources": []},
         sources=(),
         created_at=AT,
         reason="Fixed synthetic evidence",
@@ -777,15 +783,12 @@ def lean_quality_fixture(monkeypatch):
         calls["source"] += 1
         return [], False
 
-    def bridge(*args, **binding):
+    def bridge(s, ctx, pid, actual_issue, actual_failure, *, purpose):
         calls["failure"] += 1
-        assert binding == {
-            "run_id": failure.run.id,
-            "measurement_id": failure.measurement_id,
-            "run_revision": failure.run.revision,
-        }
+        assert pid == row.product_id and actual_issue == issue and actual_failure == failure
+        assert purpose == row.purpose
         return SimpleNamespace(
-            verified=verified,
+            measurement=run.measurements[0].model_dump(mode="json"),
             projection_id=uuid4(),
             basis_sha256="a" * 64,
             required_source_read_set=(),
@@ -799,12 +802,23 @@ def lean_quality_fixture(monkeypatch):
         calls["authority"].append(args[4])
         return {"authorized": True, "qualified": True, "required_source_read_set": []}
 
-    monkeypatch.setattr(quality, "source_basis", sources)
-    monkeypatch.setattr(quality, "_result", bridge)
+    from pdos_next import quality_result_bridge, source_current
+
+    monkeypatch.setattr(source_current, "direct_source_basis", sources)
+    monkeypatch.setattr(quality_result_bridge, "direct_issue_failure", bridge)
     monkeypatch.setattr(quality.policy, "assess", policy)
     monkeypatch.setattr(quality.professional, "assess", authority)
     return SimpleNamespace(
-        quality=quality, row=row, issue=issue, calls=calls, policy_read=policy_read
+        quality=quality,
+        row=row,
+        issue=issue,
+        calls=calls,
+        policy_read=policy_read,
+        direct_reads=[
+            {"artifact_id": str(r.id), "expected_revision": r.revision} for r in issue_refs(issue)
+        ],
+        source_current=source_current,
+        failure_bridge=quality_result_bridge,
     )
 
 
@@ -824,7 +838,7 @@ def test_lean_issue_keeps_fixed_failure_risk_policy_and_reads_without_unrelated_
     assert lean.policy == full.policy
     assert not any(lean.capabilities.values()) and lean.authority == {}
     assert {r.artifact_id for r in lean.required_source_read_set} == {
-        UUID(r["artifact_id"]) for r in (*host.row.required_source_read_set, host.policy_read)
+        UUID(r["artifact_id"]) for r in (*host.direct_reads, host.policy_read)
     }
 
 
@@ -836,9 +850,9 @@ def test_lean_issue_does_not_turn_unavailable_required_proof_current(monkeypatch
         raise DomainError("RECHECK_REQUIRED", "Required synthetic proof is no longer current")
 
     if port == "source":
-        monkeypatch.setattr(host.quality, "source_basis", rejected)
+        monkeypatch.setattr(host.source_current, "direct_source_basis", rejected)
     elif port == "failure":
-        monkeypatch.setattr(host.quality, "_result", rejected)
+        monkeypatch.setattr(host.failure_bridge, "direct_issue_failure", rejected)
     else:
         monkeypatch.setattr(host.quality.policy, "assess", rejected)
     view = host.quality._view(
@@ -892,7 +906,7 @@ def test_get_issue_for_change_keeps_fixed_row_private_acl_and_real_current_point
     host.row.visibility, host.row.owner_id = "private", uuid4()
     with pytest.raises(DomainError) as error:
         host.quality.get_issue_for_change(session, ctx, host.row.product_id, host.row.issue_id, 1)
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"
 
 
 def test_capture_expiry_still_rejects_exact_boundary_before_any_memo_or_owner_read(monkeypatch):
@@ -902,4 +916,11 @@ def test_capture_expiry_still_rejects_exact_boundary_before_any_memo_or_owner_re
         service._capture_valid(
             object(), object(), uuid4(), SimpleNamespace(capture=capture, graph=None)
         )
-    assert error.value.code == "GRAPH_CAPTURE_EXPIRED"
+    assert error.value.reason == "GRAPH_CAPTURE_EXPIRED"
+
+
+def test_create_payload_keeps_more_than_twenty_exact_sources():
+    work = fixture()
+    sources = tuple(work.source.model_copy(update={"id": uuid4()}) for _ in range(21))
+    value = ChangeCreatePayload.model_validate({**work.payload.model_dump(), "sources": sources})
+    assert value.sources == sources

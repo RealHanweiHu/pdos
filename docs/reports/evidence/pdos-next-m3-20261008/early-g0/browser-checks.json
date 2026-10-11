@@ -1,0 +1,44 @@
+{
+  "final_web_manifest": "web-candidate.json",
+  "owner": {
+    "edit_persisted_version": 2,
+    "submit_status": "in_review",
+    "reviewer_dropdown_excludes_owner": true
+  },
+  "reviewer": {
+    "can_write": false,
+    "product_manager": true,
+    "approved": true,
+    "result_overview_definition_count": 1,
+    "result_overview_project_count": 1
+  },
+  "keyboard": {
+    "initial_modal_focus": "确认办理",
+    "tab_cycles_inside_dialog": true,
+    "escape_closes": true,
+    "escape_returns_focus_to": "核对提交内容"
+  },
+  "layout_measurements": [
+    {
+      "theme": "light",
+      "width": 390,
+      "scroll_width": 390
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "scroll_width": 320
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "scroll_width": 390,
+      "modal_width": 358
+    }
+  ],
+  "artifact_scope": "Submit/decide/keyboard/modal/320 and 390 captures preceded final result-link-only refinement; final candidate rebuilt, approved document reloaded and final result link rechecked in final-product-overview-dark.png.",
+  "screenshots_root": "output/playwright/pdos-next-m3-20261008",
+  "nonbusiness_tool_recovery": "Repeated npx registry startup stalls; used already cached same Playwright CLI directly; date inputs filled using observed group labels.",
+  "prelogin_401_expected": true,
+  "favicon_404_existing_baseline": true
+}

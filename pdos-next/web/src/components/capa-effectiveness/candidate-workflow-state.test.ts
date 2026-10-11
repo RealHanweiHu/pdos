@@ -75,9 +75,9 @@ test("partial material with no mappings remains a tokenless indeterminate select
   assert.equal(exactCandidatePayload(p), true); assert.equal(newCandidateCommand(host(), p, id(20), id(21)).payload.mappings.length, 0);
 });
 test("a shared origin requires explicit same audience and no private material", () => {
-  const h = { ...host(), scope: { ...scope, visibility: "product" as const }, allowProductVisibility: true };
+  const h = { ...host(), scope: { ...scope, visibility: "category" as const }, allowProductVisibility: true };
   assert.throws(() => newCandidateCommand(h, payload(), id(20), id(21)));
-  assert.throws(() => newCandidateCommand(h, { ...payload(), visibility: "product" }, id(20), id(21)));
+  assert.throws(() => newCandidateCommand(h, { ...payload(), visibility: "category" }, id(20), id(21)));
 });
 test("server inputs may add real reads but cannot omit or replace original sources", () => {
   const original = command(), extra = { artifact_id: id(32), expected_revision: 3 };

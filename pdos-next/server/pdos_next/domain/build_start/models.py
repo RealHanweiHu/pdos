@@ -93,7 +93,7 @@ class BuildExecutionAssessment(Row, Base):
         ),
         CheckConstraint(
             "status IN ('UNKNOWN','BLOCKED','READY_WITH_CONDITIONS','READY') "
-            "AND visibility IN ('private','product')"
+            "AND visibility IN ('private','category','audience')"
         ),
         CheckConstraint(
             "(revision = 1 AND previous_assessment_id IS NULL AND previous_revision IS NULL) "
@@ -148,7 +148,7 @@ class BuildAuthorizationDecision(Row, Base):
     visibility: Mapped[str] = mapped_column(String(16))
     action: Mapped[str] = mapped_column(String(16))
     status: Mapped[str] = mapped_column(String(16))
-    valid_until: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    valid_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     authority_snapshot: Mapped[dict] = mapped_column(JSONB)
     fact_binding: Mapped[dict] = mapped_column(JSONB)
     sources: Mapped[list] = mapped_column(JSONB)
@@ -205,7 +205,8 @@ class BuildAuthorizationDecision(Row, Base):
             "role IN ('engineering','manufacturing') AND revision > 0 AND assessment_revision > 0"
         ),
         CheckConstraint(
-            "visibility IN ('private','product') AND ((action = 'approve' AND status = 'approved') "
+            "visibility IN ('private','category','audience') AND "
+            "((action = 'approve' AND status = 'approved') "
             "OR (action = 'revoke' AND status = 'revoked'))"
         ),
         CheckConstraint(
@@ -336,7 +337,7 @@ class BuildStart(Row, Base):
             "AND build_revision > 0 AND assessment_revision > 0"
         ),
         CheckConstraint(
-            "visibility IN ('private','product') AND engineering_role = 'engineering' "
+            "visibility IN ('private','category','audience') AND engineering_role = 'engineering' "
             "AND manufacturing_role = 'manufacturing'"
         ),
     )

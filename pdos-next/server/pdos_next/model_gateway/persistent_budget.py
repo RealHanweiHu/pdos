@@ -1,28 +1,17 @@
-"""A short-transaction model accounting port, separate from domain write authorization.
+"""Pure settlement rules for the COMMON human accounting command.
 
-Reservations are conservative UTF-8 byte + output-token bounds. Unknown attempts
-retain that reservation until explicit usage reconciliation. Neither an expired
-grant nor cancellation can erase the cost of a model request already sent.
+Model execution and new reservations are owned exclusively by agent_kernel.
 """
 
 import re
-import secrets
-from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
-from hmac import compare_digest
 from uuid import UUID
 
-from sqlalchemy import Engine, select
-from sqlalchemy.exc import IntegrityError
-
-from pdos_next.database import tenant_session
 from pdos_next.errors import DomainError
 from pdos_next.model_gateway.ports import CallPermit, Reservation
-from pdos_next.models import BudgetReservation, Principal, Product, Run
 from pdos_next.providers.types import ProviderUsage
-from pdos_next.safety import verify_test_target
-from pdos_next.service import Context, check_qualification, check_run, digest, require_access
+from pdos_next.service import Context
 
 _MAX_INTEGER = 2_147_483_647
 _DIGEST = re.compile(r"[0-9a-f]{64}")
@@ -139,175 +128,3 @@ def _apply_settlement(run, row, final: _Settlement):
     row.settled_at = datetime.now(UTC)
     row.revision = getattr(row, "revision", 1) + 1
     return run.used_tokens + run.reserved_tokens > run.token_limit
-
-
-class DatabaseBudgetPort:
-    def __init__(
-        self,
-        engine: Engine,
-        ctx: Context,
-        require_current: Callable[[CallPermit], None],
-        *,
-        synthetic_mode=False,
-    ):
-        if ctx.run_id is None or ctx.cancel_epoch is None or not callable(require_current):
-            raise DomainError("MODEL_BUDGET_INVALID", "预算必须绑定服务器运行与当前授权。")
-        self.engine, self.ctx = engine, ctx
-        self.require_current, self.synthetic_mode = require_current, synthetic_mode
-        if synthetic_mode:
-            verify_test_target(engine)
-
-    def _lock_run(self, s):
-        # Determine its Product without a lock, then take the same Product -> Run
-        # lock order as domain writes. No network or current-authorization callback here.
-        query = select(Run).where(Run.id == self.ctx.run_id, Run.tenant_id == self.ctx.tenant_id)
-        snapshot = s.scalar(query)
-        if not snapshot:
-            raise DomainError("FORBIDDEN_SCOPE", "模型预算不在当前运行范围。", 403)
-        product = s.scalar(
-            select(Product)
-            .where(Product.id == snapshot.product_id, Product.tenant_id == self.ctx.tenant_id)
-            .with_for_update()
-        )
-        if not product:
-            raise DomainError("FORBIDDEN_SCOPE", "模型预算的产品范围已失效。", 403)
-        run = s.scalar(query.with_for_update().execution_options(populate_existing=True))
-        if run.requester_id != self.ctx.requester_id or run.writer_id != self.ctx.actor_id:
-            raise DomainError("FORBIDDEN_SCOPE", "模型预算的运行身份不匹配。", 403)
-        return product, run
-
-    def reserve(
-        self, permit: CallPermit, *, input_bytes: int, max_output_tokens: int
-    ) -> Reservation:
-        _permit_shape(permit, self.ctx)
-        if (
-            not _positive_integer(input_bytes)
-            or not _positive_integer(max_output_tokens)
-            or max_output_tokens > 32768
-            or input_bytes > 1_048_576
-        ):
-            raise DomainError("MODEL_BUDGET_INVALID", "模型调用预算上限无效。")
-        # The callback may query current read sets. It runs outside this port's locks;
-        # the domain checks below authoritatively lock current grant/run/qualification.
-        self.require_current(permit)
-        token = secrets.token_urlsafe(32)
-        try:
-            with tenant_session(self.engine, self.ctx.tenant_id) as s:
-                product, run = self._lock_run(s)
-                require_access(s, self.ctx, product.id, write=True, lock=True)
-                check_run(s, self.ctx, product.id)
-                if run.status in {"succeeded", "failed", "cancelled"}:
-                    raise DomainError("MODEL_RUN_NOT_ACTIVE", "原模型运行不能再次发出调用。")
-                actor = s.get(Principal, self.ctx.actor_id)
-                if actor is None or actor.kind != "agent":
-                    raise DomainError("FORBIDDEN_SCOPE", "模型预算须绑定独立 AI 身份。", 403)
-                _permit_shape(permit, self.ctx)
-                if permit.provider_version != run.provider_version:
-                    raise DomainError("QUALIFICATION_REQUIRED", "模型版本与运行资格不匹配。", 403)
-                check_qualification(
-                    s, self.ctx, "evidence.claim.record", run, self.synthetic_mode
-                )
-                existing = s.scalar(
-                    select(BudgetReservation).where(
-                        BudgetReservation.tenant_id == self.ctx.tenant_id,
-                        BudgetReservation.call_id == permit.call_id,
-                    )
-                )
-                if existing:
-                    raise DomainError(
-                        "MODEL_CALL_ALREADY_ATTEMPTED", "原模型调用须先恢复或对账。"
-                    )
-                reserved = input_bytes + max_output_tokens
-                if (
-                    not _positive_integer(run.token_limit)
-                    or type(run.used_tokens) is not int
-                    or type(run.reserved_tokens) is not int
-                    or min(run.used_tokens, run.reserved_tokens) < 0
-                    or run.used_tokens + run.reserved_tokens + reserved > run.token_limit
-                ):
-                    raise DomainError("MODEL_BUDGET_EXCEEDED", "原运行的模型预算不足。")
-                s.add(
-                    BudgetReservation(
-                        tenant_id=self.ctx.tenant_id,
-                        run_id=run.id,
-                        call_id=permit.call_id,
-                        token_hash=digest(token),
-                        request_digest=permit.request_digest,
-                        reserved=reserved,
-                        status="reserved",
-                        provider_version=permit.provider_version,
-                        protocol=permit.protocol,
-                        route_digest=permit.route_digest,
-                    )
-                )
-                run.reserved_tokens += reserved
-                s.flush()
-        except IntegrityError as error:
-            # The tenant/call unique constraint catches collisions across different
-            # run locks as well; fail closed without returning a second reservation.
-            if getattr(error.orig, "sqlstate", None) == "23505":
-                raise DomainError(
-                    "MODEL_CALL_ALREADY_ATTEMPTED", "原模型调用须先恢复或对账。"
-                ) from None
-            raise DomainError("MODEL_BUDGET_INVALID", "模型预算记录未通过存储约束。") from None
-        return Reservation(permit.call_id, token)
-
-    def _lock_reservation(self, s, reservation):
-        _, run = self._lock_run(s)
-        row = s.scalar(
-            select(BudgetReservation)
-            .where(
-                BudgetReservation.tenant_id == self.ctx.tenant_id,
-                BudgetReservation.run_id == run.id,
-                BudgetReservation.call_id == reservation.call_id,
-            )
-            .with_for_update()
-        )
-        if not row or not compare_digest(row.token_hash, digest(reservation.token)):
-            raise DomainError("MODEL_BUDGET_INVALID", "模型预算回执与原调用不匹配。")
-        return run, row
-
-    def settle(
-        self,
-        reservation: Reservation,
-        *,
-        usage: ProviderUsage,
-        outcome: str,
-        error_code: str | None = None,
-        request_id: str | None = None,
-    ) -> None:
-        _reservation_shape(reservation)
-        final = _settlement(usage, outcome, error_code, request_id)
-        with tenant_session(self.engine, self.ctx.tenant_id) as s:
-            run, row = self._lock_reservation(s, reservation)
-            exceeded = _apply_settlement(run, row, final)
-        if exceeded:
-            # Record real usage first, then stop domain execution; raising inside
-            # the transaction would roll back precisely the cost we must retain.
-            raise DomainError("MODEL_BUDGET_EXCEEDED", "实际模型用量超过原运行预算。")
-
-    def unknown(
-        self, reservation: Reservation, *, error_code: str, request_id: str | None = None
-    ) -> None:
-        _reservation_shape(reservation)
-        _metadata(error_code, request_id)
-        with tenant_session(self.engine, self.ctx.tenant_id) as s:
-            _, row = self._lock_reservation(s, reservation)
-            if row.status in {"completed", "rejected"}:
-                raise DomainError("MODEL_BUDGET_CONFLICT", "已结算模型调用不能回退为未知。")
-            if row.status == "unknown":
-                if row.error_code != error_code:
-                    raise DomainError("MODEL_BUDGET_CONFLICT", "原未知调用状态已经保存。")
-                if row.request_id and request_id and row.request_id != request_id:
-                    raise DomainError("MODEL_BUDGET_CONFLICT", "原未知调用编号不能改写。")
-                if request_id and not row.request_id:
-                    row.request_id = request_id
-                    row.revision += 1
-                return
-            if row.request_id and request_id and row.request_id != request_id:
-                raise DomainError("MODEL_BUDGET_CONFLICT", "原调用编号不能由其他调用替代。")
-            row.status, row.error_code = "unknown", error_code
-            row.request_id = row.request_id or request_id
-            row.revision += 1
-            # Keep run.reserved_tokens unchanged. Only explicit usage settlement
-            # can release an unknown provider attempt; never expire and resend.

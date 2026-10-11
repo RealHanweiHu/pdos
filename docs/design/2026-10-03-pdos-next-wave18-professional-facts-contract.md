@@ -1,5 +1,7 @@
 # 第十八波：规则、实际观察与具名复核
 
+**2026-10-08：本施工合同已被[完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md)整体取代，仅作只读历史对照。下方旧“当前/下一步/冻结”不再作为施工指令。** 范围根、一致性、期限与数量限制按 v1.1 和已批准的 [S0 实施计划](2026-10-08-pdos-next-s0-refactoring-plan.md)执行；[旧条款对照与 B0 基线](../reports/evidence/pdos-next-s0-20261008/baseline/baseline.md)保留取代依据。原证据、失败与当时范围不改写。
+
 续接第十七波已保存的候选及原完成锚。原候选、旧失败 Run、Issue Current 与未知有效性保持。唯一活动状态仍在整合清单；本文件只冻结施工接口，不授真实资格、生产启用或人工 Exit。
 
 本轮复用 next_0026 的 RuleFact/Current、ObservationFact/Current、NamedReview 五表、冻结 body codec、实际共同 Receipt/Audit/Outbox/RequestKey 和 ConsumptionHost。公开操作仅 `quality.capa.observation.record`（T1）与 `quality.capa.verification.review`（T2）；`quality.capa.verification.rule.import` 保持服务器可信发布入口，不加入公开 PAYLOADS，也不允许表单选择 issuer。完整目标 G0～G5 与有效性/分别关闭继续未完成。

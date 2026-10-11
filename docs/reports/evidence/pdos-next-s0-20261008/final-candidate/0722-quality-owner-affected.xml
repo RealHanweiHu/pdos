@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="1.521" timestamp="2026-10-09T10:17:33.621303-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.test_quality_result_bridge_reuse" name="test_same_precise_run_reuses_only_initial_retained_and_rechecks_bytes_and_owner" time="0.072"><failure message="pdos_next.errors.DomainError: 逐项专业适用证明缺失。">tests/test_quality_result_bridge_reuse.py:261: in test_same_precise_run_reuses_only_initial_retained_and_rechecks_bytes_and_owner
+    first, second = select(archive), select(archive, 1)
+                    ^^^^^^^^^^^^^^^
+tests/test_quality_result_bridge_reuse.py:248: in select
+    return bridge.fixed_failure_result(
+pdos_next/quality_result_bridge.py:277: in fixed_failure_result
+    request = front._snapshot(request_row)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/verification_front/service.py:266: in _snapshot
+    raise DomainError("INTEGRITY_MISMATCH", "逐项专业适用证明缺失。")
+E   pdos_next.errors.DomainError: 逐项专业适用证明缺失。</failure></testcase></testsuite></testsuites>

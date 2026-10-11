@@ -206,7 +206,7 @@ function CandidateFlow({ host, api, inputs, renderReview, onSaved, onRefresh, on
         <Button disabled={busy} onClick={() => void perform(local.pending!, live.current.basis)}><ArrowClockwise/>按原请求恢复</Button>
         {local.pending.stage !== "execute" && <Button variant="outline" disabled={busy} onClick={cancel}>取消未提交的核对</Button>}
       </div>}
-      {local.savedReceipt && <p className="text-sm">已取得第 {local.savedReceipt.subject_revision} 版候选回执。固定候选不等于措施有效、问题关闭或产品放行。</p>}
+      {local.savedReceipt && <p className="text-sm">已取得第 {local.savedReceipt.subject_revision} 版候选回执。固定候选不等于措施有效、问题关闭或成品放行。</p>}
     </section>
     <CandidateForm key={formEpoch} scope={host.scope} materials={host.materials}
       disabled={blocked || rejected || hostAccessRejected || readRequired || !candidateCanPrepare(host) || local.pending !== null || preview !== null}

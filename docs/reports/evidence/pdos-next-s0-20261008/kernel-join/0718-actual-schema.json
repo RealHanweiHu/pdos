@@ -1,0 +1,23 @@
+{
+  "head": "s0_0718",
+  "lifecycle_schema_covered": true,
+  "legacy_run_columns": [
+    "product_id",
+    "work_id",
+    "requester_id",
+    "writer_id",
+    "cancel_epoch",
+    "status",
+    "skill_version",
+    "provider_version",
+    "lease_id",
+    "lease_until",
+    "token_limit",
+    "reserved_tokens",
+    "used_tokens",
+    "id",
+    "tenant_id",
+    "created_at",
+    "category_id"
+  ]
+}

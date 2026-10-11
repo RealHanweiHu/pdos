@@ -40,7 +40,7 @@ export function ModelAccounting({ product, principalId, api, onSaved }: { produc
     try { await api("v1/commands", command); setPending(null); localStorage.removeItem(storageKey); setReview(null); dialog.current?.close(); setNotice("对账已记录，原模型结果和运行状态保留。"); await load(); await onSaved(); }
     catch (e) { const failure = e as Error & { status?: number }; setError(failure.message); if (failure.status && [403, 409, 422].includes(failure.status)) { setPending(null); localStorage.removeItem(storageKey); setReview(null); dialog.current?.close(); } } finally { setBusy(false); }
   }
-  if (!calls.length && !pending) return <section className="panel mb-6"><h2 className="font-semibold">调用与费用核对</h2><p className="subtle mt-3">当前没有已登记的模型调用。模型尚未配置，不会为此自动发起调用。</p>{error && <p role="alert" className="mt-3 text-destructive">{error}</p>}</section>;
+  if (!calls.length && !pending) return <section className="panel mb-6"><h2 className="font-semibold">调用与费用核对</h2><p className="subtle mt-3">当前没有已登记的模型调用。可在模型设置中核对配置与权限。</p>{error && <p role="alert" className="mt-3 text-destructive">{error}</p>}</section>;
   return <section className="panel mb-6">
     <h2 className="font-semibold">调用与费用核对</h2><p className="subtle my-3">费用未知时继续保留预留用量。只有拿到原调用的真实用量凭证后，才能记录已知费用；对账不会重发模型请求。</p>
     {error && <p role="alert" className="my-3 text-destructive">{error}</p>}{notice && <p role="status" className="my-3">{notice}</p>}

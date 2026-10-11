@@ -15,6 +15,7 @@ from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
 from sqlalchemy import select
 
+from pdos_next.database import category_for_product
 from pdos_next.domain.configurations.service import _merge_reads
 from pdos_next.domain.supply_execution.service import _human, _read_evidence, _sources
 from pdos_next.domain.verification.ports import Invocation
@@ -37,14 +38,15 @@ from pdos_next.domain.verification_front.models import (
     MethodApplicability,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Grant, OriginalSecurity, Principal, Product, now
+from pdos_next.models import Artifact, Grant, OriginalSecurity, Principal, now
+from pdos_next.request_proof import command_inputs_once, snapshot_get, snapshot_scalar
 from pdos_next.schemas.verification.contracts import (
     Coverage,
     HandoffAccept,
     HandoffOffer,
     HandoffReturn,
 )
-from pdos_next.service import Context, digest, require_access
+from pdos_next.service import digest, require_access
 
 from .adapters import HandoffCommands, InspectedSamples, kernel
 from .models import (
@@ -114,13 +116,33 @@ def _basis(s, ctx, product_id, reads, references):
     for read in reads:
         artifact = s.get(Artifact, UUID(read["artifact_id"]))
         if artifact.original_id:
-            state = s.scalar(
-                select(OriginalSecurity).where(
-                    OriginalSecurity.tenant_id == ctx.tenant_id,
-                    OriginalSecurity.product_id == product_id,
-                    OriginalSecurity.original_id == artifact.original_id,
-                )
+            query = select(OriginalSecurity).where(
+                OriginalSecurity.tenant_id == ctx.tenant_id,
+                OriginalSecurity.product_id == product_id,
+                OriginalSecurity.original_id == artifact.original_id,
             )
+            from sqlalchemy.orm import Session
+
+            if (
+                isinstance(s, Session)
+                and s.info.get("read_snapshot") is True
+                and s.in_transaction()
+                and not (s.new or s.dirty or s.deleted)
+            ):
+                from pdos_next.database import require_context
+
+                require_context(s, ctx)
+                # Only this exact RLS-loaded row is fixed in the RR read.
+                # Sources, complete refs/private and every epoch comparison
+                # remain per-call; a writer's model gate cannot reuse this.
+                state = snapshot_scalar(
+                    s,
+                    (OriginalSecurity, ctx.tenant_id, product_id, artifact.original_id),
+                    query,
+                    scope_id=product_id,
+                )
+            else:
+                state = s.scalar(query)
             security.append(
                 {
                     "original_id": str(artifact.original_id),
@@ -140,10 +162,44 @@ def _method_pointer(s, ctx, product_id, request_id, sample_id, item_id, *, lock=
         ActualMethodCurrent.sample_id == sample_id,
         ActualMethodCurrent.item_id == item_id,
     )
-    pointer = s.scalar(query.with_for_update() if lock else query)
-    if pointer is None:
-        return None, None
-    row = s.get(ActualMethodApplicability, pointer.assessment_id)
+    from pdos_next.domain.sample_handoff.service import _fresh_pointer_pair
+
+    pair = (
+        None
+        if lock
+        else _fresh_pointer_pair(
+            s,
+            ctx,
+            product_id,
+            ActualMethodCurrent,
+            ActualMethodApplicability,
+            query,
+            (ActualMethodCurrent, product_id, request_id, sample_id, item_id),
+            "assessment_id",
+            {
+                "tenant_id": ctx.tenant_id,
+                "product_id": product_id,
+                "request_id": request_id,
+                "sample_id": sample_id,
+                "item_id": item_id,
+            },
+        )
+    )
+    if pair is None:
+        pointer = snapshot_scalar(
+            s,
+            (ActualMethodCurrent, product_id, request_id, sample_id, item_id),
+            query,
+            lock=lock,
+            scope_id=product_id,
+        )
+        if pointer is None:
+            return None, None
+        row = snapshot_get(s, ActualMethodApplicability, pointer.assessment_id, scope_id=product_id)
+    else:
+        pointer, row = pair
+        if pointer is None:
+            return None, None
     if (
         row is None
         or row.revision != pointer.assessment_revision
@@ -161,21 +217,20 @@ def _method_pointer(s, ctx, product_id, request_id, sample_id, item_id, *, lock=
 
 def _inspect(s, ctx, product_id, request, sample, *, write=False, read_context=None):
     from pdos_next.domain.build_execution.models import SampleUnit
-    from pdos_next.domain.sample_handoff.service import inspect_sample
+    from pdos_next.domain.sample_handoff.service import inspect_sample, read_context_for
+
+    if read_context is None and not write:
+        read_context = read_context_for(s, ctx, product_id)
 
     # The authoritative inspector validates the complete immutable physical chain.
     # This local read only adds the visibility needed by the enclosing request.
-    sample_row = s.scalar(
-        select(SampleUnit).where(
-            SampleUnit.id == sample.id,
-            SampleUnit.tenant_id == ctx.tenant_id,
-            SampleUnit.product_id == product_id,
-        )
-    )
-    if sample_row is None or (
-        sample_row.visibility == "private" and sample_row.owner_id != ctx.requester_id
+    sample_row = snapshot_get(s, SampleUnit, sample.id, scope_id=product_id)
+    if (
+        sample_row is None
+        or sample_row.tenant_id != ctx.tenant_id
+        or sample_row.product_id != product_id
     ):
-        raise DomainError("FORBIDDEN_SCOPE", "样件不在当前可见产品范围。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "样件不在当前可见型号范围。", 403)
     kwargs = {"at": now(), "write": write}
     if read_context is not None:
         kwargs["read_context"] = read_context
@@ -221,66 +276,42 @@ class Bound:
 
 
 def _proof_stamp(s, ctx, product_id, row):
-    """Fresh scalar guards; no ORM identity-map authority or cross-phase memo."""
-    from pdos_next.domain.professional_authority.models import ProfessionalCurrent, ProfessionalFact
+    """Current reader and referenced authority watermarks, held by this transaction."""
+    from pdos_next.domain.professional_authority.models import ProfessionalCurrent
+    from pdos_next.domain.professional_authority.service import _subject_access
     from pdos_next.domain.sample_handoff.service import ReadContext
+    from pdos_next.request_proof import request_proof, scoped_rows
 
-    identities = {ctx.actor_id, ctx.requester_id, row.owner_id}
-    rows = s.execute(
-        select(
-            Principal.id,
-            Principal.kind,
-            Principal.active,
-            Principal.access_epoch,
-            Grant.id,
-            Grant.can_write,
-            Grant.access_epoch,
-            Grant.expires_at,
-        )
-        .join(
-            Grant,
-            (Grant.tenant_id == Principal.tenant_id) & (Grant.principal_id == Principal.id),
-        )
-        .where(
-            Principal.tenant_id == ctx.tenant_id,
-            Principal.id.in_(identities),
-            Grant.product_id == product_id,
-        )
-        .order_by(Principal.id)
-    ).all()
-    epoch = s.scalar(
-        select(Product.lifecycle_epoch).where(
-            Product.tenant_id == ctx.tenant_id, Product.id == product_id
-        )
-    )
-    boundaries = s.execute(
-        select(ProfessionalFact.id, ProfessionalFact.valid_from, ProfessionalFact.valid_until)
-        .join(ProfessionalCurrent, ProfessionalCurrent.fact_id == ProfessionalFact.id)
+    product = require_access(s, ctx, product_id)
+    principal, grant = _subject_access(s, ctx, product_id, ctx.requester_id)
+    at = now()
+    if (
+        principal is None
+        or grant is None
+        or not principal.active
+        or (grant.expires_at is not None and grant.expires_at <= at)
+    ):
+        raise DomainError("FORBIDDEN_SCOPE", "当前本人品类读取权限已失效。", 403)
+    subject = UUID(row.authority_snapshot["subject_id"])
+    pointers = scoped_rows(
+        s,
+        (ProfessionalCurrent, product_id, row.project_id, subject),
+        select(ProfessionalCurrent)
         .where(
             ProfessionalCurrent.tenant_id == ctx.tenant_id,
             ProfessionalCurrent.product_id == product_id,
             ProfessionalCurrent.project_id == row.project_id,
-            ProfessionalCurrent.subject_id == row.owner_id,
+            ProfessionalCurrent.subject_id == subject,
         )
-        .order_by(ProfessionalFact.id)
-    ).all()
-    # Same exact scope predicate as professional_authority.assess; its facts
-    # and pointers require project_id, while only issuer configuration may be
-    # product-wide. Sample time after ALL SQL, including upcoming fact boundaries.
-    at = now()
-    valid = {
-        value[0]
-        for value in rows
-        if value[1] == "human" and value[2] and value[5] and value[7] > at
-    }
-    if not {ctx.actor_id, ctx.requester_id} <= valid:
-        raise DomainError("FORBIDDEN_SCOPE", "当前本人产品权限已失效。", 403)
-    if row.owner_id not in valid:
-        raise DomainError("SOURCE_STALE", "原具名核对人的身份或写权限已变化。")
-    # An absent transaction or pending local writes disables reuse, rather than
-    # accidentally spanning a flush or a different command phase.
+        .order_by(ProfessionalCurrent.id),
+        lock=any(entry["locked"] for entry in request_proof(s).authority.values()),
+    )
+    from pdos_next.domain.professional_authority.service import authority_time_current
+
+    if not authority_time_current(row.authority_snapshot, at):
+        raise DomainError("SOURCE_STALE", "当前所需职责或实际专业资格已失效。")
     transaction = s.get_transaction()
-    if epoch is None or transaction is None or s.new or s.dirty or s.deleted:
+    if transaction is None or s.new or s.dirty or s.deleted:
         return None
     return (
         id(s),
@@ -290,26 +321,27 @@ def _proof_stamp(s, ctx, product_id, row):
         ctx.actor_id,
         ctx.requester_id,
         ctx.run_id,
-        epoch,
-        tuple(tuple(value) for value in rows),
-        tuple((identity, begin, end, begin <= at < end) for identity, begin, end in boundaries),
-        ReadContext._runtime(s),
-        min(
-            [value[7] for value in rows]
-            + [
-                boundary
-                for _, begin, end in boundaries
-                for boundary in (begin, end)
-                if boundary > at
-            ]
+        product.lifecycle_epoch,
+        (principal.id, principal.access_epoch, grant.id, grant.access_epoch),
+        tuple(
+            (pointer.id, pointer.fact_id, pointer.fact_revision, pointer.epoch)
+            for pointer in pointers
         ),
+        ReadContext._runtime(s),
+        grant.expires_at,
     )
 
 
 def _proof_key(kind, row, request, sample=None, value=None):
     return (
         kind,
-        digest({column.key: getattr(row, column.key) for column in row.__table__.columns}),
+        digest(
+            {
+                column.key: getattr(row, column.key)
+                for column in row.__table__.columns
+                if column.key != "audience_dependencies"
+            }
+        ),
         digest(request.model_dump(mode="json")),
         digest(sample.model_dump(mode="json")) if sample is not None else None,
         digest(value) if value is not None else None,
@@ -317,34 +349,31 @@ def _proof_key(kind, row, request, sample=None, value=None):
 
 
 def _proof_deadline(row, stamp=None):
-    value = row.authority_snapshot.get("valid_until")
-    try:
-        at = datetime.fromisoformat(value.replace("Z", "+00:00")) if value else None
-        return (
-            min(at, stamp[-1]) if at and at.tzinfo and stamp else at if at and at.tzinfo else None
-        )
-    except (TypeError, ValueError):
-        return None
+    # The old signer's Grant expiry is provenance, never the reader's permission.
+    return stamp[-1] if stamp else None
 
 
 def _bound_proof(s, ctx, product_id, bound, row, key, check, sources):
     """Reuse professional traversal only while its exact successful proof is current.
 
-    Every hit rechecks original bytes/source ACL, both signers' fresh scalar
-    access, scope epoch, issuer registry and expiry. No failure is memoized.
+    Every hit rechecks original bytes/source ACL, the current reader's access,
+    referenced authority watermarks, issuer registry and real fact intervals.
+    No failure is memoized.
     """
     stamp = _proof_stamp(s, ctx, product_id, row)
     saved = bound.proofs.get(key)
-    if stamp is not None and saved and saved[0] == stamp and now() < saved[1]:
+    if stamp is not None and saved and saved[0] == stamp and (saved[1] is None or now() < saved[1]):
         sources()
-        if _proof_stamp(s, ctx, product_id, row) == stamp and now() < saved[1]:
+        if _proof_stamp(s, ctx, product_id, row) == stamp and (
+            saved[1] is None or now() < saved[1]
+        ):
             return
     check()
     deadline = _proof_deadline(row, stamp)
     final_stamp = _proof_stamp(s, ctx, product_id, row)
     if (deadline and now() >= deadline) or (stamp is not None and final_stamp != stamp):
         raise DomainError("SOURCE_STALE", "专业核对期间资格时效或安全版本已变化，请重新核对。")
-    if stamp is not None and deadline:
+    if stamp is not None:
         bound.proofs[key] = (stamp, deadline)
 
 
@@ -401,10 +430,13 @@ def _selected(payload, request):
     return samples, coverage
 
 
+@command_inputs_once
 def _load(s, ctx, command, product, payload, *, require_reads=True):
-    _human(s, ctx, product.id, write=True)
+    write = not getattr(s, "info", {}).get("read_snapshot", False)
+    _human(s, ctx, product.id, write=write)
+    require_access(s, ctx, product.id, write=True, lock=write)
     if command.product_id != product.id or product.tenant_id != ctx.tenant_id:
-        raise DomainError("FORBIDDEN_SCOPE", "交接不在当前产品范围。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "交接不在当前型号范围。", 403)
     previous = front._version(
         s, ctx, product.id, payload.request_id, payload.expected_request_revision
     )
@@ -420,7 +452,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
     ):
         raise DomainError("SOURCE_CHANGED", "固定计划双配置已经变化。")
     authority = front._assess(
-        s, ctx, product.id, build.project_id, command.operation, request.purpose, write=True
+        s, ctx, product.id, build.project_id, command.operation, request.purpose, write=write
     )
     refs = _merge_refs(previous.sources, _refs(payload))
     reads = _merge_reads(
@@ -432,7 +464,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
     sample_refs, coverage = _selected(payload, request)
     inspected, methods = {}, {}
     for sample in sorted(sample_refs.values(), key=lambda v: str(v.id)):
-        value = _inspect(s, ctx, product.id, request, sample, write=True)
+        value = _inspect(s, ctx, product.id, request, sample, write=write)
         inspected[sample.id] = value
         refs = _merge_refs(refs, value["source_refs"])
         reads = _merge_reads(reads, value["required_source_read_set"], refs)
@@ -444,11 +476,11 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
                 refs = _merge_refs(refs, row.sources)
                 reads = _merge_reads(reads, row.required_source_read_set, refs)
     source_basis, private = _basis(s, ctx, product.id, reads, refs)
-    if private and previous.visibility == "product":
+    if private and previous.visibility == "category":
         raise DomainError("FORBIDDEN_SCOPE", "私有实物或引用不能加入共享请求。", 403)
     if (
         any(v["visibility"] == "private" for v in inspected.values())
-        and previous.visibility == "product"
+        and previous.visibility == "category"
     ):
         raise DomainError("FORBIDDEN_SCOPE", "私有实物不能扩大受众。", 403)
     if require_reads:
@@ -488,6 +520,10 @@ def _authorize(bound, ctx, operation):
 def _execution(s, ctx, product_id, build, *, read_context=None):
     from pdos_next.domain.build_start import service as starts
     from pdos_next.domain.build_start.models import BuildStart
+    from pdos_next.domain.sample_handoff.service import read_context_for
+
+    if read_context is None:
+        read_context = read_context_for(s, ctx, product_id)
 
     if read_context is not None:
         from pdos_next.domain.sample_handoff.service import inspect_execution
@@ -512,8 +548,7 @@ def _execution(s, ctx, product_id, build, *, read_context=None):
     saved = starts._row(s, ctx, product_id, BuildStart, saved.id)
     if _read_evidence(s, ctx, product_id, saved) != "current":
         raise DomainError("SOURCE_STALE", "原开工固定来源已变化。")
-    historical = Context(ctx.tenant_id, saved.owner_id, saved.owner_id)
-    value = starts.execution_projection(s, historical, product_id, build.id)
+    value = starts.execution_projection(s, ctx, product_id, build.id)
     if (
         not value
         or value["execution_status"] != "executing"
@@ -552,8 +587,6 @@ def _actual_binding(s, ctx, product_id, request, sample, value, row, *, parent=N
         or row.authority_snapshot["purpose"] != request.purpose
     ):
         raise DomainError("INTEGRITY_MISMATCH", "实际适用事实与固定配置/方法/本人无法核对。")
-    if row.visibility == "private" and row.owner_id != ctx.requester_id:
-        raise DomainError("SOURCE_UNAVAILABLE", "实际适用事实不在当前受众。", 403)
     parent = parent or front._row(s, ctx, product_id, row.request_version_id)
     if parent.request_id != request.id or parent.revision != row.request_revision:
         raise DomainError("INTEGRITY_MISMATCH", "实际适用事实的审阅请求版本不一致。")
@@ -580,7 +613,7 @@ def _current_guards(s, ctx, command, product, payload, bound):
         _execution(s, ctx, product.id, bound.build)
     for doc in bound.base.documents:
         if doc.id.startswith(PROFESSIONAL_PREFIX) and doc.source:
-            row = s.get(MethodApplicability, doc.source.id)
+            row = snapshot_get(s, MethodApplicability, doc.source.id, scope_id=product.id)
             if row is None or doc.source.kind != "domain" or doc.source.position != METHOD_POSITION:
                 raise DomainError("SOURCE_UNAVAILABLE", "固定专业适用记录不存在。")
             _bound_method_check(s, ctx, product.id, bound, row)
@@ -631,8 +664,9 @@ def validate(s, ctx, command, product, payload):
 
 
 def _new_write(s, ctx, command, product, payload, bound):
+    write = not getattr(s, "info", {}).get("read_snapshot", False)
     if command.expected_revision != product.revision:
-        raise DomainError("VERSION_CONFLICT", "产品范围版本已变化。")
+        raise DomainError("VERSION_CONFLICT", "型号范围版本已变化。")
     if not isinstance(payload, ActualMethodPreparePayload):
         from pdos_next.domain.verification_launch.models import VerificationRunIdentity
 
@@ -647,7 +681,7 @@ def _new_write(s, ctx, command, product, payload, bound):
                 "REQUEST_RUN_SCOPE_FIXED",
                 "此请求已固定完整Run范围，新增交接范围须进入独立后续请求。",
             )
-    pointer, latest = front._current(s, ctx, product.id, payload.request_id, lock=True)
+    pointer, latest = front._current(s, ctx, product.id, payload.request_id, lock=write)
     if (
         latest is None
         or latest.id != bound.previous.id
@@ -668,12 +702,35 @@ def _assignee(s, ctx, product_id, project_id, owner):
         or not principal.active
     ):
         raise DomainError("INVALID_ASSIGNEE", "下一责任人须当前租户有效具名人员。", 403)
-    nominated = Context(ctx.tenant_id, owner, owner)
-    try:
-        require_access(s, nominated, product_id, write=True)
-        _project(s, nominated, product_id, project_id)
-    except DomainError:
-        raise DomainError("INVALID_ASSIGNEE", "下一责任人不在当前项目可办理范围。", 403) from None
+    from pdos_next.domain.professional_authority.service import _subject_access
+    from pdos_next.models import ObjectAudience
+
+    product = require_access(s, ctx, product_id)
+    project, _, _ = _project(s, ctx, product_id, project_id)
+    _, grant = _subject_access(s, ctx, product_id, owner)
+    if (
+        grant is None
+        or not grant.can_write
+        or (
+            grant.expires_at is not None
+            and (grant.expires_at is not None and grant.expires_at <= now())
+        )
+    ):
+        raise DomainError("INVALID_ASSIGNEE", "下一责任人不在当前品类可办理范围。", 403)
+    for row in (product, project):
+        if row.visibility == "category" or row.owner_id == owner:
+            continue
+        audience = s.scalar(
+            select(ObjectAudience.id).where(
+                ObjectAudience.tenant_id == ctx.tenant_id,
+                ObjectAudience.category_id == product.category_id,
+                ObjectAudience.object_type == row.__tablename__,
+                ObjectAudience.subject_id == row.id,
+                ObjectAudience.principal_id == owner,
+            )
+        )
+        if row.visibility != "audience" or audience is None:
+            raise DomainError("INVALID_ASSIGNEE", "下一责任人未在该项目的受众范围。", 403)
     return {"id": str(principal.id), "label": principal.name}
 
 
@@ -844,7 +901,7 @@ def _kernel(s, ctx, command, product, payload, bound, save, *, accepted=False):
         if source.kind != "domain":
             raise DomainError("SOURCE_UNAVAILABLE", "未登记来源不能作为交接证据。")
         if source.position == METHOD_POSITION:
-            row = s.get(MethodApplicability, source.id)
+            row = snapshot_get(s, MethodApplicability, source.id, scope_id=product.id)
             if row is None or source.revision != 1:
                 raise DomainError("SOURCE_UNAVAILABLE", "原计划专业适用证明不存在。")
             _bound_method_check(s, ctx, product.id, bound, row)
@@ -888,7 +945,7 @@ def _kernel(s, ctx, command, product, payload, bound, save, *, accepted=False):
                     bound.methods.get(key),
                 )
             except DomainError as error:
-                if error.code in {"ACTUAL_METHOD_UNKNOWN", "SOURCE_STALE"}:
+                if error.reason in {"ACTUAL_METHOD_UNKNOWN", "SOURCE_STALE"}:
                     return False
                 raise
         return bool(keys)
@@ -1056,9 +1113,9 @@ def _actual_view(
                 )
             current = pointer_row is not None and pointer_row.id == row.id
         except DomainError as error:
-            if error.code in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
+            if error.reason in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
                 raise
-            current, code = False, error.code
+            current, code = False, error.reason
     return {
         "id": None if prospective else str(row.id),
         "revision": row.revision,
@@ -1145,7 +1202,9 @@ def _request_view(
     preparation_row=None,
 ):
     if preparation_row is None:
-        prep, _ = preparation.get_preparation(s, ctx, product_id, row.preparation_id)
+        prep, _ = preparation.get_preparation(
+            s, ctx, product_id, row.preparation_id, include_capabilities=False
+        )
     else:
         prep = preparation_row
     raw = request.model_dump(mode="json")
@@ -1275,22 +1334,22 @@ def _sample_view(s, ctx, product_id, request, sample_row, *, read_context=None):
     from pdos_next.domain.build_execution.service import sample_view
     from pdos_next.schemas.verification.contracts import ConfigurationRef, SampleRef
 
-    revision = s.scalar(
-        select(ActualConfiguration.revision).where(
-            ActualConfiguration.id == sample_row.actual_configuration_id,
-            ActualConfiguration.tenant_id == ctx.tenant_id,
-            ActualConfiguration.product_id == product_id,
-            ActualConfiguration.build_id == request.build.id,
-        )
+    actual = snapshot_get(
+        s, ActualConfiguration, sample_row.actual_configuration_id, scope_id=product_id
     )
-    if revision is None:
+    if (
+        actual is None
+        or actual.tenant_id != ctx.tenant_id
+        or actual.product_id != product_id
+        or actual.build_id != request.build.id
+    ):
         raise DomainError("SOURCE_UNAVAILABLE", "实际配置不在固定样件范围。")
     reference = SampleRef(
         id=sample_row.id,
         revision=sample_row.revision,
         build_id=sample_row.build_id,
         actual_configuration=ConfigurationRef(
-            id=sample_row.actual_configuration_id, revision=revision
+            id=sample_row.actual_configuration_id, revision=actual.revision
         ),
         cavity=sample_row.cavity,
     )
@@ -1448,13 +1507,11 @@ def list_verification_handoff(s, ctx, product_id, *, build_id=None):
         query.where(
             FormalVerificationRequest.tenant_id == ctx.tenant_id,
             FormalVerificationRequest.product_id == product_id,
-        )
-        .order_by(FormalVerificationRequest.created_at, FormalVerificationRequest.id)
-        .limit(201)
+        ).order_by(FormalVerificationRequest.created_at, FormalVerificationRequest.id)
     ).all()
-    result["has_more"] = len(rows) > 200
+
     sample_views, owners, included_requests = {}, {}, set()
-    for row in rows[:200]:
+    for row in rows:
         try:
             row = front._row(s, ctx, product_id, row.id)
             cache.values[("request_version", row.id)] = row
@@ -1518,7 +1575,7 @@ def list_verification_handoff(s, ctx, product_id, *, build_id=None):
                     ),
                 )
             except DomainError as error:
-                if error.code in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
+                if error.reason in {"FORBIDDEN_SCOPE", "SOURCE_UNAVAILABLE"}:
                     raise
                 source_current = False
             view["documents_ready"] = source_current and not document_gaps(request)
@@ -1539,7 +1596,10 @@ def list_verification_handoff(s, ctx, product_id, *, build_id=None):
                 executing = True
             except DomainError as error:
                 view["blockers"].append(
-                    {"code": error.code, "detail": "当前Build执行授权须重核，既有实物不替代开工。"}
+                    {
+                        "code": error.reason,
+                        "detail": "当前Build执行授权须重核，既有实物不替代开工。",
+                    }
                 )
             samples = cache.get(
                 "sample_rows",
@@ -1552,12 +1612,11 @@ def list_verification_handoff(s, ctx, product_id, *, build_id=None):
                         SampleUnit.build_id == row.build_id,
                     )
                     .order_by(SampleUnit.created_at, SampleUnit.id)
-                    .limit(201)
                 ).all(),
             )
-            result["has_more"] |= len(samples) > 200
+
             inspected = {}
-            for sample_row in samples[:200]:
+            for sample_row in samples:
                 try:
                     sample_view, ref, facts = cache.get(
                         "sample",
@@ -1605,7 +1664,7 @@ def list_verification_handoff(s, ctx, product_id, *, build_id=None):
                             request, {item_id}
                         )
                     except DomainError as error:
-                        code = error.code
+                        code = error.reason
                 view["pair_capabilities"].append(
                     {
                         "sample_id": str(sample_id),
@@ -1677,11 +1736,10 @@ def list_verification_handoff(s, ctx, product_id, *, build_id=None):
                         Principal.tenant_id == ctx.tenant_id,
                         Principal.kind == "human",
                         Principal.active.is_(True),
-                        Grant.product_id == product_id,
+                        Grant.category_id == category_for_product(product_id),
                         Grant.can_write.is_(True),
-                        Grant.expires_at > now(),
+                        (Grant.expires_at.is_(None) | (Grant.expires_at > now())),
                     )
-                    .limit(201)
                 ).all(),
             )
             view["next_owner_ids"] = []
@@ -1729,15 +1787,13 @@ def list_verification_handoff(s, ctx, product_id, *, build_id=None):
             else:
                 query = query.where(model.build_id == build_id)
         records = s.scalars(
-            query.where(model.tenant_id == ctx.tenant_id, model.product_id == product_id)
-            .order_by(model.created_at, model.id)
-            .limit(201)
+            query.where(model.tenant_id == ctx.tenant_id, model.product_id == product_id).order_by(
+                model.created_at, model.id
+            )
         ).all()
-        result["has_more"] |= len(records) > 200
-        for record in records[:200]:
-            if record.request_id not in included_requests or (
-                record.visibility == "private" and record.owner_id != ctx.requester_id
-            ):
+
+        for record in records:
+            if record.request_id not in included_requests:
                 continue
             try:
                 _, parent = cache.get(

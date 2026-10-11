@@ -81,11 +81,6 @@ def _common(original, references, policy, now, *, allowed_pending=None):
         or (original.quarantined_at is not None and original.quarantined_at > now)
     ):
         reasons.append(DecisionReason.FACT_TIME_INVALID)
-    if (
-        now - original.observed_at > policy.max_snapshot_age
-        or now - references.observed_at > policy.max_snapshot_age
-    ):
-        reasons.append(DecisionReason.FACTS_STALE)
     return reasons
 
 

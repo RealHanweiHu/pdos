@@ -115,16 +115,21 @@ class DecisionReason(StrEnum):
     EFFECT_PENDING = "effect_pending"
     QUARANTINE_TIME_UNKNOWN = "quarantine_time_unknown"
     FACT_TIME_INVALID = "fact_time_invalid"
-    FACTS_STALE = "facts_stale"
 
 
 @dataclass(frozen=True, slots=True)
 class LifecycleScope:
     tenant_id: UUID
-    product_id: UUID
+    product_id: UUID | None
+    category_id: UUID | None = None
 
     def __post_init__(self):
-        if not isinstance(self.tenant_id, UUID) or not isinstance(self.product_id, UUID):
+        if (
+            not isinstance(self.tenant_id, UUID)
+            or (self.product_id is not None and not isinstance(self.product_id, UUID))
+            or (self.category_id is not None and not isinstance(self.category_id, UUID))
+            or (self.product_id is None and self.category_id is None)
+        ):
             raise ValueError("Scope must be server-bound UUIDs")
 
 
@@ -136,7 +141,7 @@ class CurrentAuthorization:
     actor_kind: ActorKind
     action: LifecycleAction
     access_revision: str
-    expires_at: datetime
+    expires_at: datetime | None
     named_decider_id: UUID | None = None
     decision_intent_id: UUID | None = None
 
@@ -152,7 +157,8 @@ class CurrentAuthorization:
             if value is not None and not isinstance(value, UUID):
                 raise ValueError("Invalid named decision binding")
         token(self.access_revision, "authorization revision")
-        aware(self.expires_at)
+        if self.expires_at is not None:
+            aware(self.expires_at)
 
 
 @dataclass(frozen=True, slots=True)
@@ -162,26 +168,20 @@ class RetentionPolicy:
     version: str
     failed_upload_grace: timedelta
     quarantine_grace: timedelta
-    preview_ttl: timedelta
     effect_timeout: timedelta
-    max_snapshot_age: timedelta
 
     def __post_init__(self):
         token(self.version, "policy version")
         for name in (
             "failed_upload_grace",
             "quarantine_grace",
-            "preview_ttl",
             "effect_timeout",
-            "max_snapshot_age",
         ):
             value = getattr(self, name)
             if not isinstance(value, timedelta) or value <= timedelta(0):
                 raise ValueError("Retention and time budgets must be positive durations")
-        if self.preview_ttl > timedelta(hours=1):
-            raise ValueError("Preview lifetime must be bounded")
-        if max(self.effect_timeout, self.max_snapshot_age) > timedelta(minutes=10):
-            raise ValueError("Effect and authoritative read budgets must be bounded")
+        if self.effect_timeout > timedelta(minutes=10):
+            raise ValueError("Effect execution budget must be bounded")
 
 
 @dataclass(frozen=True, slots=True)
@@ -278,7 +278,6 @@ class OrphanCandidate:
     references: ReferenceState
     decision: RetentionDecision
     captured_at: datetime
-    expires_at: datetime
     policy_digest: str
     digest: str
 
@@ -304,9 +303,6 @@ class OrphanCandidate:
         if self.original.scope != self.references.scope:
             raise ValueError("Candidate scopes must match")
         aware(self.captured_at)
-        aware(self.expires_at)
-        if self.expires_at <= self.captured_at:
-            raise ValueError("Candidate must expire after capture")
         for value in (self.digest, self.policy_digest):
             if len(value) != 64 or any(ch not in "0123456789abcdef" for ch in value):
                 raise ValueError("Invalid candidate or policy digest")
@@ -334,7 +330,6 @@ class OrphanCandidate:
             if self.decision.not_before
             else None,
             "captured_at": self.captured_at.isoformat(),
-            "expires_at": self.expires_at.isoformat(),
             "digest": self.digest,
         }
 

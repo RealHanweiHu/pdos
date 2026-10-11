@@ -143,7 +143,7 @@ def test_correction_fixed_scope(change, code):
         handler.preview(
             "npi.pilot.result.record", pilot.id, current.revision, record(current, **changes)
         )
-    assert error.value.code == code
+    assert error.value.reason == code
 
 
 @pytest.mark.parametrize(
@@ -163,7 +163,7 @@ def test_actual_batch_config_unit_mismatch(field, value):
     )
     with pytest.raises(DomainError) as error:
         handler.preview("npi.pilot.result.record", pilot.id, 1, value)
-    assert error.value.code == "INCOMPATIBLE_SCOPE"
+    assert error.value.reason == "INCOMPATIBLE_SCOPE"
 
 
 def test_server_lot_drift_quantity_limit():
@@ -176,7 +176,7 @@ def test_server_lot_drift_quantity_limit():
     facts.lot_facts = replace(facts.lot_facts, observed_unit_count=9)
     with pytest.raises(DomainError) as error:
         handler.preview("npi.pilot.result.record", pilot.id, 1, record(pilot))
-    assert error.value.code == "LOT_LIMIT"
+    assert error.value.reason == "LOT_LIMIT"
 
 
 def test_server_fixed_threshold():
@@ -185,7 +185,7 @@ def test_server_fixed_threshold():
     facts.scope_override = replace(payload.scope, minimum_sample=100)
     with pytest.raises(DomainError) as error:
         handler.preview("npi.pilot.result.record", pilot.id, 1, payload)
-    assert error.value.code == "SOURCE_CHANGED"
+    assert error.value.reason == "SOURCE_CHANGED"
 
 
 @pytest.mark.parametrize(
@@ -202,7 +202,7 @@ def test_server_authority(field, value, code):
     commands.authority = replace(commands.authority, **{field: value})
     with pytest.raises(DomainError) as error:
         handler.preview("npi.pilot.create", creation().pilot_id, 0, creation())
-    assert error.value.code == code
+    assert error.value.reason == code
 
 
 def test_current_qualification_revocation_rolls_back():
@@ -212,7 +212,7 @@ def test_current_qualification_revocation_rolls_back():
     commands.revoke_at_recheck = True
     with pytest.raises(DomainError) as error:
         handler.execute(invocation, payload)
-    assert error.value.code == "QUALIFICATION_REVOKED"
+    assert error.value.reason == "QUALIFICATION_REQUIRED"
     assert not commands.proofs[invocation.confirmation_token][2] and not commands.pilots
 
 
@@ -269,12 +269,12 @@ def test_missing_ports_fail_closed_t2_unregistered():
         ManufacturingTrialsHandler(Ports()).preview(
             "npi.pilot.create", creation().pilot_id, 0, creation()
         )
-    assert error.value.code == "INTEGRATION_REQUIRED"
+    assert error.value.reason == "INTEGRATION_REQUIRED"
     handler, _, _ = host()
     for operation in ("npi.pilot.start", "manufacturing.release", "tooling.accept", "T0"):
         with pytest.raises(DomainError) as error:
             handler.preview(operation, creation().pilot_id, 0, {})
-        assert error.value.code == "OPERATION_UNAVAILABLE"
+        assert error.value.reason == "OPERATION_UNAVAILABLE"
 
 
 def test_optimistic_conflict_preserves_confirmation():
@@ -284,7 +284,7 @@ def test_optimistic_conflict_preserves_confirmation():
     commands.pilots[pilot.id] = replace(pilot, revision=2)
     with pytest.raises(DomainError) as error:
         handler.execute(invocation, value)
-    assert error.value.code == "VERSION_CONFLICT"
+    assert error.value.reason == "VERSION_CONFLICT"
     assert not commands.proofs[invocation.confirmation_token][2] and not commands.observations
 
 
@@ -326,7 +326,7 @@ def test_result_real_synthetic_mismatch_and_future_window():
     ):
         with pytest.raises(DomainError) as error:
             handler.preview("npi.pilot.result.record", pilot.id, 1, replace(payload, scope=scope))
-        assert error.value.code == code
+        assert error.value.reason == code
 
 
 def test_second_extension_of_same_lot_rejected_and_proof_rolled_back():
@@ -335,7 +335,7 @@ def test_second_extension_of_same_lot_rejected_and_proof_rolled_back():
     invocation = prepare(handler, commands, value)
     with pytest.raises(DomainError) as error:
         handler.execute(invocation, value)
-    assert error.value.code == "LOT_EXTENSION_CONFLICT"
+    assert error.value.reason == "DUPLICATE_INTENT_CONFLICT"
     assert len(commands.pilots) == 1 and not commands.proofs[invocation.confirmation_token][2]
 
 
@@ -345,7 +345,7 @@ def test_preview_changed_payload_and_command_key_payload_conflict():
     invocation = prepare(handler, commands, value)
     with pytest.raises(DomainError) as error:
         handler.execute(invocation, replace(value, purpose="篡改实质输入"))
-    assert error.value.code == "INTENT_MISMATCH"
+    assert error.value.reason == "INTENT_MISMATCH"
     handler.execute(invocation, value)
     from pdos_next.domain.manufacturing_trials.handlers import semantic_digest
 
@@ -353,7 +353,7 @@ def test_preview_changed_payload_and_command_key_payload_conflict():
     invocation = replace(invocation, semantic_digest=semantic_digest(changed))
     with pytest.raises(DomainError) as error:
         handler.execute(invocation, changed)
-    assert error.value.code == "KEY_CONFLICT"
+    assert error.value.reason == "DUPLICATE_INTENT_CONFLICT"
 
 
 def test_lot_and_pilot_server_scope_is_not_model_supplied():
@@ -363,12 +363,12 @@ def test_lot_and_pilot_server_scope_is_not_model_supplied():
     facts.lot_facts = replace(facts.lot_facts, scope=foreign_scope)
     with pytest.raises(DomainError) as error:
         handler.preview("npi.pilot.create", value.pilot_id, 0, value)
-    assert error.value.code == "SOURCE_CHANGED"
+    assert error.value.reason == "SOURCE_CHANGED"
     handler, commands, _, pilot = create_pilot()
     commands.pilots[pilot.id] = replace(pilot, scope=foreign_scope)
     with pytest.raises(DomainError) as error:
         handler.preview("npi.pilot.result.record", pilot.id, 1, record(pilot))
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"
 
 
 def test_unit_result_source_and_server_membership_are_required():
@@ -389,13 +389,13 @@ def test_unit_result_source_and_server_membership_are_required():
     facts.revoked.add(units[0].sample.id)
     with pytest.raises(DomainError) as error:
         handler.execute(invocation, value)
-    assert error.value.code == "REF_WITHDRAWN"
+    assert error.value.reason == "SOURCE_UNAVAILABLE"
     assert not commands.observations
     facts.revoked.clear()
     facts.bad_source = True
     with pytest.raises(DomainError) as error:
         handler.execute(invocation, value)
-    assert error.value.code == "SOURCE_WITHDRAWN"
+    assert error.value.reason == "SOURCE_UNAVAILABLE"
     assert not commands.observations
 
 
@@ -406,7 +406,7 @@ def test_resource_qualification_fixed_readset_drift_invalidates_preview():
     facts.preparation_refs = (replace(facts.preparation_refs[0], revision=2),)
     with pytest.raises(DomainError) as error:
         handler.execute(invocation, value)
-    assert error.value.code == "INVALID_CONFIRMATION"
+    assert error.value.reason == "CONFIRMATION_REQUIRED"
     assert not commands.pilots and not commands.proofs[invocation.confirmation_token][2]
 
 
@@ -415,7 +415,7 @@ def test_resource_fixed_refs_revocation_blocks_new_observation():
     facts.revoked.add(facts.preparation_refs[0].id)
     with pytest.raises(DomainError) as error:
         handler.preview("npi.pilot.result.record", pilot.id, 1, record(pilot))
-    assert error.value.code == "REF_WITHDRAWN"
+    assert error.value.reason == "SOURCE_UNAVAILABLE"
 
 
 def test_parameter_values_are_source_bound_not_model_facts():
@@ -427,7 +427,7 @@ def test_parameter_values_are_source_bound_not_model_facts():
     facts.parameters_override = (replace(parameter, value="9.00"),)
     with pytest.raises(DomainError) as error:
         handler.preview("npi.pilot.create", value.pilot_id, 0, value)
-    assert error.value.code == "PARAMETER_SOURCE_MISMATCH"
+    assert error.value.reason == "PARAMETER_SOURCE_MISMATCH"
     assert not commands.pilots
 
 
@@ -440,5 +440,5 @@ def test_trial_parameter_raw_unit_mismatch_rejected():
     facts.parameters_override = (replace(parameter, unit="K"),)
     with pytest.raises(DomainError) as error:
         handler.preview("npi.tooltrial.create", value.trial_id, 0, value)
-    assert error.value.code == "PARAMETER_SOURCE_MISMATCH"
+    assert error.value.reason == "PARAMETER_SOURCE_MISMATCH"
     assert not commands.trials

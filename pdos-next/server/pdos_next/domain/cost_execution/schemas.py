@@ -10,7 +10,7 @@ from pdos_next.engines.supply_cost.dto import CostScope, MaterialPrice
 
 
 class _Sourced(FrozenDTO):
-    sources: list[DefinitionReference] = Field(min_length=1, max_length=20)
+    sources: list[DefinitionReference] = Field(min_length=1)
 
     @model_validator(mode="after")
     def exact_sources(self) -> Self:
@@ -56,7 +56,7 @@ class ProcessOperationInput(_Sourced):
 
 class ProcessInput(_Sourced):
     assumption: str = Field(min_length=1, max_length=500)
-    operations: list[ProcessOperationInput] = Field(min_length=1, max_length=500)
+    operations: list[ProcessOperationInput] = Field(min_length=1)
 
     @model_validator(mode="after")
     def unique_keys(self) -> Self:
@@ -86,11 +86,11 @@ class CostCaptureInput(_Sourced):
     expected_build_revision: int = Field(ge=1, strict=True)
     reason: str = Field(min_length=3, max_length=2000)
     cost_scope: CostScope
-    prices: list[PriceInput] = Field(default_factory=list, max_length=500)
-    material_prices: list[MaterialPrice] = Field(default_factory=list, max_length=500)
+    prices: list[PriceInput] = Field(default_factory=list)
+    material_prices: list[MaterialPrice] = Field(default_factory=list)
     process: ProcessInput | None = None
-    rates: list[RateInput] = Field(default_factory=list, max_length=100)
-    nre_price_ids: list[str] = Field(default_factory=list, max_length=100)
+    rates: list[RateInput] = Field(default_factory=list)
+    nre_price_ids: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def unique_selections(self) -> Self:

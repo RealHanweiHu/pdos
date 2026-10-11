@@ -1,4 +1,4 @@
-"""Explicit host wiring, with bounded real request choices and no business writes."""
+"""Explicit host wiring, with actual Current request choices and no business writes."""
 
 from types import MappingProxyType
 
@@ -30,7 +30,7 @@ PAIRED_FORMAL_OPERATIONS = (
 
 
 def request_options(s, ctx, product_id, basis):
-    """Enumerate bounded Current rows; each option still needs its actual business owner."""
+    """Enumerate Current rows; each option still needs its actual business owner."""
     if basis.scope.tenant_id != ctx.tenant_id or basis.scope.product_id != product_id:
         raise DomainError("FORBIDDEN_SCOPE", "复验候选不在当前范围。", 403)
     rows = s.scalars(current_formal_options_query(ctx, product_id, basis))
@@ -38,8 +38,6 @@ def request_options(s, ctx, product_id, basis):
         OutputRef(kind="verification_request", id=row.id, revision=row.revision) for row in rows
     )
     runs = tuple(s.scalars(current_run_options_query(ctx, product_id, basis)))
-    if len(formals) + len(runs) > 20:
-        raise DomainError("INTEGRATION_REQUIRED", "当前固定输出超过20项，请缩小明确范围。", 503)
     return formals + tuple(
         OutputRef(kind="verification_run", id=row.id, revision=row.revision) for row in runs
     )
@@ -78,13 +76,8 @@ def current_formal_options_query(ctx, product_id, basis):
             FormalVerificationRequest.product_id == product_id,
             FormalVerificationRequest.project_id == basis.scope.project_id,
             or_(direct, FormalVerificationRequest.operation.in_(PAIRED_FORMAL_OPERATIONS)),
-            or_(
-                FormalVerificationRequest.visibility == "product",
-                FormalVerificationRequest.owner_id == ctx.requester_id,
-            ),
         )
         .order_by(FormalVerificationRequest.created_at.desc(), FormalVerificationRequest.id)
-        .limit(21)
     )
 
 
@@ -120,10 +113,8 @@ def current_run_options_query(ctx, product_id, basis):
                 Receipt.result["revision"] == func.to_jsonb(row.revision),
             )
             .exists(),
-            or_(row.visibility == "product", row.owner_id == ctx.requester_id),
         )
         .order_by(row.created_at.desc(), row.id)
-        .limit(21)
     )
 
 
@@ -142,9 +133,9 @@ def _completion_profiles(engine, profiles):
     """
     from pdos_next import quality_followup_bootstrap as bootstrap
 
-    if type(profiles) is not list or not 1 <= len(profiles) <= 20:
+    if type(profiles) is not list or not profiles:
         raise DomainError(
-            "COMPLETION_PROFILE_CONFIG_INVALID", "多范围调查配置须为1至20项明确列表。", 422
+            "COMPLETION_PROFILE_CONFIG_INVALID", "多范围调查配置须为非空明确列表。", 422
         )
     try:
         parsed = tuple(

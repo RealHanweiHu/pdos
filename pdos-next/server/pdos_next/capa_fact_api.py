@@ -8,14 +8,14 @@ from hashlib import sha256
 from datetime import UTC, datetime
 from uuid import UUID
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Query, Request
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import or_, select
+from sqlalchemy import literal, or_, select, union_all
 
 from pdos_next.capa_candidate_api import _selected, _final_scope
-from pdos_next.capa_fact_owner import instant
 from pdos_next.capa_review_context import read_review_selection, verify_review_selection
 from pdos_next.database import tenant_session
+from pdos_next.capa_history import page_query, page_rows
 from pdos_next.domain.capa_effectiveness import (
     candidate_commands,
     candidate_storage,
@@ -62,73 +62,115 @@ def _source_choice(s, ctx, pid, ref):
     }
 
 
-def _history(s, ctx, pid, issue_id):
-    history, actual = [], {"rule": [], "observation": [], "review": []}
-    for kind, cls in (
-        ("rule", models.RuleFact),
-        ("observation", models.ObservationFact),
-        ("review", models.NamedReviewRecord),
-    ):
-        rows = list(
-            s.scalars(
-                select(cls)
-                .where(
-                    cls.tenant_id == ctx.tenant_id, cls.product_id == pid, cls.issue_id == issue_id
-                )
-                .order_by(cls.created_at.desc(), cls.id)
-                .limit(101)
+FACT_TABLES = {
+    "rule": models.RuleFact,
+    "observation": models.ObservationFact,
+    "review": models.NamedReviewRecord,
+}
+
+
+def _saved(s, ctx, pid, kind, row):
+    atom = fact_atom_storage.read_fact_atom(
+        s, ctx, pid, kind=kind, fact_id=row.id, revision=row.revision
+    )
+    return assemble_fact(row.fact_body, atom.atom, expected_payload_sha256=row.payload_sha256)
+
+
+def _history_item(fact, kind):
+    label = {
+        "rule": "已发布的固定核验规则",
+        "observation": "已保存的实际观察",
+        "review": "已保存的具名复核",
+    }[kind]
+    return {
+        "ref": fact.ref.model_dump(mode="json"),
+        "kind": kind,
+        "label": f"{label} · v{fact.ref.revision}",
+        "fact": fact.model_dump(mode="json"),
+        "current_evaluation": "not_evaluated_historical",
+        "source_status": "needs_recheck",
+        "missing": [
+            _missing("FACT_CURRENT_OWNER_REQUIRED", "历史保存记录需经当前专业核对后作为判断依据。")
+        ],
+    }
+
+
+def _history(s, ctx, pid, issue_id, cursor=None):
+    # History is a display page. It never supplies the Current selection.
+    index = union_all(
+        *(
+            select(cls.id, cls.created_at, literal(kind).label("kind")).where(
+                cls.tenant_id == ctx.tenant_id, cls.product_id == pid, cls.issue_id == issue_id
             )
+            for kind, cls in FACT_TABLES.items()
         )
-        if len(rows) > 100:
-            raise DomainError("RECHECK_REQUIRED", "事实历史超过本次完整读取上限。", 409)
-        for row in rows:
-            if row.visibility == "private" and row.owner_id != ctx.actor_id:
-                continue
-            atom = fact_atom_storage.read_fact_atom(
-                s, ctx, pid, kind=kind, fact_id=row.id, revision=row.revision
-            )
-            fact = assemble_fact(
-                row.fact_body, atom.atom, expected_payload_sha256=row.payload_sha256
-            )
-            stored = read_stored_fact(
-                s,
-                ctx,
-                pid,
-                kind,
-                fact.ref,
-                candidate_owner=candidate_storage.candidate_owner(
-                    candidate_commands.semantic_owner()
-                ),
-            )
-            actual[kind].append(stored)
-            label = {
-                "rule": "已发布的固定核验规则",
-                "observation": "已保存的实际观察",
-                "review": "已保存的具名复核",
-            }[kind]
-            history.append(
-                {
-                    "ref": fact.ref.model_dump(mode="json"),
-                    "kind": kind,
-                    "label": f"{label} · v{fact.ref.revision}",
-                    "fact": fact.model_dump(mode="json"),
-                    "current_evaluation": "not_evaluated_historical",
-                    "source_status": "needs_recheck",
-                    "missing": [
-                        _missing(
-                            "FACT_CURRENT_OWNER_REQUIRED",
-                            "历史保存记录需经当前专业核对后作为判断依据。",
-                        )
-                    ],
-                    "registry_state": stored.registry.state,
-                }
-            )
-    return history, actual
+    ).subquery()
+    rows, page = page_rows(
+        s.execute(page_query(select(index), index.c.created_at, index.c.id, index.c.kind, cursor)),
+        "kind",
+    )
+    history = []
+    for item in rows:
+        cls = FACT_TABLES[item.kind]
+        row = fact_atom_storage._one(
+            s,
+            cls,
+            cls.tenant_id == ctx.tenant_id,
+            cls.product_id == pid,
+            cls.issue_id == issue_id,
+            cls.id == item.id,
+        )
+        history.append(_history_item(_saved(s, ctx, pid, item.kind, row), item.kind))
+    return history, page
 
 
-def fact_context(s, ctx, pid, issue_id, candidate_id=None):
+def _current_facts(s, ctx, pid, issue_row, issue, origin, kind, rule=None):
+    cls, pointer = (
+        FACT_TABLES[kind],
+        {"rule": models.RuleCurrent, "observation": models.ObservationCurrent}[kind],
+    )
+    query = (
+        select(cls)
+        .join(pointer, pointer.fact_id == cls.id)
+        .where(
+            pointer.tenant_id == ctx.tenant_id,
+            pointer.product_id == pid,
+            pointer.project_id == issue_row.project_id,
+            pointer.issue_id == issue_row.issue_id,
+            pointer.capa_id == issue.capa.id,
+            pointer.origin_issue_version_id == origin.id,
+            pointer.origin_issue_revision == origin.revision,
+        )
+    )
+    if rule is not None:
+        query = query.where(
+            cls.rule_fact_id == rule.ref.id,
+            cls.rule_revision == rule.ref.revision,
+            cls.rule_sha256 == rule.ref.sha256,
+        )
+    query = query.order_by(pointer.series_id)
+    if kind == "rule":
+        query = query.limit(2)  # Two rows establish ambiguity, not a business count limit.
+    values = []
+    for row in s.scalars(query):
+        fact = _saved(s, ctx, pid, kind, row)
+        stored = read_stored_fact(
+            s,
+            ctx,
+            pid,
+            kind,
+            fact.ref,
+            candidate_owner=candidate_storage.candidate_owner(candidate_commands.semantic_owner()),
+        )
+        if stored.registry.state != "current_registered":
+            raise DomainError("SOURCE_STALE", "已选 Current 与实际固定事实不一致。", 409)
+        values.append(stored.fact)
+    return values
+
+
+def fact_context(s, ctx, pid, issue_id, candidate_id=None, history_cursor=None):
     with s.no_autoflush:
-        require_access(s, ctx, pid, lock=True)
+        require_access(s, ctx, pid, lock=not getattr(s, "info", {}).get("read_snapshot", False))
         caller, _ = candidate_prepare._caller(s, ctx, pid)
         row, issue, project, current, origin, _ = _selected(s, ctx, pid, issue_id)
         product = fact_atom_storage._one(
@@ -137,19 +179,21 @@ def fact_context(s, ctx, pid, issue_id, candidate_id=None):
         runtime = fact_service._runtime(s)
         runtime_stamp, product_revision = runtime.host.owner.runtime_stamp(s), product.revision
         current_checks = {}
-        history, actual = _history(s, ctx, pid, issue_id)
+        history, history_page = _history(s, ctx, pid, issue_id, history_cursor)
         sources, records, rules, observations = {}, [], [], []
         candidate_options, pairs, selected_candidate, review_read = [], [], None, None
         missing, operations = [], {}
-        current_rules = [
-            value.fact for value in actual["rule"] if value.registry.state == "current_registered"
-        ]
+        current_rules = _current_facts(s, ctx, pid, row, issue, origin, "rule")
         if len(current_rules) > 1:
             missing.append(
                 _missing("RULE_CURRENT_AMBIGUOUS", "有多份当前规则，需核对精确适用范围。")
             )
             current_rules = []
         active_rule = current_rules[0] if current_rules else None
+        if active_rule is not None and not any(
+            item["ref"]["id"] == str(active_rule.ref.id) for item in history
+        ):
+            history.insert(0, _history_item(active_rule, "rule"))
         if active_rule is None:
             missing.append(
                 _missing("RULE_PUBLICATION_REQUIRED", "尚无可信服务器发布的当前核验规则。")
@@ -221,12 +265,7 @@ def fact_context(s, ctx, pid, issue_id, candidate_id=None):
                 "required_source_read_set": reads,
             }
         if active_rule is not None and snapshot is not None:
-            pointers = [
-                value.fact
-                for value in actual["observation"]
-                if value.registry.state == "current_registered"
-                and value.fact.rule == active_rule.ref
-            ]
+            pointers = _current_facts(s, ctx, pid, row, issue, origin, "observation", active_rule)
             observations = [value.ref.model_dump(mode="json") for value in pointers]
             previous = next(
                 (
@@ -253,17 +292,11 @@ def fact_context(s, ctx, pid, issue_id, candidate_id=None):
                         CapaVerificationEvidence.project_id == row.project_id,
                         CapaVerificationEvidence.issue_id == issue_id,
                         CapaVerificationEvidence.capa_id == issue.capa.id,
-                        or_(
-                            CapaVerificationEvidence.visibility == "product",
-                            CapaVerificationEvidence.owner_id == ctx.actor_id,
-                        ),
                     )
                     .order_by(CapaVerificationEvidence.created_at, CapaVerificationEvidence.id)
-                    .limit(101)
+                    .execution_options(yield_per=100)
                 )
             )
-            if len(candidates) > 100:
-                raise DomainError("RECHECK_REQUIRED", "候选范围超过完整读取上限。", 409)
             for value in candidates:
                 if (
                     value.input_snapshot["stable_anchor"]["anchor_sha256"]
@@ -289,17 +322,15 @@ def fact_context(s, ctx, pid, issue_id, candidate_id=None):
                     select(Artifact)
                     .where(
                         Artifact.tenant_id == ctx.tenant_id,
-                        Artifact.product_id == pid,
+                        Artifact.category_id == row.category_id,
+                        or_(Artifact.product_id == pid, Artifact.product_id.is_(None)),
                         Artifact.status == "active",
-                        or_(Artifact.visibility == "product", Artifact.owner_id == ctx.actor_id),
                         Artifact.content.contains("pdos-capa-observation-source-v1"),
                     )
                     .order_by(Artifact.created_at, Artifact.id)
-                    .limit(101)
+                    .execution_options(yield_per=100)
                 )
             )
-            if len(raw_records) > 100:
-                raise DomainError("RECHECK_REQUIRED", "实际观察原记录超过完整读取上限。", 409)
             for source in raw_records:
                 if source.original_id is not None:
                     continue
@@ -449,6 +480,7 @@ def fact_context(s, ctx, pid, issue_id, candidate_id=None):
                 for value in issue.capa.actions
             ],
             "history": history,
+            "history_page": history_page,
             "operations": operations,
             "missing": missing,
             "effectiveness_enabled": False,
@@ -511,17 +543,18 @@ def fact_context(s, ctx, pid, issue_id, candidate_id=None):
                 )
                 verify_review_selection(review_read, fresh_review)
         _final_scope(s, ctx, pid, row, issue, project, current, origin, caller)
-        require_access(s, ctx, pid, lock=True)
+        require_access(s, ctx, pid, lock=not getattr(s, "info", {}).get("read_snapshot", False))
         final_clock = datetime.now(UTC)
-        if review_read is not None and final_clock >= fresh_review.valid_until:
+        if review_read is not None and any(
+            final_clock >= value
+            for value in (fresh_review.valid_until, *fresh_review.time_constraints)
+            if value is not None
+        ):
             raise DomainError("SOURCE_STALE", "读取期间实际复验或参与者证明已到期。", 409)
         if any(
-            final_clock
-            >= min(
-                selected.valid_until,
-                instant(authority["valid_until"]),
-                instant(active_policy["valid_until"]),
-            )
+            not selected.valid_from <= final_clock < selected.valid_until
+            or not professional.authority_time_current(authority, final_clock)
+            or not policy.policy_time_current(active_policy, final_clock)
             for selected, _, authority, active_policy, _ in current_checks.values()
         ):
             raise DomainError("SOURCE_STALE", "读取期间规则、资格或政策已到期，请重新核对。", 409)
@@ -530,29 +563,40 @@ def fact_context(s, ctx, pid, issue_id, candidate_id=None):
             or runtime.host.owner.runtime_stamp(s) != runtime_stamp
             or product.revision != product_revision
         ):
-            raise DomainError("SOURCE_STALE", "读取期间办理入口或产品版本已变化。", 409)
+            raise DomainError("SOURCE_STALE", "读取期间办理入口或型号版本已变化。", 409)
         host["access_epoch"] = digest(jsonable_encoder(host))
         return host
 
 
 def register_routes(app: FastAPI, engine, auth_dependency):
-    @app.get("/v1/products/{product_id}/capa-facts")
+    @app.get("/v1/categories/{category_id}/products/{product_id}/capa-facts")
     def get_facts(
         product_id: UUID,
         issue_id: UUID,
         request: Request,
         candidate_id: UUID | None = None,
+        history_cursor: str | None = Query(default=None, max_length=256),
         ctx: Context = auth_dependency,
     ):
         if any(
-            key not in {"issue_id", "candidate_id"} or len(request.query_params.getlist(key)) != 1
+            key not in {"issue_id", "candidate_id", "history_cursor"}
+            or len(request.query_params.getlist(key)) != 1
             for key in request.query_params
         ):
             raise DomainError("INVALID_REQUEST", "请选择一个明确的当前问题。", 422)
-        with tenant_session(engine, ctx.tenant_id) as s:
-            return jsonable_encoder(fact_context(s, ctx, product_id, issue_id, candidate_id))
+        with tenant_session(
+            engine,
+            ctx.tenant_id,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=ctx.category_id,
+            read_snapshot=True,
+        ) as s:
+            return jsonable_encoder(
+                fact_context(s, ctx, product_id, issue_id, candidate_id, history_cursor)
+            )
 
-    @app.post("/v1/products/{product_id}/capa-facts/inputs")
+    @app.post("/v1/categories/{category_id}/products/{product_id}/capa-facts/inputs")
     def inputs(
         product_id: UUID, command: Command, request: Request, ctx: Context = auth_dependency
     ):
@@ -568,7 +612,13 @@ def register_routes(app: FastAPI, engine, auth_dependency):
         payload = commands.payload_for(kind, command.payload)
         if getattr(payload, "confirmation_token", None) or getattr(payload, "approval_token", None):
             raise DomainError("INVALID_REQUEST", "输入核对不消费或替换已准备的确认。", 422)
-        with tenant_session(engine, ctx.tenant_id) as s:
+        with tenant_session(
+            engine,
+            ctx.tenant_id,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=ctx.category_id,
+        ) as s:
             require_access(s, ctx, product_id, write=True, lock=True)
             runtime = fact_service._runtime(s)
             prepared = prepare_fact(s, ctx, product_id, payload, host=runtime.host, new_write=True)

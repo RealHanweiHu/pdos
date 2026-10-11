@@ -39,7 +39,7 @@ class BuildOperationalFact(Row, Base):
     previous_revision: Mapped[int | None] = mapped_column(Integer)
     state: Mapped[str] = mapped_column(String(16))
     valid_from: Mapped[datetime] = mapped_column(DateTime(timezone=True))
-    valid_until: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    valid_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     binding: Mapped[dict] = mapped_column(JSONB)
     data: Mapped[dict] = mapped_column(JSONB)
     sources: Mapped[list] = mapped_column(JSONB)
@@ -83,7 +83,7 @@ class BuildOperationalFact(Row, Base):
         ),
         CheckConstraint(
             "state IN ('active','withdrawn') AND nature IN ('real','synthetic') "
-            "AND visibility IN ('private','product')"
+            "AND visibility IN ('private','category','audience')"
         ),
         CheckConstraint(
             "(revision=1 AND previous_id IS NULL AND previous_revision IS NULL AND series_id=id) "
@@ -219,8 +219,6 @@ class ResourceOccupancy(Row, Base):
             "(owner_kind='test_run' AND test_run_id=owner_execution_id "
             "AND test_run_id IS NOT NULL AND build_start_id IS NULL)"
         ),
-        CheckConstraint(
-            "resource_revision>0 AND units>0 AND units<=1000 AND window_finish>window_start"
-        ),
+        CheckConstraint("resource_revision>0 AND units>0 AND window_finish>window_start"),
         CheckConstraint("asset_id=resource_id"),
     )

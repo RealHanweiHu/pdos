@@ -5,10 +5,10 @@ import { eventTime, json, positive, record, same, snapshot, uuid } from "./ui-co
 export type CandidatePanelContext = { product: { id: string; revision: number }; principalId: string; issueId: string };
 export type CandidateHistory = { id: string; revision: 1; reason: string; received_at: string; result: "indeterminate";
   applicable: null; independently_verified: null; observation_complete: null; receipt_id: string };
-export type CandidatePanelData = { host: CandidateHost; candidates: CandidateHistory[]; missing_pair_options: string;
+export type CandidatePanelData = { host: CandidateHost; candidates: CandidateHistory[]; history_page?: { next_cursor: string | null }; missing_pair_options: string;
   effectiveness_enabled: false; close_enabled: false };
 export class CandidatePanelScopeError extends Error {
-  constructor() { super("返回资料不属于当前产品、本人或选定问题，已停止展示与办理。"); }
+  constructor() { super("返回资料不属于当前型号、本人或选定问题，已停止展示与办理。"); }
 }
 const keys = (value: Record<string, unknown>, fields: string[]) =>
   Object.keys(value).length === fields.length && fields.every(field => Object.hasOwn(value, field));
@@ -26,7 +26,7 @@ export function normalizeCandidatePanel(value: unknown, context: CandidatePanelC
   if (s.product_id !== context.product.id || s.principal_id !== context.principalId || s.issue_id !== context.issueId)
     throw new CandidatePanelScopeError();
   if (!validCandidateScope(s as unknown as CandidateHost["scope"])) throw new CandidatePanelScopeError();
-  if (!json(value) || !keys(value, ["host", "candidates", "missing_pair_options", "effectiveness_enabled", "close_enabled"]) ||
+  if (!json(value) || !keys(value, ["host", "candidates", "missing_pair_options", "effectiveness_enabled", "close_enabled", ...(Object.hasOwn(value, "history_page") ? ["history_page"] : [])]) ||
       !keys(h, ["scope", "materials", "product_revision", "required_source_read_set", "allowed", "current_evaluation",
         "source_status", "authority", "missing", "allowProductVisibility", "accessEpoch"]) ||
       !keys(s, ["tenant_id", "product_id", "project_id", "principal_id", "issue_id", "current_issue", "capa_id",
@@ -45,10 +45,11 @@ export function normalizeCandidatePanel(value: unknown, context: CandidatePanelC
         string(row.reason) && eventTime(row.received_at) !== null && uuid(row.receipt_id) && row.result === "indeterminate" &&
         row.applicable === null && row.independently_verified === null && row.observation_complete === null) ||
       new Set(value.candidates.map(row => row.id)).size !== value.candidates.length ||
+      (Object.hasOwn(value, "history_page") && (!record(value.history_page) || !keys(value.history_page, ["next_cursor"]) || !nullableText(value.history_page.next_cursor))) ||
       !string(value.missing_pair_options) || value.effectiveness_enabled !== false || value.close_enabled !== false)
     throw new Error("候选范围、选项或固定未知状态不能完整核对，请重新读取当前事实。");
   if (Number(h.product_revision) < context.product.revision)
-    throw new Error("产品当前版本与入口版本不一致，请先刷新上方当前事实，再读取候选。");
+    throw new Error("型号当前版本与入口版本不一致，请先刷新上方当前事实，再读取候选。");
   return snapshot(value as unknown as CandidatePanelData);
 }
 
@@ -69,9 +70,9 @@ export type CandidateBusinessReview = { title: string; purpose: string; origin_r
   requirement: { method: string; acceptance: string; observation_until: string };
   links: CandidateHost["materials"]["links"]; mappings: CandidateHost["materials"]["mappings"];
   sources: CandidateHost["materials"]["sources"]; missing: { code: string; detail: string }[];
-  risk: string; independent_verification: boolean; policy_revision: number; policy_valid_until: string;
-  roles: string[]; authority_valid_until: string; synthetic: boolean; output_readings: Object[];
-  source_count: number; visibility: "private" | "product"; reason: string };
+  risk: string; independent_verification: boolean; policy_revision: number; policy_valid_until: string | null;
+  roles: string[]; authority_valid_until: string | null; synthetic: boolean; output_readings: Object[];
+  source_count: number; visibility: "private" | "category" | "audience"; reason: string };
 
 /** Business reading follows real anchor paths. Malformed/incomplete structures disable confirmation. */
 export function candidateBusinessReview(review: CandidateReview, command: CandidateCommand, host: CandidateHost): CandidateBusinessReview | null {
@@ -135,18 +136,22 @@ export function candidateBusinessReview(review: CandidateReview, command: Candid
       inspection.observed_from !== null || inspection.observed_until !== null || typeof inspection.current !== "boolean" ||
       !record(inspection.capabilities) || inspection.capabilities.effectiveness_decide !== false || inspection.capabilities.issue_close !== false ||
       !["low", "medium", "high", "critical"].includes(String(policy.risk)) || !positive(policy.revision) ||
-      typeof policy.independent_verification !== "boolean" || eventTime(policy.valid_until) === null ||
+      typeof policy.independent_verification !== "boolean" ||
+      !(policy.valid_until === null || eventTime(policy.valid_until) !== null) ||
       !Array.isArray(authority.roles) || !authority.roles.every(string) || authority.authorized !== true || authority.qualified !== true ||
       authority.subject_id !== host.scope.principal_id || authority.operation !== command.operation || authority.purpose !== origin.purpose ||
       !same(authority.scope, origin.scope) ||
-      typeof authority.synthetic !== "boolean" || eventTime(authority.valid_until) === null) return null;
+      typeof authority.synthetic !== "boolean" ||
+      !(authority.valid_until === null || eventTime(authority.valid_until) !== null)) return null;
   return { title: origin.issue.title, purpose: origin.purpose, origin_revision: origin.ref.revision,
     current_revision: review.current_issue_revision, failures, actions, root_cause: origin.issue.root_cause.text,
     root_cause_at: String(origin.issue.root_cause.at), requirement: { method: origin.issue.capa.requirement.method,
       acceptance: origin.issue.capa.requirement.acceptance, observation_until: String(origin.issue.capa.requirement.observation_until) },
     links, mappings, sources, missing: inspection.missing.map(row => ({ code: String(row.code), detail: String(row.detail) })),
     risk: String(policy.risk), independent_verification: policy.independent_verification, policy_revision: policy.revision,
-    policy_valid_until: String(policy.valid_until), roles: authority.roles, authority_valid_until: String(authority.valid_until),
+    policy_valid_until: policy.valid_until === null ? null : String(policy.valid_until),
+    roles: authority.roles,
+    authority_valid_until: authority.valid_until === null ? null : String(authority.valid_until),
     synthetic: authority.synthetic || origin.nature === "synthetic" || policy.nature === "synthetic",
     output_readings: inspection.outputs, source_count: review.required_source_read_set.length,
     visibility: review.visibility, reason: command.payload.reason };

@@ -3,7 +3,7 @@ export type WorkspaceLocation = { area: WorkspaceArea; section: string; task: st
 export type WorkspaceEntry = { id: string; label: string; panel?: string; planned?: boolean };
 
 export const workspaceAreas: { id: WorkspaceArea; label: string }[] = [
-  { id: "work", label: "我的工作" }, { id: "products", label: "产品" },
+  { id: "work", label: "我的工作" }, { id: "products", label: "型号" },
   { id: "projects", label: "项目" }, { id: "resources", label: "组合与资源" },
   { id: "knowledge", label: "知识" }, { id: "settings", label: "设置" },
 ];

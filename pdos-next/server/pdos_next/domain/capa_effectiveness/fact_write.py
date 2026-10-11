@@ -5,6 +5,10 @@ Only the actual owner may supply source/issuer/participant/qualification facts.
 The opaque phase retains this Session and active UOW, never a cross-phase cache.
 """
 
+from pdos_next.database import category_for_product
+from pdos_next.clock import proof_deadline_current
+
+
 # Common initialization must precede model declarations used by the actual host.
 # ruff: noqa: I001
 from pdos_next.service import Context, digest
@@ -77,7 +81,8 @@ class FactWriteMaterial(Closed):
     authority_snapshot: dict[str, JsonValue]
     policy_snapshot: dict[str, JsonValue]
     inspection: dict[str, JsonValue]
-    valid_until: AwareDatetime
+    valid_until: AwareDatetime | None = None
+    time_constraints: tuple[AwareDatetime, ...] = ()
 
 
 class FactMaterialOwner(Protocol):
@@ -87,7 +92,8 @@ class FactMaterialOwner(Protocol):
     full refs and Current, policy/issuer epochs, current operation qualification
     and actual event fields. Review additionally needs all actual participant
     owners and caller independence. Unknown named conclusions are material, not
-    a waiver. valid_until is the earliest expiry OR future activation boundary.
+    a waiver. Genuine fact/temporary authorization intervals are checked
+    individually; the material capture itself does not expire.
     refresh keeps the originally persisted full anchor; it must not reseal it.
     """
 
@@ -134,6 +140,18 @@ def _require(condition, code="FACT_WRITE_OWNER_REQUIRED", status=503):
 
 def _clock():
     return datetime.now(UTC)
+
+
+def _time_current(material, at):
+    from pdos_next.domain.professional_authority import service as professional
+    from pdos_next.domain.quality_execution import policy
+
+    return (
+        (material.valid_until is None or at < material.valid_until)
+        and all(at < bound for bound in material.time_constraints)
+        and professional.authority_time_current(material.authority_snapshot, at)
+        and policy.policy_time_current(material.policy_snapshot, at)
+    )
 
 
 def _instant(value):
@@ -192,7 +210,7 @@ def _caller(s, ctx, pid, project_id):
         s,
         Grant,
         Grant.tenant_id == ctx.tenant_id,
-        Grant.product_id == pid,
+        Grant.category_id == category_for_product(pid),
         Grant.principal_id == ctx.actor_id,
     )
     _require(
@@ -200,12 +218,12 @@ def _caller(s, ctx, pid, project_id):
         and person.active is True
         and grant.can_write is True
         and project.status == "active"
-        and project.visibility in {"private", "product"}
+        and project.visibility in {"private", "category", "audience"}
         and (project.visibility != "private" or project.owner_id == ctx.requester_id),
         "FORBIDDEN_SCOPE",
         403,
     )
-    _require(grant.expires_at > _clock(), "FORBIDDEN_SCOPE", 403)
+    _require((grant.expires_at is None or grant.expires_at > _clock()), "FORBIDDEN_SCOPE", 403)
     return (
         _row_values(product, ("id", "tenant_id", "revision")),
         _row_values(project, ("id", "tenant_id", "product_id", "owner_id", "visibility", "status")),
@@ -215,7 +233,7 @@ def _caller(s, ctx, pid, project_id):
             (
                 "id",
                 "tenant_id",
-                "product_id",
+                "category_id",
                 "principal_id",
                 "can_write",
                 "expires_at",
@@ -449,9 +467,11 @@ def _check_material(ctx, pid, kind, payload, material, *, new_write):
         "MISSING_REQUIRED_EVIDENCE",
         409,
     )
-    if body.visibility == "product":
+    if body.visibility == "category":
         _require(
-            all(v.visibility == "product" for v in body.source_basis), "FACT_AUDIENCE_MISMATCH", 403
+            all(v.visibility == "category" for v in body.source_basis),
+            "FACT_AUDIENCE_MISMATCH",
+            403,
         )
     operation = commands.SPECS[kind][0]
     authority = material.authority_snapshot
@@ -574,7 +594,7 @@ def _check_material(ctx, pid, kind, payload, material, *, new_write):
             "INDEPENDENT_REVIEWER_REQUIRED",
             409,
         )
-    _require(material.valid_until > _clock(), "SOURCE_STALE", 409)
+    _require(_time_current(material, _clock()), "SOURCE_STALE", 409)
 
 
 class FactWriteHost:
@@ -649,7 +669,12 @@ class FactWriteHost:
         _require(self._runtime(s) == runtime, "SOURCE_STALE", 409)
         guards._same_uow(s, uow, ctx, caller)
         at = _clock()  # Actual clock after every owner and SQL read.
-        _require(at < min(value.valid_until, guard[3]["expires_at"]), "SOURCE_STALE", 409)
+        _require(
+            _time_current(value, at)
+            and (guard[3]["expires_at"] is None or at < guard[3]["expires_at"]),
+            "SOURCE_STALE",
+            409,
+        )
         phase = PreparedFact(
             kind, commands.semantic(payload), value, new_write, s, uow, caller, runtime[0], at
         )
@@ -758,12 +783,15 @@ def require_prepared_fact_clock(s, ctx, pid, payload, phase, at, *, host):
     _require(host._runtime(s) == state[1], "SOURCE_STALE", 409)
     at = _instant(at)
     _require(
-        phase.checked_at <= at < min(phase.valid_until, state[2][3]["expires_at"]),
+        phase.checked_at <= at
+        and _time_current(phase.material, at)
+        and (state[2][3]["expires_at"] is None or at < state[2][3]["expires_at"]),
         "SOURCE_STALE",
         409,
     )
     if phase.kind == "review":
-        _require(at < phase.material.body_material.valid_until, "SOURCE_STALE", 409)
+        until = phase.material.body_material.valid_until
+        _require(until is None or at < until, "SOURCE_STALE", 409)
     return at
 
 
@@ -832,7 +860,11 @@ def _construct_row(ctx, command, payload, phase, at, live):
             409,
         )
     if phase.kind == "review":
-        _require(body.at.occurred_at <= at < body.valid_until, "FACT_TIME_INVALID", 409)
+        _require(
+            body.at.occurred_at <= at and (body.valid_until is None or at < body.valid_until),
+            "FACT_TIME_INVALID",
+            409,
+        )
     origin = m.anchor.origin
     values = {
         "id": fact_id,
@@ -982,7 +1014,8 @@ def apply_prepared_fact(
     at = require_prepared_fact_clock(
         s, ctx, command.product_id, payload, phase, _clock(), host=host
     )
-    _require(live.consumed_at <= at < live.expires_at, "FACT_CONSUMPTION_CLOCK_INVALID", 409)
+    _require(live.consumed_at <= at and proof_deadline_current(live.tier, live.expires_at, at),
+             "FACT_CONSUMPTION_CLOCK_INVALID", 409)
     row = _construct_row(ctx, command, payload, phase, at, live)
     consumption_host.require_live(
         s,
@@ -1053,6 +1086,7 @@ def append_prepared_rule(
     intent = digest(
         {
             "operation": command.operation,
+            "category": command.category_id,
             "product": command.product_id,
             "payload": commands.semantic(payload),
             "named_actor": ctx.requester_id,

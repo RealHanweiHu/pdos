@@ -25,6 +25,7 @@ from pdos_next.service import Context
 TENANT, PRODUCT, BUILD, PROJECT, PROCESS, ACTOR, FACT, RESOURCE = (
     UUID(int=index) for index in range(1, 9)
 )
+CATEGORY = UUID(int=1000000)
 REAL_INSPECT = api.owner.inspect_resource
 
 
@@ -63,7 +64,9 @@ class PrivateRead:
 
 @dataclass
 class RouteState:
-    context: Context = field(default_factory=lambda: Context(TENANT, ACTOR, ACTOR))
+    context: Context = field(
+        default_factory=lambda: Context(TENANT, ACTOR, ACTOR, category_id=CATEGORY)
+    )
     sessions: list = field(default_factory=list)
     calls: list = field(default_factory=list)
     fail: DomainError | None = None
@@ -90,13 +93,13 @@ def route(monkeypatch):
 
     @app.exception_handler(DomainError)
     async def domain_error(_request, error):
-        return JSONResponse(
-            {"code": error.code, "message": error.message}, status_code=error.status
-        )
+        return JSONResponse(error.payload(), status_code=error.status)
 
     @app.exception_handler(RequestValidationError)
     async def invalid(_request, _error):
-        return JSONResponse({"code": "INVALID_PAYLOAD"}, status_code=422)
+        return JSONResponse(
+            DomainError("INVALID_PAYLOAD", "输入无效。", 422).payload(), status_code=422
+        )
 
     def authenticated():
         if state.auth_error:
@@ -106,8 +109,13 @@ def route(monkeypatch):
     engine = object()
 
     @contextmanager
-    def tenant_session(actual_engine, tenant):
+    def tenant_session(actual_engine, tenant, **binding):
         assert actual_engine is engine
+        assert binding == {
+            "actor_id": state.context.actor_id,
+            "requester_id": state.context.requester_id,
+            "category_id": CATEGORY,
+        }
         state.sessions.append(("begin", tenant))
         try:
             yield state.session
@@ -133,7 +141,7 @@ def route(monkeypatch):
 
 
 def url(product=PRODUCT, build=BUILD):
-    return f"/v1/products/{product}/builds/{build}/resources/inspect"
+    return f"/v1/categories/{CATEGORY}/products/{product}/builds/{build}/resources/inspect"
 
 
 def test_only_url_and_context_bind_roots_and_opaque_proof_stays_private(route):
@@ -177,7 +185,8 @@ def test_body_cannot_supply_scope_authority_proof_or_write_command(route, key):
     data = input_body()
     data[key] = str(UUID(int=900))
     response = client.post(url(), json=data)
-    assert response.status_code == 422 and response.json()["code"] == "INVALID_PAYLOAD"
+    assert response.status_code == 422 and response.json()["code"] == "VALIDATION_FAILED"
+    assert response.json()["detail"]["reason"] == "INVALID_PAYLOAD"
     assert state.sessions == [] and state.calls == []
 
 
@@ -324,7 +333,8 @@ def test_owner_failure_propagates_without_unknown_fallback_and_exits_uow(route, 
     client, state = route
     state.fail = DomainError(code, "Concrete owner guard failed", status)
     response = client.post(url(), json=input_body())
-    assert response.status_code == status and response.json()["code"] == code
+    assert response.status_code == status and response.json()["code"] == state.fail.code
+    assert response.json()["detail"]["reason"] == code
     assert state.sessions == [("begin", TENANT), ("rollback", TENANT)]
     assert len(state.calls) == 1
 
@@ -338,10 +348,11 @@ def test_failed_authentication_never_opens_tenant_uow(route):
 
 def test_real_owner_rejects_agent_context_before_any_owner_io(route, monkeypatch):
     client, state = route
-    state.context = Context(TENANT, ACTOR, ACTOR, run_id=UUID(int=999))
+    state.context = Context(TENANT, ACTOR, ACTOR, run_id=UUID(int=999), category_id=CATEGORY)
     monkeypatch.setattr(api.owner, "inspect_resource", REAL_INSPECT)
     response = client.post(url(), json=input_body())
-    assert response.status_code == 409 and response.json()["code"] == "RESOURCE_RECHECK_REQUIRED"
+    assert response.status_code == 409 and response.json()["code"] == "SOURCE_STALE"
+    assert response.json()["detail"]["reason"] == "RESOURCE_RECHECK_REQUIRED"
     assert state.sessions == [("begin", TENANT), ("rollback", TENANT)]
 
 

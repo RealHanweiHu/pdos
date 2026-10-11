@@ -24,14 +24,14 @@ class ExecutionPlan(DTO):
 class LaunchBase(DTO):
     request_id: UUID
     expected_request_revision: Revision
-    sources: tuple[DefinitionReference, ...] = Field(default=(), max_length=20)
+    sources: tuple[DefinitionReference, ...] = Field(default=())
     reason: Text
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 
 
 class PlanPayload(LaunchBase):
     run_id: UUID
-    coverage: tuple[Coverage, ...] = Field(min_length=1, max_length=10000)
+    coverage: tuple[Coverage, ...] = Field(min_length=1)
     execution_plan: ExecutionPlan
 
     @model_validator(mode="after")

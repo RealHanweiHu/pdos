@@ -7,7 +7,6 @@ from .definitions import (
     OriginalLifecycle,
     QueueOriginalSecurity,
     SecureOriginal,
-    SourceWork,
     UploadTerminal,
 )
 
@@ -19,6 +18,9 @@ class TemporalSender:
     async def __call__(self, event: Envelope):
         reference = {
             "tenant_id": event.tenant_id,
+            "category_id": event.category_id,
+            "actor_id": event.actor_id,
+            "requester_id": event.requester_id,
             "product_id": event.product_id,
             "subject_id": event.subject_id,
         }
@@ -36,23 +38,6 @@ class TemporalSender:
                     id_reuse_policy=WorkflowIDReusePolicy.REJECT_DUPLICATE,
                 )
             except WorkflowAlreadyStartedError:
-                pass
-            return identity
-        if event.event_type in {"ai.work_started", "ai.work_resume_requested", "ai.run_cancelled"}:
-            identity = f"pdos-source:{event.tenant_id}:{event.subject_id}"
-            try:
-                await self.client.start_workflow(
-                    SourceWork.run,
-                    reference,
-                    id=identity,
-                    task_queue=self.task_queue,
-                    id_conflict_policy=WorkflowIDConflictPolicy.USE_EXISTING,
-                    id_reuse_policy=WorkflowIDReusePolicy.REJECT_DUPLICATE,
-                    start_signal="wake",
-                    start_signal_args=[event.event_id],
-                )
-            except WorkflowAlreadyStartedError:
-                # A completed domain goal is never restarted after a lost acknowledgement.
                 pass
             return identity
         if event.event_type in {"original.uploaded", "original.scan_requested"}:

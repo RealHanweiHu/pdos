@@ -1,0 +1,36 @@
+{
+  "scope": "M3 early human G0 candidate, not full M3 or S0/M2 acceptance",
+  "owned_files": {
+    "pdos-next/server/pdos_next/domain/preproject/service.py": "3b753da856b666927b3997ef776beda2ffdb87c7e5ccd3b738650fe38fd00280",
+    "pdos-next/server/pdos_next/domain/preproject/models.py": "9c6c166f758204f71f0af11b521cb55a118a1bda6fd0ac1f810adb88d317e67d",
+    "pdos-next/server/pdos_next/domain/preproject/access.py": "4ffc3e4dbcca507c9d3f27e6bb01f9e0d9d033611c62f31ec4c0938ce146fd74",
+    "pdos-next/server/pdos_next/domain/preproject/__init__.py": "9e37ea5eb23c6f95cd5f9f5dc21ccbab03cb19b423a939d791ac4d77229da65c",
+    "pdos-next/server/pdos_next/domain/preproject/api.py": "77b96e290d50796c1b5d5914db51af608b13ae34564bf55a88878d5c3d7b4127",
+    "pdos-next/server/pdos_next/domain/preproject/schemas.py": "c4945a43f90a92b85ba8249fdb5aa8540b68f2412bd172411904190ee659cd48",
+    "pdos-next/server/pdos_next/domain/preproject/views.py": "c5a3b2bdcd70141ac12f463489acebb0635bf028ad92aad945b0bfee3c6b584d",
+    "pdos-next/server/tests/preproject/test_g0.py": "f0e4ea590e06b10eea281ea0e3f60a287ab76afa656e5f51e1a1c494ae1a843a",
+    "pdos-next/tools/m3_early_verify_demo.py": "e50f22c2add7a685dce99e3529184eab5d81a018383618095f510f0e9be8967a",
+    "pdos-next/tools/m3_early_demo.py": "d4bccfa9237642f27abc4b30aa90238a4313b988be6edd30ffdfdb387b16f237",
+    "pdos-next/tools/m3_early_checkpoint.py": "a1cd35358ff01dc601df02f84709e20ff38efa6340afdb708bb21ad653246aaf",
+    "pdos-next/tools/m3_early_environment.py": "13d2fc1bea53c321998e4519eeedc656684c028835a757f5bf554c809d22ec2c",
+    "pdos-next/server/migrations/candidates/m3_preproject.py": "30a0b2d8c3b8ab457d34881bc6f4a8c10a3e6536402d28aa5cdc957e8eb59e83",
+    "pdos-next/web/src/components/preproject/proposal-document.tsx": "28ffdf1f60876591e7d06ab5a55fc48df55b5709a9e45c17eb30edc2ac59f210",
+    "pdos-next/web/src/app/categories/[categoryId]/proposals/[proposalId]/page.tsx": "21a1ddb50b68247d908503b15a358d24e8e937bb39a082839b653639b4f460f5"
+  },
+  "shared_files_full_hashes_not_ownership_claim": {
+    "pdos-next/server/pdos_next/contracts.py": "25a5b55e3dff87df99513ffe1b021528f3f937b90bfe8ce00011a8344b05c24f",
+    "pdos-next/server/pdos_next/command_handlers.py": "910a17c5d28b7e5dab39806f4afaae17415da8474b40ec2a1121fe3f1858a5cb",
+    "pdos-next/server/pdos_next/service.py": "5a2063c317ebda99203070eef60542e344615f7050606996544827eeab4c0f24",
+    "pdos-next/server/pdos_next/api.py": "aa19444ea33befe0ca49aa310ed475a928c490512d6c06148237a1f4b91e4a64",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "43e6ae63ec5b5c0df3f3d1b4f87344b1251f6932fae5566b6bc1fc2a3c07ef71",
+    "pdos-next/web/postcss.config.mjs": "b19bfdc135e353538b4fb00c940725aa72ae56cab3525f12f3102104fb7a0a1b"
+  },
+  "contract": {
+    "path": "docs/design/2026-10-08-pdos-next-m3-implementation-contract.md",
+    "sha256": "ce7d5c5d3fc218b810cd1b57dad1b88cbef9ff9bd335de1a5c01599ae386cfc0"
+  },
+  "active_revision_added": false,
+  "integration_gate": "B7/B8 actual merged head; reconcile supplemental B3 ORM/schema",
+  "model_calls": 0,
+  "real_data_used": false
+}

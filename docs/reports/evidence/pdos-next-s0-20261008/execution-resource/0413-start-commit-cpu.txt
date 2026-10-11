@@ -1,0 +1,106 @@
+         826269 function calls (727353 primitive calls) in 2.096 seconds
+
+   Ordered by: cumulative time
+   List reduced from 1499 to 55 due to restriction <55>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    2.096    2.096 service.py:714(execute)
+      137    0.002    0.000    1.724    0.013 base.py:1618(_execute_clauseelement)
+      133    0.000    0.000    1.709    0.013 base.py:1404(execute)
+      133    0.000    0.000    1.709    0.013 elements.py:524(_execute_on_connection)
+      137    0.001    0.000    1.709    0.012 base.py:1767(_execute_context)
+      139    1.644    0.012    1.675    0.012 connection.py:479(wait)
+      136    0.000    0.000    1.674    0.012 default.py:1191(do_execute)
+      136    0.001    0.000    1.674    0.012 cursor.py:100(execute)
+      136    0.005    0.000    1.659    0.012 base.py:1826(_exec_single_context)
+      123    0.002    0.000    1.413    0.011 session.py:2201(_execute_internal)
+      117    0.000    0.000    1.286    0.011 context.py:306(orm_execute_statement)
+        1    0.000    0.000    1.084    1.084 service.py:1154(apply)
+       82    0.001    0.000    1.021    0.012 session.py:2517(scalar)
+      264    0.001    0.000    0.962    0.004 request_proof.py:118(snapshot_scalar)
+        1    0.000    0.000    0.888    0.888 service.py:806(validate)
+        4    0.000    0.000    0.850    0.212 request_proof.py:169(bound)
+        1    0.000    0.000    0.849    0.849 service.py:444(_load)
+        1    0.000    0.000    0.811    0.811 handlers.py:250(execute)
+        1    0.000    0.000    0.522    0.522 adapters.py:44(reserve)
+        1    0.000    0.000    0.522    0.522 service.py:934(reserve)
+        1    0.000    0.000    0.507    0.507 service.py:1915(stage_start)
+        4    0.000    0.000    0.502    0.125 service.py:857(inspect_sample)
+        4    0.000    0.000    0.502    0.125 service.py:701(_inspect)
+      129    0.000    0.000    0.416    0.003 session.py:4504(flush)
+        8    0.000    0.000    0.416    0.052 <sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush>:1(_flush)
+        8    0.000    0.000    0.416    0.052 deprecations.py:249(warned)
+        8    0.000    0.000    0.415    0.052 session.py:4557(_flush)
+        8    0.000    0.000    0.414    0.052 unitofwork.py:442(execute)
+       14    0.000    0.000    0.412    0.029 unitofwork.py:641(execute)
+       14    0.000    0.000    0.412    0.029 persistence.py:39(_save_obj)
+        1    0.000    0.000    0.355    0.355 service.py:171(_inspect)
+        8    0.000    0.000    0.352    0.044 service.py:1438(execution_projection)
+       33    0.000    0.000    0.319    0.010 session.py:2565(scalars)
+        1    0.000    0.000    0.282    0.282 adapters.py:74(record)
+        1    0.000    0.000    0.282    0.282 service.py:1174(save)
+        1    0.000    0.000    0.282    0.282 service.py:993(_record)
+        4    0.000    0.000    0.271    0.068 service.py:717(_guards)
+        3    0.000    0.000    0.269    0.090 service.py:371(_scope)
+       14    0.000    0.000    0.246    0.018 persistence.py:966(_emit_insert_statements)
+        4    0.000    0.000    0.238    0.059 service.py:271(_start_context)
+        4    0.000    0.000    0.209    0.052 service.py:477(_execution)
+        2    0.000    0.000    0.178    0.089 service.py:1059(_load)
+        1    0.000    0.000    0.168    0.168 handlers.py:282(stage_formal)
+        1    0.000    0.000    0.168    0.168 handlers.py:176(_stage)
+        1    0.000    0.000    0.166    0.166 service.py:1754(stage)
+       14    0.000    0.000    0.165    0.012 persistence.py:732(_emit_update_statements)
+       84    0.000    0.000    0.162    0.002 request_proof.py:149(snapshot_get)
+      127    0.000    0.000    0.160    0.001 request_proof.py:86(scoped_rows)
+        8    0.001    0.000    0.158    0.020 service.py:1082(_saved_capabilities)
+       40    0.001    0.000    0.155    0.004 service.py:135(_row)
+        3    0.000    0.000    0.122    0.041 service.py:324(lock_binding_assets)
+       16    0.000    0.000    0.113    0.007 service.py:116(_current_decision)
+        5    0.000    0.000    0.109    0.022 service.py:655(_reservation)
+        4    0.000    0.000    0.108    0.027 service.py:169(_chain)
+        6    0.000    0.000    0.107    0.018 service.py:1657(fresh)
+
+
+         826269 function calls (727353 primitive calls) in 2.096 seconds
+
+   Ordered by: internal time
+   List reduced from 1499 to 35 due to restriction <35>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      139    1.644    0.012    1.675    0.012 connection.py:479(wait)
+     1494    0.031    0.000    0.033    0.000 encoder.py:205(iterencode)
+46248/363    0.027    0.000    0.057    0.000 copy.py:118(deepcopy)
+   200542    0.019    0.000    0.019    0.000 {built-in method builtins.isinstance}
+   103875    0.014    0.000    0.016    0.000 {method 'get' of 'dict' objects}
+     1563    0.012    0.000    0.012    0.000 decoder.py:344(raw_decode)
+16142/145    0.011    0.000    0.020    0.000 service.py:77(canonical)
+  797/789    0.011    0.000    0.029    0.000 {method 'validate_python' of 'pydantic_core._pydantic_core.SchemaValidator' objects}
+      277    0.009    0.000    0.023    0.000 _cursor_base.py:275(_maybe_prepare_gen)
+ 3633/236    0.009    0.000    0.056    0.000 copy.py:217(_deepcopy_dict)
+     3532    0.009    0.000    0.036    0.000 coercions.py:323(expect)
+    17332    0.008    0.000    0.008    0.000 attributes.py:561(__get__)
+      693    0.007    0.000    0.007    0.000 {method 'to_python' of 'pydantic_core._pydantic_core.SchemaSerializer' objects}
+13441/625    0.006    0.000    0.009    0.000 common.py:53(visit)
+      136    0.005    0.000    1.659    0.012 base.py:1826(_exec_single_context)
+      133    0.005    0.000    0.007    0.000 cache_key.py:209(_generate_cache_key)
+     1263    0.005    0.000    0.018    0.000 elements.py:5126(_bind_param)
+    59866    0.004    0.000    0.004    0.000 {built-in method builtins.id}
+     2169    0.004    0.000    0.009    0.000 _column.py:20(__init__)
+      136    0.004    0.000    0.005    0.000 _cursor_base.py:504(_select_current_result)
+      137    0.004    0.000    0.005    0.000 cursor.py:44(__init__)
+     1295    0.004    0.000    0.008    0.000 elements.py:6025(safe_construct_with_key)
+     1666    0.004    0.000    0.005    0.000 uuid.py:139(__init__)
+      125    0.004    0.000    0.013    0.000 cursor.py:274(fetchall)
+       10    0.004    0.000    0.048    0.005 service.py:205(get_engineering)
+      123    0.003    0.000    0.003    0.000 _cursor_base.py:583(_send_query_prepared)
+     1279    0.003    0.000    0.003    0.000 {method 'astimezone' of 'datetime.datetime' objects}
+     2974    0.003    0.000    0.003    0.000 uuid.py:280(__str__)
+  3737/15    0.003    0.000    0.005    0.000 service.py:816(_fingerprint_json)
+     1273    0.003    0.000    0.005    0.000 elements.py:4249(__init__)
+      113    0.003    0.000    0.003    0.000 loading.py:819(_instance_processor)
+       69    0.003    0.000    0.022    0.000 service.py:158(_sources)
+  3575/13    0.003    0.000    0.004    0.000 fingerprint_compatibility.py:109(_safe_values)
+     1371    0.003    0.000    0.014    0.000 elements.py:2060(__init__)
+     1273    0.003    0.000    0.034    0.000 default_comparator.py:50(_boolean_compare)
+
+

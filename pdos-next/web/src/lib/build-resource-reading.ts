@@ -65,14 +65,14 @@ export function resourceReading(value: unknown, productId: string, build: Build,
     || !timestamp(value.valid_until) || !timestamp(value.fact_valid_until)
     || !(value.fact === null || version(value.fact)) || !(value.fact_sha256 === null || hash(value.fact_sha256))
     || !Array.isArray(value.resources) || value.resources.length > 100 || !Array.isArray(value.relations) || value.relations.length > 100
-    || !Array.isArray(value.required_source_read_set) || value.required_source_read_set.length > 20
+    || !Array.isArray(value.required_source_read_set)
     || !Array.isArray(value.gaps) || value.gaps.some(gap => typeof gap !== "string")) return failure();
   const reads = new Map<string, number>();
   for (const read of value.required_source_read_set) {
     if (!startRecord(read) || typeof read.artifact_id !== "string" || !Number.isSafeInteger(read.expected_revision) || Number(read.expected_revision) < 1 || reads.has(read.artifact_id)) return failure();
     reads.set(read.artifact_id, Number(read.expected_revision));
   }
-  const originals = (refs: unknown): boolean => Array.isArray(refs) && refs.length > 0 && refs.length <= 20 && refs.every(ref => startRecord(ref)
+  const originals = (refs: unknown): boolean => Array.isArray(refs) && refs.length > 0 && refs.every(ref => startRecord(ref)
     && typeof ref.artifact_id === "string" && reads.get(ref.artifact_id) === ref.expected_revision
     && Number.isSafeInteger(ref.line) && Number(ref.line) > 0 && typeof ref.quote === "string" && !!ref.quote);
   const identities = new Set<string>();

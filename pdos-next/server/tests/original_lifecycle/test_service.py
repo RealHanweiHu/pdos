@@ -98,12 +98,13 @@ def test_wrong_scope_authorization_and_tampered_digest_fail_before_any_write():
     assert not store.intents
 
 
-def test_expired_preview_and_same_version_changed_policy_are_rejected():
+def test_material_age_does_not_expire_candidate_but_changed_policy_requires_review():
     clock, store, _, service, _ = fixture()
     candidate = preview(store, service)
     clock.value += timedelta(minutes=6)
-    failure("PREVIEW_EXPIRED", lambda: confirm(store, service, candidate))
-    clock.value -= timedelta(minutes=6)
+    assert confirm(store, service, candidate).state.value == "pending"
+    clock, store, _, service, _ = fixture()
+    candidate = preview(store, service)
     service.policy = replace(service.policy, failed_upload_grace=timedelta(days=8))
     failure("POLICY_CHANGED", lambda: confirm(store, service, candidate))
     assert not store.intents

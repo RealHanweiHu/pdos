@@ -25,6 +25,7 @@ class ProviderRoute:
     )
     timeout_seconds: float = 30.0
     response_bytes: int = 1_048_576
+    configuration_digest: str | None = None
 
     def __post_init__(self):
         if self.protocol not in {"openai-compatible", "anthropic-native"}:
@@ -45,6 +46,10 @@ class ProviderRoute:
             raise ValueError("Invalid provider timeout")
         if type(self.response_bytes) is not int or not 1024 <= self.response_bytes <= 2_097_152:
             raise ValueError("Invalid provider response bound")
+        if self.configuration_digest is not None and not re.fullmatch(
+            r"[a-f0-9]{64}", self.configuration_digest
+        ):
+            raise ValueError("Invalid server configuration binding")
         self.assert_target_allowed(self.target_url)
 
     @property
@@ -65,6 +70,8 @@ class ProviderRoute:
             timeout_seconds=self.timeout_seconds,
             response_bytes=self.response_bytes,
         )
+        if self.configuration_digest is not None:
+            body["configuration_digest"] = self.configuration_digest
         return hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()
 
     def assert_target_allowed(self, target: str):

@@ -3,7 +3,6 @@
 from datetime import datetime
 from uuid import UUID
 
-from pdos_next.models import Base, Row
 from sqlalchemy import (
     CheckConstraint,
     DateTime,
@@ -15,6 +14,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
+
+from pdos_next.models import Base, Row
 
 
 class ChangeRequestVersion(Row, Base):
@@ -66,7 +67,7 @@ class ChangeRequestVersion(Row, Base):
             ],
         ),
         CheckConstraint(
-            "visibility IN ('private','product') AND status IN "
+            "visibility IN ('private','category','audience') AND status IN "
             "('draft','analysis','review','approved','implementing')"
         ),
         CheckConstraint(
@@ -85,7 +86,7 @@ class ChangeRequestVersion(Row, Base):
             "COALESCE(request_snapshot->'orders' = '[]'::jsonb, false)"
         ),
         CheckConstraint("COALESCE((request_snapshot->>'revision')::integer = revision, false)"),
-        CheckConstraint("jsonb_array_length(required_source_read_set) BETWEEN 1 AND 20"),
+        CheckConstraint("jsonb_array_length(required_source_read_set)>0"),
     )
 
 
@@ -130,7 +131,7 @@ class ChangeGraphCapture(Row, Base):
     required_source_read_set: Mapped[list] = mapped_column(JSONB)
     source_basis: Mapped[dict] = mapped_column(JSONB)
     authority_snapshot: Mapped[dict] = mapped_column(JSONB)
-    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     reason: Mapped[str] = mapped_column(Text)
     __table_args__ = (
         UniqueConstraint("tenant_id", "product_id", "id"),
@@ -156,10 +157,8 @@ class ChangeGraphCapture(Row, Base):
         ),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint("revision = 1 AND status = 'prepared' AND change_revision > 0"),
-        CheckConstraint("visibility IN ('private','product')"),
-        CheckConstraint(
-            "expires_at > created_at AND expires_at <= created_at + interval '10 minutes'"
-        ),
+        CheckConstraint("visibility IN ('private','category','audience')"),
+        CheckConstraint("expires_at IS NULL OR expires_at > created_at"),
         CheckConstraint("COALESCE(graph_snapshot->>'nature' IN ('real','synthetic'), false)"),
-        CheckConstraint("jsonb_array_length(required_source_read_set) BETWEEN 1 AND 20"),
+        CheckConstraint("jsonb_array_length(required_source_read_set)>0"),
     )

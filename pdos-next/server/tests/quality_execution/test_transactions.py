@@ -154,7 +154,13 @@ def test_fixed_failure_replay_across_title_key_and_later_event_keeps_one_created
     assert post(work.quality, alias).json()["id"] == first["id"]
     # An unrelated later professional result version retains this exact failure.
     reviewed, _ = accepted(work.quality, result_command(work, "test.run.review"))
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         later_event = session.scalar(
             select(Outbox.id).where(Outbox.receipt_id == UUID(reviewed["id"]))
         )
@@ -168,7 +174,13 @@ def test_fixed_failure_replay_across_title_key_and_later_event_keeps_one_created
         after[QualityEventFailureLink.__tablename__]
         == baseline[QualityEventFailureLink.__tablename__] + 1
     )
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         links = list(
             session.scalars(
                 select(QualityEventFailureLink).where(
@@ -227,7 +239,13 @@ def test_one_result_event_with_two_failures_creates_two_then_merge_retains_reche
         assert not any(initial["capabilities"].values())
     replay = post(work.quality, prepared)
     assert replay.status_code == 200 and replay.json()["id"] == receipt["id"]
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         mappings = list(session.scalars(select(QualityFailureMap)))
         assert {m.issue_id for m in mappings} == {UUID(first["result"]["issue_id"])}
 
@@ -268,11 +286,11 @@ def test_current_policy_missing_and_withdrawn_do_not_default_to_low_risk(quality
 
     raw = cmd(work.quality, "quality.issue.triage", value)
     response = work.quality.client.post(
-        f"/v1/products/{work.setup.product}/quality-execution/inputs",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/quality-execution/inputs",
         headers=work.quality.headers,
         json=raw,
     )
-    assert response.status_code == 503 and response.json()["code"] == "INTEGRATION_REQUIRED"
+    assert response.status_code == 503 and response.json()["code"] == "INTERNAL_ERROR"
     assert counts(work) == before
     published = publish_policy(work)
     prepared = post(work.quality, command(work, "quality.issue.triage", value), True).json()[
@@ -281,7 +299,7 @@ def test_current_policy_missing_and_withdrawn_do_not_default_to_low_risk(quality
     publish_policy(work, previous=published, state="withdrawn")
     before = counts(work)
     refused = post(work.quality, prepared)
-    assert refused.status_code == 409 and refused.json()["code"] == "RECHECK_REQUIRED"
+    assert refused.status_code == 409 and refused.json()["code"] == "SOURCE_STALE"
     unconsumed(work, prepared["payload"]["confirmation_token"])
     assert counts(work) == before
 
@@ -319,28 +337,68 @@ def test_outbox_failure_rolls_back_issue_version_pointer_and_common_confirmation
     assert issue_current(work, first["result"]["issue_id"])["revision"] == 1
 
 
-def test_source_revocation_and_named_scope_apply_before_successful_receipt_replay(quality_work):
+def test_source_revocation_and_named_scope_apply_before_successful_receipt_replay(
+    quality_work, monkeypatch
+):
+    from pdos_next import quality_result_bridge
+
     work = quality_work
     first, value = create_issue(work)
     before = counts(work)
+    retained_calls = []
+    inspect_retained = quality_result_bridge.inspect_retained_execution
+
+    def retained(*args, **kwargs):
+        retained_calls.append(True)
+        return inspect_retained(*args, **kwargs)
+
+    monkeypatch.setattr(quality_result_bridge, "inspect_retained_execution", retained)
     refused = post(work.engineer, value)
-    assert refused.status_code == 403 and refused.json()["code"] == "FORBIDDEN_SCOPE"
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    assert refused.status_code == 403 and refused.json()["code"] == "QUALIFICATION_REQUIRED", (
+        refused.text
+    )
+    assert not retained_calls
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         with pytest.raises(DomainError) as error:
             execute(
                 session,
                 Context(work.setup.tenant, work.setup.agent, work.setup.agent),
                 Command.model_validate(value),
             )
-        assert error.value.code == "FORBIDDEN_SCOPE"
+        assert error.value.reason == "FORBIDDEN_SCOPE"
     with Session(work.setup.admin) as session, session.begin():
         session.execute(
             update(Artifact).where(Artifact.id == work.failure_report).values(status="withdrawn")
         )
     refused = post(work.quality, value)
-    assert refused.status_code == 409 and refused.json()["code"] == "SOURCE_UNAVAILABLE"
+    assert refused.status_code == 200 and refused.json()["id"] == first["id"]
+    fresh = {
+        **value,
+        "command_id": str(uuid4()),
+        "idempotency_key": str(uuid4()),
+        "operation": "quality.issue.triage",
+        "payload": {
+            "issue_id": first["result"]["issue_id"],
+            "expected_issue_revision": 1,
+            "reason": "New triage requires current sources",
+        },
+    }
+    rejected = post(work.quality, fresh)
+    assert rejected.status_code in {403, 409} and rejected.json()["code"] == "SOURCE_UNAVAILABLE"
     assert counts(work) == before
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         assert session.get(Receipt, UUID(first["id"])) is not None
 
 
@@ -396,7 +454,13 @@ def test_policy_and_issue_storage_is_immutable_scoped_and_agent_has_zero_write(q
         QualityPolicyFact,
         QualityPolicyCurrent,
     )
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         tables = [cls.__tablename__ for cls in targets]
         privileges = session.execute(
             text(
@@ -408,7 +472,13 @@ def test_policy_and_issue_storage_is_immutable_scoped_and_agent_has_zero_write(q
             {"names": tables},
         ).all()
         assert len(privileges) == 6 and all(value is False for _, value in privileges)
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         with pytest.raises(DBAPIError, match="permission denied"):
             session.execute(
                 update(QualityIssueVersion)
@@ -435,13 +505,19 @@ def test_projection_or_arbitrary_event_cannot_relabel_an_unverified_result_as_fa
     value = cmd(work.quality, "quality.issue.create", forged)
     before = counts(work)
     response = work.quality.client.post(
-        f"/v1/products/{work.setup.product}/quality-execution/inputs",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/quality-execution/inputs",
         headers=work.quality.headers,
         json=value,
     )
-    assert response.status_code == 403 and response.json()["code"] == "FAILURE_EVENT_UNAVAILABLE"
+    assert response.status_code == 403 and response.json()["code"] == "SOURCE_UNAVAILABLE"
     assert counts(work) == before
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         original = session.scalar(
             select(TestResultProjection).where(TestResultProjection.run_id == work.failure_run.id)
         )

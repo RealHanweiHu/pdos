@@ -3,7 +3,7 @@
 from contextlib import contextmanager
 from copy import deepcopy
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime
 
 from sqlalchemy import event, or_, select
 
@@ -17,11 +17,15 @@ from pdos_next.change_graph_closure import (
 )
 from pdos_next.change_implementation_owner import common_group
 from pdos_next.change_order_service import _one, current_fixed, snapshot
+from pdos_next.clock import deadline_current, earliest_deadline
+from pdos_next.clock import now as server_now
+from pdos_next.database import category_for_product
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.change_control.rules import digest
 from pdos_next.domain.change_execution import service as old
 from pdos_next.domain.change_execution.models import ChangeRequestVersion
-from pdos_next.domain.professional_authority.models import ProfessionalFact
+from pdos_next.domain.professional_authority import service as professional
+from pdos_next.domain.professional_authority.models import ProfessionalCurrent
 from pdos_next.models import Grant, Principal, Product
 from pdos_next.schemas.change_control.contracts import Coverage, GraphSnapshot
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
@@ -35,7 +39,7 @@ _READ_TOKEN = object()
 
 
 def clock():
-    return datetime.now(UTC)
+    return server_now()
 
 
 def _pending_people(s):
@@ -94,7 +98,7 @@ def lock_people(s, ctx, pid, publisher_id, *, nowait=False):
             s,
             Grant,
             Grant.tenant_id == ctx.tenant_id,
-            Grant.product_id == pid,
+            Grant.category_id == category_for_product(pid),
             Grant.principal_id == identity,
             lock=True,
             nowait=nowait,
@@ -105,8 +109,7 @@ def lock_people(s, ctx, pid, publisher_id, *, nowait=False):
             and type(person.access_epoch) is int
             and person.access_epoch > 0
             and type(grant.access_epoch) is int
-            and grant.access_epoch > 0
-            and grant.expires_at is not None,
+            and grant.access_epoch > 0,
             status=403,
         )
         stamps.append(
@@ -118,16 +121,17 @@ def lock_people(s, ctx, pid, publisher_id, *, nowait=False):
                 person.access_epoch,
                 grant.id,
                 grant.tenant_id,
-                grant.product_id,
+                grant.category_id,
                 grant.principal_id,
                 grant.access_epoch,
                 grant.can_write,
-                grant.expires_at.isoformat(),
+                grant.expires_at.isoformat() if grant.expires_at else None,
             )
         )
-        deadlines.append(grant.expires_at)
-    until = min(deadlines)
-    require(clock() < until, status=403)
+        if grant.expires_at is not None:
+            deadlines.append(grant.expires_at)
+    until = min(deadlines, default=None)
+    require(until is None or clock() < until, status=403)
     return tuple(stamps), until
 
 
@@ -145,35 +149,33 @@ def dependency_epoch(s, ctx, pid):
 
 
 def temporal(s, ctx, pid, scope):
-    """Future scope-wide authority/grant boundaries cannot be inferred from the clock."""
-    at, boundaries, stamps = clock(), [], []
-    facts = list(
-        s.scalars(
-            select(ProfessionalFact)
-            .where(
-                ProfessionalFact.tenant_id == ctx.tenant_id,
-                ProfessionalFact.product_id == pid,
-                or_(
-                    ProfessionalFact.project_id == scope.project_id,
-                    ProfessionalFact.project_id.is_(None),
-                ),
-            )
-            .order_by(ProfessionalFact.id)
-            .limit(1001)
-            .execution_options(populate_existing=True, autoflush=False)
+    """Compare Current authority intervals and member epochs at the final clock.
+
+    Ordinary grants have no TTL. A fact entering or leaving its real interval
+    still changes this stamp, without shortening unrelated captures.
+    """
+    at, stamps = clock(), []
+    # Current's trigger-maintained summary has these exact immutable fact fields.
+    # Its RLS already proves the referenced Fact's complete live audience; a
+    # second Fact join repeats that work for every watermark comparison.
+    pointers = s.scalars(
+        select(ProfessionalCurrent)
+        .where(
+            ProfessionalCurrent.tenant_id == ctx.tenant_id,
+            ProfessionalCurrent.product_id == pid,
+            or_(
+                ProfessionalCurrent.project_id == scope.project_id,
+                ProfessionalCurrent.project_id.is_(None),
+            ),
         )
+        .order_by(ProfessionalCurrent.fact_id)
+        .execution_options(populate_existing=True, autoflush=False)
     )
-    grants = list(
-        s.scalars(
-            select(Grant)
-            .where(Grant.tenant_id == ctx.tenant_id, Grant.product_id == pid)
-            .order_by(Grant.id)
-            .limit(1001)
-            .execution_options(populate_existing=True, autoflush=False)
+    for pointer in pointers:
+        row = professional._summary_row(pointer)
+        professional._check_current(
+            pointer, row, ctx, pid, pointer.project_id, pointer.subject_id, summary=True
         )
-    )
-    require(len(facts) <= 1000 and len(grants) <= 1000, "COVERAGE_ENUMERATION_LIMIT", 422)
-    for row in facts:
         stamps.append(
             [
                 str(row.id),
@@ -182,16 +184,27 @@ def temporal(s, ctx, pid, scope):
                 row.state,
                 row.valid_from.isoformat(),
                 row.valid_until.isoformat(),
+                row.valid_from <= at < row.valid_until,
             ]
         )
-        boundaries += [v for v in (row.valid_from, row.valid_until) if v > at]
+    grants = s.execute(
+        select(Grant.id, Grant.access_epoch, Grant.can_write, Grant.expires_at)
+        .where(Grant.tenant_id == ctx.tenant_id, Grant.category_id == category_for_product(pid))
+        .order_by(Grant.id)
+        .execution_options(autoflush=False)
+    )
     for row in grants:
-        require(row.expires_at is not None)
-        stamps.append([str(row.id), row.access_epoch, row.can_write, row.expires_at.isoformat()])
-        if row.expires_at > at:
-            boundaries.append(row.expires_at)
-    # Only a digest is returned; private identities/counts are never exposed.
-    return digest(stamps), min(boundaries) if boundaries else None
+        stamps.append(
+            [
+                str(row.id),
+                row.access_epoch,
+                row.can_write,
+                row.expires_at.isoformat() if row.expires_at else None,
+                deadline_current(row.expires_at, at),
+            ]
+        )
+    # This opaque digest exposes no identities or counts to the reader.
+    return digest(stamps), None
 
 
 def _fixed_request(value):
@@ -204,15 +217,22 @@ def _fixed_request(value):
     }
 
 
-def fixed_seed(s, ctx, pid, refs):
+def fixed_seed(s, ctx, pid, refs, *, verify_sources=True):
     # The existing optional arbitrary Issue loader is not a coverage truth root.
-    from pdos_next.domain.quality_execution.service import get_issue_for_change
+    from pdos_next.domain.quality_execution.service import (
+        _change_scope_for_change,
+        get_issue_for_change,
+    )
 
     fixed = {}
     for ref in refs:
         if ref.kind not in {"issue", "capa"}:
             continue
         if (ref.id, ref.revision) in fixed:
+            continue
+        if not verify_sources:
+            scope, purpose = _change_scope_for_change(s, ctx, pid, ref)
+            fixed[(ref.id, ref.revision)] = (scope.project_id, purpose)
             continue
         row, view = get_issue_for_change(s, ctx, pid, ref.id, ref.revision)
         require(
@@ -229,13 +249,15 @@ def fixed_seed(s, ctx, pid, refs):
     return Scope(tenant_id=ctx.tenant_id, product_id=pid, project_id=project_id), purpose
 
 
-def binding(s, ctx, pid, change_id, purpose, *, material=None, lock=False):
+def binding(s, ctx, pid, change_id, purpose, *, material=None, lock=False, verify_sources=True):
     quiet(s)
     pointer, row = current_fixed(s, ctx, pid, change_id, lock=lock)
     request = snapshot(row)
     # Real SHARE watermark lock survives the entire original caller transaction.
     lock_dependency_clock(s, ctx, scope=request.scope, audience=request.audience)
-    scope, actual_purpose = fixed_seed(s, ctx, pid, (*request.roots, *request.references))
+    scope, actual_purpose = fixed_seed(
+        s, ctx, pid, (*request.roots, *request.references), verify_sources=verify_sources
+    )
     require(request.scope == scope and actual_purpose == purpose, status=403)
     # Every saved version is a publication. A rolled-back Current cannot erase later history.
     latest = list(
@@ -264,9 +286,8 @@ def binding(s, ctx, pid, change_id, purpose, *, material=None, lock=False):
             status=403,
         )
         require(
-            material.origin_revision <= row.revision
-            and row.revision - material.origin_revision < 100,
-            "COVERAGE_LINEAGE_LIMIT",
+            material.origin_revision <= row.revision,
+            "VERSION_CONFLICT",
             422,
         )
         seen = set()
@@ -403,7 +424,7 @@ def inspect_basis(s, ctx, pid, *, change_id, purpose):
         and controlled._caller(s, ctx, pid, write=False)[0] == caller
     )
     _same_uow(s, uow, ctx, caller_hash)
-    require(clock() < min(until, auth_until, result.valid_until or auth_until))
+    require(deadline_current(earliest_deadline(until, auth_until, result.valid_until), clock()))
     return {
         "scope": scope.model_dump(mode="json"),
         "binding": bound,
@@ -449,7 +470,13 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
     publisher_stamp = next(v for v in people if v[0] == row.actor_id)
     saved_pointer, saved_row = (
         pointer_stamp(p),
-        common_digest({v.name: getattr(row, v.name) for v in row.__table__.columns}),
+        common_digest(
+            {
+                v.name: getattr(row, v.name)
+                for v in row.__table__.columns
+                if v.name != "audience_dependencies"
+            }
+        ),
     )
     source = SourceRef.model_validate(row.source)
     value, _ = controlled.original(s, ctx, pid, source, CoverageMaterial)
@@ -513,7 +540,7 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
         owned.reads,
         row.authority_snapshot["required_source_read_set"],
     )
-    require(1 <= len(reads) <= 20, "COVERAGE_SOURCE_LIMIT", 422)
+    require(bool(reads), "MISSING_REQUIRED_EVIDENCE", 422)
     artifact_basis = controlled._source_guard(
         s, ctx, pid, value.visibility, value.owner_id, reads, sources
     )
@@ -554,14 +581,20 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
         )
         == artifact_basis
     )
-    signer_until = min(signer_until, controlled.original_authority(s, ctx, pid, row))
+    signer_until = earliest_deadline(signer_until, controlled.original_authority(s, ctx, pid, row))
     require(
         temporal(s, ctx, pid, scope)[0] == temporal_stamp and dependency_epoch(s, ctx, pid) == epoch
     )
     fresh_p, fresh_row = pointer(s, ctx, pid, scope, change_id, purpose)
     require(
         pointer_stamp(fresh_p) == saved_pointer
-        and common_digest({v.name: getattr(fresh_row, v.name) for v in fresh_row.__table__.columns})
+        and common_digest(
+            {
+                v.name: getattr(fresh_row, v.name)
+                for v in fresh_row.__table__.columns
+                if v.name != "audience_dependencies"
+            }
+        )
         == saved_row
     )
     require(binding(s, ctx, pid, change_id, purpose, material=value)[3] == bound)
@@ -575,7 +608,7 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
     fresh_people, fresh_people_until = lock_people(s, ctx, pid, row.actor_id)
     require(fresh_people == people, status=403)
     _same_uow(s, uow, ctx, caller_hash)
-    until = min(
+    until = earliest_deadline(
         value.valid_until,
         graph.expires_at,
         caller_until,
@@ -597,7 +630,7 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
             "id": str(graph.id),
             "revision": graph.revision,
             "captured_at": graph.captured_at.isoformat(),
-            "expires_at": graph.expires_at.isoformat(),
+            "expires_at": graph.expires_at.isoformat() if graph.expires_at is not None else None,
         },
         "binding": bound,
         "issuer": issuer_stamp,
@@ -725,5 +758,5 @@ def recheck_access(s, ctx, pid, previous, *, request, purpose):
         require(common_digest(publisher) == proof["publisher_access_sha256"], status=403)
         quiet(s)
         _same_uow(s, previous._uow, ctx, previous._caller_hash)
-        require(clock() < min(previous.valid_until, signer_until, until))
-        return min(previous.valid_until, signer_until, until)
+        require(clock() < earliest_deadline(previous.valid_until, signer_until, until))
+        return earliest_deadline(previous.valid_until, signer_until, until)

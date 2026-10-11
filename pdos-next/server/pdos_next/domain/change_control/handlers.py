@@ -1,5 +1,6 @@
 """Registry-callable command participant; host owns Session, proof and commit."""
 
+from pdos_next.clock import deadline_current
 from pdos_next.errors import DomainError
 from pdos_next.schemas.change_control.contracts import (
     Approval,
@@ -172,7 +173,7 @@ class ChangeControlHandler:
             a = request.assessments[-1]
             checks += self._fixed_graph(uow, authority, a.graph)
             checks += [self._source(uow, authority, s) for h in a.hypotheses for s in h.sources]
-            if authority.now >= a.graph.expires_at:
+            if not deadline_current(a.graph.expires_at, authority.now):
                 reasons.append("影响来源快照已过期。")
         if request.orders and request.status not in {"draft", "analysis"}:
             order = request.orders[-1]
@@ -182,7 +183,7 @@ class ChangeControlHandler:
             ):
                 reasons.append("决定政策/所需专业范围已变化。")
             checks.append(self._source(uow, authority, order.policy))
-            if authority.now >= order.plan.expires_at:
+            if not deadline_current(order.plan.expires_at, authority.now):
                 reasons.append("生效计划已过期。")
             self._port("facts").audience(
                 uow,
@@ -203,7 +204,7 @@ class ChangeControlHandler:
                 checks += [self._source(uow, authority, s) for s in item.selection.sources]
             for approval in order.approvals:
                 checks += [self._source(uow, authority, s) for s in approval.sources]
-                if authority.now >= approval.expires_at:
+                if not deadline_current(approval.expires_at, authority.now):
                     reasons.append(f"{approval.discipline}批准已过期。")
             for fact in (*order.implementations, *order.effectivity):
                 item = self._item(order, fact.item_id)
@@ -455,7 +456,7 @@ class ChangeControlHandler:
             checks = self._fixed_graph(uow, authority, graph)
             if (
                 graph.captured_at > authority.now
-                or authority.now >= graph.expires_at
+                or not deadline_current(graph.expires_at, authority.now)
                 or (any(not c.current for c in checks))
             ):
                 raise DomainError("RECHECK_REQUIRED", "影响来源/配置过期或待重核。")
@@ -480,7 +481,7 @@ class ChangeControlHandler:
                 raise DomainError("ASSESSMENT_MISMATCH", "必须选择最新固定影响评估。")
             assessment = request.assessments[-1]
             policy = self._policy(uow, authority, request)
-            if payload.plan.expires_at <= authority.now:
+            if not deadline_current(payload.plan.expires_at, authority.now):
                 raise DomainError("PLAN_EXPIRED", "新生效计划已过期。")
             known = {row.node.ref.identity for row in assessment.known}
             if {d.object.identity for d in payload.plan.dispositions} != known:
@@ -532,7 +533,11 @@ class ChangeControlHandler:
                 raise DomainError("SELF_APPROVAL_FORBIDDEN", "提出者不能自批。", 403)
             if any(a.discipline == payload.discipline for a in order.approvals):
                 raise DomainError("APPROVAL_ALREADY_RECORDED", "本专业已批准，修订须新内容/决定。")
-            if payload.expires_at <= authority.now or payload.expires_at > order.plan.expires_at:
+            if not deadline_current(payload.expires_at, authority.now) or (
+                payload.expires_at is not None
+                and order.plan.expires_at is not None
+                and payload.expires_at > order.plan.expires_at
+            ):
                 raise DomainError("APPROVAL_EXPIRY_INVALID", "批准有效期必须在固定计划范围内。")
             sources = tuple(dict.fromkeys((*request.sources, order.policy)))
             approval = Approval(

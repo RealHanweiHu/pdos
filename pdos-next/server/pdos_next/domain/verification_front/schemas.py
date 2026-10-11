@@ -28,9 +28,9 @@ class RequestCreatePayload(FrozenDTO):
 class ItemAssessment(FrozenDTO):
     item_id: Key
     status: Literal["applicable", "not_applicable", "unknown"]
-    conditions: tuple[Text, ...] = Field(default=(), max_length=50)
+    conditions: tuple[Text, ...] = Field(default=())
     reason: Text
-    sources: tuple[DefinitionReference, ...] = Field(default=(), max_length=20)
+    sources: tuple[DefinitionReference, ...] = Field(default=())
 
     @model_validator(mode="after")
     def positive_evidence(self) -> Self:
@@ -42,7 +42,7 @@ class ItemAssessment(FrozenDTO):
 class MethodPreparePayload(FrozenDTO):
     request_id: UUID
     expected_request_revision: Revision
-    assessments: tuple[ItemAssessment, ...] = Field(min_length=1, max_length=100)
+    assessments: tuple[ItemAssessment, ...] = Field(min_length=1)
     reason: Text
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 
@@ -58,7 +58,7 @@ class ResourceIntent(FrozenDTO):
     label: Text
     resource_id: UUID | None = None
     expected_revision: Revision | None = None
-    units: Decimal | None = Field(default=None, gt=0, le=1000, max_digits=24, decimal_places=12)
+    units: Decimal | None = Field(default=None, gt=0, max_digits=24, decimal_places=12)
 
     @model_validator(mode="after")
     def paired_identity(self) -> Self:
@@ -73,10 +73,10 @@ class ScheduleProposePayload(FrozenDTO):
     start: AwareDatetime
     finish: AwareDatetime
     original_timezone: Key
-    resource_intents: tuple[ResourceIntent, ...] = Field(default=(), max_length=100)
+    resource_intents: tuple[ResourceIntent, ...] = Field(default=())
     duration_basis: DefinitionReference | None = None
     calendar_source: DefinitionReference | None = None
-    sources: tuple[DefinitionReference, ...] = Field(default=(), max_length=20)
+    sources: tuple[DefinitionReference, ...] = Field(default=())
     reason: Text
 
     @field_validator("start", "finish")

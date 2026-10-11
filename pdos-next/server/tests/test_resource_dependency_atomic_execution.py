@@ -55,7 +55,9 @@ def test_actual_v2_atom_rollback_and_lost_response_recovery(
     value = launch_fixtures.command(work, "test.run.start")
     with actual_read_profile.section("actual_start_preview"):
         preview = work.quality.client.post(
-            "/v1/commands/preview", json=value, headers=work.quality.headers
+            f"/v1/categories/{work.setup.category}/commands/preview",
+            json=value,
+            headers=work.quality.headers,
         )
     assert preview.status_code == 200, preview.text
     prepared = preview.json()["command"]
@@ -68,10 +70,12 @@ def test_actual_v2_atom_rollback_and_lost_response_recovery(
         actual_read_profile.section("api_precommit_fault"),
     ):
         failed = work.quality.client.post(
-            "/v1/commands", json=deepcopy(prepared), headers=work.quality.headers
+            f"/v1/categories/{work.setup.category}/commands",
+            json=deepcopy(prepared),
+            headers=work.quality.headers,
         )
     assert failed.status_code == 409, failed.text
-    assert failed.json()["code"] == FAULT_CODE
+    assert failed.json()["detail"]["reason"] == FAULT_CODE
     assert fault == {"attached": True, "armed": True, "fired": True, "flushed_common_rows": 4}
     _unchanged(work, baseline)
 
@@ -93,9 +97,17 @@ def test_actual_v2_atom_rollback_and_lost_response_recovery(
         patch.setattr(work.quality.client, "post", lose_actual_committed_response)
         with pytest.raises(httpx.ReadError, match="after actual commit"):
             work.quality.client.post(
-                "/v1/commands", json=deepcopy(prepared), headers=work.quality.headers
+                f"/v1/categories/{work.setup.category}/commands",
+                json=deepcopy(prepared),
+                headers=work.quality.headers,
             )
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         committed = snapshot(session, work.setup.tenant)
         assert committed != baseline
         history = _proof(session, work)
@@ -115,10 +127,17 @@ def test_actual_v2_atom_rollback_and_lost_response_recovery(
         raw = {
             column.name: deepcopy(getattr(saved, column.name))
             for column in ResourceReservation.__table__.columns
+            if column.name != "audience_dependencies"
         }
         assert snapshot(session, work.setup.tenant) == committed
     add_unrelated_scope(work)
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         reread = _proof(session, work)
         assert reread["current"] is True, reread["reason_codes"]
         for key in ("facts_revision", "reservation", "occupancy", "sample_usage"):
@@ -126,11 +145,19 @@ def test_actual_v2_atom_rollback_and_lost_response_recovery(
         assert snapshot(session, work.setup.tenant) == committed
     with actual_read_profile.section("original_request_recovery"):
         recovered = actual_post(
-            "/v1/commands", json=deepcopy(prepared), headers=work.quality.headers
+            f"/v1/categories/{work.setup.category}/commands",
+            json=deepcopy(prepared),
+            headers=work.quality.headers,
         )
     assert recovered.status_code == 200, recovered.text
     assert recovered.json()["id"] == dropped["receipt_id"]
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         assert snapshot(session, work.setup.tenant) == committed
 
     malformed = {**raw, "id": uuid4(), "dependency_proof": {**proof, "material": {}}}
@@ -138,7 +165,13 @@ def test_actual_v2_atom_rollback_and_lost_response_recovery(
         with pytest.raises(DBAPIError) as error, session.begin_nested():
             session.execute(insert(ResourceReservation).values(**malformed))
         assert error.value.orig.diag.constraint_name == "test_resource_dependency_version_complete"
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         assert snapshot(session, work.setup.tenant) == committed
 
     report = os.environ.get("PDOS_ROOT_VERSIONED_ATOM_REPORT")

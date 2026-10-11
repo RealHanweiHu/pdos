@@ -104,6 +104,12 @@ class FixedRuns:
             raise DomainError("INTEGRITY_MISMATCH", "源事件不属于精确失败与判据。")
 
     def currentness(self, scope, failure):
+        direct = next(
+            (v for v in self.values if getattr(v, "failure", None) == failure and v.scope == scope),
+            None,
+        )
+        if direct is not None:
+            return Currentness(current=direct.current, reasons=direct.reasons)
         value = next(
             (
                 v

@@ -63,7 +63,8 @@ class ActualReviewApplicability:
     sources: tuple
     reads: tuple
     checked_at: datetime
-    valid_until: datetime
+    valid_until: datetime | None
+    time_constraints: tuple[datetime, ...] = ()
 
 
 def _checked_refs(s, ctx, pid, value):
@@ -226,7 +227,7 @@ class ActualNamedReviewOwner:
             "FACT_REVIEW_PAIR_NOT_PERFORMED",
             409,
         )
-        require(live.host_gate.valid_until is not None, "LIVE_PAIRED_EXPIRY_REQUIRED")
+        require(not live.host_gate.needs_review, "PAIR_PROFESSIONAL_STALE", 409)
         return raw, live
 
     def _mapping_pairs(self, candidate, pairs):
@@ -403,7 +404,13 @@ class ActualNamedReviewOwner:
                 409,
             )
         at = datetime.now(UTC)
-        require(actual.checked_at <= at < actual.valid_until, "SOURCE_STALE", 409)
+        require(
+            actual.checked_at <= at
+            and (actual.valid_until is None or at < actual.valid_until)
+            and all(at < value for value in actual.time_constraints),
+            "SOURCE_STALE",
+            409,
+        )
 
     def read(self, s, ctx, pid, payload, *, previous=None, new_write=True):
         require(type(payload) is commands.NamedReviewPayload, "FACT_TYPED_PAYLOAD_REQUIRED")
@@ -483,15 +490,16 @@ class ActualNamedReviewOwner:
                 policy.assess(s, ctx, pid, origin.scope.project_id, origin.purpose)
             )
             require(
-                policy_value.get("nature") == origin.nature and policy_value.get("valid_until"),
+                policy_value.get("nature") == origin.nature
+                and policy.policy_time_current(policy_value, datetime.now(UTC)),
                 "CURRENT_POLICY_OWNER_REQUIRED",
             )
             bounds = [
                 rule.valid_until,
                 participants.valid_until,
-                instant(authority["valid_until"]),
-                instant(policy_value["valid_until"]),
+                *participants.time_constraints,
                 *(v[1].host_gate.valid_until for v in pairs),
+                *(value for _, live in pairs for value in live.host_gate.time_constraints),
             ]
             sources = a.canonical_sources(
                 (
@@ -527,6 +535,7 @@ class ActualNamedReviewOwner:
             )
             if applicability:
                 bounds.append(applicability.valid_until)
+                bounds.extend(applicability.time_constraints)
             closure = read_source_closure(
                 s,
                 ctx,
@@ -634,7 +643,9 @@ class ActualNamedReviewOwner:
             )
             require(final.material_sha256 == closure.material_sha256, "SOURCE_STALE", 409)
             self._phase(s, ctx, captured, caller, stamp)
-            checked, deadline = _deadline(s, ctx, pid, (*bounds, final.valid_until))
+            checked, time_constraints = _deadline(
+                s, ctx, pid, (*bounds, final.valid_until, *final.time_constraints)
+            )
             require(payload.at.occurred_at <= checked, "FACT_TIME_INVALID", 409)
             body = {
                 "kind": "review",
@@ -665,7 +676,7 @@ class ActualNamedReviewOwner:
                 "reason": payload.reason,
                 "authority_snapshot": authority,
                 "policy_snapshot": policy_value,
-                "valid_until": deadline.isoformat(),
+                "valid_until": None,
             }
             value = FactWriteMaterial(
                 body_material=body,
@@ -687,9 +698,11 @@ class ActualNamedReviewOwner:
                     "effectiveness": "indeterminate",
                     "close": False,
                 },
-                valid_until=deadline,
+                time_constraints=time_constraints,
             )
             # Construction is pure; recheck its real deadline/UOW/runtime after it.
-            require(datetime.now(UTC) < value.valid_until, "SOURCE_STALE", 409)
+            from .fact_write import _time_current
+
+            require(_time_current(value, datetime.now(UTC)), "SOURCE_STALE", 409)
             self._phase(s, ctx, captured, caller, stamp)
             return value

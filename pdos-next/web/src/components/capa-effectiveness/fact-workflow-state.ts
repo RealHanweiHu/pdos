@@ -1,4 +1,5 @@
-import { eventTime, record, same, snapshot, validReads, uuid, positive } from "./ui-contract";
+import { record, same, snapshot, validReads, uuid, positive } from "./ui-contract";
+import { proofClockCurrent } from "@/lib/proof-clock";
 import { factCanPrepare, factIdentity, factSourceKey, observationOperation, reviewOperation, sameFactCommand, sameFactPayloadSemantics,
   tokenlessFactPayload, validFactCommand, validFactPayload, type FactCommand, type FactHost, type FactOperation,
   type FactPayload, type FactPrepared, type FactReceipt, type FactSource } from "./fact-workflow-contract";
@@ -75,9 +76,10 @@ function reviewedFactMatches(value: unknown, original: FactCommand): boolean {
       r.binding.body_material.issue_id === original.payload.issue_id && r.binding.body_material.capa_id === original.payload.capa_id;
 }
 export function factPrepared(value: unknown, original: FactCommand, now = Date.now()): FactPrepared | null {
+  const tier = original.operation === observationOperation ? "T1" : "T2";
   if (!record(value) || !validFactCommand(value.command) || !sameFactCommand(value.command, original) ||
-      eventTime(value.expires_at) === null || Date.parse(String(value.expires_at)) <= now || !record(value.review)) return null;
-  const tier = original.operation === observationOperation ? "T1" : "T2", token = tier === "T1" ? "confirmation_token" : "approval_token";
+      !proofClockCurrent(tier, value.expires_at, now) || !record(value.review)) return null;
+  const token = tier === "T1" ? "confirmation_token" : "approval_token";
   if ((tier === "T2" ? value.write_tier !== "T2" || value.named_decision !== true :
     Object.hasOwn(value, "write_tier") && value.write_tier !== "T1" || Object.hasOwn(value, "named_decision") && value.named_decision !== false) ||
     !Object.hasOwn(value.command.payload, token)) return null;
@@ -94,19 +96,19 @@ export function newFactCommand(host: FactHost, operation: FactOperation, payload
   const selectedSources: FactSource[] = [...payload.sources, payload.at.source];
   if (operation === observationOperation && "records" in payload) {
     if (!same(payload.previous, rule.previous) || !payload.target_keys.every(k => rule.target_keys.includes(k)) ||
-        !payload.records.every(r => host.records.some(choice => same(choice.record, r) && (host.binding.visibility === "private" || choice.visibility === "product")))) throw new Error("观察目标或原记录已变化，不能改写原值。");
+        !payload.records.every(r => host.records.some(choice => same(choice.record, r) && (host.binding.visibility === "private" || choice.visibility === "category")))) throw new Error("观察目标或原记录已变化，不能改写原值。");
     selectedSources.push(...payload.coverage_sources, ...payload.records.flatMap(r => r.sources));
   } else if (operation === reviewOperation && "candidate" in payload) {
     if (!same(payload.candidate, host.candidate) || !payload.observations.every(ref => host.observations.some(r => same(r, ref))) ||
         !payload.pair_applicability.every(p => host.pairs.some(choice => same(choice.mapping, p.mapping) && same(choice.method, p.method) && same(choice.criterion, p.criterion) &&
-          (host.binding.visibility === "private" || choice.visibility === "product"))) ||
+          (host.binding.visibility === "private" || choice.visibility === "category"))) ||
         !payload.action_fulfillment.every(a => host.actions.some(choice => choice.action_id === a.action_id &&
-          (host.binding.visibility === "private" || choice.visibility === "product")))) throw new Error("复核对象或真实配对已变化，请重新核对。");
+          (host.binding.visibility === "private" || choice.visibility === "category")))) throw new Error("复核对象或真实配对已变化，请重新核对。");
     selectedSources.push(...payload.pair_applicability.flatMap(p => [...p.sources, ...(p.method ? [p.method] : []), ...(p.criterion ? [p.criterion] : [])]),
       ...payload.action_fulfillment.flatMap(a => a.sources));
   } else throw new Error("操作与实际材料不匹配。");
   if (!selectedSources.every(s => host.sources.some(choice => same(choice.source, s) &&
-      (host.binding.visibility === "private" || choice.visibility === "product")))) throw new Error("原来源不在当前可读选择中，或不能扩大受众。");
+      (host.binding.visibility === "private" || choice.visibility === "category")))) throw new Error("原来源不在当前可读选择中，或不能扩大受众。");
   const reads = new Map(host.operations[operation].required_source_read_set.map(r => [r.artifact_id, r.expected_revision]));
   for (const s of selectedSources) {
     if (reads.has(s.id) && reads.get(s.id) !== s.revision) throw new Error("来源固定版本冲突，请重新读取。");

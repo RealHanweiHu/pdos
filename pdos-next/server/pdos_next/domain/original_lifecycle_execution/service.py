@@ -162,7 +162,7 @@ def validate(s, ctx, command, product, payload):
 
 def _new_write(command, product):
     if command.expected_revision != product.revision:
-        raise DomainError("VERSION_CONFLICT", "产品范围已变化，请重新预览。")
+        raise DomainError("VERSION_CONFLICT", "型号范围已变化，请重新预览。")
 
 
 def _candidate_current(service, ctx, payload):
@@ -172,8 +172,8 @@ def _candidate_current(service, ctx, payload):
     fence = service.store.lock_current(candidate.original.reference)
     references = service.references.read_under_fence(fence)
     now = service.clock.now()
-    if candidate.expires_at <= now or candidate.captured_at > now:
-        raise LifecycleFailure("PREVIEW_EXPIRED", "生命周期候选已过期。")
+    if candidate.captured_at > now:
+        raise LifecycleFailure("FACT_TIME_INVALID", "候选核对时点不能在未来。")
     if facts_digest(fence.original, references) != facts_digest(
         candidate.original, candidate.references
     ):
@@ -227,7 +227,7 @@ def preview_view(s, ctx, command, product, payload):
             original = candidate.original
             before = {
                 **candidate.as_dict(),
-                "product_id": str(original.scope.product_id),
+                "product_id": str(original.scope.product_id) if original.scope.product_id else None,
                 "owner_id": str(ctx.requester_id),
                 "registered": original.registered,
                 "manual_hold": original.manual_hold,

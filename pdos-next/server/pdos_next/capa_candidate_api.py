@@ -3,10 +3,11 @@
 from hashlib import sha256
 from uuid import UUID
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Query, Request
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 
+from pdos_next.capa_history import page_query, page_rows
 from pdos_next.database import tenant_session
 from pdos_next.domain.capa_effectiveness import (
     anchor_storage,
@@ -24,6 +25,7 @@ from pdos_next.domain.quality_execution import evidence
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
 from pdos_next.errors import DomainError
 from pdos_next.quality_followup_views import _links, owners
+from pdos_next.request_proof import scope_is_held
 from pdos_next.service import Context, digest, require_access, source_for
 
 
@@ -95,22 +97,24 @@ def _source_options(s, ctx, product_id, prepared):
     return sources
 
 
-def _history(s, ctx, product_id, issue_id):
+def _history(s, ctx, product_id, issue_id, cursor=None):
     candidates = []
-    rows = list(
+    rows, page = page_rows(
         s.scalars(
-            select(CapaVerificationEvidence)
-            .where(
-                CapaVerificationEvidence.tenant_id == ctx.tenant_id,
-                CapaVerificationEvidence.product_id == product_id,
-                CapaVerificationEvidence.issue_id == issue_id,
+            page_query(
+                select(CapaVerificationEvidence).where(
+                    CapaVerificationEvidence.tenant_id == ctx.tenant_id,
+                    CapaVerificationEvidence.product_id == product_id,
+                    CapaVerificationEvidence.issue_id == issue_id,
+                ),
+                CapaVerificationEvidence.created_at,
+                CapaVerificationEvidence.id,
+                "candidate",
+                cursor,
             )
-            .order_by(CapaVerificationEvidence.created_at.desc(), CapaVerificationEvidence.id)
-            .limit(101)
-        )
+        ),
+        "candidate",
     )
-    if len(rows) > 100:
-        raise DomainError("RECHECK_REQUIRED", "候选历史超过本次完整读取上限。", 409)
     owner = candidate_commands.semantic_owner()
     for row in rows:
         if row.visibility == "private" and row.owner_id != ctx.requester_id:
@@ -129,7 +133,7 @@ def _history(s, ctx, product_id, issue_id):
                 "receipt_id": saved.group["receipt"]["id"],
             }
         )
-    return candidates
+    return candidates, page
 
 
 def _final_scope(s, ctx, product_id, row, issue, project, current, origin, caller):
@@ -147,9 +151,11 @@ def _final_scope(s, ctx, product_id, row, issue, project, current, origin, calle
         raise DomainError("SOURCE_STALE", "展示读取后本人或产品授权水位已改变。", 409)
 
 
-def candidate_context(s, ctx, product_id, issue_id):
+def candidate_context(s, ctx, product_id, issue_id, history_cursor=None):
     with s.no_autoflush:
-        require_access(s, ctx, product_id, lock=True)
+        require_access(
+            s, ctx, product_id, lock=not getattr(s, "info", {}).get("read_snapshot", False)
+        )
         caller, _ = candidate_prepare._caller(s, ctx, product_id)
         row, issue, project, current, origin, payload = _selected(s, ctx, product_id, issue_id)
         prepared = None
@@ -186,7 +192,7 @@ def candidate_context(s, ctx, product_id, issue_id):
                 if link["source_status"] != "current"
                 for code in link["reason_codes"]
             )
-            candidates = _history(s, ctx, product_id, issue_id)
+            candidates, history_page = _history(s, ctx, product_id, issue_id, history_cursor)
             # Display/history IO is complete. Keep each real saved Link proof,
             # source closure, authority and caller bound through the last clock.
             for saved, proof in link_proofs:
@@ -201,17 +207,24 @@ def candidate_context(s, ctx, product_id, issue_id):
                     != proof
                 ):
                     raise DomainError("SOURCE_STALE", "展示期间整改回链实际输出证明已改变。", 409)
-            if (
-                candidate_prepare._authority(s, ctx, product_id, basis)
-                != prepared.authority_snapshot
-                or candidate_prepare._policy(s, ctx, product_id, basis) != prepared.policy_snapshot
-            ):
-                raise DomainError("SOURCE_STALE", "展示期间候选来源、专业或政策已改变。", 409)
-            if (
-                evidence.source_basis(s, ctx, product_id, prepared.required_source_read_set)[0]
-                != prepared.raw_source_basis
-            ):
-                raise DomainError("SOURCE_STALE", "全部展示读取后完整候选来源安全闭包已改变。", 409)
+            # The prepared proof holds the same actual source/professional and
+            # policy rows under RR. Its sealed UOW/runtime and real deadline
+            # guard below also runs after all display/history IO.
+            if not (getattr(s, "info", {}).get("read_snapshot") and scope_is_held(s, product_id)):
+                if (
+                    candidate_prepare._authority(s, ctx, product_id, basis)
+                    != prepared.authority_snapshot
+                    or candidate_prepare._policy(s, ctx, product_id, basis)
+                    != prepared.policy_snapshot
+                ):
+                    raise DomainError("SOURCE_STALE", "展示期间候选来源、专业或政策已改变。", 409)
+                if (
+                    evidence.source_basis(s, ctx, product_id, prepared.required_source_read_set)[0]
+                    != prepared.raw_source_basis
+                ):
+                    raise DomainError(
+                        "SOURCE_STALE", "全部展示读取后完整候选来源安全闭包已改变。", 409
+                    )
             _final_scope(s, ctx, product_id, row, issue, project, current, origin, caller)
             candidate_prepare.require_prepared_candidate_clock(
                 s, ctx, product_id, payload, prepared, candidate_prepare._clock()
@@ -224,7 +237,7 @@ def candidate_context(s, ctx, product_id, issue_id):
                 raise
             missing.append({"code": error.code, "detail": error.message})
             sources, links = [], []
-            candidates = _history(s, ctx, product_id, issue_id)
+            candidates, history_page = _history(s, ctx, product_id, issue_id, history_cursor)
             _final_scope(s, ctx, product_id, row, issue, project, current, origin, caller)
         finally:
             if prepared is not None:
@@ -256,12 +269,13 @@ def candidate_context(s, ctx, product_id, issue_id):
             "synthetic": authority.get("synthetic") is True,
         },
         "missing": missing,
-        "allowProductVisibility": row.visibility == "product",
+        "allowProductVisibility": row.visibility == "category",
     }
     host["accessEpoch"] = digest(jsonable_encoder(host))
     return {
         "host": host,
         "candidates": candidates,
+        "history_page": history_page,
         "missing_pair_options": "尚无当前办理入口可完整核对的新测试配对；可保存缺项候选。",
         "effectiveness_enabled": False,
         "close_enabled": False,
@@ -269,14 +283,26 @@ def candidate_context(s, ctx, product_id, issue_id):
 
 
 def register_routes(app: FastAPI, engine, auth_dependency):
-    @app.get("/v1/products/{product_id}/capa-candidates")
+    @app.get("/v1/categories/{category_id}/products/{product_id}/capa-candidates")
     def read_candidates(
-        product_id: UUID, request: Request, issue_id: UUID, ctx: Context = auth_dependency
+        product_id: UUID,
+        request: Request,
+        issue_id: UUID,
+        history_cursor: str | None = Query(default=None, max_length=256),
+        ctx: Context = auth_dependency,
     ):
         if any(
-            name != "issue_id" or len(request.query_params.getlist(name)) != 1
+            name not in {"issue_id", "history_cursor"}
+            or len(request.query_params.getlist(name)) != 1
             for name in request.query_params
         ):
             raise DomainError("INVALID_REQUEST", "请选择一个明确的当前问题。", 400)
-        with tenant_session(engine, ctx.tenant_id) as s:
-            return jsonable_encoder(candidate_context(s, ctx, product_id, issue_id))
+        with tenant_session(
+            engine,
+            ctx.tenant_id,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=ctx.category_id,
+            read_snapshot=True,
+        ) as s:
+            return jsonable_encoder(candidate_context(s, ctx, product_id, issue_id, history_cursor))

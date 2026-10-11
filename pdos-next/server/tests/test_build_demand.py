@@ -27,6 +27,7 @@ from pdos_next.domain.builds.demand import DatabaseBuildDemandPort, load_bound_d
 from pdos_next.domain.builds.models import BuildReadiness
 from pdos_next.domain.supply_cost.rules import basis_binding
 from pdos_next.engines.supply_cost.common import digest
+from pdos_next.error_catalog import REASONS
 from pdos_next.errors import DomainError
 from pdos_next.models import Artifact, Grant, OriginalSecurity, Receipt, UploadedOriginal, now
 from pdos_next.schemas.supply_cost.dto import Scope
@@ -48,7 +49,13 @@ def compute(setup, config):
         command["source_read_set"] = config["reads"]
     response = post(setup, command)
     assert response.status_code == 200, response.text
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         saved = session.get(BuildReadiness, UUID(response.json()["subject_id"]))
         result = deepcopy(saved.result)
         persisted_at = saved.created_at
@@ -59,6 +66,7 @@ def compute(setup, config):
         "result": result,
         "persisted_at": persisted_at,
         "scope": Scope(
+            category_id=str(setup.category),
             tenant_id=str(setup.tenant),
             product_id=str(setup.product),
             project_id=config["project"],
@@ -73,8 +81,15 @@ def demand_work(setup, configuration):  # noqa: F811 - imported fixture
 
 
 def load(setup, work, *, scope=None, as_of=None, context=None):
-    with tenant_session(setup.engine, setup.tenant) as session:
-        return DatabaseBuildDemandPort(context or setup.ctx).load(
+    context = context or setup.ctx
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=context.actor_id,
+        requester_id=context.requester_id,
+        category_id=setup.category,
+    ) as session:
+        return DatabaseBuildDemandPort(context).load(
             session, scope or work["scope"], work["build_id"], 1, as_of or now()
         )
 
@@ -112,7 +127,13 @@ def test_bundle_identity_stays_fixed_when_only_calculation_time_moves(setup, dem
 
 
 def test_port_participates_in_the_callers_transaction_and_has_no_receipt_write(setup, demand_work):
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         before = session.scalar(select(func.count()).select_from(Receipt))
         transaction = session.get_transaction()
         result = load_bound_demand(
@@ -126,13 +147,14 @@ def test_port_participates_in_the_callers_transaction_and_has_no_receipt_write(s
         DatabaseBuildDemandPort(setup.ctx).load(
             session, demand_work["scope"], demand_work["build_id"], 1, now()
         )
-    assert refused.value.code == "INTEGRATION_REQUIRED"
+    assert refused.value.reason == "INTEGRATION_REQUIRED"
+    assert refused.value.code == REASONS["INTEGRATION_REQUIRED"]
 
 
 @pytest.mark.parametrize("field", ["tenant_id", "product_id", "project_id", "audience"])
 def test_server_scope_cannot_be_widened_or_substituted(setup, demand_work, field):
     changed = demand_work["scope"].model_copy(
-        update={field: f"product:{setup.product}" if field == "audience" else str(uuid4())}
+        update={field: f"category:{setup.category}" if field == "audience" else str(uuid4())}
     )
     with pytest.raises(DomainError) as refused:
         load(setup, demand_work, scope=changed)
@@ -145,13 +167,13 @@ def test_current_source_version_withdrawal_and_acl_are_not_snapshot_authority(
 ):
     context = setup.ctx
     if change == "peer":
-        context = Context(setup.tenant, setup.peer, setup.peer)
+        context = Context(setup.tenant, setup.peer, setup.peer, category_id=setup.category)
     else:
         with Session(setup.admin) as session, session.begin():
             if change == "grant":
                 session.execute(
                     update(Grant)
-                    .where(Grant.product_id == setup.product, Grant.principal_id == setup.human)
+                    .where(Grant.category_id == setup.category, Grant.principal_id == setup.human)
                     .values(expires_at=now() - timedelta(seconds=1))
                 )
             else:
@@ -170,29 +192,45 @@ def test_current_source_version_withdrawal_and_acl_are_not_snapshot_authority(
 def test_readiness_is_not_available_before_it_was_persisted(setup, demand_work):
     with pytest.raises(DomainError) as refused:
         load(setup, demand_work, as_of=demand_work["persisted_at"] - timedelta(microseconds=1))
-    assert refused.value.code == "DEMAND_SNAPSHOT_INCOMPLETE"
+    assert refused.value.reason == "DEMAND_SNAPSHOT_INCOMPLETE"
+    assert refused.value.code == REASONS["DEMAND_SNAPSHOT_INCOMPLETE"]
     with pytest.raises(DomainError) as refused:
         load(setup, demand_work, as_of=now() + timedelta(hours=1))
-    assert refused.value.code == "INVALID_EVENT_TIME"
+    assert refused.value.reason == "INVALID_EVENT_TIME"
+    assert refused.value.code == REASONS["INVALID_EVENT_TIME"]
 
 
 def test_missing_readiness_does_not_return_empty_success(setup, configuration):  # noqa: F811
     receipt, _ = accepted(setup, build_command(setup, configuration))
     scope = Scope(
+        category_id=str(setup.category),
         tenant_id=str(setup.tenant),
         product_id=str(setup.product),
         project_id=configuration["project"],
         audience=f"private:{setup.human}",
     )
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         with pytest.raises(DomainError) as refused:
             DatabaseBuildDemandPort(setup.ctx).load(session, scope, receipt["subject_id"], 1, now())
-    assert refused.value.code == "PORT_UNCONNECTED"
+    assert refused.value.reason == "PORT_UNCONNECTED"
+    assert refused.value.code == REASONS["PORT_UNCONNECTED"]
 
 
 @pytest.mark.parametrize("revision", [2, 0, True])
 def test_fixed_build_revision_is_exact(setup, demand_work, revision):
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         with pytest.raises(DomainError) as refused:
             DatabaseBuildDemandPort(setup.ctx).load(
                 session, demand_work["scope"], demand_work["build_id"], revision, now()
@@ -202,7 +240,13 @@ def test_fixed_build_revision_is_exact(setup, demand_work, revision):
 
 @pytest.mark.parametrize("changed", ["coverage", "demands", "hash", "manufacturing", "basis"])
 def test_incomplete_saved_bundle_never_rebuilds_demand_from_live_bom(setup, demand_work, changed):
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = session.get(BuildReadiness, UUID(demand_work["readiness_id"]))
         original = row.result
         broken = deepcopy(original)
@@ -221,7 +265,8 @@ def test_incomplete_saved_bundle_never_rebuilds_demand_from_live_bom(setup, dema
                     DatabaseBuildDemandPort(setup.ctx).load(
                         session, demand_work["scope"], demand_work["build_id"], 1, now()
                     )
-                assert refused.value.code == "DEMAND_SNAPSHOT_INCOMPLETE"
+                assert refused.value.reason == "DEMAND_SNAPSHOT_INCOMPLETE"
+                assert refused.value.code == REASONS["DEMAND_SNAPSHOT_INCOMPLETE"]
             finally:
                 row.result = original
 
@@ -232,7 +277,8 @@ def test_source_content_hash_uses_the_existing_source_algorithm(setup, demand_wo
     monkeypatch.setattr("pdos_next.service.digest", lambda value: "0" * 64)
     with pytest.raises(DomainError) as refused:
         load(setup, demand_work)
-    assert refused.value.code == "INTEGRITY_MISMATCH"
+    assert refused.value.reason == "INTEGRITY_MISMATCH"
+    assert refused.value.code == REASONS["INTEGRITY_MISMATCH"]
 
 
 @pytest.fixture
@@ -245,6 +291,7 @@ def original_work(setup, configuration, request, secured_runtime):  # noqa: F811
             UploadedOriginal(
                 id=original_id,
                 tenant_id=setup.tenant,
+                category_id=setup.category,
                 product_id=setup.product,
                 owner_id=setup.peer if condition == "private_peer" else setup.human,
                 title="Synthetic stored original",
@@ -264,6 +311,7 @@ def original_work(setup, configuration, request, secured_runtime):  # noqa: F811
         session.add(
             OriginalSecurity(
                 tenant_id=setup.tenant,
+                category_id=setup.category,
                 product_id=setup.product,
                 original_id=original_id,
                 epoch=1,
@@ -275,6 +323,7 @@ def original_work(setup, configuration, request, secured_runtime):  # noqa: F811
             Artifact(
                 id=artifact_id,
                 tenant_id=setup.tenant,
+                category_id=setup.category,
                 product_id=setup.product,
                 owner_id=setup.human,
                 title="Synthetic original-derived text",
@@ -292,7 +341,10 @@ def original_work(setup, configuration, request, secured_runtime):  # noqa: F811
             setup.engine,
             {
                 "tenant_id": str(setup.tenant),
+                "category_id": str(setup.category),
                 "product_id": str(setup.product),
+                "actor_id": str(setup.human),
+                "requester_id": str(setup.human),
                 "subject_id": str(original_id),
             },
         )
@@ -349,6 +401,7 @@ def original_work(setup, configuration, request, secured_runtime):  # noqa: F811
         "artifact_id": str(artifact_id),
         "object_hash": object_hash,
         "scope": Scope(
+            category_id=str(setup.category),
             tenant_id=str(setup.tenant),
             product_id=str(setup.product),
             project_id=config["project"],
@@ -367,7 +420,13 @@ def test_actual_original_ref_is_complete_without_exposing_object_key_or_claiming
     assert original.version == "2" and original.sha256 == original_work["object_hash"]
     assert refs[f"artifact:{original_work['artifact_id']}"].sha256 == source_digest(TEXT)
     assert "storage_key" not in bound.model_dump_json()
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = session.get(UploadedOriginal, UUID(original_work["original_id"]))
         assert row.scan_status == "clean"  # explicit synthetic fixture receipt
         assert "scan_status" not in bound.model_dump_json()

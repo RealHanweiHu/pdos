@@ -41,7 +41,7 @@ def caller(setup, identity, token):
         **{
             **vars(setup),
             "human": identity,
-            "ctx": Context(setup.tenant, identity, identity),
+            "ctx": Context(setup.tenant, identity, identity, category_id=setup.category),
             "headers": {"Authorization": f"Bearer {token}"},
         }
     )
@@ -56,7 +56,7 @@ def artifact(setup, content, title="Synthetic event"):
             {
                 "title": title,
                 "source_label": "Synthetic fixture only",
-                "visibility": "product",
+                "visibility": "category",
                 "content": content,
             },
         ),
@@ -129,7 +129,7 @@ def readiness(work, sample, *, state="ready", previous=None, caller_setup=None):
         ),
     )
     response = setup.client.get(
-        f"/v1/products/{setup.product}/sample-handoff",
+        f"/v1/categories/{setup.category}/products/{setup.product}/sample-handoff",
         headers=setup.headers,
         params={"purpose": work.scope.purpose, "build_id": work.build_id},
     )
@@ -181,7 +181,7 @@ def handoff_work(ready_work):
         session.add(
             Grant(
                 tenant_id=setup.tenant,
-                product_id=setup.product,
+                category_id=setup.category,
                 principal_id=quality_id,
                 can_write=True,
                 expires_at=now() + timedelta(minutes=53),
@@ -332,7 +332,7 @@ def handoff_work(ready_work):
 def listing(work, setup=None):
     setup = setup or work.quality
     response = setup.client.get(
-        f"/v1/products/{setup.product}/verification-handoff", headers=setup.headers
+        f"/v1/categories/{setup.category}/products/{setup.product}/verification-handoff", headers=setup.headers
     )
     assert response.status_code == 200, response.text
     return response.json()

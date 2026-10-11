@@ -60,9 +60,11 @@ EXTRA_READ_MODELS = (
 
 
 @pytest.fixture
-def native_resource_case(operational_work, tmp_path):
+def native_resource_case(operational_work, tmp_path, request):
     work = operational_work
     setup = work.setup
+    profile = getattr(request, "param", "bounded")
+    assert profile in {"bounded", "no_deadline"}
     verify_test_target(setup.engine)
     # Configure a real private store. The native branch reads persisted text;
     # uploaded bytes, if ever introduced, still use the actual store/safety owner.
@@ -77,7 +79,9 @@ def native_resource_case(operational_work, tmp_path):
         data["materials"] = []
         data["materials_scope_complete"] = False
         data["valid_from"] = (work.at - timedelta(minutes=10)).isoformat()
-        data["valid_until"] = (work.at + timedelta(minutes=30)).isoformat()
+        data["valid_until"] = (
+            None if profile == "no_deadline" else (work.at + timedelta(minutes=30)).isoformat()
+        )
         data["sources"] = [reference]
         for resource in data["resources"]:
             resource["facts"] = []
@@ -88,12 +92,14 @@ def native_resource_case(operational_work, tmp_path):
         payload = FactInput.model_validate(data)
         assert payload.scope == work.scope
         assert payload.valid_from <= work.scope.window.start
-        assert payload.valid_until >= work.scope.window.finish
+        assert payload.valid_until is None or payload.valid_until >= work.scope.window.finish
         assert not payload.materials and payload.materials_scope_complete is False
         assert all(not value.facts for value in payload.resources)
         work.payload = payload
         receipt = imported(work)
-        with tenant_session(setup.engine, setup.tenant) as session:
+        with tenant_session(
+            setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+        ) as session:
             build, _, process, _reads, scope, execution = configurations_for(work, session)
             request = ResourceRequest(
                 scope=scope,
@@ -128,18 +134,20 @@ def configurations_for(work, session):
 def read_effect_hashes(work):
     """Reuse original effect hash contract, adding all resource/Source/access read rows."""
     result = effect_hashes(work)
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         for model in EXTRA_READ_MODELS:
             result[model.__tablename__] = digest(
                 sorted(
                     [
-                        {
-                            column.name: getattr(row, column.name)
-                            for column in model.__table__.columns
-                        }
-                        for row in session.scalars(
-                            select(model).where(model.tenant_id == work.setup.tenant)
-                        )
+                        dict(row)
+                        for row in session.execute(
+                            select(model.__table__).where(model.tenant_id == work.setup.tenant)
+                        ).mappings()
                     ],
                     key=lambda row: str(row["id"]),
                 )

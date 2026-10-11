@@ -31,7 +31,7 @@ class SourceSnapshot(DTO):
     revision: int
     active: bool
     readable: bool
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     allowed_scope_ids: tuple[UUID, ...]
     allowed_product_ids: tuple[UUID, ...] = ()
     content: str

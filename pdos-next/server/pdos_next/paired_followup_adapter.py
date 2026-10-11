@@ -116,6 +116,10 @@ def _handle_sha(value):
                 "valid_until": value.host_gate.valid_until.isoformat()
                 if value.host_gate.valid_until
                 else None,
+                "time_constraints": [
+                    bound.isoformat() for bound in value.host_gate.time_constraints
+                ],
+                "needs_review": value.host_gate.needs_review,
             },
         }
     )
@@ -339,6 +343,8 @@ class PairedFollowupOwner:
                 check.proof.material_sha256,
                 tuple(sorted((v.kind, v.basis_sha256) for v in gate.stamps)),
                 gate.valid_until,
+                gate.time_constraints,
+                gate.needs_review,
                 digest(snapshot),
                 digest(source_basis),
             )
@@ -357,7 +363,9 @@ class PairedFollowupOwner:
         paired_storage._guard_uow(s, uow, ctx, caller)
         checked = _now()
         _require(
-            gate.valid_until is not None and gate.checked_at <= checked < gate.valid_until,
+            gate.checked_at <= checked
+            and (gate.valid_until is None or checked < gate.valid_until)
+            and all(checked < value for value in gate.time_constraints),
             "PAIR_LIVE_PROOF_EXPIRED",
         )
 
@@ -436,7 +444,8 @@ class PairedFollowupOwner:
         _require(item is not None and item[0]() is previous, "PAIR_HANDLE_UNBOUND", 503)
         saved = item[1]
         _require(
-            previous.host_gate.valid_until is not None and _now() < previous.host_gate.valid_until,
+            (previous.host_gate.valid_until is None or _now() < previous.host_gate.valid_until)
+            and all(_now() < value for value in previous.host_gate.time_constraints),
             "PAIR_LIVE_PROOF_EXPIRED",
         )
         basis, selected, uow, caller, runtime = self._input(
@@ -460,7 +469,9 @@ class PairedFollowupOwner:
             and fresh.structure == previous.structure
             and tuple(sorted((v.kind, v.basis_sha256) for v in fresh.host_gate.stamps))
             == tuple(sorted((v.kind, v.basis_sha256) for v in previous.host_gate.stamps))
-            and fresh.host_gate.valid_until == previous.host_gate.valid_until,
+            and fresh.host_gate.valid_until == previous.host_gate.valid_until
+            and fresh.host_gate.time_constraints == previous.host_gate.time_constraints
+            and fresh.host_gate.needs_review == previous.host_gate.needs_review,
         )
         self._finish(s, ctx, product_id, fresh.host_gate, uow, caller, runtime, write=write)
         return fresh

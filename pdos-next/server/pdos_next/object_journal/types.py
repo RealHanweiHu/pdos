@@ -15,14 +15,24 @@ ByteStatus = Literal["intact", "missing", "corrupt", "unavailable"]
 @dataclass(frozen=True, slots=True)
 class JournalScope:
     tenant_id: UUID
-    product_id: UUID
+    product_id: UUID | None
+    category_id: UUID | None = None
 
     def __post_init__(self):
-        if not isinstance(self.tenant_id, UUID) or not isinstance(self.product_id, UUID):
+        if (
+            not isinstance(self.tenant_id, UUID)
+            or (self.product_id is not None and not isinstance(self.product_id, UUID))
+            or (self.category_id is not None and not isinstance(self.category_id, UUID))
+            or (self.product_id is None and self.category_id is None)
+        ):
             raise ValueError("Journal scope requires server-bound UUIDs")
 
     def to_dict(self):
-        return {"tenant_id": str(self.tenant_id), "product_id": str(self.product_id)}
+        return {
+            "tenant_id": str(self.tenant_id),
+            "product_id": str(self.product_id) if self.product_id else None,
+            "category_id": str(self.category_id) if self.category_id else None,
+        }
 
 
 @dataclass(frozen=True, slots=True)

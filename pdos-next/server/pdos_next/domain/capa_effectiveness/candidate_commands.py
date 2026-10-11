@@ -34,11 +34,11 @@ class CandidateRecordPayload(DTO):
     issue_id: UUID
     expected_issue_revision: Revision
     capa_id: UUID
-    remediation_link_refs: tuple[FixedRef, ...] = Field(default=(), max_length=20)
-    mappings: tuple[FailurePairMapping, ...] = Field(default=(), max_length=10000)
-    sources: tuple[DefinitionReference, ...] = Field(default=(), max_length=20)
+    remediation_link_refs: tuple[FixedRef, ...] = Field(default=())
+    mappings: tuple[FailurePairMapping, ...] = Field(default=())
+    sources: tuple[DefinitionReference, ...] = Field(default=())
     reason: Text
-    visibility: Literal["private", "product"] = "private"
+    visibility: Literal["private", "category", "audience"] = "private"
     confirmation_token: Token | None = None
 
     @model_validator(mode="after")

@@ -4,6 +4,10 @@ No payload anchor, current qualification grant, consumption, flush, commit or
 public registration. Fresh original bytes are always read by the actual owner.
 """
 
+from pdos_next.clock import earliest_deadline
+from pdos_next.database import category_for_product
+
+
 # Initialize actual registry before importing domain children.
 # ruff: noqa: I001
 from copy import deepcopy
@@ -15,12 +19,12 @@ from weakref import WeakKeyDictionary, ref
 
 from pdos_next.service import Context, digest, material_digest
 
-from . import anchor  
-from . import anchor_owner  
-from . import anchor_storage  
-from . import candidate_commands as commands  
-from . import fact_atom_storage as guards  
-from . import fact_consumption as consumption  
+from . import anchor
+from . import anchor_owner
+from . import anchor_storage
+from . import candidate_commands as commands
+from . import fact_atom_storage as guards
+from . import fact_consumption as consumption
 from pdos_next.contracts import Command
 from pdos_next.domain.capa_verification import service as followup
 from pdos_next.domain.capa_verification.schemas import CandidateBinding, CandidateInspect
@@ -141,7 +145,7 @@ def _caller(s, ctx, command):
         s,
         Grant,
         Grant.tenant_id == ctx.tenant_id,
-        Grant.product_id == command.product_id,
+        Grant.category_id == category_for_product(command.product_id),
         Grant.principal_id == ctx.actor_id,
     )
     _require(
@@ -376,7 +380,9 @@ class CandidateAnchorRestoreHost:
             created, expires = _deadline(proof.created_at), _deadline(proof.expires_at)
             _require(created >= saved.origin.created_at, "CANDIDATE_PROOF_CLOCK_REQUIRED")
             _require(
-                created <= _clock() < min(expires, before_until), "CANDIDATE_PROOF_EXPIRED", 409
+                created <= _clock() < expires and (before_until is None or _clock() < before_until),
+                "CANDIDATE_PROOF_EXPIRED",
+                409,
             )
             # Fresh anchor is never an argument/client DTO. Real owner re-reads
             # exact original bytes, saved Start/consumption and source closure.
@@ -455,7 +461,7 @@ class CandidateAnchorRestoreHost:
             self._phase(s, ctx, uow, caller, stamp)
             checked_at = _clock()  # Last real clock, after final Grant SQL.
             _require(
-                created <= checked_at < min(expires, before_until, after_until),
+                created <= checked_at < earliest_deadline(expires, before_until, after_until),
                 "CANDIDATE_PROOF_EXPIRED",
                 409,
             )
@@ -474,7 +480,7 @@ class CandidateAnchorRestoreHost:
                 uow,
                 stamp,
                 checked_at,
-                min(expires, after_until),
+                earliest_deadline(expires, after_until),
             )
 
     def restore(self, s, ctx, command, payload, proof):

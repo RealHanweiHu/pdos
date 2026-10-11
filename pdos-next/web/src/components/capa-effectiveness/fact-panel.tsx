@@ -129,13 +129,26 @@ function ScopedFactPanel({ product, principalId, issueId, api, onSaved, onPendin
             void read().catch(() => {});
           }}>
           <option value="">请明确选择候选，不默认采用历史记录</option>
-          {host.candidate_options?.map(c => <option key={c.ref.id} value={c.ref.id}>{c.label} · 固定配对 {c.mapping_count} 项 · {c.visibility === "private" ? "私人范围" : "产品共享"}</option>)}
+          {host.candidate_options?.map(c => <option key={c.ref.id} value={c.ref.id}>{c.label} · 固定配对 {c.mapping_count} 项 · {c.visibility === "private" ? "私人范围" : "品类共享"}</option>)}
         </select>
         <span className="subtle">候选切换会废弃尚未发送的填写与预览。原请求未完成或回执未知时，只能恢复原请求。</span>
       </label>}
     </div>
     {host && <FactWorkflow host={host} inputs={command => send(`v1/products/${product.id}/capa-facts/inputs`, command)}
       preview={command => send("v1/commands/preview", command)} execute={command => send("v1/commands", command)}
+      readHistory={async cursor => {
+        const ticket = sequence.current;
+        try {
+          const value = await api<FactHost>(`v1/products/${product.id}/capa-facts?issue_id=${encodeURIComponent(issueId)}&history_cursor=${encodeURIComponent(cursor)}`);
+          if (!alive.current || ticket !== sequence.current) throw new Error("历史读取已结束");
+          if (!validFactHost(value) || value.binding.scope.product_id !== product.id || value.binding.caller_id !== principalId || value.binding.issue_id !== issueId)
+            throw Object.assign(new Error("历史范围不能核对"), { status: 403 });
+          return value;
+        } catch (failure) {
+          if (alive.current && ticket === sequence.current && failure && typeof failure === "object" && "status" in failure && [401, 403].includes(Number(failure.status))) clearPrivate();
+          throw failure;
+        }
+      }}
       readReview={(review, command) => readFactBusinessReview(host, review, command)} onSaved={afterSaved} onRefresh={read}
       onPendingChange={pendingChanged} blocked={blocked || loading || readFailed}
       hostAccessRejected={rejected} onAccessRejected={clearPrivate}/>} 

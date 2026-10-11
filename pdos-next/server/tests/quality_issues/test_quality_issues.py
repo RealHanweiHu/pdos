@@ -7,12 +7,13 @@ from pydantic import ValidationError
 
 from pdos_next.domain.quality_issues.handlers import QualityIssueHandler
 from pdos_next.domain.quality_issues.ports import Ports, VerifiedRun
-from pdos_next.domain.quality_issues.rules import failure_ref, replace
+from pdos_next.domain.quality_issues.rules import failure_ref, issue_sources, replace
 from pdos_next.domain.verification.rules import compute_results
 from pdos_next.errors import DomainError
 from pdos_next.schemas.quality_issues.contracts import (
     CapaAction,
     CapaDraft,
+    ContainmentRecord,
     EffectivenessDecide,
     EffectivenessRequirement,
     Hypothesis,
@@ -38,7 +39,101 @@ def decide():
 def assert_domain(code, fn):
     with pytest.raises(DomainError) as error:
         fn()
-    assert error.value.code == code
+    assert error.value.reason == code
+
+
+def _repeated_source_issue(h, **changes):
+    iid = h.create().subject_id
+    shared = source("repeated-judgment")
+    other = replace(shared, **changes)
+    action = h.action("repeated-judgment-action")
+    action = replace(
+        action,
+        evidence=(shared, other, shared),
+        at=replace(action.at, source=shared),
+    )
+    issue = replace(h.issue(iid), status="actioning", containment=(action,))
+    h.commands.issues[iid] = issue
+    return issue, shared, other
+
+
+@pytest.mark.parametrize("field", ["kind", "id", "revision", "position"])
+def test_normal_action_distinct_sources_preserve_identity_and_recheck_every_call(
+    monkeypatch, field
+):
+    h = Harness()
+    changes = {
+        "kind": "domain",
+        "id": uid("other-judgment"),
+        "revision": 2,
+        "position": "synthetic: sheet 1 / B2",
+    }
+    issue, shared, other = _repeated_source_issue(h, **{field: changes[field]})
+    assert issue_sources(issue) == (shared, other, shared, shared)
+    assert issue_sources(issue, distinct=True) == (shared, other)
+    actual = h.evidence.currentness
+    calls = []
+
+    def observed(bound_scope, ref, purpose):
+        assert bound_scope == issue.scope and purpose == "quality.issue"
+        calls.append(ref)
+        return actual(bound_scope, ref, purpose)
+
+    monkeypatch.setattr(h.evidence, "currentness", observed)
+    assessments = h.handler._current(h.commands.authority, issue)
+    assert all(assessment.current for assessment in assessments)
+    assert len(assessments) == len(issue.failures) + 2
+    assert calls == [shared, other]
+
+    # Each later invocation still asks the actual port; an earlier positive
+    # assessment cannot conceal a changed ACL or withdrawn distinct reference.
+    action = ContainmentRecord(action=h.action("next-judgment-action"))
+    h.evidence.denied.add(other)
+    with pytest.raises(Rejection, match="source revoked/ACL denied"):
+        h.call("quality.issue.containment.record", issue.id, issue.revision, action)
+    assert calls == [shared, other] * 2
+    assert h.issue(issue.id) == issue
+    h.evidence.denied.clear()
+    h.evidence.stale[other] = ("Distinct judgment source withdrawn",)
+    assert_domain(
+        "RECHECK_REQUIRED",
+        lambda: h.call("quality.issue.containment.record", issue.id, issue.revision, action),
+    )
+    assert calls == [shared, other] * 3
+    assert h.issue(issue.id) == issue
+
+
+def test_raw_recheck_and_reader_preserve_repeated_source_reason_sequence(monkeypatch):
+    from pdos_next.domain.quality_issues.read_models import QualityIssueReader
+
+    h = Harness()
+    issue, shared, other = _repeated_source_issue(h)
+    assert other == shared and issue_sources(issue) == (shared,) * 4
+    assert issue_sources(issue, distinct=True) == (shared,)
+    reason = "Repeated judgment source withdrawn"
+    h.evidence.stale[shared] = (reason,)
+    actual = h.evidence.currentness
+    calls = []
+
+    def observed(bound_scope, ref, purpose):
+        calls.append(ref)
+        return actual(bound_scope, ref, purpose)
+
+    monkeypatch.setattr(h.evidence, "currentness", observed)
+    assessments = h.handler._current(h.commands.authority, issue, allow_stale=True)
+    assert tuple(reason for value in assessments for reason in value.reasons) == (reason,) * 4
+    assert calls == [shared] * 4
+    reading = QualityIssueReader(h.handler.ports).get(issue.id)
+    assert reading.issue == issue and not reading.current
+    assert reading.recheck_reasons == (reason,) * 4
+    assert calls == [shared] * 8
+    h.call(
+        "quality.issue.recheck", issue.id, issue.revision, IssueRecheck(reason="Synthetic recheck")
+    )
+    saved = h.issue(issue.id)
+    assert saved.needs_recheck and saved.recheck_reasons == (reason,) * 4
+    assert saved.containment == issue.containment and saved.history[:-1] == issue.history
+    assert calls == [shared] * 16
 
 
 def test_synthetic_result_is_strict_verified_failure():

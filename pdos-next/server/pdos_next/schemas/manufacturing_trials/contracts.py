@@ -152,7 +152,7 @@ class ToolTrialCreate(DTO):
     tooling: Ref
     trial_round: Count
     purpose: Text
-    cavities: tuple[Key, ...] = Field(min_length=1, max_length=1000)
+    cavities: tuple[Key, ...] = Field(min_length=1)
     material_lots: tuple[Ref, ...] = ()
     parameters: tuple[Parameter, ...] = ()
     issues: tuple[Ref, ...] = ()
@@ -270,8 +270,8 @@ class ResultRecord(DTO):
     correction_reason: Text | None = None
     scope: YieldScope
     counts: Counts | None = None
-    units: tuple[UnitOutcome, ...] = Field(default=(), max_length=10000)
-    exceptions: tuple[ExceptionFact, ...] = Field(default=(), max_length=1000)
+    units: tuple[UnitOutcome, ...] = Field(default=())
+    exceptions: tuple[ExceptionFact, ...] = Field(default=())
     observed: EventTime
     source: SourceRef
 

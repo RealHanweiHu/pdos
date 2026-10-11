@@ -280,25 +280,30 @@ def test_v2_retains_current_owner_source_and_uow_guards(versioned, change, monke
     assert result["current"] is False and result["reason_codes"], result
 
 
-def test_v2_original_signer_deadline_expiry_during_last_maker_io_is_not_old_window(
-    work, monkeypatch
-):
+def test_v2_original_signer_member_deadline_is_independent_of_current_reader(work, monkeypatch):
     different_signer_and_maker(work)
     prepare_v2(work, monkeypatch)
+    validate = retained._versioned_revision
+    rounds = []
 
-    def delay(person_id, read_count):
-        if person_id == uid(90) and read_count == 2:
+    def expire_old_member(*args):
+        value = validate(*args)
+        rounds.append(value)
+        if len(rounds) == 2:
             work.clock.at = work.grants[uid(80)].expires_at
+        return value
 
-    work.query_hooks.append(delay)
-    denied(work, "FORBIDDEN_SCOPE")
+    monkeypatch.setattr(retained, "_versioned_revision", expire_old_member)
+    assert inspect(work)["current"] is True
     assert work.clock.at < work.grants[uid(6)].expires_at
 
 
-def test_v2_maker_deadline_checked_after_final_pure_integrity_validation(work, monkeypatch):
+def test_v2_current_reader_deadline_checked_after_final_pure_integrity_validation(
+    work, monkeypatch
+):
     different_signer_and_maker(work)
     work.grants[uid(80)].expires_at = work.clock.at + timedelta(hours=3)
-    work.grants[uid(90)].expires_at = work.clock.at + timedelta(seconds=1)
+    work.grants[uid(6)].expires_at = work.clock.at + timedelta(seconds=1)
     prepare_v2(work, monkeypatch)
     validate = retained._versioned_revision
     rounds = []
@@ -307,7 +312,7 @@ def test_v2_maker_deadline_checked_after_final_pure_integrity_validation(work, m
         value = validate(*args)
         rounds.append(value)
         if len(rounds) == 2:
-            work.clock.at = work.grants[uid(90)].expires_at
+            work.clock.at = work.grants[uid(6)].expires_at
         return value
 
     monkeypatch.setattr(retained, "_versioned_revision", delay)

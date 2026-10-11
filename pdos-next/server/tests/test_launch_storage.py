@@ -52,7 +52,13 @@ from pdos_next.service import digest, execute
 
 def storage_snapshot(work):
     """Counts plus mutable pointers, gates and token state must all roll back."""
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         tables = (
             FormalVerificationRequest,
             FormalVerificationCurrent,
@@ -120,7 +126,13 @@ def assert_rollback(work, baseline, prepared=None):
     assert storage_snapshot(work) == baseline
     if prepared is not None:
         token = prepared["payload"]["confirmation_token"]
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.ctx.actor_id,
+            requester_id=work.quality.ctx.requester_id,
+            category_id=work.setup.category,
+        ) as s:
             assert (
                 s.scalar(
                     select(Confirmation.consumed).where(Confirmation.token_hash == digest(token))
@@ -131,7 +143,13 @@ def assert_rollback(work, baseline, prepared=None):
 
 def other_physical_sample(work):
     accepted_id = work.binding.pairs[0].sample.id
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         sample = s.scalar(
             select(SampleUnit).where(
                 SampleUnit.product_id == work.setup.product,
@@ -231,7 +249,13 @@ def test_corrupt_new_start_atom_rolls_back_all_eight_storage_boundaries(launch_w
         baseline = storage_snapshot(work)
         seen = []
         with pytest.raises(DBAPIError, match=message):
-            with tenant_session(work.setup.engine, work.setup.tenant) as s:
+            with tenant_session(
+                work.setup.engine,
+                work.setup.tenant,
+                actor_id=work.quality.ctx.actor_id,
+                requester_id=work.quality.ctx.requester_id,
+                category_id=work.setup.category,
+            ) as s:
                 if case == "wrong_same_build_sample" and not other["has_gate"]:
                     # This new gate belongs to the same failing UOW and must
                     # roll back. Flush it before injection so the immediate FK
@@ -260,7 +284,13 @@ def test_corrupt_new_start_atom_rolls_back_all_eight_storage_boundaries(launch_w
                     event.remove(s, "before_flush", inject)
         assert seen == [case]
         assert_rollback(work, baseline, prepared)
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.ctx.actor_id,
+            requester_id=work.quality.ctx.requester_id,
+            category_id=work.setup.category,
+        ) as s:
             consumed = dict(
                 s.execute(
                     select(Confirmation.token_hash, Confirmation.consumed).where(
@@ -279,7 +309,13 @@ def test_orphan_sample_usage_without_actual_start_rolls_back(launch_work):
     with pytest.raises(
         DBAPIError, match="Every test use requires its exact actual Run and request start"
     ):
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.ctx.actor_id,
+            requester_id=work.quality.ctx.requester_id,
+            category_id=work.setup.category,
+        ) as s:
             if (
                 s.scalar(
                     select(SampleUsageSentinel.id).where(
@@ -310,7 +346,7 @@ def test_orphan_sample_usage_without_actual_start_rolls_back(launch_work):
                     actual_configuration_revision=pair.sample.actual_configuration.revision,
                     revision=1,
                     owner_id=work.quality.human,
-                    visibility="product",
+                    visibility="category",
                     destructive=False,
                     state="reserved",
                     window_start=work.binding.window.start,
@@ -336,7 +372,13 @@ def test_orphan_resource_reservation_without_actual_start_rolls_back(launch_work
     with pytest.raises(
         DBAPIError, match="Every test use requires its exact actual Run and request start"
     ):
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.ctx.actor_id,
+            requester_id=work.quality.ctx.requester_id,
+            category_id=work.setup.category,
+        ) as s:
             s.add(
                 TestResourceReservation(
                     id=uuid4(),
@@ -348,7 +390,7 @@ def test_orphan_resource_reservation_without_actual_start_rolls_back(launch_work
                     fact_id=work.test_fact_id,
                     fact_revision=1,
                     owner_id=work.quality.human,
-                    visibility="product",
+                    visibility="category",
                     revision=1,
                     state="formal",
                     intent_digest=digest({"orphan": "resource-reservation"}),

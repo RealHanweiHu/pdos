@@ -65,11 +65,11 @@ class ActualEventTime(EventTime):
 
 
 class ExactObservationTarget(ObservationTarget):
-    identity_sources: tuple[ExactSource, ...] = Field(min_length=1, max_length=20)
+    identity_sources: tuple[ExactSource, ...] = Field(min_length=1)
 
 
 class ExactSamplingRequirement(SamplingRequirement):
-    targets: tuple[ExactObservationTarget, ...] = Field(min_length=1, max_length=10000)
+    targets: tuple[ExactObservationTarget, ...] = Field(min_length=1)
     sampling_method: ExactSource
     acceptance: ExactSource
 
@@ -84,7 +84,7 @@ class ObservationRecordInput(Closed):
     target_key: Text
     occurred_at: AwareDatetime
     original_timezone: Text
-    sources: tuple[ExactSource, ...] = Field(min_length=1, max_length=20)
+    sources: tuple[ExactSource, ...] = Field(min_length=1)
     raw_material: dict[str, JsonValue]
 
     @model_validator(mode="after")
@@ -102,9 +102,9 @@ class FactTarget(Closed):
     issue_id: UUID
     expected_issue_revision: Revision
     capa_id: UUID
-    sources: tuple[ExactSource, ...] = Field(min_length=1, max_length=20)
+    sources: tuple[ExactSource, ...] = Field(min_length=1)
     reason: Text
-    visibility: Literal["private", "product"] = "private"
+    visibility: Literal["private", "category", "audience"] = "private"
 
     @model_validator(mode="after")
     def exact_sources(self):
@@ -115,12 +115,12 @@ class FactTarget(Closed):
 class ObservationPayload(FactTarget):
     rule: FactRef
     previous: FactRef | None = None
-    target_keys: tuple[Text, ...] = Field(min_length=1, max_length=10000)
+    target_keys: tuple[Text, ...] = Field(min_length=1)
     observed_from: AwareDatetime
     observed_until: AwareDatetime
     at: ActualEventTime
-    records: tuple[ObservationRecordInput, ...] = Field(min_length=1, max_length=10000)
-    coverage_sources: tuple[ExactSource, ...] = Field(min_length=1, max_length=20)
+    records: tuple[ObservationRecordInput, ...] = Field(min_length=1)
+    coverage_sources: tuple[ExactSource, ...] = Field(min_length=1)
     confirmation_token: Token | None = None
 
     @model_validator(mode="after")
@@ -152,7 +152,7 @@ class PairReviewInput(Closed):
     criterion: ExactSource | None = None
     conclusion: Conclusion
     reason: Text
-    sources: tuple[ExactSource, ...] = Field(min_length=1, max_length=20)
+    sources: tuple[ExactSource, ...] = Field(min_length=1)
 
     @model_validator(mode="after")
     def references(self):
@@ -164,7 +164,7 @@ class ActionReviewInput(Closed):
     action_id: UUID
     conclusion: Conclusion
     reason: Text
-    sources: tuple[ExactSource, ...] = Field(min_length=1, max_length=20)
+    sources: tuple[ExactSource, ...] = Field(min_length=1)
 
     @model_validator(mode="after")
     def references(self):
@@ -175,10 +175,10 @@ class ActionReviewInput(Closed):
 class NamedReviewPayload(FactTarget):
     candidate: FactRef
     rule: FactRef
-    observations: tuple[FactRef, ...] = Field(min_length=1, max_length=64)
+    observations: tuple[FactRef, ...] = Field(min_length=1)
     at: ActualEventTime
-    pair_applicability: tuple[PairReviewInput, ...] = Field(min_length=1, max_length=10000)
-    action_fulfillment: tuple[ActionReviewInput, ...] = Field(min_length=1, max_length=10000)
+    pair_applicability: tuple[PairReviewInput, ...] = Field(min_length=1)
+    action_fulfillment: tuple[ActionReviewInput, ...] = Field(min_length=1)
     conclusion: Conclusion
     approval_token: Token | None = None
 

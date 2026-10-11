@@ -29,7 +29,9 @@ def reference(value):
 def permit(value):
     data = dict(value)
     data["reference"] = reference(data["reference"])
-    data["scope"] = LifecycleScope(**{key: UUID(item) for key, item in data["scope"].items()})
+    data["scope"] = LifecycleScope(
+        **{key: UUID(item) if item else None for key, item in data["scope"].items()}
+    )
     for key in ("operation_id", "lease_token", "named_decider_id"):
         data[key] = UUID(data[key])
     for key in ("issued_at", "expires_at"):

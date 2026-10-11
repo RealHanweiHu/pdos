@@ -32,7 +32,7 @@ from pdos_next.domain.verification_launch.models import (
 from pdos_next.errors import DomainError
 from pdos_next.models import Audit, Confirmation, Outbox, Product, Receipt, RequestKey
 
-FAULT_CODE = "TEST_V2_PRECOMMIT_FAULT"
+FAULT_CODE = "VERSION_CONFLICT"
 MISSING_GROUP_MESSAGE = (
     "Versioned Start requires its common receipt, request key, audit and outbox atom"
 )
@@ -65,10 +65,10 @@ def snapshot(session, tenant_id):
     """Full rows, not merely counts, cover pointers/epochs/T1/common logs together."""
     return {
         model.__tablename__: sorted(
-            common.digest(
-                {column.name: getattr(row, column.name) for column in model.__table__.columns}
-            )
-            for row in session.scalars(select(model).where(model.tenant_id == tenant_id))
+            common.digest(dict(row))
+            for row in session.execute(
+                select(model.__table__).where(model.__table__.c.tenant_id == tenant_id)
+            ).mappings()
         )
         for model in ATOM_MODELS
     }
@@ -85,76 +85,48 @@ def _same_command(command, target):
 
 @contextmanager
 def fail_after_final_common_flush(monkeypatch, target):
-    """An HTTP request raises only after real Receipt/Key/Audit/Outbox have flushed.
+    """Raise after the actual Receipt/Key/Audit/Outbox exist in one HTTP UOW.
 
-    This preserves every actual execute/validator/save method. The deliberate
-    DomainError leaves the API's tenant_session context, rolling back the whole
-    request. Restore the hook before immediately retrying the unchanged request.
+    RequestKey is inserted through the real atomic Core upsert, which flushes
+    Audit/Outbox first. Check all four stored rows after that actual operation;
+    an ORM-only pending-row hook would silently miss the Core request key.
     """
-    original = common.append_receipt
-    hooks = []
+    original_append, original_key = common.append_receipt, common.remember_key
     trace = {"attached": False, "armed": False, "fired": False, "flushed_common_rows": 0}
+    captured = {}
 
     def append(session, ctx, command, *args, **kwargs):
-        receipt = original(session, ctx, command, *args, **kwargs)
-        if not _same_command(command, target) or trace["attached"]:
-            return receipt
-        assert inspect(receipt).persistent and receipt.operation == "test.run.start"
-        assert receipt.actor_id == receipt.requester_id == ctx.actor_id and receipt.run_id is None
-        assert receipt.subject_type == "test_run" and receipt.subject_revision == 2
-        trace["attached"] = True
-        pending = []
-
-        def before_flush(active, _context, _instances):
-            if trace["armed"] or trace["fired"]:
-                return
-            selected = [
-                row
-                for row in active.new
-                if isinstance(row, (RequestKey, Audit, Outbox))
-                and row.tenant_id == ctx.tenant_id
-                and row.receipt_id == receipt.id
-            ]
-            keys = [row for row in selected if isinstance(row, RequestKey)]
-            audits = [row for row in selected if isinstance(row, Audit)]
-            outboxes = [row for row in selected if isinstance(row, Outbox)]
-            if not keys:
-                return  # Receipt's earlier flush is deliberately not the target.
-            assert len(keys) == len(audits) == len(outboxes) == 1
-            assert (
-                keys[0].key == target.idempotency_key and keys[0].digest == receipt.request_digest
-            )
-            assert audits[0].actor_id == ctx.actor_id and audits[0].operation == "test.run.start"
-            assert outboxes[0].type == "test.run_started"
-            assert outboxes[0].subject_id == receipt.subject_id
-            pending.extend(selected)
-            trace["armed"] = True
-
-        def after_flush(_active, _context):
-            if not trace["armed"] or trace["fired"]:
-                return
-            assert all(inspect(row).persistent for row in pending)
-            trace["flushed_common_rows"] = len(pending) + 1  # Includes prior real Receipt INSERT.
-            trace["fired"] = True
-            raise DomainError(FAULT_CODE, "明确测试故障：共同全组已flush但尚未commit。", 409)
-
-        event.listen(session, "before_flush", before_flush)
-        event.listen(session, "after_flush_postexec", after_flush)
-        hooks.extend(
-            [
-                (session, "before_flush", before_flush),
-                (session, "after_flush_postexec", after_flush),
-            ]
-        )
+        receipt = original_append(session, ctx, command, *args, **kwargs)
+        if _same_command(command, target):
+            assert inspect(receipt).persistent and receipt.operation == "test.run.start"
+            assert receipt.actor_id == receipt.requester_id == ctx.actor_id
+            assert receipt.run_id is None and receipt.agent_run_id is None
+            assert receipt.subject_type == "test_run" and receipt.subject_revision == 2
+            trace["attached"] = True
+            captured.update(session=session, receipt=receipt)
         return receipt
+
+    def remember(session, ctx, key, request_digest, receipt):
+        original_key(session, ctx, key, request_digest, receipt)
+        if captured.get("session") is not session or captured.get("receipt") is not receipt:
+            return
+        assert key == target.idempotency_key and request_digest == receipt.request_digest
+        keys = list(session.scalars(select(RequestKey).where(RequestKey.receipt_id == receipt.id)))
+        audits = list(session.scalars(select(Audit).where(Audit.receipt_id == receipt.id)))
+        outboxes = list(session.scalars(select(Outbox).where(Outbox.receipt_id == receipt.id)))
+        assert len(keys) == len(audits) == len(outboxes) == 1
+        assert keys[0].key == key and keys[0].digest == receipt.request_digest
+        assert audits[0].actor_id == ctx.actor_id and audits[0].operation == "test.run.start"
+        assert (
+            outboxes[0].type == "test.run_started" and outboxes[0].subject_id == receipt.subject_id
+        )
+        trace.update(armed=True, fired=True, flushed_common_rows=4)
+        raise DomainError(FAULT_CODE, "明确测试故障：共同全组已写入但尚未commit。", 409)
 
     with monkeypatch.context() as patch:
         patch.setattr(common, "append_receipt", append)
-        try:
-            yield trace
-        finally:
-            for session, name, callback in hooks:
-                event.remove(session, name, callback)
+        patch.setattr(common, "remember_key", remember)
+        yield trace
 
 
 @contextmanager

@@ -7,11 +7,12 @@ module never commits, consumes a proof, creates output or starts verification.
 
 from copy import deepcopy
 from dataclasses import dataclass
-from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy import select
+from sqlalchemy.orm import Session
 
+from pdos_next.database import category_for_product
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.quality_execution import policy
 from pdos_next.domain.quality_execution.evidence import (
@@ -69,7 +70,7 @@ def _runtime(s):
 def _human(s, ctx, pid, *, write=False):
     product = s.scalar(select(Product).where(Product.id == pid, Product.tenant_id == ctx.tenant_id))
     if product is None:
-        raise DomainError("FORBIDDEN_SCOPE", "品质后续对象不在产品范围。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "品质后续对象不在型号范围。", 403)
     require_access(s, ctx, pid, write=write, lock=write)
     actor = s.execute(
         select(Principal.tenant_id, Principal.kind, Principal.active).where(
@@ -273,7 +274,8 @@ def _assessment(
         value.allowed is not True
         or value.current is not True
         or value.classification == "unknown"
-        or value.valid_until <= now()
+        or (value.valid_until is not None and value.valid_until <= now())
+        or any(bound <= now() for bound in value.time_constraints)
         or (value.classification == "formal_change" and not value.owner_proofs)
     ):
         raise DomainError(
@@ -489,16 +491,16 @@ def _refresh(s, ctx, pid, operation, bound):
     ):
         raise DomainError("SOURCE_STALE", "全部原件核对后当前专业资格/签发epoch已改变。")
     at = now()
-    if any(value.valid_until <= at for value in bound.assessments):
+    if any(
+        (value.valid_until is not None and value.valid_until <= at)
+        or any(bound <= at for bound in value.time_constraints)
+        for value in bound.assessments
+    ):
         raise DomainError("SOURCE_STALE", "末端措施完成核对证明已到期。")
-    for proof in (authority, bound.policy):
-        try:
-            deadline = datetime.fromisoformat(proof["valid_until"].replace("Z", "+00:00"))
-            expired = deadline.utcoffset() is None or deadline <= at
-        except (KeyError, TypeError, ValueError, AttributeError):
-            expired = True
-        if expired:
-            raise DomainError("SOURCE_STALE", "专业/政策核对结束时已过有效边界。")
+    if not professional.authority_time_current(authority, at):
+        raise DomainError("SOURCE_STALE", "末端当前职责或实际资格已失效。")
+    if not policy.policy_time_current(bound.policy, at):
+        raise DomainError("SOURCE_STALE", "专业/政策核对结束时已过有效边界。")
     if _runtime(s) is not bound.runtime:
         raise DomainError("SOURCE_STALE", "末端宿主配置已撤回或改变。")
 
@@ -764,11 +766,15 @@ def _read_row(s, ctx, pid, row, *, current):
             grant = s.execute(
                 select(Grant.can_write, Grant.expires_at).where(
                     Grant.tenant_id == ctx.tenant_id,
-                    Grant.product_id == pid,
+                    Grant.category_id == category_for_product(pid),
                     Grant.principal_id == ctx.requester_id,
                 )
             ).one_or_none()
-            writable = grant is not None and grant.can_write is True and grant.expires_at > now()
+            writable = (
+                grant is not None
+                and grant.can_write is True
+                and (grant.expires_at is None or grant.expires_at > now())
+            )
             for op in PAYLOADS:
                 authority = professional.assess(s, ctx, pid, row.project_id, op, row.purpose, now())
                 authorities[op] = authority
@@ -936,12 +942,21 @@ def list_quality_followup(s, ctx, pid, *, issue_id=None, revision=None, run_id=N
         )
     )
     views, pointers, unavailable = [], {}, 0
+    held = isinstance(s, Session) and s.info.get("read_snapshot")
+    if held:
+        from pdos_next.domain.quality_execution.service import read_current_rows
+
+        selected_pointers = read_current_rows(s, ctx, pid, rows[:100])
     for row in rows[:100]:
-        pointer = s.scalar(
-            select(QualityIssueCurrent).where(
-                QualityIssueCurrent.tenant_id == ctx.tenant_id,
-                QualityIssueCurrent.product_id == pid,
-                QualityIssueCurrent.issue_id == row.issue_id,
+        pointer = (
+            selected_pointers.get(row.issue_id)
+            if held
+            else s.scalar(
+                select(QualityIssueCurrent).where(
+                    QualityIssueCurrent.tenant_id == ctx.tenant_id,
+                    QualityIssueCurrent.product_id == pid,
+                    QualityIssueCurrent.issue_id == row.issue_id,
+                )
             )
         )
         current = bool(pointer and pointer.issue_version_id == row.id)

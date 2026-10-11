@@ -20,6 +20,7 @@ def native(monkeypatch, *, agent=False):
     actor_id = uuid4() if agent else source.owner_id
     run_id = uuid4() if agent else None
     receipt = SimpleNamespace(
+        category_id=ctx.category_id,
         id=uuid4(),
         command_id=uuid4(),
         tenant_id=ctx.tenant_id,
@@ -74,7 +75,15 @@ def test_registered_native_text_keeps_exact_real_registration_provenance(monkeyp
 
 @pytest.mark.parametrize(
     "field",
-    ["tenant_id", "product_id", "subject_id", "subject_revision", "requester_id", "visibility"],
+    [
+        "tenant_id",
+        "category_id",
+        "product_id",
+        "subject_id",
+        "subject_revision",
+        "requester_id",
+        "visibility",
+    ],
 )
 def test_native_receipt_cannot_be_a_different_scope_subject_or_audience(monkeypatch, field):
     s, ctx, pid, reads, exact, _, receipt, _ = native(monkeypatch)
@@ -85,7 +94,7 @@ def test_native_receipt_cannot_be_a_different_scope_subject_or_audience(monkeypa
     )
     with pytest.raises(DomainError) as error:
         service._evidence(s, ctx, pid, reads, (exact,))
-    assert error.value.code == "INTEGRATION_REQUIRED" and error.value.status == 503
+    assert error.value.reason == "INTEGRATION_REQUIRED" and error.value.status == 503
 
 
 def test_native_receipt_result_must_be_the_exact_registration_version(monkeypatch):
@@ -100,7 +109,7 @@ def test_agent_native_text_requires_actual_exact_bound_run(monkeypatch):
     run.writer_id = uuid4()
     with pytest.raises(DomainError) as error:
         service._evidence(s, ctx, pid, reads, (exact,))
-    assert error.value.code == "INTEGRATION_REQUIRED" and error.value.status == 503
+    assert error.value.reason == "INTEGRATION_REQUIRED" and error.value.status == 503
 
 
 def test_duplicate_or_missing_native_registration_is_unknown(monkeypatch):
@@ -109,7 +118,7 @@ def test_duplicate_or_missing_native_registration_is_unknown(monkeypatch):
         s.scalars = lambda _query, rows=registered: rows
         with pytest.raises(DomainError) as error:
             service._evidence(s, ctx, pid, reads, (exact,))
-        assert error.value.code == "INTEGRATION_REQUIRED" and error.value.status == 503
+        assert error.value.reason == "INTEGRATION_REQUIRED" and error.value.status == 503
 
 
 def test_uploaded_original_keeps_bytes_integrity_and_security_epoch(monkeypatch):

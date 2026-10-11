@@ -1,0 +1,44 @@
+{
+  "read_only": true,
+  "network_calls": 0,
+  "configurations": [
+    {
+      "path": ".env",
+      "present": true,
+      "legacy_metadata": {
+        "PDOS_LLM_PROVIDER": "minimax",
+        "PDOS_LLM_MODEL": "MiniMax-M3",
+        "PDOS_LLM_BASE_URL": {
+          "scheme": "https",
+          "hostname": "api.minimaxi.com"
+        },
+        "PDOS_LLM_MINIMAX_MODEL": "MiniMax-M3",
+        "PDOS_LLM_MINIMAX_BASE_URL": {
+          "scheme": "https",
+          "hostname": "api.minimaxi.com"
+        },
+        "PDOS_LLM_OPENAI_MODEL": "gpt-5.1",
+        "PDOS_LLM_OPENAI_BASE_URL": {
+          "scheme": "https",
+          "hostname": "api.openai.com"
+        },
+        "PDOS_LLM_ANTHROPIC_MODEL": "claude-sonnet-5",
+        "PDOS_LLM_ANTHROPIC_BASE_URL": {
+          "scheme": "https",
+          "hostname": "api.anthropic.com"
+        }
+      },
+      "credential_present": {
+        "PDOS_LLM_API_KEY": true,
+        "PDOS_LLM_MINIMAX_API_KEY": true,
+        "PDOS_LLM_OPENAI_API_KEY": true,
+        "ANTHROPIC_API_KEY": false
+      }
+    },
+    {
+      "path": "pdos-next/.env",
+      "present": false
+    }
+  ],
+  "m2_configuration_note": "Legacy .env is not a tenant configuration or SecretPort binding for pdos-next; no credentials were printed or imported."
+}

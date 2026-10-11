@@ -24,7 +24,7 @@ export type PlanForecast = {
 };
 export type PlanProposal = { id: string; revision: number; reason: string; input_snapshot: ScheduleInput; forecast: PlanForecast; project_revision: number };
 export type Project = {
-  id: string; name: string; purpose: string; scope: string; owner_id: string; visibility: "private" | "product";
+  id: string; name: string; purpose: string; scope: string; owner_id: string; visibility: "private" | "category" | "audience";
   revision: number; status: string; source_status: string; created_at: string;
   definition: { id: string; title: string; revision: number; status: string; source_status: string };
   required_source_read_set: SourceRead[]; proposals: PlanProposal[];
@@ -36,7 +36,7 @@ export type Project = {
 export type ProjectList = { items: Project[]; has_more: boolean; unavailable_count: number };
 export type CreateProjectPayload = {
   name: string; purpose: string; scope: string; definition_id: string; expected_definition_revision: number;
-  visibility: "private" | "product"; confirmation_token?: string | null;
+  visibility: "private" | "category" | "audience"; confirmation_token?: string | null;
 };
 export type ProposePlanPayload = { project_id: string; expected_project_revision: number; schedule: ScheduleInput; reason: string };
 export type ApplyPlanPayload = { project_id: string; proposal_id: string; expected_project_revision: number; confirmation_token?: string | null };
@@ -47,14 +47,14 @@ export type ProjectCommand = {
 };
 export type ProjectReview = {
   operation: ProjectCommand["operation"]; name: string; effect: string; purpose?: string; scope?: string;
-  visibility?: "private" | "product"; definition?: { id: string; title: string; revision: number; status: string };
+  visibility?: "private" | "category" | "audience"; definition?: { id: string; title: string; revision: number; status: string };
   project_id?: string; project_revision?: number; proposal_id?: string; proposal_revision?: number;
   forecast?: PlanForecast; input_snapshot?: ScheduleInput; reason?: string;
 };
 export type PreparedProject = { command: ProjectCommand; review: ProjectReview; expires_at: string; confirmation_token: string };
 export type TaskDraft = { key: string; title: string; discipline: Discipline; depends_on: string[]; minimum: string; maximum: string; basis: string };
 export type ProjectDraft = {
-  name: string; purpose: string; scope: string; definitionId: string; visibility: "private" | "product";
+  name: string; purpose: string; scope: string; definitionId: string; visibility: "private" | "category" | "audience";
   projectId: string; startUtc: string; timezone: string; calendarVersion: string; weekdays: number[];
   intervals: string; holidays: string; tasks: TaskDraft[]; reason: string;
 };
@@ -84,7 +84,7 @@ function isRecord(value: unknown): value is Record<string, unknown> { return !!v
 export function restoreProjectDraft(value: unknown, productId: string): LocalProjectDraft | null {
   if (!isRecord(value) || !isRecord(value.draft)) return null;
   const draft = value.draft;
-  if (!stringFields(draft, ["name", "purpose", "scope", "definitionId", "projectId", "startUtc", "timezone", "calendarVersion", "intervals", "holidays", "reason"]) || !["private", "product"].includes(String(draft.visibility))) return null;
+  if (!stringFields(draft, ["name", "purpose", "scope", "definitionId", "projectId", "startUtc", "timezone", "calendarVersion", "intervals", "holidays", "reason"]) || !["private", "category", "audience"].includes(String(draft.visibility))) return null;
   if (!Array.isArray(draft.weekdays) || !draft.weekdays.every(day => Number.isInteger(day) && Number(day) >= 0 && Number(day) <= 6)) return null;
   if (!Array.isArray(draft.tasks) || draft.tasks.length > 500 || !draft.tasks.every(task => isRecord(task) && stringFields(task, ["key", "title", "minimum", "maximum", "basis"]) && ["engineering", "npi"].includes(String(task.discipline)) && Array.isArray(task.depends_on) && task.depends_on.every(key => typeof key === "string"))) return null;
   if (value.pending != null) {

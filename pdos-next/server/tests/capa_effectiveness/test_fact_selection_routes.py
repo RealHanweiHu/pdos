@@ -20,18 +20,22 @@ CANDIDATE = UUID("33333333-3333-4333-8333-333333333333")
 @pytest.fixture
 def client(monkeypatch):
     app = FastAPI()
-    context = SimpleNamespace(tenant_id=PID)
+    context = SimpleNamespace(
+        tenant_id=PID, actor_id=ISSUE, requester_id=ISSUE, category_id=CANDIDATE
+    )
 
     @app.exception_handler(DomainError)
     def domain_error(_request, error):
         return JSONResponse({"code": error.code}, status_code=error.status)
 
     @contextmanager
-    def session(_engine, tenant):
+    def session(_engine, tenant, **kwargs):
+        assert kwargs["category_id"] == CANDIDATE
         assert tenant == context.tenant_id
         yield object()
 
-    def selector(_s, actual, product, issue, candidate=None):
+    def selector(_s, actual, product, issue, candidate=None, history_cursor=None):
+        assert history_cursor is None
         assert actual is context
         return {
             "product_id": str(product),
@@ -49,14 +53,14 @@ def client(monkeypatch):
 
 
 def test_unselected_get_passes_none_and_never_guesses_oldest_candidate(client):
-    response = client.get(f"/v1/products/{PID}/capa-facts?issue_id={ISSUE}")
+    response = client.get(f"/v1/categories/{CANDIDATE}/products/{PID}/capa-facts?issue_id={ISSUE}")
     assert response.status_code == 200
     assert response.json()["candidate_id"] is None
 
 
 def test_selected_get_binds_only_the_explicit_uuid(client):
     response = client.get(
-        f"/v1/products/{PID}/capa-facts?issue_id={ISSUE}&candidate_id={CANDIDATE}"
+        f"/v1/categories/{CANDIDATE}/products/{PID}/capa-facts?issue_id={ISSUE}&candidate_id={CANDIDATE}"
     )
     assert response.status_code == 200
     assert response.json() == {
@@ -80,4 +84,9 @@ def test_selected_get_binds_only_the_explicit_uuid(client):
     ],
 )
 def test_candidate_query_cannot_override_or_ambiguously_choose_scope(client, suffix):
-    assert client.get(f"/v1/products/{PID}/capa-facts?issue_id={ISSUE}{suffix}").status_code == 422
+    assert (
+        client.get(
+            f"/v1/categories/{CANDIDATE}/products/{PID}/capa-facts?issue_id={ISSUE}{suffix}"
+        ).status_code
+        == 422
+    )

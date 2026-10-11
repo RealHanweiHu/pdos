@@ -41,11 +41,10 @@ export function preciseProfessionalReference(source: DefinitionSource, line: num
 }
 export function professionalReads(...sets: SourceRead[][]): SourceRead[] {
   const reads = new Map<string, number>(); for (const read of sets.flat()) { if (!read.artifact_id || !Number.isSafeInteger(read.expected_revision) || read.expected_revision < 1) throw new Error("来源读集尚不完整，请刷新固定请求与职责事实。"); if (reads.has(read.artifact_id) && reads.get(read.artifact_id) !== read.expected_revision) throw new Error("同一资料的固定版本不一致，请先重新核对。"); reads.set(read.artifact_id, read.expected_revision); }
-  if (reads.size > 20) throw new Error("本次固定依据超过 20 份，请缩小核对范围。");
   return [...reads].sort(([a], [b]) => a.localeCompare(b)).map(([artifact_id, expected_revision]) => ({ artifact_id, expected_revision }));
 }
 export const professionalReferenceReads = (refs: DefinitionReference[]): SourceRead[] => professionalReads(refs.map(ref => ({ artifact_id: ref.artifact_id, expected_revision: ref.expected_revision })));
-export function professionalUnits(value: string): string | null { const cleaned = value.trim(); if (!cleaned) return null; const match = /^(\d+)(?:\.(\d+))?$/.exec(cleaned); if (!match || !/[1-9]/.test(cleaned) || (match[1].replace(/^0+/, "").length || 1) + (match[2]?.length ?? 0) > 24 || (match[2]?.length ?? 0) > 12 || Number(cleaned) > 1000) throw new Error("资源意向数量须大于零且不超过 1000，最多 12 位小数；未知留空，不补零。"); return cleaned; }
+export function professionalUnits(value: string): string | null { const cleaned = value.trim(); if (!cleaned) return null; const match = /^(\d+)(?:\.(\d+))?$/.exec(cleaned); if (!match || !/[1-9]/.test(cleaned) || (match[1].replace(/^0+/, "").length || 1) + (match[2]?.length ?? 0) > 24 || (match[2]?.length ?? 0) > 12) throw new Error("资源意向数量须大于零，最多 12 位小数；未知留空，不补零。"); return cleaned; }
 export type MethodDraft = { itemId: string; status: MethodStatus; conditions: string; reason: string; references: DefinitionReference[] };
 export type ResourceDraft = { kind: ResourceIntent["kind"]; label: string; units: string };
 export type ScheduleDraft = { start: string; finish: string; timezone: string; resources: ResourceDraft[]; durationRef: DefinitionReference | null; calendarRef: DefinitionReference | null; references: DefinitionReference[]; reason: string };
@@ -53,26 +52,26 @@ export const blankProfessionalSchedule = (): ScheduleDraft => ({ start: "", fini
 export const blankProfessionalMethods = (items: PreparationItem[]): MethodDraft[] => items.map(item => ({ itemId: item.id, status: "unknown", conditions: "", reason: "", references: [] }));
 export type ProfessionalDrafts = { preparationId: string; createId: string; createReason: string; requestId: string; versionId: string; methodVersion: string; methods: MethodDraft[]; methodReason: string; scheduleVersion: string; schedule: ScheduleDraft; references: DefinitionReference[] };
 const validRef = (value: unknown): value is DefinitionReference => professionalRecord(value) && typeof value.artifact_id === "string" && !!value.artifact_id && Number.isSafeInteger(value.expected_revision) && Number(value.expected_revision) > 0 && Number.isSafeInteger(value.line) && Number(value.line) > 0 && typeof value.quote === "string" && !!value.quote && value.quote.length <= 4000;
-const validRefs = (value: unknown): value is DefinitionReference[] => Array.isArray(value) && value.length <= 20 && value.every(validRef);
+const validRefs = (value: unknown): value is DefinitionReference[] => Array.isArray(value) && value.every(validRef);
 export function restoreProfessional(value: unknown, productId: string, principalId: string): { draft: ProfessionalDrafts; pending: PendingProfessional | null } | null {
   if (!professionalRecord(value) || value.schema_version !== 1 || value.product_id !== productId || value.principal_id !== principalId || !professionalRecord(value.draft)) return null;
   const draft = value.draft, fields = ["preparationId", "createId", "createReason", "requestId", "versionId", "methodVersion", "methodReason", "scheduleVersion"];
   if (!fields.every(key => typeof draft[key] === "string") || !validRefs(draft.references) || !Array.isArray(draft.methods) || draft.methods.length > 100
     || !draft.methods.every(row => professionalRecord(row) && typeof row.itemId === "string" && Object.hasOwn(methodStatusNames, String(row.status)) && typeof row.conditions === "string" && typeof row.reason === "string" && validRefs(row.references)) || !professionalRecord(draft.schedule)) return null;
   const schedule = draft.schedule;
-  if (!["start", "finish", "timezone", "reason"].every(key => typeof schedule[key] === "string") || !Array.isArray(schedule.resources) || schedule.resources.length > 100 || !schedule.resources.every(row => professionalRecord(row) && Object.hasOwn(resourceKindNames, String(row.kind)) && typeof row.label === "string" && typeof row.units === "string")
+  if (!["start", "finish", "timezone", "reason"].every(key => typeof schedule[key] === "string") || !Array.isArray(schedule.resources) || !schedule.resources.every(row => professionalRecord(row) && Object.hasOwn(resourceKindNames, String(row.kind)) && typeof row.label === "string" && typeof row.units === "string")
     || !validRefs(schedule.references) || !(schedule.durationRef === null || validRef(schedule.durationRef)) || !(schedule.calendarRef === null || validRef(schedule.calendarRef))) return null;
   if (value.pending !== null) {
     const pending = value.pending; if (!professionalRecord(pending) || !["preview", "execute"].includes(String(pending.stage)) || !professionalRecord(pending.command)) return null;
     const command = pending.command;
-    if (command.product_id !== productId || typeof command.command_id !== "string" || !command.command_id || typeof command.idempotency_key !== "string" || !command.idempotency_key || !professionalOperations.includes(command.operation as ProfessionalOperation) || !Number.isSafeInteger(command.expected_revision) || Number(command.expected_revision) < 1 || !Array.isArray(command.source_read_set) || command.source_read_set.length > 20 || !command.source_read_set.every(ref => professionalRecord(ref) && typeof ref.artifact_id === "string" && Number.isSafeInteger(ref.expected_revision) && Number(ref.expected_revision) > 0) || !professionalRecord(command.payload)) return null;
+    if (command.product_id !== productId || typeof command.command_id !== "string" || !command.command_id || typeof command.idempotency_key !== "string" || !command.idempotency_key || !professionalOperations.includes(command.operation as ProfessionalOperation) || !Number.isSafeInteger(command.expected_revision) || Number(command.expected_revision) < 1 || !Array.isArray(command.source_read_set) || !command.source_read_set.every(ref => professionalRecord(ref) && typeof ref.artifact_id === "string" && Number.isSafeInteger(ref.expected_revision) && Number(ref.expected_revision) > 0) || !professionalRecord(command.payload)) return null;
     const payload = command.payload;
     if (typeof payload.request_id !== "string" || typeof payload.reason !== "string") return null;
     if (command.operation === "verification.request.create") { if (pending.stage !== "execute" || typeof payload.preparation_id !== "string" || !Number.isSafeInteger(payload.expected_preparation_revision) || Number(payload.expected_preparation_revision) < 1 || typeof payload.preparation_sha256 !== "string" || !/^[0-9a-f]{64}$/.test(payload.preparation_sha256)) return null; }
     else {
       if (!Number.isSafeInteger(payload.expected_request_revision) || Number(payload.expected_request_revision) < 1) return null;
       if (command.operation === "verification.method.prepare") {
-        if (!Array.isArray(payload.assessments) || !payload.assessments.length || payload.assessments.length > 100 || !payload.assessments.every(row => professionalRecord(row) && typeof row.item_id === "string" && Object.hasOwn(methodStatusNames, String(row.status)) && typeof row.reason === "string" && Array.isArray(row.conditions) && row.conditions.every(condition => typeof condition === "string") && validRefs(row.sources)) || pending.stage === "execute" && (typeof payload.confirmation_token !== "string" || payload.confirmation_token.length < 20)) return null;
+        if (!Array.isArray(payload.assessments) || !payload.assessments.length || !payload.assessments.every(row => professionalRecord(row) && typeof row.item_id === "string" && Object.hasOwn(methodStatusNames, String(row.status)) && typeof row.reason === "string" && Array.isArray(row.conditions) && row.conditions.every(condition => typeof condition === "string") && validRefs(row.sources)) || pending.stage === "execute" && (typeof payload.confirmation_token !== "string" || payload.confirmation_token.length < 20)) return null;
       } else if (pending.stage !== "execute" || !professionalTime(payload.start) || !professionalTime(payload.finish) || typeof payload.original_timezone !== "string" || !Array.isArray(payload.resource_intents) || !validRefs(payload.sources) || !(payload.duration_basis === null || validRef(payload.duration_basis)) || !(payload.calendar_source === null || validRef(payload.calendar_source))) return null;
     }
   }
@@ -107,7 +106,7 @@ export function professionalMethods(request: ProfessionalRequest, draft: MethodD
   return { request_id: request.request_id, expected_request_revision: request.revision, assessments: draft.map(row => {
     if (!Object.hasOwn(methodStatusNames, row.status)) throw new Error("请明确选择适用、不适用或未知。");
     if (row.status === "applicable" && !row.references.length) throw new Error("具名确认方法适用需要可精确核验的原文依据。");
-    const conditions = row.conditions.split(/\r?\n/).map(value => value.trim()).filter(Boolean); if (conditions.length > 50 || conditions.some(value => value.length > 2000) || row.references.length > 20) throw new Error("每项最多 50 条条件与 20 条精确依据，请缩小核对范围。");
+    const conditions = row.conditions.split(/\r?\n/).map(value => value.trim()).filter(Boolean); if (conditions.some(value => value.length > 2000)) throw new Error("每条条件不超过 2000 字。");
     return { item_id: row.itemId, status: row.status, conditions, reason: professionalReason(row.reason), sources: row.references.map(ref => ({ ...ref })) };
   }), reason: professionalReason(reason) };
 }
@@ -115,7 +114,6 @@ export function professionalSchedule(request: ProfessionalRequest, draft: Schedu
   if (["reported", "disposed"].includes(request.status) || !professionalCapability(request.capabilities, "schedule_propose") || !request.is_current || request.source_status !== "current") throw new Error("当前请求版不允许资源意向窗口，请核对当前职责、资格和来源。");
   const start = professionalTime(draft.start.trim()), finish = professionalTime(draft.finish.trim());
   if (!start || !finish || Date.parse(start) < now || Date.parse(finish) <= Date.parse(start)) throw new Error("请填写带时区且尚未开始的明确窗口，结束须晚于开始；最终以服务器时钟核对。");
-  if (draft.resources.length > 100 || draft.references.length > 20) throw new Error("窗口最多包含 100 项资源意向和 20 条依据。");
   return { request_id: request.request_id, expected_request_revision: request.revision, start, finish, original_timezone: professionalZone(draft.timezone), resource_intents: draft.resources.map(resource => {
     const label = resource.label.trim(); if (!label || label.length > 2000 || !Object.hasOwn(resourceKindNames, resource.kind)) throw new Error("每个资源意向须有真实名称和明确类型，缺资源身份仍保留未知。");
     return { kind: resource.kind, label, resource_id: null, expected_revision: null, units: professionalUnits(resource.units) };

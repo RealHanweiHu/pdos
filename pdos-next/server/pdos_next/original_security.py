@@ -10,6 +10,7 @@ from sqlalchemy import select
 
 from pdos_next.contracts import Command
 from pdos_next.database import tenant_session
+from pdos_next.dispatch.context import event_context
 from pdos_next.errors import DomainError
 from pdos_next.evidence_security.rules import bind_request, parsing_gate
 from pdos_next.evidence_security.types import (
@@ -66,8 +67,8 @@ def decoded_request(value):
     binding = dict(value["binding"])
     reference = dict(binding.pop("object_ref"))
     reference["id"] = UUID(reference["id"])
-    for key in ("tenant_id", "product_id", "requester_id"):
-        binding[key] = UUID(binding[key])
+    for key in ("tenant_id", "product_id", "category_id", "requester_id"):
+        binding[key] = UUID(binding[key]) if binding.get(key) else None
     policy = dict(value["policy"])
     policy["limits"] = ScanLimits(**policy["limits"])
     return ScanRequest(
@@ -97,6 +98,13 @@ def decoded_receipt(value, request):
 
 
 def security_row(s, original, *, lock=True):
+    from pdos_next.request_proof import request_proof
+
+    proof = request_proof(s)
+    key = (OriginalSecurity, ("original", original.id))
+    lock_key = (OriginalSecurity, ("locked", original.id))
+    if key in proof.read_rows and (not lock or proof.read_rows.get(lock_key)):
+        return proof.read_rows[key]
     query = select(OriginalSecurity).where(
         OriginalSecurity.original_id == original.id,
         OriginalSecurity.product_id == original.product_id,
@@ -104,12 +112,15 @@ def security_row(s, original, *, lock=True):
     row = s.scalar(query.with_for_update() if lock else query)
     if not row:
         raise DomainError("ORIGINAL_SECURITY_UNAVAILABLE", "原件安全记录待核对。", 409)
+    proof.read_rows[key] = row
+    proof.read_rows[lock_key] = lock
     return row
 
 
 class Guard:
-    def __init__(self, s, original, state, requester_id):
+    def __init__(self, s, original, state, requester_id, *, lock=True):
         self.s, self.original, self.state, self.requester = s, original, state, requester_id
+        self.lock = lock
 
     def current_configuration(self):
         runtime = runtime_for(self.s)
@@ -122,21 +133,59 @@ class Guard:
         from pdos_next.service import Context, digest, require_access
 
         row, state = self.original, self.state
-        ctx = Context(row.tenant_id, self.requester, self.requester)
-        require_access(self.s, ctx, row.product_id, lock=True)
-        grant = self.s.scalar(
-            select(Grant).where(
-                Grant.product_id == row.product_id,
-                Grant.principal_id == self.requester,
+        scope = self.s.info.get("scope")
+        if not scope or not scope[1] or not scope[2]:
+            raise DomainError("FORBIDDEN_SCOPE", "扫描证明缺少当前请求身份。", 403)
+        ctx = Context(*scope[:3], category_id=scope[3])
+        from pdos_next.request_proof import request_proof
+
+        require_access(self.s, ctx, row.product_id, lock=self.lock)
+        proof = request_proof(self.s)
+        authority = proof.authority[
+            (ctx.tenant_id, row.category_id, ctx.actor_id, ctx.requester_id)
+        ]
+        held = {principal.id: (principal, grant) for principal, grant in authority["rows"]}
+        if self.requester in held:
+            principal, grant = held[self.requester]
+        else:
+            key = (Grant, ("scan-requester", row.category_id, self.requester))
+            if key not in proof.read_rows:
+                proof.read_rows[key] = self.s.execute(
+                    select(Principal, Grant)
+                    .join(Grant, Grant.principal_id == Principal.id)
+                    .where(
+                        Principal.id == self.requester,
+                        Principal.tenant_id == row.tenant_id,
+                        Grant.category_id == row.category_id,
+                        Grant.tenant_id == row.tenant_id,
+                    )
+                ).first()
+            pair = proof.read_rows[key]
+            if pair is None:
+                raise DomainError("FORBIDDEN_SCOPE", "扫描来源授权需要重核。", 403)
+            principal, grant = pair
+        source_key = (Artifact, ("original", row.id))
+        if source_key not in proof.read_rows:
+            source = next(
+                (
+                    source
+                    for source in (
+                        *proof.sources.values(),
+                        *proof.source_rows.values(),
+                        *self.s.identity_map.values(),
+                    )
+                    if isinstance(source, Artifact) and source.original_id == row.id
+                ),
+                None,
             )
-        )
-        principal = self.s.get(Principal, self.requester)
-        source = self.s.scalar(select(Artifact).where(Artifact.original_id == row.id))
+            proof.read_rows[source_key] = source or self.s.scalar(
+                select(Artifact).where(Artifact.original_id == row.id)
+            )
+        source = proof.read_rows[source_key]
         active = (
             state.source_state == "active"
             and state.disposition == "active"
             and (not source or source.status == "active")
-            and (row.visibility != "private" or row.owner_id == self.requester)
         )
         if object_ref != object_reference(row):
             active = False
@@ -158,6 +207,7 @@ class Guard:
             ),
             digest([row.owner_id, row.visibility, state.source_state, state.disposition]),
             active,
+            category_id=row.category_id,
         )
 
     def is_current(self, binding):
@@ -167,30 +217,40 @@ class Guard:
             return False
 
 
-def decision(s, original, state):
+def decision(s, original, state, *, lock=False):
+    from pdos_next.request_proof import batch_read, request_proof
+
     record = (
-        s.get(OriginalScanRequest, state.current_request_id) if state.current_request_id else None
+        batch_read(s, OriginalScanRequest, [state.current_request_id])[state.current_request_id]
+        if state.current_request_id
+        else None
     )
     if not record:
         return None, None, None
     request = decoded_request(record.binding)
-    stored = s.scalar(select(OriginalScanResult).where(OriginalScanResult.request_id == record.id))
+    proof = request_proof(s)
+    key = (OriginalScanResult, ("request", record.id))
+    if key not in proof.read_rows:
+        proof.read_rows[key] = s.scalar(
+            select(OriginalScanResult).where(OriginalScanResult.request_id == record.id)
+        )
+    stored = proof.read_rows[key]
     receipt = decoded_receipt(stored.result, request) if stored else None
     return (
-        parsing_gate(request, receipt, Guard(s, original, state, record.requester_id), now=now()),
+        parsing_gate(
+            request, receipt, Guard(s, original, state, record.requester_id, lock=lock), now=now()
+        ),
         record,
         stored,
     )
 
 
-def require_safe(s, ctx, original):
+def require_safe(s, ctx, original, *, lock=True):
     from pdos_next.service import require_access
 
-    require_access(s, ctx, original.product_id, lock=True)
-    if original.visibility == "private" and original.owner_id != ctx.requester_id:
-        raise DomainError("SOURCE_UNAVAILABLE", "原件不在当前授权范围。", 403)
-    state = security_row(s, original)
-    gate, _, _ = decision(s, original, state)
+    require_access(s, ctx, original.product_id, lock=lock)
+    state = security_row(s, original, lock=lock)
+    gate, _, _ = decision(s, original, state, lock=lock)
     if (
         not gate
         or not gate.allow_parse
@@ -206,7 +266,7 @@ def require_safe(s, ctx, original):
 def view(s, original, ctx=None, store=None):
     from pdos_next.service import require_access
 
-    state = security_row(s, original)
+    state = security_row(s, original, lock=False)
     gate, record, result = decision(s, original, state)
     write = False
     if ctx:
@@ -272,12 +332,14 @@ def source_status(s, source):
         return source.status
     from pdos_next.service import Context
 
-    s.scalar(select(Product).where(Product.id == source.product_id).with_for_update())
     original = s.get(UploadedOriginal, source.original_id)
     if not original:
         return "unavailable"
     try:
-        require_safe(s, Context(source.tenant_id, source.owner_id, source.owner_id), original)
+        scope = s.info.get("scope")
+        if not scope or not scope[1] or not scope[2]:
+            return "unavailable"
+        require_safe(s, Context(*scope[:3], category_id=scope[3]), original, lock=False)
     except DomainError:
         return "stale"
     return "active"
@@ -287,10 +349,20 @@ def request_scan(s, ctx, product_id, original_id, *, expected_epoch, idempotency
     from pdos_next.originals import object_reference, require_original
     from pdos_next.service import append_receipt, digest, receipt_view, require_access
 
-    product = s.scalar(select(Product).where(Product.id == product_id).with_for_update())
-    if not product:
-        raise DomainError("FORBIDDEN_SCOPE", "产品范围不可用。", 403)
-    require_access(s, ctx, product_id, write=True, lock=True)
+    require_access(s, ctx, product_id)
+    fingerprint = digest(["scan", product_id, original_id, expected_epoch])
+    key = s.scalar(
+        select(RequestKey).where(
+            RequestKey.actor_id == ctx.actor_id, RequestKey.key == idempotency_key
+        )
+    )
+    if key:
+        if key.digest != fingerprint:
+            raise DomainError("DUPLICATE_INTENT_CONFLICT", "相同请求编号对应不同扫描。")
+        return receipt_view(s.get(Receipt, key.receipt_id))
+    product = require_access(s, ctx, product_id, write=True, lock=True)
+    if product_id is not None:
+        product = s.scalar(select(Product).where(Product.id == product_id).with_for_update())
     if (
         ctx.run_id
         or ctx.actor_id != ctx.requester_id
@@ -302,16 +374,6 @@ def request_scan(s, ctx, product_id, original_id, *, expected_epoch, idempotency
     guard = Guard(s, original, state, ctx.requester_id)
     if not guard.bind_for_scan(object_reference(original)).source_active:
         raise DomainError("SOURCE_UNAVAILABLE", "原件已撤回或生命周期状态不允许扫描。", 409)
-    fingerprint = digest(["scan", product_id, original_id, expected_epoch])
-    key = s.scalar(
-        select(RequestKey).where(
-            RequestKey.actor_id == ctx.actor_id, RequestKey.key == idempotency_key
-        )
-    )
-    if key:
-        if key.digest != fingerprint:
-            raise DomainError("DUPLICATE_INTENT_CONFLICT", "相同请求编号对应不同扫描。")
-        return receipt_view(s.get(Receipt, key.receipt_id))
     if state.epoch != expected_epoch:
         raise DomainError("VERSION_CONFLICT", "原件安全状态已变化，请刷新后重试。")
     configuration = guard.current_configuration()
@@ -329,6 +391,7 @@ def request_scan(s, ctx, product_id, original_id, *, expected_epoch, idempotency
     record = OriginalScanRequest(
         id=req.request_id,
         tenant_id=ctx.tenant_id,
+        category_id=ctx.category_id,
         product_id=product_id,
         original_id=original.id,
         requester_id=ctx.requester_id,
@@ -341,6 +404,7 @@ def request_scan(s, ctx, product_id, original_id, *, expected_epoch, idempotency
     state.current_request_id = record.id
     original.scan_status = "not_scanned"
     command = Command(
+        category_id=ctx.category_id,
         command_id=uuid4(),
         idempotency_key=idempotency_key,
         operation="evidence.original.scan.request",
@@ -371,13 +435,20 @@ def request_scan(s, ctx, product_id, original_id, *, expected_epoch, idempotency
 
 
 def queue_uploaded(engine, reference):
-    from pdos_next.service import Context
 
-    tenant, product_id, original_id = (
-        UUID(reference[k]) for k in ("tenant_id", "product_id", "subject_id")
-    )
-    with tenant_session(engine, tenant) as s:
-        s.scalar(select(Product).where(Product.id == product_id).with_for_update())
+    ctx = event_context(reference)
+    tenant, original_id = UUID(reference["tenant_id"]), UUID(reference["subject_id"])
+    product_id = UUID(reference["product_id"]) if reference.get("product_id") else None
+    with tenant_session(
+        engine,
+        tenant,
+        actor_id=ctx.actor_id,
+        requester_id=ctx.requester_id,
+        category_id=ctx.category_id,
+    ) as s:
+        from pdos_next.service import require_access
+
+        require_access(s, ctx, product_id)
         original = s.get(UploadedOriginal, original_id)
         if not original or original.product_id != product_id:
             raise DomainError("SOURCE_UNAVAILABLE", "待扫描原件不可用。", 403)
@@ -386,7 +457,7 @@ def queue_uploaded(engine, reference):
             return {"status": "requested", "request_id": str(state.current_request_id)}
         receipt = request_scan(
             s,
-            Context(tenant, original.owner_id, original.owner_id),
+            ctx,
             product_id,
             original_id,
             expected_epoch=state.epoch,
@@ -397,18 +468,27 @@ def queue_uploaded(engine, reference):
 
 def scan_requested(engine, reference):
     from pdos_next.originals import require_original
-    from pdos_next.service import Context, append_receipt, digest
+    from pdos_next.service import append_receipt, digest
 
-    tenant, product_id, request_id = (
-        UUID(reference[k]) for k in ("tenant_id", "product_id", "subject_id")
-    )
-    with tenant_session(engine, tenant) as s:
-        s.scalar(select(Product).where(Product.id == product_id).with_for_update())
+    ctx = event_context(reference)
+    tenant, request_id = UUID(reference["tenant_id"]), UUID(reference["subject_id"])
+    product_id = UUID(reference["product_id"]) if reference.get("product_id") else None
+    with tenant_session(
+        engine,
+        tenant,
+        actor_id=ctx.actor_id,
+        requester_id=ctx.requester_id,
+        category_id=ctx.category_id,
+    ) as s:
+        from pdos_next.service import require_access
+
+        require_access(s, ctx, product_id)
         record = s.get(OriginalScanRequest, request_id)
         if not record or record.product_id != product_id:
             raise DomainError("SOURCE_UNAVAILABLE", "扫描请求不可用。", 403)
         request = decoded_request(record.binding)
-        ctx = Context(tenant, record.requester_id, record.requester_id)
+        if record.requester_id != ctx.requester_id:
+            raise DomainError("FORBIDDEN_SCOPE", "扫描范围信封与具名请求不符。", 403)
         original = require_original(s, ctx, product_id, record.original_id, lock=True)
         state = security_row(s, original)
         guard = Guard(s, original, state, record.requester_id)
@@ -425,8 +505,16 @@ def scan_requested(engine, reference):
         if previous:
             return {"status": previous.status, "original_id": str(original.id)}
     result = asyncio.run(runtime.scanner.scan(request))
-    with tenant_session(engine, tenant) as s:
-        s.scalar(select(Product).where(Product.id == product_id).with_for_update())
+    with tenant_session(
+        engine,
+        tenant,
+        actor_id=ctx.actor_id,
+        requester_id=ctx.requester_id,
+        category_id=ctx.category_id,
+    ) as s:
+        from pdos_next.service import require_access
+
+        require_access(s, ctx, product_id)
         original = require_original(s, ctx, product_id, request.binding.object_ref.id, lock=True)
         state = security_row(s, original)
         guard = Guard(s, original, state, ctx.requester_id)
@@ -452,6 +540,7 @@ def scan_requested(engine, reference):
         stored = OriginalScanResult(
             id=uuid4(),
             tenant_id=tenant,
+            category_id=ctx.category_id,
             product_id=product_id,
             original_id=original.id,
             request_id=request_id,
@@ -463,6 +552,7 @@ def scan_requested(engine, reference):
         original.scan_status = result.status.value
         s.flush()
         command = Command(
+            category_id=ctx.category_id,
             command_id=uuid4(),
             idempotency_key=f"scan-result:{request_id}",
             operation="evidence.original.scan.record",

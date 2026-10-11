@@ -41,7 +41,7 @@ class BomItem(FrozenDTO):
 class BomSnapshot(FrozenDTO):
     ref: SnapshotRef
     engineering_configuration: SnapshotRef
-    items: Annotated[tuple[BomItem, ...], Field(max_length=2000)]
+    items: Annotated[tuple[BomItem, ...], Field()]
 
 
 class FixedBasis(FrozenDTO):
@@ -101,9 +101,9 @@ class CoverageRequest(TimedRequest):
     supply_snapshot: SnapshotRef
     # True only if the service has supplied every relevant pool and active reservation.
     supply_scope_complete: bool
-    pools: Annotated[tuple[SupplyPool, ...], Field(max_length=4000)]
-    reservations: Annotated[tuple[ReservationSnapshot, ...], Field(max_length=8000)] = ()
-    alternates: Annotated[tuple[AlternateQualification, ...], Field(max_length=1000)] = ()
+    pools: Annotated[tuple[SupplyPool, ...], Field()]
+    reservations: Annotated[tuple[ReservationSnapshot, ...], Field()] = ()
+    alternates: Annotated[tuple[AlternateQualification, ...], Field()] = ()
 
 
 class DemandLine(FrozenDTO):
@@ -213,7 +213,7 @@ class ProcessOperation(FrozenDTO):
 
 class ProcessSnapshot(FrozenDTO):
     ref: SnapshotRef
-    operations: Annotated[tuple[ProcessOperation, ...], Field(max_length=2000)]
+    operations: Annotated[tuple[ProcessOperation, ...], Field()]
     assumption: Text
 
 
@@ -235,17 +235,17 @@ class CostScope(FrozenDTO):
     max_rate_age_days: Annotated[int, Field(ge=0, le=3650)]
     nre_policy: Literal["excluded", "separate", "amortize"]
     nre_volume: Positive | None = None
-    assumptions: Annotated[tuple[Text, ...], Field(min_length=1, max_length=30)]
+    assumptions: Annotated[tuple[Text, ...], Field(min_length=1)]
 
 
 class CostRequest(TimedRequest):
     basis: FixedBasis
     scope: CostScope
     process: ProcessSnapshot | None = None
-    material_prices: Annotated[tuple[MaterialPrice, ...], Field(max_length=2000)]
-    prices: Annotated[tuple[PriceSnapshot, ...], Field(max_length=4000)]
-    rates: Annotated[tuple[ExchangeRate, ...], Field(max_length=100)] = ()
-    nre_price_ids: Annotated[tuple[Text, ...], Field(max_length=1000)] = ()
+    material_prices: Annotated[tuple[MaterialPrice, ...], Field()]
+    prices: Annotated[tuple[PriceSnapshot, ...], Field()]
+    rates: Annotated[tuple[ExchangeRate, ...], Field()] = ()
+    nre_price_ids: Annotated[tuple[Text, ...], Field()] = ()
 
 
 class CostLine(FrozenDTO):

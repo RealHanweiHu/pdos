@@ -51,7 +51,7 @@ const actionDescriptions: Record<Operation, string> = {
   "quality.capa.observation.record": "依据已发布的规则记录发生时间与实际观察，不从填写表单推定观察完整。",
   "quality.capa.verification.review": "按当前专业职责逐项复核适用性；未知保持未知，不能代替有效性决定。",
   "quality.capa.effectiveness.decide": "完整核对规则、观察与独立复核后，由具名人员分别作出有效性决定。",
-  "quality.issue.close": "关闭是独立批准，既有有效性决定不会自动关闭问题或放行产品。",
+  "quality.issue.close": "关闭是独立批准，既有有效性决定不会自动关闭问题或放行成品。",
 };
 const evaluationNames: Record<Evaluation, string> = {
   evaluated_current: "本次已核对当前事实",
@@ -222,7 +222,7 @@ export function CapaEffectivenessView({ state, busy, callbacks, issueOptions = [
         {businessPreview?.content ?? <p className="text-sm">完整业务预览尚未接通，不能确认保存。</p>}
         {hasSaveTimePlaceholder(prepared.review.before) || hasSaveTimePlaceholder(prepared.review.after) ?
           <p className="subtle">保存时由服务器记录的时点尚未生成；这是保存记录时间，不是实际观察发生时间。</p> : null}
-        <p className="subtle">本次核对有效至：<span className={`font-mono ${wrap}`}>{prepared.expires_at}</span></p>
+        <p className="subtle">{prepared.expires_at ? <>本次核对有效至：<span className={`font-mono ${wrap}`}>{prepared.expires_at}</span></> : "本次具名决定须在提交时重核当前依据。"}</p>
         {!completePreview && <p className="text-sm">办理材料或完整预览尚未接通，不能继续确认。</p>}
         <div className="flex flex-wrap gap-2">
           <Button type="button" className={touchButton} disabled={!confirmAllowed} onClick={callbacks.onConfirm}>
@@ -248,7 +248,7 @@ export function CapaEffectivenessView({ state, busy, callbacks, issueOptions = [
         <p className="subtle">{same(model.issue.ref, model.current_issue) ? "所选版本为服务器返回的当前版本。" : "所选历史版本只读；当前版本不由本页推算。"}</p>
         {model.anchor ? <div className="space-y-2 rounded-lg border p-3">
           <p className="text-sm font-medium">固定整改依据</p><FixedRef kind="anchor" reference={model.anchor.ref} labels={labels} />
-          <p className="subtle">{sourceNames[model.anchor.source_status]} · {model.anchor.visibility === "private" ? "私人范围" : "产品范围"}</p>
+          <p className="subtle">{sourceNames[model.anchor.source_status]} · {model.anchor.visibility === "private" ? "私人范围" : "型号范围"}</p>
           <p className="text-sm">保留最初失败版本：</p><FixedRef kind="issue" reference={model.anchor.origin_issue} labels={labels} />
         </div> : <p className="text-sm">固定整改依据尚未取得，不能从后续回链补造原失败事实。</p>}
         {detailSlots?.failurePairs ?? <p className="text-sm">原失败与新复验的逐样件、逐测试项完整对应尚未接通；不能只凭回链摘要认定已复验。</p>}

@@ -137,12 +137,8 @@ def apply(*args, **kwargs):
 
 
 def prepare_preview(s, ctx, command, product, payload):
-    owner.require(
-        command.product_id == product.id and command.expected_revision == product.revision,
-        "VERSION_CONFLICT",
-    )
-    return owner.read_phase(s, ctx, command, payload, current_cas=True)
+    return owner.prepare_preview(s, ctx, command, product, payload)
 
 
 def preview_prepared(s, ctx, command, product, payload, phase):
-    return owner._review(ctx, command, payload, phase)
+    return owner.preview_prepared(s, ctx, command, product, payload, phase)

@@ -7,7 +7,7 @@ import pdos_next.models  # noqa: F401 - complete model registration before runti
 from pdos_next import change_controlled_owner as controlled
 from pdos_next.change_graph_closure import _fresh_selects, _json, _pending_dependencies
 from pdos_next.domain.change_control.rules import digest
-from pdos_next.domain.change_execution.graph import MAX_NODES, OwnerReader
+from pdos_next.domain.change_execution.graph import OwnerReader
 from pdos_next.domain.quality_execution.service import get_issue_for_change
 from pdos_next.errors import DomainError
 from pdos_next.schemas.change_control.contracts import Node
@@ -87,7 +87,6 @@ def _read_registry(s, ctx, pid, request):
             ref = pending.pop(0)
             if ref.identity in objects:
                 continue
-            require(len(objects) < MAX_NODES, "COVERAGE_ENUMERATION_LIMIT", 422)
             obj = reader.resolve(ref)
             require(obj.current is True, "COVERAGE_DEPENDENCY_UNRESOLVED")
             objects[ref.identity] = obj

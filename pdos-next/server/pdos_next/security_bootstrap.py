@@ -25,23 +25,31 @@ class ScopedScanReader:
         engine = getattr(self.store, "read_engine", None)
         if binding is None or engine is None or binding.object_ref != reference:
             raise SecurityFailure("FORBIDDEN_SCOPE")
-        from sqlalchemy import select
 
         from pdos_next.database import tenant_session
-        from pdos_next.models import Product
         from pdos_next.original_security import Guard, security_row
         from pdos_next.originals import read_registered_bytes, require_original
         from pdos_next.service import Context
 
-        with tenant_session(engine, binding.tenant_id) as s:
-            s.scalar(select(Product).where(Product.id == binding.product_id).with_for_update())
-            ctx = Context(binding.tenant_id, binding.requester_id, binding.requester_id)
+        with tenant_session(
+            engine,
+            binding.tenant_id,
+            actor_id=binding.requester_id,
+            requester_id=binding.requester_id,
+            category_id=binding.category_id,
+        ) as s:
+            ctx = Context(
+                binding.tenant_id,
+                binding.requester_id,
+                binding.requester_id,
+                category_id=binding.category_id,
+            )
             row = require_original(s, ctx, binding.product_id, reference.id, lock=True)
             guard = Guard(s, row, security_row(s, row), binding.requester_id)
             if not guard.is_current(binding):
                 raise SecurityFailure("SOURCE_STALE")
             return read_registered_bytes(
-                self.store, reference, binding.tenant_id, binding.product_id
+                self.store, reference, binding.tenant_id, binding.product_id, binding.category_id
             )
 
 

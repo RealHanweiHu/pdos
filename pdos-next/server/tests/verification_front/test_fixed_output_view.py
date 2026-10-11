@@ -176,6 +176,13 @@ def fixed_request(monkeypatch, bound):  # noqa: F811 - imported pytest fixture
 
         def get(self, model, identity):
             work.calls.append(model.__name__)
+            if model is FormalVerificationRequest:
+                selected = parent if parent.id == identity else row if row.id == identity else None
+                return (
+                    selected
+                    if selected is not None and selected.owner_id == ctx.requester_id
+                    else None
+                )
             value = work.children[model]
             assert value is None or value.id == identity
             return value
@@ -285,7 +292,7 @@ def test_fixed_mode_cannot_skip_missing_referenced_child(fixed_request, assess_c
     work.children[child] = None
     with pytest.raises(DomainError) as caught:
         read(work, assess_capabilities=assess_capabilities)
-    assert caught.value.code == "INTEGRITY_MISMATCH"
+    assert caught.value.reason == "INTEGRITY_MISMATCH"
 
 
 @pytest.mark.parametrize("assess_capabilities", [True, False])
@@ -307,7 +314,7 @@ def test_fixed_mode_keeps_parent_access_snapshot_and_source_guards(
         return
     with pytest.raises(DomainError) as caught:
         read(work, assess_capabilities=assess_capabilities)
-    assert caught.value.code == (
+    assert caught.value.reason == (
         "FORBIDDEN_SCOPE" if failure == "private" else "INTEGRITY_MISMATCH"
     )
 

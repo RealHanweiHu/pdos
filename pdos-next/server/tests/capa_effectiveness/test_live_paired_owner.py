@@ -128,7 +128,7 @@ def frame(monkeypatch, operation="test.run.start"):
                 Grant(
                     id=structural.uid(f"grant:{actor}"),
                     tenant_id=work.ctx.tenant_id,
-                    product_id=work.binding.scope.product_id,
+                    category_id=work.ctx.category_id,
                     principal_id=actor,
                     can_write=True,
                     access_epoch=1,
@@ -138,7 +138,7 @@ def frame(monkeypatch, operation="test.run.start"):
 
     def authority(s, ctx, pid, project_id, snapshot, *, at):
         calls.append(("authority", snapshot["subject_id"], at))
-        assert at < clock[0]  # Exact saved decision period, not the current clock.
+        assert at == clock[0]  # Saved signature remains history; Current is checked now.
         return {
             "current": True,
             "assessment": {
@@ -175,6 +175,7 @@ def frame(monkeypatch, operation="test.run.start"):
         required_source_read_set=work.material.fact.reads,
         byte_material=({"original_id": str(structural.uid("report")), "sha256": "a" * 64},),
         valid_until=structural.AT + timedelta(hours=1),
+        time_constraints=(structural.AT + timedelta(hours=1),),
     )
     monkeypatch.setattr(bridge, "_source_read", lambda *args: sources)
     monkeypatch.setattr(bridge, "_fixed_source_basis", lambda *args: None)
@@ -203,7 +204,7 @@ def frame(monkeypatch, operation="test.run.start"):
 def code(call, expected):
     with pytest.raises(DomainError) as error:
         call()
-    assert error.value.code == expected
+    assert error.value.reason == expected
 
 
 def test_actual_storage_shape_attests_separate_saved_signers_and_caller_without_mutation(
@@ -224,7 +225,8 @@ def test_actual_storage_shape_attests_separate_saved_signers_and_caller_without_
         "semantic",
         "runtime",
     }
-    assert gate.valid_until == work.sources.valid_until
+    assert gate.valid_until is None
+    assert work.sources.time_constraints[0] in gate.time_constraints
     assert work.material.fact.actor_id != work.ctx.requester_id
     assert len([v for v in work.calls if v[0] == "authority"]) >= 2
     assert not work.s.new and not work.s.dirty and not work.s.deleted
@@ -297,17 +299,26 @@ def test_professional_revoke_after_bytes_blocks_gate(monkeypatch):
     code(work.attest, "PAIR_PROFESSIONAL_STALE")
 
 
-def test_original_signer_global_principal_disable_is_rechecked_after_all_source_io(monkeypatch):
+def test_disabled_original_signer_preserves_history_and_marks_review(monkeypatch):
     work = frame(monkeypatch)
     actor = work.material.fact.actor_id
 
-    def source(*args):
-        row = next(v for v in work.memory.rows[Principal] if v.id == actor)
-        row.active = False  # No Product epoch update, as in actual global disable.
-        return work.sources
+    row = next(v for v in work.memory.rows[Principal] if v.id == actor)
+    row.active = False
+    work.memory.rows[Grant] = [
+        value for value in work.memory.rows[Grant] if value.principal_id != actor
+    ]
+    original = bridge.front._recheck
 
-    monkeypatch.setattr(bridge, "_source_read", source)
-    code(work.attest, "PAIR_PROFESSIONAL_STALE")
+    def authority(*args, **kwargs):
+        value = original(*args, **kwargs)
+        value["needs_review"] = args[4]["subject_id"] == str(actor)
+        return value
+
+    monkeypatch.setattr(bridge.front, "_recheck", authority)
+    gate = work.attest()
+    assert gate.needs_review is True
+    assert gate.caller_id == work.ctx.requester_id
 
 
 def test_runtime_issuer_epoch_change_after_bytes_blocks_gate(monkeypatch):
@@ -414,7 +425,8 @@ def test_actual_scope_sql_is_bounded_and_does_not_flush(monkeypatch):
     work = frame(monkeypatch)
     monkeypatch.setattr(work.s, "flush", lambda *args: pytest.fail("owner must never flush"))
     gate = work.attest()
-    assert gate.valid_until > gate.checked_at
+    assert gate.valid_until is None
+    assert all(value > gate.checked_at for value in gate.time_constraints)
     assert all(
         query.get_execution_options().get("populate_existing")
         for query in work.memory.queries
@@ -478,7 +490,7 @@ def test_actual_definition_reference_is_typed_before_real_full_line_hash_owner(m
     assert closure[0]["sources"][0].revision == 2
 
 
-def test_full_source_closure_over_twenty_or_two_versions_is_rejected_without_truncation():
+def test_full_source_closure_over_twenty_is_complete_and_conflicting_versions_reject():
     rows = {
         "row": SimpleNamespace(
             sources=[],
@@ -488,7 +500,7 @@ def test_full_source_closure_over_twenty_or_two_versions_is_rejected_without_tru
             ],
         )
     }
-    code(lambda: bridge._refs_reads(rows), "RECHECK_REQUIRED")
+    assert len(bridge._refs_reads(rows)[1]) == 21
     rows["row"].required_source_read_set = [
         {"artifact_id": str(structural.uid("same-source")), "expected_revision": v} for v in (1, 2)
     ]
@@ -544,40 +556,33 @@ def test_drift_between_actual_wrapper_rounds_cannot_reuse_first_live_gate(monkey
     assert calls[0] == 1
 
 
-def test_planned_current_professional_boundary_is_full_scope_bounded_and_not_filtered_positive(
-    monkeypatch,
-):
+def test_planned_read_does_not_create_capture_deadline_from_unrelated_fact(monkeypatch):
     work = frame(monkeypatch)
-    read = work.read()
     next_at = structural.AT + timedelta(microseconds=3)
-    records = [
-        SimpleNamespace(
-            valid_from=next_at, valid_until=next_at + timedelta(minutes=1), state="withdrawn"
-        )
-    ]
-    selected = []
-    monkeypatch.setattr(work.s, "scalars", lambda query: (selected.append(query), records)[1])
-    bounds = bridge._planned_deadlines(
-        work.s, work.ctx, work.binding.scope.product_id, read, structural.AT
+    plan = SimpleNamespace(
+        facts_revision="a" * 64,
+        required_source_read_set=work.material.fact.reads,
+        valid_until=None,
+        expiry_boundaries=(),
     )
-    assert min(bounds) == next_at
-    query = selected[0]
-    assert query._limit_clause.value == 21
-    assert query.get_execution_options() == {"populate_existing": True, "autoflush": False}
-    assert "professional_authority_current" in str(query)
-    assert "state =" not in str(query)  # Negative/current facts cannot be silently omitted.
+    monkeypatch.setattr(bridge, "_execution", lambda *args: (None, plan))
+    monkeypatch.setattr(bridge.resources, "expired", lambda value, at: False)
+    gate = work.attest()
+    assert gate.valid_until is None and next_at not in gate.time_constraints
+    assert not any("professional_authority_current" in str(query) for query in work.memory.queries)
 
 
-def test_planned_activation_crossed_during_final_io_denies_gate(monkeypatch):
+def test_planned_actual_resource_condition_crossed_during_final_io_denies_gate(monkeypatch):
     work = frame(monkeypatch)
     boundary = structural.AT + timedelta(microseconds=1)
     plan = SimpleNamespace(
         facts_revision="a" * 64,
         required_source_read_set=work.material.fact.reads,
         valid_until=work.sources.valid_until,
+        expiry_boundaries=(boundary,),
     )
     monkeypatch.setattr(bridge, "_execution", lambda *args: (None, plan))
-    monkeypatch.setattr(bridge, "_planned_deadlines", lambda *args: (boundary,))
+    monkeypatch.setattr(bridge.resources, "expired", lambda value, at: at >= boundary)
     caller = bridge._caller
     calls = [0]
 

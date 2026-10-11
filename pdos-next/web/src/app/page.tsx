@@ -1,2 +1,2 @@
-import { Workspace } from "@/components/workspace";
-export default function Page() { return <Workspace />; }
+import { CategoryWorkspace } from "@/components/category-workspace";
+export default function Page() { return <CategoryWorkspace />; }

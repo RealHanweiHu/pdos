@@ -4,9 +4,9 @@ from uuid import UUID
 
 from pydantic import Field, field_validator, model_serializer, model_validator
 
-from pdos_next.contracts import StrictModel
 from pdos_next.domain.build_start.schemas import BuildExecutionScope
 from pdos_next.engines.supply_cost.common import Positive
+from pdos_next.schema_base import StrictModel
 
 
 class BuildCreatePayload(StrictModel):
@@ -66,7 +66,10 @@ class BuildReadinessPayload(StrictModel):
         value = handler(self)
         if self.execution_scope is None:
             for key in (
-                "execution_scope", "previous_assessment_id", "expected_previous_revision", "reason"
+                "execution_scope",
+                "previous_assessment_id",
+                "expected_previous_revision",
+                "reason",
             ):
                 value.pop(key, None)
         return value

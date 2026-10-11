@@ -36,7 +36,7 @@ def _scope():
             ["builds.tenant_id", "builds.product_id", "builds.project_id", "builds.id"],
         ),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
-        CheckConstraint("visibility IN ('private','product') AND build_revision > 0"),
+        CheckConstraint("visibility IN ('private','category','audience') AND build_revision > 0"),
     )
 
 
@@ -47,7 +47,6 @@ class SupplyCapture(_Scoped, Base):
     capture_key: Mapped[str] = mapped_column(String(160))
     request_sha256: Mapped[str] = mapped_column(String(64))
     snapshot_id: Mapped[UUID]
-    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     input_snapshot: Mapped[dict] = mapped_column(JSONB)
     bound_demand: Mapped[dict] = mapped_column(JSONB)
     proposed_snapshot: Mapped[dict] = mapped_column(JSONB)
@@ -57,7 +56,7 @@ class SupplyCapture(_Scoped, Base):
         UniqueConstraint("tenant_id", "product_id", "owner_id", "capture_key"),
         UniqueConstraint("tenant_id", "product_id", "snapshot_id"),
         UniqueConstraint("tenant_id", "product_id", "project_id", "build_id", "id", "snapshot_id"),
-        CheckConstraint("revision = 1 AND status = 'unapplied' AND expires_at > created_at"),
+        CheckConstraint("revision = 1 AND status = 'unapplied'"),
     )
 
 

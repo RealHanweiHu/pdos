@@ -38,13 +38,13 @@ export type Capability = {
   required_source_read_set: Read[]; receipt_subject_type: string;
 };
 export type Issue = {
-  issue_id: string; ref: VersionRef; owner_id: string; visibility: "private" | "product";
+  issue_id: string; ref: VersionRef; owner_id: string; visibility: "private" | "category" | "audience";
   purpose: string; status: "actioning" | "awaiting_verification" | "closed";
   current_evaluation: Evaluation; source_status: SourceState;
 };
 export type Anchor = {
   ref: MaterialRef; origin_issue: VersionRef; issue_id: string; capa_id: string;
-  scope: Scope; owner_id: string; visibility: "private" | "product";
+  scope: Scope; owner_id: string; visibility: "private" | "category" | "audience";
   purpose: string; nature: "real" | "synthetic"; source_status: SourceState;
 };
 export type LateLink = {
@@ -96,7 +96,7 @@ export type Inputs = {
 };
 export type Prepared = {
   schema_version: typeof uiSchema; command: Command; binding: Binding;
-  expires_at: string; write_tier: Tier; named_decision: boolean;
+  expires_at: string | null; write_tier: Tier; named_decision: boolean;
   review: { before: Json; after: Json; effect: string };
 };
 export type Receipt = {
@@ -117,7 +117,7 @@ export const record = (x: unknown): x is Record<string, unknown> =>
 export const uuid = (x: unknown): x is string => typeof x === "string" &&
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(x);
 export const positive = (x: unknown): x is number => Number.isSafeInteger(x) && Number(x) > 0;
-const text = (x: unknown): x is string => typeof x === "string" && x.length > 0 && x.length <= 10000;
+const text = (x: unknown): x is string => typeof x === "string" && x.length > 0;
 const hasKeys = (x: Record<string, unknown>, keys: string[]) =>
   Object.keys(x).length === keys.length && keys.every(key => Object.hasOwn(x, key));
 export const validRef = (x: unknown): x is VersionRef => record(x) &&
@@ -144,7 +144,7 @@ export function json(x: unknown, depth = 0, seen = new Set<object>()): x is Json
   if (!Array.isArray(x) && !record(x)) return false;
   if (seen.has(x)) return false; seen.add(x);
   const values = Array.isArray(x) ? x : Object.values(x);
-  const result = values.length <= 10000 && values.every(v => json(v, depth + 1, seen));
+  const result = values.every(v => json(v, depth + 1, seen));
   seen.delete(x); return result;
 }
 /** Clone/freeze without serializing clocks, decimal strings or negative-zero JSON numbers. */
@@ -154,7 +154,7 @@ export function snapshot<T>(x: T): T {
   return x;
 }
 export function validReads(x: unknown): x is Read[] {
-  if (!Array.isArray(x) || x.length > 20) return false;
+  if (!Array.isArray(x)) return false;
   const seen = new Set<string>();
   return x.every(v => {
     if (!record(v) || !hasKeys(v, ["artifact_id", "expected_revision"]) || !uuid(v.artifact_id) ||
@@ -163,7 +163,7 @@ export function validReads(x: unknown): x is Read[] {
   });
 }
 export function validMissing(x: unknown): x is Missing[] {
-  return Array.isArray(x) && x.length <= 10000 && x.every(v => record(v) &&
+  return Array.isArray(x) && x.every(v => record(v) &&
     hasKeys(v, ["code", "detail"]) && text(v.code) && text(v.detail));
 }
 /** Validation only; returns original aware ISO string, including fractional precision and offset. */
@@ -202,7 +202,7 @@ export function parseModel(x: unknown): Model | null {
       x.schema_version !== uiSchema || !validContext(x.context) || !record(x.issue) || !validMissing(x.missing)) return null;
   const issue = x.issue;
   if (!hasKeys(issue, ["issue_id", "ref", "owner_id", "visibility", "purpose", "status", "current_evaluation", "source_status"]) ||
-      !uuid(issue.issue_id) || !validRef(issue.ref) || !uuid(issue.owner_id) || !["private", "product"].includes(String(issue.visibility)) ||
+      !uuid(issue.issue_id) || !validRef(issue.ref) || !uuid(issue.owner_id) || !["private", "category", "audience"].includes(String(issue.visibility)) ||
       !text(issue.purpose) || issue.purpose !== issue.purpose.trim() || !["actioning", "awaiting_verification", "closed"].includes(String(issue.status)) ||
       !evaluation(issue.current_evaluation) || !sourceState(issue.source_status) || (x.current_issue !== null && !validRef(x.current_issue))) return null;
   if (x.anchor !== null) {

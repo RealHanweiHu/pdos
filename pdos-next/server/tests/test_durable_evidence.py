@@ -56,13 +56,22 @@ def upload_input(content=b"Synthetic original\nPressure: 150 PSI\n", **changes):
 
 def uploaded(setup, store, content=b"Synthetic original\nPressure: 150 PSI\n", **changes):
     data = upload_input(content, **changes)
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         result = upload(session, setup.ctx, setup.product, data, store)
     return result, data
 
 
 def reference(setup, receipt):
     return {
+        "category_id": str(setup.category),
+        "actor_id": str(setup.human),
+        "requester_id": str(setup.human),
         "tenant_id": str(setup.tenant),
         "product_id": str(setup.product),
         "subject_id": receipt["subject_id"],
@@ -81,10 +90,22 @@ def expire_lease(setup, event_id):
 def test_upload_same_and_changed_keys_preserve_one_original_receipt(setup, store):
     content = b"\nSynthetic original bytes\n"
     first, data = uploaded(setup, store, content)
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         replay = upload(session, setup.ctx, setup.product, data, store)
     assert replay == first
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         changed_key = upload(
             session,
             setup.ctx,
@@ -95,7 +116,13 @@ def test_upload_same_and_changed_keys_preserve_one_original_receipt(setup, store
     assert changed_key == first
     with (
         pytest.raises(DomainError) as error,
-        tenant_session(setup.engine, setup.tenant) as session,
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.human,
+            requester_id=setup.human,
+            category_id=setup.category,
+        ) as session,
     ):
         upload(
             session,
@@ -107,7 +134,13 @@ def test_upload_same_and_changed_keys_preserve_one_original_receipt(setup, store
             store,
         )
     assert error.value.code == "DUPLICATE_INTENT_CONFLICT"
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         original = session.get(UploadedOriginal, UUID(first["subject_id"]))
         assert count(session, UploadedOriginal) == 1
         assert count(session, Receipt) == count(session, Audit) == count(session, Outbox) == 1
@@ -128,11 +161,24 @@ def test_upload_same_and_changed_keys_preserve_one_original_receipt(setup, store
 def test_upload_validation_happens_before_original_or_receipt(setup, store, changes, code):
     with (
         pytest.raises(DomainError) as error,
-        tenant_session(setup.engine, setup.tenant) as session,
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.human,
+            requester_id=setup.human,
+            category_id=setup.category,
+        ) as session,
     ):
         upload(session, setup.ctx, setup.product, upload_input(**changes), store)
-    assert error.value.code == code
-    with tenant_session(setup.engine, setup.tenant) as session:
+    assert error.value.code == ("VERSION_CONFLICT" if code == "VERSION_CONFLICT" else "VALIDATION_FAILED")
+    assert error.value.reason == code
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         assert (
             count(session, UploadedOriginal)
             == count(session, Receipt)
@@ -145,24 +191,45 @@ def test_upload_validation_happens_before_original_or_receipt(setup, store, chan
 def test_upload_and_private_download_require_current_scope_and_human(setup, store):
     result, _ = uploaded(setup, store)
     identity = UUID(result["subject_id"])
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = require_original(session, setup.ctx, setup.product, identity)
         assert store.read_original(object_reference(row)).startswith(b"Synthetic original")
     with (
         pytest.raises(DomainError) as error,
-        tenant_session(setup.engine, setup.tenant) as session,
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.peer,
+            requester_id=setup.peer,
+            category_id=setup.category,
+        ) as session,
     ):
         require_original(
-            session, Context(setup.tenant, setup.peer, setup.peer), setup.product, identity
+            session,
+            Context(setup.tenant, setup.peer, setup.peer, category_id=setup.category),
+            setup.product,
+            identity,
         )
     assert error.value.code == "SOURCE_UNAVAILABLE"
     with (
         pytest.raises(DomainError) as error,
-        tenant_session(setup.engine, setup.tenant) as session,
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.agent,
+            requester_id=setup.agent,
+            category_id=setup.category,
+        ) as session,
     ):
         upload(
             session,
-            Context(setup.tenant, setup.agent, setup.agent),
+            Context(setup.tenant, setup.agent, setup.agent, category_id=setup.category),
             setup.product,
             upload_input(b"Agent cannot upload"),
             store,
@@ -177,14 +244,20 @@ def test_upload_and_private_download_require_current_scope_and_human(setup, stor
     with Session(setup.admin) as session, session.begin():
         grant = session.scalar(
             select(Grant).where(
-                Grant.product_id == setup.product,
+                Grant.category_id == setup.category,
                 Grant.principal_id == setup.human,
             )
         )
         grant.expires_at = now() - timedelta(seconds=1)
     with (
         pytest.raises(DomainError) as error,
-        tenant_session(setup.engine, setup.tenant) as session,
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.human,
+            requester_id=setup.human,
+            category_id=setup.category,
+        ) as session,
     ):
         require_original(session, setup.ctx, setup.product, identity)
     assert error.value.code == "FORBIDDEN_SCOPE"
@@ -196,11 +269,23 @@ def test_original_metadata_is_database_immutable_and_bytes_remain_available(setu
     identity = UUID(result["subject_id"])
     with (
         pytest.raises(DBAPIError, match="immutable"),
-        tenant_session(setup.engine, setup.tenant) as session,
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.human,
+            requester_id=setup.human,
+            category_id=setup.category,
+        ) as session,
     ):
         session.get(UploadedOriginal, identity).content_hash = "0" * 64
         session.flush()
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = require_original(session, setup.ctx, setup.product, identity)
         assert store.read_original(object_reference(row)) == content
 
@@ -211,7 +296,13 @@ def test_parse_utf8_commits_artifact_receipt_audit_and_event_once(setup, store):
     result = secured_parse(setup.engine, reference(setup, upload_receipt), store)
     assert result["status"] == "parsed"
     assert secured_parse(setup.engine, reference(setup, upload_receipt), store) == result
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = session.get(UploadedOriginal, UUID(upload_receipt["subject_id"]))
         artifact = session.scalar(select(Artifact).where(Artifact.original_id == row.id))
         receipt = session.scalar(
@@ -240,7 +331,13 @@ def test_text_locator_preserves_cr_unicode_separator_and_empty_source_line(setup
     assert (
         secured_parse(setup.engine, reference(setup, upload_receipt), store)["status"] == "parsed"
     )
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = session.get(UploadedOriginal, UUID(upload_receipt["subject_id"]))
         artifact = session.scalar(select(Artifact).where(Artifact.original_id == row.id))
         assert artifact.content.encode("utf-8") == content
@@ -267,7 +364,13 @@ def test_parse_outbox_failure_rolls_back_derived_fact_and_result(setup, store):
             secured_parse(setup.engine, reference(setup, upload_receipt), store)
     finally:
         event.remove(Outbox, "before_insert", fail)
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = session.get(UploadedOriginal, UUID(upload_receipt["subject_id"]))
         assert row.status == "uploaded" and row.revision == 1 and row.locator_map == []
         assert count(session, Artifact) == 0
@@ -283,7 +386,13 @@ def test_parse_failure_and_replayed_worker_preserve_original_without_fact(setup,
     result = secured_parse(setup.engine, reference(setup, upload_receipt), store)
     assert result["status"] == "failed"
     assert secured_parse(setup.engine, reference(setup, upload_receipt), store) == result
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = session.get(UploadedOriginal, UUID(upload_receipt["subject_id"]))
         assert row.parse_code == "INVALID_ENCODING" and row.scan_status == "clean"
         assert row.revision == 2 and row.locator_map == [] and count(session, Artifact) == 0
@@ -314,7 +423,13 @@ def test_two_parse_workers_produce_one_fact_and_one_parse_receipt(
             )
         )
     assert results[0] == results[1] and results[0]["status"] == "parsed"
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         assert count(session, Artifact) == 1
         assert count(session, Receipt, Receipt.operation == "evidence.original.parse") == 1
         assert count(session, Audit) == count(session, Outbox) == 4
@@ -330,7 +445,7 @@ def test_access_revoked_during_parse_blocks_domain_commit(
         with Session(setup.admin) as session, session.begin():
             grant = session.scalar(
                 select(Grant).where(
-                    Grant.product_id == setup.product,
+                    Grant.category_id == setup.category,
                     Grant.principal_id == setup.human,
                 )
             )
@@ -343,10 +458,20 @@ def test_access_revoked_during_parse_blocks_domain_commit(
     with pytest.raises(DomainError) as error:
         secured_parse(setup.engine, reference(setup, upload_receipt), store)
     assert error.value.code == "FORBIDDEN_SCOPE"
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
+        row = session.get(UploadedOriginal, UUID(upload_receipt["subject_id"]))
+        assert row is None
+    with Session(setup.admin) as session:
         row = session.get(UploadedOriginal, UUID(upload_receipt["subject_id"]))
         assert row.status == "uploaded" and row.revision == 1
-        assert count(session, Artifact) == 0 and count(session, Receipt) == 3
+        assert count(session, Artifact, Artifact.tenant_id == setup.tenant) == 0
+        assert count(session, Receipt, Receipt.tenant_id == setup.tenant) == 3
 
 
 def two_page_pdf():
@@ -381,7 +506,13 @@ def two_page_pdf():
 def test_pdf_locator_uses_actual_derived_lines_including_page_separator(setup, store):
     result, _ = uploaded(setup, store, two_page_pdf(), filename="synthetic.pdf")
     assert secured_parse(setup.engine, reference(setup, result), store)["status"] == "parsed"
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = session.get(UploadedOriginal, UUID(result["subject_id"]))
         artifact = session.scalar(select(Artifact).where(Artifact.original_id == row.id))
         lines = artifact.content.splitlines()
@@ -405,7 +536,13 @@ def test_xlsx_locator_retains_cell_and_multiline_value_offsets(setup, store):
     workbook.save(target)
     result, _ = uploaded(setup, store, target.getvalue(), filename="synthetic.xlsx")
     assert secured_parse(setup.engine, reference(setup, result), store)["status"] == "parsed"
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = session.get(UploadedOriginal, UUID(result["subject_id"]))
         artifact = session.scalar(select(Artifact).where(Artifact.original_id == row.id))
         lines = artifact.content.splitlines()
@@ -420,12 +557,18 @@ def test_competing_outbox_leases_have_one_claim_and_one_inbox(setup, store):
     uploaded(setup, store)
     with ThreadPoolExecutor(max_workers=2) as pool:
         lists = list(
-            pool.map(lambda _: claim_events(setup.engine, setup.tenant, limit=1), range(2))
+            pool.map(lambda _: claim_events(setup.dispatch, setup.tenant, limit=1), range(2))
         )
     events = [envelope for values in lists for envelope in values]
     assert len(events) == 1
     envelope = events[0]
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = session.get(Outbox, UUID(envelope.event_id))
         assert row.lease_id == UUID(envelope.lease_id) and row.attempts == 1
         assert row.delivered_at is None and row.lease_until > now()
@@ -434,21 +577,33 @@ def test_competing_outbox_leases_have_one_claim_and_one_inbox(setup, store):
 
 def test_unknown_delivery_waits_then_new_lease_rejects_old_ack(setup, store):
     uploaded(setup, store)
-    first = claim_events(setup.engine, setup.tenant)[0]
-    delivery_unknown(setup.engine, first)
-    assert claim_events(setup.engine, setup.tenant) == []
-    with tenant_session(setup.engine, setup.tenant) as session:
+    first = claim_events(setup.dispatch, setup.tenant)[0]
+    delivery_unknown(setup.dispatch, first)
+    assert claim_events(setup.dispatch, setup.tenant) == []
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = session.get(Outbox, UUID(first.event_id))
         assert row.last_error == "DELIVERY_UNKNOWN" and row.delivered_at is None
         assert row.lease_id == UUID(first.lease_id)
     expire_lease(setup, first.event_id)
-    second = claim_events(setup.engine, setup.tenant)[0]
+    second = claim_events(setup.dispatch, setup.tenant)[0]
     assert second.event_id == first.event_id and second.lease_id != first.lease_id
-    assert acknowledge(setup.engine, first, workflow_id="stale-workflow") is False
-    assert acknowledge(setup.engine, second, workflow_id="synthetic-original-workflow") is True
-    assert acknowledge(setup.engine, second, workflow_id="overwrite-workflow") is False
-    assert claim_events(setup.engine, setup.tenant) == []
-    with tenant_session(setup.engine, setup.tenant) as session:
+    assert acknowledge(setup.dispatch, first, workflow_id="stale-workflow") is False
+    assert acknowledge(setup.dispatch, second, workflow_id="synthetic-original-workflow") is True
+    assert acknowledge(setup.dispatch, second, workflow_id="overwrite-workflow") is False
+    assert claim_events(setup.dispatch, setup.tenant) == []
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = session.get(Outbox, UUID(first.event_id))
         inbox = session.scalar(
             select(Inbox).where(Inbox.event_id == row.id, Inbox.consumer == CONSUMER)
@@ -467,11 +622,11 @@ def test_dispatch_response_loss_retries_original_inbox_then_marks_ignored(setup,
         attempted.append(envelope.event_id)
         raise ConnectionError("Synthetic lost response")
 
-    assert asyncio.run(dispatch_once(setup.engine, setup.tenant, unknown_sender)) == {
+    assert asyncio.run(dispatch_once(setup.dispatch, setup.tenant, unknown_sender)) == {
         "delivered": 0,
         "unknown": 1,
     }
-    assert asyncio.run(dispatch_once(setup.engine, setup.tenant, unknown_sender)) == {
+    assert asyncio.run(dispatch_once(setup.dispatch, setup.tenant, unknown_sender)) == {
         "delivered": 0,
         "unknown": 0,
     }
@@ -482,11 +637,17 @@ def test_dispatch_response_loss_retries_original_inbox_then_marks_ignored(setup,
         assert envelope.event_id == attempted[0]
         return None
 
-    assert asyncio.run(dispatch_once(setup.engine, setup.tenant, no_route)) == {
+    assert asyncio.run(dispatch_once(setup.dispatch, setup.tenant, no_route)) == {
         "delivered": 1,
         "unknown": 0,
     }
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         row = session.get(Outbox, UUID(attempted[0]))
         inbox = session.scalar(
             select(Inbox).where(Inbox.event_id == row.id, Inbox.consumer == CONSUMER)

@@ -5,7 +5,7 @@ import { awareTimestamp, canonicalLifecycleTime, lifecycleCommand, lifecycleFail
 const raw = { id: "object-a", title: "未完成上传的合成原件", filename: "source.txt", revision: 3, registered: false, upload_state: "failed", parse_state: "not_requested", retention_until: "2026-10-01T10:00:00Z", manual_hold: false, disposition: "active", pending_intent_id: null, reference_count: 0, formal_history: false, coverage_complete: true, registration_state: "unregistered", byte_status: "present", reasons: [], can_quarantine: true, can_restore: false, can_record_protection: true, can_abandon_upload: true, upload_attempt_id: "attempt-a", upload_attempt_revision: 2, policy_version: "policy-a", intents: [{ id: "intent-a", revision: 1, action: "quarantine", state: "pending", created_at: "2026-10-02T10:00:00Z", updated_at: "2026-10-02T10:00:00Z", recovery_required: false, reason: "合成观察", can_cancel: true, can_reconcile: false }] };
 const inventory = normalizeInventory({ items: [raw], policy: { version: "policy-a", profile: "local-synthetic", failed_upload_grace_seconds: 60, quarantine_grace_seconds: 120 }, coverage_complete: true });
 const item = inventory.items[0], now = Date.parse("2026-10-02T10:01:00Z");
-const candidate = { candidate_id: "candidate-a", action: "quarantine", object_id: item.id, digest: "a".repeat(64), eligible: true, reasons: [], expires_at: "2026-10-02T10:05:00Z", not_before: null, lifecycle_revision: item.revision };
+const candidate = { candidate_id: "candidate-a", action: "quarantine", object_id: item.id, digest: "a".repeat(64), eligible: true, reasons: [], captured_at: "2026-10-02T10:05:00Z", not_before: null, lifecycle_revision: item.revision };
 const command = lifecycleCommand("product-a", 7, item, "evidence.lifecycle.quarantine", { candidate_id: candidate.candidate_id, digest: candidate.digest }, "具名核对合成隔离意图", "command-a", "key-a");
 function prepared(original: LifecycleCommand = command) { return { command: { ...original, payload: { ...original.payload, confirmation_token: "server-confirmation-token" } }, expires_at: "2026-10-02T10:05:00Z", review: { before: { ...candidate }, after: { action: "quarantine", status: "pending", reason: original.payload.reason, physical_effect_applied: false }, effect: "只记录意图，不删除字节，不授予安全资格。" } }; }
 
@@ -24,7 +24,7 @@ test("intent actions require explicit capabilities rather than a guessed state",
 });
 test("candidate identity, action, digest, version and aware time are exact", () => {
   assert.equal(validLifecycleCandidate(candidate, item, "quarantine"), true);
-  for (const changes of [{ object_id: "object-b" }, { action: "restore" }, { digest: "broken" }, { lifecycle_revision: 2 }, { expires_at: "2026-10-02T10:05:00" }]) assert.equal(validLifecycleCandidate({ ...candidate, ...changes }, item, "quarantine"), false);
+  for (const changes of [{ object_id: "object-b" }, { action: "restore" }, { digest: "broken" }, { lifecycle_revision: 2 }, { captured_at: "2026-10-02T10:05:00" }]) assert.equal(validLifecycleCandidate({ ...candidate, ...changes }, item, "quarantine"), false);
   assert.equal(validLifecycleCandidate({ ...candidate, eligible: false, reasons: ["registered_original"] }, item, "quarantine"), true);
 });
 test("confirmed command preserves identifiers, semantic payload and empty source read-set", () => {

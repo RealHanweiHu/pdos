@@ -3,6 +3,7 @@
 # ruff: noqa: F811 - pytest fixture dependency imports are deliberate
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
+from dataclasses import replace
 from datetime import datetime
 from uuid import UUID, uuid4
 
@@ -12,21 +13,6 @@ from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 from test_project_first_plan import accepted, post
 from verification_handoff.fixtures import command as handoff_command
-from verification_launch.fixtures import (  # noqa: F401
-    accepted_work,
-    advance_clock,
-    command,
-    current,
-    fixed_run,
-    known_configuration,
-    launch_work,
-    listing,
-    operational_work,
-    planned,
-    promised,
-    ready_work,
-    started,
-)
 
 from pdos_next.contracts import Command
 from pdos_next.database import tenant_session
@@ -47,10 +33,31 @@ from pdos_next.errors import DomainError
 from pdos_next.models import Artifact, Audit, Confirmation, Outbox, Principal, Receipt, RequestKey
 from pdos_next.schemas.verification.contracts import EventTime
 from pdos_next.service import Context, digest, execute
+from pdos_next.test_resource_import import import_test_resource_fact
+from verification_launch.fixtures import (  # noqa: F401
+    accepted_work,
+    advance_clock,
+    command,
+    current,
+    fixed_run,
+    known_configuration,
+    launch_work,
+    listing,
+    operational_work,
+    planned,
+    promised,
+    ready_work,
+    started,
+)
 
 
 def counts(work):
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as s:
         return {
             model.__tablename__: s.scalar(select(func.count()).select_from(model))
             for model in (
@@ -79,7 +86,12 @@ def preview(work, value):
 
 def unconsumed(work, prepared):
     token = prepared["payload"]["confirmation_token"]
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as s:
         assert (
             s.scalar(select(Confirmation.consumed).where(Confirmation.token_hash == digest(token)))
             is False
@@ -149,7 +161,12 @@ def test_fixed_full_accepted_plan_promise_and_atomic_actual_start_leave_old_hist
         request["timeline"]["actual_start"]["occurred_at"]
     ) == datetime.fromisoformat(actual["payload"]["at"]["occurred_at"])
     assert request["timeline"]["final_result"] is None and request["timeline"]["disposed"] is None
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as s:
         history = s.get(FormalVerificationRequest, UUID(old["id"]))
         assert history.request_snapshot == old["request_snapshot"]
         use = s.scalar(select(SampleRunUsage).where(SampleRunUsage.run_id == work.binding.run_id))
@@ -158,7 +175,12 @@ def test_fixed_full_accepted_plan_promise_and_atomic_actual_start_leave_old_hist
             use.source_basis["actual_start"]
         ) == EventTime.model_validate(actual["payload"]["at"])
     unconsumed_token = prepared["payload"]["confirmation_token"]
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as s:
         assert (
             s.scalar(
                 select(Confirmation.consumed).where(
@@ -220,11 +242,14 @@ def test_complete_accepted_scope_and_fixed_resource_binding_cannot_be_shrunk_or_
     wrong = deepcopy(value)
     wrong["payload"]["execution_plan"]["conditions"] = "Client changed trusted conditions"
     result = post(work.quality, wrong, True)
-    assert result.status_code == 409 and result.json()["code"] == "TEST_PLAN_SCOPE_MISMATCH"
+    assert (
+        result.status_code == 409
+        and result.json()["detail"]["reason"] == "TEST_PLAN_SCOPE_MISMATCH"
+    )
     omitted = deepcopy(value)
     omitted["payload"]["coverage"] = []
     result = post(work.quality, omitted, True)
-    assert result.status_code == 422 and result.json()["code"] == "INVALID_PAYLOAD"
+    assert result.status_code == 422 and result.json()["detail"]["reason"] == "INVALID_PAYLOAD"
     assert not listing(work)["runs"]
 
 
@@ -249,29 +274,94 @@ def test_source_withdrawal_blocks_old_confirmation_and_keeps_every_effect_unwrit
     work = launch_work
     prepared = preview(work, command(work, "test.run.plan"))["command"]
     before = counts(work)
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as s:
         s.execute(
             update(Artifact)
             .where(Artifact.id == UUID(work.actual_source["artifact_id"]))
             .values(status="withdrawn")
         )
     result = post(work.quality, prepared)
-    assert result.status_code == 409 and result.json()["code"] == "SOURCE_UNAVAILABLE"
+    assert result.status_code == 409 and result.json()["detail"]["reason"] == "SOURCE_UNAVAILABLE"
     assert counts(work) == before
     unconsumed(work, prepared)
 
 
-def test_named_resource_decision_changes_block_actual_start_before_common_confirmation(
+def test_historical_resource_decision_callback_is_not_replayed_by_confirmed_start(
+    launch_work, monkeypatch
+):
+    work = launch_work
+    promised(work)
+    advance_clock(work, monkeypatch)
+    calls = []
+    original = work.test_issuer.verify_named_decision
+
+    def observed(*args, **kwargs):
+        calls.append((args, kwargs))
+        return original(*args, **kwargs)
+
+    # Observe a real registered issuer's callback without supplying any proof.
+    # Keep key/version/epoch/token identical to the originally signed fact.
+    registered = replace(work.test_issuer, verify_named_decision=observed)
+    registry = dict(work.setup.engine._pdos_test_resource_issuers)
+    registry[registered.key] = registered
+    with monkeypatch.context() as observer:
+        observer.setattr(work.setup.engine, "_pdos_test_resource_issuers", registry)
+        prepared = preview(work, command(work, "test.run.start"))["command"]
+        before = counts(work)
+        work.test_decisions_current = False
+        result = post(work.quality, prepared)
+        assert result.status_code == 200, result.text
+        assert result.json()["subject_type"] == "test_run"
+        assert calls == []
+        after = counts(work)
+        assert (
+            after[TestResourceReservation.__tablename__]
+            == before[TestResourceReservation.__tablename__] + 1
+        )
+        assert after[SampleRunUsage.__tablename__] == before[SampleRunUsage.__tablename__] + 1
+        assert after[ResourceOccupancy.__tablename__] > before[ResourceOccupancy.__tablename__]
+        assert current(work)["status"] == "executing"
+
+
+def test_direct_resource_current_successor_blocks_old_start_confirmation_without_effects(
     launch_work, monkeypatch
 ):
     work = launch_work
     promised(work)
     advance_clock(work, monkeypatch)
     prepared = preview(work, command(work, "test.run.start"))["command"]
+    successor = work.test_input.model_copy(
+        update={
+            "expected_previous_id": work.test_fact_id,
+            "expected_previous_revision": 1,
+            "reason": "Actual signed resource Current successor after Start preview",
+        }
+    )
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as s:
+        receipt = import_test_resource_fact(
+            s,
+            work.quality.ctx,
+            work.setup.product,
+            work.test_issuer,
+            successor,
+            request_key=str(uuid4()),
+            command_id=uuid4(),
+        )
+        assert UUID(receipt["subject_id"]) != work.test_fact_id
     before = counts(work)
-    work.test_decisions_current = False
     result = post(work.quality, prepared)
-    assert result.status_code == 409 and result.json()["code"] == "RESOURCE_NOT_READY"
+    assert result.status_code == 409
+    assert result.json()["detail"]["reason"] == "RESOURCE_FACTS_CHANGED"
     assert counts(work) == before and current(work)["status"] == "scheduled"
     unconsumed(work, prepared)
 
@@ -286,7 +376,12 @@ def test_end_of_common_audit_outbox_failure_rolls_back_start_occupancy_usage_and
     advance_clock(work, monkeypatch)
     prepared = preview(work, command(work, "test.run.start"))["command"]
     before = counts(work)
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as s:
         epochs = {r.id: r.occupancy_epoch for r in s.scalars(select(OperationalAsset))}
     append = common.append_receipt
 
@@ -299,7 +394,12 @@ def test_end_of_common_audit_outbox_failure_rolls_back_start_occupancy_usage_and
         post(work.quality, prepared)
     assert counts(work) == before
     unconsumed(work, prepared)
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as s:
         assert {r.id: r.occupancy_epoch for r in s.scalars(select(OperationalAsset))} == epochs
     monkeypatch.setattr(common, "append_receipt", append)
     retry = post(work.quality, prepared)
@@ -310,15 +410,22 @@ def test_build_writer_or_agent_cannot_claim_quality_or_write_run_directly(launch
     work = launch_work
     value = command(work, "test.run.plan")
     result = post(work.setup, value, True)
-    assert result.status_code == 403 and result.json()["code"] == "QUALIFICATION_REQUIRED"
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    assert (
+        result.status_code == 403 and result.json()["detail"]["reason"] == "QUALIFICATION_REQUIRED"
+    )
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as s:
         with pytest.raises(DomainError) as error:
             execute(
                 s,
                 Context(work.setup.tenant, work.setup.agent, work.setup.agent),
                 Command.model_validate(value),
             )
-        assert error.value.code == "FORBIDDEN_SCOPE"
+        assert error.value.reason == "FORBIDDEN_SCOPE"
     with Session(work.setup.admin) as s:
         for table in (
             VerificationRunIdentity,
@@ -340,7 +447,12 @@ def test_immutable_run_identity_versions_and_cross_tenant_rls(launch_work):
     planned(work)
     row = fixed_run(work)
     with pytest.raises(DBAPIError, match="permission denied"):
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.human,
+            category_id=work.setup.category,
+        ) as s:
             s.execute(
                 update(VerificationRunVersion)
                 .where(VerificationRunVersion.id == UUID(row["id"]))
@@ -389,5 +501,7 @@ def test_acceptance_cannot_expand_fixed_one_run_scope_after_plan(launch_work):
         },
     )
     result = post(work.quality, value, True)
-    assert result.status_code == 409 and result.json()["code"] == "REQUEST_RUN_SCOPE_FIXED"
+    assert (
+        result.status_code == 403 and result.json()["detail"]["reason"] == "REQUEST_RUN_SCOPE_FIXED"
+    )
     assert len(current(work)["accepted_coverage"]) == 1

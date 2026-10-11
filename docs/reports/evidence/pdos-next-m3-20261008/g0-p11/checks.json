@@ -1,0 +1,20 @@
+{
+  "target": "127.0.0.1:52693/pdos_test",
+  "marker": "bfcfb45f-4eaa-4a65-a038-c1da6b98f8af",
+  "alembic_baseline": "s0_0719",
+  "checks": {
+    "tests": 50,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0
+  },
+  "AT52_new_cases": 4,
+  "AT52_included_in_final_m3": true,
+  "source_drift": [],
+  "full_system_acceptance": false,
+  "production_changed": false,
+  "final_log": "frozen-m3.log",
+  "final_junit": "frozen-m3.xml",
+  "snapshot_drift": [],
+  "P11_implementation_matches_current": true
+}

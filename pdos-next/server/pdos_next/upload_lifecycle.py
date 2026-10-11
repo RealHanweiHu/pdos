@@ -37,18 +37,17 @@ def reference_document(reference):
 
 
 def named(s, ctx, product_id):
-    product = s.scalar(select(Product).where(Product.id == product_id).with_for_update())
-    if not product:
-        raise DomainError("FORBIDDEN_SCOPE", "产品范围不可用。", 403)
-    require_access(s, ctx, product_id, write=True, lock=True)
+    product = require_access(s, ctx, product_id, write=True, lock=True)
+    if product_id is not None:
+        product = s.scalar(select(Product).where(Product.id == product_id).with_for_update())
     actor = s.get(Principal, ctx.actor_id)
-    if ctx.run_id or ctx.actor_id != ctx.requester_id or actor.kind != "human":
+    if ctx.run_id or ctx.agent_run_id or ctx.actor_id != ctx.requester_id or actor.kind != "human":
         raise DomainError("NAMED_DECISION_REQUIRED", "上传登记需要具名本人办理。", 403)
     return product
 
 
 def reserve(s, ctx, product_id, data):
-    product = named(s, ctx, product_id)
+    require_access(s, ctx, product_id)
     content, media, request, fingerprint = upload_contents(data)
     key = s.scalar(
         select(RequestKey).where(
@@ -65,11 +64,18 @@ def reserve(s, ctx, product_id, data):
         ):
             raise DomainError("DUPLICATE_INTENT_CONFLICT", "原上传请求对应不同范围或内容。")
         return None
-    intent = digest(["evidence.original.upload", product_id, ctx.requester_id, request])
+    intent = digest(
+        ["evidence.original.upload", ctx.category_id, product_id, ctx.requester_id, request]
+    )
     if s.scalar(
-        select(Receipt.id).where(Receipt.product_id == product_id, Receipt.intent_digest == intent)
+        select(Receipt.id).where(
+            Receipt.category_id == ctx.category_id,
+            Receipt.product_id == product_id,
+            Receipt.intent_digest == intent,
+        )
     ):
         return None
+    product = named(s, ctx, product_id)
     previous = s.scalar(
         select(UploadAttempt).where(
             UploadAttempt.owner_id == ctx.requester_id,
@@ -93,7 +99,7 @@ def reserve(s, ctx, product_id, data):
     if equivalent:
         return equivalent.id
     if product.revision != data.expected_revision:
-        raise DomainError("VERSION_CONFLICT", "产品范围已变化。")
+        raise DomainError("VERSION_CONFLICT", "型号范围已变化。")
     from hashlib import sha256
 
     object_id, content_hash = uuid4(), sha256(content).hexdigest()
@@ -108,6 +114,7 @@ def reserve(s, ctx, product_id, data):
     row = UploadAttempt(
         id=object_id,
         tenant_id=ctx.tenant_id,
+        category_id=ctx.category_id,
         product_id=product_id,
         owner_id=ctx.requester_id,
         request_key=data.idempotency_key,
@@ -124,7 +131,8 @@ def reserve(s, ctx, product_id, data):
 def require_reserved(s, ctx, product_id, attempt, fingerprint, reference=None):
     s.refresh(attempt)
     if (
-        attempt.product_id != product_id
+        attempt.category_id != ctx.category_id
+        or attempt.product_id != product_id
         or attempt.owner_id != ctx.requester_id
         or attempt.request_digest != fingerprint
         or attempt.status != "reserved"

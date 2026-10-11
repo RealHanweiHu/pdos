@@ -1,0 +1,41 @@
+{
+  "head": "s0_0723",
+  "database": "pdos_test",
+  "port": 62303,
+  "marker": "6712d849-f2c1-4b32-ae79-d50d9a31639d",
+  "synthetic_only": true,
+  "llm_calls": 0,
+  "chain_tables": {
+    "engineering_configurations": {
+      "rows": 287,
+      "sha256": "c925c7d4b2553046f610e2b4ac4696ee6b7e077f17cf979dccdaaace7de50fc0"
+    },
+    "process_revisions": {
+      "rows": 286,
+      "sha256": "db93bb1904ff79070b218ea87375fa69c3cd74b0de5572bf85bb056cca477c4b"
+    },
+    "build_starts": {
+      "rows": 168,
+      "sha256": "c4b04c306e6fde0b407471f1e1f44658326918ea46e9b2641adc6775a95d7370"
+    },
+    "verification_handoff_facts": {
+      "rows": 326,
+      "sha256": "31b3313f0c58c38603ef5e02a33f2a9f6f08f1a26f30e80cfac649b6b48b89e1"
+    },
+    "verification_run_versions": {
+      "rows": 378,
+      "sha256": "67b2a1b299b3acd38686b82d97be8e946ed0cf22235dd6480a80a8f36ef69302"
+    },
+    "test_resource_reservations": {
+      "rows": 155,
+      "sha256": "befe3d7233eb65c3a46375c2931f75a2a0fda32d261dc7cb7070543c0dc01063"
+    }
+  },
+  "public_read_after_restore": true,
+  "original_start_receipt_recovered": true,
+  "read_and_replay_added_no_effects": true,
+  "source_store": "Existing synthetic source bytes retained and re-read; DB restore only",
+  "event_scope": "Actual dispatcher role and Temporal routing; metadata-only events are acknowledged as ignored. No workflow or external side effects claimed.",
+  "workflow_starts": 0,
+  "external_sends": 0
+}

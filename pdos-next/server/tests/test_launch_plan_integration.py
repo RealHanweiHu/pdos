@@ -7,6 +7,7 @@ count tests remain explicit.  No connection or actual qualification is claimed.
 
 import copy
 from datetime import timedelta
+from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
@@ -16,7 +17,7 @@ from test_launch_plan_preview import no_io, work  # noqa: F401
 from pdos_next import launch_plan_preview as seam
 from pdos_next import service as common
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Confirmation, Grant, Principal, Product
+from pdos_next.models import Artifact, Category, Confirmation, Grant, Principal, Product
 
 
 def proposed_preview():
@@ -40,7 +41,7 @@ def common_rows(request, monkeypatch):
         id=uuid4(),
         tenant_id=w.ctx.tenant_id,
         created_at=w.clock[0],
-        product_id=w.product.id,
+        category_id=w.ctx.category_id,
         principal_id=w.ctx.actor_id,
         can_write=True,
         expires_at=w.clock[0] + timedelta(hours=1),
@@ -52,40 +53,72 @@ def common_rows(request, monkeypatch):
             tenant_id=w.ctx.tenant_id,
             created_at=w.clock[0],
             product_id=w.product.id,
+            category_id=w.ctx.category_id,
             owner_id=w.ctx.actor_id,
             title="No-I/O fixed original",
             source_label="Explicit scalar-read substitute",
             content=f"Fixed native material {n}",
             content_hash="a" * 64,
-            visibility="product",
+            visibility="category",
             revision=ref.expected_revision,
             original_id=None,
             status="active",
         )
         for n, ref in enumerate(w.command.source_read_set)
     ]
-    for row in [principal, grant, *artifacts]:
+    category = Category(
+        id=w.ctx.category_id,
+        tenant_id=w.ctx.tenant_id,
+        created_at=w.clock[0],
+        name="No-I/O category root",
+        purpose="Explicit synthetic category protocol",
+        owner_id=w.ctx.actor_id,
+        revision=1,
+        lifecycle_epoch=1,
+    )
+    for row in [category, principal, grant, *artifacts]:
         make_transient_to_detached(row)
         w.s.add(row)
     selected = []
-    artifact_reads = iter(artifacts)
 
     def scalar(query):
         entity = query.column_descriptions[0]["entity"]
         selected.append(entity)
         if entity is Product:
             return w.product
-        if entity is Principal:
-            return principal
-        if entity is Grant:
-            return grant
         if entity is Artifact:
-            return next(artifact_reads)
+            # All ten fixture originals belong to this model, not the category-only branch.
+            assert query.column_descriptions[0]["name"] in {"id", "Artifact"}
+            return None
         pytest.fail(f"Unexpected common scalar read {entity}")
 
+    def execute(query):
+        assert [column["entity"] for column in query.column_descriptions] == [Principal, Grant]
+        selected.extend((Principal, Grant))
+        return SimpleNamespace(all=lambda: [(principal, grant)])
+
+    def scalars(query):
+        assert query.column_descriptions[0]["entity"] is Artifact
+        selected.append((Artifact, "batch"))
+        # Explicit RLS substitute in a no-I/O protocol check. Actual privacy is tested in PG.
+        return iter(
+            row
+            for row in artifacts
+            if row.visibility == "category" or row.owner_id == w.ctx.actor_id
+        )
+
     monkeypatch.setattr(w.s, "scalar", scalar)
+    monkeypatch.setattr(w.s, "execute", execute)
+    monkeypatch.setattr(w.s, "scalars", scalars)
+    w.s.info["scope"] = (w.ctx.tenant_id, w.ctx.actor_id, w.ctx.requester_id, w.ctx.category_id)
     monkeypatch.setattr(common, "now", lambda: w.clock[0])
-    w.principal, w.grant, w.artifacts, w.selected = principal, grant, artifacts, selected
+    w.category, w.principal, w.grant, w.artifacts, w.selected = (
+        category,
+        principal,
+        grant,
+        artifacts,
+        selected,
+    )
     return w
 
 
@@ -101,10 +134,10 @@ def test_normal_common_locks_and_persistent_rows_are_not_pending_writes(common_r
 
     monkeypatch.setattr(seam, "preview_once", counted)
     result = proposed_preview()(w.s, w.ctx, w.command)
-    assert entry_states == [(13, 0, 0, 0)]
-    assert w.selected.count(Product) == 12
+    assert entry_states == [(14, 0, 0, 0)]
+    assert w.selected.count(Product) == 1
     assert w.selected.count(Principal) == 1 and w.selected.count(Grant) == 1
-    assert w.selected.count(Artifact) == 10
+    assert w.selected.count((Artifact, "batch")) == 1
     assert w.counts == {"load": 1, "guards": 1, "cas": 1}
     pending = list(w.s.new)
     assert len(pending) == 1 and type(pending[0]) is Confirmation

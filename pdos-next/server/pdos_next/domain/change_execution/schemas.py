@@ -3,6 +3,8 @@
 from typing import Literal, Self
 from uuid import UUID
 
+from pydantic import AwareDatetime, Field, JsonValue, field_validator, model_validator
+
 from pdos_next.schemas.change_control.contracts import (
     ChangeRequest,
     GraphSnapshot,
@@ -11,11 +13,10 @@ from pdos_next.schemas.change_control.contracts import (
     RequestCreate,
 )
 from pdos_next.schemas.verification.contracts import DTO, SourceRef
-from pydantic import AwareDatetime, Field, JsonValue, field_validator, model_validator
 
 
 class ChangeCreatePayload(RequestCreate):
-    visibility: Literal["private", "product"] = "private"
+    visibility: Literal["private", "category", "audience"] = "private"
 
     @field_validator("roots", "references", "sources", mode="before")
     @classmethod
@@ -33,8 +34,6 @@ class ChangeCreatePayload(RequestCreate):
         for group in (self.roots, self.references):
             if len({ref.identity for ref in group}) != len(group):
                 raise ValueError("固定引用不能重复")
-        if len(self.sources) > 20:
-            raise ValueError("精确来源最多20份")
         if any(ref.kind != "artifact" for ref in self.sources):
             raise ValueError("人工变更依据须引用已登记原文Artifact的精确行")
         return self
@@ -44,7 +43,7 @@ class ImpactComputePayload(DTO):
     change_id: UUID
     expected_change_revision: int = Field(ge=1, strict=True)
     snapshot: Ref
-    hypotheses: tuple[Hypothesis, ...] = Field(default=(), max_length=100)
+    hypotheses: tuple[Hypothesis, ...] = Field(default=())
 
     @field_validator("snapshot", mode="before")
     @classmethod
@@ -87,7 +86,7 @@ class FixedIssue(DTO):
     revision: int = Field(ge=1, strict=True)
     project_id: UUID
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     snapshot: dict
     required_source_read_set: list[dict]
     source_basis: dict
@@ -102,7 +101,7 @@ class ChangeView(DTO):
     project_id: UUID
     request: ChangeRequest
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     status: Literal["draft", "analysis", "review", "approved", "implementing"]
     created_at: AwareDatetime
     current: bool
@@ -124,7 +123,7 @@ class GraphCaptureView(DTO):
     current: bool
     source_status: Literal["current", "needs_recheck"]
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     reason: str
     required_source_read_set: list[dict[str, JsonValue]]
     impact_payload: ImpactComputePayload

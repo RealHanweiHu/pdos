@@ -1,0 +1,938 @@
+{
+  "audit": "main-0418-category-lifecycle-clock-source-only",
+  "main_head": "s0_0418 parent-reported; no main database connection",
+  "source_only": true,
+  "database_operations": 0,
+  "model_calls": 0,
+  "tests_rerun": false,
+  "function": {
+    "source": "pdos-next/server/migrations/schema_s0_0407.py",
+    "line": 3,
+    "security": "invoker (no SECURITY DEFINER)",
+    "sql": "CREATE OR REPLACE FUNCTION public.lifecycle_reference_gate()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\n      DECLARE payload JSONB; old_payload JSONB; p UUID; t UUID; c UUID;\n      BEGIN\n        IF TG_OP='DELETE' THEN payload=to_jsonb(OLD); ELSE payload=to_jsonb(NEW); END IF;\n        IF TG_OP='UPDATE' THEN\n          old_payload=to_jsonb(OLD);\n          IF ROW(payload->>'product_id',payload->>'tenant_id') IS DISTINCT FROM\n             ROW(old_payload->>'product_id',old_payload->>'tenant_id') THEN\n            RAISE EXCEPTION 'Reference scope cannot be reassigned';\n          END IF;\n        END IF;\n        -- Lifecycle receipts document retention decisions, not consuming business references.\n        IF TG_TABLE_NAME='action_receipts' AND payload->>'operation' LIKE 'evidence.lifecycle.%' THEN\n          IF TG_OP='DELETE' THEN RETURN OLD; ELSE RETURN NEW; END IF;\n        END IF;\n        p=(payload->>'product_id')::uuid; t=(payload->>'tenant_id')::uuid;\n        c=(payload->>'category_id')::uuid;\n        IF p IS NULL THEN\n          PERFORM 1 FROM categories WHERE id=c AND tenant_id=t FOR UPDATE;\n          IF NOT FOUND THEN RAISE EXCEPTION 'Reference category gate unavailable'; END IF;\n          IF TG_OP<>'DELETE' AND EXISTS (\n            SELECT 1 FROM lifecycle_objects o WHERE o.product_id IS NULL AND o.category_id=c AND o.tenant_id=t\n            AND ((o.state->'value'->>'pending_intent_id') IS NOT NULL\n              OR o.state->'value'->>'disposition' IN ('quarantined','unknown','purged'))\n            AND position(o.id::text in payload::text)>0\n          ) THEN RAISE EXCEPTION 'Pending or isolated original prohibits new references'; END IF;\n          UPDATE categories SET lifecycle_epoch=lifecycle_epoch+1 WHERE id=c AND tenant_id=t;\n          IF TG_OP='DELETE' THEN RETURN OLD; ELSE RETURN NEW; END IF;\n        END IF;\n        PERFORM 1 FROM products WHERE id=p AND tenant_id=t FOR UPDATE;\n        IF NOT FOUND THEN RAISE EXCEPTION 'Reference product gate unavailable'; END IF;\n        IF TG_OP<>'DELETE' AND EXISTS (\n          SELECT 1 FROM lifecycle_objects o WHERE o.product_id=p AND o.tenant_id=t\n          AND ((o.state->'value'->>'pending_intent_id') IS NOT NULL\n               OR o.state->'value'->>'disposition' IN ('quarantined','unknown','purged'))\n          AND position(o.id::text in payload::text)>0\n        ) THEN RAISE EXCEPTION 'Pending or isolated original prohibits new references'; END IF;\n        UPDATE products SET lifecycle_epoch=lifecycle_epoch+1 WHERE id=p AND tenant_id=t;\n        IF TG_OP='DELETE' THEN RETURN OLD; ELSE RETURN NEW; END IF;\n      END $function$\n"
+  },
+  "category_policy": {
+    "source": "pdos-next/server/migrations/schema_s0_0001.py",
+    "line": 4,
+    "sql": "CREATE POLICY category_scope ON \"categories\" USING (public.category_access(tenant_id,id) OR public.category_bootstrap(tenant_id,id)) WITH CHECK (tenant_id=nullif(current_setting('pdos.tenant_id',true),'')::uuid AND owner_id=public.scope_actor() AND public.scope_actor()=public.scope_requester())"
+  },
+  "effective_static_triggers": [
+    {
+      "table": "action_receipts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "actual_configurations",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "artifact_versions",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "bom_lines",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "bom_revisions",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "build_lots",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "build_readiness",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "builds",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "claim_consumptions",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "claims",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "cost_current_inputs",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "cost_estimates",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "cost_input_snapshots",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "cost_source_captures",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "definition_revisions",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "definition_sources",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "definition_specs",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "engineering_configurations",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "original_scan_requests",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "original_scan_results",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "original_security",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "parts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "plan_proposals",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "plan_revisions",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "process_revisions",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "product_variants",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "project_product_links",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "project_tasks",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "project_work_packages",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "projects",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "runs",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "sample_allocations",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "sample_units",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "supply_current_snapshots",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "supply_kit_projections",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "supply_snapshots",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "supply_source_captures",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "task_dependencies",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "uploaded_originals",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "variant_revisions",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "verification_current_preparations",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "verification_preparations",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "work_requests",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "upload_attempts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "professional_authority_facts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "professional_authority_current",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "verification_formal_requests",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "verification_current_formal_requests",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "verification_method_applicabilities",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "verification_window_proposals",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "build_execution_assessments",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "build_operational_facts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "build_authorization_decisions",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "build_current_execution_assessments",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "build_operational_current",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "build_current_authorizations",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "build_starts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "operational_material_holds",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "operational_resource_occupancies",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "verification_actual_method_batches",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "verification_handoff_facts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "sample_readiness_facts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "verification_actual_method_applicabilities",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "sample_current_readiness",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "verification_current_actual_methods",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "verification_run_identities",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "test_resource_facts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "verification_run_versions",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "test_resource_current",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "test_resource_reservations",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "verification_current_runs",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "verification_launch_facts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "sample_usage_sentinels",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "sample_run_usages",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "measurement_import_captures",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "test_measurements",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "test_result_projections",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "test_result_actions",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "change_request_versions",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "quality_issue_versions",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "quality_policy_facts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "change_graph_captures",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "change_request_currents",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "quality_current_issues",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "quality_current_policies",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "quality_failure_maps",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "quality_event_failure_links",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "capa_remediation_links",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "capa_verification_evidence",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "capa_verification_rule_facts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "capa_observation_facts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "capa_current_verification_rules",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "capa_current_observations",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "change_order_records",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "change_approval_records",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "change_implementation_captures",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "change_implementation_records",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "controlled_change_policy_facts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "controlled_change_policy_currents",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "controlled_change_selection_facts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "controlled_change_selection_currents",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "manufacturing_preparation_versions",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "manufacturing_preparation_currents",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "manufacturing_baseline_document_links",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "controlled_change_coverage_facts",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    },
+    {
+      "table": "controlled_change_coverage_currents",
+      "trigger": "lifecycle_reference",
+      "timing": "BEFORE",
+      "events": "INSERT OR DELETE OR UPDATE",
+      "source": "pdos-next/server/migrations/schema_s0_0001.py",
+      "line": 4
+    }
+  ],
+  "trigger_count": 107,
+  "removed_triggers": [
+    {
+      "table": "grants",
+      "trigger": "lifecycle_reference",
+      "source": "pdos-next/server/migrations/schema_s0_0002.py",
+      "line": 3
+    }
+  ],
+  "trigger_inventory_method": "AST read SQL/UPGRADE_SQL/SCHEMA_SQL assignments in active schema_s0_0001..0418, exclude DOWNGRADE_SQL and pre-s0 archive. Active versions contain no additional upgrade lifecycle_reference trigger; grants occurrence is only 0002 downgrade.",
+  "main_schema_source_snapshot": [
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0001.py",
+      "sha256": "5da2301badf3c332764e628ebe94496d23c7036dc636dfeabfaf3508b0fb186d"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0002.py",
+      "sha256": "b92eac45f985e9407ca22a7098ffc03e8e356c5c9bc9ad1da82e94b64bdc580b"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0404.py",
+      "sha256": "3610dcf81a38c35c21e0d15158ab62e04f18a9f87a5e08566b9a135d8955c8dc"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0406.py",
+      "sha256": "004aee46d13dc9bb3963c9fb70744b0195673ad0ec6bd731406a9f7ac0cfdcdf"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0407.py",
+      "sha256": "2d610eda8326ce829e903065d1fac9b20e38ffb789066f99bd6bf9854deaeef9"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0408.py",
+      "sha256": "d44c88b20b6450412966808c28a2621f4eaed11b2556aa53bb6b5eccd8e7c1cd"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0409.py",
+      "sha256": "be219766ba06e081f661eed34abd0851bee4d06536241fb9145b1416440466cd"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0410.py",
+      "sha256": "5e41cbac0302bc7a75d610254fad98c074bac989d15e89e628978976dd1eb6ac"
+    }
+  ],
+  "frozen_candidate_verification": {
+    "manifest": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/private-db/source-manifest.json",
+    "files": 34,
+    "hash_mismatches": [],
+    "source_digest": "701785a12e32c159e212a944c1c51e1a968cbc32b8acbda6f1de2b7536638a62",
+    "port_selection": {
+      "passed": 76,
+      "seconds": 12.87,
+      "actual_postgresql_cases": 29,
+      "pure_cases": 47
+    },
+    "separate_graph_selection": {
+      "passed": 11,
+      "seconds": 1.9
+    },
+    "summed_as_single_selection": false
+  }
+}

@@ -5,6 +5,9 @@ They do not attest confirmation consumption, seven effectiveness gates or a
 public preview-to-write handoff. That handoff needs the real saved proof anchor.
 """
 
+from pdos_next.database import category_for_product
+
+
 # Initialize actual registry before importing its domain children.
 # ruff: noqa: I001
 from copy import deepcopy
@@ -30,6 +33,7 @@ from pdos_next.domain.professional_authority.models import ProfessionalFact
 from pdos_next.domain.quality_execution import evidence, policy
 from pdos_next.errors import DomainError
 from pdos_next.models import Grant, Principal, Product
+from pdos_next.request_proof import batch_read, scope_is_held
 from pdos_next.contracts import Command
 from pdos_next.quality_result_bridge import _runtime_stamp
 from sqlalchemy import select
@@ -53,7 +57,8 @@ class PreparedCandidate:
     uow: tuple
     runtime_binding: str
     checked_at: datetime
-    valid_until: datetime
+    valid_until: datetime | None
+    caller_expires_at: datetime | None = None
     # Same-phase server metadata only; never a payload/review or saved fact.
     persistent_origin_ref: candidate_storage.FactRef | None = None
 
@@ -125,7 +130,7 @@ def _caller(s, ctx, pid):
         s,
         Grant,
         Grant.tenant_id == ctx.tenant_id,
-        Grant.product_id == pid,
+        Grant.category_id == category_for_product(pid),
         Grant.principal_id == ctx.actor_id,
     )
     _require(grant.can_write is True, "FORBIDDEN_SCOPE", "当前本人没有产品办理权限。", 403)
@@ -152,7 +157,7 @@ def _current(s, ctx, pid, actual, payload):
         (origin.issue_id, origin.scope.tenant_id, origin.scope.product_id)
         == (payload.issue_id, ctx.tenant_id, pid),
         "FORBIDDEN_SCOPE",
-        "原完成锚不在本次Issue/租户/产品范围。",
+        "原完成锚不在本次Issue/租户/型号范围。",
         403,
     )
     _require(
@@ -211,11 +216,9 @@ def _authority(s, ctx, pid, basis):
         403,
     )
     _require(
-        bool(value.get("facts_revision"))
-        and bool(value.get("fact_refs"))
-        and value.get("valid_until") is not None,
+        bool(value.get("facts_revision")) and bool(value.get("fact_refs")),
         "INTEGRATION_REQUIRED",
-        "专业准入缺少完整事实/期限。",
+        "专业准入缺少完整事实。",
         503,
     )
     if basis.nature == "real" and value.get("synthetic") is not False:
@@ -224,12 +227,12 @@ def _authority(s, ctx, pid, basis):
     # exact fact it actually selected, including inactive/negative scope facts.
     refs = value["fact_refs"]
     _require(
-        isinstance(refs, list) and len(refs) <= professional.MAX_FACTS,
+        isinstance(refs, list),
         "INTEGRATION_REQUIRED",
-        "专业事实范围必须完整有界。",
+        "专业事实范围必须完整。",
         503,
     )
-    deadlines = [_deadline(value["valid_until"])]
+    exact_refs = []
     for item in refs:
         try:
             identity = UUID(item["id"])
@@ -242,20 +245,37 @@ def _authority(s, ctx, pid, basis):
             "专业事实版本不能猜测。",
             503,
         )
-        row = guards._one(
-            s,
-            ProfessionalFact,
-            ProfessionalFact.tenant_id == ctx.tenant_id,
-            ProfessionalFact.product_id == pid,
-            ProfessionalFact.project_id == basis.scope.project_id,
-            ProfessionalFact.subject_id == ctx.requester_id,
-            ProfessionalFact.id == identity,
-            ProfessionalFact.revision == revision,
-        )
-        if row.state == "active":
-            deadlines.extend(v for v in (row.valid_from, row.valid_until) if v > evaluated_at)
-    value["valid_until"] = min(deadlines).isoformat()
-    _require(_clock() < min(deadlines), detail="专业来源或事实查询期间已越过资格期限/激活边界。")
+        exact_refs.append((identity, revision))
+    if s.info.get("read_snapshot") and scope_is_held(s, pid):
+        # Full RLS-loaded rows are held by this actual RR request. Check every
+        # exact scope/version after one batch, including negative scope facts.
+        rows = batch_read(s, ProfessionalFact, {identity for identity, _ in exact_refs})
+        for identity, revision in exact_refs:
+            row = rows[identity]
+            _require(
+                row is not None
+                and (row.tenant_id, row.product_id, row.project_id, row.subject_id, row.revision)
+                == (ctx.tenant_id, pid, basis.scope.project_id, ctx.requester_id, revision),
+                "FACT_EXACT_GROUP_ROW_MISSING",
+                "专业事实须逐条匹配当前租户、型号、项目、本人和固定版本。",
+                503,
+            )
+    else:
+        for identity, revision in exact_refs:
+            guards._one(
+                s,
+                ProfessionalFact,
+                ProfessionalFact.tenant_id == ctx.tenant_id,
+                ProfessionalFact.product_id == pid,
+                ProfessionalFact.project_id == basis.scope.project_id,
+                ProfessionalFact.subject_id == ctx.requester_id,
+                ProfessionalFact.id == identity,
+                ProfessionalFact.revision == revision,
+            )
+    _require(
+        professional.authority_time_current(value, _clock()),
+        detail="专业来源或事实查询期间实际职责或资格已失效。",
+    )
     return value
 
 
@@ -263,15 +283,14 @@ def _policy(s, ctx, pid, basis):
     value = deepcopy(policy.assess(s, ctx, pid, basis.scope.project_id, basis.purpose))
     _require(
         value.get("nature") == basis.nature
-        and value.get("valid_until") is not None
         and value.get("facts_revision")
         and value.get("id")
         and value.get("revision"),
         "INTEGRATION_REQUIRED",
-        "当前政策缺少真实完整范围/期限或事实性质不符。",
+        "当前政策缺少真实完整范围或事实性质不符。",
         503,
     )
-    if basis.visibility == "product" and value.get("private") is not False:
+    if basis.visibility == "category" and value.get("private") is not False:
         raise DomainError("CANDIDATE_AUDIENCE_MISMATCH", "私人政策不能进入共享候选。", 403)
     return value
 
@@ -310,11 +329,10 @@ def _saved_origin_anchor(s, ctx, pid, payload, actual):
                 CapaVerificationEvidence.issue_revision == origin.ref.revision,
             )
             .order_by(CapaVerificationEvidence.created_at, CapaVerificationEvidence.id)
-            .limit(101)
+            .limit(1)
             .execution_options(populate_existing=True, autoflush=False)
         )
     )
-    _require(len(rows) <= 100, detail="同原完成版的持久候选超过有界读取上限。")
     if not rows:
         return None
     selected = candidate_storage.read_candidate(
@@ -360,16 +378,6 @@ def _material(phase, *, stable=False):
     }
 
 
-def _deadline(value):
-    try:
-        at = datetime.fromisoformat(value)
-        if at.tzinfo is None or at.utcoffset() is None:
-            raise ValueError
-        return at.astimezone(UTC)
-    except (TypeError, ValueError):
-        raise DomainError("INTEGRATION_REQUIRED", "专业或政策缺少明确真实有效期限。", 503) from None
-
-
 def _read(s, ctx, pid, payload, origin_ref):
     payload = commands._payload(payload)
     origin_ref = anchors.VersionRef.model_validate(commands._attributes(origin_ref))
@@ -381,6 +389,7 @@ def _read(s, ctx, pid, payload, origin_ref):
     )
     uow, caller = guards._uow(s), digest(vars(ctx))
     stamp = _runtime(s)
+    readonly_snapshot = bool(s.info.get("read_snapshot")) and scope_is_held(s, pid)
     with s.no_autoflush:
         before_caller, caller_until = _caller(s, ctx, pid)
         actual = anchor_owner.read_anchor_from_actual_owner(
@@ -464,7 +473,7 @@ def _read(s, ctx, pid, payload, origin_ref):
             len(subset) == len(selected_ids) and digest(subset) == inspection.source_basis_sha256,
             detail="原inspection来源闭包摘要不能漂白。",
         )
-        if private and basis.visibility == "product":
+        if private and basis.visibility == "category":
             raise DomainError(
                 "CANDIDATE_AUDIENCE_MISMATCH", "任何私人来源都不能进入共享候选。", 403
             )
@@ -487,29 +496,35 @@ def _read(s, ctx, pid, payload, origin_ref):
         )
         inspection = CandidateInspect.model_validate(inspection_raw)
         _phase(s, ctx, uow, caller, stamp)
-        # Independent post-all-owner/source IO proof refresh. Keep the FIRST
-        # complete anchor/full proof unchanged, compare only frozen stable paths.
-        final_anchor = anchor_owner.read_anchor_from_actual_owner(
-            s, ctx, pid, payload.issue_id, origin_ref
-        )
-        _require(
-            _anchor_material(final_anchor.anchor) == _anchor_material(actual.anchor),
-            detail="末端原完成锚或固定失败依据改变。",
-        )
-        _require(
-            final_anchor.origin_descriptor == actual.origin_descriptor,
-            detail="末端Current/Project/共同保存组改变。",
-        )
+        # RR/READ ONLY holds the same actual rows throughout this request. Keep
+        # the first owner proof; later IO still precedes scope/runtime and real
+        # deadline checks below. Command/write preparation keeps its refresh.
+        final_anchor = actual
+        if readonly_snapshot:
+            _require(s.info.get("read_snapshot") and scope_is_held(s, pid))
+        else:
+            final_anchor = anchor_owner.read_anchor_from_actual_owner(
+                s, ctx, pid, payload.issue_id, origin_ref
+            )
+            _require(
+                _anchor_material(final_anchor.anchor) == _anchor_material(actual.anchor),
+                detail="末端原完成锚或固定失败依据改变。",
+            )
+            _require(
+                final_anchor.origin_descriptor == actual.origin_descriptor,
+                detail="末端Current/Project/共同保存组改变。",
+            )
         _current(s, ctx, pid, final_anchor, payload)
-        final_inspection = followup.inspect_candidate(
-            s, ctx, pid, binding, at=_clock(), write=False
-        )
-        # Compare the original bounded inspection before adding host closure.
-        _require(
-            final_inspection.model_dump(mode="json", exclude={"inspection_sha256"})
-            == original_inspection,
-            detail="末端候选输出、映射或缺项改变。",
-        )
+        if not readonly_snapshot:
+            final_inspection = followup.inspect_candidate(
+                s, ctx, pid, binding, at=_clock(), write=False
+            )
+            # Compare the original inspection before adding host closure.
+            _require(
+                final_inspection.model_dump(mode="json", exclude={"inspection_sha256"})
+                == original_inspection,
+                detail="末端候选输出、映射或缺项改变。",
+            )
         # Re-read the persisted root/group after original/output owner IO.
         # Source, professional/policy, Current, caller and real clock checks
         # remain AFTER this additional IO; the stored proof grants no gate.
@@ -544,13 +559,13 @@ def _read(s, ctx, pid, payload, origin_ref):
         _require(after_caller == before_caller, detail="本人/Grant访问epoch或产品已经改变。")
         _phase(s, ctx, uow, caller, stamp)
         checked_at = _clock()
-        valid_until = min(
-            caller_until,
-            after_until,
-            _deadline(authority["valid_until"]),
-            _deadline(published["valid_until"]),
+        _require(
+            all(value is None or checked_at < value for value in (caller_until, after_until))
+            and professional.authority_time_current(authority, checked_at)
+            and policy.policy_time_current(published, checked_at),
+            "SOURCE_STALE",
+            "全部IO后当前授权或实际专业/政策条件已失效。",
         )
-        _require(checked_at < valid_until, "SOURCE_STALE", "全部IO后当前授权/专业/政策已到期。")
         _require(checked_at >= final_anchor.checked_at, detail="末端真实时钟早于最后原锚读取。")
         return PreparedCandidate(
             commands.semantic(payload),
@@ -569,23 +584,29 @@ def _read(s, ctx, pid, payload, origin_ref):
             uow,
             stamp,
             checked_at,
-            valid_until,
+            None,
+            after_until,
             saved_origin.ref if saved_origin is not None else None,
         )
 
 
-def _seal(phase):
+def _seal_material(phase, material):
     return digest(
         {
-            "material": _material(phase),
+            "material": material,
             "checked_at": phase.checked_at,
             "valid_until": phase.valid_until,
+            "caller_expires_at": phase.caller_expires_at,
             "runtime": phase.runtime_binding,
             "persistent_origin_ref": None
             if phase.persistent_origin_ref is None
             else phase.persistent_origin_ref.model_dump(mode="json"),
         }
     )
+
+
+def _seal(phase):
+    return _seal_material(phase, _material(phase))
 
 
 def prepare_candidate(s, ctx, product_id, payload, *, origin_ref):
@@ -683,12 +704,21 @@ def _finish_write(s, ctx, command, payload, fresh, binding):
     )
     _phase(s, ctx, fresh.uow, digest(vars(ctx)), fresh.runtime_binding)
     at = _clock()
-    until = min(fresh.valid_until, binding.restored.expires_at, caller_until)
+    until = binding.restored.expires_at
     _require(
-        fresh.checked_at <= at < until,
-        detail="全部owner/proof/caller读取后已越过专业激活、政策或原确认期限。",
+        fresh.checked_at <= at < until
+        and (caller_until is None or at < caller_until)
+        and professional.authority_time_current(fresh.authority_snapshot, at)
+        and policy.policy_time_current(fresh.policy_snapshot, at),
+        detail="全部读取后实际专业/政策条件、本人授权或T1确认已失效。",
     )
-    return replace(fresh, anchor=binding.restored.anchor, checked_at=at, valid_until=until)
+    return replace(
+        fresh,
+        anchor=binding.restored.anchor,
+        checked_at=at,
+        valid_until=until,
+        caller_expires_at=caller_until,
+    )
 
 
 def prepare_candidate_write(s, ctx, command, payload, proof, restore_host):
@@ -791,12 +821,13 @@ def reviewed_candidate(phase):
         "需真实准备阶段。",
         503,
     )
+    material = _material(phase)
     _require(
-        _seal(phase) == _PHASES[phase][2],
+        _seal_material(phase, material) == _PHASES[phase][2],
         "CANDIDATE_PREPARED_BINDING_CHANGED",
         "准备材料或期限已改变。",
     )
-    return _material(phase)  # checked_at is excluded; original proof clocks remain.
+    return material  # Fresh independent JSON; original proof clocks remain.
 
 
 def invalidate_prepared_candidate(phase):
@@ -820,7 +851,11 @@ def require_prepared_candidate_clock(s, ctx, product_id, payload, phase, at):
         422,
     )
     _require(
-        phase.checked_at <= at <= _clock() and at < phase.valid_until,
+        phase.checked_at <= at <= _clock()
+        and (phase.valid_until is None or at < phase.valid_until)
+        and (phase.caller_expires_at is None or at < phase.caller_expires_at)
+        and professional.authority_time_current(phase.authority_snapshot, at)
+        and policy.policy_time_current(phase.policy_snapshot, at),
         "SOURCE_STALE",
         "保存时点已越过当前授权/专业/政策边界。",
     )

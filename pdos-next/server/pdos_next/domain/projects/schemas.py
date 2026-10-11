@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import Field, model_validator
 
-from pdos_next.contracts import StrictModel
+from pdos_next.schema_base import StrictModel
 from pdos_next.schemas.planning import ScheduleInput
 
 
@@ -13,7 +13,7 @@ class ProjectCreatePayload(StrictModel):
     scope: str = Field(min_length=3, max_length=2000)
     definition_id: UUID
     expected_definition_revision: int = Field(ge=1)
-    visibility: Literal["private", "product"] = "private"
+    visibility: Literal["private", "category", "audience"] = "private"
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 
 

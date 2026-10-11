@@ -34,7 +34,7 @@ def setup(monkeypatch):
         id=uuid4(),
         owner_id=person,
         snapshot_sha256="a" * 64,
-        visibility="product",
+        visibility="category",
         required_source_read_set=[],
     )
     clock = [AT]
@@ -67,16 +67,16 @@ def test_same_get_start_projection_reuses_proof_and_detaches_mutable_output(monk
     assert repeated["execution_qualification"] == "limited_current"
 
 
-def test_future_fact_activation_is_a_cache_boundary_even_before_expiry(monkeypatch):
+def test_one_get_uses_one_snapshot_despite_nested_time_fields(monkeypatch):
     session, ctx, product, build, start, clock, calls = setup(monkeypatch)
     cache = service.ReadContext(session, ctx, product)
     cache.projection(session, ctx, product, start, build)
     clock[0] = AT + timedelta(seconds=3)
     cache.projection(session, ctx, product, start, build)
-    assert len(calls) == 2
+    assert len(calls) == 1
 
 
-def test_expiry_during_expensive_projection_does_not_cache_behind_later_window(monkeypatch):
+def test_nested_material_deadlines_do_not_trigger_a_second_projection(monkeypatch):
     session, ctx, product, build, start, clock, calls = setup(monkeypatch)
 
     def slow_projection(*args):
@@ -94,7 +94,7 @@ def test_expiry_during_expensive_projection_does_not_cache_behind_later_window(m
     cache = service.ReadContext(session, ctx, product)
     cache.projection(session, ctx, product, start, build)
     cache.projection(session, ctx, product, start, build)
-    assert len(calls) == 2
+    assert len(calls) == 1
 
 
 @pytest.mark.parametrize(
@@ -143,7 +143,7 @@ def test_read_context_cannot_cross_session_transaction_identity_product_or_mutat
         )
     with pytest.raises(DomainError) as error:
         cache.check(session, ctx, product, **arguments)
-    assert error.value.code == "INVALID_READ_CONTEXT"
+    assert error.value.reason == "INVALID_READ_CONTEXT"
 
 
 def test_failure_reuse_is_fail_closed_and_runtime_change_rechecks(monkeypatch):
@@ -158,7 +158,7 @@ def test_failure_reuse_is_fail_closed_and_runtime_change_rechecks(monkeypatch):
     for _ in range(2):
         with pytest.raises(DomainError) as error:
             cache.projection(session, ctx, product, start, build)
-        assert error.value.code == "SOURCE_UNAVAILABLE"
+        assert error.value.reason == "SOURCE_UNAVAILABLE"
     assert len(calls) == 1
     session.engine._pdos_operational_issuer_epochs = {"issuer": 3}
     with pytest.raises(DomainError):
@@ -183,7 +183,7 @@ def test_cached_start_projection_never_bypasses_live_consumer_source_acl(monkeyp
     service._start_context(session, ctx, product, chain, read_context=cache)
     with pytest.raises(DomainError) as error:
         service._start_context(session, ctx, product, chain, read_context=cache)
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"
     assert len(calls) == 1 and len(source_calls) == 2
 
 
@@ -193,7 +193,9 @@ def test_optimized_chain_checks_ancestor_sources_even_without_inherited_sample_r
     ancestor = {"artifact_id": str(uuid4()), "expected_revision": 1}
     sample = SimpleNamespace(
         id=sample_id,
-        visibility="product",
+        tenant_id=ctx.tenant_id,
+        product_id=product,
+        visibility="category",
         owner_id=ctx.requester_id,
         actual_configuration_id=actual_id,
         lot_id=lot_id,

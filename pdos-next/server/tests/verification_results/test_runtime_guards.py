@@ -4,6 +4,12 @@
 import pytest
 from sqlalchemy import select
 from test_project_first_plan import accepted, post
+
+from pdos_next.database import tenant_session
+from pdos_next.domain.professional_authority import service as professional
+from pdos_next.domain.test_resources import service as resources
+from pdos_next.models import Confirmation
+from pdos_next.service import digest
 from verification_results.fixtures import (  # noqa: F401
     accepted_work,
     capture,
@@ -16,12 +22,6 @@ from verification_results.fixtures import (  # noqa: F401
     results_work,
 )
 from verification_results.test_transactions import counts
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.professional_authority import service as professional
-from pdos_next.domain.test_resources import service as resources
-from pdos_next.models import Confirmation
-from pdos_next.service import digest
 
 
 @pytest.mark.parametrize("issuer", ["professional", "resources"])
@@ -53,11 +53,16 @@ def test_store_read_runtime_revocation_blocks_import_and_rolls_back_confirmation
     monkeypatch.setattr(work.report_store, "read_original", revoked_after_bytes)
     response = post(work.quality, prepared)
     assert fired and response.status_code == 409, response.text
-    assert response.json()["code"] == "SOURCE_STALE"
+    assert response.json()["detail"]["reason"] == "SOURCE_STALE"
     assert counts(work) == before
     after = current_rows(work)
     assert after.row.id == fixed.row.id and after.request.id == fixed.request.id
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as session:
         assert (
             session.scalar(
                 select(Confirmation.consumed).where(Confirmation.token_hash == digest(token))
@@ -66,7 +71,7 @@ def test_store_read_runtime_revocation_blocks_import_and_rolls_back_confirmation
         )
 
 
-def test_compute_semantic_replay_also_rechecks_runtime_after_old_measurement_io(
+def test_compute_semantic_replay_returns_prior_receipt_without_measurement_io(
     results_work, monkeypatch
 ):
     work = results_work
@@ -87,6 +92,10 @@ def test_compute_semantic_replay_also_rechecks_runtime_after_old_measurement_io(
         return content
 
     monkeypatch.setattr(work.report_store, "read_original", revoke)
-    refused = post(work.quality, value)
-    assert fired and refused.status_code == 409, refused.text
-    assert refused.json()["code"] == "SOURCE_STALE" and counts(work) == before
+    replay = post(work.quality, value)
+    assert not fired and replay.status_code == 200, replay.text
+    assert replay.json()["id"] == response.json()["id"] and counts(work) == before
+    resources.disable_issuer(work.setup.engine, work.test_issuer.key)
+    recovered = post(work.quality, value)
+    assert not fired and recovered.status_code == 200, recovered.text
+    assert recovered.json()["id"] == response.json()["id"] and counts(work) == before

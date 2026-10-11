@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import Field, field_validator, model_validator
 
-from pdos_next.contracts import StrictModel
+from pdos_next.schema_base import StrictModel
 from pdos_next.schemas.products.definitions import DefinitionReference, DefinitionSpec
 
 
@@ -18,12 +18,12 @@ class VariantSpecOverride(DefinitionSpec):
 class VariantOverrides(StrictModel):
     title: str | None = Field(default=None, min_length=2, max_length=200)
     purpose: str | None = Field(default=None, min_length=3, max_length=2000)
-    use_cases: list[str] | None = Field(default=None, min_length=1, max_length=50)
-    requirements: list[str] | None = Field(default=None, max_length=100)
-    constraints: list[str] | None = Field(default=None, max_length=100)
-    unknowns: list[str] | None = Field(default=None, max_length=100)
-    exclusions: list[str] | None = Field(default=None, max_length=100)
-    specs: list[VariantSpecOverride] | None = Field(default=None, max_length=100)
+    use_cases: list[str] | None = Field(default=None, min_length=1)
+    requirements: list[str] | None = Field(default=None)
+    constraints: list[str] | None = Field(default=None)
+    unknowns: list[str] | None = Field(default=None)
+    exclusions: list[str] | None = Field(default=None)
+    specs: list[VariantSpecOverride] | None = Field(default=None)
 
     @field_validator("use_cases", "requirements", "constraints", "unknowns", "exclusions")
     @classmethod
@@ -49,12 +49,12 @@ class VariantOverrides(StrictModel):
 class VariantDerivePayload(StrictModel):
     name: str = Field(min_length=2, max_length=160)
     kind: Literal["customer", "region", "configuration"]
-    applicability: list[str] = Field(min_length=1, max_length=30)
+    applicability: list[str] = Field(min_length=1)
     parent_definition_id: UUID
     expected_parent_revision: int = Field(ge=1)
-    visibility: Literal["private", "product"] = "private"
+    visibility: Literal["private", "category", "audience"] = "private"
     overrides: VariantOverrides = Field(default_factory=VariantOverrides)
-    sources: list[DefinitionReference] = Field(min_length=1, max_length=20)
+    sources: list[DefinitionReference] = Field(min_length=1)
     reason: str = Field(min_length=3, max_length=2000)
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 
@@ -89,8 +89,8 @@ class VariantRebasePayload(StrictModel):
     expected_variant_revision: int = Field(ge=1)
     parent_definition_id: UUID
     expected_parent_revision: int = Field(ge=1)
-    choices: list[RebaseChoice] = Field(default_factory=list, max_length=200)
-    sources: list[DefinitionReference] = Field(min_length=1, max_length=20)
+    choices: list[RebaseChoice] = Field(default_factory=list)
+    sources: list[DefinitionReference] = Field(min_length=1)
     reason: str = Field(min_length=3, max_length=2000)
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 

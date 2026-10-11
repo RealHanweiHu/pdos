@@ -89,8 +89,10 @@ def parse_response(body: dict, route: ProviderRoute, request_id=None) -> Provide
             message = choice["message"]
             if message.get("refusal"):
                 raise ProviderError("PROVIDER_REFUSAL", usage=usage, request_id=request_id)
-            if message.get("role") != "assistant" or message.get("tool_calls") or message.get(
-                "function_call"
+            if (
+                message.get("role") != "assistant"
+                or message.get("tool_calls")
+                or message.get("function_call")
             ):
                 raise ValueError("Text-only assistant response required")
             content = message["content"]
@@ -100,9 +102,10 @@ def parse_response(body: dict, route: ProviderRoute, request_id=None) -> Provide
                 raise ProviderError("PROVIDER_OUTPUT_TRUNCATED", usage=usage, request_id=request_id)
             if reason == "refusal":
                 raise ProviderError("PROVIDER_REFUSAL", usage=usage, request_id=request_id)
-            if isinstance(body.get("stop_details"), dict) and body["stop_details"].get(
-                "type"
-            ) == "refusal":
+            if (
+                isinstance(body.get("stop_details"), dict)
+                and body["stop_details"].get("type") == "refusal"
+            ):
                 raise ProviderError("PROVIDER_REFUSAL", usage=usage, request_id=request_id)
             if reason != "end_turn" or body.get("role") != "assistant":
                 raise ValueError("Unexpected provider finish reason")

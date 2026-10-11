@@ -19,9 +19,9 @@ from uuid import UUID
 
 from pdos_next.service import Context, digest
 
-from . import anchor  
-from . import anchor_storage  
-from . import fact_atom_storage as guards  
+from . import anchor
+from . import anchor_storage
+from . import fact_atom_storage as guards
 from .fact_registry_storage import CandidateRegistryRead
 from .facts import FactRef
 from pdos_next.domain.capa_verification.models import CapaVerificationEvidence
@@ -133,7 +133,9 @@ def _canonical(value):
 def _columns(row, *, exclude=frozenset()):
     material = {}
     for column in row.__table__.columns:
-        if column.key in exclude:
+        # Audience dependencies are a DB-owned RLS projection, outside the
+        # immutable business atom. Live RLS/ACL checks remain independent.
+        if column.key in exclude or column.key == "audience_dependencies":
             continue
         value = getattr(row, column.key)
         _require(column.nullable or value is not None, "CANDIDATE_ACTUAL_COLUMN_MISSING")
@@ -178,7 +180,7 @@ def _row(s, ctx, pid, candidate_id):
         CapaVerificationEvidence.id == candidate_id,
     )
     _require(
-        row.visibility in {"private", "product"}
+        row.visibility in {"private", "category", "audience"}
         and (row.visibility != "private" or row.owner_id == ctx.requester_id),
         "FORBIDDEN_SCOPE",
         403,
@@ -333,6 +335,7 @@ def _group(s, ctx, pid, row, body, payload, owner):
     expected_intent = digest(
         {
             "operation": OPERATION,
+            "category": ctx.category_id,
             "product": pid,
             "payload": owner.semantic(payload),
             "named_actor": row.writer_id,
@@ -396,6 +399,7 @@ def _group(s, ctx, pid, row, body, payload, owner):
             "actor": row.writer_id,
             "requester": row.writer_id,
             "operation": OPERATION,
+            "category": ctx.category_id,
             "product": pid,
             "expected_revision": proof.revision,
             "read_set": sorted(

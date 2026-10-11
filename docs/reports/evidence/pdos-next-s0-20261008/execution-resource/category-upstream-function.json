@@ -1,0 +1,7 @@
+[
+  {
+    "name": "upstream_row_visible",
+    "args": "t uuid, c uuid, p uuid, typ text, sid uuid",
+    "definition": "CREATE OR REPLACE FUNCTION public.upstream_row_visible(t uuid, c uuid, p uuid, typ text, sid uuid)\n RETURNS boolean\n LANGUAGE plpgsql\n STABLE\n SET search_path TO 'public', 'pg_temp'\nAS $function$\nDECLARE visible boolean;\nBEGIN\n IF NOT typ=ANY(ARRAY['uploaded_originals','artifact_versions','definition_revisions',\n  'product_variants','projects','plan_proposals','bom_revisions','engineering_configurations'])\n THEN RETURN false; END IF;\n EXECUTE format('SELECT EXISTS(SELECT 1 FROM public.%I\n  WHERE tenant_id=$1 AND category_id=$2 AND product_id IS NOT DISTINCT FROM $3 AND id=$4)',typ)\n INTO visible USING t,c,p,sid;\n RETURN visible;\nEND $function$\n"
+  }
+]

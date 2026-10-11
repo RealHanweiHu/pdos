@@ -1,0 +1,8 @@
+{
+  "status": "backup-preserved",
+  "database_marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "schema_before": "s0_0424",
+  "backup_name": "0424-before-kernel-join-20261009T073956Z.dump",
+  "sha256": "0d3a4835333c1619989b11256a31fe74335faad1da5f9fd13e53813e0b2388de",
+  "synthetic_only": true
+}

@@ -1,0 +1,35 @@
+{
+  "policies": [
+    {
+      "tablename": "claims",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = claims.tenant_id) AND (p.category_id = claims.category_id) AND (p.id = claims.product_id)))))",
+      "with_check": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = claims.tenant_id) AND (p.category_id = claims.category_id) AND (p.id = claims.product_id)))))"
+    },
+    {
+      "tablename": "claims",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((artifact_id IS NULL) OR upstream_row_visible(tenant_id, category_id, product_id, 'artifact_versions'::text, artifact_id))",
+      "with_check": null
+    },
+    {
+      "tablename": "claims",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (human_owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = claims.tenant_id) AND (a.category_id = claims.category_id) AND ((a.object_type)::text = 'claims'::text) AND (a.subject_id = claims.id) AND (a.owner_id = claims.human_owner_id) AND (a.principal_id = scope_requester()))))))",
+      "with_check": "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (human_owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = claims.tenant_id) AND (a.category_id = claims.category_id) AND ((a.object_type)::text = 'claims'::text) AND (a.subject_id = claims.id) AND (a.owner_id = claims.human_owner_id) AND (a.principal_id = scope_requester()))))))"
+    }
+  ],
+  "functions": [
+    {
+      "name": "business_upstream_visible",
+      "definition": "CREATE OR REPLACE FUNCTION public.business_upstream_visible(t uuid, c uuid, p uuid, typ text, sid uuid)\n RETURNS boolean\n LANGUAGE plpgsql\n STABLE\n SET search_path TO 'public', 'pg_temp'\nAS $function$\nDECLARE visible boolean;\nBEGIN\n IF NOT typ=ANY(ARRAY['actual_configurations','build_authorization_decisions','build_execution_assessments','build_lots','builds','engineering_configurations','measurement_import_captures','process_revisions','professional_authority_facts','projects','sample_allocations','sample_units','test_resource_facts','test_result_projections','verification_actual_method_batches','verification_formal_requests','verification_preparations','verification_run_identities','verification_run_versions']) THEN RETURN false; END IF;\n EXECUTE format('SELECT EXISTS(SELECT 1 FROM public.%I\n  WHERE tenant_id=$1 AND category_id=$2 AND product_id=$3 AND id=$4)',typ)\n INTO visible USING t,c,p,sid;\n RETURN visible;\nEND $function$\n"
+    },
+    {
+      "name": "direct_source_set_visible",
+      "definition": "CREATE OR REPLACE FUNCTION public.direct_source_set_visible(t uuid, c uuid, p uuid, refs jsonb)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO 'public', 'pg_temp'\nAS $function$\n SELECT category_access(t,c,false) AND jsonb_typeof(refs)='array' AND NOT EXISTS (\n   SELECT 1 FROM jsonb_array_elements(refs) r\n   LEFT JOIN artifact_versions a ON a.id=(r->>'artifact_id')::uuid\n     AND a.tenant_id=t AND a.category_id=c AND a.product_id IS NOT DISTINCT FROM p\n   LEFT JOIN products m ON m.id=a.product_id AND m.tenant_id=t AND m.category_id=c\n   LEFT JOIN uploaded_originals o ON o.id=a.original_id AND o.tenant_id=t AND o.category_id=c AND o.product_id IS NOT DISTINCT FROM a.product_id\n   WHERE a.id IS NULL OR (a.product_id IS NOT NULL AND (m.id IS NULL\n     OR NOT source_object_audience(t,c,'products',m.id,m.owner_id,m.visibility)))\n     OR NOT source_object_audience(t,c,'artifact_versions',a.id,a.owner_id,a.visibility)\n     OR (a.original_id IS NOT NULL AND (o.id IS NULL\n       OR NOT source_object_audience(t,c,'uploaded_originals',o.id,o.owner_id,o.visibility)))\n )\n$function$\n"
+    }
+  ]
+}

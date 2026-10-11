@@ -9,6 +9,7 @@ from copy import deepcopy
 from datetime import timedelta
 from uuid import UUID
 
+import pytest
 from sqlalchemy import select
 
 from pdos_next.database import tenant_session
@@ -29,12 +30,36 @@ from pdos_next.service import digest
 from .fixtures import SOURCE_TEXT, observe_direct_named_verifier, read_effect_hashes
 
 
+@pytest.mark.parametrize("native_resource_case", ["no_deadline"], indirect=True)
+def test_ordinary_fact_without_deadline_remains_current_for_the_execution_window(
+    native_resource_case,
+):
+    case = native_resource_case
+    setup, request = case.setup, case.request
+    before = read_effect_hashes(case.work)
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        category_id=setup.category,
+    ) as session:
+        read = owner.inspect_resource(session, setup.ctx, setup.product, request=request)
+        assert read.view.current and read.view.state == "known"
+        assert read.view.fact_valid_until is None
+        assert read.view.valid_until == request.execution.window.finish
+        assert owner.refresh_resource(session, setup.ctx, setup.product, read).view == read.view
+    assert read_effect_hashes(case.work) == before
+
+
 def test_native_source_current_owner_refresh_and_authenticated_post_have_no_effects(
     native_resource_case,
 ):
     case, work = native_resource_case, native_resource_case.work
     setup, request = case.setup, case.request
-    endpoint = f"/v1/products/{setup.product}/builds/{request.build.id}/resources/inspect"
+    endpoint = (
+        f"/v1/categories/{setup.category}/products/{setup.product}"
+        f"/builds/{request.build.id}/resources/inspect"
+    )
     body = {
         "project_id": str(request.scope.project_id),
         "expected_build_revision": request.build.revision,
@@ -45,7 +70,9 @@ def test_native_source_current_owner_refresh_and_authenticated_post_have_no_effe
     assert setup.engine._pdos_change_store is case.store
     issuer_identity, callback_identity = work.issuer, work.issuer.verify_named_decision
     registry_epoch = deepcopy(setup.engine._pdos_operational_issuer_epochs)
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as session:
         fact = session.get(BuildOperationalFact, UUID(case.receipt["subject_id"]))
         pointer = session.scalar(
             select(BuildOperationalCurrent).where(
@@ -115,7 +142,9 @@ def test_native_source_current_owner_refresh_and_authenticated_post_have_no_effe
 
     baseline = read_effect_hashes(work)
     with observe_direct_named_verifier(work.issuer) as calls:
-        with tenant_session(setup.engine, setup.tenant) as session:
+        with tenant_session(
+            setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+        ) as session:
             prepared = owner.inspect_resource(session, setup.ctx, setup.product, request=request)
             refreshed = owner.refresh_resource(session, setup.ctx, setup.product, prepared)
             assert prepared.view == refreshed.view

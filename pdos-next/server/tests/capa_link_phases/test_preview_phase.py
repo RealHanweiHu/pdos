@@ -36,13 +36,14 @@ NOW = datetime(2026, 10, 3, 12, tzinfo=UTC)
 
 @pytest.fixture
 def work(monkeypatch):
-    tenant, actor, product_id, project = uuid4(), uuid4(), uuid4(), uuid4()
-    ctx = Context(tenant, actor, actor)
+    tenant, actor, product_id, project, category = uuid4(), uuid4(), uuid4(), uuid4(), uuid4()
+    ctx = Context(tenant, actor, actor, category_id=category)
     engine = SimpleNamespace()
     session = Session(bind=engine)
     product = Product(
         id=product_id,
         tenant_id=tenant,
+        category_id=category,
         created_at=NOW,
         owner_id=actor,
         name="Synthetic phase protocol product",
@@ -50,6 +51,7 @@ def work(monkeypatch):
         revision=1,
         lifecycle_epoch=1,
         status="draft",
+        visibility="category",
     )
     make_transient_to_detached(product)
     session.add(product)
@@ -63,7 +65,7 @@ def work(monkeypatch):
         capa_id=uuid4(),
         purpose="Protocol checks only",
         owner_id=actor,
-        visibility="product",
+        visibility="category",
         nature="synthetic",
         requirement=EffectivenessRequirement(
             method="Not verified by this test",
@@ -83,7 +85,7 @@ def work(monkeypatch):
     output = OutputReading(
         ref=OutputRef(kind="verification_request", id=uuid4(), revision=1),
         owner_id=actor,
-        visibility="product",
+        visibility="category",
         project_id=project,
         title="Synthetic structural option",
         status="draft",
@@ -97,7 +99,7 @@ def work(monkeypatch):
         basis=basis,
         action_id=action.action_id,
         outputs=(output,),
-        visibility="product",
+        visibility="category",
         owner_id=actor,
         required_source_read_set=(source,),
         source_basis_sha256="d" * 64,
@@ -115,6 +117,7 @@ def work(monkeypatch):
         command_id=uuid4(),
         idempotency_key="synthetic-preview-key",
         operation=phase.OPERATION,
+        category_id=category,
         product_id=product_id,
         expected_revision=1,
         source_read_set=[source.model_dump()],
@@ -128,14 +131,46 @@ def work(monkeypatch):
         pytest.fail("Preview must not consume or assert a shared proof")
 
     engine._pdos_capa_link_consumed_proof = proof
+    authority_fact = {
+        "role": "quality",
+        "nature": "synthetic",
+        "state": "active",
+        "operations": [phase.OPERATION],
+        "purposes": [basis.purpose],
+        "valid_from": (NOW - timedelta(days=1)).isoformat(),
+        "valid_until": (NOW + timedelta(minutes=10)).isoformat(),
+    }
+    policy_id = str(uuid4())
     bound = phase.link.Bound(
         resolution,
-        {"valid_until": (NOW + timedelta(minutes=10)).isoformat(), "epoch": 1},
-        {"valid_until": (NOW + timedelta(minutes=8)).isoformat(), "epoch": 1},
+        {
+            "valid_until": None,
+            "epoch": 1,
+            "operation": phase.OPERATION,
+            "purpose": basis.purpose,
+            "synthetic": True,
+            "roles": ["quality"],
+            "fact_refs": [{**authority_fact, "kind": kind} for kind in ("duty", "qualification")],
+        },
+        {
+            "valid_until": None,
+            "epoch": 1,
+            "id": policy_id,
+            "revision": 1,
+            "source_basis": [
+                {
+                    "id": policy_id,
+                    "revision": 1,
+                    "state": "active",
+                    "valid_from": (NOW - timedelta(days=1)).isoformat(),
+                    "valid_until": (NOW + timedelta(minutes=8)).isoformat(),
+                }
+            ],
+        },
         (),
         [source.model_dump(mode="json")],
         {"artifact_sources": [{"synthetic": True, "epoch": 1}]},
-        "product",
+        "category",
         proof,
     )
 
@@ -320,7 +355,11 @@ def test_owner_io_uow_binding_change_rejected_at_tail(work, monkeypatch, stage):
 @pytest.mark.parametrize("stage", ["load", "refresh", "review"])
 @pytest.mark.parametrize("proof", ["authority", "policy"])
 def test_professional_or_policy_expiry_after_io_fails_closed(work, monkeypatch, stage, proof):
-    getattr(work.bound, proof)["valid_until"] = (NOW + timedelta(seconds=1)).isoformat()
+    actual_facts = getattr(work.bound, proof)[
+        "fact_refs" if proof == "authority" else "source_basis"
+    ]
+    for fact in actual_facts:
+        fact["valid_until"] = (NOW + timedelta(seconds=1)).isoformat()
     name = {"load": "_load", "refresh": "_refresh", "review": "_review"}[stage]
     original = getattr(phase.link, name)
 
@@ -361,7 +400,7 @@ def test_missing_real_loader_configuration_is_not_synthetic_positive(work, monke
     monkeypatch.setattr(phase.link, "_load", missing)
     with pytest.raises(DomainError) as failure:
         prepare(work)
-    assert failure.value.code == "INTEGRATION_REQUIRED"
+    assert failure.value.reason == "INTEGRATION_REQUIRED"
     assert work.counts["new_write"] == 0
 
 

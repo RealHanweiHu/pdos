@@ -3,7 +3,7 @@
 import hashlib
 import json
 from dataclasses import dataclass
-from datetime import UTC, datetime, timedelta
+from datetime import datetime
 from uuid import UUID, uuid4
 from weakref import WeakKeyDictionary
 
@@ -11,6 +11,9 @@ from pydantic import AwareDatetime, ConfigDict, Field, field_validator, model_va
 from sqlalchemy import select
 
 from pdos_next import change_order_store as store
+from pdos_next.clock import deadline_current, earliest_deadline, proof_deadline_current
+from pdos_next.clock import now as server_now
+from pdos_next.database import category_for_product
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.capa_verification.service import load_followup_basis
 from pdos_next.domain.change_control.rules import digest
@@ -37,7 +40,7 @@ from pdos_next.service import digest as common_digest
 
 
 def clock():
-    return datetime.now(UTC)
+    return server_now()
 
 
 def _require(value, code="IMPLEMENTATION_OWNER_MISMATCH", status=409):
@@ -65,8 +68,8 @@ class Occurrence(DTO):
     outcome: str = Field(pattern="^(succeeded|failed|unknown)$")
     occurred_at: AwareDatetime
     original_timezone: str
-    sources: tuple[SourceRef, ...] = Field(min_length=1, max_length=20)
-    outputs: tuple[Ref, ...] = Field(max_length=20)
+    sources: tuple[SourceRef, ...] = Field(min_length=1)
+    outputs: tuple[Ref, ...] = Field()
     note: Text
     nature: str = Field(pattern="^(real|synthetic)$")
 
@@ -241,11 +244,13 @@ def _atom_proof(s, ctx, pid, atom, group):
         and proof.token_hash == atom.token_sha256
         and proof.payload_digest == atom.material_sha256
         and proof.snapshot == atom.input_snapshot["review"]
-        and proof.created_at
-        <= atom.proof_consumed_at
-        <= atom.created_at
-        < proof.expires_at
-        == atom.proof_expires_at,
+        and proof.created_at <= atom.proof_consumed_at <= atom.created_at
+        and proof_deadline_current(
+            "T2" if atom.operation == "change.order.approve" else "T1",
+            proof.expires_at,
+            atom.created_at,
+        )
+        and proof.expires_at == atom.proof_expires_at,
         "IMPLEMENTATION_GROUP_MISMATCH",
     )
     _require(
@@ -326,14 +331,15 @@ def validate_binding(s, ctx, pid, request, order, occurrence, *, new_write=False
         all(
             v.actor_id != request.requester_id
             and v.content_digest == order.content_digest
-            and v.at <= occurrence.occurred_at < v.expires_at
+            and v.at <= occurrence.occurred_at
+            and deadline_current(v.expires_at, occurrence.occurred_at)
             for v in order.approvals
         ),
         "APPROVAL_REQUIRED",
         403,
     )
     _require(
-        occurrence.occurred_at < order.plan.expires_at
+        deadline_current(order.plan.expires_at, occurrence.occurred_at)
         and occurrence.nature == request.assessments[-1].graph.nature,
         "IMPLEMENTATION_OWNER_MISMATCH",
     )
@@ -420,7 +426,7 @@ def read_capture(s, ctx, pid, request, order, fact_id, *, new_write=False):
         store.ImplementationCapture.order_id == order.id,
         store.ImplementationCapture.fact_id == fact_id,
     )
-    _require(row.visibility == request.audience[0].split(":", 1)[0] or row.visibility == "product")
+    _require(row.visibility == request.audience[0].split(":", 1)[0] or row.visibility == "category")
     if row.visibility == "private":
         _require(row.owner_id == ctx.requester_id, "FORBIDDEN_SCOPE", 403)
     fact = ImplementationFact.model_validate(row.fact_snapshot)
@@ -433,7 +439,7 @@ def read_capture(s, ctx, pid, request, order, fact_id, *, new_write=False):
     fact_matches_occurrence(fact, occurrence)
     if new_write:
         _require(
-            clock() < row.expires_at
+            deadline_current(row.expires_at)
             and row.change_revision == request.revision
             and row.change_version_id is not None,
             "CAPTURE_STALE",
@@ -540,10 +546,11 @@ def prepare_capture(s, ctx, pid, input):
     _same_uow(s, uow, ctx, common_digest(vars(ctx)))
     at = actualclock()
     _require(
-        at < min(order.plan.expires_at, *[v.expires_at for v in order.approvals]),
+        deadline_current(
+            earliest_deadline(order.plan.expires_at, *[v.expires_at for v in order.approvals]), at
+        ),
         "APPROVAL_EXPIRED",
     )
-    _require(at < received + timedelta(minutes=10), "CAPTURE_STALE")
     result = store.ImplementationCapture(
         id=uuid4(),
         tenant_id=ctx.tenant_id,
@@ -568,8 +575,7 @@ def prepare_capture(s, ctx, pid, input):
         source_basis=sourcebasis,
         output_basis=outputs,
         created_at=fact.received_at,
-        expires_at=min(
-            received + timedelta(minutes=10),
+        expires_at=earliest_deadline(
             order.plan.expires_at,
             *[v.expires_at for v in order.approvals],
         ),
@@ -612,7 +618,7 @@ class ApprovedImplementationOwner:
             ChangeRequestVersion.id == implementation_version_id,
         )
         _require(
-            version.visibility == "product" or version.owner_id == ctx.requester_id,
+            version.visibility != "private" or version.owner_id == ctx.requester_id,
             "FORBIDDEN_SCOPE",
             403,
         )
@@ -628,7 +634,7 @@ class ApprovedImplementationOwner:
         )
         project_stamp = (project.owner_id, project.visibility, project.scope, project.status)
         _require(
-            project.visibility == "product" or project.owner_id == ctx.requester_id,
+            project.visibility != "private" or project.owner_id == ctx.requester_id,
             "FORBIDDEN_SCOPE",
             403,
         )
@@ -748,10 +754,8 @@ class ApprovedImplementationOwner:
                 and proof.revision == approved.shared_proof_revision
                 and proof.token_hash == approved.token_sha256
                 and proof.payload_digest == approved.material_sha256
-                and proof.created_at
-                <= approved.proof_consumed_at
-                <= approved.created_at
-                < proof.expires_at,
+                and proof.created_at <= approved.proof_consumed_at <= approved.created_at
+                and proof_deadline_current("T2", proof.expires_at, approved.created_at),
                 "IMPLEMENTATION_GROUP_MISMATCH",
             )
             signer = Context(ctx.tenant_id, approval.actor_id, approval.actor_id)
@@ -807,7 +811,7 @@ class ApprovedImplementationOwner:
         )
         _require(
             (project.owner_id, project.visibility, project.scope, project.status) == project_stamp
-            and (project.visibility == "product" or project.owner_id == ctx.requester_id),
+            and (project.visibility != "private" or project.owner_id == ctx.requester_id),
             "FORBIDDEN_SCOPE",
             403,
         )
@@ -834,7 +838,7 @@ class ApprovedImplementationOwner:
             s,
             Grant,
             Grant.tenant_id == ctx.tenant_id,
-            Grant.product_id == pid,
+            Grant.category_id == category_for_product(pid),
             Grant.principal_id == ctx.requester_id,
         )
         person = _one(
@@ -843,7 +847,7 @@ class ApprovedImplementationOwner:
         _require(
             person.active is True
             and person.kind == "human"
-            and clock() < min(grant.expires_at, policy.valid_until),
+            and clock() < earliest_deadline(grant.expires_at, policy.valid_until),
             "FORBIDDEN_SCOPE",
             403,
         )

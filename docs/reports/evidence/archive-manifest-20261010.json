@@ -1,0 +1,591 @@
+{
+  "user_date": "2026-10-10",
+  "threshold_bytes_exclusive": 5000000,
+  "count": 97,
+  "total_bytes": 746263718,
+  "archive_root": "/Users/huhanwei/pdos-evidence-archive",
+  "files": [
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/execution-resource/0413-performance.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/execution-resource/0413-performance.json",
+      "bytes": 19365061,
+      "sha256": "7db09a25b543174f044c2f51e701b41f836c16d38ae5f5ce945984ea28b5b2d0"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/execution-resource/0414-performance.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/execution-resource/0414-performance.json",
+      "bytes": 19568622,
+      "sha256": "b4485de92fcbd47c329d1861ffdc352b84fa8644aec5014e219c00e328707552"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/execution-resource/0419-read-candidate.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/execution-resource/0419-read-candidate.json",
+      "bytes": 9896037,
+      "sha256": "01fc1aee9379ac42913954d6edbb53d8fa3ca6914912d06beadc322f78548f9b"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0723-checkpoint/b8-after-final-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0723-checkpoint/b8-after-final-upgrade.json",
+      "bytes": 6420956,
+      "sha256": "303524e3c88af4f6aca71807e4301d33bd49ce90fce6e5189b182fbe737c6835"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0723-checkpoint/b8-after-first-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0723-checkpoint/b8-after-first-upgrade.json",
+      "bytes": 6420956,
+      "sha256": "303524e3c88af4f6aca71807e4301d33bd49ce90fce6e5189b182fbe737c6835"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0723-checkpoint/b8-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0723-checkpoint/b8-before.json",
+      "bytes": 6421773,
+      "sha256": "6997a9bbcc2a05c5d892836d69f47afdb4e83e435a7f88b0726ff650aafddae0"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0723-checkpoint/b8-downgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0723-checkpoint/b8-downgrade.json",
+      "bytes": 6421773,
+      "sha256": "6997a9bbcc2a05c5d892836d69f47afdb4e83e435a7f88b0726ff650aafddae0"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0723-checkpoint/main-after-first-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0723-checkpoint/main-after-first-upgrade.json",
+      "bytes": 6420626,
+      "sha256": "4ac5312549e9df5ad8b7f92dd70f24a7566750831d5577a2d36872534f0de311"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0723-checkpoint/main-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0723-checkpoint/main-before.json",
+      "bytes": 6421443,
+      "sha256": "fe3ec0c1979a51939ddecf5363bfd83f003a008bd42d9764d8dc2434769dcdc6"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0723-checkpoint-preflight-failure-2/b8-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0723-checkpoint-preflight-failure-2/b8-before.json",
+      "bytes": 6421773,
+      "sha256": "6997a9bbcc2a05c5d892836d69f47afdb4e83e435a7f88b0726ff650aafddae0"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0723-checkpoint-preflight-failure-2/main-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0723-checkpoint-preflight-failure-2/main-before.json",
+      "bytes": 6421443,
+      "sha256": "fe3ec0c1979a51939ddecf5363bfd83f003a008bd42d9764d8dc2434769dcdc6"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0723-emptychain/after-final-seed.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0723-emptychain/after-final-seed.json",
+      "bytes": 6419953,
+      "sha256": "d3eaaf3839fc3065a4a6098569367d965c169ea3d7d9511d2b2377c6c6adfbf1"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0723-emptychain/after-final-upgrade-before-seed.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0723-emptychain/after-final-upgrade-before-seed.json",
+      "bytes": 6419953,
+      "sha256": "74c68ca9adb8186c4af4a12a184290d44c31fb5f3e06697aa1f4bca688c867fb"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0723-emptychain/after-first-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0723-emptychain/after-first-upgrade.json",
+      "bytes": 6419953,
+      "sha256": "9fabd1fb3a4118c8f435c5a992678d16e0f2fabfc45af279c99aa86ba1cc87de"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0723-emptychain/before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0723-emptychain/before.json",
+      "bytes": 6420770,
+      "sha256": "52cf04571c81919b6061a93496aee328b8d3dbc25c5036f34722b9fade411999"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0723-emptychain-preflight-failure-2/before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0723-emptychain-preflight-failure-2/before.json",
+      "bytes": 6420770,
+      "sha256": "52cf04571c81919b6061a93496aee328b8d3dbc25c5036f34722b9fade411999"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-checkpoint/b8-after-final-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-checkpoint/b8-after-final-upgrade.json",
+      "bytes": 6432311,
+      "sha256": "3616e5371b1bbb1cdaf2bb1ce610b48cbc28d35ccfd9324b056e25db18fad061"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-checkpoint/b8-after-first-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-checkpoint/b8-after-first-upgrade.json",
+      "bytes": 6432311,
+      "sha256": "3616e5371b1bbb1cdaf2bb1ce610b48cbc28d35ccfd9324b056e25db18fad061"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-checkpoint/b8-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-checkpoint/b8-before.json",
+      "bytes": 6420960,
+      "sha256": "faa43e914fe44b7625cb64de547f7e648fe076c5c7eace7b83612210478b1e2c"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-checkpoint/b8-downgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-checkpoint/b8-downgrade.json",
+      "bytes": 6420960,
+      "sha256": "faa43e914fe44b7625cb64de547f7e648fe076c5c7eace7b83612210478b1e2c"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-checkpoint/main-after-first-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-checkpoint/main-after-first-upgrade.json",
+      "bytes": 6431977,
+      "sha256": "dc7aaf749690343bcc1561b826b395e4d7ea50a2ce08bca3c3d619457ad87046"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-checkpoint/main-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-checkpoint/main-before.json",
+      "bytes": 6420626,
+      "sha256": "4ac5312549e9df5ad8b7f92dd70f24a7566750831d5577a2d36872534f0de311"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-checkpoint-initial-acl-guard-failure/b8-after-acl-guard-failure.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-checkpoint-initial-acl-guard-failure/b8-after-acl-guard-failure.json",
+      "bytes": 6420960,
+      "sha256": "faa43e914fe44b7625cb64de547f7e648fe076c5c7eace7b83612210478b1e2c"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-checkpoint-initial-acl-guard-failure/b8-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-checkpoint-initial-acl-guard-failure/b8-before.json",
+      "bytes": 6420960,
+      "sha256": "faa43e914fe44b7625cb64de547f7e648fe076c5c7eace7b83612210478b1e2c"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-checkpoint-initial-acl-guard-failure/main-after-acl-guard-failure.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-checkpoint-initial-acl-guard-failure/main-after-acl-guard-failure.json",
+      "bytes": 6420626,
+      "sha256": "4ac5312549e9df5ad8b7f92dd70f24a7566750831d5577a2d36872534f0de311"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-checkpoint-initial-acl-guard-failure/main-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-checkpoint-initial-acl-guard-failure/main-before.json",
+      "bytes": 6420626,
+      "sha256": "4ac5312549e9df5ad8b7f92dd70f24a7566750831d5577a2d36872534f0de311"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-emptychain/after-final-seed.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-emptychain/after-final-seed.json",
+      "bytes": 6431304,
+      "sha256": "cc7a347d26ffcede4562dd675c08521cd64df033a8f9f1d08c4fc2545aaa9f1a"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-emptychain/after-final-upgrade-before-seed.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-emptychain/after-final-upgrade-before-seed.json",
+      "bytes": 6431304,
+      "sha256": "e31bed71a3acca1c78e05ec5b59edbd653dc00217a25ef3704317cd889c15149"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-emptychain/after-first-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-emptychain/after-first-upgrade.json",
+      "bytes": 6431304,
+      "sha256": "aded3540f03cf9ef866cbca9954c0faeebf3ddfa8fd1cc957acedd26464ea992"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-emptychain/before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-emptychain/before.json",
+      "bytes": 6419953,
+      "sha256": "d3eaaf3839fc3065a4a6098569367d965c169ea3d7d9511d2b2377c6c6adfbf1"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-emptychain-initial-acl-guard-failure/before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-emptychain-initial-acl-guard-failure/before.json",
+      "bytes": 6419953,
+      "sha256": "d3eaaf3839fc3065a4a6098569367d965c169ea3d7d9511d2b2377c6c6adfbf1"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-emptychain-initial-acl-guard-failure/empty-after-acl-guard-failure.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-emptychain-initial-acl-guard-failure/empty-after-acl-guard-failure.json",
+      "bytes": 6419953,
+      "sha256": "d3eaaf3839fc3065a4a6098569367d965c169ea3d7d9511d2b2377c6c6adfbf1"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-projection-schema-review/b8-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-projection-schema-review/b8-current.json",
+      "bytes": 6432311,
+      "sha256": "a44e10375d61af0637fc7d0e97283d6cb05eaf6c5eb521a483eab068755052eb"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-projection-schema-review/empty-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-projection-schema-review/empty-current.json",
+      "bytes": 6431304,
+      "sha256": "cc7a347d26ffcede4562dd675c08521cd64df033a8f9f1d08c4fc2545aaa9f1a"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0725-projection-schema-review/main-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0725-projection-schema-review/main-current.json",
+      "bytes": 6431977,
+      "sha256": "dc7aaf749690343bcc1561b826b395e4d7ea50a2ce08bca3c3d619457ad87046"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-artifact-fixed-schema-review/b8-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-artifact-fixed-schema-review/b8-current.json",
+      "bytes": 6432389,
+      "sha256": "5c2136da72034c706b5febb842f0b3a4dfbef40326d7ef2b66a9e165a90c82ea"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-artifact-fixed-schema-review/empty-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-artifact-fixed-schema-review/empty-current.json",
+      "bytes": 6431376,
+      "sha256": "c35433c8cd18724c37d8233209e7cb913a0556fb0e244854fa0b406d9dd1350b"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-artifact-fixed-schema-review/main-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-artifact-fixed-schema-review/main-current.json",
+      "bytes": 6432049,
+      "sha256": "06f61ecb5c455d4afc328249bd87cb998bd983d3f451cb1323e24bb8461275c9"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-artifact-fixed-sql-callers.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-artifact-fixed-sql-callers.json",
+      "bytes": 25710959,
+      "sha256": "137473bfc1cf96f91a08c39a09d86d5177a8bc4d226a38155b47217579077436"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-artifact-sql-callers.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-artifact-sql-callers.json",
+      "bytes": 5257479,
+      "sha256": "cd8e27aa42c6b042ae451a9151fe79b5410b6c881de1ed869dcc6f95b84666b1"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-canonical-schema-review/b8-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-canonical-schema-review/b8-current.json",
+      "bytes": 6432386,
+      "sha256": "4c7446856f608a0e5a152004f98ccb2347c2d7db12041bd27657b187b74619ad"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-canonical-schema-review/empty-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-canonical-schema-review/empty-current.json",
+      "bytes": 6431376,
+      "sha256": "c35433c8cd18724c37d8233209e7cb913a0556fb0e244854fa0b406d9dd1350b"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-canonical-schema-review/main-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-canonical-schema-review/main-current.json",
+      "bytes": 6432049,
+      "sha256": "06f61ecb5c455d4afc328249bd87cb998bd983d3f451cb1323e24bb8461275c9"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-checkpoint/b8-after-final-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-checkpoint/b8-after-final-upgrade.json",
+      "bytes": 6432383,
+      "sha256": "e7b2693e98e40487d5a382ff3ff7ff42fbfc1c6a1be637dfd81216ab5e68d14c"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-checkpoint/b8-after-first-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-checkpoint/b8-after-first-upgrade.json",
+      "bytes": 6432383,
+      "sha256": "e7b2693e98e40487d5a382ff3ff7ff42fbfc1c6a1be637dfd81216ab5e68d14c"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-checkpoint/b8-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-checkpoint/b8-before.json",
+      "bytes": 6432311,
+      "sha256": "2f12deeeac8ce91a6960be0d1208a73acaf14bfae3c51c8ed69baee3593b69d2"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-checkpoint/b8-downgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-checkpoint/b8-downgrade.json",
+      "bytes": 6432311,
+      "sha256": "2f12deeeac8ce91a6960be0d1208a73acaf14bfae3c51c8ed69baee3593b69d2"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-checkpoint/main-after-first-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-checkpoint/main-after-first-upgrade.json",
+      "bytes": 6432049,
+      "sha256": "06f61ecb5c455d4afc328249bd87cb998bd983d3f451cb1323e24bb8461275c9"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-checkpoint/main-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-checkpoint/main-before.json",
+      "bytes": 6431977,
+      "sha256": "dc7aaf749690343bcc1561b826b395e4d7ea50a2ce08bca3c3d619457ad87046"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-emptychain/after-final-seed.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-emptychain/after-final-seed.json",
+      "bytes": 6431376,
+      "sha256": "c35433c8cd18724c37d8233209e7cb913a0556fb0e244854fa0b406d9dd1350b"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-emptychain/after-final-upgrade-before-seed.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-emptychain/after-final-upgrade-before-seed.json",
+      "bytes": 6431376,
+      "sha256": "5b74fec139399bfda1dc3261a797425691c7879666962d5c0aeef69aa158bf27"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-emptychain/after-first-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-emptychain/after-first-upgrade.json",
+      "bytes": 6431376,
+      "sha256": "833f59d64cb053fa46b974598807b5ecd4428f027edc99e2f5956d652e22903f"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-emptychain/before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-emptychain/before.json",
+      "bytes": 6431304,
+      "sha256": "cc7a347d26ffcede4562dd675c08521cd64df033a8f9f1d08c4fc2545aaa9f1a"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-held-source-final-schema-review/b8-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-held-source-final-schema-review/b8-current.json",
+      "bytes": 6432392,
+      "sha256": "3d68adb533268c9c309d157ae5bb7a00c68c6b372704ce04594fafe14f5807ce"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-held-source-final-schema-review/empty-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-held-source-final-schema-review/empty-current.json",
+      "bytes": 6431376,
+      "sha256": "c35433c8cd18724c37d8233209e7cb913a0556fb0e244854fa0b406d9dd1350b"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-held-source-final-schema-review/main-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-held-source-final-schema-review/main-current.json",
+      "bytes": 6432049,
+      "sha256": "06f61ecb5c455d4afc328249bd87cb998bd983d3f451cb1323e24bb8461275c9"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-held-source-final-sql-callers.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-held-source-final-sql-callers.json",
+      "bytes": 33503325,
+      "sha256": "b2c2a74905a3670338fdda7fe32780adf6115380192790440792a240bcfaba5e"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0726-held-source-fixed-sql-callers.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0726-held-source-fixed-sql-callers.json",
+      "bytes": 28041914,
+      "sha256": "3f9c6eba353cdea9f368f1b5d08cd74519202f64fc4b258e58117060b57eb301"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-checkpoint/b8-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-checkpoint/b8-before.json",
+      "bytes": 6432417,
+      "sha256": "80e64d84bf754900e7796715a854eed65e9bcb350891b5e28568e297564abbb2"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-checkpoint/main-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-checkpoint/main-before.json",
+      "bytes": 6432074,
+      "sha256": "e41476f4caf8eeda777b60d0a1307c6f505e52672037c7331d24c43b64c21a2c"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-current-pair-source-review/b8-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-current-pair-source-review/b8-current.json",
+      "bytes": 6431468,
+      "sha256": "c54a6b8680301fcc8b8f43a1ddbfad802f37988a1947c5e56aedfdd842736703"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-current-pair-source-review/empty-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-current-pair-source-review/empty-current.json",
+      "bytes": 6430451,
+      "sha256": "1644ad8da939e1b370c259ec4b03b7b48cd3c22a21fd7147573300d8a4a3340c"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-current-pair-source-review/main-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-current-pair-source-review/main-current.json",
+      "bytes": 6431124,
+      "sha256": "c88929d040d40ec823526338c7e73c6a96f46dc241f4badca67e2c393e256774"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-emptychain/before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-emptychain/before.json",
+      "bytes": 6431401,
+      "sha256": "b1d4149830bdd459f59d252cf2afc6de3536f81b27549ee8b03fc600734c35b7"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-fixed-checkpoint/b8-after-final-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-fixed-checkpoint/b8-after-final-upgrade.json",
+      "bytes": 6431467,
+      "sha256": "666246a5ea63b365a6eed772bf63c7812cd6a20a5f62d89df0617b0530dd75e6"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-fixed-checkpoint/b8-after-first-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-fixed-checkpoint/b8-after-first-upgrade.json",
+      "bytes": 6431467,
+      "sha256": "666246a5ea63b365a6eed772bf63c7812cd6a20a5f62d89df0617b0530dd75e6"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-fixed-checkpoint/b8-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-fixed-checkpoint/b8-before.json",
+      "bytes": 6432417,
+      "sha256": "80e64d84bf754900e7796715a854eed65e9bcb350891b5e28568e297564abbb2"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-fixed-checkpoint/b8-downgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-fixed-checkpoint/b8-downgrade.json",
+      "bytes": 6432417,
+      "sha256": "80e64d84bf754900e7796715a854eed65e9bcb350891b5e28568e297564abbb2"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-fixed-checkpoint/main-after-first-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-fixed-checkpoint/main-after-first-upgrade.json",
+      "bytes": 6431124,
+      "sha256": "c88929d040d40ec823526338c7e73c6a96f46dc241f4badca67e2c393e256774"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-fixed-checkpoint/main-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-fixed-checkpoint/main-before.json",
+      "bytes": 6432074,
+      "sha256": "e41476f4caf8eeda777b60d0a1307c6f505e52672037c7331d24c43b64c21a2c"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-fixed-emptychain/after-final-seed.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-fixed-emptychain/after-final-seed.json",
+      "bytes": 6430451,
+      "sha256": "1644ad8da939e1b370c259ec4b03b7b48cd3c22a21fd7147573300d8a4a3340c"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-fixed-emptychain/after-final-upgrade-before-seed.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-fixed-emptychain/after-final-upgrade-before-seed.json",
+      "bytes": 6430451,
+      "sha256": "0417969e72e32ffc3c2164cfa221fc9c805c7f25a1ea675929d25ab87e65fdac"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-fixed-emptychain/after-first-upgrade.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-fixed-emptychain/after-first-upgrade.json",
+      "bytes": 6430451,
+      "sha256": "2fe0740f83e77e06dda1f64077bba9f68ba51ad0fc43186accab357c48405801"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-fixed-emptychain/before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-fixed-emptychain/before.json",
+      "bytes": 6431401,
+      "sha256": "b1d4149830bdd459f59d252cf2afc6de3536f81b27549ee8b03fc600734c35b7"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-pure-cpu-source-review/b8-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-pure-cpu-source-review/b8-current.json",
+      "bytes": 6431467,
+      "sha256": "52f7fe827c5ee2b6e842038d58c4d5f2f42b21cebf9925eb0e1041f4d7507f2d"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-pure-cpu-source-review/empty-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-pure-cpu-source-review/empty-current.json",
+      "bytes": 6430451,
+      "sha256": "1644ad8da939e1b370c259ec4b03b7b48cd3c22a21fd7147573300d8a4a3340c"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-pure-cpu-source-review/main-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-pure-cpu-source-review/main-current.json",
+      "bytes": 6431124,
+      "sha256": "c88929d040d40ec823526338c7e73c6a96f46dc241f4badca67e2c393e256774"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-watched-owner-source-review/b8-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-watched-owner-source-review/b8-current.json",
+      "bytes": 6431467,
+      "sha256": "d99ab61cddff7015fde79217b58617fcd433feca0e2a2c2a3ab0899ed0acbcdb"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-watched-owner-source-review/empty-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-watched-owner-source-review/empty-current.json",
+      "bytes": 6430451,
+      "sha256": "1644ad8da939e1b370c259ec4b03b7b48cd3c22a21fd7147573300d8a4a3340c"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0727-watched-owner-source-review/main-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0727-watched-owner-source-review/main-current.json",
+      "bytes": 6431124,
+      "sha256": "c88929d040d40ec823526338c7e73c6a96f46dc241f4badca67e2c393e256774"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/b8-after.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/b8-after.json",
+      "bytes": 6433796,
+      "sha256": "8ff00cf6f60287fdc6c39532bce6c5a61e713b29c0ad4b82bce41bbc9346b8d6"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/b8-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/b8-before.json",
+      "bytes": 6431468,
+      "sha256": "609b34f2f90c7208c95cf544cf671079fa75ba18dcd2a5ded42040603725f877"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/b8-reviewed-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/b8-reviewed-current.json",
+      "bytes": 6417547,
+      "sha256": "92f9d89120cbff6bec8d68c3de4cf5478b47ce84db4cbfd1194e4450056b1bf1"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/empty-after.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/empty-after.json",
+      "bytes": 6432779,
+      "sha256": "bf7b7140ed2015b2ec17795e05554cfb541da3948666c286406b7e16cb1366d8"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/empty-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/empty-before.json",
+      "bytes": 6430451,
+      "sha256": "1644ad8da939e1b370c259ec4b03b7b48cd3c22a21fd7147573300d8a4a3340c"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/empty-reviewed-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/empty-reviewed-current.json",
+      "bytes": 6416700,
+      "sha256": "23e4f7d099367998f6ae25a51d43ed4d8f341a65044a6d19bc1c604b200566f4"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/main-after.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/main-after.json",
+      "bytes": 6433452,
+      "sha256": "107870a05533dea3f8e4e44caf4e7c5e848f2f86459ac530e0169e163e4ed8c1"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/main-before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/main-before.json",
+      "bytes": 6431124,
+      "sha256": "c88929d040d40ec823526338c7e73c6a96f46dc241f4badca67e2c393e256774"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/main-reviewed-current.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/0728-direct-confirmation/main-reviewed-current.json",
+      "bytes": 6417134,
+      "sha256": "359fe6de338475952ae18d381c46e6c807bf71c9cbc55cb6eac22e552f8118b0"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/p12-current-empty/2-upgrade-head.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/p12-current-empty/2-upgrade-head.json",
+      "bytes": 6432779,
+      "sha256": "6c1de9cbd947257df5f81972f64a6c1e52508f845d9d7bf717ef499774ded7f7"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/p12-current-empty/4-upgrade-head.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/p12-current-empty/4-upgrade-head.json",
+      "bytes": 6432779,
+      "sha256": "6c1de9cbd947257df5f81972f64a6c1e52508f845d9d7bf717ef499774ded7f7"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/p12-current-empty/after-restore.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/p12-current-empty/after-restore.json",
+      "bytes": 6433644,
+      "sha256": "7767a608bbac21cf17a7bbd94eb5f4064a4c1af6cbb94e4b10c325c55ff40dc2"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/p12-current-empty/before.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/p12-current-empty/before.json",
+      "bytes": 6432779,
+      "sha256": "bf7b7140ed2015b2ec17795e05554cfb541da3948666c286406b7e16cb1366d8"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/performance-attempt-1/b4-launch.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/performance-attempt-1/b4-launch.json",
+      "bytes": 19940183,
+      "sha256": "9ebeb09782af1bfe33b55e742e09911af3e0dd5366b4545d85c8cebeeba91aac"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/performance-attempt-16/quality-samples.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/performance-attempt-16/quality-samples.json",
+      "bytes": 6359349,
+      "sha256": "ce6911a9f7e2e82fcd862d65793c52dc894ac87f21ea400b77460e00c65d0097"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/performance-attempt-3/b4-launch.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/performance-attempt-3/b4-launch.json",
+      "bytes": 19820637,
+      "sha256": "2fe74f3ba799925184de51faa32f284224b301b6d896c56922f312213b00394d"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/performance-final-capa-rr-2/b4-launch.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-s0-20261008/final-candidate/performance-final-capa-rr-2/b4-launch.json",
+      "bytes": 5964871,
+      "sha256": "4b2e660204cf5b3c04cd7f55813353e9671ab1091b7407894d4d4a6b4e8285ed"
+    }
+  ]
+}

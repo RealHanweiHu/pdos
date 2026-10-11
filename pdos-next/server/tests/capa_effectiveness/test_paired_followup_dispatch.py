@@ -35,7 +35,7 @@ def selected(work, original_basis, monkeypatch):  # noqa: F811 - imported pytest
         project_id=work.scope.project_id,
         request_id=uuid4(),
         owner_id=work.actor,
-        visibility="product",
+        visibility="category",
         operation="test.run.start",
         status="executing",
         required_source_read_set=[
@@ -218,7 +218,7 @@ def test_advanced_missing_owner_never_uses_direct_receipt_or_draft_fallback(sele
     monkeypatch.setattr(adapter, "configured", lambda s: None)
     with pytest.raises(DomainError) as error:
         resolve(v)
-    assert (error.value.code, error.value.status) == ("INTEGRATION_REQUIRED", 503)
+    assert (error.value.reason, error.value.status) == ("INTEGRATION_REQUIRED", 503)
     assert not v.direct_calls and not v.reads
 
 
@@ -228,7 +228,7 @@ def test_refresh_cannot_degrade_to_direct_formal_when_original_operation_changes
     v.row["operation"] = "verification.request.create"
     with pytest.raises(DomainError) as error:
         service._refresh_output(v.work.s, v.work.ctx, v.work.pid, v.basis, v.ref, handle)
-    assert error.value.code == "SOURCE_STALE" and not v.direct_calls
+    assert error.value.reason == "SOURCE_STALE" and not v.direct_calls
 
 
 @pytest.mark.parametrize("problem", ["ref", "project", "private"])
@@ -244,7 +244,7 @@ def test_adapter_return_cannot_change_output_scope_or_private_audience(selected,
     v.output = v.output.model_copy(update=update)
     with pytest.raises(DomainError) as error:
         resolve(v)
-    assert error.value.code == "INTEGRITY_MISMATCH"
+    assert error.value.reason == "INTEGRITY_MISMATCH"
 
 
 def test_second_actual_refresh_output_drift_is_not_serialized_as_current(selected):
@@ -252,7 +252,7 @@ def test_second_actual_refresh_output_drift_is_not_serialized_as_current(selecte
     v.drift = True
     with pytest.raises(DomainError) as error:
         resolve(v)
-    assert error.value.code == "SOURCE_STALE" and len(v.refreshes) == 1
+    assert error.value.reason == "SOURCE_STALE" and len(v.refreshes) == 1
 
 
 @pytest.mark.parametrize("code", ["SOURCE_STALE", "FORBIDDEN_SCOPE", "INTEGRATION_REQUIRED"])
@@ -261,7 +261,7 @@ def test_actual_owner_refresh_refusal_is_preserved_not_caught_or_replaced(select
     v.refresh_error = code
     with pytest.raises(DomainError) as error:
         resolve(v)
-    assert error.value.code == code and not v.direct_calls
+    assert error.value.reason == code and not v.direct_calls
 
 
 def test_run_kind_uses_existing_actual_run_owner_not_formal_pair(selected, monkeypatch):
@@ -276,7 +276,7 @@ def test_run_kind_uses_existing_actual_run_owner_not_formal_pair(selected, monke
         product_id=v.work.pid,
         project_id=v.work.scope.project_id,
         owner_id=v.work.actor,
-        visibility="product",
+        visibility="category",
         status="running",
         run_id=uuid4(),
     )

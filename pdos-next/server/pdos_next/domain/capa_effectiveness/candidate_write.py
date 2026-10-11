@@ -48,7 +48,7 @@ def reviewed_prepared_candidate(phase):
     """Actual server preview material; no new IO or authorization is inferred."""
     review = preparation.reviewed_candidate(phase)
     _require(isinstance(review, dict) and "operation" not in review)
-    return {"operation": OPERATION, **deepcopy(review)}
+    return {"operation": OPERATION, **review}
 
 
 def _product(s, ctx, command, product):

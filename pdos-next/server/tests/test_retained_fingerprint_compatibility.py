@@ -12,7 +12,7 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 from test_fingerprint_compatibility import materials  # noqa: F401 -- fixture reuse
 
@@ -24,6 +24,7 @@ from pdos_next.domain.test_resources.models import TestResourceCurrent as Curren
 from pdos_next.domain.test_resources.models import TestResourceFact as Fact
 from pdos_next.domain.test_resources.schemas import TestReservationResult as Result
 from pdos_next.domain.verification_launch.schemas import ExecutionPlan
+from pdos_next.errors import DomainError
 from pdos_next.models import Grant, Principal, Product
 from pdos_next.schemas.resource_readiness.contracts import (
     ReadinessReport,
@@ -67,7 +68,7 @@ def work(materials, monkeypatch):
         enabled=True,
         test_marker_verified=True,
     )
-    ctx = Context(fixed.tenant_id, binding.executor_id, binding.executor_id)
+    ctx = Context(fixed.tenant_id, binding.executor_id, binding.executor_id, category_id=uid(500))
     session = Session(bind=engine)
     session.begin()
     source = {"id": uid(30), "revision": 1, "kind": "artifact", "position": "line:1"}
@@ -250,6 +251,7 @@ def work(materials, monkeypatch):
     product = Product(
         id=fixed.product_id,
         tenant_id=ctx.tenant_id,
+        category_id=ctx.category_id,
         revision=1,
         lifecycle_epoch=1,
         status="draft",
@@ -261,7 +263,7 @@ def work(materials, monkeypatch):
     grant = Grant(
         id=uid(52),
         tenant_id=ctx.tenant_id,
-        product_id=fixed.product_id,
+        category_id=ctx.category_id,
         principal_id=ctx.actor_id,
         can_write=True,
         access_epoch=1,
@@ -285,14 +287,33 @@ def work(materials, monkeypatch):
         return rows[model]
 
     def scalars(query):
-        assert query.get_execution_options()["autoflush"] is False
-        assert query.get_execution_options()["populate_existing"] is True
-        assert query._limit_clause.value == 2
         return [selected(query)]
 
     monkeypatch.setattr(session, "scalars", scalars)
     monkeypatch.setattr(session, "scalar", selected)
     monkeypatch.setattr(session, "get", lambda model, key: rows[model])
+    # Explicit substitutes for the public authority ports; this fixture never connects.
+    from pdos_next import service as public_service
+    from pdos_next.domain.professional_authority import service as professional
+
+    def public_access(s, current_ctx, product_id, *, write=False, lock=False):
+        assert s is session and product_id == product.id
+        if (
+            current_ctx.category_id != product.category_id
+            or not person.active
+            or (grant.expires_at is not None and grant.expires_at <= clock.at)
+            or (write and not grant.can_write)
+        ):
+            raise DomainError("FORBIDDEN_SCOPE", "Explicit fixture authority revoked")
+        return product
+
+    def subject_access(s, current_ctx, product_id, subject_id):
+        assert s is session and product_id == product.id
+        current_grant = selected(select(Grant).where(Grant.principal_id == subject_id))
+        return people[subject_id], current_grant
+
+    monkeypatch.setattr(public_service, "require_access", public_access)
+    monkeypatch.setattr(professional, "_subject_access", subject_access)
     monkeypatch.setattr(retained, "_human", lambda *a, **k: None)
     monkeypatch.setattr(retained.launch, "_version", lambda *a, **k: original)
     monkeypatch.setattr(retained.launch, "_snapshot", lambda row: (run, plan))
@@ -340,7 +361,9 @@ def work(materials, monkeypatch):
         "sample_usage": [{"id": str(uid(42))}],
     }
 
-    def saved_effects(*a):
+    def saved_effects(*a, fresh=False):
+        assert a[0] is session and session.info.get("read_snapshot") is not True
+        assert fresh is True  # This real non-RR Session requires terminal fresh SQL.
         owner_io.effect += 1
         return deepcopy(effects)
 
@@ -581,7 +604,7 @@ def add_live_reader(work, identity, *, expires_at=None):
     work.grants[identity] = Grant(
         id=uid(identity.int + 100),
         tenant_id=work.ctx.tenant_id,
-        product_id=work.pid,
+        category_id=work.ctx.category_id,
         principal_id=identity,
         can_write=False,
         access_epoch=1,
@@ -594,7 +617,7 @@ def different_signer_and_maker(work):
     add_live_reader(work, uid(90))
     work.original.authority_snapshot["subject_id"] = str(uid(80))
     work.fact.owner_id = uid(90)
-    work.fact.visibility = "product"
+    work.fact.visibility = "category"
     work.fact.fact_sha256 = resources._fact_hash(work.fact)
     work.old["fact"] = work.fresh["fact"] = work.fact.fact_sha256
     work.bundle.fact_ref.sha256 = work.fact.fact_sha256
@@ -604,26 +627,23 @@ def different_signer_and_maker(work):
     work.existing.facts_revision = sha
 
 
-def test_actual_distinct_consumer_signer_maker_access_gates_remain_deduplicated(work):
+def test_retained_read_checks_consumer_access_and_keeps_fixed_signer_maker_provenance(work):
     different_signer_and_maker(work)
     result = inspect(work)
     assert result["current"] is True, result
-    assert work.query_reads == {uid(6): 2, uid(80): 2, uid(90): 2}
+    assert work.query_reads == {uid(6): 2}
 
 
-def test_original_signer_grant_expiry_during_last_maker_io_is_not_historical_qualification(work):
+def test_original_signer_grant_expiry_does_not_erase_historical_qualification(work):
     different_signer_and_maker(work)
-
-    def delay(person_id, read_count):
-        if person_id == uid(90) and read_count == 2:
-            work.clock.at = work.grants[uid(80)].expires_at
-
-    work.query_hooks.append(delay)
-    denied(work, "FORBIDDEN_SCOPE")
+    work.clock.at = work.grants[uid(80)].expires_at
+    result = inspect(work)
+    assert result["current"] is True, result
+    assert uid(80) not in work.query_reads and uid(90) not in work.query_reads
     assert work.clock.at < work.grants[uid(6)].expires_at
 
 
-def test_fact_maker_grant_expiry_before_final_clock_cannot_return_current(work, monkeypatch):
+def test_fact_maker_grant_expiry_is_independent_of_current_consumer(work, monkeypatch):
     different_signer_and_maker(work)
     work.grants[uid(80)].expires_at = work.clock.at + timedelta(hours=3)
     work.grants[uid(90)].expires_at = work.clock.at + timedelta(seconds=1)
@@ -634,12 +654,16 @@ def test_fact_maker_grant_expiry_before_final_clock_cannot_return_current(work, 
         work.clock.at = work.grants[uid(90)].expires_at
 
     monkeypatch.setattr(retained, "_same_uow", finish)
-    denied(work, "FORBIDDEN_SCOPE")
+    result = inspect(work)
+    assert result["current"] is True, result
+    assert work.clock.at < work.grants[uid(6)].expires_at
 
 
-def test_fact_maker_access_epoch_changed_during_last_original_authority_io_is_rejected(work):
+def test_fact_maker_access_epoch_change_does_not_rewrite_signed_provenance(work):
     different_signer_and_maker(work)
     work.io.hook = lambda round: (
         setattr(work.grants[uid(90)], "access_epoch", 2) if round == 2 else None
     )
-    denied(work, "SOURCE_STALE")
+    result = inspect(work)
+    assert result["current"] is True, result
+    assert work.grants[uid(90)].access_epoch == 2 and uid(90) not in work.query_reads

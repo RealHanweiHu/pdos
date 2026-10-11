@@ -53,7 +53,7 @@ class TestPlanBinding(DTO):
     conditions: Text
     equipment: DefinitionReference
     calibration: DefinitionReference
-    pairs: tuple[TestPairBinding, ...] = Field(min_length=1, max_length=10000)
+    pairs: tuple[TestPairBinding, ...] = Field(min_length=1)
 
     @model_validator(mode="after")
     def pairs_unique(self) -> Self:
@@ -79,19 +79,19 @@ class TestResourceFactInput(DTO):
     expected_previous_revision: int = Field(default=0, ge=0, strict=True)
     state: Literal["active", "withdrawn"] = "active"
     valid_from: AwareDatetime
-    valid_until: AwareDatetime
-    resources: tuple[ResourceInput, ...] = Field(min_length=1, max_length=100)
-    required_uses: tuple[ResourceUse, ...] = Field(min_length=1, max_length=100)
+    valid_until: AwareDatetime | None = None
+    resources: tuple[ResourceInput, ...] = Field(min_length=1)
+    required_uses: tuple[ResourceUse, ...] = Field(min_length=1)
     # A trusted approved-method declaration, never a client waiver checkbox.
     requirements_sources: Refs
-    approved_conditions: tuple[Text, ...] = Field(default=(), max_length=50)
+    approved_conditions: tuple[Text, ...] = Field(default=())
     sources: Refs
     reason: Text
 
     @field_validator("valid_from", "valid_until")
     @classmethod
     def utc(cls, value):
-        return value.astimezone(UTC)
+        return value.astimezone(UTC) if value is not None else None
 
     @field_validator("required_uses", mode="before")
     @classmethod
@@ -103,7 +103,7 @@ class TestResourceFactInput(DTO):
 
     @model_validator(mode="after")
     def complete(self) -> Self:
-        if self.valid_until <= self.valid_from:
+        if self.valid_until is not None and self.valid_until <= self.valid_from:
             raise ValueError("Test facts require a positive validity interval")
         if (self.expected_previous_id is None) != (self.expected_previous_revision == 0):
             raise ValueError("Previous fact id and revision must be paired")
@@ -138,6 +138,8 @@ class BoundTestResources(DTO):
     uses: tuple[ResourceUse, ...] = ()
     required_source_read_set: tuple[SourceRead, ...] = ()
     valid_until: AwareDatetime | None = None
+    expiry_boundaries: tuple[AwareDatetime, ...] = Field(default=(), exclude=True)
+    authority_basis: dict | None = Field(default=None, exclude=True)
     nature: Literal["unknown", "real", "synthetic"] = "unknown"
     sample_usage: tuple[SampleUsageView, ...] = ()
 

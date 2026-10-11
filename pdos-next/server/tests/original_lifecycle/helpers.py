@@ -337,9 +337,7 @@ def fixture():
         "synthetic-policy:v1",
         timedelta(days=7),
         timedelta(days=30),
-        timedelta(minutes=5),
         timedelta(seconds=30),
-        timedelta(minutes=1),
     )
     service = LifecycleService(
         store=store,

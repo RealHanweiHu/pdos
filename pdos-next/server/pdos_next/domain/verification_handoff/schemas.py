@@ -13,7 +13,7 @@ from pdos_next.schemas.verification.contracts import DTO, Coverage, EventTime, S
 class HandoffBase(DTO):
     request_id: UUID
     expected_request_revision: Revision
-    sources: tuple[DefinitionReference, ...] = Field(default=(), max_length=20)
+    sources: tuple[DefinitionReference, ...] = Field(default=())
     reason: Text
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 
@@ -23,9 +23,9 @@ class ActualItemAssessment(DTO):
     item_id: Key
     expected_assessment_revision: Annotated[int, Field(ge=0, strict=True)]
     status: Literal["applicable", "not_applicable", "unknown"]
-    conditions: tuple[Text, ...] = Field(default=(), max_length=50)
+    conditions: tuple[Text, ...] = Field(default=())
     reason: Text
-    sources: tuple[DefinitionReference, ...] = Field(default=(), max_length=20)
+    sources: tuple[DefinitionReference, ...] = Field(default=())
 
     @model_validator(mode="after")
     def positive_evidence(self) -> Self:
@@ -35,7 +35,7 @@ class ActualItemAssessment(DTO):
 
 
 class ActualMethodPreparePayload(HandoffBase):
-    assessments: tuple[ActualItemAssessment, ...] = Field(min_length=1, max_length=1000)
+    assessments: tuple[ActualItemAssessment, ...] = Field(min_length=1)
 
     @model_validator(mode="after")
     def unique_pairs(self) -> Self:
@@ -46,8 +46,8 @@ class ActualMethodPreparePayload(HandoffBase):
 
 
 class OfferPayload(HandoffBase):
-    samples: tuple[SampleRef, ...] = Field(min_length=1, max_length=1000)
-    coverage: tuple[Coverage, ...] = Field(min_length=1, max_length=10000)
+    samples: tuple[SampleRef, ...] = Field(min_length=1)
+    coverage: tuple[Coverage, ...] = Field(min_length=1)
     at: EventTime
 
     @model_validator(mode="after")
@@ -62,8 +62,8 @@ class OfferPayload(HandoffBase):
 
 
 class AcceptPayload(HandoffBase):
-    coverage: tuple[Coverage, ...] = Field(min_length=1, max_length=10000)
-    returned_coverage: tuple[Coverage, ...] = Field(default=(), max_length=10000)
+    coverage: tuple[Coverage, ...] = Field(min_length=1)
+    returned_coverage: tuple[Coverage, ...] = Field(default=())
     next_owner_id: UUID | None = None
     at: EventTime
 
@@ -79,7 +79,7 @@ class AcceptPayload(HandoffBase):
 
 
 class ReturnPayload(HandoffBase):
-    coverage: tuple[Coverage, ...] = Field(min_length=1, max_length=10000)
+    coverage: tuple[Coverage, ...] = Field(min_length=1)
     next_owner_id: UUID
     at: EventTime
 

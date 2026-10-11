@@ -8,6 +8,8 @@ import pytest
 from test_retained_execution import (  # noqa: F401
     _current,
     _proof,
+    _run_row,
+    _scoped,
     known_configuration,
     operational_work,
     ready_work,
@@ -16,7 +18,7 @@ from test_retained_execution import (  # noqa: F401
 )
 from verification_launch import fixtures as launch_fixtures
 
-from pdos_next.database import engine_for, tenant_session
+from pdos_next.database import engine_for
 from pdos_next.domain.test_resources import service as resources
 from pdos_next.safety import verify_test_target
 
@@ -30,8 +32,11 @@ def engines():
     auth = engine_for(os.environ["AUTH_DATABASE_URL"])
     verify_test_target(admin)
     verify_test_target(app)
+    dispatch = engine_for(os.environ["DISPATCH_DATABASE_URL"])
+    verify_test_target(dispatch)
+    app._pdos_dispatch_engine = dispatch
     yield admin, app, auth
-    for engine in (admin, app, auth):
+    for engine in (admin, app, auth, dispatch):
         engine.dispose()
 
 
@@ -49,12 +54,12 @@ def add_unrelated_scope(work):
 
 def test_exact_single_dependency_survives_unrelated_scope_addition(retained_started_work):
     work = retained_started_work
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with _scoped(work) as s:
         before = _proof(s, work)
         _current(before)
     assert len(work.setup.engine._pdos_test_resource_issuer_epochs) == 1
     add_unrelated_scope(work)
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with _scoped(work) as s:
         after = _proof(s, work)
         _current(after)
         assert after["facts_revision"] == before["facts_revision"]
@@ -64,18 +69,32 @@ def test_exact_single_dependency_survives_unrelated_scope_addition(retained_star
         assert after["saved_start_at"] == before["saved_start_at"]
 
 
-def test_legacy_saved_multiple_keys_are_not_guessed(retained_launch_work, monkeypatch):
+def test_new_v2_start_preserves_its_exact_dependency_with_multiple_registered_keys(
+    retained_launch_work, monkeypatch
+):
     work = retained_launch_work
     add_unrelated_scope(work)
     launch_fixtures.started(work, monkeypatch)
     assert len(work.setup.engine._pdos_test_resource_issuer_epochs) == 2
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
-        _current(_proof(s, work))
+    with _scoped(work) as s:
+        original = _run_row(s, work)
+        assert original.input_snapshot["resource_fingerprint_version"] == (
+            "test-resource-dependency-v2"
+        )
+        before = _proof(s, work)
+        _current(before)
     add_unrelated_scope(work)
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with _scoped(work) as s:
         after = _proof(s, work)
-        assert after["current"] is False
-        assert after["reason_codes"] == ["RETAINED_EXECUTION_CHANGED"]
+        _current(after)
+        for field in (
+            "facts_revision",
+            "reservation",
+            "occupancy",
+            "sample_usage",
+            "saved_start_at",
+        ):
+            assert after[field] == before[field]
 
 
 def test_boolean_epoch_does_not_reproduce_real_original_dependency(retained_started_work):
@@ -86,7 +105,7 @@ def test_boolean_epoch_does_not_reproduce_real_original_dependency(retained_star
     assert epochs[work.test_issuer.key] == 1
     epochs[work.test_issuer.key] = True
     work.setup.engine._pdos_test_resource_issuer_epochs = epochs
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with _scoped(work) as s:
         after = _proof(s, work)
         assert after["current"] is False
         assert after["reason_codes"]

@@ -45,7 +45,7 @@ def main():
     import os
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--realm", required=True, choices=("pdos", "pdos-next"))
+    parser.add_argument("--realm", required=True, choices=("pdos-next",))
     args = parser.parse_args()
     install(
         os.environ["PDOS_AGENT_RUNTIME_DATABASE_URL"],

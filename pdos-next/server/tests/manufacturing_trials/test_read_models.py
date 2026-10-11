@@ -20,7 +20,7 @@ def test_current_observation_and_historical_readiness_are_separate():
     assert reading.preparation_at_creation.state == "UNKNOWN"
     with pytest.raises(DomainError) as error:
         pilot_reading(current, ())
-    assert error.value.code == "INCOMPLETE_HISTORY"
+    assert error.value.reason == "INCOMPLETE_HISTORY"
 
 
 def test_history_duplicate_is_not_counted_twice():
@@ -30,4 +30,4 @@ def test_history_duplicate_is_not_counted_twice():
     observation = commands.observations[value.observation_id]
     with pytest.raises(DomainError) as error:
         pilot_reading(commands.pilots[pilot.id], (observation, observation))
-    assert error.value.code == "DUPLICATE_HISTORY"
+    assert error.value.reason == "DUPLICATE_HISTORY"

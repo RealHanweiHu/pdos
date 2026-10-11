@@ -194,7 +194,7 @@ export function previewProblem(preview: PreparedVerificationAction, intent: Veri
   if (!Number.isFinite(Date.parse(preview.expiresAt)) || Date.parse(preview.expiresAt) <= now) return "本次预览已过期，请重新核对。";
   if (!preview.allowed || preview.missing.some(item => item.blocking)) return "本次范围尚不可办理，请处理阻塞缺项。";
   if (preview.scope.request.id !== intent.request.id || preview.scope.request.revision !== intent.request.revision) return "服务器核对的请求范围不一致。";
-  if ("build" in intent && (preview.scope.productId !== intent.build.productId || preview.scope.projectId !== intent.build.projectId)) return "服务器核对的产品或项目范围不一致。";
+  if ("build" in intent && (preview.scope.productId !== intent.build.productId || preview.scope.projectId !== intent.build.projectId)) return "服务器核对的型号或项目范围不一致。";
   const expectedSamples = intent.samples;
   if (expectedSamples.some(sample => !preview.scope.samples.some(value => canonical(value) === canonical(sample))) || preview.scope.samples.some(sample => !expectedSamples.some(value => canonical(value) === canonical(sample)))) return "服务器核对未固定实际样件及配置版本。";
   if (canonical(preview.scope.coverage) !== canonical(intent.coverage)) return "服务器核对未覆盖所选样件与测试项的精确对应范围。";

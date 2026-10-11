@@ -26,7 +26,7 @@ export type StoredObservation = {
 };
 export type PackageItem = { category: string; source: Citation };
 export type Research = {
-  id: string; tenant_id: string; owner_id: string; audience: "private" | "product";
+  id: string; tenant_id: string; owner_id: string; audience: "private" | "category" | "audience";
   scope_id: string; revision: number; title: string; mode: "research" | "oem";
   questions: string[]; use_cases: string[]; items: PackageItem[]; observations: StoredObservation[];
 };
@@ -46,7 +46,7 @@ export type DefinitionSpec = Omit<SpecValue, "applicability"> & {
 export type DefinitionCandidate = {
   research_id: string; research_revision: number; product_id: string; expected_product_revision: number;
   payload: {
-    title: string; purpose: string; visibility: "private" | "product";
+    title: string; purpose: string; visibility: "private" | "category" | "audience";
     use_cases: string[]; requirements: string[]; constraints: string[]; unknowns: string[];
     exclusions: string[]; specs: DefinitionSpec[]; sources: DefinitionReference[];
     parent_definition_id: string | null; expected_parent_revision: number | null; change_reason: string;

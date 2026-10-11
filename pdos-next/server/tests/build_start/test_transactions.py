@@ -74,7 +74,12 @@ def assessment_command(work, previous=None):
         "previous_assessment_id": previous["id"] if previous else None,
         "expected_previous_revision": previous["revision"] if previous else 0,
     }
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         inputs = assessment_inputs(
             session,
             work.setup.ctx,
@@ -88,7 +93,8 @@ def assessment_command(work, previous=None):
 
 def view(work):
     response = work.setup.client.get(
-        f"/v1/products/{work.setup.product}/build-start", headers=work.setup.headers
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/build-start",
+        headers=work.setup.headers,
     )
     assert response.status_code == 200, response.text
     return response.json()
@@ -124,7 +130,12 @@ def authority_fact(work, role, kind, **changes):
 
 
 def import_authority(work, role, kind, **changes):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         return import_professional_fact(
             session,
             work.setup.ctx,
@@ -268,7 +279,12 @@ def started(work):
 
 
 def counts(work):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         result = {
             model.__tablename__: session.scalar(
                 select(func.count()).select_from(model).where(model.tenant_id == work.setup.tenant)
@@ -317,7 +333,12 @@ def test_t2_preview_named_one_confirmation_and_approve_not_t1(ready_work):
     assert prepared["review"]["after"]["fact_binding"]["accepted_controls"] == sorted(CONTROLS)
     saved = post(ready_work.setup, prepared["command"])
     assert saved.status_code == 200, saved.text
-    with tenant_session(ready_work.setup.engine, ready_work.setup.tenant) as session:
+    with tenant_session(
+        ready_work.setup.engine,
+        ready_work.setup.tenant,
+        actor_id=ready_work.setup.human,
+        category_id=ready_work.setup.category,
+    ) as session:
         assert (
             session.scalar(
                 select(func.count())
@@ -331,8 +352,38 @@ def test_t2_preview_named_one_confirmation_and_approve_not_t1(ready_work):
         )
 
 
+def test_ordinary_named_decisions_have_no_expiry_and_still_start_atomically(ready_work):
+    work = ready_work
+    decisions = []
+    for role in ("engineering", "manufacturing"):
+        value = authorization_command(work, role)
+        value["payload"].pop("valid_until")
+        for review in value["payload"]["professional_assessments"]:
+            review.pop("valid_until")
+        receipt, _ = accepted(work.setup, value)
+        row = next(
+            item for item in view(work)["authorizations"] if item["id"] == receipt["subject_id"]
+        )
+        assert row["valid_until"] is None and row["expired"] is False
+        assert all(item["valid_until"] is None for item in row["professional_assessments"])
+        decisions.append(row)
+    receipt, prepared = accepted(work.setup, start_command(work, *decisions))
+    saved = next(row for row in view(work)["starts"] if row["id"] == receipt["subject_id"])
+    assert (
+        saved["status"] == "executing"
+        and saved["execution_result"]["state"] == "READY_WITH_CONDITIONS"
+    )
+    replay = post(work.setup, prepared)
+    assert replay.status_code == 200 and replay.json()["id"] == receipt["id"]
+
+
 def test_atomic_start_holds_receipt_and_read_projection_do_not_modify_original_plan(ready_work):
-    with tenant_session(ready_work.setup.engine, ready_work.setup.tenant) as session:
+    with tenant_session(
+        ready_work.setup.engine,
+        ready_work.setup.tenant,
+        actor_id=ready_work.setup.human,
+        category_id=ready_work.setup.category,
+    ) as session:
         build = session.get(Build, UUID(ready_work.build_id))
         before = {
             key: deepcopy(getattr(build, key))
@@ -359,7 +410,12 @@ def test_atomic_start_holds_receipt_and_read_projection_do_not_modify_original_p
         data["capabilities_by_build"][ready_work.build_id]["execution_qualification"]
         == "limited_current"
     )
-    with tenant_session(ready_work.setup.engine, ready_work.setup.tenant) as session:
+    with tenant_session(
+        ready_work.setup.engine,
+        ready_work.setup.tenant,
+        actor_id=ready_work.setup.human,
+        category_id=ready_work.setup.category,
+    ) as session:
         saved = session.get(Build, UUID(ready_work.build_id))
         assert before == {key: getattr(saved, key) for key in before}
         holds = session.scalars(
@@ -408,16 +464,26 @@ def test_changed_start_semantic_cannot_reuse_own_reservation(ready_work):
     command["command_id"], command["idempotency_key"] = str(uuid4()), str(uuid4())
     command["payload"]["reason"] = "Different purported start intent"
     response = post(ready_work.setup, command)
-    assert response.status_code == 409 and response.json()["code"] == "BUILD_ALREADY_STARTED"
+    assert (
+        response.status_code == 409
+        and response.json()["detail"]["reason"] == "BUILD_ALREADY_STARTED"
+    )
 
 
-def test_source_withdrawal_guards_successful_start_replay_and_keeps_history(ready_work):
-    _, command = started(ready_work)
+def test_source_withdrawal_blocks_new_intent_and_preserves_readable_start_replay(ready_work):
+    receipt, command = started(ready_work)
     source_id = UUID(command["payload"]["event_source"]["artifact_id"])
     with Session(ready_work.setup.admin) as session, session.begin():
         session.execute(update(Artifact).where(Artifact.id == source_id).values(status="withdrawn"))
     response = post(ready_work.setup, command)
-    assert response.status_code == 409 and response.json()["code"] == "SOURCE_UNAVAILABLE"
+    assert response.status_code == 200 and response.json()["id"] == receipt["id"]
+    changed = deepcopy(command)
+    changed["command_id"], changed["idempotency_key"] = str(uuid4()), str(uuid4())
+    changed["payload"]["reason"] = "Synthetic new intent after withdrawal"
+    rejected = post(ready_work.setup, changed)
+    assert (
+        rejected.status_code == 409 and rejected.json()["detail"]["reason"] == "SOURCE_UNAVAILABLE"
+    )
     data = view(ready_work)
     assert data["starts"][0]["source_status"] == "needs_recheck"
     assert data["capabilities_by_build"][ready_work.build_id]["stop_required"] is True
@@ -447,7 +513,8 @@ def test_original_approver_qualification_revoke_restore_aba_invalidates_old_t1(r
     )
     response = post(ready_work.setup, reviewed.json()["command"])
     assert (
-        response.status_code == 409 and response.json()["code"] == "PROFESSIONAL_AUTHORITY_CHANGED"
+        response.status_code == 409
+        and response.json()["detail"]["reason"] == "PROFESSIONAL_AUTHORITY_CHANGED"
     )
     assert counts(ready_work)["build_starts"] == 0
 
@@ -459,7 +526,10 @@ def test_authorization_revoke_cas_blocks_old_start_and_does_not_erase_old_approv
     revoked, _ = approved(ready_work, "engineering", action="revoke", previous=engineering)
     assert revoked["status"] == "revoked"
     response = post(ready_work.setup, start, True)
-    assert response.status_code == 409 and response.json()["code"] == "AUTHORIZATION_NOT_CURRENT"
+    assert (
+        response.status_code == 409
+        and response.json()["detail"]["reason"] == "AUTHORIZATION_NOT_CURRENT"
+    )
     history = view(ready_work)["authorizations"]
     assert len(history) == 3 and any(
         row["id"] == engineering["id"] and row["status"] == "approved" for row in history
@@ -473,10 +543,18 @@ def test_reassessment_cas_invalidates_old_fixed_approval_start(ready_work):
     response = post(ready_work.setup, assessment_command(ready_work, ready_work.assessment))
     assert response.status_code == 200, response.text
     start = post(ready_work.setup, command, True)
-    assert start.status_code == 409 and start.json()["code"] == "ASSESSMENT_VERSION_CONFLICT"
+    assert (
+        start.status_code == 409
+        and start.json()["detail"]["reason"] == "ASSESSMENT_VERSION_CONFLICT"
+    )
     current = view(ready_work)["current_assessment_by_build"][ready_work.build_id]
     assert current == {"assessment_id": response.json()["subject_id"], "revision": 2}
-    with tenant_session(ready_work.setup.engine, ready_work.setup.tenant) as session:
+    with tenant_session(
+        ready_work.setup.engine,
+        ready_work.setup.tenant,
+        actor_id=ready_work.setup.human,
+        category_id=ready_work.setup.category,
+    ) as session:
         original_receipt = session.scalar(
             select(Receipt.id).where(
                 Receipt.subject_id == UUID(ready_work.assessment["id"]),
@@ -491,18 +569,27 @@ def test_reassessment_cas_invalidates_old_fixed_approval_start(ready_work):
     new_intent = assessment_command(ready_work)
     new_intent["payload"]["reason"] = "Synthetic stale new assessment intent"
     stale = post(ready_work.setup, new_intent)
-    assert stale.status_code == 409 and stale.json()["code"] == "ASSESSMENT_VERSION_CONFLICT"
+    assert (
+        stale.status_code == 409
+        and stale.json()["detail"]["reason"] == "ASSESSMENT_VERSION_CONFLICT"
+    )
     assert view(ready_work)["current_assessment_by_build"][ready_work.build_id] == current
 
 
 def test_missing_professional_controls_or_no_exact_readset_blocks_before_confirmation(ready_work):
     command = authorization_command(ready_work, "engineering", accepted_controls=[])
     response = post(ready_work.setup, command, True)
-    assert response.status_code == 422 and response.json()["code"] == "EXECUTION_CONTROLS_REQUIRED"
+    assert (
+        response.status_code == 422
+        and response.json()["detail"]["reason"] == "EXECUTION_CONTROLS_REQUIRED"
+    )
     command = authorization_command(ready_work, "engineering")
     command["source_read_set"] = []
     response = post(ready_work.setup, command, True)
-    assert response.status_code == 409 and response.json()["code"] == "MISSING_REQUIRED_EVIDENCE"
+    assert (
+        response.status_code == 409
+        and response.json()["detail"]["reason"] == "MISSING_REQUIRED_EVIDENCE"
+    )
 
 
 def test_product_writer_without_trusted_professional_fact_cannot_self_authorize(operational_work):
@@ -514,7 +601,8 @@ def test_product_writer_without_trusted_professional_fact_cannot_self_authorize(
         operational_work.setup, authorization_command(operational_work, "engineering"), True
     )
     assert (
-        rejected.status_code == 403 and rejected.json()["code"] == "PROFESSIONAL_AUTHORITY_REQUIRED"
+        rejected.status_code == 403
+        and rejected.json()["detail"]["reason"] == "PROFESSIONAL_AUTHORITY_REQUIRED"
     )
 
 
@@ -527,7 +615,12 @@ def test_agent_or_run_never_performs_t2_or_start(ready_work):
         ),
     ):
         with (
-            tenant_session(ready_work.setup.engine, ready_work.setup.tenant) as session,
+            tenant_session(
+                ready_work.setup.engine,
+                ready_work.setup.tenant,
+                actor_id=ready_work.setup.human,
+                category_id=ready_work.setup.category,
+            ) as session,
             pytest.raises(DomainError),
         ):
             execute(session, context, request)
@@ -586,7 +679,7 @@ def test_execution_facts_immutable_and_pointer_cannot_delete_or_backtrack(ready_
 
 def record_deviation(work, configuration):
     response = work.setup.client.get(
-        f"/v1/products/{work.setup.product}/build-execution/compare",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/build-execution/compare",
         headers=work.setup.headers,
         params={
             "build_id": work.build_id,
@@ -629,7 +722,7 @@ def record_deviation(work, configuration):
 def test_preexisting_actual_deviation_is_nonwaivable_start_blocker(ready_work, configuration):
     record_deviation(ready_work, configuration)
     response = post(ready_work.setup, authorization_command(ready_work, "engineering"), True)
-    assert response.status_code == 409 and response.json()["code"] == "BUILD_NOT_READY"
+    assert response.status_code == 409 and response.json()["detail"]["reason"] == "BUILD_NOT_READY"
     caps = view(ready_work)["capabilities_by_build"][ready_work.build_id]
     assert not caps["engineering_approve"] and not caps["start"]
     assert any(item["code"] == "ACTUAL_CONFIGURATION_DEVIATION" for item in caps["blockers"])
@@ -648,7 +741,7 @@ def test_poststart_deviation_remains_recordable_but_requires_stop_recheck(
     assert caps["stop_required"] and caps["execution_qualification"] == "needs_recheck"
     assert any(item["code"] == "ACTUAL_CONFIGURATION_DEVIATION" for item in caps["blockers"])
     replay = post(ready_work.setup, command)
-    assert replay.status_code == 409
+    assert replay.status_code == 200 and replay.json()["id"] == receipt["id"]
 
 
 def shared_configuration(setup):
@@ -661,7 +754,7 @@ def shared_configuration(setup):
                 "title": "Shared synthetic scope source",
                 "content": "Synthetic requirement is unverified",
                 "source_label": "Explicit shared synthetic source",
-                "visibility": "product",
+                "visibility": "category",
             },
         ),
     )
@@ -683,7 +776,7 @@ def shared_configuration(setup):
                 "purpose": "Verify preparation",
                 "use_cases": ["Internal prototype"],
                 "change_reason": "Shared synthetic fixed scope",
-                "visibility": "product",
+                "visibility": "category",
                 "sources": [ref],
             },
             sid,
@@ -699,7 +792,7 @@ def shared_configuration(setup):
                 "name": "Shared synthetic project",
                 "purpose": "Verify preparation",
                 "scope": "Internal synthetic prototype",
-                "visibility": "product",
+                "visibility": "category",
                 "definition_id": defined.json()["subject_id"],
                 "expected_definition_revision": 1,
             },
@@ -707,7 +800,7 @@ def shared_configuration(setup):
         ),
     )
     common = {
-        "visibility": "product",
+        "visibility": "category",
         "reason": "Shared synthetic fixed configuration",
         "sources": [ref],
     }
@@ -765,7 +858,7 @@ def shared_configuration(setup):
                 "site": "SYN-INTERNAL-LAB",
                 "line": "SYN-LINE",
                 "operations": [
-                {"key": "assembly", "name": "Synthetic assembly", "kind": "assembly"}
+                    {"key": "assembly", "name": "Synthetic assembly", "kind": "assembly"}
                 ],
             },
             sid,
@@ -798,7 +891,7 @@ def test_shared_build_three_named_people_and_distinct_grant_expiries(setup):
         session.add(
             Grant(
                 tenant_id=setup.tenant,
-                product_id=setup.product,
+                category_id=setup.category,
                 principal_id=manufacturer,
                 can_write=True,
                 expires_at=at + timedelta(minutes=50),
@@ -821,7 +914,7 @@ def test_shared_build_three_named_people_and_distinct_grant_expiries(setup):
         **{
             **vars(setup),
             "human": setup.peer,
-            "ctx": Context(setup.tenant, setup.peer, setup.peer),
+            "ctx": Context(setup.tenant, setup.peer, setup.peer, category_id=setup.category),
             "headers": {"Authorization": f"Bearer {setup.tokens[setup.peer]}"},
         }
     )
@@ -829,7 +922,7 @@ def test_shared_build_three_named_people_and_distinct_grant_expiries(setup):
         **{
             **vars(setup),
             "human": manufacturer,
-            "ctx": Context(setup.tenant, manufacturer, manufacturer),
+            "ctx": Context(setup.tenant, manufacturer, manufacturer, category_id=setup.category),
             "headers": {"Authorization": f"Bearer {token}"},
         }
     )
@@ -918,7 +1011,7 @@ def test_shared_build_three_named_people_and_distinct_grant_expiries(setup):
                     "title": "Shared synthetic actual event",
                     "content": event,
                     "source_label": "Shared synthetic observation",
-                    "visibility": "product",
+                    "visibility": "category",
                 },
             ),
         )

@@ -128,6 +128,11 @@ class SelectMemory:
         if expression.operator is operators.and_:
             return all(self._matches(row, child) for child in expression.clauses)
         assert expression.operator is operators.eq, "New SQL requires an explicit substitute."
+        if getattr(expression.right, "name", None) == "category_for_product":
+            product_id = next(iter(expression.right.clauses)).value
+            return row.category_id == next(
+                value.category_id for value in self.rows[Product] if value.id == product_id
+            )
         assert hasattr(expression.right, "value"), "No fabricated SQL expression truth."
         return getattr(row, expression.left.key) == expression.right.value
 
@@ -153,8 +158,30 @@ class SelectMemory:
     def scalars(self, statement):
         return self.selected(statement)
 
+    def execute(self, statement):
+        assert [value["entity"] for value in statement.column_descriptions] == [Principal, Grant]
+        self.queries.append(statement)
+        values = []
+        for person in self.rows[Principal]:
+            for grant in self.rows[Grant]:
+                if (person.id, person.tenant_id) != (grant.principal_id, grant.tenant_id):
+                    continue
+                matches = True
+                for clause in statement._where_criteria:
+                    row = person if clause.left.table.name == Principal.__tablename__ else grant
+                    actual = getattr(row, clause.left.key)
+                    expected = clause.right.value
+                    if clause.operator is operators.in_op:
+                        matches = matches and actual in expected
+                    else:
+                        assert clause.operator is operators.eq
+                        matches = matches and actual == expected
+                if matches:
+                    values.append((person, grant))
+        return SimpleNamespace(all=lambda: sorted(values, key=lambda value: str(value[0].id)))
+
     def get(self, model, identity):
-        assert model is Build  # Existing builds._build actual private scope gate.
+        assert model in self.rows
         return next((row for row in self.rows[model] if row.id == identity), None)
 
 
@@ -170,10 +197,11 @@ def orm_rows(binding, material):
             active=True,
             access_epoch=1,
         ),
-        Product(id=scope.product_id, tenant_id=scope.tenant_id),
+        Product(id=scope.product_id, tenant_id=scope.tenant_id, category_id=samples.uid("category")),
         Grant(
             id=samples.uid("grant"),
-            **base,
+            tenant_id=scope.tenant_id,
+            category_id=samples.uid("category"),
             principal_id=binding.caller_id,
             can_write=True,
             expires_at=samples.AT + timedelta(days=1),
@@ -185,7 +213,7 @@ def orm_rows(binding, material):
             project_id=scope.project_id,
             revision=binding.build.revision,
             owner_id=samples.OWNER,
-            visibility="product",
+            visibility="category",
             engineering_configuration_id=binding.build.engineering_configuration.id,
             manufacturing_configuration_id=binding.build.manufacturing_configuration.id,
         ),
@@ -194,14 +222,14 @@ def orm_rows(binding, material):
             **base,
             revision=binding.build.engineering_configuration.revision,
             owner_id=samples.OWNER,
-            visibility="product",
+            visibility="category",
         ),
         ProcessRevision(
             id=binding.build.manufacturing_configuration.id,
             **base,
             revision=binding.build.manufacturing_configuration.revision,
             owner_id=samples.OWNER,
-            visibility="product",
+            visibility="category",
             engineering_configuration_id=binding.build.engineering_configuration.id,
             engineering_revision=binding.build.engineering_configuration.revision,
         ),
@@ -401,10 +429,14 @@ def frame(monkeypatch, operation="test.run.plan"):
     s.begin()
     monkeypatch.setattr(s, "scalar", memory.scalar)
     monkeypatch.setattr(s, "scalars", memory.scalars)
+    monkeypatch.setattr(s, "execute", memory.execute)
     monkeypatch.setattr(s, "get", memory.get)
     monkeypatch.setattr(storage, "now", lambda: samples.AT)
     monkeypatch.setattr(common, "now", lambda: samples.AT)
-    ctx = common.Context(binding.scope.tenant_id, binding.caller_id, binding.caller_id)
+    ctx = common.Context(
+        binding.scope.tenant_id, binding.caller_id, binding.caller_id,
+        category_id=samples.uid("category"),
+    )
     return SimpleNamespace(
         s=s,
         ctx=ctx,
@@ -820,7 +852,7 @@ def test_projection_private_scope_and_actual_version_are_not_assumed(monkeypatch
     with pytest.raises(DomainError) as error:
         work.read()
     assert error.value.code == "FORBIDDEN_SCOPE"
-    projection.visibility = "product"
+    projection.visibility = "category"
     projection.run_revision = 99
     with pytest.raises(DomainError) as error:
         work.read()

@@ -251,11 +251,11 @@ class FakeHost:
         if proof is None or proof["used"]:
             raise DomainError("CONFIRMATION_REQUIRED", "one-use common proof required")
         if proof["expires"] <= authority.now:
-            raise DomainError("CONFIRMATION_EXPIRED", "common proof expired")
+            raise DomainError("PREVIEW_EXPIRED", "common proof expired")
         if proof["actor"] != authority.actor_id or proof["scope"] != authority.scope:
-            raise DomainError("CONFIRMATION_ACTOR_MISMATCH", "actor/scope changed")
+            raise DomainError("CONFIRMATION_SCOPE_CHANGED", "actor/scope changed")
         if proof["digest"] != preview.digest:
-            raise DomainError("CONFIRMATION_STALE", "fixed preview/read set changed")
+            raise DomainError("RECHECK_REQUIRED", "fixed preview/read set changed")
         proof["used"] = True
 
     def record(self, uow, invocation, mutation):
@@ -298,12 +298,12 @@ class FakeHost:
     def audience(self, uow, authority, audience, refs, sources):
         self.check(uow)
         if not self.audience_allowed:
-            raise DomainError("FORBIDDEN_AUDIENCE", "read rights do not allow shared output", 403)
+            raise DomainError("AUDIENCE_USE_FORBIDDEN", "read rights do not allow shared output", 403)
 
     def source(self, uow, authority, source):
         self.check(uow)
         if digest(source) in self.denied_sources:
-            raise DomainError("FORBIDDEN_SOURCE", "server source ACL denied", 403)
+            raise DomainError("FORBIDDEN_SCOPE", "server source ACL denied", 403)
         stale = digest(source) in self.stale_sources
         return Currentness(
             current=not stale, reasons=("source corrected/withdrawn",) if stale else ()

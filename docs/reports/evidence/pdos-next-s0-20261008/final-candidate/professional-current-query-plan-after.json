@@ -1,0 +1,383 @@
+{
+  "diagnostic_only": true,
+  "p95_measured": false,
+  "head": "s0_0723",
+  "table": "professional_authority_current",
+  "actual_role": "pdos_next_app",
+  "actual_rr_read_only": true,
+  "exact_complete_subject_groups": 3,
+  "plans": [
+    {
+      "planning_ms": 3.648,
+      "execution_ms": 35.89,
+      "plan": {
+        "Node Type": "Sort",
+        "Actual Total Time": 35.389,
+        "Actual Rows": 8,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 4633,
+        "Shared Read Blocks": 23,
+        "Plans": [
+          {
+            "Node Type": "Index Scan",
+            "Relation Name": "professional_authority_current",
+            "Index Name": "professional_authority_curren_tenant_id_product_id_project_key1",
+            "Actual Total Time": 35.355,
+            "Actual Rows": 8,
+            "Actual Loops": 1,
+            "Rows Removed by Filter": 0,
+            "Rows Removed by Index Recheck": 0,
+            "Shared Hit Blocks": 4630,
+            "Shared Read Blocks": 23,
+            "Plans": [
+              {
+                "Node Type": "Index Scan",
+                "Relation Name": "products",
+                "Index Name": "ix_products_tenant_id",
+                "Actual Total Time": 0.069,
+                "Actual Rows": 1,
+                "Actual Loops": 8,
+                "Rows Removed by Filter": 0,
+                "Rows Removed by Index Recheck": 0,
+                "Shared Hit Blocks": 118,
+                "Shared Read Blocks": 2,
+                "Plans": [
+                  {
+                    "Node Type": "Seq Scan",
+                    "Relation Name": "object_audiences",
+                    "Actual Total Time": 0.0,
+                    "Actual Rows": 0,
+                    "Actual Loops": 0,
+                    "Rows Removed by Filter": 0,
+                    "Shared Hit Blocks": 0,
+                    "Shared Read Blocks": 0
+                  }
+                ]
+              },
+              {
+                "Node Type": "Index Scan",
+                "Relation Name": "products",
+                "Index Name": "ix_products_tenant_id",
+                "Actual Total Time": 0.052,
+                "Actual Rows": 1,
+                "Actual Loops": 8,
+                "Rows Removed by Filter": 0,
+                "Rows Removed by Index Recheck": 0,
+                "Shared Hit Blocks": 120,
+                "Shared Read Blocks": 0,
+                "Plans": [
+                  {
+                    "Node Type": "Seq Scan",
+                    "Relation Name": "object_audiences",
+                    "Actual Total Time": 0.0,
+                    "Actual Rows": 0,
+                    "Actual Loops": 0,
+                    "Rows Removed by Filter": 0,
+                    "Shared Hit Blocks": 0,
+                    "Shared Read Blocks": 0
+                  }
+                ]
+              },
+              {
+                "Node Type": "Index Scan",
+                "Relation Name": "professional_authority_facts",
+                "Index Name": "professional_authority_facts_tenant_id_product_id_project_i_key",
+                "Actual Total Time": 3.98,
+                "Actual Rows": 1,
+                "Actual Loops": 8,
+                "Rows Removed by Filter": 0,
+                "Rows Removed by Index Recheck": 0,
+                "Shared Hit Blocks": 3905,
+                "Shared Read Blocks": 17,
+                "Plans": [
+                  {
+                    "Node Type": "Index Scan",
+                    "Relation Name": "products",
+                    "Index Name": "ix_products_tenant_id",
+                    "Actual Total Time": 0.042,
+                    "Actual Rows": 1,
+                    "Actual Loops": 8,
+                    "Rows Removed by Filter": 0,
+                    "Rows Removed by Index Recheck": 0,
+                    "Shared Hit Blocks": 120,
+                    "Shared Read Blocks": 0,
+                    "Plans": [
+                      {
+                        "Node Type": "Seq Scan",
+                        "Relation Name": "object_audiences",
+                        "Actual Total Time": 0.0,
+                        "Actual Rows": 0,
+                        "Actual Loops": 0,
+                        "Rows Removed by Filter": 0,
+                        "Shared Hit Blocks": 0,
+                        "Shared Read Blocks": 0
+                      }
+                    ]
+                  },
+                  {
+                    "Node Type": "Seq Scan",
+                    "Relation Name": "object_audiences",
+                    "Actual Total Time": 0.0,
+                    "Actual Rows": 0,
+                    "Actual Loops": 0,
+                    "Rows Removed by Filter": 0,
+                    "Shared Hit Blocks": 0,
+                    "Shared Read Blocks": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "planning_ms": 1.333,
+      "execution_ms": 18.91,
+      "plan": {
+        "Node Type": "Sort",
+        "Actual Total Time": 18.739,
+        "Actual Rows": 6,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 2289,
+        "Shared Read Blocks": 0,
+        "Plans": [
+          {
+            "Node Type": "Index Scan",
+            "Relation Name": "professional_authority_current",
+            "Index Name": "professional_authority_curren_tenant_id_product_id_project_key1",
+            "Actual Total Time": 18.727,
+            "Actual Rows": 6,
+            "Actual Loops": 1,
+            "Rows Removed by Filter": 0,
+            "Rows Removed by Index Recheck": 0,
+            "Shared Hit Blocks": 2289,
+            "Shared Read Blocks": 0,
+            "Plans": [
+              {
+                "Node Type": "Index Scan",
+                "Relation Name": "products",
+                "Index Name": "ix_products_tenant_id",
+                "Actual Total Time": 0.046,
+                "Actual Rows": 1,
+                "Actual Loops": 6,
+                "Rows Removed by Filter": 0,
+                "Rows Removed by Index Recheck": 0,
+                "Shared Hit Blocks": 90,
+                "Shared Read Blocks": 0,
+                "Plans": [
+                  {
+                    "Node Type": "Seq Scan",
+                    "Relation Name": "object_audiences",
+                    "Actual Total Time": 0.0,
+                    "Actual Rows": 0,
+                    "Actual Loops": 0,
+                    "Rows Removed by Filter": 0,
+                    "Shared Hit Blocks": 0,
+                    "Shared Read Blocks": 0
+                  }
+                ]
+              },
+              {
+                "Node Type": "Index Scan",
+                "Relation Name": "products",
+                "Index Name": "ix_products_tenant_id",
+                "Actual Total Time": 0.052,
+                "Actual Rows": 1,
+                "Actual Loops": 6,
+                "Rows Removed by Filter": 0,
+                "Rows Removed by Index Recheck": 0,
+                "Shared Hit Blocks": 90,
+                "Shared Read Blocks": 0,
+                "Plans": [
+                  {
+                    "Node Type": "Seq Scan",
+                    "Relation Name": "object_audiences",
+                    "Actual Total Time": 0.0,
+                    "Actual Rows": 0,
+                    "Actual Loops": 0,
+                    "Rows Removed by Filter": 0,
+                    "Shared Hit Blocks": 0,
+                    "Shared Read Blocks": 0
+                  }
+                ]
+              },
+              {
+                "Node Type": "Index Scan",
+                "Relation Name": "professional_authority_facts",
+                "Index Name": "professional_authority_facts_tenant_id_product_id_project_i_key",
+                "Actual Total Time": 2.927,
+                "Actual Rows": 1,
+                "Actual Loops": 6,
+                "Rows Removed by Filter": 0,
+                "Rows Removed by Index Recheck": 0,
+                "Shared Hit Blocks": 1958,
+                "Shared Read Blocks": 0,
+                "Plans": [
+                  {
+                    "Node Type": "Index Scan",
+                    "Relation Name": "products",
+                    "Index Name": "ix_products_tenant_id",
+                    "Actual Total Time": 0.041,
+                    "Actual Rows": 1,
+                    "Actual Loops": 6,
+                    "Rows Removed by Filter": 0,
+                    "Rows Removed by Index Recheck": 0,
+                    "Shared Hit Blocks": 90,
+                    "Shared Read Blocks": 0,
+                    "Plans": [
+                      {
+                        "Node Type": "Seq Scan",
+                        "Relation Name": "object_audiences",
+                        "Actual Total Time": 0.0,
+                        "Actual Rows": 0,
+                        "Actual Loops": 0,
+                        "Rows Removed by Filter": 0,
+                        "Shared Hit Blocks": 0,
+                        "Shared Read Blocks": 0
+                      }
+                    ]
+                  },
+                  {
+                    "Node Type": "Seq Scan",
+                    "Relation Name": "object_audiences",
+                    "Actual Total Time": 0.0,
+                    "Actual Rows": 0,
+                    "Actual Loops": 0,
+                    "Rows Removed by Filter": 0,
+                    "Shared Hit Blocks": 0,
+                    "Shared Read Blocks": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "planning_ms": 1.334,
+      "execution_ms": 8.47,
+      "plan": {
+        "Node Type": "Sort",
+        "Actual Total Time": 8.322,
+        "Actual Rows": 2,
+        "Actual Loops": 1,
+        "Shared Hit Blocks": 777,
+        "Shared Read Blocks": 0,
+        "Plans": [
+          {
+            "Node Type": "Index Scan",
+            "Relation Name": "professional_authority_current",
+            "Index Name": "professional_authority_curren_tenant_id_product_id_project_key1",
+            "Actual Total Time": 8.317,
+            "Actual Rows": 2,
+            "Actual Loops": 1,
+            "Rows Removed by Filter": 0,
+            "Rows Removed by Index Recheck": 0,
+            "Shared Hit Blocks": 777,
+            "Shared Read Blocks": 0,
+            "Plans": [
+              {
+                "Node Type": "Index Scan",
+                "Relation Name": "products",
+                "Index Name": "ix_products_tenant_id",
+                "Actual Total Time": 0.108,
+                "Actual Rows": 1,
+                "Actual Loops": 2,
+                "Rows Removed by Filter": 0,
+                "Rows Removed by Index Recheck": 0,
+                "Shared Hit Blocks": 30,
+                "Shared Read Blocks": 0,
+                "Plans": [
+                  {
+                    "Node Type": "Seq Scan",
+                    "Relation Name": "object_audiences",
+                    "Actual Total Time": 0.0,
+                    "Actual Rows": 0,
+                    "Actual Loops": 0,
+                    "Rows Removed by Filter": 0,
+                    "Shared Hit Blocks": 0,
+                    "Shared Read Blocks": 0
+                  }
+                ]
+              },
+              {
+                "Node Type": "Index Scan",
+                "Relation Name": "products",
+                "Index Name": "ix_products_tenant_id",
+                "Actual Total Time": 0.099,
+                "Actual Rows": 1,
+                "Actual Loops": 2,
+                "Rows Removed by Filter": 0,
+                "Rows Removed by Index Recheck": 0,
+                "Shared Hit Blocks": 30,
+                "Shared Read Blocks": 0,
+                "Plans": [
+                  {
+                    "Node Type": "Seq Scan",
+                    "Relation Name": "object_audiences",
+                    "Actual Total Time": 0.0,
+                    "Actual Rows": 0,
+                    "Actual Loops": 0,
+                    "Rows Removed by Filter": 0,
+                    "Shared Hit Blocks": 0,
+                    "Shared Read Blocks": 0
+                  }
+                ]
+              },
+              {
+                "Node Type": "Index Scan",
+                "Relation Name": "professional_authority_facts",
+                "Index Name": "professional_authority_facts_tenant_id_product_id_project_i_key",
+                "Actual Total Time": 3.687,
+                "Actual Rows": 1,
+                "Actual Loops": 2,
+                "Rows Removed by Filter": 0,
+                "Rows Removed by Index Recheck": 0,
+                "Shared Hit Blocks": 666,
+                "Shared Read Blocks": 0,
+                "Plans": [
+                  {
+                    "Node Type": "Index Scan",
+                    "Relation Name": "products",
+                    "Index Name": "ix_products_tenant_id",
+                    "Actual Total Time": 0.094,
+                    "Actual Rows": 1,
+                    "Actual Loops": 2,
+                    "Rows Removed by Filter": 0,
+                    "Rows Removed by Index Recheck": 0,
+                    "Shared Hit Blocks": 30,
+                    "Shared Read Blocks": 0,
+                    "Plans": [
+                      {
+                        "Node Type": "Seq Scan",
+                        "Relation Name": "object_audiences",
+                        "Actual Total Time": 0.0,
+                        "Actual Rows": 0,
+                        "Actual Loops": 0,
+                        "Rows Removed by Filter": 0,
+                        "Shared Hit Blocks": 0,
+                        "Shared Read Blocks": 0
+                      }
+                    ]
+                  },
+                  {
+                    "Node Type": "Seq Scan",
+                    "Relation Name": "object_audiences",
+                    "Actual Total Time": 0.0,
+                    "Actual Rows": 0,
+                    "Actual Loops": 0,
+                    "Rows Removed by Filter": 0,
+                    "Shared Hit Blocks": 0,
+                    "Shared Read Blocks": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

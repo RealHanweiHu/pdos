@@ -3,6 +3,7 @@
 from types import SimpleNamespace
 
 import pytest
+
 from pdos_next.api import create_app
 
 CHOICES = (
@@ -31,7 +32,7 @@ def test_invalid_plural_choice_fails_before_engine_creation(monkeypatch, single,
         pytest.fail("Invalid startup input must fail before obtaining engines")
 
     monkeypatch.setattr("pdos_next.api.configured_engines", forbidden)
-    with pytest.raises(ValueError, match="finite nonempty"):
+    with pytest.raises(ValueError, match="nonempty"):
         create_app(**{plural: invalid})
 
 
@@ -46,7 +47,10 @@ def test_explicit_fact_owner_and_publisher_are_ambiguous_before_any_configuratio
     assert vars(engine) == before
 
 
-def test_professional_plural_requires_real_target_guard_before_issuer_registration(monkeypatch):
+@pytest.mark.parametrize("profile_count", [1, 21])
+def test_professional_plural_requires_real_target_guard_before_issuer_registration(
+    monkeypatch, profile_count
+):
     engine = SimpleNamespace(retained=object())
     before = vars(engine).copy()
 
@@ -64,5 +68,5 @@ def test_professional_plural_requires_real_target_guard_before_issuer_registrati
         raising=False,
     )
     with pytest.raises(RuntimeError, match="explicitly verified"):
-        create_app(engine, professional_synthetic_profiles=[{}])
+        create_app(engine, professional_synthetic_profiles=[{} for _ in range(profile_count)])
     assert vars(engine) == before

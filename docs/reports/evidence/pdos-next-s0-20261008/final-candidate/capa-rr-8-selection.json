@@ -1,0 +1,10 @@
+[
+  "tests/capa_effectiveness/test_candidate_service.py",
+  "tests/capa_effectiveness/test_fixed_candidate_anchor.py::test_professional_or_policy_epoch_change_after_io_is_still_rejected",
+  "tests/capa_effectiveness/test_fixed_candidate_anchor.py::test_final_actual_clock_rejects_expiry_after_saved_group_io",
+  "tests/capa_effectiveness/test_candidate_write_prepare.py",
+  "tests/capa_verification/test_pure.py",
+  "tests/capa_verification/test_fixed_request_owner.py",
+  "tests/quality_followup_transactions/test_capa_fact_flow.py::test_candidate_snapshot_reads_once_preserves_deadlines_and_rechecks_next_request",
+  "tests/quality_followup_transactions/test_capa_fact_flow.py::test_actual_candidate_rule_and_observation_keep_complete_sources_current_and_receipt"
+]

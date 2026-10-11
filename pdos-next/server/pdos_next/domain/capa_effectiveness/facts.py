@@ -46,7 +46,7 @@ from .paired import (
 
 Nature = Literal["real", "synthetic"]
 Applicability = Literal["applicable", "not_applicable", "unknown"]
-Count = Annotated[int, Field(strict=True, ge=1, le=1_000_000)]
+Count = Annotated[int, Field(strict=True, ge=1)]
 
 
 class FactOperations(Closed):
@@ -166,11 +166,11 @@ class FactBase(Closed):
     requirement_sha256: Sha256
     nature: Nature
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     created_at: AwareDatetime
     sources: tuple[SourceRef, ...] = Field(min_length=1)
-    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
-    source_basis: tuple[SourceSafety, ...] = Field(min_length=1, max_length=20)
+    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1)
+    source_basis: tuple[SourceSafety, ...] = Field(min_length=1)
     provenance: FactAtom
 
     @model_validator(mode="after")
@@ -184,7 +184,7 @@ class FactBase(Closed):
         ):
             raise ValueError("Successor has a distinct immutable row and consecutive version")
         source_closure(self.sources, self.required_source_read_set, self.source_basis)
-        if self.visibility == "product" and any(
+        if self.visibility == "category" and any(
             b.visibility == "private" for b in self.source_basis
         ):
             raise ValueError("Shared fact cannot enlarge private source audience")
@@ -211,7 +211,7 @@ class ObservationTarget(Closed):
 
 
 class SamplingRequirement(Closed):
-    targets: tuple[ObservationTarget, ...] = Field(min_length=1, max_length=10000)
+    targets: tuple[ObservationTarget, ...] = Field(min_length=1)
     minimum_records: Count
     sampling_method: SourceRef
     acceptance: SourceRef
@@ -276,12 +276,12 @@ class ObservationVersion(FactBase):
     kind: Literal["observation"] = "observation"
     rule: FactRef
     issuer: IssuerRef
-    targets: tuple[ObservationTarget, ...] = Field(min_length=1, max_length=10000)
+    targets: tuple[ObservationTarget, ...] = Field(min_length=1)
     executor_id: UUID
     observed_from: AwareDatetime
     observed_until: AwareDatetime
     at: EventTime
-    records: tuple[ObservationRecord, ...] = Field(min_length=1, max_length=10000)
+    records: tuple[ObservationRecord, ...] = Field(min_length=1)
     coverage_sources: tuple[SourceRef, ...] = Field(min_length=1)
     # An original owner supplies sampling evidence. No complete/result boolean.
     sampling_material: dict[str, JsonValue]
@@ -360,7 +360,7 @@ class NamedReview(FactBase):
     reason: Text
     authority_snapshot: dict[str, JsonValue]
     policy_snapshot: dict[str, JsonValue]
-    valid_until: AwareDatetime
+    valid_until: AwareDatetime | None = None
 
     @model_validator(mode="after")
     def reviewer(self):
@@ -370,7 +370,7 @@ class NamedReview(FactBase):
             raise ValueError("Participants have distinct owner identities")
         if self.candidate.sha256 != self.candidate_sha256:
             raise ValueError("Fixed candidate material hash must match its actual version ref")
-        if self.valid_until <= self.created_at:
+        if self.valid_until is not None and self.valid_until <= self.created_at:
             raise ValueError("Saved review needs a fixed positive validity interval")
         return self
 
@@ -414,8 +414,8 @@ class StructuralFactProof(Closed):
     rule: FactRef
     observations: tuple[FactRef, ...]
     pair_proofs: tuple[StructuralPairProof, ...]
-    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1, max_length=20)
-    source_basis: tuple[SourceSafety, ...] = Field(min_length=1, max_length=20)
+    required_source_read_set: tuple[SourceRead, ...] = Field(min_length=1)
+    source_basis: tuple[SourceSafety, ...] = Field(min_length=1)
     material_sha256: Sha256
 
 
@@ -652,7 +652,8 @@ def inspect_fact_material(material, operations, *, at) -> FactInspection:
         )
     if (
         not rule.valid_from <= at < rule.valid_until
-        or not review.created_at <= at < review.valid_until
+        or not review.created_at <= at
+        or (review.valid_until is not None and at >= review.valid_until)
     ):
         missing.append(
             Missing(
@@ -835,7 +836,8 @@ class HostFactProof:
     basis_sha256: str
     nature: Nature
     checked_at: datetime
-    valid_until: datetime
+    valid_until: datetime | None
+    time_constraints: tuple[datetime, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -954,7 +956,9 @@ def _gate(reader, s, ctx, structure, gate, kind, transaction, nested, start, at)
         "Real complete owner fingerprint is required.",
     )
     _require(
-        start <= _instant(gate.checked_at) <= at and at < _instant(gate.valid_until),
+        start <= _instant(gate.checked_at) <= at
+        and (gate.valid_until is None or at < _instant(gate.valid_until))
+        and all(at < _instant(value) for value in gate.time_constraints),
         "FACT_OWNER_PROOF_EXPIRED",
         "Qualification/source/owner proof expired or has a future evaluation during IO.",
     )
@@ -1070,7 +1074,9 @@ def load_verification_facts(
         final_proofs = tuple(proofs)
         fingerprint = (
             checked.proof.material_sha256,
-            tuple((p.kind, p.basis_sha256, p.valid_until) for p in final_proofs),
+            tuple(
+                (p.kind, p.basis_sha256, p.valid_until, p.time_constraints) for p in final_proofs
+            ),
         )
         if phase:
             _require(
@@ -1109,8 +1115,8 @@ def load_verification_facts(
         if missing:
             return FactReadOutcome(final_check.proof, (), (missing,))
     _require(
-        tuple((p.kind, p.basis_sha256, p.valid_until) for p in refreshed)
-        == tuple((p.kind, p.basis_sha256, p.valid_until) for p in final_proofs),
+        tuple((p.kind, p.basis_sha256, p.valid_until, p.time_constraints) for p in refreshed)
+        == tuple((p.kind, p.basis_sha256, p.valid_until, p.time_constraints) for p in final_proofs),
         "SOURCE_STALE",
         "Final current closure changed after a later owner IO.",
     )

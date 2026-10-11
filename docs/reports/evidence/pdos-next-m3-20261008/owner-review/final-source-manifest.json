@@ -1,0 +1,31 @@
+{
+  "scope": "M3 review backend candidate and touched common ports; other working tree edits excluded",
+  "files": {
+    "pdos-next/server/migrations/candidates/m3_preproject.py": "93dbf75fb40f48261b513fe37eb74d0d25bc82feaad1272b3695116680552840",
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py": "c85b028a09d7a8832970251bbcfd92493d686120f156cbbf3932dfeca214d848",
+    "pdos-next/server/pdos_next/agent_kernel/domain_adapter.py": "faa3e230485ad1e6f07265e6659e5886532feb739b8bab01d1f61716b2eebd09",
+    "pdos-next/server/pdos_next/agent_kernel/execution.py": "859f6065960f7e93669061ae16da6e9975855b051d79d11e1c0b678daa93c167",
+    "pdos-next/server/pdos_next/agent_kernel/graph.py": "29af1f640019ffddd9e730f654cd3916eca065e6b3e1fd093e8bbcf98e5ae958",
+    "pdos-next/server/pdos_next/api.py": "cea49fbb857560ff90b34cbfdd34c3c560555f3e0e644624497ba89656cd49b6",
+    "pdos-next/server/pdos_next/domain/preproject/__init__.py": "9e37ea5eb23c6f95cd5f9f5dc21ccbab03cb19b423a939d791ac4d77229da65c",
+    "pdos-next/server/pdos_next/domain/preproject/access.py": "44f3157cbabac72d5bce2c9f0d7edd0eef5dcec6ffc3859360a1ebe844e2a440",
+    "pdos-next/server/pdos_next/domain/preproject/api.py": "77b96e290d50796c1b5d5914db51af608b13ae34564bf55a88878d5c3d7b4127",
+    "pdos-next/server/pdos_next/domain/preproject/category_models.py": "228e4114ce90ec211fa8038f443d968baca34fc6d6131f05815df429db596e2a",
+    "pdos-next/server/pdos_next/domain/preproject/definition_columns.py": "13e7c60e014a7be1845cc02848395aba7a65e5a8fda04a0b4ea7cf1284312312",
+    "pdos-next/server/pdos_next/domain/preproject/materialize.py": "07ed9dc60fde14580703bfa29472fcbd016ee9da7cac78d3c1108980c737e8be",
+    "pdos-next/server/pdos_next/domain/preproject/models.py": "66cc795356b43b666fa86af515eb01b8105b5e35d102d9eeb019d8c467d5a5f0",
+    "pdos-next/server/pdos_next/domain/preproject/provenance.py": "b8b44aecccd41cc074dfc4f9edbd64c34a175f4380b0cd0b51b5707db7730872",
+    "pdos-next/server/pdos_next/domain/preproject/schemas.py": "1d50e0cec5358e8e564d9e5a9620d74211e25f83a2f739a269b050fb14f9edcb",
+    "pdos-next/server/pdos_next/domain/preproject/service.py": "77da8101a872f302e6e5688d10764bf99d79d584b643538fa39ad0b958bf7b0d",
+    "pdos-next/server/pdos_next/domain/preproject/views.py": "c5a3b2bdcd70141ac12f463489acebb0635bf028ad92aad945b0bfee3c6b584d",
+    "pdos-next/server/pdos_next/domain/products/definitions.py": "527f8ad8e288cf35d899c75842f26f3a7fcc9e5ef05d1e743dd663de384ffcb0",
+    "pdos-next/server/pdos_next/domain/products/service.py": "5a8ccc81d8962e418c94c90a47404473f4d5d5999129887c9d22513d51071305",
+    "pdos-next/server/pdos_next/domain/projects/service.py": "fd78a8fd212af676c6a1d36380981f2b5c04d47f260f591cf48b61af146bd011",
+    "pdos-next/server/pdos_next/service.py": "313601c8da9286e20ab01fa6b32504bbf3b27e9d3f8b4e1a988683fb5ab9f25d",
+    "pdos-next/server/tests/preproject/test_g0.py": "f0e4ea590e06b10eea281ea0e3f60a287ab76afa656e5f51e1a1c494ae1a843a",
+    "pdos-next/server/tests/preproject/test_review_fixes.py": "054f47ca6997eec8d0545c9116ae79bfa06a060ced30a651e7b547f5a1fc8331",
+    "pdos-next/tools/m3_early_checkpoint.py": "cc3c1eaa7e4bac6ae783d43042c0e6ca1c3f2e9f10234c5bbe68b0d964084eac",
+    "pdos-next/tools/m3_early_environment.py": "3b247a5247e3df6fbdb03bf503da17523715433126629cbc9cce359faeca843f",
+    "pdos-next/tools/owner_policy.py": "584462161a294486d4be9aff3817bb38b4438912d0cf9a1d9e28a4a07b5425aa"
+  }
+}

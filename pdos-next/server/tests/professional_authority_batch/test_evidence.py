@@ -4,15 +4,35 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import inspect
+from sqlalchemy import inspect, select
 
 from pdos_next.domain.professional_authority import service as actual
 from pdos_next.domain.supply_execution import service as supply
 from pdos_next.engines.supply_cost.common import SnapshotRef
-from pdos_next.models import Artifact
+from pdos_next.models import Artifact, OriginalSecurity
 from tests.professional_authority.test_assessment import AT
 
 from .professional_batch_harness import STAGE, BatchSession, clone
+
+
+@pytest.fixture(autouse=True)
+def original_security_ports(monkeypatch):
+    # This suite substitutes source IO; actual RLS/source binding is covered in PG tests.
+    import pdos_next.original_security as security
+    import pdos_next.originals as originals
+
+    monkeypatch.setattr(
+        originals,
+        "require_original",
+        lambda s, ctx, pid, oid: SimpleNamespace(id=oid, product_id=pid),
+    )
+    monkeypatch.setattr(
+        security,
+        "security_row",
+        lambda s, original, **kw: s.scalar(
+            select(OriginalSecurity).where(OriginalSecurity.original_id == original.id)
+        ),
+    )
 
 
 class EvidenceSession(BatchSession):
@@ -31,7 +51,7 @@ class EvidenceSession(BatchSession):
                 source_label="Synthetic",
                 content="Synthetic",
                 content_hash="a" * 64,
-                visibility="product",
+                visibility="category",
                 revision=1,
                 status="active",
                 original_id=original,
@@ -169,6 +189,7 @@ def test_uploaded_security_sql_boundary_keeps_later_artifact_fresh_get(monkeypat
     ]
     namespace = dict(vars(actual))
     namespace["inspect"] = inspect
+    namespace["OriginalSecurity"] = OriginalSecurity
     exec(compile(ast.Module(body=nodes, type_ignores=[]), str(path), "exec"), namespace)
     unsafe = call(namespace["_evidence"], clone(session))
     assert unsafe != before and unsafe[2]["security"][-1]["security_epoch"] == 1

@@ -135,7 +135,7 @@ test("microsecond interval and offset semantics preserve original event strings"
 test("whole original record, exact source and private audience cannot be rewritten", () => {
   const p = observation(); p.records[0].raw_material.raw_value = "12.0000"; assert.throws(() => newFactCommand(host(), observationOperation, p, id(50), id(51)));
   const q = observation(); q.at.source = { ...source, position: `line:3;quote_sha256:${"a".repeat(64)}` }; assert.throws(() => newFactCommand(host(), observationOperation, q, id(50), id(51)));
-  const h = host(); h.binding.visibility = "product"; assert.throws(() => newFactCommand(h, observationOperation, { ...observation(), visibility: "product" }, id(50), id(51)));
+  const h = host(); h.binding.visibility = "category"; assert.throws(() => newFactCommand(h, observationOperation, { ...observation(), visibility: "category" }, id(50), id(51)));
 });
 test("strict payload refuses issuer/participants/independence/effective clocks", () => {
   for (const extra of [{ issuer: "self" }, { independently_verified: true }, { participants: [id(4)] }, { observation_complete: true }])
@@ -172,6 +172,13 @@ test("actual T1 preview allows omitted display tier; T2 must be named", () => {
   const p = factPrepared(preview(), command())!; assert.equal(p.write_tier, "T1"); assert.equal(p.named_decision, false);
   const c = command(reviewOperation), v = preview(c); assert.equal(factPrepared(v, c)?.write_tier, "T2");
   assert.equal(factPrepared({ ...v, named_decision: false }, c), null); assert.equal(factPrepared({ ...v, write_tier: "T1" }, c), null);
+});
+test("named T2 review accepts no deadline while T1 confirmation requires one", () => {
+  const c = command(reviewOperation), v = preview(c);
+  assert.equal(factPrepared({ ...v, expires_at: null }, c)?.write_tier, "T2");
+  assert.equal(factPrepared({ ...v, expires_at: null, named_decision: false }, c), null);
+  assert.equal(factPrepared({ ...v, expires_at: undefined }, c), null);
+  assert.equal(factPrepared({ ...preview(), expires_at: null }, command()), null);
 });
 test("preview keeps exact command while parsed semantic clocks may use equivalent UTC", () => {
   const c = command(), v = preview(c); const semantic = structuredClone(c.payload) as ObservationPayload;

@@ -20,6 +20,7 @@ export type FactWorkflowProps = {
   readReview?: (review: Record<string, unknown>, command: FactCommand) => FactBusinessReview | null;
   onSaved: (receipt: FactReceipt) => Promise<void>;
   onRefresh: () => Promise<void>;
+  readHistory?: (cursor: string) => Promise<FactHost>;
   onPendingChange?: (locked: boolean) => void;
   onAccessRejected?: (saved: boolean, late?: boolean) => void;
   blocked?: boolean;
@@ -41,7 +42,7 @@ export function FactWorkflow(props: FactWorkflowProps) {
   return <FactFlow key={identity} {...props} host={props.host} identity={identity}/>;
 }
 function FactFlow({ host, inputs, preview: requestPreview, execute, readReview, onSaved, onRefresh,
-  onPendingChange, onAccessRejected, blocked = false, hostAccessRejected = false, identity }: FactWorkflowProps & { host: FactHost; identity: string }) {
+  onPendingChange, onAccessRejected, readHistory, blocked = false, hostAccessRejected = false, identity }: FactWorkflowProps & { host: FactHost; identity: string }) {
   const [local, setLocal] = useState<FactLocal>(() => blankFactLocal(identity));
   const [prepared, setPrepared] = useState<FactPrepared | null>(null), [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(false), [readRequired, setReadRequired] = useState(false), [rejected, setRejected] = useState(false);
@@ -162,7 +163,7 @@ function FactFlow({ host, inputs, preview: requestPreview, execute, readReview, 
     <section className="panel space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-3"><h3 className="font-semibold">观察与独立具名复核</h3>
         <Button variant="outline" disabled={busy} onClick={() => void refresh()}><ArrowClockwise/>重试读取当前事实</Button></div>
-      <p className="text-sm">记录实际观察与独立专业判断，分别办理。规则仅由可信宿主发布；保存不等于措施有效、问题关闭或产品放行。</p>
+      <p className="text-sm">记录实际观察与独立专业判断，分别办理。规则仅由可信宿主发布；保存不等于措施有效、问题关闭或成品放行。</p>
       {Object.values(host.operations).some(c => c.authority.synthetic) && <p className="rounded-lg border border-primary p-3 text-sm">本地合成演练：当前事实与资格用于核验流程，不代表真实生产资格。</p>}
       {notice && <p role="status" className="flex items-start gap-2 text-sm">{local.outcome === "saved" ? <CheckCircle className="mt-0.5 size-4 shrink-0 text-primary"/> : <WarningCircle className="mt-0.5 size-4 shrink-0"/>}{notice}</p>}
       {host.missing.length > 0 && <ul className="list-disc pl-5 text-sm">{host.missing.map((m, i) => <li key={`${m.code}:${i}`}>{m.detail}</li>)}</ul>}
@@ -173,7 +174,7 @@ function FactFlow({ host, inputs, preview: requestPreview, execute, readReview, 
       </div>}
       {local.savedReceipt && <p className="text-sm">已取得{opLabel(local.savedReceipt.operation)}第 {local.savedReceipt.subject_revision} 版回执。请以服务器读取的固定历史为准。</p>}
     </section>
-    <FactHistoryReading host={host}/>
+    <FactHistoryReading key={host.access_epoch} host={host} readHistory={readHistory}/>
     <FactForm key={`${basis}:${formEpoch}`} host={host} disabled={disabled} onSubmit={submit}/>
     <dialog ref={dialog} onCancel={e => { e.preventDefault(); cancel(); }} className="m-auto max-h-[85dvh] w-[calc(100%-2rem)] max-w-3xl overflow-y-auto rounded-lg border border-border bg-background p-5 text-foreground backdrop:bg-black/50">
       {prepared && <div className={`space-y-4 ${wrap}`}><div className="flex items-start justify-between gap-3">
@@ -181,7 +182,7 @@ function FactFlow({ host, inputs, preview: requestPreview, execute, readReview, 
         <Button variant="ghost" size="icon" disabled={busy} aria-label="返回核对办理材料" onClick={cancel}><X/></Button></div>
         {complete ? <BusinessReading value={business!}/> : <p role="alert">固定范围、原记录、专业依据与保存后果尚未完整显示，不能确认。</p>}
         <p className="subtle">实际发生时间保留原精度与时区；保存时记录的接收时间不代替事件发生时间。有效性与关闭仍须独立办理。</p>
-        <p className="subtle">本次确认有效至 {prepared.expires_at}。提交回执未知时只恢复原请求。</p>
+        <p className="subtle">{prepared.expires_at ? `本次确认有效至 ${prepared.expires_at}。` : "本次具名决定须在提交时重核当前依据。"}提交回执未知时只恢复原请求。</p>
         <div className="flex flex-wrap gap-3"><Button disabled={!confirm} onClick={() => {
           if (confirm && prepared) void perform({ stage: "execute", command: prepared.command }, live.current.basis);
         }}><CheckCircle/>{prepared.write_tier === "T2" ? "以本人姓名作出专业复核决定" : "一次确认保存实际观察"}</Button>
@@ -201,10 +202,25 @@ function SourceReading({ sources }: { sources: FactHost["sources"] }) {
   return <div className="space-y-2">{sources.map(s => <blockquote key={factSourceKey(s.source)} className="rounded-lg border p-3 text-sm">
     <p className="font-medium">{s.title} · 第 {s.source.revision} 版 · 原文第 {s.line} 行</p><p className="whitespace-pre-wrap">{s.quote}</p></blockquote>)}</div>;
 }
-function FactHistoryReading({ host }: { host: FactHost }) {
+function FactHistoryReading({ host, readHistory }: { host: FactHost; readHistory?: (cursor: string) => Promise<FactHost> }) {
+  const [rows, setRows] = useState(host.history), [cursor, setCursor] = useState(host.history_page?.next_cursor ?? null);
+  const [busy, setBusy] = useState(false), [error, setError] = useState("");
+  const alive = useRef(false);
+  useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
+  const more = async () => {
+    if (!cursor || !readHistory || busy) return;
+    setBusy(true); setError("");
+    try {
+      const page = await readHistory(cursor);
+      if (!alive.current) return;
+      setRows(old => [...old, ...page.history.filter(row => !old.some(saved => same(saved.ref, row.ref)))]);
+      setCursor(page.history_page?.next_cursor ?? null);
+    } catch { if (alive.current) setError("历史读取失败，请重试读取。"); }
+    finally { if (alive.current) setBusy(false); }
+  };
   return <section className="panel space-y-3"><h3 className="font-semibold">规则、观察与具名复核历史</h3>
-    {!host.history.length && <p className="text-sm">尚未返回可读的固定历史，不推定已观察或已复核。</p>}
-    {host.history.map(h => <details key={refKey(h.ref)} className={`rounded-lg border p-3 ${wrap}`}><summary className="cursor-pointer text-sm font-medium">{h.label} · 第 {h.ref.revision} 版</summary>
+    {!rows.length && <p className="text-sm">尚未返回可读的固定历史，不推定已观察或已复核。</p>}
+    {rows.map(h => <details key={refKey(h.ref)} className={`rounded-lg border p-3 ${wrap}`}><summary className="cursor-pointer text-sm font-medium">{h.label} · 第 {h.ref.revision} 版</summary>
       <div className="mt-3 space-y-2 text-sm"><p>{h.current_evaluation === "not_evaluated_historical" ? "历史固定版本，当前资格未评估，只读保留。" : h.source_status === "current" ? "按服务器当前来源状态显示。" : "原来源需重核，不据历史结论办理新操作。"}</p>
         <dl className="grid gap-2">{["purpose", "observed_from", "observed_until", "valid_from", "valid_until", "created_at", "reason", "conclusion"].filter(k => Object.hasOwn(h.fact, k)).map(k =>
           <div key={k}><dt className="subtle">{{ purpose: "用途", observed_from: "实际观察开始", observed_until: "实际观察结束", valid_from: "适用开始", valid_until: "适用截止", created_at: "服务器保存时间", reason: "原因", conclusion: "专业结论" }[k]}</dt>
@@ -213,6 +229,8 @@ function FactHistoryReading({ host }: { host: FactHost }) {
         </dl>{h.missing.map((m, i) => <p key={`${m.code}:${i}`}>{m.detail}</p>)}
         <SavedFactDetails host={host} fact={h.fact}/>
         <details><summary className="cursor-pointer subtle">固定记录对账</summary><p>{h.ref.id} · 第 {h.ref.revision} 版</p></details></div></details>)}
+    {error && <p role="alert" className="text-sm">{error}</p>}
+    {cursor && readHistory && <Button variant="outline" disabled={busy} onClick={() => void more()}>读取更多固定历史</Button>}
   </section>;
 }
 
@@ -258,7 +276,7 @@ function FactForm({ host, disabled, onSubmit }: { host: FactHost; disabled: bool
   const [pairs, setPairs] = useState<Record<string, { conclusion: string; reason: string; sources: string[] }>>({});
   const [actions, setActions] = useState<Record<string, { conclusion: string; reason: string; sources: string[] }>>({});
   const [conclusion, setConclusion] = useState(""), [reason, setReason] = useState(""), [error, setError] = useState("");
-  const [visibility, setVisibility] = useState<"private" | "product">("private");
+  const [visibility, setVisibility] = useState<"private" | "category" | "audience">("private");
   const capability = host.operations[operation], rule = host.rules.find(r => refKey(r.ref) === ruleKey);
   const choose = (value: string[], key: string, checked: boolean) => checked ? [...value, key] : value.filter(k => k !== key);
   function selectRecord(key: string, checked: boolean) {
@@ -295,10 +313,10 @@ function FactForm({ host, disabled, onSubmit }: { host: FactHost; disabled: bool
   }
   return <form className={`panel space-y-4 ${wrap}`} onSubmit={e => { e.preventDefault(); if (disabled || !factCanPrepare(host, operation)) return;
     try { setError(""); onSubmit(operation, payload()); } catch (failure) { setError(failure instanceof Error ? failure.message : "请核对真实材料。"); } }}>
-    <h3 className="font-semibold">办理材料</h3><p className="text-sm">用途：{host.binding.purpose}。受众：{host.binding.visibility === "private" ? "私人固定范围" : "产品共享固定范围"}。当前问题第 {host.binding.current_issue.revision} 版，不能以原失败版本替代当前核对。</p>
+    <h3 className="font-semibold">办理材料</h3><p className="text-sm">用途：{host.binding.purpose}。受众：{host.binding.visibility === "private" ? "私人固定范围" : "品类共享固定范围"}。当前问题第 {host.binding.current_issue.revision} 版，不能以原失败版本替代当前核对。</p>
     <label className="block space-y-1 text-sm"><span>本次操作</span><select disabled={disabled} className={input} value={operation} onChange={e => setOperation(e.target.value as FactOperation)}><option value={observationOperation}>记录实际观察 · 一次确认</option><option value={reviewOperation}>独立具名专业复核 · 具名决定</option></select></label>
     <fieldset disabled={disabled || !factCanPrepare(host, operation)} className="min-w-0 space-y-4">
-      <label className="block space-y-1 text-sm"><span>本次保存受众（默认私人）</span><select className={input} value={visibility} onChange={e => setVisibility(e.target.value as "private" | "product")}><option value="private">私人固定范围</option>{host.binding.visibility === "product" && <option value="product">产品共享固定范围</option>}</select></label>
+      <label className="block space-y-1 text-sm"><span>本次保存受众（默认私人）</span><select className={input} value={visibility} onChange={e => setVisibility(e.target.value as "private" | "category" | "audience")}><option value="private">私人固定范围</option>{host.binding.visibility === "category" && <option value="product">品类共享固定范围</option>}</select></label>
       <p className="subtle">必须与服务器固定的原问题受众一致。共享原问题需要本人明确选择共享；私人材料不能扩大受众。</p>
       <label className="block space-y-1 text-sm"><span>固定已发布规则</span><select className={input} value={ruleKey} onChange={e => setRuleKey(e.target.value)}><option value="">请选择真实固定规则</option>{host.rules.map(r => <option key={refKey(r.ref)} value={refKey(r.ref)}>{r.label} · 第 {r.ref.revision} 版</option>)}</select></label>
       {operation === observationOperation ? <>

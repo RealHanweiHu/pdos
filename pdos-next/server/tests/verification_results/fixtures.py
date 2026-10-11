@@ -11,7 +11,7 @@ import pytest
 from build_start.test_transactions import import_authority
 from fastapi.testclient import TestClient
 from security_fixture import secured_parse, synthetic_runtime
-from sqlalchemy import select
+from sqlalchemy import inspect, select
 from test_project_first_plan import cmd
 from verification_handoff import fixtures as handoff
 from verification_launch import fixtures as launch
@@ -72,7 +72,7 @@ def launch_work(accepted_work, request, monkeypatch):
     # Patch the test-module construction alias; never modify the actual DTO's
     # model_validate implementation or any already stored plan/fact/clock.
     monkeypatch.setattr(launch, "TestPlanBinding", ResultPlanBuilder)
-    fixture = launch.launch_work.__wrapped__(accepted_work, request)
+    fixture = launch.launch_work.__wrapped__(accepted_work, request, monkeypatch)
     try:
         yield next(fixture)
     finally:
@@ -82,7 +82,7 @@ def launch_work(accepted_work, request, monkeypatch):
 @pytest.fixture
 def results_work(launch_work, monkeypatch, tmp_path):
     work = launch_work
-    launch.started(work, monkeypatch)  # Waits for real UTC, never mocks PostgreSQL time.
+    launch.started(work, monkeypatch)  # Explicit server clock port; real PG RLS and writes.
     # Results-only credentials are new current facts after real execution. They
     # do not authorize or alter the saved Start; retained proof independently
     # rechecks its original, operation-specific signer and source facts.
@@ -97,7 +97,12 @@ def results_work(launch_work, monkeypatch, tmp_path):
         )
         for kind in ("duty", "qualification")
     }
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as session:
         _, row = launch_service._current(
             session, work.quality.ctx, work.setup.product, run_id=work.binding.run_id
         )
@@ -162,12 +167,20 @@ def results_work(launch_work, monkeypatch, tmp_path):
 def _row_values(row):
     """Take plain column values before tenant_session commits and expires ORM state."""
     return SimpleNamespace(
-        **{column.key: deepcopy(getattr(row, column.key)) for column in row.__table__.columns}
+        **{
+            column.key: deepcopy(getattr(row, column.key))
+            for column in inspect(row).mapper.column_attrs
+        }
     )
 
 
 def current_rows(work):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as session:
         _, request_row = front._current(
             session, work.quality.ctx, work.setup.product, UUID(work.request_id)
         )
@@ -184,7 +197,7 @@ def upload_report(work, rows):
     visibility = current_rows(work).row.visibility
     content = ("\n".join(json.dumps(row, ensure_ascii=False) for row in rows) + "\n").encode()
     response = work.quality.client.post(
-        f"/v1/products/{work.setup.product}/originals",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/originals",
         headers=work.quality.headers,
         json={
             "title": "Synthetic exact measurement JSONL",
@@ -200,12 +213,20 @@ def upload_report(work, rows):
     original_id = response.json()["subject_id"]
     reference = {
         "tenant_id": str(work.setup.tenant),
+        "category_id": str(work.setup.category),
+        "actor_id": str(work.quality.human),
+        "requester_id": str(work.quality.human),
         "product_id": str(work.setup.product),
         "subject_id": original_id,
     }
     result = secured_parse(work.setup.engine, reference, work.report_store)
     assert result["status"] == "parsed", result
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.human,
+        category_id=work.setup.category,
+    ) as session:
         row = session.scalar(
             select(Artifact).where(
                 Artifact.tenant_id == work.setup.tenant,
@@ -239,7 +260,7 @@ def capture(work, indices=(0,), *, artifact_id=None, key=None):
         reason="Synthetic original-byte selection",
     )
     result = work.quality.client.post(
-        f"/v1/products/{work.setup.product}/verification-results/captures",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/verification-results/captures",
         headers=work.quality.headers,
         json=value.model_dump(mode="json"),
     )
@@ -303,7 +324,12 @@ def command(work, operation, *, captured=None, final=False, **changes):
 
             from pdos_next.domain.verification_results.models import TestResultProjection
 
-            with tenant_session(work.setup.engine, work.setup.tenant) as session:
+            with tenant_session(
+                work.setup.engine,
+                work.setup.tenant,
+                actor_id=work.quality.human,
+                category_id=work.setup.category,
+            ) as session:
                 projection = session.scalar(
                     select(TestResultProjection).where(
                         TestResultProjection.tenant_id == work.setup.tenant,
@@ -327,7 +353,7 @@ def command(work, operation, *, captured=None, final=False, **changes):
         value.setdefault("sources", sources)
     result = cmd(work.quality, operation, value)
     response = work.quality.client.post(
-        f"/v1/products/{work.setup.product}/verification-results/inputs",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/verification-results/inputs",
         headers=work.quality.headers,
         json=result,
     )
@@ -339,7 +365,7 @@ def command(work, operation, *, captured=None, final=False, **changes):
 def listing(work, *, caller=None):
     caller = caller or work.quality
     result = caller.client.get(
-        f"/v1/products/{work.setup.product}/verification-results",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/verification-results",
         headers=caller.headers,
         params={"build_id": work.build_id, "run_id": str(work.binding.run_id)},
     )

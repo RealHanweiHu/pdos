@@ -207,7 +207,10 @@ def candidate(work, raw=None, **kwargs):
 def assert_failure(code, fn):
     with pytest.raises(DomainError) as failed:
         fn()
-    assert failed.value.code == code
+    assert failed.value.reason == code
+    from pdos_next.error_catalog import CATEGORIES
+
+    assert failed.value.code in CATEGORIES
     # Failure messages are bounded and do not include the actual report values.
     assert len(str(failed.value)) <= 150
 
@@ -585,7 +588,7 @@ def test_nonfinite_json_tokens_are_rejected_separately_from_original_strings(wor
 def test_encoding_bom_blank_nonobject_partial_json_or_surrogate_are_not_observations(work, payload):
     with pytest.raises(DomainError) as failed:
         extract_observations(payload, binding(work, payload))
-    assert failed.value.code in {
+    assert failed.value.reason in {
         "INVALID_REPORT_ENCODING",
         "UNSUPPORTED_REPORT_LINE_BREAK",
         "INVALID_REPORT_FORMAT",
@@ -620,8 +623,8 @@ def test_full_bytes_hash_size_and_limits_precede_report_interpretation(work):
     )
     two = content(work, (work.row, work.row))
     assert_failure(
-        "REPORT_ROW_LIMIT",
-        lambda: extract_observations(two, binding(work, two), limits=VerifierLimits(max_rows=1)),
+        "AMBIGUOUS_REPORT_ROW",
+        lambda: extract_observations(two, binding(work, two)),
     )
     deep = b'{"x": [[[[[[[[[1]]]]]]]]]}\n'
     assert_failure(
@@ -631,7 +634,12 @@ def test_full_bytes_hash_size_and_limits_precede_report_interpretation(work):
 
 @pytest.mark.parametrize(
     "limit",
-    [{"max_input_bytes": 0}, {"max_rows": 10001}, {"max_depth": True}, {"max_line_bytes": 131073}],
+    [
+        {"max_input_bytes": 0},
+        {"max_input_bytes": 10000001},
+        {"max_depth": True},
+        {"max_line_bytes": 131073},
+    ],
 )
 def test_limits_cannot_be_unbounded_or_boolean(limit):
     with pytest.raises(ValueError):

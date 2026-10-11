@@ -3,6 +3,7 @@
 import copy
 from datetime import UTC, datetime
 from types import SimpleNamespace
+from uuid import UUID as CategoryUUID
 from uuid import uuid4
 
 import httpx
@@ -25,8 +26,16 @@ def no_io(monkeypatch):
 
 @pytest.fixture
 def actual_definition_dto(monkeypatch):
-    from pdos_next import original_security
+    from pdos_next import original_security, service
+    from pdos_next.domain.products import definitions
     from pdos_next.domain.products.definitions import definition_view
+
+    monkeypatch.setattr(service, "require_access", lambda *_args, **_kw: None)
+    monkeypatch.setattr(
+        definitions,
+        "batch_read",
+        lambda session, model, identities: {key: session.get(model, key) for key in identities},
+    )
 
     tenant, owner, product, identity = (uuid4() for _ in range(4))
     refs = [
@@ -43,7 +52,7 @@ def actual_definition_dto(monkeypatch):
         ref.artifact_id: SimpleNamespace(
             tenant_id=tenant,
             owner_id=owner,
-            visibility="product",
+            visibility="category",
             revision=ref.source_revision,
             title="固定来源",
         )
@@ -64,11 +73,12 @@ def actual_definition_dto(monkeypatch):
     row = SimpleNamespace(
         id=identity,
         product_id=product,
+        category_id=CategoryUUID(int=1000000),
         owner_id=owner,
         parent_definition_id=None,
         revision=1,
         status="draft",
-        visibility="product",
+        visibility="category",
         title="固定定义",
         purpose="内部合成准备",
         use_cases=["内部"],
@@ -112,7 +122,7 @@ def test_union_keeps_definition_source_not_in_process_or_engineering(actual_defi
 def test_missing_sources_cannot_be_empty_closure(shape):
     with pytest.raises(m.DomainError) as error:
         m._definition_reads(shape)
-    assert error.value.code == "INVALID_FIXED_DEFINITION"
+    assert error.value.reason == "INVALID_FIXED_DEFINITION"
     assert error.value.status == 503
 
 
@@ -133,7 +143,7 @@ def test_invalid_exact_source_is_typed_rejection(actual_definition_dto, field, v
     actual_definition_dto["sources"][0][field] = value
     with pytest.raises(m.DomainError) as error:
         m._definition_reads(actual_definition_dto)
-    assert error.value.code == "INVALID_FIXED_DEFINITION"
+    assert error.value.reason == "INVALID_FIXED_DEFINITION"
     assert error.value.status == 503
 
 
@@ -141,7 +151,7 @@ def test_missing_source_key_is_typed_rejection(actual_definition_dto):
     del actual_definition_dto["sources"][0]["artifact_id"]
     with pytest.raises(m.DomainError) as error:
         m._definition_reads(actual_definition_dto)
-    assert error.value.code == "INVALID_FIXED_DEFINITION"
+    assert error.value.reason == "INVALID_FIXED_DEFINITION"
 
 
 @pytest.mark.parametrize("status", ["stale", "withdrawn", "unavailable", None])
@@ -149,14 +159,14 @@ def test_each_source_must_remain_active(actual_definition_dto, status):
     actual_definition_dto["sources"][1]["status"] = status
     with pytest.raises(m.DomainError) as error:
         m._definition_reads(actual_definition_dto)
-    assert error.value.code == "RECHECK_REQUIRED"
+    assert error.value.reason == "RECHECK_REQUIRED"
 
 
 def test_definition_overall_currentness_is_required(actual_definition_dto):
     actual_definition_dto["source_status"] = "needs_recheck"
     with pytest.raises(m.DomainError) as error:
         m._definition_reads(actual_definition_dto)
-    assert error.value.code == "RECHECK_REQUIRED"
+    assert error.value.reason == "RECHECK_REQUIRED"
 
 
 def test_conflicting_revisions_still_use_original_strict_merge(actual_definition_dto):
@@ -165,7 +175,7 @@ def test_conflicting_revisions_still_use_original_strict_merge(actual_definition
     actual_definition_dto["sources"].append(copied)
     with pytest.raises(m.DomainError) as error:
         m._definition_reads(actual_definition_dto)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
     assert error.value.status == 422
 
 
@@ -178,7 +188,7 @@ def test_actual_load_fixed_reaches_unchanged_negative_authority_not_keyerror(
     from pdos_next.service import Context
 
     tenant, actor, product, project_id, process_id, engineering_id = (uuid4() for _ in range(6))
-    ctx = Context(tenant, actor, actor)
+    ctx = Context(tenant, actor, actor, category_id=CategoryUUID(int=1000000))
     ref = {
         key: actual_definition_dto["sources"][0][key]
         for key in ("artifact_id", "expected_revision", "line", "quote")
@@ -187,7 +197,7 @@ def test_actual_load_fixed_reaches_unchanged_negative_authority_not_keyerror(
         project_id=project_id,
         process={"id": process_id, "revision": 1},
         title="真实字段准备",
-        visibility="product",
+        visibility="category",
         reason="纯核负例",
         sources=[ref],
     )
@@ -210,19 +220,20 @@ def test_actual_load_fixed_reaches_unchanged_negative_authority_not_keyerror(
         expected_revision=1,
         payload=payload.model_dump(mode="json"),
         source_read_set=[],
+        category_id=CategoryUUID(int=1000000),
     )
-    project = SimpleNamespace(id=project_id, purpose="内部合成准备", visibility="product")
+    project = SimpleNamespace(id=project_id, purpose="内部合成准备", visibility="category")
     link = SimpleNamespace(definition_id=uuid4(), definition_revision=1)
     engineering = SimpleNamespace(
         definition_id=link.definition_id,
         definition_revision=1,
-        visibility="product",
+        visibility="category",
         required_source_read_set=[],
     )
     process = SimpleNamespace(
         revision=1,
         engineering_configuration_id=engineering_id,
-        visibility="product",
+        visibility="category",
         required_source_read_set=[],
     )
     monkeypatch.setattr(m, "_uow", lambda *a: None)
@@ -256,5 +267,5 @@ def test_actual_load_fixed_reaches_unchanged_negative_authority_not_keyerror(
     )
     with pytest.raises(m.DomainError) as error:
         m._load_fixed(object(), ctx, command, object(), payload, require_reads=False)
-    assert error.value.code == "QUALIFICATION_REQUIRED"
+    assert error.value.reason == "QUALIFICATION_REQUIRED"
     assert error.value.status == 403

@@ -42,7 +42,7 @@ class PreparationItem(FrozenDTO):
     conditions: Text | None = None
     material: Text | None = None
     sample_count: int = Field(ge=1, le=10000, strict=True)
-    cavities: tuple[Key, ...] = Field(default=(), max_length=1000)
+    cavities: tuple[Key, ...] = Field(default=())
     destructive: bool = Field(default=False, strict=True)
 
     @model_validator(mode="after")
@@ -55,7 +55,7 @@ class PreparationItem(FrozenDTO):
 class PreparationDocument(FrozenDTO):
     id: Key
     title: Text
-    item_ids: tuple[Key, ...] = Field(min_length=1, max_length=100)
+    item_ids: tuple[Key, ...] = Field(min_length=1)
     source: DefinitionReference | None = None
     required: bool = Field(default=True, strict=True)
 
@@ -74,13 +74,13 @@ class PreparationRecordPayload(FrozenDTO):
     title: Text
     purpose: Text
     return_form: Text
-    items: tuple[PreparationItem, ...] = Field(min_length=1, max_length=100)
-    documents: tuple[PreparationDocument, ...] = Field(default=(), max_length=100)
+    items: tuple[PreparationItem, ...] = Field(min_length=1)
+    documents: tuple[PreparationDocument, ...] = Field(default=())
     expected_at: AwareDatetime | None = None
     expected_timezone: Key | None = None
     tentative_at: AwareDatetime | None = None
     tentative_timezone: Key | None = None
-    sources: tuple[DefinitionReference, ...] = Field(min_length=1, max_length=20)
+    sources: tuple[DefinitionReference, ...] = Field(min_length=1)
     reason: Text
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 

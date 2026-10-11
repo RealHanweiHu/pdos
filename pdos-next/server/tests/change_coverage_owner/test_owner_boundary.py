@@ -5,6 +5,7 @@ import json
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
+from uuid import UUID as CategoryUUID
 from uuid import uuid4
 
 import pytest
@@ -41,6 +42,68 @@ from pdos_next.schemas.verification.contracts import Scope, SourceRef
 ACTUAL_PROJECT = controlled._project
 ACTUAL_SOURCE_GUARD = controlled._source_guard
 ACTUAL_EXECUTE = Session.execute
+
+
+def test_temporal_current_summary_retains_future_interval_and_ordinary_grant_rules(
+    env, monkeypatch
+):
+    for row in env.rows:
+        if isinstance(row, Grant):
+            row.expires_at = None
+    baseline = owner.temporal(env.s, env.ctx, env.pid, env.scope)[0]
+    monkeypatch.setattr(owner, "clock", lambda: env.at + timedelta(days=30))
+    assert owner.temporal(env.s, env.ctx, env.pid, env.scope)[0] == baseline
+
+    fact_id = uuid4()
+    pointer = owner.ProfessionalCurrent(
+        id=uuid4(),
+        tenant_id=env.ctx.tenant_id,
+        product_id=env.pid,
+        project_id=env.scope.project_id,
+        subject_id=env.ctx.requester_id,
+        kind="qualification",
+        issuer_key="synthetic-interval",
+        external_id="fixed-interval",
+        series_id=fact_id,
+        fact_id=fact_id,
+        fact_revision=1,
+        epoch=1,
+        summary={
+            **{
+                key: str(value)
+                for key, value in {
+                    "id": fact_id,
+                    "tenant_id": env.ctx.tenant_id,
+                    "category_id": CategoryUUID(int=1000000),
+                    "product_id": env.pid,
+                    "project_id": env.scope.project_id,
+                    "subject_id": env.ctx.requester_id,
+                    "owner_id": env.ctx.requester_id,
+                    "series_id": fact_id,
+                }.items()
+            },
+            "kind": "qualification",
+            "issuer_key": "synthetic-interval",
+            "external_id": "fixed-interval",
+            "revision": 1,
+            "fact_sha256": "1" * 64,
+            "state": "active",
+            "valid_from": (env.at + timedelta(minutes=1)).isoformat(),
+            "valid_until": (env.at + timedelta(minutes=2)).isoformat(),
+            "required_source_read_set": [],
+        },
+    )
+    env.rows.append(pointer)
+    monkeypatch.setattr(owner, "clock", lambda: env.at)
+    before = owner.temporal(env.s, env.ctx, env.pid, env.scope)[0]
+    monkeypatch.setattr(owner, "clock", lambda: env.at + timedelta(seconds=90))
+    active = owner.temporal(env.s, env.ctx, env.pid, env.scope)[0]
+    assert active != before
+    monkeypatch.setattr(owner, "clock", lambda: env.at + timedelta(minutes=2))
+    assert owner.temporal(env.s, env.ctx, env.pid, env.scope)[0] != active
+    pointer.summary = {**pointer.summary, "revision": 2}
+    with pytest.raises(DomainError):
+        owner.temporal(env.s, env.ctx, env.pid, env.scope)
 
 
 def append_canonical_successor(e, *, owner_id=None, visibility=None):
@@ -262,13 +325,14 @@ def condition(expression, row):
 
 @pytest.fixture
 def env(monkeypatch):
+    monkeypatch.setattr(owner, "category_for_product", lambda _pid: CategoryUUID(int=1000000))
     at = datetime.now(UTC)
     engine = create_engine("postgresql+psycopg://unused/unused")  # No connect, ever.
     s = Session(engine)
     s.begin()
     tid, pid, project_id, actor, change_id, version_id = [uuid4() for _ in range(6)]
     scope = Scope(tenant_id=tid, product_id=pid, project_id=project_id)
-    ctx = common.Context(tid, actor, actor)
+    ctx = common.Context(tid, actor, actor, category_id=CategoryUUID(int=1000000))
     source = SourceRef(id=uuid4(), revision=1, position="line:1;quote_sha256:" + "0" * 64)
     ref = Ref(id=uuid4(), revision=1, kind="issue")
     request = ChangeRequest(
@@ -293,7 +357,7 @@ def env(monkeypatch):
         previous_version_id=None,
         previous_revision=None,
         owner_id=actor,
-        visibility="product",
+        visibility="category",
         status="draft",
         operation="change.request.create",
         request_snapshot=request.model_dump(mode="json"),
@@ -321,7 +385,7 @@ def env(monkeypatch):
         def resolve(self, value):
             obj = objects[value.identity]
             if obj.visibility == "private":
-                raise DomainError("PRIVATE_IDENTIFIABLE_ROW", str(obj.ref.id), 403)
+                raise DomainError("FORBIDDEN_SCOPE", str(obj.ref.id), 403)
             return obj
 
         def links(self, obj):
@@ -329,7 +393,9 @@ def env(monkeypatch):
 
     monkeypatch.setattr(registry, "OwnerReader", Reader)
     monkeypatch.setattr(old, "_issue_loader", lambda s: object())
-    monkeypatch.setattr(owner, "fixed_seed", lambda *args: (scope, "bounded fixed purpose"))
+    monkeypatch.setattr(
+        owner, "fixed_seed", lambda *args, verify_sources=True: (scope, "bounded fixed purpose")
+    )
     lock_calls = []
 
     def scope_lock(s, ctx, *, scope, audience):
@@ -371,14 +437,14 @@ def env(monkeypatch):
     monkeypatch.setattr(controlled, "_native_registration", lambda *args: None, raising=False)
     monkeypatch.setattr(old, "_native_registration", lambda *args: None)
     rows = [
-        Product(id=pid, tenant_id=tid, revision=1),
+        Product(id=pid, tenant_id=tid, revision=1, category_id=CategoryUUID(int=1000000)),
         Principal(
             id=actor, tenant_id=tid, name="publisher A", kind="human", active=True, access_epoch=1
         ),
         Grant(
             id=uuid4(),
             tenant_id=tid,
-            product_id=pid,
+            category_id=CategoryUUID(int=1000000),
             principal_id=actor,
             can_write=True,
             expires_at=at + timedelta(minutes=20),
@@ -418,6 +484,22 @@ def env(monkeypatch):
         )
 
     monkeypatch.setattr(s, "scalars", scalars)
+
+    def execute(query):
+        # Substitute only the temporal watermark's projected scalar reads.
+        entities = {column["entity"] for column in query.column_descriptions}
+        assert entities == {Grant}
+        return [
+            SimpleNamespace(
+                **{
+                    column["name"]: getattr(row, column["name"])
+                    for column in query.column_descriptions
+                }
+            )
+            for row in scalars(query)
+        ]
+
+    monkeypatch.setattr(s, "execute", execute)
     monkeypatch.setattr(s, "add", rows.append)
     monkeypatch.setattr(s, "add_all", rows.extend)
 
@@ -439,7 +521,7 @@ def env(monkeypatch):
         origin_version_id=version_id,
         origin_revision=1,
         owner_id=actor,
-        visibility="product",
+        visibility="category",
         publisher_id=actor,
         roots=(ref,),
         nodes=(ref,),
@@ -464,11 +546,12 @@ def env(monkeypatch):
         update={"position": "line:1;quote_sha256:" + hashlib.sha256(original.encode()).hexdigest()}
     )
     artifact = Artifact(
+        category_id=CategoryUUID(int=1000000),
         id=source.id,
         tenant_id=tid,
         product_id=pid,
         owner_id=actor,
-        visibility="product",
+        visibility="category",
         revision=1,
         status="active",
         original_id=None,
@@ -570,7 +653,7 @@ def separate_reader(e):
     grant = Grant(
         id=uuid4(),
         tenant_id=e.ctx.tenant_id,
-        product_id=e.pid,
+        category_id=CategoryUUID(int=1000000),
         principal_id=reader.id,
         can_write=False,
         expires_at=e.at + timedelta(minutes=20),
@@ -579,7 +662,9 @@ def separate_reader(e):
     e.rows.extend((reader, grant))
     publisher_id = e.ctx.actor_id
     publish(e)
-    e.ctx = common.Context(e.ctx.tenant_id, reader.id, reader.id)
+    e.ctx = common.Context(
+        e.ctx.tenant_id, reader.id, reader.id, category_id=CategoryUUID(int=1000000)
+    )
     return next(r for r in e.rows if isinstance(r, Principal) and r.id == publisher_id), reader
 
 
@@ -642,7 +727,7 @@ def use_actual_scope_acls(e, monkeypatch, *, private_change=False):
                 Grant(
                     id=uuid4(),
                     tenant_id=e.ctx.tenant_id,
-                    product_id=e.pid,
+                    category_id=CategoryUUID(int=1000000),
                     principal_id=identity,
                     can_write=True,
                     access_epoch=1,
@@ -658,14 +743,14 @@ def use_actual_scope_acls(e, monkeypatch, *, private_change=False):
         name="readable project",
         purpose=e.material.purpose,
         scope="fixed",
-        visibility="product",
+        visibility="category",
         status="active",
         revision=1,
     )
     e.rows.append(project)
     change = next(r for r in e.rows if isinstance(r, ChangeRequestVersion))
     change.owner_id = change_owner
-    change.visibility = "private" if private_change else "product"
+    change.visibility = "private" if private_change else "category"
     e.request = e.request.model_copy(update={"requester_id": change_owner})
     change.request_snapshot, change.request_sha256 = (
         e.request.model_dump(mode="json"),
@@ -686,7 +771,9 @@ def use_actual_scope_acls(e, monkeypatch, *, private_change=False):
     )
     e.artifact.content, e.artifact.content_hash = original, common.digest(original)
     if private_change:
-        e.ctx = common.Context(e.ctx.tenant_id, change_owner, change_owner)
+        e.ctx = common.Context(
+            e.ctx.tenant_id, change_owner, change_owner, category_id=CategoryUUID(int=1000000)
+        )
     e.payload = e.payload.model_copy(update={"source": e.source})
     e.issuer = trust.configure(
         e.engine,
@@ -710,12 +797,14 @@ def test_product_project_owner_change_owner_publisher_and_reader_can_differ(env,
     project, change, reader_id = use_actual_scope_acls(env, monkeypatch)
     assert len({project.owner_id, change.owner_id, publisher_id, reader_id}) == 4
     publish(env)
-    env.ctx = common.Context(env.ctx.tenant_id, reader_id, reader_id)
+    env.ctx = common.Context(
+        env.ctx.tenant_id, reader_id, reader_id, category_id=CategoryUUID(int=1000000)
+    )
     current = read(env)
     assert len(current.coverage) == 8
     fact = next(r for r in env.rows if isinstance(r, models.ChangeCoverageFact))
     assert fact.owner_id == change.owner_id and fact.actor_id == publisher_id
-    assert fact.visibility == change.visibility == "product"
+    assert fact.visibility == change.visibility == "category"
 
 
 def test_private_change_owner_in_readable_project_can_publish_and_read_own(env, monkeypatch):
@@ -723,7 +812,9 @@ def test_private_change_owner_in_readable_project_can_publish_and_read_own(env, 
     assert project.owner_id != change.owner_id == env.ctx.actor_id
     publish(env)
     assert len(read(env).coverage) == 8
-    env.ctx = common.Context(env.ctx.tenant_id, reader_id, reader_id)
+    env.ctx = common.Context(
+        env.ctx.tenant_id, reader_id, reader_id, category_id=CategoryUUID(int=1000000)
+    )
     with pytest.raises(DomainError) as failure:
         read(env)
     assert failure.value.status == 403
@@ -731,7 +822,9 @@ def test_private_change_owner_in_readable_project_can_publish_and_read_own(env, 
 
 def test_private_change_cannot_be_published_by_project_owner(env, monkeypatch):
     project, _, _ = use_actual_scope_acls(env, monkeypatch, private_change=True)
-    env.ctx = common.Context(env.ctx.tenant_id, project.owner_id, project.owner_id)
+    env.ctx = common.Context(
+        env.ctx.tenant_id, project.owner_id, project.owner_id, category_id=CategoryUUID(int=1000000)
+    )
     with pytest.raises(DomainError) as failure:
         publish(env)
     assert failure.value.status == 403
@@ -789,7 +882,7 @@ def test_publisher_a_reader_b_have_scoped_real_lock_statements(env, monkeypatch)
         where = {v.left.key: v.right.value for v in query._where_criteria}
         assert where["tenant_id"] == env.ctx.tenant_id
         if query.column_descriptions[0]["entity"] is Grant:
-            assert where["product_id"] == env.pid
+            assert where["category_id"] == env.ctx.category_id
             assert where["principal_id"] in (publisher.id, reader.id)
     # Publisher fence digest is stable for another legitimate reader phase.
     assert "publisher_access_sha256" in current.source_basis
@@ -829,7 +922,7 @@ def test_pending_publisher_revocation_cannot_be_erased(env):
 
 
 @pytest.mark.parametrize(
-    "field", ["can_write", "expires_at", "access_epoch", "tenant_id", "product_id", "principal_id"]
+    "field", ["can_write", "expires_at", "access_epoch", "tenant_id", "category_id", "principal_id"]
 )
 def test_source_io_pending_publisher_grant_is_not_refreshed_away(env, monkeypatch, field):
     publisher, _ = separate_reader(env)
@@ -849,7 +942,7 @@ def test_source_io_pending_publisher_grant_is_not_refreshed_away(env, monkeypatc
                 "expires_at": env.at - timedelta(seconds=1),
                 "access_epoch": 2,
                 "tenant_id": uuid4(),
-                "product_id": uuid4(),
+                "category_id": uuid4(),
                 "principal_id": uuid4(),
             }[field]
             setattr(grant, field, value)
@@ -1070,7 +1163,9 @@ def test_saved_current_owner_fails_closed_on_drift(env, monkeypatch, mutation):
     elif mutation in {"final_clock", "expired"}:
         monkeypatch.setattr(owner, "clock", lambda: env.material.valid_until)
     elif mutation == "caller":
-        env.ctx = common.Context(env.scope.tenant_id, uuid4(), uuid4())
+        env.ctx = common.Context(
+            env.scope.tenant_id, uuid4(), uuid4(), category_id=CategoryUUID(int=1000000)
+        )
     elif mutation == "uow":
         env.s.rollback()
         env.s.begin()
@@ -1095,7 +1190,7 @@ def test_hidden_dependency_is_generic_and_cannot_disappear(env):
     env.links[env.graph.roots[0].identity] = ((ref, "secret relation"),)
     with pytest.raises(DomainError) as error:
         read(env)
-    assert error.value.code == "COVERAGE_DEPENDENCY_UNRESOLVED"
+    assert error.value.reason == "COVERAGE_DEPENDENCY_UNRESOLVED"
     assert str(ref.id) not in error.value.message and "secret" not in error.value.message
 
 
@@ -1187,14 +1282,14 @@ def test_duplicate_original_keys_rejected_before_import(env):
     )
     with pytest.raises(DomainError) as error:
         controlled.original(env.s, env.ctx, env.pid, source, schemas.CoverageMaterial)
-    assert error.value.code == "MISSING_REQUIRED_EVIDENCE"
+    assert error.value.reason == "MISSING_REQUIRED_EVIDENCE"
 
 
 def test_future_authority_boundary_and_last_io_clock(env, monkeypatch):
     grant = Grant(
         id=uuid4(),
         tenant_id=env.scope.tenant_id,
-        product_id=env.pid,
+        category_id=CategoryUUID(int=1000000),
         principal_id=uuid4(),
         access_epoch=1,
         can_write=False,
@@ -1203,7 +1298,7 @@ def test_future_authority_boundary_and_last_io_clock(env, monkeypatch):
     env.rows.append(grant)
     publish(env)
     current = read(env)
-    assert current.valid_until == grant.expires_at
+    assert current.valid_until == env.material.valid_until
     monkeypatch.setattr(owner, "clock", lambda: grant.expires_at)
     with pytest.raises(DomainError):
         owner.refresh(
@@ -1259,7 +1354,26 @@ def test_stored_publication_shape_must_remain_exact(env, field):
         read(env)
 
 
-def test_registry_bound_does_not_make_truncated_closure_complete(env):
+def test_original_approval_registry_keeps_pins_beyond_previous_cap(env):
+    pins = tuple(
+        schemas.OriginalApproval(
+            source=env.source.model_copy(update={"id": uuid4()}),
+            material_sha256=digest(env.material),
+        )
+        for _ in range(101)
+    )
+    issuer = trust.configure(
+        env.engine, env.professional, scope=env.scope, approvals=pins
+    )
+    assert issuer.epoch == env.issuer.epoch + 1
+    assert issuer.approvals == pins
+    assert trust.current(env.engine, env.scope, supplied=issuer) is issuer
+    assert trust.check(
+        env.engine, env.scope, pins[-1].source, env.material, supplied=issuer
+    ) is issuer
+
+
+def test_registry_growth_over_previous_cap_retains_full_closure_and_invalidates_old_graph(env):
     for _ in range(250):
         ref = Ref(id=uuid4(), revision=1, kind="part")
         env.objects[ref.identity] = OwnedObject(
@@ -1272,7 +1386,7 @@ def test_registry_bound_does_not_make_truncated_closure_complete(env):
     )
     with pytest.raises(DomainError) as error:
         publish(env)
-    assert error.value.code == "COVERAGE_ENUMERATION_LIMIT"
+    assert error.value.reason == "COVERAGE_OWNER_STALE"
 
 
 def test_same_product_change_current_rollback_cannot_hide_newer_version(env):
@@ -1288,7 +1402,7 @@ def test_same_product_change_current_rollback_cannot_hide_newer_version(env):
         previous_version_id=old_version.id,
         previous_revision=1,
         owner_id=env.ctx.actor_id,
-        visibility="product",
+        visibility="category",
         status="analysis",
         operation="change.impact.compute",
         request_snapshot=env.request.model_copy(
@@ -1370,7 +1484,12 @@ def test_import_read_refresh_each_take_actual_scope_lock_seam(env):
 def test_real_session_pending_dependencies_are_not_erased_by_refresh(env, kind):
     publish(env)
     row = (
-        Artifact(id=uuid4(), tenant_id=env.scope.tenant_id, product_id=env.pid)
+        Artifact(
+            id=uuid4(),
+            tenant_id=env.scope.tenant_id,
+            product_id=env.pid,
+            category_id=CategoryUUID(int=1000000),
+        )
         if kind == "dependency"
         else models.ChangeCoverageCurrent(
             id=uuid4(), tenant_id=env.scope.tenant_id, product_id=env.pid

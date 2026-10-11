@@ -83,7 +83,13 @@ def followup_integration_contract():
 
 def fixed_issue(work, revision=None):
     """Copy values inside the active Session; never return expired ORM rows."""
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         pointer = s.scalar(
             select(QualityIssueCurrent).where(
                 QualityIssueCurrent.issue_id == work.issue_id,
@@ -99,14 +105,23 @@ def fixed_issue(work, revision=None):
         )
         assert row is not None
         return SimpleNamespace(
-            **{column.key: deepcopy(getattr(row, column.key)) for column in row.__table__.columns},
+            **{
+                column.key: deepcopy(getattr(row, column.key, None))
+                for column in row.__table__.columns
+            },
             current_id=pointer.issue_version_id,
             current_revision=pointer.issue_revision,
         )
 
 
 def exact_source(work, reference, *, line=1):
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         row = s.get(Artifact, UUID(str(reference["artifact_id"])))
         raw = row.content.splitlines()[line - 1]
         return ExactSource(
@@ -120,7 +135,7 @@ def exact_source(work, reference, *, line=1):
 def command(work, operation, payload):
     value = cmd(work.quality, operation, deepcopy(payload))
     response = work.quality.client.post(
-        f"/v1/products/{work.setup.product}/{PATH}/inputs",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/{PATH}/inputs",
         headers=work.quality.headers,
         json=value,
     )
@@ -174,7 +189,13 @@ def link_command(work):
 
 
 def counts(work):
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         return {
             cls.__tablename__: s.scalar(select(func.count()).select_from(cls))
             for cls in (
@@ -195,10 +216,21 @@ def counts(work):
 
 def proof_row(work, prepared):
     token = prepared["payload"].get("approval_token") or prepared["payload"]["confirmation_token"]
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         row = s.scalar(select(Confirmation).where(Confirmation.token_hash == digest(token)))
         assert row is not None
-        return SimpleNamespace(id=row.id, consumed=row.consumed, snapshot=deepcopy(row.snapshot))
+        return SimpleNamespace(
+            id=row.id,
+            consumed=row.consumed,
+            expires_at=row.expires_at,
+            snapshot=deepcopy(row.snapshot),
+        )
 
 
 def no_effect(work, before, prepared, old_issue):

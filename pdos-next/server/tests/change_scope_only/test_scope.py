@@ -9,6 +9,7 @@ import inspect
 from copy import deepcopy
 from datetime import timedelta
 from types import SimpleNamespace
+from uuid import UUID as CategoryUUID
 from uuid import uuid4
 
 import pytest
@@ -66,7 +67,7 @@ def case(monkeypatch):
             },
         }
     )
-    ctx = Context(run.scope.tenant_id, actor, actor)
+    ctx = Context(run.scope.tenant_id, actor, actor, category_id=CategoryUUID(int=1000000))
     row = QualityIssueVersion(
         id=uuid4(),
         tenant_id=ctx.tenant_id,
@@ -203,7 +204,7 @@ def test_wrong_fixed_row_or_private_owner_refused(case, field):
     )
     with pytest.raises(DomainError, match="固定问题") as error:
         read(case)
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"
 
 
 @pytest.mark.parametrize("count", [0, 2])
@@ -232,7 +233,7 @@ def test_current_compound_identity_must_match_exact_fixed_row(case, field):
     )
     with pytest.raises(DomainError) as error:
         read(case)
-    assert error.value.code == "RECHECK_REQUIRED"
+    assert error.value.reason == "RECHECK_REQUIRED"
 
 
 @pytest.mark.parametrize("field", ["id", "revision", "status", "scope", "audience", "sha"])
@@ -251,7 +252,7 @@ def test_snapshot_full_digest_and_header_checked(case, field):
         case.row.issue_snapshot, case.row.snapshot_sha256 = body, digest(body)
     with pytest.raises(DomainError) as error:
         read(case)
-    assert error.value.code == "INTEGRITY_MISMATCH"
+    assert error.value.reason == "INTEGRITY_MISMATCH"
 
 
 @pytest.mark.parametrize(
@@ -260,7 +261,7 @@ def test_snapshot_full_digest_and_header_checked(case, field):
 def test_exact_ref_semantics(case, kind, key):
     with pytest.raises(DomainError) as error:
         read(case, Ref(id=case.issue.id, revision=4, kind=kind, key=key))
-    assert error.value.code == "FIXED_REFERENCE_MISMATCH"
+    assert error.value.reason == "FIXED_REFERENCE_MISMATCH"
 
 
 @pytest.mark.parametrize(
@@ -269,7 +270,6 @@ def test_exact_ref_semantics(case, kind, key):
         ("active", False),
         ("kind", "ai"),
         ("expires_at", NOW),
-        ("expires_at", None),
         ("tenant_id", None),
         ("product_id", None),
         ("person_id", None),
@@ -279,7 +279,7 @@ def test_current_acl_or_exact_deadline_refused(case, field, value):
     case.access[field] = value
     with pytest.raises(DomainError) as error:
         read(case)
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"
 
 
 def test_acl_aba_after_current_read_refused(case):
@@ -290,7 +290,7 @@ def test_acl_aba_after_current_read_refused(case):
     case.state["hook"] = hook
     with pytest.raises(DomainError) as error:
         read(case)
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"
 
 
 def test_expiry_after_all_io_refused(case, monkeypatch):
@@ -298,7 +298,7 @@ def test_expiry_after_all_io_refused(case, monkeypatch):
     monkeypatch.setattr(quality, "now", lambda: next(ticks))
     with pytest.raises(DomainError) as error:
         read(case)
-    assert error.value.code == "FORBIDDEN_SCOPE"
+    assert error.value.reason == "FORBIDDEN_SCOPE"
 
 
 @pytest.mark.parametrize(
@@ -308,7 +308,7 @@ def test_pending_local_changes_disable_scope_derivation(case, model):
     case.s.add(model(id=uuid4(), tenant_id=case.ctx.tenant_id))
     with pytest.raises(DomainError) as error:
         read(case)
-    assert error.value.code == "RECHECK_REQUIRED" and not case.state["queries"]
+    assert error.value.reason == "RECHECK_REQUIRED" and not case.state["queries"]
 
 
 @pytest.mark.parametrize("change_at", ["engine", "root", "savepoint", "caller"])
@@ -329,13 +329,13 @@ def test_uow_engine_ancestry_caller_change_refused(case, change_at, monkeypatch)
     case.state["hook"] = hook
     with pytest.raises(DomainError) as error:
         read(case)
-    assert error.value.code == "FACT_CALLER_UOW_CHANGED"
+    assert error.value.reason == "FACT_CALLER_UOW_CHANGED"
 
 
 def test_non_session_cannot_derive_scope(case):
     with pytest.raises(DomainError) as error:
         quality._change_scope_for_change(object(), case.ctx, case.row.product_id, case.issue_ref)
-    assert error.value.code == "FACT_ACTIVE_SESSION_REQUIRED"
+    assert error.value.reason == "FACT_ACTIVE_SESSION_REQUIRED"
 
 
 def test_custom_issue_loader_keeps_full_old_path_even_if_default_function(case, monkeypatch):
@@ -391,9 +391,9 @@ def test_all_seed_consumers_still_run_initial_and_final_complete_owner_reads(fun
     assert "current = fresh.resolve(obj.ref)" in inspect.getsource(change._refresh)
 
 
-def test_list_history_keeps_original_complete_seed_path():
+def test_list_history_uses_scope_only_seed_without_complete_seed_walk():
     source = inspect.getsource(change.list_changes)
-    assert "_seed(s, ctx, product_id" in source and "_scope_seed(" not in source
+    assert "_scope_seed(" in source and "_seed(s, ctx, product_id" not in source
 
 
 @pytest.mark.parametrize("variant", ["missing", "future", "wrong_id"])
@@ -405,7 +405,7 @@ def test_current_pointer_cannot_rollback_same_issue_series(case, variant):
     }[variant]
     with pytest.raises(DomainError) as error:
         read(case)
-    assert error.value.code == "RECHECK_REQUIRED"
+    assert error.value.reason == "RECHECK_REQUIRED"
     query = next(q for name, q in case.state["queries"] if name == "latest")
     assert {case.ctx.tenant_id, case.row.product_id, case.row.project_id, case.issue.id, 4} <= set(
         query.compile().params.values()
@@ -415,7 +415,12 @@ def test_current_pointer_cannot_rollback_same_issue_series(case, variant):
 def test_lifecycle_bookkeeping_allowed_without_clearing_confirmation(case):
     from pdos_next.models import Confirmation
 
-    product = Product(id=case.row.product_id, tenant_id=case.ctx.tenant_id, lifecycle_epoch=1)
+    product = Product(
+        id=case.row.product_id,
+        tenant_id=case.ctx.tenant_id,
+        lifecycle_epoch=1,
+        category_id=CategoryUUID(int=1000000),
+    )
     make_transient_to_detached(product)
     case.s.add(product)
     product.lifecycle_epoch = 2

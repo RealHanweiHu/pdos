@@ -57,6 +57,10 @@ class ModelConfigurationVersion(Row, Base):
         ),
     )
 
+    @property
+    def status(self):
+        return "enabled" if self.enabled else "disabled"
+
 
 def decode(row: ModelConfigurationVersion) -> ConfigurationVersion:
     try:

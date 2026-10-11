@@ -22,7 +22,7 @@ def register_routes(app: FastAPI, engine, auth_dependency):
     """Use the host's existing human authentication dependency and tenant UOW."""
 
     @app.post(
-        "/v1/products/{product_id}/builds/{build_id}/resources/inspect",
+        "/v1/categories/{category_id}/products/{product_id}/builds/{build_id}/resources/inspect",
         response_model=ResourceView,
     )
     def inspect_build_resource(
@@ -47,7 +47,13 @@ def register_routes(app: FastAPI, engine, auth_dependency):
             resource=data.resource,
             fact=data.fact,
         )
-        with tenant_session(engine, ctx.tenant_id) as session:
+        with tenant_session(
+            engine,
+            ctx.tenant_id,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=ctx.category_id,
+        ) as session:
             result = owner.inspect_resource(session, ctx, product_id, request=selection)
             # Never serialize ResourceRead: its token, Source basis and UOW
             # stamps stay inside the server. Do not recalculate/drop read sets.

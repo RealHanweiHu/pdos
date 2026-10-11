@@ -1,0 +1,5098 @@
+{
+  "edges": {
+    "artifact_versions": [
+      [
+        "original_id",
+        "uploaded_originals"
+      ]
+    ],
+    "claims": [
+      [
+        "artifact_id",
+        "artifact_versions"
+      ]
+    ],
+    "definition_revisions": [
+      [
+        "parent_definition_id",
+        "definition_revisions"
+      ]
+    ],
+    "variant_revisions": [
+      [
+        "parent_definition_id",
+        "definition_revisions"
+      ],
+      [
+        "variant_id",
+        "product_variants"
+      ]
+    ],
+    "plan_proposals": [
+      [
+        "project_id",
+        "projects"
+      ]
+    ],
+    "plan_revisions": [
+      [
+        "project_id",
+        "projects"
+      ],
+      [
+        "proposal_id",
+        "plan_proposals"
+      ]
+    ],
+    "engineering_configurations": [
+      [
+        "definition_id",
+        "definition_revisions"
+      ],
+      [
+        "bom_id",
+        "bom_revisions"
+      ]
+    ],
+    "process_revisions": [
+      [
+        "engineering_configuration_id",
+        "engineering_configurations"
+      ]
+    ],
+    "actual_configurations": [
+      [
+        "actual_engineering_configuration_id",
+        "engineering_configurations"
+      ],
+      [
+        "actual_manufacturing_configuration_id",
+        "process_revisions"
+      ],
+      [
+        "build_id",
+        "builds"
+      ],
+      [
+        "planned_manufacturing_configuration_id",
+        "process_revisions"
+      ]
+    ],
+    "build_authorization_decisions": [
+      [
+        "assessment_id",
+        "build_execution_assessments"
+      ],
+      [
+        "build_id",
+        "builds"
+      ]
+    ],
+    "build_execution_assessments": [
+      [
+        "build_id",
+        "builds"
+      ]
+    ],
+    "build_lots": [
+      [
+        "actual_configuration_id",
+        "actual_configurations"
+      ],
+      [
+        "build_id",
+        "builds"
+      ]
+    ],
+    "build_operational_facts": [
+      [
+        "build_id",
+        "builds"
+      ]
+    ],
+    "build_readiness": [
+      [
+        "build_id",
+        "builds"
+      ]
+    ],
+    "build_starts": [
+      [
+        "assessment_id",
+        "build_execution_assessments"
+      ],
+      [
+        "build_id",
+        "builds"
+      ],
+      [
+        "engineering_authorization_id",
+        "build_authorization_decisions"
+      ],
+      [
+        "manufacturing_authorization_id",
+        "build_authorization_decisions"
+      ]
+    ],
+    "builds": [
+      [
+        "engineering_configuration_id",
+        "engineering_configurations"
+      ],
+      [
+        "manufacturing_configuration_id",
+        "process_revisions"
+      ],
+      [
+        "project_id",
+        "projects"
+      ]
+    ],
+    "measurement_import_captures": [
+      [
+        "request_version_id",
+        "verification_formal_requests"
+      ],
+      [
+        "run_id",
+        "verification_run_identities"
+      ],
+      [
+        "run_version_id",
+        "verification_run_versions"
+      ]
+    ],
+    "professional_authority_facts": [
+      [
+        "project_id",
+        "projects"
+      ]
+    ],
+    "sample_allocations": [
+      [
+        "build_id",
+        "builds"
+      ],
+      [
+        "lot_id",
+        "build_lots"
+      ]
+    ],
+    "sample_readiness_facts": [
+      [
+        "lot_id",
+        "build_lots"
+      ],
+      [
+        "sample_id",
+        "sample_units"
+      ]
+    ],
+    "sample_run_usages": [
+      [
+        "run_id",
+        "verification_run_identities"
+      ],
+      [
+        "sample_id",
+        "sample_units"
+      ]
+    ],
+    "sample_units": [
+      [
+        "allocation_id",
+        "sample_allocations"
+      ],
+      [
+        "build_id",
+        "builds"
+      ],
+      [
+        "lot_id",
+        "build_lots"
+      ]
+    ],
+    "test_measurements": [
+      [
+        "actual_configuration_id",
+        "actual_configurations"
+      ],
+      [
+        "capture_id",
+        "measurement_import_captures"
+      ],
+      [
+        "run_id",
+        "verification_run_identities"
+      ],
+      [
+        "run_version_id",
+        "verification_run_versions"
+      ],
+      [
+        "sample_id",
+        "sample_units"
+      ]
+    ],
+    "test_resource_facts": [
+      [
+        "accepted_request_id",
+        "verification_formal_requests"
+      ],
+      [
+        "build_id",
+        "builds"
+      ]
+    ],
+    "test_resource_reservations": [
+      [
+        "fact_id",
+        "test_resource_facts"
+      ],
+      [
+        "run_id",
+        "verification_run_identities"
+      ]
+    ],
+    "test_result_actions": [
+      [
+        "capture_id",
+        "measurement_import_captures"
+      ],
+      [
+        "next_request_version_id",
+        "verification_formal_requests"
+      ],
+      [
+        "next_run_version_id",
+        "verification_run_versions"
+      ],
+      [
+        "projection_id",
+        "test_result_projections"
+      ],
+      [
+        "request_version_id",
+        "verification_formal_requests"
+      ],
+      [
+        "run_id",
+        "verification_run_identities"
+      ],
+      [
+        "run_version_id",
+        "verification_run_versions"
+      ]
+    ],
+    "test_result_projections": [
+      [
+        "run_id",
+        "verification_run_identities"
+      ],
+      [
+        "run_version_id",
+        "verification_run_versions"
+      ]
+    ],
+    "verification_actual_method_applicabilities": [
+      [
+        "actual_configuration_id",
+        "actual_configurations"
+      ],
+      [
+        "batch_id",
+        "verification_actual_method_batches"
+      ],
+      [
+        "request_version_id",
+        "verification_formal_requests"
+      ],
+      [
+        "sample_id",
+        "sample_units"
+      ]
+    ],
+    "verification_actual_method_batches": [
+      [
+        "request_version_id",
+        "verification_formal_requests"
+      ]
+    ],
+    "verification_formal_requests": [
+      [
+        "build_id",
+        "builds"
+      ],
+      [
+        "preparation_id",
+        "verification_preparations"
+      ]
+    ],
+    "verification_handoff_facts": [
+      [
+        "next_request_version_id",
+        "verification_formal_requests"
+      ],
+      [
+        "request_version_id",
+        "verification_formal_requests"
+      ]
+    ],
+    "verification_launch_facts": [
+      [
+        "next_request_version_id",
+        "verification_formal_requests"
+      ],
+      [
+        "request_version_id",
+        "verification_formal_requests"
+      ],
+      [
+        "run_id",
+        "verification_run_identities"
+      ],
+      [
+        "run_version_id",
+        "verification_run_versions"
+      ]
+    ],
+    "verification_method_applicabilities": [
+      [
+        "request_version_id",
+        "verification_formal_requests"
+      ]
+    ],
+    "verification_preparations": [
+      [
+        "build_id",
+        "builds"
+      ]
+    ],
+    "verification_run_identities": [
+      [
+        "build_id",
+        "builds"
+      ]
+    ],
+    "verification_run_versions": [
+      [
+        "request_version_id",
+        "verification_formal_requests"
+      ],
+      [
+        "run_id",
+        "verification_run_identities"
+      ]
+    ],
+    "verification_window_proposals": [
+      [
+        "request_version_id",
+        "verification_formal_requests"
+      ]
+    ]
+  },
+  "tables": [
+    "actual_configurations",
+    "build_authorization_decisions",
+    "build_execution_assessments",
+    "build_lots",
+    "build_operational_facts",
+    "build_readiness",
+    "build_starts",
+    "builds",
+    "measurement_import_captures",
+    "professional_authority_facts",
+    "sample_allocations",
+    "sample_readiness_facts",
+    "sample_run_usages",
+    "sample_units",
+    "test_measurements",
+    "test_resource_facts",
+    "test_resource_reservations",
+    "test_result_actions",
+    "test_result_projections",
+    "verification_actual_method_applicabilities",
+    "verification_actual_method_batches",
+    "verification_formal_requests",
+    "verification_handoff_facts",
+    "verification_launch_facts",
+    "verification_method_applicabilities",
+    "verification_preparations",
+    "verification_run_identities",
+    "verification_run_versions",
+    "verification_window_proposals"
+  ],
+  "parents": [
+    "actual_configurations",
+    "artifact_versions",
+    "bom_revisions",
+    "build_authorization_decisions",
+    "build_execution_assessments",
+    "build_lots",
+    "build_operational_facts",
+    "build_readiness",
+    "build_starts",
+    "builds",
+    "claims",
+    "definition_revisions",
+    "engineering_configurations",
+    "measurement_import_captures",
+    "plan_proposals",
+    "plan_revisions",
+    "process_revisions",
+    "product_variants",
+    "professional_authority_facts",
+    "projects",
+    "sample_allocations",
+    "sample_readiness_facts",
+    "sample_run_usages",
+    "sample_units",
+    "test_measurements",
+    "test_resource_facts",
+    "test_resource_reservations",
+    "test_result_actions",
+    "test_result_projections",
+    "uploaded_originals",
+    "variant_revisions",
+    "verification_actual_method_applicabilities",
+    "verification_actual_method_batches",
+    "verification_formal_requests",
+    "verification_handoff_facts",
+    "verification_launch_facts",
+    "verification_method_applicabilities",
+    "verification_preparations",
+    "verification_run_identities",
+    "verification_run_versions",
+    "verification_window_proposals"
+  ],
+  "policies": [
+    {
+      "tablename": "actual_configurations",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = actual_configurations.tenant_id) AND (a.category_id = actual_configurations.category_id) AND ((a.object_type)::text = 'actual_configurations'::text) AND (a.subject_id = actual_configurations.id) AND (a.owner_id = actual_configurations.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "actual_configurations",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "actual_configurations",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = actual_configurations.tenant_id) AND (p.category_id = actual_configurations.category_id) AND (p.id = actual_configurations.product_id)))))"
+    },
+    {
+      "tablename": "actual_configurations",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((actual_engineering_configuration_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'engineering_configurations'::text, actual_engineering_configuration_id)) AND ((actual_manufacturing_configuration_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'process_revisions'::text, actual_manufacturing_configuration_id)) AND ((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id)) AND ((planned_manufacturing_configuration_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'process_revisions'::text, planned_manufacturing_configuration_id)))"
+    },
+    {
+      "tablename": "artifact_versions",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = artifact_versions.tenant_id) AND (a.category_id = artifact_versions.category_id) AND ((a.object_type)::text = 'artifact_versions'::text) AND (a.subject_id = artifact_versions.id) AND (a.owner_id = artifact_versions.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "artifact_versions",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND ((product_id IS NULL) OR (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = artifact_versions.tenant_id) AND (p.category_id = artifact_versions.category_id) AND (p.id = artifact_versions.product_id))))))"
+    },
+    {
+      "tablename": "artifact_versions",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((original_id IS NULL) OR upstream_row_visible(tenant_id, category_id, product_id, 'uploaded_originals'::text, original_id))"
+    },
+    {
+      "tablename": "bom_revisions",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = bom_revisions.tenant_id) AND (a.category_id = bom_revisions.category_id) AND ((a.object_type)::text = 'bom_revisions'::text) AND (a.subject_id = bom_revisions.id) AND (a.owner_id = bom_revisions.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "bom_revisions",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "bom_revisions",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = bom_revisions.tenant_id) AND (p.category_id = bom_revisions.category_id) AND (p.id = bom_revisions.product_id)))))"
+    },
+    {
+      "tablename": "build_authorization_decisions",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = build_authorization_decisions.tenant_id) AND (a.category_id = build_authorization_decisions.category_id) AND ((a.object_type)::text = 'build_authorization_decisions'::text) AND (a.subject_id = build_authorization_decisions.id) AND (a.owner_id = build_authorization_decisions.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "build_authorization_decisions",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "build_authorization_decisions",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_authorization_decisions.tenant_id) AND (p.category_id = build_authorization_decisions.category_id) AND (p.id = build_authorization_decisions.product_id)))))"
+    },
+    {
+      "tablename": "build_authorization_decisions",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((assessment_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'build_execution_assessments'::text, assessment_id)) AND ((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id)))"
+    },
+    {
+      "tablename": "build_execution_assessments",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = build_execution_assessments.tenant_id) AND (a.category_id = build_execution_assessments.category_id) AND ((a.object_type)::text = 'build_execution_assessments'::text) AND (a.subject_id = build_execution_assessments.id) AND (a.owner_id = build_execution_assessments.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "build_execution_assessments",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "build_execution_assessments",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_execution_assessments.tenant_id) AND (p.category_id = build_execution_assessments.category_id) AND (p.id = build_execution_assessments.product_id)))))"
+    },
+    {
+      "tablename": "build_execution_assessments",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id))"
+    },
+    {
+      "tablename": "build_lots",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = build_lots.tenant_id) AND (a.category_id = build_lots.category_id) AND ((a.object_type)::text = 'build_lots'::text) AND (a.subject_id = build_lots.id) AND (a.owner_id = build_lots.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "build_lots",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "build_lots",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_lots.tenant_id) AND (p.category_id = build_lots.category_id) AND (p.id = build_lots.product_id)))))"
+    },
+    {
+      "tablename": "build_lots",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((actual_configuration_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'actual_configurations'::text, actual_configuration_id)) AND ((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id)))"
+    },
+    {
+      "tablename": "build_operational_facts",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = build_operational_facts.tenant_id) AND (a.category_id = build_operational_facts.category_id) AND ((a.object_type)::text = 'build_operational_facts'::text) AND (a.subject_id = build_operational_facts.id) AND (a.owner_id = build_operational_facts.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "build_operational_facts",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "build_operational_facts",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_operational_facts.tenant_id) AND (p.category_id = build_operational_facts.category_id) AND (p.id = build_operational_facts.product_id)))))"
+    },
+    {
+      "tablename": "build_operational_facts",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id))"
+    },
+    {
+      "tablename": "build_readiness",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = build_readiness.tenant_id) AND (a.category_id = build_readiness.category_id) AND ((a.object_type)::text = 'build_readiness'::text) AND (a.subject_id = build_readiness.id) AND (a.owner_id = build_readiness.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "build_readiness",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_readiness.tenant_id) AND (p.category_id = build_readiness.category_id) AND (p.id = build_readiness.product_id)))))"
+    },
+    {
+      "tablename": "build_readiness",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id))"
+    },
+    {
+      "tablename": "build_starts",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = build_starts.tenant_id) AND (a.category_id = build_starts.category_id) AND ((a.object_type)::text = 'build_starts'::text) AND (a.subject_id = build_starts.id) AND (a.owner_id = build_starts.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "build_starts",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "build_starts",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_starts.tenant_id) AND (p.category_id = build_starts.category_id) AND (p.id = build_starts.product_id)))))"
+    },
+    {
+      "tablename": "build_starts",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((assessment_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'build_execution_assessments'::text, assessment_id)) AND ((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id)) AND ((engineering_authorization_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'build_authorization_decisions'::text, engineering_authorization_id)) AND ((manufacturing_authorization_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'build_authorization_decisions'::text, manufacturing_authorization_id)))"
+    },
+    {
+      "tablename": "builds",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = builds.tenant_id) AND (a.category_id = builds.category_id) AND ((a.object_type)::text = 'builds'::text) AND (a.subject_id = builds.id) AND (a.owner_id = builds.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "builds",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = builds.tenant_id) AND (p.category_id = builds.category_id) AND (p.id = builds.product_id)))))"
+    },
+    {
+      "tablename": "builds",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((engineering_configuration_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'engineering_configurations'::text, engineering_configuration_id)) AND ((manufacturing_configuration_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'process_revisions'::text, manufacturing_configuration_id)) AND ((project_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'projects'::text, project_id)))"
+    },
+    {
+      "tablename": "claims",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (human_owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = claims.tenant_id) AND (a.category_id = claims.category_id) AND ((a.object_type)::text = 'claims'::text) AND (a.subject_id = claims.id) AND (a.owner_id = claims.human_owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "claims",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = claims.tenant_id) AND (p.category_id = claims.category_id) AND (p.id = claims.product_id)))))"
+    },
+    {
+      "tablename": "claims",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((artifact_id IS NULL) OR upstream_row_visible(tenant_id, category_id, product_id, 'artifact_versions'::text, artifact_id))"
+    },
+    {
+      "tablename": "definition_revisions",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = definition_revisions.tenant_id) AND (a.category_id = definition_revisions.category_id) AND ((a.object_type)::text = 'definition_revisions'::text) AND (a.subject_id = definition_revisions.id) AND (a.owner_id = definition_revisions.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "definition_revisions",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "definition_sources_visible(tenant_id, category_id, product_id, id)"
+    },
+    {
+      "tablename": "definition_revisions",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = definition_revisions.tenant_id) AND (p.category_id = definition_revisions.category_id) AND (p.id = definition_revisions.product_id)))))"
+    },
+    {
+      "tablename": "definition_revisions",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((parent_definition_id IS NULL) OR upstream_row_visible(tenant_id, category_id, product_id, 'definition_revisions'::text, parent_definition_id))"
+    },
+    {
+      "tablename": "engineering_configurations",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = engineering_configurations.tenant_id) AND (a.category_id = engineering_configurations.category_id) AND ((a.object_type)::text = 'engineering_configurations'::text) AND (a.subject_id = engineering_configurations.id) AND (a.owner_id = engineering_configurations.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "engineering_configurations",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "engineering_configurations",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = engineering_configurations.tenant_id) AND (p.category_id = engineering_configurations.category_id) AND (p.id = engineering_configurations.product_id)))))"
+    },
+    {
+      "tablename": "engineering_configurations",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((definition_id IS NULL) OR upstream_row_visible(tenant_id, category_id, product_id, 'definition_revisions'::text, definition_id)) AND ((bom_id IS NULL) OR upstream_row_visible(tenant_id, category_id, product_id, 'bom_revisions'::text, bom_id)))"
+    },
+    {
+      "tablename": "measurement_import_captures",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = measurement_import_captures.tenant_id) AND (a.category_id = measurement_import_captures.category_id) AND ((a.object_type)::text = 'measurement_import_captures'::text) AND (a.subject_id = measurement_import_captures.id) AND (a.owner_id = measurement_import_captures.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "measurement_import_captures",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "measurement_import_captures",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = measurement_import_captures.tenant_id) AND (p.category_id = measurement_import_captures.category_id) AND (p.id = measurement_import_captures.product_id)))))"
+    },
+    {
+      "tablename": "measurement_import_captures",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((request_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_formal_requests'::text, request_version_id)) AND ((run_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_run_identities'::text, run_id)) AND ((run_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_run_versions'::text, run_version_id)))"
+    },
+    {
+      "tablename": "plan_proposals",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = plan_proposals.tenant_id) AND (a.category_id = plan_proposals.category_id) AND ((a.object_type)::text = 'plan_proposals'::text) AND (a.subject_id = plan_proposals.id) AND (a.owner_id = plan_proposals.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "plan_proposals",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = plan_proposals.tenant_id) AND (p.category_id = plan_proposals.category_id) AND (p.id = plan_proposals.product_id)))))"
+    },
+    {
+      "tablename": "plan_proposals",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((project_id IS NULL) OR upstream_row_visible(tenant_id, category_id, product_id, 'projects'::text, project_id))"
+    },
+    {
+      "tablename": "plan_revisions",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = plan_revisions.tenant_id) AND (a.category_id = plan_revisions.category_id) AND ((a.object_type)::text = 'plan_revisions'::text) AND (a.subject_id = plan_revisions.id) AND (a.owner_id = plan_revisions.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "plan_revisions",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = plan_revisions.tenant_id) AND (p.category_id = plan_revisions.category_id) AND (p.id = plan_revisions.product_id)))))"
+    },
+    {
+      "tablename": "plan_revisions",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((project_id IS NULL) OR upstream_row_visible(tenant_id, category_id, product_id, 'projects'::text, project_id)) AND ((proposal_id IS NULL) OR upstream_row_visible(tenant_id, category_id, product_id, 'plan_proposals'::text, proposal_id)))"
+    },
+    {
+      "tablename": "process_revisions",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = process_revisions.tenant_id) AND (a.category_id = process_revisions.category_id) AND ((a.object_type)::text = 'process_revisions'::text) AND (a.subject_id = process_revisions.id) AND (a.owner_id = process_revisions.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "process_revisions",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "process_revisions",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = process_revisions.tenant_id) AND (p.category_id = process_revisions.category_id) AND (p.id = process_revisions.product_id)))))"
+    },
+    {
+      "tablename": "process_revisions",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((engineering_configuration_id IS NULL) OR upstream_row_visible(tenant_id, category_id, product_id, 'engineering_configurations'::text, engineering_configuration_id))"
+    },
+    {
+      "tablename": "product_variants",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = product_variants.tenant_id) AND (a.category_id = product_variants.category_id) AND ((a.object_type)::text = 'product_variants'::text) AND (a.subject_id = product_variants.id) AND (a.owner_id = product_variants.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "product_variants",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = product_variants.tenant_id) AND (p.category_id = product_variants.category_id) AND (p.id = product_variants.product_id)))))"
+    },
+    {
+      "tablename": "professional_authority_facts",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = professional_authority_facts.tenant_id) AND (a.category_id = professional_authority_facts.category_id) AND ((a.object_type)::text = 'professional_authority_facts'::text) AND (a.subject_id = professional_authority_facts.id) AND (a.owner_id = professional_authority_facts.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "professional_authority_facts",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "professional_authority_facts",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = professional_authority_facts.tenant_id) AND (p.category_id = professional_authority_facts.category_id) AND (p.id = professional_authority_facts.product_id)))))"
+    },
+    {
+      "tablename": "professional_authority_facts",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((project_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'projects'::text, project_id))"
+    },
+    {
+      "tablename": "projects",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = projects.tenant_id) AND (a.category_id = projects.category_id) AND ((a.object_type)::text = 'projects'::text) AND (a.subject_id = projects.id) AND (a.owner_id = projects.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "projects",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = projects.tenant_id) AND (p.category_id = projects.category_id) AND (p.id = projects.product_id)))))"
+    },
+    {
+      "tablename": "projects",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "project_definition_visible(tenant_id, category_id, product_id, id)"
+    },
+    {
+      "tablename": "sample_allocations",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = sample_allocations.tenant_id) AND (a.category_id = sample_allocations.category_id) AND ((a.object_type)::text = 'sample_allocations'::text) AND (a.subject_id = sample_allocations.id) AND (a.owner_id = sample_allocations.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "sample_allocations",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "sample_allocations",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = sample_allocations.tenant_id) AND (p.category_id = sample_allocations.category_id) AND (p.id = sample_allocations.product_id)))))"
+    },
+    {
+      "tablename": "sample_allocations",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id)) AND ((lot_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'build_lots'::text, lot_id)))"
+    },
+    {
+      "tablename": "sample_readiness_facts",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = sample_readiness_facts.tenant_id) AND (a.category_id = sample_readiness_facts.category_id) AND ((a.object_type)::text = 'sample_readiness_facts'::text) AND (a.subject_id = sample_readiness_facts.id) AND (a.owner_id = sample_readiness_facts.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "sample_readiness_facts",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "sample_readiness_facts",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = sample_readiness_facts.tenant_id) AND (p.category_id = sample_readiness_facts.category_id) AND (p.id = sample_readiness_facts.product_id)))))"
+    },
+    {
+      "tablename": "sample_readiness_facts",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((lot_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'build_lots'::text, lot_id)) AND ((sample_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'sample_units'::text, sample_id)))"
+    },
+    {
+      "tablename": "sample_run_usages",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = sample_run_usages.tenant_id) AND (a.category_id = sample_run_usages.category_id) AND ((a.object_type)::text = 'sample_run_usages'::text) AND (a.subject_id = sample_run_usages.id) AND (a.owner_id = sample_run_usages.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "sample_run_usages",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "sample_run_usages",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = sample_run_usages.tenant_id) AND (p.category_id = sample_run_usages.category_id) AND (p.id = sample_run_usages.product_id)))))"
+    },
+    {
+      "tablename": "sample_run_usages",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((run_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_run_identities'::text, run_id)) AND ((sample_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'sample_units'::text, sample_id)))"
+    },
+    {
+      "tablename": "sample_units",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = sample_units.tenant_id) AND (a.category_id = sample_units.category_id) AND ((a.object_type)::text = 'sample_units'::text) AND (a.subject_id = sample_units.id) AND (a.owner_id = sample_units.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "sample_units",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "sample_units",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = sample_units.tenant_id) AND (p.category_id = sample_units.category_id) AND (p.id = sample_units.product_id)))))"
+    },
+    {
+      "tablename": "sample_units",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((allocation_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'sample_allocations'::text, allocation_id)) AND ((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id)) AND ((lot_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'build_lots'::text, lot_id)))"
+    },
+    {
+      "tablename": "test_measurements",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = test_measurements.tenant_id) AND (a.category_id = test_measurements.category_id) AND ((a.object_type)::text = 'test_measurements'::text) AND (a.subject_id = test_measurements.id) AND (a.owner_id = test_measurements.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "test_measurements",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "test_measurements",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = test_measurements.tenant_id) AND (p.category_id = test_measurements.category_id) AND (p.id = test_measurements.product_id)))))"
+    },
+    {
+      "tablename": "test_measurements",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((actual_configuration_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'actual_configurations'::text, actual_configuration_id)) AND ((capture_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'measurement_import_captures'::text, capture_id)) AND ((run_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_run_identities'::text, run_id)) AND ((run_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_run_versions'::text, run_version_id)) AND ((sample_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'sample_units'::text, sample_id)))"
+    },
+    {
+      "tablename": "test_resource_facts",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = test_resource_facts.tenant_id) AND (a.category_id = test_resource_facts.category_id) AND ((a.object_type)::text = 'test_resource_facts'::text) AND (a.subject_id = test_resource_facts.id) AND (a.owner_id = test_resource_facts.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "test_resource_facts",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "test_resource_facts",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = test_resource_facts.tenant_id) AND (p.category_id = test_resource_facts.category_id) AND (p.id = test_resource_facts.product_id)))))"
+    },
+    {
+      "tablename": "test_resource_facts",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((accepted_request_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_formal_requests'::text, accepted_request_id)) AND ((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id)))"
+    },
+    {
+      "tablename": "test_resource_reservations",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = test_resource_reservations.tenant_id) AND (a.category_id = test_resource_reservations.category_id) AND ((a.object_type)::text = 'test_resource_reservations'::text) AND (a.subject_id = test_resource_reservations.id) AND (a.owner_id = test_resource_reservations.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "test_resource_reservations",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "test_resource_reservations",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = test_resource_reservations.tenant_id) AND (p.category_id = test_resource_reservations.category_id) AND (p.id = test_resource_reservations.product_id)))))"
+    },
+    {
+      "tablename": "test_resource_reservations",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((fact_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'test_resource_facts'::text, fact_id)) AND ((run_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_run_identities'::text, run_id)))"
+    },
+    {
+      "tablename": "test_result_actions",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = test_result_actions.tenant_id) AND (a.category_id = test_result_actions.category_id) AND ((a.object_type)::text = 'test_result_actions'::text) AND (a.subject_id = test_result_actions.id) AND (a.owner_id = test_result_actions.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "test_result_actions",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "test_result_actions",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = test_result_actions.tenant_id) AND (p.category_id = test_result_actions.category_id) AND (p.id = test_result_actions.product_id)))))"
+    },
+    {
+      "tablename": "test_result_actions",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((capture_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'measurement_import_captures'::text, capture_id)) AND ((next_request_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_formal_requests'::text, next_request_version_id)) AND ((next_run_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_run_versions'::text, next_run_version_id)) AND ((projection_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'test_result_projections'::text, projection_id)) AND ((request_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_formal_requests'::text, request_version_id)) AND ((run_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_run_identities'::text, run_id)) AND ((run_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_run_versions'::text, run_version_id)))"
+    },
+    {
+      "tablename": "test_result_projections",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = test_result_projections.tenant_id) AND (a.category_id = test_result_projections.category_id) AND ((a.object_type)::text = 'test_result_projections'::text) AND (a.subject_id = test_result_projections.id) AND (a.owner_id = test_result_projections.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "test_result_projections",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "test_result_projections",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = test_result_projections.tenant_id) AND (p.category_id = test_result_projections.category_id) AND (p.id = test_result_projections.product_id)))))"
+    },
+    {
+      "tablename": "test_result_projections",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((run_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_run_identities'::text, run_id)) AND ((run_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_run_versions'::text, run_version_id)))"
+    },
+    {
+      "tablename": "uploaded_originals",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = uploaded_originals.tenant_id) AND (a.category_id = uploaded_originals.category_id) AND ((a.object_type)::text = 'uploaded_originals'::text) AND (a.subject_id = uploaded_originals.id) AND (a.owner_id = uploaded_originals.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "uploaded_originals",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND ((product_id IS NULL) OR (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = uploaded_originals.tenant_id) AND (p.category_id = uploaded_originals.category_id) AND (p.id = uploaded_originals.product_id))))))"
+    },
+    {
+      "tablename": "variant_revisions",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = variant_revisions.tenant_id) AND (a.category_id = variant_revisions.category_id) AND ((a.object_type)::text = 'variant_revisions'::text) AND (a.subject_id = variant_revisions.id) AND (a.owner_id = variant_revisions.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "variant_revisions",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, (effective_definition -> 'sources'::text))"
+    },
+    {
+      "tablename": "variant_revisions",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = variant_revisions.tenant_id) AND (p.category_id = variant_revisions.category_id) AND (p.id = variant_revisions.product_id)))))"
+    },
+    {
+      "tablename": "variant_revisions",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((parent_definition_id IS NULL) OR upstream_row_visible(tenant_id, category_id, product_id, 'definition_revisions'::text, parent_definition_id)) AND ((variant_id IS NULL) OR upstream_row_visible(tenant_id, category_id, product_id, 'product_variants'::text, variant_id)))"
+    },
+    {
+      "tablename": "verification_actual_method_applicabilities",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = verification_actual_method_applicabilities.tenant_id) AND (a.category_id = verification_actual_method_applicabilities.category_id) AND ((a.object_type)::text = 'verification_actual_method_applicabilities'::text) AND (a.subject_id = verification_actual_method_applicabilities.id) AND (a.owner_id = verification_actual_method_applicabilities.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "verification_actual_method_applicabilities",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "verification_actual_method_applicabilities",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_actual_method_applicabilities.tenant_id) AND (p.category_id = verification_actual_method_applicabilities.category_id) AND (p.id = verification_actual_method_applicabilities.product_id)))))"
+    },
+    {
+      "tablename": "verification_actual_method_applicabilities",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((actual_configuration_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'actual_configurations'::text, actual_configuration_id)) AND ((batch_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_actual_method_batches'::text, batch_id)) AND ((request_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_formal_requests'::text, request_version_id)) AND ((sample_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'sample_units'::text, sample_id)))"
+    },
+    {
+      "tablename": "verification_actual_method_batches",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = verification_actual_method_batches.tenant_id) AND (a.category_id = verification_actual_method_batches.category_id) AND ((a.object_type)::text = 'verification_actual_method_batches'::text) AND (a.subject_id = verification_actual_method_batches.id) AND (a.owner_id = verification_actual_method_batches.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "verification_actual_method_batches",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "verification_actual_method_batches",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_actual_method_batches.tenant_id) AND (p.category_id = verification_actual_method_batches.category_id) AND (p.id = verification_actual_method_batches.product_id)))))"
+    },
+    {
+      "tablename": "verification_actual_method_batches",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((request_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_formal_requests'::text, request_version_id))"
+    },
+    {
+      "tablename": "verification_formal_requests",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = verification_formal_requests.tenant_id) AND (a.category_id = verification_formal_requests.category_id) AND ((a.object_type)::text = 'verification_formal_requests'::text) AND (a.subject_id = verification_formal_requests.id) AND (a.owner_id = verification_formal_requests.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "verification_formal_requests",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "verification_formal_requests",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_formal_requests.tenant_id) AND (p.category_id = verification_formal_requests.category_id) AND (p.id = verification_formal_requests.product_id)))))"
+    },
+    {
+      "tablename": "verification_formal_requests",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id)) AND ((preparation_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_preparations'::text, preparation_id)))"
+    },
+    {
+      "tablename": "verification_handoff_facts",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = verification_handoff_facts.tenant_id) AND (a.category_id = verification_handoff_facts.category_id) AND ((a.object_type)::text = 'verification_handoff_facts'::text) AND (a.subject_id = verification_handoff_facts.id) AND (a.owner_id = verification_handoff_facts.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "verification_handoff_facts",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "verification_handoff_facts",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_handoff_facts.tenant_id) AND (p.category_id = verification_handoff_facts.category_id) AND (p.id = verification_handoff_facts.product_id)))))"
+    },
+    {
+      "tablename": "verification_handoff_facts",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((next_request_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_formal_requests'::text, next_request_version_id)) AND ((request_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_formal_requests'::text, request_version_id)))"
+    },
+    {
+      "tablename": "verification_launch_facts",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = verification_launch_facts.tenant_id) AND (a.category_id = verification_launch_facts.category_id) AND ((a.object_type)::text = 'verification_launch_facts'::text) AND (a.subject_id = verification_launch_facts.id) AND (a.owner_id = verification_launch_facts.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "verification_launch_facts",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "verification_launch_facts",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_launch_facts.tenant_id) AND (p.category_id = verification_launch_facts.category_id) AND (p.id = verification_launch_facts.product_id)))))"
+    },
+    {
+      "tablename": "verification_launch_facts",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((next_request_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_formal_requests'::text, next_request_version_id)) AND ((request_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_formal_requests'::text, request_version_id)) AND ((run_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_run_identities'::text, run_id)) AND ((run_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_run_versions'::text, run_version_id)))"
+    },
+    {
+      "tablename": "verification_method_applicabilities",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = verification_method_applicabilities.tenant_id) AND (a.category_id = verification_method_applicabilities.category_id) AND ((a.object_type)::text = 'verification_method_applicabilities'::text) AND (a.subject_id = verification_method_applicabilities.id) AND (a.owner_id = verification_method_applicabilities.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "verification_method_applicabilities",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "verification_method_applicabilities",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_method_applicabilities.tenant_id) AND (p.category_id = verification_method_applicabilities.category_id) AND (p.id = verification_method_applicabilities.product_id)))))"
+    },
+    {
+      "tablename": "verification_method_applicabilities",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((request_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_formal_requests'::text, request_version_id))"
+    },
+    {
+      "tablename": "verification_preparations",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = verification_preparations.tenant_id) AND (a.category_id = verification_preparations.category_id) AND ((a.object_type)::text = 'verification_preparations'::text) AND (a.subject_id = verification_preparations.id) AND (a.owner_id = verification_preparations.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "verification_preparations",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "verification_preparations",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_preparations.tenant_id) AND (p.category_id = verification_preparations.category_id) AND (p.id = verification_preparations.product_id)))))"
+    },
+    {
+      "tablename": "verification_preparations",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id))"
+    },
+    {
+      "tablename": "verification_run_identities",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = verification_run_identities.tenant_id) AND (a.category_id = verification_run_identities.category_id) AND ((a.object_type)::text = 'verification_run_identities'::text) AND (a.subject_id = verification_run_identities.id) AND (a.owner_id = verification_run_identities.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "verification_run_identities",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_run_identities.tenant_id) AND (p.category_id = verification_run_identities.category_id) AND (p.id = verification_run_identities.product_id)))))"
+    },
+    {
+      "tablename": "verification_run_identities",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((build_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'builds'::text, build_id))"
+    },
+    {
+      "tablename": "verification_run_versions",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = verification_run_versions.tenant_id) AND (a.category_id = verification_run_versions.category_id) AND ((a.object_type)::text = 'verification_run_versions'::text) AND (a.subject_id = verification_run_versions.id) AND (a.owner_id = verification_run_versions.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "verification_run_versions",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "verification_run_versions",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_run_versions.tenant_id) AND (p.category_id = verification_run_versions.category_id) AND (p.id = verification_run_versions.product_id)))))"
+    },
+    {
+      "tablename": "verification_run_versions",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "(((request_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_formal_requests'::text, request_version_id)) AND ((run_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_run_identities'::text, run_id)))"
+    },
+    {
+      "tablename": "verification_window_proposals",
+      "policyname": "category_scope",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = verification_window_proposals.tenant_id) AND (a.category_id = verification_window_proposals.category_id) AND ((a.object_type)::text = 'verification_window_proposals'::text) AND (a.subject_id = verification_window_proposals.id) AND (a.owner_id = verification_window_proposals.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "verification_window_proposals",
+      "policyname": "direct_source_audience",
+      "cmd": "SELECT",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "verification_window_proposals",
+      "policyname": "model_audience",
+      "cmd": "ALL",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = verification_window_proposals.tenant_id) AND (p.category_id = verification_window_proposals.category_id) AND (p.id = verification_window_proposals.product_id)))))"
+    },
+    {
+      "tablename": "verification_window_proposals",
+      "policyname": "upstream_audience",
+      "cmd": "SELECT",
+      "qual": "((request_version_id IS NULL) OR business_upstream_visible(tenant_id, category_id, product_id, 'verification_formal_requests'::text, request_version_id))"
+    }
+  ],
+  "columns": [
+    {
+      "table_name": "actual_configurations",
+      "column_name": "status"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "planned_engineering_configuration_id"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "planned_manufacturing_configuration_id"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "actual_engineering_configuration_id"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "actual_engineering_revision"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "actual_manufacturing_configuration_id"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "actual_manufacturing_revision"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "observed_at"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "differences"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "build_revision"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "id"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "actual_configurations",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "artifact_versions",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "artifact_versions",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "artifact_versions",
+      "column_name": "title"
+    },
+    {
+      "table_name": "artifact_versions",
+      "column_name": "source_label"
+    },
+    {
+      "table_name": "artifact_versions",
+      "column_name": "content"
+    },
+    {
+      "table_name": "artifact_versions",
+      "column_name": "content_hash"
+    },
+    {
+      "table_name": "artifact_versions",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "artifact_versions",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "artifact_versions",
+      "column_name": "original_id"
+    },
+    {
+      "table_name": "artifact_versions",
+      "column_name": "status"
+    },
+    {
+      "table_name": "artifact_versions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "artifact_versions",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "artifact_versions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "artifact_versions",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "series_id"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "previous_id"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "expected_previous_revision"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "name"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "status"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "bom_revisions",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "engineering_configuration_id"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "manufacturing_configuration_id"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "role"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "previous_decision_id"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "previous_revision"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "assessment_id"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "assessment_revision"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "assessment_sha256"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "action"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "status"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "valid_until"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "authority_snapshot"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "fact_binding"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "snapshot_sha256"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "intent_digest"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "build_authorization_decisions",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "build_revision"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "engineering_configuration_id"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "manufacturing_configuration_id"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "engineering_configuration_revision"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "manufacturing_configuration_revision"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "previous_assessment_id"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "previous_revision"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "status"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "execution_scope"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "result"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "snapshot_sha256"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "intent_digest"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "id"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "build_execution_assessments",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "status"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "actual_configuration_id"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "actual_configuration_revision"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "lot_label"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "observed_unit_count"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "unit"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "observation_system"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "observation_external_id"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "observation_nature"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "occurred_at"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "received_at"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "build_revision"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "id"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "build_lots",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "build_revision"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "issuer_key"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "issuer_version"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "issuer_epoch"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "nature"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "external_id"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "series_id"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "previous_id"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "previous_revision"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "state"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "valid_from"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "valid_until"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "binding"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "data"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "source_basis"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "fact_sha256"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "id"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "build_operational_facts",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "build_readiness",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "build_readiness",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "build_readiness",
+      "column_name": "build_revision"
+    },
+    {
+      "table_name": "build_readiness",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "build_readiness",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "build_readiness",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "build_readiness",
+      "column_name": "status"
+    },
+    {
+      "table_name": "build_readiness",
+      "column_name": "result"
+    },
+    {
+      "table_name": "build_readiness",
+      "column_name": "id"
+    },
+    {
+      "table_name": "build_readiness",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "build_readiness",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "build_readiness",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "build_revision"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "engineering_configuration_id"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "manufacturing_configuration_id"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "assessment_id"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "assessment_revision"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "assessment_sha256"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "engineering_authorization_id"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "engineering_authorization_revision"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "manufacturing_authorization_id"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "manufacturing_authorization_revision"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "engineering_role"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "manufacturing_role"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "status"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "occurred_at"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "occurred_timezone"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "execution_scope"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "event_source"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "authority_snapshot"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "reservations"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "snapshot_sha256"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "intent_digest"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "id"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "build_starts",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "project_revision"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "engineering_configuration_id"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "manufacturing_configuration_id"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "previous_build_id"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "name"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "type"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "purpose"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "planned_quantity"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "unit"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "planned_start"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "planned_end"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "verification_objectives"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "disposition_plan"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "status"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "id"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "builds",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "artifact_id"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "source_revision"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "line"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "quote"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "statement"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "nature"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "availability"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "human_owner_id"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "writer_id"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "status"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "id"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "claims",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "parent_definition_id"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "title"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "purpose"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "status"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "use_cases"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "requirements"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "constraints"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "unknowns"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "exclusions"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "change_reason"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "definition_revisions",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "definition_id"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "definition_revision"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "bom_id"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "bom_revision"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "design_versions"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "series_id"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "previous_id"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "expected_previous_revision"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "name"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "status"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "id"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "engineering_configurations",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "capture_key"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "input_digest"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "run_version_id"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "run_revision"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "run_sha256"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "request_version_id"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "request_revision"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "input_snapshot"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "observations"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "report_binding"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "source_basis"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "run_id"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "status"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "id"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "measurement_import_captures",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "plan_proposals",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "plan_proposals",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "plan_proposals",
+      "column_name": "project_revision"
+    },
+    {
+      "table_name": "plan_proposals",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "plan_proposals",
+      "column_name": "status"
+    },
+    {
+      "table_name": "plan_proposals",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "plan_proposals",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "plan_proposals",
+      "column_name": "input_snapshot"
+    },
+    {
+      "table_name": "plan_proposals",
+      "column_name": "forecast"
+    },
+    {
+      "table_name": "plan_proposals",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "plan_proposals",
+      "column_name": "id"
+    },
+    {
+      "table_name": "plan_proposals",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "plan_proposals",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "plan_proposals",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "plan_revisions",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "plan_revisions",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "plan_revisions",
+      "column_name": "proposal_id"
+    },
+    {
+      "table_name": "plan_revisions",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "plan_revisions",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "plan_revisions",
+      "column_name": "status"
+    },
+    {
+      "table_name": "plan_revisions",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "plan_revisions",
+      "column_name": "forecast"
+    },
+    {
+      "table_name": "plan_revisions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "plan_revisions",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "plan_revisions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "plan_revisions",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "engineering_configuration_id"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "engineering_revision"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "operations"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "site"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "line"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "series_id"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "previous_id"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "expected_previous_revision"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "name"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "status"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "process_revisions",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "product_variants",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "product_variants",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "product_variants",
+      "column_name": "name"
+    },
+    {
+      "table_name": "product_variants",
+      "column_name": "kind"
+    },
+    {
+      "table_name": "product_variants",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "product_variants",
+      "column_name": "status"
+    },
+    {
+      "table_name": "product_variants",
+      "column_name": "id"
+    },
+    {
+      "table_name": "product_variants",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "product_variants",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "product_variants",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "subject_id"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "kind"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "role"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "nature"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "issuer_key"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "issuer_version"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "external_id"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "operations"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "purposes"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "state"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "valid_from"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "valid_until"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "series_id"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "previous_id"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "previous_revision"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "source_basis"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "fact_sha256"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "id"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "professional_authority_facts",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "name"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "purpose"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "scope"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "status"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "current_plan_id"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "id"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "status"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "lot_id"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "actual_configuration_id"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "unit_count"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "build_revision"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "id"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "sample_allocations",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "build_revision"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "sample_id"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "sample_revision"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "lot_id"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "lot_revision"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "actual_configuration_id"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "actual_configuration_revision"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "previous_readiness_id"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "previous_revision"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "status"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "purpose"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "occurred_at"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "occurred_timezone"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "received_at"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "nature"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "event_source"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "fixed_snapshot"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "authority_snapshot"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "source_basis"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "snapshot_sha256"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "intent_digest"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "id"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "sample_readiness_facts",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "run_id"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "sample_id"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "sample_revision"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "actual_configuration_id"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "actual_configuration_revision"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "destructive"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "state"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "window_start"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "window_finish"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "coverage"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "intent_digest"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "source_basis"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "id"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "sample_run_usages",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "status"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "lot_id"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "allocation_id"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "actual_configuration_id"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "label"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "operation_key"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "cavity"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "custodian_id"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "custodian_label"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "location"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "destination"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "availability"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "build_revision"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "id"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "sample_units",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "run_version_id"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "run_revision"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "sample_id"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "sample_revision"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "actual_configuration_id"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "actual_configuration_revision"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "item_id"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "capture_id"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "measurement"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "measurement_sha256"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "verified_observation"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "source_basis"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "run_id"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "status"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "id"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "test_measurements",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "run_id"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "accepted_request_id"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "accepted_request_revision"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "issuer_key"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "issuer_version"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "issuer_epoch"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "nature"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "external_id"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "series_id"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "previous_id"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "previous_revision"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "state"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "valid_from"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "valid_until"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "binding"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "data"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "source_basis"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "fact_sha256"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "id"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "test_resource_facts",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "run_id"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "fact_id"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "fact_revision"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "state"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "intent_digest"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "binding"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "reservation"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "reservation_sha256"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "facts_revision"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "fingerprint_version"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "dependency_proof"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "id"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "test_resource_reservations",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "operation"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "actor_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "intent_digest"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "request_version_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "request_revision"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "next_request_version_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "next_request_revision"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "run_version_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "run_revision"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "next_run_version_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "next_run_revision"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "capture_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "projection_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "input_snapshot"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "authority_snapshot"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "event"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "source_basis"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "run_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "status"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "test_result_actions",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "run_version_id"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "run_revision"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "run_sha256"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "basis_sha256"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "rules_version"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "rules_sha256"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "input_snapshot"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "result"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "computed_results"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "source_basis"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "run_id"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "status"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "id"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "test_result_projections",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "title"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "filename"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "source_label"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "media_type"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "byte_count"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "content_hash"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "storage_key"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "status"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "parse_code"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "locator_map"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "scan_status"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "id"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "uploaded_originals",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "variant_id"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "parent_definition_id"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "parent_revision"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "previous_revision_id"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "status"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "effective_definition"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "overrides"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "applicability"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "choices"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "variant_revisions",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "batch_id"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "sample_id"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "sample_revision"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "actual_configuration_id"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "actual_configuration_revision"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "item_id"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "previous_assessment_id"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "previous_revision"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "status"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "method_digest"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "assessment_snapshot"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "request_version_id"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "request_revision"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "source_basis"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "authority_snapshot"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "snapshot_sha256"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "id"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "verification_actual_method_applicabilities",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "status"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "input_snapshot"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "assessment_ids"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "intent_digest"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "request_version_id"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "request_revision"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "source_basis"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "authority_snapshot"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "snapshot_sha256"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "id"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "verification_actual_method_batches",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "build_revision"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "previous_request_id"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "previous_revision"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "status"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "operation"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "preparation_id"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "preparation_revision"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "preparation_sha256"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "purpose"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "request_snapshot"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "input_snapshot"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "snapshot_sha256"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "authority_snapshot"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "intent_digest"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "id"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "verification_formal_requests",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "operation"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "status"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "next_request_version_id"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "next_request_revision"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "input_snapshot"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "kernel_event"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "intent_digest"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "request_version_id"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "request_revision"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "source_basis"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "authority_snapshot"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "snapshot_sha256"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "id"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "verification_handoff_facts",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "request_version_id"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "request_revision"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "next_request_version_id"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "next_request_revision"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "run_id"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "run_version_id"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "run_revision"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "status"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "operation"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "input_snapshot"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "kernel_event"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "source_basis"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "authority_snapshot"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "intent_digest"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "snapshot_sha256"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "id"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "verification_launch_facts",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "request_version_id"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "request_revision"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "item_id"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "status"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "engineering_configuration_id"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "engineering_configuration_revision"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "manufacturing_configuration_id"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "manufacturing_configuration_revision"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "method_ref"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "assessment_snapshot"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "authority_snapshot"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "snapshot_sha256"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "id"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "verification_method_applicabilities",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "build_revision"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "status"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "previous_preparation_id"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "previous_revision"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "input_snapshot"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "request_snapshot"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "snapshot_sha256"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "id"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "verification_preparations",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "verification_run_identities",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "verification_run_identities",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "verification_run_identities",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "verification_run_identities",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "verification_run_identities",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "verification_run_identities",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "verification_run_identities",
+      "column_name": "id"
+    },
+    {
+      "table_name": "verification_run_identities",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "verification_run_identities",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "verification_run_identities",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "build_id"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "build_revision"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "request_version_id"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "request_revision"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "run_id"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "previous_run_version_id"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "previous_revision"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "writer_id"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "status"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "operation"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "run_snapshot"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "execution_plan"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "plan_sha256"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "input_snapshot"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "snapshot_sha256"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "source_basis"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "authority_snapshot"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "intent_digest"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "verification_run_versions",
+      "column_name": "category_id"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "product_id"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "project_id"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "request_version_id"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "request_revision"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "owner_id"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "status"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "window"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "input_snapshot"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "resources"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "gaps"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "authority_snapshot"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "sources"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "required_source_read_set"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "snapshot_sha256"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "occupancy"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "id"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "tenant_id"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "verification_window_proposals",
+      "column_name": "category_id"
+    }
+  ]
+}

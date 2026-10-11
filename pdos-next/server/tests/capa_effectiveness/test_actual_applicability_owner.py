@@ -53,7 +53,7 @@ def group(work, subject, *, operation, family, actor, revision=1, command_id=Non
         subject_revision=revision,
         actor_id=actor,
         requester_id=actor,
-        visibility="product",
+        visibility="category",
         command_id=command_id,
         run_id=None,
         request_digest=common.digest("original key material"),
@@ -140,8 +140,24 @@ def method_work(work, monkeypatch):
         "operation": "verification.actual_method.prepare",
         "purpose": request.purpose,
         "scope": work.scope.model_dump(mode="json"),
-        "valid_until": (at + timedelta(hours=2)).isoformat(),
-        "fact_refs": [{"id": str(uuid4()), "revision": 1}],
+        "valid_until": None,
+        "roles": ["quality"],
+        "synthetic": True,
+        "fact_refs": [
+            dict(
+                id=str(uuid4()),
+                revision=1,
+                kind=kind,
+                role="quality",
+                state="active",
+                nature="synthetic",
+                operations=["verification.actual_method.prepare"],
+                purposes=[request.purpose],
+                valid_from=at.isoformat(),
+                valid_until=(at + timedelta(hours=2)).isoformat(),
+            )
+            for kind in ("duty", "qualification")
+        ],
     }
     fact = work.s.seed(
         ProfessionalFact,
@@ -154,6 +170,15 @@ def method_work(work, monkeypatch):
         state="active",
         valid_from=at,
         valid_until=at + timedelta(hours=2),
+    )
+    work.s.seed(
+        ProfessionalFact,
+        id=UUID_value(authority["fact_refs"][1]["id"]),
+        tenant_id=work.ctx.tenant_id,
+        product_id=work.pid,
+        project_id=work.scope.project_id,
+        subject_id=work.actor,
+        revision=1,
     )
     payload = ActualMethodPreparePayload(
         request_id=request.id,
@@ -187,7 +212,7 @@ def method_work(work, monkeypatch):
         request_id=request.id,
         revision=1,
         owner_id=work.actor,
-        visibility="product",
+        visibility="category",
         request_snapshot=request.model_dump(mode="json"),
         snapshot_sha256=common.digest(request.model_dump(mode="json")),
         sources=refs,
@@ -219,7 +244,7 @@ def method_work(work, monkeypatch):
         request_version_id=parent["id"],
         request_revision=1,
         owner_id=work.actor,
-        visibility="product",
+        visibility="category",
         sources=refs,
         required_source_read_set=reads,
         source_basis=source_basis,
@@ -361,7 +386,7 @@ def method_read(value):
         value.work.s,
         value.work.ctx,
         value.work.pid,
-        SimpleNamespace(scope=value.work.scope, visibility="product"),
+        SimpleNamespace(scope=value.work.scope, visibility="category"),
     )
     actual = owner.ActualApplicabilityOwner(None)._method(
         reader, value.selected, value.pair, value.rule
@@ -379,7 +404,8 @@ def test_actual_method_reads_writer_batch_atom_and_preserves_raw_material(method
     assert raw["actual"] == method_work.child and raw["batch"] == method_work.batch
     assert raw["batch"]["intent_digest"] != method_work.receipt["intent_digest"]
     assert method_work.checked == ["current reviewer"]
-    assert bounds and all(v > datetime.now(UTC) for v in bounds)
+    assert bounds == ()
+    assert raw["actual"]["authority_snapshot"]["fact_refs"]
     assert {v["table"] for v in reader.rows} >= {
         "verification_actual_method_batches",
         "verification_actual_method_applicabilities",
@@ -516,11 +542,14 @@ def test_source_aba_basis_propagates(method_work, monkeypatch):
     assert failure.value.code == "SOURCE_STALE"
 
 
-def test_actual_future_professional_activation_limits_validity(method_work):
+def test_selected_professional_duty_must_be_effective_for_new_action(method_work):
     v = method_work
     future = datetime.now(UTC) + timedelta(seconds=10)
     v.fact["valid_from"] = future
-    assert min(method_read(v)[0][2]) == future
+    v.child["authority_snapshot"]["fact_refs"][0]["valid_from"] = future.isoformat()
+    with pytest.raises(DomainError) as error:
+        method_read(v)
+    assert error.value.reason == "SOURCE_STALE"
 
 
 def test_missing_live_pair_does_not_authorize_dto(method_work):
@@ -534,13 +563,13 @@ def test_missing_live_pair_does_not_authorize_dto(method_work):
             (v.pair, True),
             SimpleNamespace(origin=SimpleNamespace(scope=v.work.scope, purpose=v.request.purpose)),
         )
-    assert failure.value.code == "LIVE_PAIRED_OWNER_REQUIRED"
+    assert failure.value.reason == "LIVE_PAIRED_OWNER_REQUIRED"
 
 
 def test_raw_session_rollback_before_return_is_rejected(method_work):
     v = method_work
     reader = _Read(
-        v.work.s, v.work.ctx, v.work.pid, SimpleNamespace(scope=v.work.scope, visibility="product")
+        v.work.s, v.work.ctx, v.work.pid, SimpleNamespace(scope=v.work.scope, visibility="category")
     )
     owner.ActualApplicabilityOwner(None)._method(reader, v.selected, v.pair, v.rule)
     v.work.s.rollback()
@@ -551,13 +580,13 @@ def test_raw_session_rollback_before_return_is_rejected(method_work):
 def test_current_changes_after_owner_io_are_not_cached(method_work):
     v = method_work
     reader = _Read(
-        v.work.s, v.work.ctx, v.work.pid, SimpleNamespace(scope=v.work.scope, visibility="product")
+        v.work.s, v.work.ctx, v.work.pid, SimpleNamespace(scope=v.work.scope, visibility="category")
     )
     owner.ActualApplicabilityOwner(None)._method(reader, v.selected, v.pair, v.rule)
     v.pointer["assessment_revision"] += 1
     with pytest.raises(DomainError) as failure:
         reader.finish()
-    assert failure.value.code == "PARTICIPANT_OWNER_CHANGED"
+    assert failure.value.reason == "PARTICIPANT_OWNER_CHANGED"
 
 
 @pytest.fixture
@@ -641,7 +670,8 @@ def action_work(work, monkeypatch):
         owner,
         "read_source_closure",
         lambda _s, _ctx, _pid, **kwargs: SimpleNamespace(
-            valid_until=min(kwargs["boundaries"]),
+            valid_until=None,
+            time_constraints=tuple(value for value in kwargs["boundaries"] if value is not None),
             source_basis=_dump(saved.origin_source_basis),
             material_sha256="c" * 64,
         ),
@@ -704,7 +734,7 @@ def test_action_port_replaced_during_final_source_io_is_rejected(action_work, mo
     monkeypatch.setattr(owner, "read_source_closure", source_io)
     with pytest.raises(DomainError) as error:
         action_read(v, reader)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 def test_expiry_during_final_action_material_construction_is_rejected(action_work, monkeypatch):
@@ -713,12 +743,12 @@ def test_expiry_during_final_action_material_construction_is_rejected(action_wor
     at = datetime.now(UTC)
 
     def expire_at_construction(*args, **kwargs):
-        return at - timedelta(seconds=2), at - timedelta(seconds=1)
+        return at - timedelta(seconds=2), (at - timedelta(seconds=1),)
 
     monkeypatch.setattr(owner, "_deadline", expire_at_construction)
     with pytest.raises(DomainError) as error:
         action_read(v)
-    assert error.value.code == "SOURCE_STALE"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 @pytest.mark.parametrize(
@@ -761,7 +791,7 @@ def test_completion_true_does_not_prove_fulfillment(action_work):
     )
     with pytest.raises(DomainError) as failure:
         action_read(v)
-    assert failure.value.code == "ACTION_FULFILLMENT_OWNER_REQUIRED"
+    assert failure.value.reason == "ACTION_FULFILLMENT_OWNER_REQUIRED"
 
 
 def test_fulfillment_attestation_does_not_accept_boolean_or_other_caller(action_work):
@@ -814,6 +844,6 @@ def test_action_refresh_reads_original_group_again(action_work):
         )
 
 
-def test_source_union_over_20_is_rejected_not_truncated():
-    with pytest.raises(DomainError):
-        a.canonical_reads(a.SourceRead(artifact_id=uuid4(), expected_revision=1) for _ in range(21))
+def test_source_union_over_20_is_complete():
+    selected = tuple(a.SourceRead(artifact_id=uuid4(), expected_revision=1) for _ in range(21))
+    assert set(a.canonical_reads(selected)) == set(selected)

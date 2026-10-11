@@ -1,11 +1,13 @@
 """Shared-command quality host. No commits, network, proofs or receipts owned here."""
 
+from contextlib import nullcontext
 from dataclasses import dataclass
-from datetime import datetime
 from uuid import UUID, uuid4
 
 from sqlalchemy import select
+from sqlalchemy.orm import Session, load_only
 
+from pdos_next.database import category_for_product
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.quality_issues.ports import Authority, Invocation
 from pdos_next.domain.quality_issues.rules import (
@@ -16,6 +18,7 @@ from pdos_next.domain.quality_issues.rules import (
 )
 from pdos_next.errors import DomainError
 from pdos_next.models import Grant, Principal, Product, RemediationLinkRecord, now
+from pdos_next.request_proof import command_inputs_once, snapshot_get, snapshot_scalar
 from pdos_next.schemas.quality_issues.contracts import (
     CapaDraft,
     ContainmentRecord,
@@ -36,7 +39,7 @@ from .models import (
     QualityIssueCurrent,
     QualityIssueVersion,
 )
-from .ports import FixedQualityResult
+from .ports import FixedQualityResult, FixedQualityScope
 from .schemas import (
     CapaDraftPayload,
     ContainmentPayload,
@@ -60,13 +63,23 @@ deduplicate_subject = frozenset({"quality_issue"})
 EFFECT = "保存固定失败/问题与草稿；不认定根因、有效性或关闭，不改原测试与配置。"
 
 
-def configure_result_bridge(engine, bridge, *, refresh=None):
+def configure_result_bridge(engine, bridge, *, refresh=None, scope=None, read_batch=None):
     if bridge is not None and not callable(bridge):
         raise TypeError("Trusted result bridge must be callable")
     if refresh is not None and not callable(refresh):
         raise TypeError("Trusted result refresh must be callable")
+    if scope is not None and not callable(scope):
+        raise TypeError("Trusted result scope must be callable")
+    if read_batch is not None and not callable(read_batch):
+        raise TypeError("Trusted result read batch must be callable")
+    prepare_batch = getattr(read_batch, "prepare", None)
+    if prepare_batch is not None and not callable(prepare_batch):
+        raise TypeError("Trusted result preparation batch must be callable")
     engine._pdos_quality_result_bridge = bridge
     engine._pdos_quality_result_refresh = refresh
+    engine._pdos_quality_result_scope = scope
+    engine._pdos_quality_result_read_batch = read_batch
+    engine._pdos_quality_result_prepare_batch = prepare_batch
 
 
 def _result(s, ctx, pid, **binding):
@@ -106,11 +119,8 @@ def _stamp(value):
     return digest(raw)
 
 
-def _human(s, ctx, pid, *, write=False):
-    product = s.scalar(select(Product).where(Product.id == pid, Product.tenant_id == ctx.tenant_id))
-    if product is None:
-        raise DomainError("FORBIDDEN_SCOPE", "品质对象不在当前产品范围。", 403)
-    require_access(s, ctx, pid, write=write, lock=write)
+def _human(s, ctx, pid, *, write=False, lock=None):
+    product = require_access(s, ctx, pid, write=write, lock=write if lock is None else lock)
     actor = s.get(Principal, ctx.requester_id)
     if actor is None or actor.kind != "human" or ctx.actor_id != ctx.requester_id or ctx.run_id:
         raise DomainError("NAMED_PERSON_REQUIRED", "本切片只开放当前具名本人办理。", 403)
@@ -134,26 +144,41 @@ def _snapshot(row):
     return issue
 
 
+def _current(s, ctx, pid, issue_id, *, lock=False):
+    return snapshot_scalar(
+        s,
+        (QualityIssueCurrent, ctx.tenant_id, pid, issue_id),
+        select(QualityIssueCurrent).where(
+            QualityIssueCurrent.tenant_id == ctx.tenant_id,
+            QualityIssueCurrent.product_id == pid,
+            QualityIssueCurrent.issue_id == issue_id,
+        ),
+        scope_id=pid,
+        lock=lock,
+    )
+
+
 def _row(s, ctx, pid, issue_id, revision=None):
     if revision is None:
-        pointer = s.scalar(
-            select(QualityIssueCurrent).where(
-                QualityIssueCurrent.tenant_id == ctx.tenant_id,
-                QualityIssueCurrent.product_id == pid,
-                QualityIssueCurrent.issue_id == issue_id,
-            )
+        pointer = _current(s, ctx, pid, issue_id)
+        row = (
+            snapshot_get(s, QualityIssueVersion, pointer.issue_version_id, scope_id=pid)
+            if pointer
+            else None
         )
-        row = s.get(QualityIssueVersion, pointer.issue_version_id) if pointer else None
         if row and row.revision != pointer.issue_revision:
             raise DomainError("INTEGRITY_MISMATCH", "问题当前指针版本不一致。")
     else:
-        row = s.scalar(
+        row = snapshot_scalar(
+            s,
+            (QualityIssueVersion, ctx.tenant_id, pid, issue_id, revision),
             select(QualityIssueVersion).where(
                 QualityIssueVersion.tenant_id == ctx.tenant_id,
                 QualityIssueVersion.product_id == pid,
                 QualityIssueVersion.issue_id == issue_id,
                 QualityIssueVersion.revision == revision,
-            )
+            ),
+            scope_id=pid,
         )
     if (
         row is None
@@ -164,6 +189,28 @@ def _row(s, ctx, pid, issue_id, revision=None):
         raise DomainError("FORBIDDEN_SCOPE", "问题版本不在当前可读范围。", 403)
     _snapshot(row)
     return row
+
+
+def read_current_rows(s, ctx, pid, rows):
+    """Read all selected Issue watermarks once inside an actual GET snapshot."""
+    from pdos_next.request_proof import snapshot_rows
+
+    identities = {row.issue_id for row in rows}
+    pointers = (
+        snapshot_rows(
+            s,
+            (QualityIssueCurrent, pid, frozenset(identities)),
+            select(QualityIssueCurrent).where(
+                QualityIssueCurrent.tenant_id == ctx.tenant_id,
+                QualityIssueCurrent.product_id == pid,
+                QualityIssueCurrent.issue_id.in_(identities),
+            ),
+            scope_id=pid,
+        )
+        if identities
+        else ()
+    )
+    return {pointer.issue_id: pointer for pointer in pointers}
 
 
 def _domain(payload):
@@ -222,10 +269,38 @@ class Bound:
     source_basis: dict
     domain_payload: object
     invocation: Invocation
+    runtime_guard: object = None
 
 
+@command_inputs_once
 def _load(s, ctx, command, product, payload, *, require_reads=True):
-    _human(s, ctx, product.id, write=True)
+    if command.operation in {"quality.issue.triage", "quality.issue.containment.record"}:
+        from .direct import load
+
+        return load(s, ctx, command, product, payload, require_reads=require_reads)
+    prepare_batch = getattr(s.get_bind(), "_pdos_quality_result_prepare_batch", None)
+    if not getattr(s, "info", {}).get("read_snapshot", False) and callable(prepare_batch):
+        # This boundary ends before any common confirmation can be consumed.
+        # Its real retained terminal runs before the original professional,
+        # policy/source and natural-deadline guards seal the prepared inputs.
+        def terminal_access():
+            policy_seal = _refresh_access(s, ctx, product.id, command.operation, bound)
+            return lambda: _refresh_access_end(s, bound, policy_seal)
+
+        with prepare_batch(s, ctx, product.id, terminal_access=terminal_access):
+            bound = _load_material(s, ctx, command, product, payload, require_reads=require_reads)
+            _refresh_results(s, ctx, product.id, bound)
+        return bound
+    bound = _load_material(s, ctx, command, product, payload, require_reads=require_reads)
+    _refresh(s, ctx, product.id, command.operation, bound)
+    return bound
+
+
+def _load_material(s, ctx, command, product, payload, *, require_reads=True):
+    write = not getattr(s, "info", {}).get("read_snapshot", False)
+    # An inputs snapshot still requires current write permission and a named
+    # human. It reads the exact facts without acquiring command write locks.
+    _human(s, ctx, product.id, write=True, lock=write)
     if command.operation not in PAYLOADS or not isinstance(payload, PAYLOADS[command.operation]):
         raise DomainError("INVALID_OPERATION", "该品质动作未在本切片开放。", 403)
     rows, issues, results, bindings, failure_issues = {}, {}, [], [], {}
@@ -235,14 +310,50 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
             "run_id": payload.run_id,
             "measurement_id": payload.measurement_id,
             "event_id": payload.event_id,
-            "write": True,
+            "write": write,
         }
+        # Resolve exact archived scope before byte/execution reads. An ineligible
+        # caller cannot turn another person's resource-proof mismatch into an
+        # apparent failure-source conflict. The full result bridge still proves
+        # the failure independently and must match this actual row identity.
+        scope_reader = getattr(s.get_bind(), "_pdos_quality_result_scope", None)
+        header = None
+        if callable(scope_reader):
+            header = FixedQualityScope.model_validate(
+                scope_reader(s, ctx, product.id, run_id=payload.run_id, event_id=payload.event_id)
+            )
+            if (
+                header.scope.tenant_id != ctx.tenant_id
+                or header.scope.product_id != product.id
+                or header.run_id != payload.run_id
+                or header.event_id != payload.event_id
+            ):
+                raise DomainError("INTEGRITY_MISMATCH", "原失败范围未绑定所选运行事件。")
+            authority = professional.assess(
+                s,
+                ctx,
+                product.id,
+                header.scope.project_id,
+                command.operation,
+                header.purpose,
+                now(),
+                write=write,
+            )
+            if authority.get("authorized") is not True or authority.get("qualified") is not True:
+                raise DomainError("QUALIFICATION_REQUIRED", "当前具名专业职责与资格不足。", 403)
         create = _result(s, ctx, product.id, **binding)
+        if header is not None and (
+            create.scope != header.scope
+            or create.purpose != header.purpose
+            or create.run_version_id != header.run_version_id
+            or create.run_revision != header.run_revision
+        ):
+            raise DomainError("INTEGRITY_MISMATCH", "完整失败证明与原范围身份不一致。")
         selected = failure_ref(create.verified, payload.measurement_id)
         scope, purpose = create.scope, create.purpose
         visibility, owner = payload.visibility, ctx.requester_id
         if create.visibility == "private" and visibility != "private":
-            raise DomainError("FORBIDDEN_SCOPE", "私有失败来源不能提升产品共享受众。", 403)
+            raise DomainError("FORBIDDEN_SCOPE", "私有失败来源不能提升品类共享受众。", 403)
         results.append(create)
         bindings.append(binding)
         mapping = s.scalar(
@@ -270,7 +381,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
                     raise DomainError("FORBIDDEN_SCOPE", "归并不能跨项目或固定用途。", 403)
                 rows[other.issue_id], issues[other.issue_id] = other, _snapshot(other)
     authority = professional.assess(
-        s, ctx, product.id, scope.project_id, command.operation, purpose, now(), write=True
+        s, ctx, product.id, scope.project_id, command.operation, purpose, now(), write=write
     )
     if authority.get("authorized") is not True or authority.get("qualified") is not True:
         raise DomainError("QUALIFICATION_REQUIRED", "当前具名专业职责与资格不足。", 403)
@@ -280,7 +391,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
                 "run_id": failure.run.id,
                 "measurement_id": failure.measurement_id,
                 "run_revision": failure.run.revision,
-                "write": True,
+                "write": write,
             }
             value = _result(s, ctx, product.id, **binding)
             if (
@@ -348,19 +459,28 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
         domain,
         inv,
     )
-    _refresh(s, ctx, product.id, command.operation, bound)
     return bound
 
 
 def _refresh(s, ctx, pid, operation, bound):
-    # _load independently checked every original byte in this phase. Recheck all
-    # fixed proofs without a second byte read, then current human authority last.
-    # No proof is reused across validate, preview or apply transactions.
+    if bound.source_basis.get("contract") == "s0.direct-quality.v1":
+        from .direct import refresh
+
+        return refresh(s, ctx, pid, operation, bound)
+    # One exact command holds its prepared inputs only in this transaction.
+    # Recheck after all owner IO and again at _record, including after the common
+    # confirmation was consumed. No byte proof survives a request/transaction.
+    _refresh_results(s, ctx, pid, bound)
+    _refresh_access(s, ctx, pid, operation, bound)
+
+
+def _refresh_results(s, ctx, pid, bound):
+    write = not getattr(s, "info", {}).get("read_snapshot", False)
     refresh = getattr(s.get_bind(), "_pdos_quality_result_refresh", None)
     if not callable(refresh):
         raise DomainError("INTEGRATION_REQUIRED", "全部原值读取后历史执行重核接口待接入。", 503)
     for saved in bound.results:
-        value = refresh(s, ctx, pid, saved, write=True)
+        value = refresh(s, ctx, pid, saved, write=write)
         value = (
             value
             if isinstance(value, FixedQualityResult)
@@ -368,6 +488,11 @@ def _refresh(s, ctx, pid, operation, bound):
         )
         if not value.current or _stamp(value) != _stamp(saved):
             raise DomainError("SOURCE_STALE", "完整原件核对后原失败或历史执行证明已变化。")
+
+
+def _refresh_access(s, ctx, pid, operation, bound):
+    write = not getattr(s, "info", {}).get("read_snapshot", False)
+    policy_seal = _policy_issuer_seal(s, bound)
     if bound.policy is not None:
         current = policy.assess(s, ctx, pid, bound.scope.project_id, bound.purpose)
         if current != bound.policy:
@@ -376,7 +501,7 @@ def _refresh(s, ctx, pid, operation, bound):
     if actual != bound.source_basis["artifact_sources"]:
         raise DomainError("SOURCE_STALE", "品质原文或安全状态已变化。")
     authority = professional.assess(
-        s, ctx, pid, bound.scope.project_id, operation, bound.purpose, now(), write=True
+        s, ctx, pid, bound.scope.project_id, operation, bound.purpose, now(), write=write
     )
     if (
         authority != bound.authority
@@ -384,16 +509,44 @@ def _refresh(s, ctx, pid, operation, bound):
         or (authority.get("qualified") is not True)
     ):
         raise DomainError("SOURCE_STALE", "原件核对期间当前专业资格或签发epoch已变化。")
+    _human(s, ctx, pid, write=True, lock=write)
+    _refresh_access_end(s, bound, policy_seal)
+    return policy_seal
+
+
+def _policy_issuer_seal(s, bound):
+    if bound.policy is None:
+        return None
+    engine = s.get_bind()
+    epochs = getattr(engine, "_pdos_quality_policy_epochs", {})
+    scope = bound.scope
+    expected = scope.tenant_id, scope.product_id, scope.project_id
+    # Only this policy-consuming quality scope is relevant. Run bridges and
+    # quality.create do not acquire dependencies on unrelated policy registries.
+    return digest(
+        {
+            key: [id(issuer), issuer.key, issuer.version, issuer.epoch, epochs.get(key)]
+            for key, issuer in getattr(engine, "_pdos_quality_policy_issuers", {}).items()
+            if isinstance(issuer, policy.PolicyIssuer)
+            and issuer._token is policy._CAPABILITY
+            and issuer.key == key
+            and (issuer.tenant_id, issuer.product_id, issuer.project_id) == expected
+        }
+    )
+
+
+def _refresh_access_end(s, bound, policy_seal):
+    if _policy_issuer_seal(s, bound) != policy_seal:
+        raise DomainError("SOURCE_STALE", "末端当前范围的政策签发入口已变化。")
+    _refresh_access_time(bound)
+
+
+def _refresh_access_time(bound):
     at = now()
-    for proof in (authority, bound.policy):
-        if proof is None:
-            continue
-        try:
-            until = datetime.fromisoformat(proof["valid_until"].replace("Z", "+00:00"))
-            expired = until.utcoffset() is None or until <= at
-        except (KeyError, TypeError, ValueError, AttributeError):
-            expired = True
-        if expired:
+    if not professional.authority_time_current(bound.authority, at):
+        raise DomainError("SOURCE_STALE", "末端当前职责或实际资格已失效。")
+    if bound.policy is not None:
+        if not policy.policy_time_current(bound.policy, at):
             raise DomainError("SOURCE_STALE", "办理核对结束时专业资格或政策边界已失效。")
 
 
@@ -404,7 +557,9 @@ def _kernel(s, ctx, pid, bound, record, *, accepted=False):
         actor_kind="human",
         roles=tuple(bound.authority["roles"]),
         audience=(
-            f"private:{bound.owner_id}" if bound.visibility == "private" else f"product:{pid}",
+            f"private:{bound.owner_id}"
+            if bound.visibility == "private"
+            else f"category:{ctx.category_id}",
         ),
         authorized=bound.authority["authorized"] is True,
         qualified=bound.authority["qualified"] is True,
@@ -459,20 +614,12 @@ def _draft_not_linked(s, ctx, pid, payload, bound):
             raise DomainError("INVALID_STATE", "已有实际回链的CAPA不可续改草稿文本。")
 
 
-def _new_write(s, ctx, command, product, payload, bound):
+def _new_write(s, ctx, command, product, payload, bound, *, lock=True):
     if command.expected_revision != product.revision:
         raise DomainError("VERSION_CONFLICT", "产品水位已变化。")
     pointers = {}
     for identity, row in sorted(bound.rows.items(), key=lambda item: str(item[0])):
-        pointer = s.scalar(
-            select(QualityIssueCurrent)
-            .where(
-                QualityIssueCurrent.tenant_id == ctx.tenant_id,
-                QualityIssueCurrent.product_id == product.id,
-                QualityIssueCurrent.issue_id == identity,
-            )
-            .with_for_update()
-        )
+        pointer = _current(s, ctx, product.id, identity, lock=lock)
         if (
             pointer is None
             or pointer.issue_version_id != row.id
@@ -487,7 +634,7 @@ def _new_write(s, ctx, command, product, payload, bound):
             grant = s.scalar(
                 select(Grant).where(
                     Grant.tenant_id == ctx.tenant_id,
-                    Grant.product_id == product.id,
+                    Grant.category_id == category_for_product(product.id),
                     Grant.principal_id == action.executor_id,
                 )
             )
@@ -495,9 +642,16 @@ def _new_write(s, ctx, command, product, payload, bound):
                 actor is None
                 or actor.tenant_id != ctx.tenant_id
                 or not actor.active
-                or (actor.kind != "human" or grant is None or grant.expires_at <= now())
+                or (
+                    actor.kind != "human"
+                    or grant is None
+                    or (
+                        grant.expires_at is not None
+                        and (grant.expires_at is not None and grant.expires_at <= now())
+                    )
+                )
             ):
-                raise DomainError("FORBIDDEN_SCOPE", "措施责任人须当前产品具名成员。", 403)
+                raise DomainError("FORBIDDEN_SCOPE", "措施责任人须当前型号具名成员。", 403)
     return pointers
 
 
@@ -708,10 +862,14 @@ def _preview_issue(issue, before):
     return raw
 
 
-def _review(s, ctx, pid, bound):
+def _review(s, ctx, pid, bound, prepared=None):
     handler = _kernel(s, ctx, pid, bound, lambda _: None)
-    preview, mutation = handler._prepare(
-        handler.ports.commands.authority, bound.invocation, bound.domain_payload
+    preview, mutation = (
+        prepared
+        if prepared is not None
+        else handler._prepare(
+            handler.ports.commands.authority, bound.invocation, bound.domain_payload
+        )
     )
     if mutation.event_name == "issue.recheck_required":
         raise DomainError("RECHECK_REQUIRED", "原失败漂移须独立重核，不借建单续写。")
@@ -739,31 +897,93 @@ def preview_view(s, ctx, command, product, payload):
     return _review(s, ctx, product.id, bound)
 
 
+def prepare_preview(s, ctx, command, product, payload):
+    from .direct import prepare_preview as prepare
+
+    return prepare(s, ctx, command, product, payload)
+
+
+def preview_prepared(s, ctx, command, product, payload, phase):
+    return phase.review
+
+
+def encode_prepared(phase):
+    from .direct import encode_prepared as encode
+
+    return encode(phase)
+
+
+def prepare_confirmed(s, ctx, command, product, payload, material):
+    from .direct import prepare_confirmed as prepare
+
+    return prepare(s, ctx, command, product, payload, material)
+
+
+def apply_confirmed(s, ctx, command, product, payload, phase):
+    from .direct import apply_confirmed as apply
+
+    return apply(s, ctx, command, product, payload, phase)
+
+
 def inputs(s, ctx, pid, command):
+    read_batch = getattr(s.get_bind(), "_pdos_quality_result_read_batch", None)
+    with (
+        read_batch(s, ctx, pid)
+        if callable(read_batch)
+        and command.operation not in {"quality.issue.triage", "quality.issue.containment.record"}
+        else nullcontext()
+    ):
+        material = _inputs(s, ctx, pid, command)
+    # The complete bridge's terminal reads follow the kernel's source IO. This
+    # last pure clock check keeps the current actor's own actual authority and
+    # policy deadlines at the end of the complete input reading as well.
+    at = now()
+    if not professional.authority_time_current(material["authority"], at):
+        raise DomainError("SOURCE_STALE", "全部品质输入核对后当前专业资格已失效。")
+    published = material["review"]["read_basis"]["policy"]
+    if published is not None and not policy.policy_time_current(published, at):
+        raise DomainError("SOURCE_STALE", "全部品质输入核对后当前政策边界已失效。")
+    return material
+
+
+def _inputs(s, ctx, pid, command):
     cls = PAYLOADS.get(command.operation)
     if cls is None:
         raise DomainError("INVALID_OPERATION", "品质输入动作未开放。", 403)
-    product = _human(s, ctx, pid, write=True)
+    product = _human(s, ctx, pid, write=True, lock=False)
     if command.product_id != pid:
-        raise DomainError("FORBIDDEN_SCOPE", "输入命令与当前产品不一致。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "输入命令与当前型号不一致。", 403)
     payload = cls.model_validate(command.payload)
     bound = _load(s, ctx, command, product, payload, require_reads=False)
-    _new_write(s, ctx, command, product, payload, bound)
+    _new_write(s, ctx, command, product, payload, bound, lock=False)
+    review = _review(s, ctx, pid, bound)
+    # The kernel can inspect additional judgment evidence. Recheck that complete
+    # source set and current professional/policy state after its last owner IO.
+    _refresh(s, ctx, pid, command.operation, bound)
     return {
         "operation": command.operation,
         "allowed": True,
         "required_source_read_set": bound.reads,
         "authority": bound.authority,
-        "review": _review(s, ctx, pid, bound),
+        "review": review,
     }
 
 
 def _view(s, ctx, pid, row, *, current, assess_capabilities=True):
+    from pdos_next.quality_result_bridge import direct_issue_failure
+    from pdos_next.source_current import direct_source_basis
+
+    from .direct import issue_refs
+
     issue = _snapshot(row)
-    reads = merge_reads(row.required_source_read_set)
+    refs = issue_refs(issue)
+    reads = merge_reads([{"artifact_id": str(r.id), "expected_revision": r.revision} for r in refs])
     source_current = True
     try:
-        source_basis(s, ctx, pid, reads)
+        actual, _ = direct_source_basis(s, ctx, pid, refs, reads)
+        saved = {entry["id"]: entry for entry in row.source_basis.get("artifact_sources", [])}
+        if any(saved.get(entry["id"]) != entry for entry in actual):
+            raise DomainError("SOURCE_STALE", "问题的直接来源水位已变化。")
     except DomainError as exc:
         if exc.status == 403:
             raise
@@ -783,24 +1003,12 @@ def _view(s, ctx, pid, row, *, current, assess_capabilities=True):
         state = "current"
         for failure in issue.failures:
             try:
-                value = _result(
-                    s,
-                    ctx,
-                    pid,
-                    run_id=failure.run.id,
-                    measurement_id=failure.measurement_id,
-                    run_revision=failure.run.revision,
-                )
-                if failure_ref(value.verified, failure.measurement_id) != failure:
-                    raise DomainError("RECHECK_REQUIRED", "原失败固定依据已改变。")
-                measurement = next(
-                    m for m in value.verified.run.measurements if m.id == failure.measurement_id
-                )
+                value = direct_issue_failure(s, ctx, pid, issue, failure, purpose=row.purpose)
                 failures.append(
                     FailureReading(
                         failure=failure,
                         available=True,
-                        measurement=measurement.model_dump(mode="json"),
+                        measurement=value.measurement,
                         projection_id=value.projection_id,
                         basis_sha256=value.basis_sha256,
                         required_source_read_set=value.required_source_read_set,
@@ -878,7 +1086,7 @@ def _view(s, ctx, pid, row, *, current, assess_capabilities=True):
         authority=authorities,
         policy=published,
         required_source_read_set=reads,
-        sources=row.sources,
+        sources=[r.model_dump(mode="json") for r in refs],
         created_at=row.created_at,
         reason=row.reason,
         followup_needs=(
@@ -898,13 +1106,7 @@ def _view(s, ctx, pid, row, *, current, assess_capabilities=True):
 def get_issue(s, ctx, pid, issue_id, revision=None, *, write=False):
     _human(s, ctx, pid, write=write)
     row = _row(s, ctx, pid, issue_id, revision)
-    pointer = s.scalar(
-        select(QualityIssueCurrent).where(
-            QualityIssueCurrent.tenant_id == ctx.tenant_id,
-            QualityIssueCurrent.product_id == pid,
-            QualityIssueCurrent.issue_id == issue_id,
-        )
-    )
+    pointer = _current(s, ctx, pid, issue_id)
     return row, _view(
         s, ctx, pid, row, current=bool(pointer and pointer.issue_version_id == row.id)
     )
@@ -955,7 +1157,11 @@ def _change_scope_acl(s, ctx, pid):
                 Grant.expires_at,
             )
             .select_from(Product)
-            .join(Grant, (Grant.tenant_id == Product.tenant_id) & (Grant.product_id == Product.id))
+            .join(
+                Grant,
+                (Grant.tenant_id == Product.tenant_id)
+                & (Grant.category_id == category_for_product(Product.id)),
+            )
             .join(
                 Principal,
                 (Principal.tenant_id == Grant.tenant_id) & (Principal.id == Grant.principal_id),
@@ -976,8 +1182,7 @@ def _change_scope_acl(s, ctx, pid):
         or rows[0]["person_id"] != ctx.requester_id
         or rows[0]["kind"] != "human"
         or rows[0]["active"] is not True
-        or rows[0]["expires_at"] is None
-        or rows[0]["expires_at"] <= now()
+        or (rows[0]["expires_at"] is not None and rows[0]["expires_at"] <= now())
     ):
         raise DomainError("FORBIDDEN_SCOPE", "当前本人不能读取固定问题范围。", 403)
     return dict(rows[0])
@@ -1050,13 +1255,15 @@ def _change_scope_for_change(s, ctx, pid, ref):
             or row.product_id != pid
             or row.issue_id != ref.id
             or row.revision != ref.revision
-            or row.visibility not in {"private", "product"}
+            or row.visibility not in {"private", "category", "audience"}
             or (row.visibility == "private" and row.owner_id != ctx.requester_id)
         ):
             raise DomainError("FORBIDDEN_SCOPE", "固定问题范围或私人受众不一致。", 403)
         issue = _snapshot(row)
         expected_audience = (
-            f"private:{row.owner_id}" if row.visibility == "private" else f"product:{pid}",
+            f"private:{row.owner_id}"
+            if row.visibility == "private"
+            else f"category:{row.category_id}",
         )
         if (
             issue.audience != expected_audience
@@ -1113,17 +1320,56 @@ def _change_scope_for_change(s, ctx, pid, ref):
             raise DomainError("FORBIDDEN_SCOPE", "范围读取期间本人权限已变化。", 403)
     _same_uow(s, uow, ctx, caller)
     pending()
-    if now() >= access["expires_at"]:
+    if access["expires_at"] is not None and now() >= access["expires_at"]:
         raise DomainError("FORBIDDEN_SCOPE", "范围读取结束时本人权限已到期。", 403)
     return issue.scope, row.purpose
 
 
 def list_quality(s, ctx, pid, *, issue_id=None, run_id=None, build_id=None):
+    # The actual bridge owns this optional boundary. Its normal exit refreshes
+    # every distinct Run after ALL issue/candidate original-byte reads. Keep it
+    # outside _view's per-issue error handling so terminal revocation cannot be
+    # swallowed into an apparently current reading.
+    read_batch = getattr(s.get_bind(), "_pdos_quality_result_read_batch", None)
+    with read_batch(s, ctx, pid) if callable(read_batch) else nullcontext():
+        return _list_quality(s, ctx, pid, issue_id=issue_id, run_id=run_id, build_id=build_id)
+
+
+def _list_quality(s, ctx, pid, *, issue_id=None, run_id=None, build_id=None):
     _human(s, ctx, pid)
     # Explicit selection bounds current proofs; empty selection reads no full history.
-    query = select(QualityIssueVersion).where(
-        QualityIssueVersion.tenant_id == ctx.tenant_id,
-        QualityIssueVersion.product_id == pid,
+    # Historical reads consume the complete Issue snapshot and its exact source
+    # summaries, not the stored command/authority preparation snapshots. Keep
+    # the same rows and RLS; refuse implicit loads of omitted writer columns.
+    query = (
+        select(QualityIssueVersion)
+        .options(
+            load_only(
+                QualityIssueVersion.id,
+                QualityIssueVersion.tenant_id,
+                QualityIssueVersion.category_id,
+                QualityIssueVersion.product_id,
+                QualityIssueVersion.project_id,
+                QualityIssueVersion.issue_id,
+                QualityIssueVersion.revision,
+                QualityIssueVersion.status,
+                QualityIssueVersion.issue_snapshot,
+                QualityIssueVersion.snapshot_sha256,
+                QualityIssueVersion.required_source_read_set,
+                QualityIssueVersion.source_basis,
+                QualityIssueVersion.visibility,
+                QualityIssueVersion.owner_id,
+                QualityIssueVersion.purpose,
+                QualityIssueVersion.sources,
+                QualityIssueVersion.created_at,
+                QualityIssueVersion.reason,
+                raiseload=True,
+            )
+        )
+        .where(
+            QualityIssueVersion.tenant_id == ctx.tenant_id,
+            QualityIssueVersion.product_id == pid,
+        )
     )
     mapping_more = False
     if issue_id is not None:
@@ -1163,24 +1409,42 @@ def list_quality(s, ctx, pid, *, issue_id=None, run_id=None, build_id=None):
         ).model_dump(mode="json")
     rows = list(s.scalars(query.order_by(QualityIssueVersion.created_at.desc()).limit(101)))
     views, pointers, unavailable = [], {}, 0
+    held = isinstance(s, Session) and s.info.get("read_snapshot")
+    selected_pointers = read_current_rows(s, ctx, pid, rows[:100]) if held else {}
     for row in rows[:100]:
         try:
-            pointer = s.scalar(
-                select(QualityIssueCurrent).where(
-                    QualityIssueCurrent.tenant_id == ctx.tenant_id,
-                    QualityIssueCurrent.product_id == pid,
-                    QualityIssueCurrent.issue_id == row.issue_id,
+            pointer = (
+                selected_pointers.get(row.issue_id)
+                if held
+                else s.scalar(
+                    select(QualityIssueCurrent).where(
+                        QualityIssueCurrent.tenant_id == ctx.tenant_id,
+                        QualityIssueCurrent.product_id == pid,
+                        QualityIssueCurrent.issue_id == row.issue_id,
+                    )
                 )
             )
             current = bool(pointer and pointer.issue_version_id == row.id)
+            if held and row.visibility == "private" and row.owner_id != ctx.requester_id:
+                raise DomainError("FORBIDDEN_SCOPE", "问题版本不在当前可读范围。", 403)
             views.append(
-                _view(s, ctx, pid, _row(s, ctx, pid, row.issue_id, row.revision), current=current)
+                _view(
+                    s,
+                    ctx,
+                    pid,
+                    row if held else _row(s, ctx, pid, row.issue_id, row.revision),
+                    current=current,
+                )
             )
             if current:
                 pointers[str(row.issue_id)] = {"issue_version_id": row.id, "revision": row.revision}
         except DomainError:
             unavailable += 1
-    failures = _failure_candidates(s, ctx, pid, run_id, build_id) if run_id else ()
+    failures = (
+        _failure_candidates(s, ctx, pid, run_id, build_id, known=views, issue_rows=rows)
+        if run_id
+        else ()
+    )
     known_policies = {digest(view.policy): view.policy for view in views if view.policy is not None}
     actor = s.get(Principal, ctx.requester_id)
     return QualityReading(
@@ -1195,7 +1459,7 @@ def list_quality(s, ctx, pid, *, issue_id=None, run_id=None, build_id=None):
     ).model_dump(mode="json")
 
 
-def _failure_candidates(s, ctx, pid, run_id, build_id):
+def _failure_candidates(s, ctx, pid, run_id, build_id, *, known=(), issue_rows=()):
     from pdos_next.domain.verification_launch.models import (
         VerificationRunCurrent,
         VerificationRunVersion,
@@ -1236,12 +1500,49 @@ def _failure_candidates(s, ctx, pid, run_id, build_id):
                 Outbox.subject_id.in_([row.id, *projections]),
             )
             .order_by(Outbox.created_at)
-            .limit(100)
         )
     )
     output = []
+    saved_failures = {
+        str(reading.failure.measurement_id): (view, reading)
+        for view in known
+        if view.is_current and view.source_status == "current"
+        for reading in view.failures
+        if reading.available and reading.failure.run.id == run_id
+    }
     for result in row.run_snapshot.get("computed_results", []):
         if result["result"] != "fail" or row.run_snapshot["result"] != "fail":
+            continue
+        saved = saved_failures.get(result["measurement_id"])
+        if saved is not None:
+            view, reading = saved
+            authority = professional.assess(
+                s, ctx, pid, view.project_id, "quality.issue.create", view.purpose, now()
+            )
+            creation = next(
+                (v for v in issue_rows if v.issue_id == view.issue_id and v.revision == 1), None
+            )
+            output.append(
+                FailureReading.model_validate(
+                    {
+                        **reading.model_dump(mode="json"),
+                        "event_ids": tuple(events),
+                        "authority": authority,
+                        # Preserve the original create intent's declared sources for
+                        # direct receipt recovery; a read never reproves that chain.
+                        "required_source_read_set": merge_reads(
+                            creation.required_source_read_set
+                            if creation
+                            else reading.required_source_read_set,
+                            authority.get("required_source_read_set", []),
+                        ),
+                        "capabilities": {
+                            "quality.issue.create": authority.get("authorized") is True
+                            and authority.get("qualified") is True
+                        },
+                    }
+                )
+            )
             continue
         values = []
         for event in events:

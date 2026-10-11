@@ -38,15 +38,15 @@ class FactInput(DTO):
     external_id: str = Field(min_length=1, max_length=200)
     kind: Literal["duty", "qualification"]
     role: Literal["engineering", "quality", "manufacturing"]
-    operations: list[str] = Field(min_length=1, max_length=10)
-    purposes: list[str] = Field(min_length=1, max_length=20)
+    operations: list[str] = Field(min_length=1)
+    purposes: list[str] = Field(min_length=1)
     state: Literal["active", "withdrawn", "revoked"] = "active"
     valid_from: AwareDatetime
     valid_until: AwareDatetime
     previous_id: UUID | None = None
     expected_previous_revision: int = Field(default=0, ge=0, strict=True)
     approval: ApprovalBasis
-    sources: list[DefinitionReference] = Field(min_length=1, max_length=20)
+    sources: list[DefinitionReference] = Field(min_length=1)
     reason: str = Field(min_length=3, max_length=2000)
 
     @field_validator("valid_from", "valid_until")

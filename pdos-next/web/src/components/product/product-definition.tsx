@@ -25,7 +25,7 @@ function restoredDraft(value: unknown): LocalDraft | null {
   if (!local.payload || typeof local.payload !== "object") return null;
   const draft = local.payload as Record<string, unknown>;
   if (!["title", "purpose", "change_reason"].every(key => typeof draft[key] === "string")) return null;
-  if (!["private", "product"].includes(String(draft.visibility))) return null;
+  if (!["private", "category", "audience"].includes(String(draft.visibility))) return null;
   if (!listFields.every(([key]) => Array.isArray(draft[key]) && (draft[key] as unknown[]).every(item => typeof item === "string"))) return null;
   if (!Array.isArray(draft.sources) || !Array.isArray(draft.specs)) return null;
   const validRef = (item: unknown) => !!item && typeof item === "object" && typeof (item as DefinitionReference).artifact_id === "string" && typeof (item as DefinitionReference).quote === "string" && Number.isInteger((item as DefinitionReference).line) && Number.isInteger((item as DefinitionReference).expected_revision);
@@ -54,7 +54,7 @@ function inputProblem(draft: DefinitionPayload): string | null {
 
 function changeValue(value: unknown): ReactNode {
   if (value === null || value === undefined) return <span className="subtle">未记录</span>;
-  if (typeof value === "string") return value === "private" ? "仅本人" : value === "product" ? "产品共享" : value;
+  if (typeof value === "string") return value === "private" ? "仅本人" : value === "category" ? "品类授权成员" : value === "audience" ? "指定评审人" : value;
   if (Array.isArray(value)) return <ul className="space-y-1">{value.map((item, index) => <li key={index}>{changeValue(item)}</li>)}</ul>;
   if (typeof value === "object") {
     const item = value as Record<string, unknown>;
@@ -88,7 +88,7 @@ function DefinitionPanel({ product, principalId, sources, api, onSaved }: Props)
   const writing = useRef(false);
   const source = sources.find(item => item.id === sourceId);
   const selectedSources = payload.sources.map(ref => sources.find(item => item.id === ref.artifact_id));
-  const privateSource = selectedSources.some(item => item?.visibility === "private");
+  const privateSource = selectedSources.some(item => item?.visibility !== "category");
   const invalidSources = payload.sources.some(ref => !sources.some(item => item.id === ref.artifact_id && item.revision === ref.expected_revision && item.status === "active"));
   const latest = items[0];
 
@@ -129,7 +129,7 @@ function DefinitionPanel({ product, principalId, sources, api, onSaved }: Props)
     if (!source || source.status !== "active" || !quote.trim()) return;
     const ref = { artifact_id: source.id, expected_revision: source.revision, line: selectedLine, quote: quote.trim() };
     if (payload.sources.some(item => referenceKey(item) === referenceKey(ref))) return;
-    edit({ ...payload, visibility: source.visibility === "private" ? "private" : payload.visibility, sources: [...payload.sources, ref] });
+    edit({ ...payload, visibility: source.visibility !== "category" ? "private" : payload.visibility, sources: [...payload.sources, ref] });
   }
   function removeReference(ref: DefinitionReference) {
     const key = referenceKey(ref);
@@ -172,8 +172,8 @@ function DefinitionPanel({ product, principalId, sources, api, onSaved }: Props)
   }
 
   const showEditor = !!pending || (editorOpen ?? (!loading && items.length === 0));
-  return <section className="min-w-0 space-y-5" aria-label="产品定义">
-    <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="subtle">从当前资料形成定义 · 无需建立项目</p><h2 className="mt-1 text-lg font-semibold">产品定义与可测规格</h2></div><div className="flex flex-wrap gap-2"><Button variant="outline" disabled={busy || !!pending} aria-expanded={showEditor} aria-controls={`definition-editor-pane-${product.id}`} onClick={() => setEditorOpen(!showEditor)}><Plus/>{showEditor ? "收起编辑" : "编辑定义草稿"}</Button><Button variant="outline" disabled={busy} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新已保存版本</Button></div></header>
+  return <section className="min-w-0 space-y-5" aria-label="型号定义">
+    <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="subtle">从当前资料形成定义 · 无需建立项目</p><h2 className="mt-1 text-lg font-semibold">型号定义与可测规格</h2></div><div className="flex flex-wrap gap-2"><Button variant="outline" disabled={busy || !!pending} aria-expanded={showEditor} aria-controls={`definition-editor-pane-${product.id}`} onClick={() => setEditorOpen(!showEditor)}><Plus/>{showEditor ? "收起编辑" : "编辑定义草稿"}</Button><Button variant="outline" disabled={busy} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新已保存版本</Button></div></header>
     {error && <p role="alert" className="break-words rounded-lg border border-destructive p-3 text-destructive">{error}</p>}
     {notice && <p role="status" className="rounded-lg border border-border p-3">{notice}</p>}
     {unavailable > 0 && <p className="subtle">{unavailable} 个版本的来源权限需要重核，派生正文已隐藏。</p>}
@@ -192,7 +192,7 @@ function DefinitionPanel({ product, principalId, sources, api, onSaved }: Props)
               <div className="mt-4"><label>原始资料<select value={sourceId} onChange={event => { setSourceId(event.target.value); setQuote(""); }}><option value="">选择资料</option>{sources.map(item => <option key={item.id} value={item.id} disabled={item.status !== "active"}>{item.title} · v{item.revision}{item.status !== "active" ? " · 已失效" : ""}</option>)}</select></label>
                 {source && <div className="mb-3 max-h-52 overflow-auto rounded-lg border border-border p-2">{sourceLines(source.content).map((text, index) => <button type="button" className="source-line" key={index} disabled={source.status !== "active" || !text.trim()} aria-pressed={selectedLine === index + 1 && !!quote && text.includes(quote)} onClick={() => { setSelectedLine(index + 1); setQuote(text.trim().slice(0, 4000)); }}><span className="subtle shrink-0 w-6">{index + 1}</span><span className="min-w-0 break-words">{text || " "}{originalLocation(source, index + 1) && <small className="subtle block">{originalLocation(source, index + 1)}</small>}</span></button>)}</div>}
                 <label>精确摘录 · 第 {selectedLine} 行<textarea maxLength={4000} value={quote} onChange={event => setQuote(event.target.value)} placeholder="选择原文行，也可缩小为该行内的准确片段"/></label>
-                <Button type="button" variant="outline" disabled={!source || source.status !== "active" || !quote.trim() || payload.sources.length >= 20} onClick={addReference}>加入定义依据</Button>
+                <Button type="button" variant="outline" disabled={!source || source.status !== "active" || !quote.trim()} onClick={addReference}>加入定义依据</Button>
                 <ul className="mt-4 space-y-3">{payload.sources.map(ref => <li key={referenceKey(ref)} className="min-w-0 rounded-lg border border-border p-3"><p className="subtle">{sources.find(item => item.id === ref.artifact_id)?.title ?? "原来源"} · v{ref.expected_revision} · 第{ref.line}行</p><blockquote className="my-2 break-words">{ref.quote}</blockquote><Button type="button" size="sm" variant="ghost" onClick={() => removeReference(ref)}><Trash/>移除此引用</Button></li>)}</ul>
               </div>
             </details>
@@ -211,7 +211,7 @@ function DefinitionPanel({ product, principalId, sources, api, onSaved }: Props)
                 </div>
               </details>)}
             </section>
-            <label>草稿受众<select value={payload.visibility} onChange={event => edit({ ...payload, visibility: event.target.value as DefinitionPayload["visibility"] })}><option value="private">仅我可见</option><option value="product" disabled={privateSource || !!(payload.parent_definition_id && items.find(item => item.id === payload.parent_definition_id)?.visibility === "private")}>产品授权成员</option></select></label>
+            <label>草稿受众<select value={payload.visibility} onChange={event => edit({ ...payload, visibility: event.target.value as DefinitionPayload["visibility"] })}><option value="private">仅我可见</option><option value="category" disabled={privateSource || !!(payload.parent_definition_id && items.find(item => item.id === payload.parent_definition_id)?.visibility !== "category")}>品类授权成员</option></select></label>
             {privateSource && <p className="subtle mb-3">含私人来源，整份定义保持仅你可见。</p>}
             <label>保存 / 续版原因<textarea required minLength={3} maxLength={2000} value={payload.change_reason} onChange={event => edit({ ...payload, change_reason: event.target.value })}/></label>
             {invalidSources && <p className="mb-3 text-destructive">所选来源版本已改变或失效，请重新核对引用。</p>}
@@ -222,7 +222,7 @@ function DefinitionPanel({ product, principalId, sources, api, onSaved }: Props)
       </ReadingPanel>
       </div>
       <ReadingPanel title="已保存定义" count={items.length}>
-        {loading ? <p role="status" className="subtle">正在读取定义版本…</p> : items.length === 0 ? <p className="subtle">还没有可见定义版本。先核对原文，再保存首版草稿。</p> : <div className="space-y-4">{items.map((item, index) => <ReadingRecord key={item.id} id={`definition-${item.id}`} title={`${item.title} · v${item.revision}`} open={index === 0} meta={<><time dateTime={item.created_at}>{new Date(item.created_at).toLocaleString()}</time> · 草稿 · {item.visibility === "private" ? "仅本人" : "产品共享"}{item.source_status !== "current" && " · 来源待重核"}</>}>
+        {loading ? <p role="status" className="subtle">正在读取定义版本…</p> : items.length === 0 ? <p className="subtle">还没有可见定义版本。先核对原文，再保存首版草稿。</p> : <div className="space-y-4">{items.map((item, index) => <ReadingRecord key={item.id} id={`definition-${item.id}`} title={`${item.title} · v${item.revision}`} open={index === 0} meta={<><time dateTime={item.created_at}>{new Date(item.created_at).toLocaleString()}</time> · 草稿 · {item.visibility === "private" ? "仅本人" : item.visibility === "audience" ? "指定评审人" : "品类授权成员"}{item.source_status !== "current" && " · 来源待重核"}</>}>
           <p className="break-words">{item.purpose}</p>{listFields.map(([key, label]) => item[key].length > 0 && <section key={key}><h4 className="subtle mb-1">{label}</h4><ul className="list-disc space-y-1 pl-5">{item[key].map((value, position) => <li className="break-words" key={position}>{value}</li>)}</ul></section>)}
           {item.specs.length > 0 && <section className="space-y-3"><h4 className="font-medium">规格与核对条件</h4>{item.specs.map(spec => <article key={spec.key} className="min-w-0 border-t border-border pt-3"><p className="break-words font-medium">{spec.parameter}</p><p className="my-2 break-words font-mono">{specificationValue(spec)}</p><p className="subtle">{natureLabels[spec.nature]} · 待专业确认 · {spec.owner_id === principalId ? "我负责" : spec.owner_id ? "有原负责人" : "负责人待定"}</p><p className="mt-2 break-words text-sm">依据：{spec.reason}</p><p className="subtle mt-1 break-words">条件：{spec.test_conditions.join("；") || "尚未明确"}</p><p className="subtle break-words">方法：{spec.method ?? "尚未明确"} · 判据：{spec.acceptance_criterion ?? "尚未明确"}</p></article>)}</section>}
           <details><summary className="cursor-pointer text-sm font-medium"><FileText className="mr-1 inline-block size-4"/>原文依据与版本</summary><ul className="mt-3 space-y-3">{item.sources.map(ref => <li key={referenceKey(ref)} className="min-w-0 border-l-2 border-border pl-3"><p className="subtle">{ref.title} · v{ref.expected_revision} · 第{ref.line}行 · {ref.status === "active" ? "当前来源有效" : "来源待重核"}</p><blockquote className="mt-1 break-words text-sm">{ref.quote}</blockquote></li>)}</ul></details>

@@ -6,9 +6,11 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
+
 from pdos_next import operational_bootstrap as bootstrap
 from pdos_next.domain.build_operational_facts import service as domain
 from pdos_next.domain.build_operational_facts.schemas import DecisionInput
+from pdos_next.error_catalog import REASONS
 from pdos_next.errors import DomainError
 from pdos_next.schemas.resource_readiness.contracts import ResourceRef
 
@@ -117,7 +119,8 @@ def test_exact_scope_selects_real_issuer_before_finite_decision_callback(monkeyp
     assert domain._issuer(session, ctx, a.product_id, uuid4(), a) is a
     with pytest.raises(DomainError) as error:
         domain._issuer(session, ctx, b.product_id, uuid4(), a)
-    assert error.value.code == "TRUSTED_ISSUER_REQUIRED"
+    assert error.value.reason == "TRUSTED_ISSUER_REQUIRED"
+    assert error.value.code == REASONS["TRUSTED_ISSUER_REQUIRED"]
     item = left["decisions"][0]
     resource = ResourceRef.model_validate(item["resource"])
     fact = DecisionInput.model_validate(item["decision"])

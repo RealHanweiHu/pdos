@@ -6,12 +6,14 @@ import { runInNewContext } from "node:vm";
 import { ModuleKind, ScriptTarget, transpileModule } from "typescript";
 import type { NextRequest } from "next/server";
 
+const category = "dededede-dede-4ded-8ded-dededededede";
+const scoped = (path: string) => path.startsWith("v1/categories/") || path === "v1/session" ? path : path.replace(/^v1\//, `v1/categories/${category}/`);
 const product = "11111111-2222-4333-8444-555555555555";
 const build = "66666666-7777-4888-8999-aaaaaaaaaaaa";
 const run = "bbbbbbbb-cccc-4ddd-8eee-ffffffffffff";
 const issue = "12345678-1234-4123-8123-123456789abc";
 const change = "87654321-4321-4321-8321-cba987654321";
-const base = `v1/products/${product}`;
+const base = `v1/categories/${category}/products/${product}`;
 const options = { module: ModuleKind.CommonJS, target: ScriptTarget.ES2022, esModuleInterop: true };
 const compiled = (path: string) => transpileModule(readFileSync(resolve(path), "utf8"), { compilerOptions: options, fileName: path }).outputText;
 // Run the actual handler and actual origin guard; only its host I/O is replaced.
@@ -61,9 +63,10 @@ function harness(configuration: { token?: string | null; api?: string | null; re
     },
   });
   const handlers = route.exports as { GET: Handler; POST: Handler };
-  async function send(path: string, value: { method?: "GET" | "POST"; query?: string; body?: string; origin?: string | null; host?: string; textFailure?: boolean } = {}) {
+  async function send(path: string, value: { method?: "GET" | "POST"; query?: string; body?: string; origin?: string | null; host?: string; textFailure?: boolean; unscoped?: boolean } = {}) {
     const method = value.method ?? "GET", headers = new Headers({ host: value.host ?? "localhost:3000" });
     if (value.origin !== null) headers.set("origin", value.origin ?? "http://localhost:3000");
+    if (!value.unscoped) path = scoped(path);
     const request = new Request(`http://localhost:3000/api/${path}${value.query ? `?${value.query}` : ""}`, { method, headers, body: value.body });
     Object.defineProperty(request, "nextUrl", { value: new URL(request.url) });
     const originalText = request.text.bind(request);
@@ -81,6 +84,27 @@ function harness(configuration: { token?: string | null; api?: string | null; re
 }
 
 const resourceInspect = `${base}/builds/${build}/resources/inspect`;
+test("小Pai与模型配置要求明确品类、准确方法及各自分页条件", async () => {
+  for (const path of ["v1/agent-runs", "v1/model-configuration", `v1/products/${product}/workspace`]) {
+    const h = harness();
+    const value = await h.send(path, { unscoped: true });
+    assert.equal(value.response.status, 404); assert.equal(h.calls.length, 0);
+  }
+  for (const [path, query] of [
+    [`v1/agent-runs/${run}`, "page_size=1"], ["v1/agent-runs", "after=0"],
+    [`v1/agent-runs/${run}/events`, `cursor=${issue}`],
+    ["v1/model-configuration", "enabled=true"],
+  ]) {
+    const h = harness(); const value = await h.send(path, { query });
+    assert.equal(value.response.status, 422); assert.equal(h.calls.length, 0);
+  }
+  const h = harness(); const invalid = await h.send("v1/model-configuration", { method: "POST", body: "{}" });
+  assert.equal(invalid.response.status, 405); assert.equal(h.calls.length, 0);
+  const actual = await h.send("v1/agent-runs", { query: `page_size=50&cursor=${issue}` });
+  assert.equal(actual.response.status, 200);
+  assert.equal(h.calls[0].url, `http://synthetic-api.invalid/v1/categories/${category}/agent-runs?page_size=50&cursor=${issue}`);
+});
+
 test("固定工序资源读回原样转发唯一正文与完整来源结果", async () => {
   const result = { execution_authorized: false, relations: [], required_source_read_set: [{ artifact_id: issue, expected_revision: 1 }] };
   const h = harness({ response: async () => Response.json(result) });
@@ -125,7 +149,7 @@ test("资源领域拒绝原样返回并且不补来源或命令", async () => {
 test("资源读取传输失败如实标记未取得读回，不要求恢复业务操作", async () => {
   const h = harness({ response: async () => { throw new Error("synthetic transport failure"); } });
   const { response } = await h.send(resourceInspect, { method: "POST", body: "{}" });
-  assert.equal(response.status, 503); assert.equal((await response.json()).code, "READ_UNAVAILABLE");
+  assert.equal(response.status, 503); assert.equal((await response.json()).code, "SOURCE_UNAVAILABLE");
   assert.equal(h.calls.length, 1);
 });
 
@@ -263,7 +287,7 @@ test("写请求必须同源，内部URL主机不同但Origin与Host匹配仍遵�
 });
 
 test("不合法JSON仅原样转发一次，仍由领域DTO拒绝，BFF不生成替代命令", async () => {
-  const h = harness({ response: async () => Response.json({ code: "INVALID_PAYLOAD" }, { status: 422 }) });
+  const h = harness({ response: async () => Response.json({ code: "VALIDATION_FAILED" }, { status: 422 }) });
   const body = '{"operation":"quality.issue.create",';
   const { response, reads } = await h.send("v1/commands", { method: "POST", body });
   assert.equal(response.status, 422); assert.equal(reads, 1); assert.equal(h.calls[0].init.body, body);
@@ -275,7 +299,7 @@ test("后端写回执未知不会重试，也不把服务器内部错误透露�
   const body = JSON.stringify({ operation: "quality.issue.triage", command_id: "original", idempotency_key: "original" });
   const { response, reads } = await h.send("v1/commands", { method: "POST", body });
   assert.equal(response.status, 503); assert.equal(reads, 1); assert.equal(h.calls.length, 1);
-  const value = await response.json(); assert.equal(value.code, "RESULT_UNKNOWN"); assert.equal(JSON.stringify(value).includes("private"), false);
+  const value = await response.json(); assert.equal(value.code, "EXTERNAL_OUTCOME_UNKNOWN"); assert.equal(JSON.stringify(value).includes("private"), false);
 });
 
 test("候选完整核对使用独立等待上限，未知结果保留原请求且绝不自动重发", async () => {
@@ -294,7 +318,7 @@ test("候选完整核对使用独立等待上限，未知结果保留原请求�
     assert.equal((h.calls[0].init as RequestInit & { dispatcher?: unknown }).dispatcher, h.dispatcher);
     assert.equal(h.calls[0].init.cache, "no-store");
     assert.equal(h.calls[0].init.redirect, "error");
-    const result = await response.json(); assert.equal(result.code, "RESULT_UNKNOWN");
+    const result = await response.json(); assert.equal(result.code, "EXTERNAL_OUTCOME_UNKNOWN");
     assert.equal(JSON.stringify(result).includes("private"), false);
   }
 });
@@ -302,7 +326,7 @@ test("候选完整核对使用独立等待上限，未知结果保留原请求�
 test("读取失败单独说明未发起操作，显式重读才产生下一次请求", async () => {
   const h = harness({ response: async () => { throw new Error("synthetic unavailable read"); } });
   const first = await h.send(`${base}/quality-execution`, { query: `run_id=${run}` });
-  assert.equal(first.response.status, 503); assert.equal((await first.response.json()).code, "READ_UNAVAILABLE");
+  assert.equal(first.response.status, 503); assert.equal((await first.response.json()).code, "SOURCE_UNAVAILABLE");
   assert.equal(first.reads, 0); assert.equal(h.calls.length, 1);
   await h.send(`${base}/quality-execution`, { query: `run_id=${run}` }); assert.equal(h.calls.length, 2);
 });
@@ -311,7 +335,7 @@ test("配对整改与候选历史深读保持同一600秒传输预算，失败�
   for (const path of ["quality-followup", "capa-candidates"]) {
     const h = harness({ response: async () => { throw new Error("private transport detail"); } });
     const { response, reads } = await h.send(`${base}/${path}`, { query: `issue_id=${issue}` });
-    assert.equal(response.status, 503); assert.equal((await response.json()).code, "READ_UNAVAILABLE");
+    assert.equal(response.status, 503); assert.equal((await response.json()).code, "SOURCE_UNAVAILABLE");
     assert.equal(reads, 0); assert.equal(h.calls.length, 1);
     assert.deepEqual(h.timeouts, [600000]);
     assert.equal((h.calls[0].init as RequestInit & { dispatcher?: unknown }).dispatcher, h.dispatcher);
@@ -324,7 +348,7 @@ test("body读取失败不调用后端，响应流失败也不重发已提交请�
   assert.equal(failed.response.status, 503); assert.equal(failed.reads, 1); assert.equal(unread.calls.length, 0);
   const stream = harness({ response: async () => new Response(new ReadableStream({ start(controller) { controller.error(new Error("synthetic response lost")); } })) });
   const lost = await stream.send("v1/commands", { method: "POST", body: JSON.stringify({ operation: "change.request.create" }) });
-  assert.equal(lost.response.status, 503); assert.equal((await lost.response.json()).code, "RESULT_UNKNOWN"); assert.equal(stream.calls.length, 1);
+  assert.equal(lost.response.status, 503); assert.equal((await lost.response.json()).code, "EXTERNAL_OUTCOME_UNKNOWN"); assert.equal(stream.calls.length, 1);
 });
 
 test("领域403/409/422回执保留状态与正文，下载响应头兼容原入口", async () => {
@@ -400,10 +424,10 @@ test("事实超时保留UNKNOWN且不重发，读取失败保留READ_UNAVAILABLE
   const lost = harness({ response: async () => { throw new Error("synthetic connection lost"); } });
   const body = JSON.stringify({ operation: "quality.capa.observation.record", original_value: "unchanged" });
   const value = await lost.send("v1/commands", { method: "POST", body });
-  assert.equal(value.response.status, 503); assert.equal((await value.response.json()).code, "RESULT_UNKNOWN");
+  assert.equal(value.response.status, 503); assert.equal((await value.response.json()).code, "EXTERNAL_OUTCOME_UNKNOWN");
   assert.equal(lost.calls.length, 1); assert.equal(lost.calls[0].init.body, body);
   const unread = harness({ response: async () => { throw new Error("synthetic read lost"); } });
   const read = await unread.send(`${base}/capa-facts`, { query: `issue_id=${issue}` });
-  assert.equal(read.response.status, 503); assert.equal((await read.response.json()).code, "READ_UNAVAILABLE");
+  assert.equal(read.response.status, 503); assert.equal((await read.response.json()).code, "SOURCE_UNAVAILABLE");
   assert.equal(unread.calls.length, 1); assert.equal(read.reads, 0);
 });

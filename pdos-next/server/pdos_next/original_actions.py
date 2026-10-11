@@ -32,7 +32,7 @@ def validate(s, ctx, command, product, payload):
 
 def preview_view(s, ctx, command, product, payload):
     if command.expected_revision != product.revision:
-        raise DomainError("VERSION_CONFLICT", "产品范围已变化，请刷新后重新预览。")
+        raise DomainError("VERSION_CONFLICT", "型号范围已变化，请刷新后重新预览。")
     original = require_original(s, ctx, product.id, payload.original_id, lock=True)
     state = security_row(s, original)
     if state.source_state != "active" or state.epoch != payload.expected_epoch:
@@ -45,14 +45,16 @@ def preview_view(s, ctx, command, product, payload):
             "epoch": state.epoch,
         },
         "after": {"source_state": "withdrawn", "reason": payload.reason},
-        "effect": ("停止下载、解析和新的业务引用；依赖结果需重新核对。"
-                   "原件字节与历史决定保留，不执行物理删除。"),
+        "effect": (
+            "停止下载、解析和新的业务引用；依赖结果需重新核对。"
+            "原件字节与历史决定保留，不执行物理删除。"
+        ),
     }
 
 
 def apply(s, ctx, command, product, payload):
     if command.expected_revision != product.revision:
-        raise DomainError("VERSION_CONFLICT", "产品范围已变化，请刷新后重新预览。")
+        raise DomainError("VERSION_CONFLICT", "型号范围已变化，请刷新后重新预览。")
     original = require_original(s, ctx, product.id, payload.original_id, lock=True)
     state = security_row(s, original)
     if state.epoch != payload.expected_epoch or state.source_state != "active":

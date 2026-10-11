@@ -31,7 +31,7 @@ from change_execution.test_transactions import (  # noqa: F401
     ready_work,
     results_work,
 )
-from sqlalchemy import event, func, select
+from sqlalchemy import event, func, select, update
 from test_project_first_plan import cmd, post
 from test_resource_dependency_execution import engines  # noqa: F401 - verified exact target fixture
 
@@ -81,7 +81,7 @@ from pdos_next.schemas.change_control.contracts import GraphSnapshot
 from pdos_next.schemas.verification.contracts import SourceRef
 from pdos_next.service import digest as common_digest
 
-CASE_NODE_LIMIT = 32  # Narrower than the owner's unchanged hard limit of 250.
+CASE_NODE_LIMIT = 32  # Only this synthetic fixture's expected topology.
 SOURCE_LIMIT = 20
 FAULT_MESSAGE = "Synthetic coverage publication fault after actual flush"
 ATOM_MODELS = (
@@ -121,17 +121,23 @@ def effect_hashes(work, session=None):
     def read(s):
         return {
             model.__tablename__: sorted(
-                common_digest(
-                    {column.name: getattr(row, column.name) for column in model.__table__.columns}
-                )
-                for row in s.scalars(select(model).where(model.tenant_id == work.setup.tenant))
+                common_digest(dict(row))
+                for row in s.execute(
+                    select(model.__table__).where(model.tenant_id == work.setup.tenant)
+                ).mappings()
             )
             for model in ATOM_MODELS
         }
 
     if session is not None:
         return read(session)
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         return read(s)
 
 
@@ -167,7 +173,13 @@ def registered_original(work, raw, *, title):
 def publish(work, issuer, payload, command_id, request_key):
     # Any exception leaves this entire tenant_session context: no savepoint,
     # partial rollback, reused aborted Session, or catch-then-commit path.
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         return importer.trusted_import(
             s,
             work.quality.ctx,
@@ -220,7 +232,7 @@ def publication_fault(s, work, material, command_id, request_key, monkeypatch, *
             event.remove(Outbox, "before_insert", fail_insert)
         return
 
-    assert mode in {"after_full_flush", "clock_after_full_flush"}
+    assert mode in {"after_full_flush", "clock_after_full_flush", "source_after_full_flush"}
     actual_flush = s.flush
     with monkeypatch.context() as patch:
 
@@ -242,6 +254,13 @@ def publication_fault(s, work, material, command_id, request_key, monkeypatch, *
                 state.update(armed=True, fired=True, flushed_common_rows=4)
                 if mode == "after_full_flush":
                     raise RuntimeError(FAULT_MESSAGE)
+                if mode == "source_after_full_flush":
+                    s.execute(
+                        update(Artifact)
+                        .where(Artifact.id == work.hypothesis_source.id)
+                        .values(status="withdrawn")
+                    )
+                    return
                 # Fault only. Actual business/PG/qualification clocks and all
                 # prior fixture facts are untouched; never used for success.
                 patch.setattr(
@@ -263,10 +282,16 @@ def test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recov
     assert all(v.status == "unknown" for v in graph.coverage)
     assert 1 <= len(graph.nodes) <= CASE_NODE_LIMIT
     assert 1 <= len(captured["required_source_read_set"]) <= SOURCE_LIMIT
-    assert graph.nature == "synthetic" and graph.expires_at > now()
+    assert graph.nature == "synthetic" and graph.expires_at is None
     original_capture = deepcopy(captured["capture"])
 
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         _, change = current_fixed(s, work.quality.ctx, work.setup.product, UUID(change_id))
         request = change_snapshot(change)
         fast_scope = change_service._scope_seed(
@@ -290,7 +315,7 @@ def test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recov
         assert basis["scope"] == scope.model_dump(mode="json")
         assert digest(basis["closure"]["projection"]) == digest(registry.graph_projection(graph))
         project = s.get(Project, scope.project_id)
-        assert project.visibility == "product" and project.owner_id != change.owner_id
+        assert project.visibility == "category" and project.owner_id != change.owner_id
         assert change.owner_id == work.quality.human and change.visibility == "private"
         material = schemas.CoverageMaterial(
             schema_version="pdos-controlled-change-coverage-v1",
@@ -321,7 +346,7 @@ def test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recov
             ),
             closure_sha256=basis["closure_sha256"],
             valid_from=graph.captured_at,
-            valid_until=graph.expires_at,
+            valid_until=graph.captured_at + timedelta(hours=1),
             nature="synthetic",
         )
 
@@ -343,7 +368,13 @@ def test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recov
     }
     # Native registrations advance the real dependency clock. They do not enter
     # this fixed domain topology or change its registry closure SHA.
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         after_registration = owner.inspect_basis(
             s, work.quality.ctx, work.setup.product, change_id=material.change_id, purpose=purpose
         )
@@ -381,10 +412,25 @@ def test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recov
             assert failure.value.code == "MISSING_REQUIRED_EVIDENCE" and failure.value.status == 422
             assert effect_hashes(work) == baseline
 
-        for mode in ("outbox_insert", "after_full_flush", "clock_after_full_flush"):
-            expected = DomainError if mode == "clock_after_full_flush" else RuntimeError
+        for mode in (
+            "outbox_insert",
+            "after_full_flush",
+            "clock_after_full_flush",
+            "source_after_full_flush",
+        ):
+            expected = (
+                DomainError
+                if mode.endswith("after_full_flush") and mode != "after_full_flush"
+                else RuntimeError
+            )
             with pytest.raises(expected) as failure:
-                with tenant_session(work.setup.engine, work.setup.tenant) as s:
+                with tenant_session(
+                    work.setup.engine,
+                    work.setup.tenant,
+                    actor_id=work.quality.ctx.actor_id,
+                    requester_id=work.quality.ctx.requester_id,
+                    category_id=work.setup.category,
+                ) as s:
                     with publication_fault(
                         s, work, material, command_id, request_key, monkeypatch, mode=mode
                     ) as state:
@@ -399,8 +445,13 @@ def test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recov
                         )
             assert state["armed"] is True and state["fired"] is True
             assert state["flushed_common_rows"] == (0 if mode == "outbox_insert" else 4)
-            if mode == "clock_after_full_flush":
-                assert failure.value.code == "COVERAGE_OWNER_STALE" and failure.value.status == 409
+            if mode in {"clock_after_full_flush", "source_after_full_flush"}:
+                assert failure.value.code in {"SOURCE_STALE", "MISSING_REQUIRED_EVIDENCE"}
+                assert failure.value.reason in {
+                    "COVERAGE_OWNER_STALE",
+                    "COVERAGE_DEPENDENCY_UNRESOLVED",
+                }
+                assert failure.value.status == 409
             else:
                 assert str(failure.value) == FAULT_MESSAGE
             faults[mode] = deepcopy(state)
@@ -422,7 +473,13 @@ def test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recov
             Outbox,
         ):
             assert len(committed[model.__tablename__]) == len(baseline[model.__tablename__]) + 1
-        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.quality.ctx.actor_id,
+            requester_id=work.quality.ctx.requester_id,
+            category_id=work.setup.category,
+        ) as s:
             saved = s.get(models.ChangeCoverageFact, UUID(receipt["subject_id"]))
             assert saved.material == valid_raw and saved.material_sha256 == digest(material)
             assert (
@@ -448,7 +505,8 @@ def test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recov
             assert all(
                 v.status == "complete" and v.source == originals["valid"] for v in current.coverage
             )
-            assert current.valid_until <= material.valid_until == graph.expires_at
+            assert current.valid_until <= material.valid_until
+            assert graph.expires_at is None
             assert 1 <= len(current.required_source_read_set) <= SOURCE_LIMIT
             assert current.source_basis["dependency_epoch"] == saved.dependency_epoch
             refreshed = owner.refresh(
@@ -470,6 +528,55 @@ def test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recov
         assert publish(work, issuer, payload, command_id, request_key) == receipt
         assert effect_hashes(work) == committed
 
+        # The last real publisher check can perform SQL in this same UOW.
+        # A dependency change after that check must roll back the new capture
+        # together with the physical epoch, despite the held row locks.
+        capture_key = str(uuid4())
+        late_fault = {"fired": False}
+        actual_recheck = owner.recheck_access
+        equipment = next(
+            resource.resource.id
+            for resource in work.test_input.resources
+            if resource.resource.kind == "equipment"
+        )
+
+        def recheck_with_late_dependency(s, *args, **kwargs):
+            result = actual_recheck(s, *args, **kwargs)
+            if any(
+                isinstance(row, ChangeGraphCapture) and row.capture_key == capture_key
+                for row in s.identity_map.values()
+            ):
+                changed = s.execute(
+                    update(OperationalAsset)
+                    .where(
+                        OperationalAsset.tenant_id == work.setup.tenant,
+                        OperationalAsset.id == equipment,
+                    )
+                    .values(occupancy_epoch=OperationalAsset.occupancy_epoch + 1)
+                )
+                assert changed.rowcount == 1
+                late_fault["fired"] = True
+            return result
+
+        with monkeypatch.context() as late:
+            late.setattr(owner, "recheck_access", recheck_with_late_dependency)
+            response = work.quality.client.post(
+                f"/v1/categories/{work.setup.category}/products/{work.setup.product}"
+                "/change-execution/captures",
+                headers=work.quality.headers,
+                json={
+                    "capture_key": str(capture_key),
+                    "change_id": str(change_id),
+                    "expected_change_revision": 1,
+                    "reason": "Synthetic dependency fault after the last real owner SQL",
+                },
+            )
+        assert late_fault["fired"] is True
+        assert response.status_code == 409 and response.json()["code"] == "SOURCE_STALE"
+        assert response.json()["detail"]["reason"] == "RECHECK_REQUIRED"
+        assert effect_hashes(work) == committed
+        faults["capture_after_last_owner_sql"] = late_fault
+
         report = os.environ.get("PDOS_ROOT_COVERAGE_PUBLICATION_REPORT")
         if report:
             with Path(report).open("x") as stream:
@@ -481,7 +588,7 @@ def test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recov
                         "project_owner_differs_from_change_owner": True,
                         "actual_nodes": len(graph.nodes),
                         "case_node_limit": CASE_NODE_LIMIT,
-                        "owner_node_limit": schemas.MAX_NODES,
+                        "owner_node_limit": None,
                         "source_limit": SOURCE_LIMIT,
                         "actual_source_reads": len(current.required_source_read_set),
                         "coverage_entries": len(current.coverage),

@@ -4,7 +4,7 @@ from copy import deepcopy
 from dataclasses import replace
 from decimal import Decimal
 from types import SimpleNamespace
-from uuid import UUID
+from uuid import NAMESPACE_URL, UUID, uuid5
 
 import pytest
 from pydantic import ValidationError
@@ -13,6 +13,31 @@ from pdos_next.domain.build_operational_facts import service
 from pdos_next.domain.build_operational_facts.schemas import FactInput, OperationalScope
 
 from .support import AT, NoDatabase, example
+
+
+@pytest.fixture(autouse=True)
+def fixed_capacity_port(monkeypatch):
+    from pdos_next.domain.build_operational_facts import physical_summary
+
+    def summary(s, ctx, pid, kind, identities, **options):
+        assert isinstance(s, NoDatabase)
+        if kind == "material":
+            return [
+                {"asset_id": str(row.asset_id), "quantity": str(row.quantity), "unit": row.unit}
+                for row in s.holds if row.asset_id in identities
+            ]
+        return [
+            {
+                "id": str(uuid5(NAMESPACE_URL, f"capacity:{row.window_start}:{row.window_finish}")),
+                "resource_id": str(row.resource_id),
+                "window_start": row.window_start.isoformat(),
+                "window_finish": row.window_finish.isoformat(),
+                "units": str(row.units),
+            }
+            for row in s.occupied if row.resource_id in identities
+        ]
+
+    monkeypatch.setattr(physical_summary, "capacity_summary", summary)
 
 
 def evaluated(data_transform=None, issuer_transform=None, *, holds=(), occupied=()):

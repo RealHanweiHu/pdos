@@ -29,7 +29,7 @@ def publish_rule(s, ctx, command, *, publisher):
         .with_for_update()
     )
     if product is None:
-        raise DomainError("FORBIDDEN_SCOPE", "规则不在当前产品范围。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "规则不在当前型号范围。", 403)
     require_access(s, ctx, product.id, write=True, lock=True)
     uow, caller = guards._uow(s), digest(vars(ctx))
     request_digest = digest(
@@ -44,6 +44,7 @@ def publish_rule(s, ctx, command, *, publisher):
     intent = digest(
         {
             "operation": command.operation,
+            "category": command.category_id,
             "product": product.id,
             "payload": commands.semantic(payload),
             "named_actor": ctx.requester_id,

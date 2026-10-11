@@ -24,7 +24,7 @@ def digest(value) -> str:
 class RuntimeStore:
     def __init__(self, url: str, *, realm: str, marker: str):
         self.url, self.realm, self.marker = url, realm, marker
-        if realm not in {"pdos", "pdos-next"}:
+        if realm not in {"pdos-next"}:
             raise ValueError("Unknown runtime realm")
         with self.connection() as c:
             row = c.execute("SELECT marker FROM environment_guard").fetchone()
@@ -48,13 +48,13 @@ class RuntimeStore:
                 "VALUES(%s,%s,%s,%s,%s,%s) ON CONFLICT(realm,id) DO NOTHING",
                 (self.realm, tenant_id, job_id, handler, fingerprint, Jsonb(payload)),
             )
-        return dict(
-            realm=self.realm,
-            tenant_id=tenant_id,
-            job_id=job_id,
-            handler=handler,
-            input_digest=fingerprint,
-        )
+        return {
+            "realm": self.realm,
+            "tenant_id": tenant_id,
+            "job_id": job_id,
+            "handler": handler,
+            "input_digest": fingerprint,
+        }
 
     def read(self, ref: dict) -> dict:
         if ref["realm"] != self.realm:
@@ -86,6 +86,7 @@ class RuntimeStore:
             )
 
     def finish(self, ref: dict, result: dict):
+        self.read(ref)
         with self.connection() as c:
             c.execute(
                 "UPDATE agent_runtime_jobs SET state='completed',result=%s,"
@@ -95,6 +96,7 @@ class RuntimeStore:
             )
 
     def fail(self, ref: dict, code: str):
+        self.read(ref)
         with self.connection() as c:
             c.execute(
                 "UPDATE agent_runtime_jobs SET state='failed',error_code=%s,"
@@ -103,6 +105,7 @@ class RuntimeStore:
             )
 
     def require_reconciliation(self, ref: dict):
+        self.read(ref)
         with self.connection() as connection:
             connection.execute(
                 "UPDATE agent_runtime_jobs SET error_code='AGENT_RECONCILIATION_REQUIRED' "
@@ -111,6 +114,7 @@ class RuntimeStore:
             )
 
     def emit(self, ref: dict, event: dict):
+        self.read(ref)
         with self.connection() as c:
             c.execute(
                 "INSERT INTO agent_runtime_events(realm,job_id,body) VALUES(%s,%s,%s)",
@@ -129,7 +133,7 @@ class RuntimeStore:
 
 SCHEMA = """
 CREATE TABLE agent_runtime_jobs(
- realm text NOT NULL CHECK(realm IN ('pdos','pdos-next')),
+ realm text NOT NULL CHECK(realm IN ('pdos-next')),
  tenant_id uuid NOT NULL, id uuid NOT NULL, handler text NOT NULL,
  input_digest text NOT NULL, payload jsonb NOT NULL,
  state text NOT NULL DEFAULT 'queued'

@@ -5,12 +5,14 @@ from uuid import UUID, uuid4
 
 import pytest
 from pydantic import ValidationError
+from sqlalchemy.orm import Session
 
+from pdos_next.domain.build_operational_facts.models import OperationalAsset
 from pdos_next.domain.test_resources import service
 from pdos_next.domain.test_resources.schemas import TestPlanBinding as Binding
 from pdos_next.domain.test_resources.schemas import TestResourceFactInput as FactInput
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
+from pdos_next.service import Context, digest
 
 
 def reference():
@@ -249,7 +251,7 @@ def test_revoke_restore_issuer_epoch_cannot_reuse_old_context():
     assert service._issuer(session, ctx, product, None, new) is new
 
 
-def test_union_locks_complete_assets_in_existing_global_order(monkeypatch, binding_data, fact_data):
+def test_union_locks_complete_assets_in_one_global_id_order(monkeypatch, binding_data, fact_data):
     binding = Binding.model_validate(binding_data)
     data = FactInput.model_validate(fact_data)
     material, small, large = UUID(int=10), UUID(int=1), UUID(int=100)
@@ -260,22 +262,49 @@ def test_union_locks_complete_assets_in_existing_global_order(monkeypatch, bindi
         product_id=UUID(int=6),
         project_id=binding.project_id,
         build_id=binding.build_id,
-        visibility="product",
+        visibility="category",
         data={},
-    )
-    session = SimpleNamespace(
-        scalar=lambda _: SimpleNamespace(fact_id=uuid4()), get=lambda *_: manufacturing
     )
     ctx = Context(manufacturing.tenant_id, uuid4(), uuid4())
     calls = []
     monkeypatch.setattr(service, "_specs", lambda _: test_specs)
     monkeypatch.setattr(service.BuildFactInput, "model_validate", lambda _: SimpleNamespace())
     monkeypatch.setattr(service, "build_asset_specs", lambda *_: build_specs)
-    monkeypatch.setattr(
-        service, "_locked_assets", lambda _s, _c, specs, **kw: calls.append(specs[0][1])
-    )
-    service._lock_union(session, ctx, manufacturing.product_id, binding, data)
-    assert calls == [material, small, large]
+
+    def scalars(query):
+        assert list(query._order_by_clauses) == [OperationalAsset.id]
+        assert query._for_update_arg is not None
+        identities = set(query.compile().params["id_1"])
+        calls.append(identities)
+        return [
+            OperationalAsset(
+                id=aid,
+                tenant_id=ctx.tenant_id,
+                kind=kind,
+                external_key=key,
+                identity=identity,
+                revision=revision,
+                data={"value": data, "state": "active"},
+                data_sha256=digest(data),
+            )
+            for kind, aid, key, identity, revision, data in [test_specs[0], *build_specs]
+        ]
+
+    # A real unbound Session supplies request-proof state; all IO methods are
+    # replaced explicitly, and the actual shared asset selector is inspected.
+    with Session() as session, session.begin():
+        monkeypatch.setattr(
+            session,
+            "scalar",
+            lambda query: (
+                manufacturing
+                if query.column_descriptions[0]["entity"] is service.BuildOperationalFact
+                else SimpleNamespace(fact_id=uuid4())
+            ),
+        )
+        monkeypatch.setattr(session, "scalars", scalars)
+        service._lock_union(session, ctx, manufacturing.product_id, binding, data)
+    assert calls == [{small, material, large}]
 
 
 def test_at_refuses_naive_future_and_accepts_exact_current(monkeypatch):
@@ -363,4 +392,4 @@ def test_port_result_cannot_substitute_fixed_physical_sample(binding_data, field
         )
     with pytest.raises(DomainError) as failure:
         service._require_sample_binding(reference, value)
-    assert failure.value.code == "TEST_PLAN_SCOPE_MISMATCH"
+    assert failure.value.reason == "TEST_PLAN_SCOPE_MISMATCH"

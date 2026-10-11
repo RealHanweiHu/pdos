@@ -9,6 +9,7 @@ from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from uuid import UUID
+from uuid import UUID as CategoryUUID
 
 import pytest
 from psycopg.errors import DeadlockDetected, LockNotAvailable, SerializationFailure
@@ -52,7 +53,7 @@ def env(monkeypatch):
     engine = create_engine("postgresql+psycopg://unused@invalid/pdos_test")
     s = Session(engine)
     s.begin()
-    ctx = Context(UUID(int=1), UUID(int=2), UUID(int=2))
+    ctx = Context(UUID(int=1), UUID(int=2), UUID(int=2), category_id=CategoryUUID(int=1000000))
     publisher = UUID(int=7)
     pid, project_id, bid, process_id = UUID(int=4), UUID(int=5), UUID(int=3), UUID(int=9)
     resource = {"id": str(UUID(int=50)), "revision": 1, "kind": "fixture"}
@@ -129,6 +130,7 @@ def env(monkeypatch):
             lifecycle_epoch=1,
             status="draft",
             owner_id=ctx.requester_id,
+            category_id=CategoryUUID(int=1000000),
         ),
     )
     for identity in (ctx.requester_id, publisher):
@@ -151,7 +153,7 @@ def env(monkeypatch):
                 tenant_id=ctx.tenant_id,
                 created_at=AT,
                 principal_id=identity,
-                product_id=pid,
+                category_id=CategoryUUID(int=1000000),
                 can_write=False,
                 access_epoch=1,
                 expires_at=AT + timedelta(minutes=5),
@@ -192,7 +194,7 @@ def env(monkeypatch):
             build_id=bid,
             build_revision=1,
             owner_id=publisher,
-            visibility="product",
+            visibility="category",
             issuer_key=issuer.key,
             issuer_version=issuer.version,
             issuer_epoch=issuer.epoch,
@@ -378,7 +380,7 @@ def test_product_then_preflight_then_full_people_then_clock_then_owner_io_order(
     )
     assert env.calls[:clock_index] == [
         ("row_select", "Product", True),
-        ("row_select", "BuildOperationalCurrent", True),
+        ("row_select", "BuildOperationalCurrent", False),
         ("row_select", "BuildOperationalFact", False),
         ("row_select", "Principal", True),
         ("row_select", "Grant", True),
@@ -405,7 +407,7 @@ def test_nowait_person_failure_is_fixed_error_and_never_unknown_or_more_io(env, 
     monkeypatch.setattr(env.s, "scalars", locked)
     with pytest.raises(DomainError) as error:
         read(env)
-    assert error.value.code == "RESOURCE_RECHECK_REQUIRED" and error.value.status == 409
+    assert error.value.reason == "RESOURCE_RECHECK_REQUIRED" and error.value.status == 409
     assert env.calls[-1][:2] == ("row_select", "BuildOperationalFact")
     assert not any(
         item[0] in {"source_bytes", "actual_SQL_clock_substituted"} for item in env.calls
@@ -436,7 +438,7 @@ def test_missing_root_nowait_seam_fails_configured_port_instead_of_fallback(env,
     monkeypatch.setattr(owner, "lock_people", old_signature)
     with pytest.raises(DomainError) as error:
         read(env)
-    assert error.value.code == "RESOURCE_PEOPLE_NOWAIT_REQUIRED" and error.value.status == 503
+    assert error.value.reason == "RESOURCE_PEOPLE_NOWAIT_REQUIRED" and error.value.status == 503
     assert not any(item[0] == "actual_SQL_clock_substituted" for item in env.calls)
 
 
@@ -575,13 +577,13 @@ def test_saved_read_set_must_equal_full_actual_sources_even_if_hash_matches(env)
         read(env)
 
 
-def test_actual_merge_preserves_twenty_source_limit(env):
+def test_actual_merge_preserves_complete_source_set_over_twenty(env):
     env.reads.extend(
         [{"artifact_id": str(UUID(int=200 + index)), "expected_revision": 1} for index in range(20)]
     )
     env.fact.__dict__["fact_sha256"] = operational._fact_hash(env.fact)
-    with pytest.raises(DomainError):
-        read(env)
+    value = read(env)
+    assert len(value.view.required_source_read_set) == len(env.reads) > 20
 
 
 @pytest.mark.parametrize("field", ["scope", "process", "build", "execution"])

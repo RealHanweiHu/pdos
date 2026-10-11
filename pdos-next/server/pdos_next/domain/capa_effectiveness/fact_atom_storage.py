@@ -5,6 +5,10 @@ new fact targets do not exist in the public candidate yet. A returned FactAtom
 describes stored associations, and cannot replace the seven owner gates.
 """
 
+from pdos_next.database import category_for_product
+from pdos_next.clock import proof_deadline_current
+
+
 # Initialize the common registry before staged domain imports.
 # ruff: noqa: I001
 
@@ -31,6 +35,7 @@ from pdos_next.models import (
     Receipt,
     RequestKey,
 )
+from pdos_next.request_proof import snapshot_rows
 from pdos_next.schemas.verification.contracts import Scope
 from sqlalchemy import select
 from sqlalchemy.orm import Session, SessionTransaction
@@ -118,13 +123,30 @@ def _same_uow(s, captured, ctx, caller):
 
 
 def _one(s, model, *where):
-    rows = list(
-        s.scalars(
-            select(model)
-            .where(*where)
-            .limit(2)
-            .execution_options(populate_existing=True, autoflush=False)
-        )
+    _uow(s)
+    query = (
+        select(model)
+        .where(*where)
+        .limit(2)
+        .execution_options(populate_existing=True, autoflush=False)
+    )
+    # Only the snapshot or an actually held model gate permits reuse. The
+    # complete parameter set keeps exact version/tenant predicates in the key.
+    compiled = query.compile()
+    scope_id = next(
+        (
+            getattr(getattr(clause, "right", None), "value", None)
+            for clause in where
+            if getattr(getattr(clause, "left", None), "name", None) == "product_id"
+            or (model is Product and getattr(getattr(clause, "left", None), "name", None) == "id")
+        ),
+        None,
+    )
+    rows = snapshot_rows(
+        s,
+        ("capa-exact-row", model, str(compiled), digest(compiled.params)),
+        query,
+        scope_id=scope_id,
     )
     _require(len(rows) == 1, "FACT_EXACT_GROUP_ROW_MISSING")
     return rows[0]
@@ -141,11 +163,15 @@ def _acl(s, ctx, product_id):
         s,
         Grant,
         Grant.tenant_id == ctx.tenant_id,
-        Grant.product_id == product_id,
+        Grant.category_id == category_for_product(product_id),
         Grant.principal_id == ctx.actor_id,
     )
     # The final Grant query can outlive a clock sampled before this IO.
-    if person.kind != "human" or person.active is not True or grant.expires_at <= datetime.now(UTC):
+    if (
+        person.kind != "human"
+        or person.active is not True
+        or (grant.expires_at is not None and grant.expires_at <= datetime.now(UTC))
+    ):
         raise DomainError("FORBIDDEN_SCOPE", "当前本人不能读取这份事实。", 403)
 
 
@@ -161,7 +187,14 @@ def _proof(s, row, operation, tier):
     if tier == "host_import":
         _require(all(row[key] is None for key in fields), "FACT_IMPORT_HAS_PUBLIC_PROOF")
         return None
-    _require(all(row[key] is not None for key in fields), "FACT_SAVED_PROOF_INCOMPLETE")
+    _require(
+        all(
+            row[key] is not None
+            for key in fields
+            if not (tier == "T2" and key == "proof_expires_at")
+        ),
+        "FACT_SAVED_PROOF_INCOMPLETE",
+    )
     proof = _one(
         s,
         Confirmation,
@@ -178,7 +211,8 @@ def _proof(s, row, operation, tier):
         and proof.token_hash == row["token_sha256"]
         and proof.payload_digest == row["material_sha256"]
         and proof.expires_at == row["proof_expires_at"]
-        and proof.created_at <= row["proof_consumed_at"] <= row["created_at"] < proof.expires_at,
+        and proof.created_at <= row["proof_consumed_at"] <= row["created_at"]
+        and proof_deadline_current(tier, proof.expires_at, row["created_at"]),
         "FACT_SAVED_PROOF_BINDING_MISMATCH",
     )
     return {

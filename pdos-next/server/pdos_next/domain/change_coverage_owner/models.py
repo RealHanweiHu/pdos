@@ -22,6 +22,7 @@ from pdos_next.models import Base
 
 class ChangeCoverageFact(_Fact, Base):
     __tablename__ = "controlled_change_coverage_facts"
+    valid_until: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     change_id: Mapped[UUID]
     origin_version_id: Mapped[UUID]
     origin_revision: Mapped[int] = mapped_column(Integer)
@@ -58,8 +59,7 @@ class ChangeCoverageFact(_Fact, Base):
             "AND dependency_epoch>0 AND origin_revision>0"
         ),
         CheckConstraint(
-            "nature IN ('real','synthetic') AND "
-            "jsonb_array_length(required_source_read_set) BETWEEN 1 AND 20"
+            "nature IN ('real','synthetic') AND jsonb_array_length(required_source_read_set)>0"
         ),
         CheckConstraint("valid_from<=created_at AND created_at<valid_until"),
     )

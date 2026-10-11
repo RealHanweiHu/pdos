@@ -41,7 +41,7 @@ def authority_work(setup):
                 "title": "Synthetic credential source",
                 "content": SOURCE_TEXT,
                 "source_label": "Synthetic issuer source",
-                "visibility": "product",
+                "visibility": "category",
             },
         ),
     )
@@ -58,7 +58,7 @@ def authority_work(setup):
                 "purpose": PURPOSE,
                 "use_cases": ["Synthetic authority assessment"],
                 "change_reason": "First draft",
-                "visibility": "product",
+                "visibility": "category",
                 "sources": [reference],
             },
             source_id,
@@ -74,7 +74,7 @@ def authority_work(setup):
                 "name": "Synthetic authority scope",
                 "purpose": PURPOSE,
                 "scope": "Only synthetic verification authority",
-                "visibility": "product",
+                "visibility": "category",
                 "definition_id": definition.json()["subject_id"],
                 "expected_definition_revision": 1,
             },
@@ -127,7 +127,14 @@ def fact_payload(setup, work, kind="duty", **changes):
 
 
 def imported(setup, work, payload, *, request_key=None, ctx=None, issuer=None):
-    with tenant_session(setup.engine, setup.tenant) as session:
+    caller = ctx or setup.ctx
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=caller.actor_id,
+        requester_id=caller.requester_id,
+        category_id=setup.category,
+    ) as session:
         return import_professional_fact(
             session,
             ctx or setup.ctx,
@@ -139,7 +146,14 @@ def imported(setup, work, payload, *, request_key=None, ctx=None, issuer=None):
 
 
 def assessment(setup, work, *, ctx=None, operation=OP, purpose=PURPOSE, at=None):
-    with tenant_session(setup.engine, setup.tenant) as session:
+    caller = ctx or setup.ctx
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=caller.actor_id,
+        requester_id=caller.requester_id,
+        category_id=setup.category,
+    ) as session:
         return authority.assess(
             session,
             ctx or setup.ctx,
@@ -170,7 +184,9 @@ def successor(setup, work, previous, kind="qualification", **changes):
 
 
 def count(setup, model):
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as session:
         return session.scalar(select(func.count()).select_from(model))
 
 
@@ -197,7 +213,9 @@ def test_trusted_pair_writes_same_transaction_receipt_audit_outbox_and_exact_sou
     assert viewed["required_source_read_set"] == [
         {"artifact_id": authority_work["source"], "expected_revision": 1}
     ]
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as session:
         for record in records:
             for model in (Audit, Outbox):
                 assert (
@@ -219,7 +237,7 @@ def test_fake_issuer_object_is_rejected_even_with_owner_write_grant(setup, autho
     fake = SimpleNamespace(key=issuer.key, version=issuer.version, nature=issuer.nature)
     with pytest.raises(DomainError) as caught:
         imported(setup, authority_work, fact_payload(setup, authority_work), issuer=fake)
-    assert caught.value.code == "TRUSTED_ISSUER_REQUIRED"
+    assert caught.value.reason == "TRUSTED_ISSUER_REQUIRED"
     assert count(setup, ProfessionalFact) == 0
 
 
@@ -229,7 +247,7 @@ def test_trusted_issuer_scope_cannot_be_rebound_by_payload(setup, authority_work
         imported(
             setup, authority_work, fact_payload(setup, authority_work, **{field: str(uuid4())})
         )
-    assert caught.value.code == (
+    assert caught.value.reason == (
         "FORBIDDEN_SCOPE" if field == "product_id" else "FORBIDDEN_ISSUER_SCOPE"
     )
     assert count(setup, ProfessionalFact) == 0
@@ -279,7 +297,9 @@ def test_revoke_restore_monotonic_epoch_invalidates_saved_review(setup, authorit
     assert negative["qualified"] is False and negative["authorized"] is False
     assert current["authorized"] is True
     assert len({v["facts_revision"] for v in (original, negative, current)}) == 3
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as session:
         check = authority.recheck_snapshot(
             session, setup.ctx, setup.product, UUID(authority_work["project"]), original, now()
         )
@@ -306,7 +326,9 @@ def test_historical_import_replay_returns_original_receipt_without_rewinding_poi
     semantic = imported(setup, authority_work, deepcopy(payload))
     assert replay["id"] == semantic["id"] == original["id"]
     assert count(setup, ProfessionalFact) == 3
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as session:
         assert (
             session.scalar(
                 select(func.count())
@@ -334,25 +356,28 @@ def test_revoked_qualification_replay_is_history_and_does_not_restore_authority(
     after = assessment(setup, authority_work)
     assert replay["id"] == original["id"]
     assert after == before and after["authorized"] is False and after["qualified"] is False
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as session:
         pointer = session.scalar(
             select(ProfessionalCurrent).where(ProfessionalCurrent.kind == "qualification")
         )
         assert pointer.fact_id == UUID(revoked["subject_id"]) and pointer.epoch == 2
 
 
-def test_disabled_issuer_cannot_replay_an_old_successful_import_key(setup, authority_work):
+def test_disabled_issuer_preserves_receipt_replay_and_blocks_new_import(setup, authority_work):
     payload = fact_payload(setup, authority_work)
     key = str(uuid4())
-    imported(setup, authority_work, payload, request_key=key)
+    original = imported(setup, authority_work, payload, request_key=key)
     before = {
         model: count(setup, model)
         for model in (ProfessionalFact, ProfessionalCurrent, Receipt, Audit, Outbox, RequestKey)
     }
     authority.disable_issuer(setup.engine, authority_work["issuer"].key)
+    assert imported(setup, authority_work, payload, request_key=key) == original
     with pytest.raises(DomainError) as caught:
-        imported(setup, authority_work, payload, request_key=key)
-    assert caught.value.code == "TRUSTED_ISSUER_REQUIRED"
+        imported(setup, authority_work, {**payload, "reason": "New signing intent"})
+    assert caught.value.reason == "TRUSTED_ISSUER_REQUIRED"
     assert {model: count(setup, model) for model in before} == before
 
 
@@ -364,7 +389,7 @@ def test_idempotency_key_conflict_cannot_create_another_fact(setup, authority_wo
         imported(
             setup, authority_work, {**payload, "reason": "Different import reason"}, request_key=key
         )
-    assert caught.value.code == "DUPLICATE_INTENT_CONFLICT"
+    assert caught.value.reason == "DUPLICATE_INTENT_CONFLICT"
     assert count(setup, ProfessionalFact) == 1
 
 
@@ -383,10 +408,10 @@ def test_expired_known_facts_and_unknown_qualification_are_distinct(setup, autho
     assert viewed["qualified"] is False and "PROFESSIONAL_FACT_EXPIRED" in viewed["reason_codes"]
 
 
-def test_source_withdrawal_blocks_current_authority_and_receipt_replay(setup, authority_work):
+def test_source_withdrawal_blocks_new_authority_and_preserves_receipt_replay(setup, authority_work):
     key = str(uuid4())
     payload = fact_payload(setup, authority_work)
-    imported(setup, authority_work, payload, request_key=key)
+    original = imported(setup, authority_work, payload, request_key=key)
     with Session(setup.admin) as session, session.begin():
         session.execute(
             update(Artifact)
@@ -395,8 +420,9 @@ def test_source_withdrawal_blocks_current_authority_and_receipt_replay(setup, au
         )
     viewed = assessment(setup, authority_work)
     assert viewed["authorized"] is False and viewed["fact_refs"] == []
+    assert imported(setup, authority_work, payload, request_key=key) == original
     with pytest.raises(DomainError):
-        imported(setup, authority_work, payload, request_key=key)
+        imported(setup, authority_work, {**payload, "reason": "New signing intent"})
 
 
 def test_private_evidence_does_not_grant_authority_to_another_subject(setup, authority_work):
@@ -426,17 +452,24 @@ def test_private_evidence_does_not_grant_authority_to_another_subject(setup, aut
     assert viewed["authorized"] is False and viewed["required_source_read_set"] == []
 
 
-def test_grant_loss_is_checked_before_successful_import_replay(setup, authority_work):
+def test_write_loss_keeps_readable_receipt_but_read_access_loss_blocks_it(setup, authority_work):
     key = str(uuid4())
     payload = fact_payload(setup, authority_work)
-    imported(setup, authority_work, payload, request_key=key)
+    original = imported(setup, authority_work, payload, request_key=key)
     with Session(setup.admin) as session, session.begin():
         session.execute(
             update(Grant)
-            .where(Grant.principal_id == setup.human, Grant.product_id == setup.product)
+            .where(Grant.principal_id == setup.human, Grant.category_id == setup.category)
             .values(can_write=False)
         )
     assert assessment(setup, authority_work)["authorized"] is False
+    assert imported(setup, authority_work, payload, request_key=key) == original
+    with pytest.raises(DomainError):
+        imported(setup, authority_work, {**payload, "reason": "New signing intent"})
+    with Session(setup.admin) as session, session.begin():
+        session.execute(update(Grant).where(
+            Grant.principal_id == setup.human, Grant.category_id == setup.category,
+        ).values(expires_at=now() - timedelta(seconds=1)))
     with pytest.raises(DomainError):
         imported(setup, authority_work, payload, request_key=key)
 
@@ -447,7 +480,9 @@ def test_wrapper_rollback_removes_fact_pointer_receipt_audit_outbox_and_requestk
     models = (ProfessionalFact, ProfessionalCurrent, Receipt, Audit, Outbox, RequestKey)
     before = {model: count(setup, model) for model in models}
     with pytest.raises(RuntimeError, match="Synthetic after flush"):
-        with tenant_session(setup.engine, setup.tenant) as session:
+        with tenant_session(
+            setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+        ) as session:
             import_professional_fact(
                 session,
                 setup.ctx,
@@ -465,7 +500,9 @@ def test_wrapper_rollback_removes_fact_pointer_receipt_audit_outbox_and_requestk
 def test_current_pointer_cannot_rewind_change_issuer_or_delete(setup, authority_work, action):
     imported(setup, authority_work, fact_payload(setup, authority_work))
     with pytest.raises(DBAPIError):
-        with tenant_session(setup.engine, setup.tenant) as session:
+        with tenant_session(
+            setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+        ) as session:
             row = session.scalar(select(ProfessionalCurrent))
             if action == "delete":
                 session.delete(row)
@@ -480,7 +517,9 @@ def test_current_pointer_cannot_rewind_change_issuer_or_delete(setup, authority_
 def test_fact_is_physically_immutable(setup, authority_work, action):
     saved = imported(setup, authority_work, fact_payload(setup, authority_work))
     with pytest.raises(DBAPIError):
-        with tenant_session(setup.engine, setup.tenant) as session:
+        with tenant_session(
+            setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+        ) as session:
             row = session.get(ProfessionalFact, UUID(saved["subject_id"]))
             if action == "delete":
                 session.delete(row)

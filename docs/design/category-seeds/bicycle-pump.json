@@ -1,0 +1,2671 @@
+{
+  "schema": "pdos.category-seed",
+  "schema_version": 1,
+  "status": "draft",
+  "draft_label": "草稿 v0.2，C/D 业务口径已确认；参数与法规适用待专业确认",
+  "origin": "ai_draft",
+  "generated_on": "2026-10-08",
+  "categories": [
+    {
+      "category_id": "bicycle-pump",
+      "name_zh": "自行车打气筒",
+      "name_en": "Electric bicycle pump",
+      "draft_label": "草稿 v0.2，C/D 业务口径已确认；参数与法规适用待专业确认",
+      "boundary": {
+        "definition": "以自行车（含电助力自行车）轮胎打气为主要用途的打气产品，包含锂电电动、手动（落地式/便携式）和 CO₂ 充气器；按形态、用途与工况分组。汽车/自行车等多功能泵归汽车品类。",
+        "includes": [
+          {
+            "item": "锂电电动迷你打气筒（直插或短软管）",
+            "basis": "自行车打气用途；我方当前自研范围单独记录"
+          },
+          {
+            "item": "电助力自行车（e-bike）轮胎",
+            "basis": "属自行车轮胎；Presta / Schrader / Dunlop 均可能出现"
+          },
+          {
+            "item": "公路、砾石、山地、城市通勤车轮胎",
+            "basis": "同属自行车用途；现有锂电草稿按两类标准胎研究，其他形态和具体条件待专业确认"
+          },
+          {
+            "item": "球类、泳圈等附带场景",
+            "basis": "只作为 valve_compatibility 取值记录"
+          },
+          {
+            "item": "手动打气筒（落地式、迷你手持）",
+            "basis": "用户确认按用途纳入；手动形态单独比较参数与工况"
+          },
+          {
+            "item": "CO₂ 充气器",
+            "basis": "用户确认按用途纳入；气瓶/耗材与专用参数、工况及法规待专业确认"
+          },
+          {
+            "item": "电动滑板车/平衡车轮胎（兼用场景）",
+            "basis": "仅记录兼用场景，工况单列；多功能汽车泵仍按汽车品类对标"
+          }
+        ],
+        "excludes": [
+          {
+            "item": "汽车充气泵与汽车/自行车等多功能泵",
+            "basis": "归 auto-tire-inflator，按市场对标"
+          },
+          {
+            "item": "摩托车轮胎",
+            "basis": "归 auto-tire-inflator 次要场景"
+          },
+          {
+            "item": "桨板 / 充气床泵",
+            "basis": "低压大流量、专用气门，建议另立品类"
+          },
+          {
+            "item": "Tubeless 坐胎专用爆冲气罐/设备",
+            "basis": "用途为瞬间大流量坐胎，专用字典待另行研究；普通落地式手动打气筒按打气用途纳入本品类"
+          }
+        ],
+        "criteria": [
+          {
+            "dimension": "主要使用场景",
+            "auto_tire_inflator": "车边补气、应急",
+            "bicycle_pump": "骑行前打气、路上补胎后充气",
+            "sup_inflatable_pump": "水上/露营充气，低压大容积"
+          },
+          {
+            "dimension": "目标压力量级",
+            "auto_tire_inflator": "几十 psi（以车辆铭牌为准）",
+            "bicycle_pump": "公路胎可到 100 psi 以上，山地胎几十 psi",
+            "sup_inflatable_pump": "十几 psi 量级"
+          },
+          {
+            "dimension": "主要气门",
+            "auto_tire_inflator": "Schrader(AV)",
+            "bicycle_pump": "Presta(SV) 为主，Schrader、Dunlop 并存",
+            "sup_inflatable_pump": "Halkey-Roberts 等专用阀"
+          },
+          {
+            "dimension": "标准测试工况",
+            "auto_tire_inflator": "205/55 R16，0→36 / 26→36 psi",
+            "bicycle_pump": "700×25C 0→100 psi；29×2.25 0→30 psi",
+            "sup_inflatable_pump": "另定"
+          },
+          {
+            "dimension": "关键性能",
+            "auto_tire_inflator": "补气时间、停机准确、续航次数",
+            "bicycle_pump": "高压可达性、重量体积、Presta 连接",
+            "sup_inflatable_pump": "大流量、充满时间"
+          },
+          {
+            "dimension": "重量重要程度",
+            "auto_tire_inflator": "中",
+            "bicycle_pump": "高",
+            "sup_inflatable_pump": "低–中"
+          }
+        ],
+        "criteria_note": "压力量级为常识性描述，实际以车辆铭牌和轮胎侧壁标注为准（Schwalbe 官方说明自行车胎压力见侧壁），待专家确认。 本表为已有充气场景参考，不改变已确认的按用途归类；自行车手动/CO₂、组合机和兼用场景另列专用条件。",
+        "edge_cases": [
+          {
+            "case": "手动打气筒及 CO₂ 充气器",
+            "proposal": "按自行车打气用途纳入本品类；形态、参数与工况分别比较",
+            "basis": "按用途划界的最终确认；不再仅以我方锂电形态排除",
+            "status": "用户已确认",
+            "decision_ref": "README.md#cd-confirmed"
+          },
+          {
+            "case": "电动滑板车 / 平衡车轮胎",
+            "proposal": "作为兼用场景，工况单列；不单独建品类",
+            "basis": "用户 Q5 及最终确认",
+            "status": "用户已确认",
+            "decision_ref": "README.md#cd-confirmed"
+          },
+          {
+            "case": "汽车/自行车等多功能泵",
+            "proposal": "归汽车品类，按市场对标",
+            "basis": "用户 Q4",
+            "status": "用户已确认",
+            "decision_ref": "README.md#cd-confirmed"
+          },
+          {
+            "case": "带自行车灯功能的泵",
+            "proposal": "照明作为附加功能记录；若宣传可作车灯，另评灯具法规",
+            "basis": "自行车灯有各国道路法规",
+            "status": "待专家确认"
+          }
+        ],
+        "decision_record": {
+          "status": "user_confirmed",
+          "confirmed_on": "2026-10-08",
+          "confirmed_by": "用户本人（本会话逐项回答并最终回复“好的”）",
+          "reference": "README.md#cd-confirmed",
+          "scope": "C 品类边界与 D 法规资料/判定口径；不授予具体法规适用、合规通过或参数测试资格"
+        },
+        "classification_rule": "按用途划界，供电/结构/产品形态在品类内分组；汽车/自行车等多功能泵统一归汽车品类，按市场对标；分类不以当前我方自研范围为边界。"
+      },
+      "dictionary_conventions": {
+        "baseline_condition_B0": "环境 23±2 °C；按说明书充满后静置 ≥1 h",
+        "standard_tires": {
+          "TIRE_ROAD": "测试轮胎 700×25C（ISO 5775-1 标记 25-622）开口胎 + 丁基内胎，Presta 气门（可拆芯），装于匹配轮辋、不承载",
+          "TIRE_MTB": "测试轮胎 29×2.25（ISO 5775-1 标记 57-622）开口胎 + 丁基内胎，Presta 气门，装于匹配轮辋、不承载"
+        },
+        "pressure_unit_note": "表压；1 bar = 14.504 psi = 100 kPa；1 psi = 6.895 kPa；1 kgf/cm² = 98.07 kPa = 14.22 psi",
+        "reference_gauge": "参考压力计（数字式，准确度建议优于被测允差 4 倍以上，校准在有效期内）",
+        "direction_values": [
+          "higher",
+          "lower",
+          "target",
+          "neutral"
+        ],
+        "benchmark_weight_values": [
+          "high",
+          "medium",
+          "low"
+        ],
+        "data_nature_values": [
+          "measured",
+          "claimed",
+          "inferred",
+          "unknown"
+        ],
+        "status_values": [
+          "ai_draft",
+          "expert_pending",
+          "confirmed",
+          "unknown"
+        ],
+        "form_groups": [
+          "锂电电动",
+          "手动（落地式/便携式）",
+          "CO₂"
+        ],
+        "coverage_note": "本版 30 个参数及测试项只覆盖锂电电动形态草稿。手动、CO₂ 已纳入品类，但专用字典与测试骨架待补；不得把电动泵 required 参数和充满/自动停机工况直接套用于两类新增形态。",
+        "coverage_gaps": [
+          "手动形态专用参数、工况和测试方法待专业确认",
+          "CO₂ 形态专用参数、耗材/气瓶、工况和法规覆盖待专业确认"
+        ]
+      },
+      "parameters": [
+        {
+          "parameter_id": "max_pressure",
+          "version": 1,
+          "key": "max_pressure",
+          "label": "最大压力",
+          "label_en": "Maximum pressure",
+          "value_type": "number",
+          "unit": "psi",
+          "unit_notes": "表压；1 bar = 14.504 psi = 100 kPa；1 psi = 6.895 kPa；1 kgf/cm² = 98.07 kPa = 14.22 psi",
+          "direction": "higher",
+          "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；出口经自带气嘴接 ≤0.1 L 刚性密封容器，参考压力计（数字式，准确度建议优于被测允差 4 倍以上，校准在有效期内）接容器",
+          "verification_method": "连续运行至压力不再上升（30 s 内波动 ≤0.5 psi）或到达设备上限，记录最高稳定读数；实胎能否达到见 fill_time_road",
+          "acceptance_criterion": "无统一判据，按产品定义（常用：实测 ≥ 标称值）",
+          "benchmark_weight": "high",
+          "benchmark_weight_reason": "公路胎需要高压，能否到达是基本门槛；小容积下标称值须用实胎工况验证",
+          "data_nature_hint": "宣传值为主，多不说明测试容积",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "expert_pending",
+          "expert_open_points": [
+            "密封容器容积 0.1 L 是否合适"
+          ],
+          "source_ids": [
+            "SRC-NIST-SP811"
+          ]
+        },
+        {
+          "parameter_id": "fill_time_road",
+          "version": 1,
+          "key": "fill_time_road",
+          "label": "公路胎充气时间（0→100 psi）",
+          "label_en": "Road tire fill time 0→100 psi, 700×25C",
+          "value_type": "number",
+          "unit": "s",
+          "unit_notes": "",
+          "direction": "lower",
+          "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；测试轮胎 700×25C（ISO 5775-1 标记 25-622）开口胎 + 丁基内胎，Presta 气门（可拆芯），装于匹配轮辋、不承载；内胎排空至 0 psi（气门芯在位）→ 目标 100 psi（≈6.9 bar），同时记录到达 80 psi 的用时",
+          "verification_method": "预设目标后计时到自动停机；拆下泵头 60 s 后用 Presta 接头参考压力计测实际胎压并一并报告；达不到目标时记'未达到'及最高压力；测 3 次取中位数，两次之间冷却",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "high",
+          "benchmark_weight_reason": "公路骑行者的核心诉求，也直接体现高压低流量下的真实能力",
+          "data_nature_hint": "宣传值常见，但胎宽与起止压力口径不一，不可比",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "expert_pending",
+          "expert_open_points": [
+            "目标压力 100 psi 还是 80 psi",
+            "胎宽 25C 还是 28C"
+          ],
+          "source_ids": [
+            "SRC-ISO5775-1"
+          ]
+        },
+        {
+          "parameter_id": "fill_time_mtb",
+          "version": 1,
+          "key": "fill_time_mtb",
+          "label": "山地胎充气时间（0→30 psi）",
+          "label_en": "MTB tire fill time 0→30 psi, 29×2.25",
+          "value_type": "number",
+          "unit": "s",
+          "unit_notes": "",
+          "direction": "lower",
+          "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；测试轮胎 29×2.25（ISO 5775-1 标记 57-622）开口胎 + 丁基内胎，Presta 气门，装于匹配轮辋、不承载；内胎排空至 0 psi → 目标 30 psi（≈2.1 bar）",
+          "verification_method": "预设目标后计时到自动停机；拆下泵头 60 s 后用参考压力计测实际胎压并一并报告；测 3 次取中位数，两次之间冷却",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "medium",
+          "benchmark_weight_reason": "宽胎容积大、压力低，考验流量；山地用户占比待研究",
+          "data_nature_hint": "宣传值偶见，口径不一",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "expert_pending",
+          "expert_open_points": [
+            "山地车常用无内胎，测试用内胎是否可接受"
+          ],
+          "source_ids": [
+            "SRC-ISO5775-1"
+          ]
+        },
+        {
+          "parameter_id": "free_air_flow",
+          "version": 1,
+          "key": "free_air_flow",
+          "label": "自由流量",
+          "label_en": "Free air flow (zero back-pressure)",
+          "value_type": "number",
+          "unit": "L/min",
+          "unit_notes": "按吸气标准状态折算，状态待专家确认",
+          "direction": "higher",
+          "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；出口接流量计，背压 ≈0（表压 ≤0.1 bar）；稳定运行 30 s 后读数",
+          "verification_method": "热式或容积式流量计串接；仅作解释用，不作为性能主指标",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "low",
+          "benchmark_weight_reason": "高压低流量：自行车胎容积小、压力高，零背压流量对公路胎几乎无参考意义",
+          "data_nature_hint": "宣传值偶见",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": [
+            "SRC-ISO1217"
+          ]
+        },
+        {
+          "parameter_id": "pressure_accuracy",
+          "version": 1,
+          "key": "pressure_accuracy",
+          "label": "压力测量误差",
+          "label_en": "Pressure reading error",
+          "value_type": "number",
+          "unit": "psi",
+          "unit_notes": "报告各测试点 |显示值 − 参考值| 的最大值；表压；1 bar = 14.504 psi = 100 kPa；1 psi = 6.895 kPa；1 kgf/cm² = 98.07 kPa = 14.22 psi",
+          "direction": "lower",
+          "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；被测设备与参考压力计（数字式，准确度建议优于被测允差 4 倍以上，校准在有效期内）接同一密封容器；测试点 20 / 30 / 60 / 80 / 100 psi（超出量程不测），升压方向，每点稳定 30 s 后读数",
+          "verification_method": "逐点记录显示值与参考值，取最大绝对误差；低压点（20/30 psi）单独报告",
+          "acceptance_criterion": "无统一判据，按产品定义；可参考 EN 12645（适用性待专家确认）",
+          "benchmark_weight": "high",
+          "benchmark_weight_reason": "山地胎几 psi 的差别就影响抓地与防夹胎，公路胎高压点也需准确",
+          "data_nature_hint": "宣传值偶见，多不注明测试点",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "expert_pending",
+          "expert_open_points": [
+            "测试点组合"
+          ],
+          "source_ids": [
+            "SRC-EN12645"
+          ]
+        },
+        {
+          "parameter_id": "display_resolution",
+          "version": 1,
+          "key": "display_resolution",
+          "label": "显示分辨率",
+          "label_en": "Display resolution",
+          "value_type": "number",
+          "unit": "psi",
+          "unit_notes": "",
+          "direction": "lower",
+          "conditions": "核查各单位下的最小显示步进",
+          "verification_method": "读取显示",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "medium",
+          "benchmark_weight_reason": "山地用户按 0.5–1 psi 微调（待用户研究确认）",
+          "data_nature_hint": "可核查",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": []
+        },
+        {
+          "parameter_id": "auto_stop",
+          "version": 1,
+          "key": "auto_stop",
+          "label": "自动停机（预设压力）",
+          "label_en": "Auto shut-off at preset pressure",
+          "value_type": "boolean",
+          "unit": "bool",
+          "unit_notes": "",
+          "direction": "neutral",
+          "conditions": "功能核查：按说明书设定预设压力后启动",
+          "verification_method": "核查可设范围、步进与到达后是否停机",
+          "acceptance_criterion": "有/无；可设范围按产品定义",
+          "benchmark_weight": "medium",
+          "benchmark_weight_reason": "高压段手动判断困难，自动停机价值高于汽车用途",
+          "data_nature_hint": "说明书声明，可核查",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": []
+        },
+        {
+          "parameter_id": "auto_stop_deviation",
+          "version": 1,
+          "key": "auto_stop_deviation",
+          "label": "自动停机偏差",
+          "label_en": "Auto shut-off deviation",
+          "value_type": "number",
+          "unit": "psi",
+          "unit_notes": "偏差 = 拆下泵头 60 s 后实测胎压 − 预设值",
+          "direction": "lower",
+          "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；测试轮胎 700×25C（ISO 5775-1 标记 25-622）开口胎 + 丁基内胎，Presta 气门（可拆芯），装于匹配轮辋、不承载；起始 60 psi，预设 80 psi；停机后拆下泵头，60 s 后用 Presta 接头参考压力计测胎压",
+          "verification_method": "测 3 次，报告最大绝对偏差、停机时显示值与拆卸泄气损失（停机时显示值 − 拆下后实测值）",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "high",
+          "benchmark_weight_reason": "Presta 拆卸泄气明显，'显示到了但胎里没到'是常见落差",
+          "data_nature_hint": "很少宣传，需实测",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": [
+            "SRC-ISO5775-1"
+          ]
+        },
+        {
+          "parameter_id": "presta_connection",
+          "version": 1,
+          "key": "presta_connection",
+          "label": "Presta 连接方式",
+          "label_en": "Presta connection",
+          "value_type": "enum",
+          "unit": "enum",
+          "unit_notes": "取值：螺纹直连 / 推入或锁杆直连 / 需转换嘴",
+          "direction": "neutral",
+          "conditions": "用 Presta 可拆芯内胎实连",
+          "verification_method": "记录连接方式、是否需先拧松顶针、单手可操作性",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "high",
+          "benchmark_weight_reason": "Presta 是公路与中高端车主流气门（占比待研究）；螺纹泵头不兼容 Schwalbe Clik Valve（Schwalbe 官方说明）",
+          "data_nature_hint": "说明书声明，可核查",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": [
+            "SRC-SCHWALBE-CLIK"
+          ]
+        },
+        {
+          "parameter_id": "valve_core_retention",
+          "version": 1,
+          "key": "valve_core_retention",
+          "label": "可拆气门芯松脱",
+          "label_en": "Removable valve-core loosening",
+          "value_type": "number",
+          "unit": "次/20 次",
+          "unit_notes": "",
+          "direction": "lower",
+          "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；Presta 可拆芯内胎；连接—充气至 60 psi—拆下，循环 20 次",
+          "verification_method": "记录气门芯被带松或带出的次数",
+          "acceptance_criterion": "0 次（暂定，待专家确认）",
+          "benchmark_weight": "medium",
+          "benchmark_weight_reason": "螺纹泵头拆下时可能把可拆气门芯带松，路上发生即无法继续骑行（发生率待用户声音核实）",
+          "data_nature_hint": "几乎无宣传，只能实测或从用户评论得到",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "expert_pending",
+          "expert_open_points": [
+            "循环次数与判据"
+          ],
+          "source_ids": []
+        },
+        {
+          "parameter_id": "valve_compatibility",
+          "version": 1,
+          "key": "valve_compatibility",
+          "label": "气嘴兼容",
+          "label_en": "Valve compatibility",
+          "value_type": "enum_set",
+          "unit": "enum",
+          "unit_notes": "取值：Presta(SV,FV) / Schrader(AV) / Dunlop(DV,Woods) / Schwalbe Clik Valve / 球针；注明直连或需转换嘴",
+          "direction": "neutral",
+          "conditions": "核查随附气嘴与转换嘴，逐一实连充气",
+          "verification_method": "每种气门实测连接、充气、拆卸，记录是否需转换嘴与是否漏气",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "high",
+          "benchmark_weight_reason": "自行车三种传统气门并存，另有 Schwalbe Clik Valve 新系统",
+          "data_nature_hint": "说明书声明，可核查",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": [
+            "SRC-SCHWALBE-VALVES",
+            "SRC-SCHWALBE-CLIK",
+            "SRC-ISO9413",
+            "SRC-ISO4570"
+          ]
+        },
+        {
+          "parameter_id": "battery_capacity_mah",
+          "version": 1,
+          "key": "battery_capacity_mah",
+          "label": "电池标称容量",
+          "label_en": "Rated battery capacity",
+          "value_type": "number",
+          "unit": "mAh",
+          "unit_notes": "须注明对应电压与串并联结构；统一换算到 Wh 再比较",
+          "direction": "higher",
+          "conditions": "按电池组标称电压声明；抽检放电：20±5 °C，0.2 C 恒流放电至截止电压（IEC 61960-3 方法，适用性待专家确认）",
+          "verification_method": "读取标签与规格书；口径不一时先换算",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "medium",
+          "benchmark_weight_reason": "影响续航，但续航以可充胎次数为准",
+          "data_nature_hint": "宣传值，口径常不一致",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "expert_pending",
+          "expert_open_points": [],
+          "source_ids": [
+            "SRC-IEC61960-3"
+          ]
+        },
+        {
+          "parameter_id": "battery_energy_wh",
+          "version": 1,
+          "key": "battery_energy_wh",
+          "label": "电池额定能量",
+          "label_en": "Rated battery energy",
+          "value_type": "number",
+          "unit": "Wh",
+          "unit_notes": "Wh = 标称电压 V × 额定容量 Ah",
+          "direction": "higher",
+          "conditions": "以电池标签值为准，并与 UN 38.3 测试概要核对",
+          "verification_method": "核对三者一致",
+          "acceptance_criterion": "无性能判据；运输门槛见 §4",
+          "benchmark_weight": "low",
+          "benchmark_weight_reason": "电池较小，通常远低于航空门槛，但仍须标注与核对",
+          "data_nature_hint": "标签值，可核实",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": [
+            "SRC-UN38.3",
+            "SRC-IATA-LB"
+          ]
+        },
+        {
+          "parameter_id": "charge_input",
+          "version": 1,
+          "key": "charge_input",
+          "label": "充电输入",
+          "label_en": "Charging input",
+          "value_type": "text",
+          "unit": "text",
+          "unit_notes": "接口 + 协议 + 最大协商电压电流",
+          "direction": "neutral",
+          "conditions": "读取产品标识与说明书；用 USB-C 功率计实测协商档位",
+          "verification_method": "记录接口、协议、实测功率、适配器是否随附",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "medium",
+          "benchmark_weight_reason": "骑行途中可否用手机充电器/移动电源补电",
+          "data_nature_hint": "说明书声明，可实测",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": [
+            "SRC-USB-PD"
+          ]
+        },
+        {
+          "parameter_id": "charge_time",
+          "version": 1,
+          "key": "charge_time",
+          "label": "充电时间",
+          "label_en": "Charge time (empty to full)",
+          "value_type": "number",
+          "unit": "min",
+          "unit_notes": "",
+          "direction": "lower",
+          "conditions": "环境 23±2 °C；放电至自动关机后静置 1 h；用 5 V/2 A 适配器充至指示充满（另记产品声明最高功率档）",
+          "verification_method": "记录用时与满电指示时刻",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "medium",
+          "benchmark_weight_reason": "骑行前临时补电",
+          "data_nature_hint": "宣传值常不注明适配器",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": []
+        },
+        {
+          "parameter_id": "endurance_tires",
+          "version": 1,
+          "key": "endurance_tires",
+          "label": "续航（可充胎次）",
+          "label_en": "Endurance (fills per charge)",
+          "value_type": "number",
+          "unit": "次",
+          "unit_notes": "完整充气次数，不足一次不计",
+          "direction": "higher",
+          "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；测试轮胎 700×25C（ISO 5775-1 标记 25-622）开口胎 + 丁基内胎，Presta 气门（可拆芯），装于匹配轮辋、不承载；每次 0→80 psi；两次之间按说明书冷却（未规定则间隔 5 min）；直到无法完成一次充气或自动关机",
+          "verification_method": "逐次记录用时，观察末段衰减",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "high",
+          "benchmark_weight_reason": "长途骑行与多次爆胎时能否撑住，是携带型泵的核心卖点",
+          "data_nature_hint": "宣传值常见，但胎规与起止压力口径不一",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "expert_pending",
+          "expert_open_points": [
+            "0→80 psi 还是 60→90 psi 补气"
+          ],
+          "source_ids": [
+            "SRC-ISO5775-1"
+          ]
+        },
+        {
+          "parameter_id": "noise_level",
+          "version": 1,
+          "key": "noise_level",
+          "label": "工作噪声",
+          "label_en": "Operating noise",
+          "value_type": "number",
+          "unit": "dB(A)",
+          "unit_notes": "A 计权 LAeq，测量距离 1 m",
+          "direction": "lower",
+          "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；设备置于硬质反射地面（半消声室或背景噪声低 ≥10 dB 的安静室）；负载为 700×25C 测试轮胎 60→80 psi；传声器距设备几何中心 1 m，前后左右 4 点",
+          "verification_method": "IEC 61672-1 1/2 级声级计；报告 4 点能量平均 LAeq 与 LAFmax；无统一方法",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "low",
+          "benchmark_weight_reason": "使用时间短，噪声次要；高压段噪声明显升高",
+          "data_nature_hint": "宣传值常不注明距离与计权",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "expert_pending",
+          "expert_open_points": [
+            "测量距离与负载"
+          ],
+          "source_ids": [
+            "SRC-IEC61672-1",
+            "SRC-ISO2151"
+          ]
+        },
+        {
+          "parameter_id": "weight_g",
+          "version": 1,
+          "key": "weight_g",
+          "label": "重量",
+          "label_en": "Weight",
+          "value_type": "number",
+          "unit": "g",
+          "unit_notes": "1 oz = 28.35 g",
+          "direction": "lower",
+          "conditions": "主机（含内置电池），不含支架、转换嘴、充电线；另记含随附支架重量",
+          "verification_method": "精度 0.1 g 电子秤",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "high",
+          "benchmark_weight_reason": "随车/随身携带，重量是公路骑行者首要筛选条件之一（待研究确认）",
+          "data_nature_hint": "宣传值，实测容易",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": []
+        },
+        {
+          "parameter_id": "dimensions",
+          "version": 1,
+          "key": "dimensions",
+          "label": "外形尺寸",
+          "label_en": "Dimensions (L×W×H)",
+          "value_type": "text",
+          "unit": "mm",
+          "unit_notes": "L×W×H，另算体积 cm³",
+          "direction": "lower",
+          "conditions": "主机外廓最大尺寸",
+          "verification_method": "卡尺测量",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "high",
+          "benchmark_weight_reason": "决定能否放进骑行服口袋、鞍包或水壶架",
+          "data_nature_hint": "宣传值，实测容易",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": []
+        },
+        {
+          "parameter_id": "mount_options",
+          "version": 1,
+          "key": "mount_options",
+          "label": "携带与安装方式",
+          "label_en": "Carry & mount options",
+          "value_type": "enum_set",
+          "unit": "enum",
+          "unit_notes": "取值：水壶架座 / 车架绑带支架 / 鞍包或车包 / 骑行服口袋 / 无",
+          "direction": "neutral",
+          "conditions": "核查随附支架与说明书",
+          "verification_method": "记录方式，并实装确认不干涉水壶",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "medium",
+          "benchmark_weight_reason": "携带方式决定是否'随车带着走'",
+          "data_nature_hint": "说明书声明，可核查",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": []
+        },
+        {
+          "parameter_id": "display_units",
+          "version": 1,
+          "key": "display_units",
+          "label": "显示与单位",
+          "label_en": "Display & pressure units",
+          "value_type": "enum_set",
+          "unit": "enum",
+          "unit_notes": "显示类型：LCD / LED 数码 / 无；单位：psi / bar / kPa",
+          "direction": "neutral",
+          "conditions": "核查显示类型与可切换单位；强光可读性主观评价（方法待专家确认）",
+          "verification_method": "记录类型与单位",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "medium",
+          "benchmark_weight_reason": "户外骑行强光下读数",
+          "data_nature_hint": "可核查",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "expert_pending",
+          "expert_open_points": [
+            "强光可读性评价方法"
+          ],
+          "source_ids": []
+        },
+        {
+          "parameter_id": "light",
+          "version": 1,
+          "key": "light",
+          "label": "照明",
+          "label_en": "Light",
+          "value_type": "text",
+          "unit": "text",
+          "unit_notes": "记录模式与宣传光通量",
+          "direction": "neutral",
+          "conditions": "核查模式",
+          "verification_method": "无统一测量口径",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "low",
+          "benchmark_weight_reason": "附加功能；若宣传可作自行车灯，需另评各国自行车灯具法规（待专家确认）",
+          "data_nature_hint": "宣传值为主",
+          "applicability": "optional",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": []
+        },
+        {
+          "parameter_id": "power_bank_output",
+          "version": 1,
+          "key": "power_bank_output",
+          "label": "移动电源输出",
+          "label_en": "Power bank output",
+          "value_type": "number",
+          "unit": "W",
+          "unit_notes": "各输出口 V/A 与总功率",
+          "direction": "higher",
+          "conditions": "满电；电子负载测各口最大稳定输出功率（参考 GB/T 35590-2017 思路，待专家确认）",
+          "verification_method": "逐口测试",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "low",
+          "benchmark_weight_reason": "电池小，附加价值有限；带此功能可能触发移动电源相关法规（见 §4）",
+          "data_nature_hint": "宣传值",
+          "applicability": "optional",
+          "origin": "ai_draft",
+          "status": "expert_pending",
+          "expert_open_points": [],
+          "source_ids": [
+            "SRC-GBT35590"
+          ]
+        },
+        {
+          "parameter_id": "ip_rating",
+          "version": 1,
+          "key": "ip_rating",
+          "label": "防护等级",
+          "label_en": "Ingress protection (IP code)",
+          "value_type": "enum",
+          "unit": "IP code",
+          "unit_notes": "按 IEC 60529 表示",
+          "direction": "higher",
+          "conditions": "按 IEC 60529 规定的对应等级试验",
+          "verification_method": "宣称等级须有试验报告",
+          "acceptance_criterion": "宣称即须有报告支撑",
+          "benchmark_weight": "medium",
+          "benchmark_weight_reason": "装在车上或随身骑行会淋雨、溅泥",
+          "data_nature_hint": "宣传值，常无报告",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": [
+            "SRC-IEC60529"
+          ]
+        },
+        {
+          "parameter_id": "operating_temp",
+          "version": 1,
+          "key": "operating_temp",
+          "label": "工作温度范围",
+          "label_en": "Operating temperature range",
+          "value_type": "range",
+          "unit": "°C",
+          "unit_notes": "分别声明工作与充电温度范围",
+          "direction": "target",
+          "conditions": "读取说明书；低温验证（0 °C 静置 4 h 后做 fill_time_road，温度点待专家确认）",
+          "verification_method": "记录声明范围与低温充气用时",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "low",
+          "benchmark_weight_reason": "冬季骑行少于夏季（待研究）",
+          "data_nature_hint": "说明书声明",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "expert_pending",
+          "expert_open_points": [
+            "是否需要低温验证"
+          ],
+          "source_ids": []
+        },
+        {
+          "parameter_id": "continuous_run_time",
+          "version": 1,
+          "key": "continuous_run_time",
+          "label": "连续工作时间",
+          "label_en": "Continuous run time / duty cycle",
+          "value_type": "number",
+          "unit": "min",
+          "unit_notes": "另记声明占空比与保护后恢复时间",
+          "direction": "higher",
+          "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；出口接针阀节流，维持背压 100 psi（≈6.9 bar），连续运行",
+          "verification_method": "运行至过热保护或说明书上限；记录时间与恢复冷却时间",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "medium",
+          "benchmark_weight_reason": "小泵高压段发热大，公路胎全充可能接近热限",
+          "data_nature_hint": "说明书声明；实测少见",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "expert_pending",
+          "expert_open_points": [
+            "背压 100 psi 是否合适"
+          ],
+          "source_ids": []
+        },
+        {
+          "parameter_id": "surface_temp",
+          "version": 1,
+          "key": "surface_temp",
+          "label": "最高表面温度",
+          "label_en": "Max surface temperature",
+          "value_type": "number",
+          "unit": "°C",
+          "unit_notes": "",
+          "direction": "lower",
+          "conditions": "continuous_run_time 测试结束时；热电偶测握持区、外壳最热点、气嘴接头",
+          "verification_method": "记录三处最高温度与环境温度",
+          "acceptance_criterion": "无统一判据，按产品定义；可参考 IEC 60335-1 表面温升限值（待专家确认）",
+          "benchmark_weight": "medium",
+          "benchmark_weight_reason": "高压段缸体与气嘴发热，用户手持操作",
+          "data_nature_hint": "几乎无宣传，需实测",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "expert_pending",
+          "expert_open_points": [
+            "判据采用哪个安全标准"
+          ],
+          "source_ids": [
+            "SRC-IEC60335-1"
+          ]
+        },
+        {
+          "parameter_id": "hose_length",
+          "version": 1,
+          "key": "hose_length",
+          "label": "气管长度",
+          "label_en": "Air hose length",
+          "value_type": "number",
+          "unit": "mm",
+          "unit_notes": "无软管直插记 0",
+          "direction": "neutral",
+          "conditions": "从机身出口到气嘴末端",
+          "verification_method": "卷尺测量",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "low",
+          "benchmark_weight_reason": "直插式更紧凑，软管式对气门与轮辋位置更宽容；无方向",
+          "data_nature_hint": "可核查",
+          "applicability": "optional",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": []
+        },
+        {
+          "parameter_id": "storage_retention",
+          "version": 1,
+          "key": "storage_retention",
+          "label": "存放电量保持",
+          "label_en": "Charge retention after storage",
+          "value_type": "number",
+          "unit": "%",
+          "unit_notes": "",
+          "direction": "higher",
+          "conditions": "满电后 23±2 °C 存放 28 天后测剩余放电量",
+          "verification_method": "参考 IEC 61960-3 荷电保持试验思路",
+          "acceptance_criterion": "无统一判据，按产品定义",
+          "benchmark_weight": "low",
+          "benchmark_weight_reason": "随包长期携带、需要时才用",
+          "data_nature_hint": "几乎无宣传",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "ai_draft",
+          "expert_open_points": [],
+          "source_ids": [
+            "SRC-IEC61960-3"
+          ]
+        },
+        {
+          "parameter_id": "drop_robustness",
+          "version": 1,
+          "key": "drop_robustness",
+          "label": "跌落耐受",
+          "label_en": "Drop robustness",
+          "value_type": "boolean",
+          "unit": "bool",
+          "unit_notes": "",
+          "direction": "neutral",
+          "conditions": "方法待专家确认（可参考 IEC 60068 系列，具体部分与高度待定）",
+          "verification_method": "跌落后检查外观、功能、压力误差",
+          "acceptance_criterion": "跌落后功能正常（暂定）",
+          "benchmark_weight": "medium",
+          "benchmark_weight_reason": "随车颠簸、骑行中掉落比汽车用途更常见",
+          "data_nature_hint": "几乎无宣传",
+          "applicability": "required",
+          "origin": "ai_draft",
+          "status": "expert_pending",
+          "expert_open_points": [
+            "跌落高度、次数；是否加振动试验"
+          ],
+          "source_ids": [
+            "SRC-IEC60068-1"
+          ]
+        }
+      ],
+      "not_applicable": [
+        {
+          "parameter": "fill_time_full / fill_time_topup（汽车胎工况）",
+          "reason": "汽车/自行车多功能泵归汽车品类；其兼用场景工况单列，不复用不同品类字典作同口径比较"
+        },
+        {
+          "parameter": "power_source / power_cord_length / rated_power",
+          "reason": "当前锂电形态字典未单列这些参数；手动/CO₂ 形态及其参数、工况分别补充，不以本项限制品类用途边界"
+        },
+        {
+          "parameter": "preset_modes",
+          "reason": "v1 不设；若产品有'公路/山地/球类'模式，记在 display_units 备注（待用户确认是否单列）"
+        },
+        {
+          "parameter": "tubeless 坐胎能力",
+          "reason": "坐胎专用爆冲设备未纳入本版字典；普通落地式手动打气筒已纳入品类，专用工况待补"
+        }
+      ],
+      "test_template": {
+        "generated_from": "parameters（同参数、同版本）",
+        "common_record_fields": [
+          "样品编号与产品形态/配置（适用时记录固件/硬件版本及随附配件）",
+          "环境温度 °C",
+          "适用时记录电池起始状态（电量或供电电压）；手动/CO₂ 等其他形态另记其专用条件",
+          "仪器编号与校准有效期",
+          "测试人",
+          "测试日期",
+          "原始数据文件"
+        ],
+        "default_sample_plan": "每项至少 3 台样品，按方法要求重复；样本量待专家确认",
+        "specifications_frozen": false,
+        "items": [
+          {
+            "test_id": "T-BIKE-01",
+            "key": "max_pressure",
+            "title": "最大压力 测试",
+            "parameter_id": "max_pressure",
+            "parameter_version": 1,
+            "unit": "psi",
+            "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；出口经自带气嘴接 ≤0.1 L 刚性密封容器，参考压力计（数字式，准确度建议优于被测允差 4 倍以上，校准在有效期内）接容器",
+            "direction": "higher",
+            "method": "连续运行至压力不再上升（30 s 内波动 ≤0.5 psi）或到达设备上限，记录最高稳定读数；实胎能否达到见 fill_time_road",
+            "acceptance_criteria": "无统一判据，按产品定义（常用：实测 ≥ 标称值）",
+            "record_fields": [
+              "最高稳定压力 psi",
+              "到达时间 s",
+              "是否保护停机"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-02",
+            "key": "fill_time_road",
+            "title": "公路胎充气时间（0→100 psi） 测试",
+            "parameter_id": "fill_time_road",
+            "parameter_version": 1,
+            "unit": "s",
+            "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；测试轮胎 700×25C（ISO 5775-1 标记 25-622）开口胎 + 丁基内胎，Presta 气门（可拆芯），装于匹配轮辋、不承载；内胎排空至 0 psi（气门芯在位）→ 目标 100 psi（≈6.9 bar），同时记录到达 80 psi 的用时",
+            "direction": "lower",
+            "method": "预设目标后计时到自动停机；拆下泵头 60 s 后用 Presta 接头参考压力计测实际胎压并一并报告；达不到目标时记'未达到'及最高压力；测 3 次取中位数，两次之间冷却",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "到 80 psi 用时 s",
+              "到 100 psi 用时 s",
+              "拆下后实测 psi",
+              "是否达到"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-03",
+            "key": "fill_time_mtb",
+            "title": "山地胎充气时间（0→30 psi） 测试",
+            "parameter_id": "fill_time_mtb",
+            "parameter_version": 1,
+            "unit": "s",
+            "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；测试轮胎 29×2.25（ISO 5775-1 标记 57-622）开口胎 + 丁基内胎，Presta 气门，装于匹配轮辋、不承载；内胎排空至 0 psi → 目标 30 psi（≈2.1 bar）",
+            "direction": "lower",
+            "method": "预设目标后计时到自动停机；拆下泵头 60 s 后用参考压力计测实际胎压并一并报告；测 3 次取中位数，两次之间冷却",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "用时 s",
+              "拆下后实测 psi"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-04",
+            "key": "free_air_flow",
+            "title": "自由流量 测试",
+            "parameter_id": "free_air_flow",
+            "parameter_version": 1,
+            "unit": "L/min",
+            "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；出口接流量计，背压 ≈0（表压 ≤0.1 bar）；稳定运行 30 s 后读数",
+            "direction": "higher",
+            "method": "热式或容积式流量计串接；仅作解释用，不作为性能主指标",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "流量 L/min",
+              "背压 bar"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-05",
+            "key": "pressure_accuracy",
+            "title": "压力测量误差 测试",
+            "parameter_id": "pressure_accuracy",
+            "parameter_version": 1,
+            "unit": "psi",
+            "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；被测设备与参考压力计（数字式，准确度建议优于被测允差 4 倍以上，校准在有效期内）接同一密封容器；测试点 20 / 30 / 60 / 80 / 100 psi（超出量程不测），升压方向，每点稳定 30 s 后读数",
+            "direction": "lower",
+            "method": "逐点记录显示值与参考值，取最大绝对误差；低压点（20/30 psi）单独报告",
+            "acceptance_criteria": "无统一判据，按产品定义；可参考 EN 12645（适用性待专家确认）",
+            "record_fields": [
+              "测试点 psi",
+              "显示值",
+              "参考值",
+              "误差"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-06",
+            "key": "display_resolution",
+            "title": "显示分辨率 测试",
+            "parameter_id": "display_resolution",
+            "parameter_version": 1,
+            "unit": "psi",
+            "conditions": "核查各单位下的最小显示步进",
+            "direction": "lower",
+            "method": "读取显示",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "psi 步进",
+              "bar 步进"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-07",
+            "key": "auto_stop",
+            "title": "自动停机（预设压力） 测试",
+            "parameter_id": "auto_stop",
+            "parameter_version": 1,
+            "unit": "bool",
+            "conditions": "功能核查：按说明书设定预设压力后启动",
+            "direction": "neutral",
+            "method": "核查可设范围、步进与到达后是否停机",
+            "acceptance_criteria": "有/无；可设范围按产品定义",
+            "record_fields": [
+              "有/无",
+              "可设范围",
+              "设定步进"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-08",
+            "key": "auto_stop_deviation",
+            "title": "自动停机偏差 测试",
+            "parameter_id": "auto_stop_deviation",
+            "parameter_version": 1,
+            "unit": "psi",
+            "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；测试轮胎 700×25C（ISO 5775-1 标记 25-622）开口胎 + 丁基内胎，Presta 气门（可拆芯），装于匹配轮辋、不承载；起始 60 psi，预设 80 psi；停机后拆下泵头，60 s 后用 Presta 接头参考压力计测胎压",
+            "direction": "lower",
+            "method": "测 3 次，报告最大绝对偏差、停机时显示值与拆卸泄气损失（停机时显示值 − 拆下后实测值）",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "预设值 psi",
+              "停机时显示值 psi",
+              "拆下后实测 psi",
+              "偏差 psi",
+              "拆卸损失 psi"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-09",
+            "key": "presta_connection",
+            "title": "Presta 连接方式 测试",
+            "parameter_id": "presta_connection",
+            "parameter_version": 1,
+            "unit": "enum",
+            "conditions": "用 Presta 可拆芯内胎实连",
+            "direction": "neutral",
+            "method": "记录连接方式、是否需先拧松顶针、单手可操作性",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "连接方式",
+              "是否需转换嘴",
+              "单手可操作"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-10",
+            "key": "valve_core_retention",
+            "title": "可拆气门芯松脱 测试",
+            "parameter_id": "valve_core_retention",
+            "parameter_version": 1,
+            "unit": "次/20 次",
+            "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；Presta 可拆芯内胎；连接—充气至 60 psi—拆下，循环 20 次",
+            "direction": "lower",
+            "method": "记录气门芯被带松或带出的次数",
+            "acceptance_criteria": "0 次（暂定，待专家确认）",
+            "record_fields": [
+              "松动次数",
+              "带出次数"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-11",
+            "key": "valve_compatibility",
+            "title": "气嘴兼容 测试",
+            "parameter_id": "valve_compatibility",
+            "parameter_version": 1,
+            "unit": "enum",
+            "conditions": "核查随附气嘴与转换嘴，逐一实连充气",
+            "direction": "neutral",
+            "method": "每种气门实测连接、充气、拆卸，记录是否需转换嘴与是否漏气",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "气门类型",
+              "直连/转换嘴",
+              "是否漏气"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-12",
+            "key": "battery_capacity_mah",
+            "title": "电池标称容量 测试",
+            "parameter_id": "battery_capacity_mah",
+            "parameter_version": 1,
+            "unit": "mAh",
+            "conditions": "按电池组标称电压声明；抽检放电：20±5 °C，0.2 C 恒流放电至截止电压（IEC 61960-3 方法，适用性待专家确认）",
+            "direction": "higher",
+            "method": "读取标签与规格书；口径不一时先换算",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "标称电压 V",
+              "额定容量 mAh",
+              "实测放电容量 mAh"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-13",
+            "key": "battery_energy_wh",
+            "title": "电池额定能量 测试",
+            "parameter_id": "battery_energy_wh",
+            "parameter_version": 1,
+            "unit": "Wh",
+            "conditions": "以电池标签值为准，并与 UN 38.3 测试概要核对",
+            "direction": "higher",
+            "method": "核对三者一致",
+            "acceptance_criteria": "无性能判据；运输门槛见 §4",
+            "record_fields": [
+              "标签 Wh",
+              "测试概要 Wh"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-14",
+            "key": "charge_input",
+            "title": "充电输入 测试",
+            "parameter_id": "charge_input",
+            "parameter_version": 1,
+            "unit": "text",
+            "conditions": "读取产品标识与说明书；用 USB-C 功率计实测协商档位",
+            "direction": "neutral",
+            "method": "记录接口、协议、实测功率、适配器是否随附",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "接口",
+              "协议",
+              "实测功率 W",
+              "适配器是否随附"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-15",
+            "key": "charge_time",
+            "title": "充电时间 测试",
+            "parameter_id": "charge_time",
+            "parameter_version": 1,
+            "unit": "min",
+            "conditions": "环境 23±2 °C；放电至自动关机后静置 1 h；用 5 V/2 A 适配器充至指示充满（另记产品声明最高功率档）",
+            "direction": "lower",
+            "method": "记录用时与满电指示时刻",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "适配器规格",
+              "用时 min"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-16",
+            "key": "endurance_tires",
+            "title": "续航（可充胎次） 测试",
+            "parameter_id": "endurance_tires",
+            "parameter_version": 1,
+            "unit": "次",
+            "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；测试轮胎 700×25C（ISO 5775-1 标记 25-622）开口胎 + 丁基内胎，Presta 气门（可拆芯），装于匹配轮辋、不承载；每次 0→80 psi；两次之间按说明书冷却（未规定则间隔 5 min）；直到无法完成一次充气或自动关机",
+            "direction": "higher",
+            "method": "逐次记录用时，观察末段衰减",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "次数",
+              "每次用时 s",
+              "末次结束原因"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-17",
+            "key": "noise_level",
+            "title": "工作噪声 测试",
+            "parameter_id": "noise_level",
+            "parameter_version": 1,
+            "unit": "dB(A)",
+            "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；设备置于硬质反射地面（半消声室或背景噪声低 ≥10 dB 的安静室）；负载为 700×25C 测试轮胎 60→80 psi；传声器距设备几何中心 1 m，前后左右 4 点",
+            "direction": "lower",
+            "method": "IEC 61672-1 1/2 级声级计；报告 4 点能量平均 LAeq 与 LAFmax；无统一方法",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "LAeq dB(A)",
+              "LAFmax dB(A)",
+              "背景 dB(A)"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-18",
+            "key": "weight_g",
+            "title": "重量 测试",
+            "parameter_id": "weight_g",
+            "parameter_version": 1,
+            "unit": "g",
+            "conditions": "主机（含内置电池），不含支架、转换嘴、充电线；另记含随附支架重量",
+            "direction": "lower",
+            "method": "精度 0.1 g 电子秤",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "主机重量 g",
+              "含支架重量 g"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-19",
+            "key": "dimensions",
+            "title": "外形尺寸 测试",
+            "parameter_id": "dimensions",
+            "parameter_version": 1,
+            "unit": "mm",
+            "conditions": "主机外廓最大尺寸",
+            "direction": "lower",
+            "method": "卡尺测量",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "L mm",
+              "W mm",
+              "H mm",
+              "体积 cm³"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-20",
+            "key": "mount_options",
+            "title": "携带与安装方式 测试",
+            "parameter_id": "mount_options",
+            "parameter_version": 1,
+            "unit": "enum",
+            "conditions": "核查随附支架与说明书",
+            "direction": "neutral",
+            "method": "记录方式，并实装确认不干涉水壶",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "方式",
+              "是否随附支架"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-21",
+            "key": "display_units",
+            "title": "显示与单位 测试",
+            "parameter_id": "display_units",
+            "parameter_version": 1,
+            "unit": "enum",
+            "conditions": "核查显示类型与可切换单位；强光可读性主观评价（方法待专家确认）",
+            "direction": "neutral",
+            "method": "记录类型与单位",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "显示类型",
+              "单位列表"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-22",
+            "key": "light",
+            "title": "照明 测试",
+            "parameter_id": "light",
+            "parameter_version": 1,
+            "unit": "text",
+            "conditions": "核查模式",
+            "direction": "neutral",
+            "method": "无统一测量口径",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "模式",
+              "光通量 lm（宣传/实测）"
+            ],
+            "applicability": "optional",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-23",
+            "key": "power_bank_output",
+            "title": "移动电源输出 测试",
+            "parameter_id": "power_bank_output",
+            "parameter_version": 1,
+            "unit": "W",
+            "conditions": "满电；电子负载测各口最大稳定输出功率（参考 GB/T 35590-2017 思路，待专家确认）",
+            "direction": "higher",
+            "method": "逐口测试",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "接口",
+              "最大功率 W"
+            ],
+            "applicability": "optional",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-24",
+            "key": "ip_rating",
+            "title": "防护等级 测试",
+            "parameter_id": "ip_rating",
+            "parameter_version": 1,
+            "unit": "IP code",
+            "conditions": "按 IEC 60529 规定的对应等级试验",
+            "direction": "higher",
+            "method": "宣称等级须有试验报告",
+            "acceptance_criteria": "宣称即须有报告支撑",
+            "record_fields": [
+              "宣称等级",
+              "报告编号"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-25",
+            "key": "operating_temp",
+            "title": "工作温度范围 测试",
+            "parameter_id": "operating_temp",
+            "parameter_version": 1,
+            "unit": "°C",
+            "conditions": "读取说明书；低温验证（0 °C 静置 4 h 后做 fill_time_road，温度点待专家确认）",
+            "direction": "target",
+            "method": "记录声明范围与低温充气用时",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "工作范围 °C",
+              "充电范围 °C"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-26",
+            "key": "continuous_run_time",
+            "title": "连续工作时间 测试",
+            "parameter_id": "continuous_run_time",
+            "parameter_version": 1,
+            "unit": "min",
+            "conditions": "环境 23±2 °C；按说明书充满后静置 ≥1 h；出口接针阀节流，维持背压 100 psi（≈6.9 bar），连续运行",
+            "direction": "higher",
+            "method": "运行至过热保护或说明书上限；记录时间与恢复冷却时间",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "连续运行 min",
+              "停机原因",
+              "恢复冷却 min"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-27",
+            "key": "surface_temp",
+            "title": "最高表面温度 测试",
+            "parameter_id": "surface_temp",
+            "parameter_version": 1,
+            "unit": "°C",
+            "conditions": "continuous_run_time 测试结束时；热电偶测握持区、外壳最热点、气嘴接头",
+            "direction": "lower",
+            "method": "记录三处最高温度与环境温度",
+            "acceptance_criteria": "无统一判据，按产品定义；可参考 IEC 60335-1 表面温升限值（待专家确认）",
+            "record_fields": [
+              "握持区 °C",
+              "外壳 °C",
+              "气嘴接头 °C"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-28",
+            "key": "hose_length",
+            "title": "气管长度 测试",
+            "parameter_id": "hose_length",
+            "parameter_version": 1,
+            "unit": "mm",
+            "conditions": "从机身出口到气嘴末端",
+            "direction": "neutral",
+            "method": "卷尺测量",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "长度 mm"
+            ],
+            "applicability": "optional",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-29",
+            "key": "storage_retention",
+            "title": "存放电量保持 测试",
+            "parameter_id": "storage_retention",
+            "parameter_version": 1,
+            "unit": "%",
+            "conditions": "满电后 23±2 °C 存放 28 天后测剩余放电量",
+            "direction": "higher",
+            "method": "参考 IEC 61960-3 荷电保持试验思路",
+            "acceptance_criteria": "无统一判据，按产品定义",
+            "record_fields": [
+              "剩余放电量 %"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          },
+          {
+            "test_id": "T-BIKE-30",
+            "key": "drop_robustness",
+            "title": "跌落耐受 测试",
+            "parameter_id": "drop_robustness",
+            "parameter_version": 1,
+            "unit": "bool",
+            "conditions": "方法待专家确认（可参考 IEC 60068 系列，具体部分与高度待定）",
+            "direction": "neutral",
+            "method": "跌落后检查外观、功能、压力误差",
+            "acceptance_criteria": "跌落后功能正常（暂定）",
+            "record_fields": [
+              "跌落条件",
+              "外观",
+              "功能"
+            ],
+            "applicability": "required",
+            "state": "expert_pending"
+          }
+        ],
+        "coverage_note": "本版 30 个参数及测试项只覆盖锂电电动形态草稿。手动、CO₂ 已纳入品类，但专用字典与测试骨架待补；不得把电动泵 required 参数和充满/自动停机工况直接套用于两类新增形态。"
+      },
+      "regulations": {
+        "notes": [
+          "D 口径已由用户确认（2026-10-08）：首批知识覆盖欧盟、美国、加拿大、日本、澳大利亚、中国大陆；各提案/变体明确实际销售市场，覆盖范围不等于每个型号六地同时可售。英国、韩国保留为储备资料，全球运输条目按实际运输配置和路线判定。",
+          "考虑持续销售：记录投放时间、法规生效/过渡时间及持续销售的影响；法规版本和结构要求由认证负责人按具体型号/变体确认，不把欧盟要求自动变成全球统一结构规定。",
+          "法定要求（statutory）、客户/渠道要求（customer_channel）、自愿技术参考（voluntary_reference）分别记录；目录中的 requirement_kind 仍为 AI 分类草稿，classification_state = ai_draft，由认证负责人核对。",
+          "按实际配置分别判定产品本体、电池、充电系统与随附适配器、包装/标签，以及无线/联网、移动电源、搭电、照明、补胎液、手动/CO₂ 等形态；现有目录不代表所有新增形态已完整覆盖。",
+          "原 status 保留来源目录状态：“已核实来源”不是本产品适用或合规结论。“不适用”也是原 AI 建议，不是具名确认。source_state、applicability_state、compliance_state 分开记录；本稿全部 applicability_state = expert_pending，compliance_state = not_assessed，待认证负责人按配置和投放时间确认。",
+          "客户额外认证、测试和特殊要求挂对应提案/变体，记录客户要求版本、负责人、适用范围及关联规格/测试/证据；原件保持私有。沉淀到品类须人工确认并去标识，不能把单个客户要求直接变成品类默认要求。",
+          "来源核验方式逐条见 sources.md；本次增补欧盟电池拆换例外授权文本与美国 DOE 官方定义，并修正无线联网和充电系统的条件判断；没有执行真实产品认证或专家签核。"
+        ],
+        "object_values": [
+          "product",
+          "battery",
+          "charger",
+          "packaging",
+          "radio",
+          "all"
+        ],
+        "status_values": [
+          "verified",
+          "pending",
+          "expert",
+          "na"
+        ],
+        "items": [
+          {
+            "region": "欧盟",
+            "domain": "通用安全",
+            "object": "all",
+            "instrument": "GPSR (EU) 2023/988",
+            "applicability": "适用；2024-12-13 起。已受 CE 协调法规覆盖的方面按协调法规，远程销售信息、事故报告等条款仍适用",
+            "status": "verified",
+            "source_ids": [
+              "SRC-EU-GPSR"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "电气安全",
+            "object": "product",
+            "instrument": "LVD 2014/35/EU",
+            "applicability": "本体额定为 7–12 V 量级直流，低于 75 V DC，不在 LVD 范围；本体安全落在 GPSR 和/或机械法规",
+            "status": "verified",
+            "source_ids": [
+              "SRC-EU-LVD"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "电气安全",
+            "object": "charger",
+            "instrument": "LVD 2014/35/EU",
+            "applicability": "通常不随附适配器；若随附市电适配器，适配器在 LVD 范围",
+            "status": "verified",
+            "source_ids": [
+              "SRC-EU-LVD"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "机械安全",
+            "object": "product",
+            "instrument": "机械指令 2006/42/EC → 机械法规 (EU) 2023/1230（2027-01-20 起）",
+            "applicability": "电池款不在 LVD 范围，家电排除不适用，同类产品 DoC（Bosch EasyPump、Ryobi R18I）按 2006/42/EC 声明，引用 EN 62841-1:2015、EN 1012-1:2010；12 V 有线款同理；带蓝牙款在 2023/1230 第 2(2)(p) 条下是否被排除待专家确认",
+            "status": "expert",
+            "source_ids": [
+              "SRC-EU-MR",
+              "SRC-DOC-BOSCH",
+              "SRC-DOC-RYOBI"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "EMC",
+            "object": "product",
+            "instrument": "EMC 2014/30/EU",
+            "applicability": "适用（带蓝牙则按 RED）；公报可核到 EN 55014-1:2017+A11:2020，同类 DoC 另引 EN 55014-2:2015；2021 新版是否入公报待确认",
+            "status": "verified",
+            "source_ids": [
+              "SRC-EU-EMC"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "化学物质",
+            "object": "all",
+            "instrument": "RoHS 2011/65/EU + (EU) 2015/863",
+            "applicability": "适用于整机电子电气部件",
+            "status": "verified",
+            "source_ids": [
+              "SRC-EU-ROHS"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "化学物质",
+            "object": "product",
+            "instrument": "REACH (EC) 1907/2006：SVHC 告知；附件 XVII 第 50 项 PAH",
+            "applicability": "适用；软管、手柄、橡胶气嘴等接触皮肤部件 8 种 PAH 各 ≤1 mg/kg；SVHC >0.1% 须告知",
+            "status": "verified",
+            "source_ids": [
+              "SRC-EU-REACH50"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "电池",
+            "object": "battery",
+            "instrument": "电池法规 (EU) 2023/1542",
+            "applicability": "锂电配置按 (EU) 2023/1542 评估 CE/DoC、回收/EPR、标签及持续销售义务。第 11 条自 2027-02-18 适用；便携电池拆换要求、分类与例外按具体产品确认。2026-07-14 新增拆换例外授权文本已发布，正式公报编号、生效及本产品适用仍待认证负责人核对；不把用户“考虑持续销售”记为拆换资格或全球统一结构决定。",
+            "status": "expert",
+            "source_ids": [
+              "SRC-EU-BATT",
+              "SRC-EU-BATT-DEROG-2026"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "回收标签",
+            "object": "packaging",
+            "instrument": "WEEE 2012/19/EU",
+            "applicability": "适用；2018-08-15 起覆盖所有 EEE；划叉轮式垃圾桶标志，各成员国生产者注册",
+            "status": "verified",
+            "source_ids": [
+              "SRC-EU-WEEE"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "无线",
+            "object": "radio",
+            "instrument": "RED 2014/53/EU",
+            "applicability": "仅带蓝牙时适用（安全与 EMC 改按 RED 3(1)(a)(b)，安全无电压下限）；EN 300 328 V2.2.2、EN 301 489-17 V3.3.1 已入公报",
+            "status": "verified",
+            "source_ids": [
+              "SRC-EU-RED"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "无线网络安全",
+            "object": "radio",
+            "instrument": "RED 授权法规 (EU) 2022/30 + EN 18031-1:2024（2025-08-01 起）",
+            "applicability": "条件适用；2022/30 第 1 条包含自身经互联网通信的设备，直接通信或经其他设备通信均在判断范围。蓝牙/App 架构不能一概判为不适用；按实际协议、数据流、隐私/支付功能及投放时间由认证负责人确认。",
+            "status": "expert",
+            "source_ids": [
+              "SRC-EU-REDDA"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "充电接口",
+            "object": "charger",
+            "instrument": "通用充电器 Directive (EU) 2022/2380",
+            "applicability": "附件 Ia 13 类不含充气泵且只管无线电设备，不适用",
+            "status": "na",
+            "source_ids": [
+              "SRC-EU-CC"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "噪声",
+            "object": "product",
+            "instrument": "户外设备噪声指令 2000/14/EC",
+            "applicability": "附件 I 的 compressor 定义要求“配可换装设备”，同类 DoC 未引用；是否适用待专家确认",
+            "status": "expert",
+            "source_ids": [
+              "SRC-EU-ODN"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "计量参考",
+            "object": "product",
+            "instrument": "EN 12645:2014（非协调标准）；86/217/EEC 胎压表指令已由 2011/17/EU 废止；OIML R 23",
+            "applicability": "面向机动车轮胎，对自行车打气筒是否可借用待确认",
+            "status": "pending",
+            "source_ids": [
+              "SRC-EN12645",
+              "SRC-EU-2011-17",
+              "SRC-OIML-R23"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "voluntary_reference",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "能效",
+            "object": "charger",
+            "instrument": "外部电源生态设计 (EU) 2019/1782（2028-12-14 起由 (EU) 2025/2052 取代）",
+            "applicability": "仅随附适配器时适用",
+            "status": "verified",
+            "source_ids": [
+              "SRC-EU-EPS"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "欧盟",
+            "domain": "包装",
+            "object": "packaging",
+            "instrument": "PPWR (EU) 2025/40",
+            "applicability": "2026-08-12 起适用；统一材质标签另有较晚日期",
+            "status": "verified",
+            "source_ids": [
+              "SRC-EU-PPWR"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "英国",
+            "domain": "合格标志",
+            "object": "all",
+            "instrument": "CE 标志在 GB 无限期继续认可（2024 年修订条例，2024-10-01 生效）；UKCA 可选",
+            "applicability": "适用；对应条例：机械 SI 2008/1597、EMC SI 2016/1091、RoHS SI 2012/3032、GPSR SI 2005/1803、无线 SI 2017/1206（电气安全 SI 2016/1101 与 LVD 同电压范围，本体不在范围）",
+            "status": "verified",
+            "source_ids": [
+              "SRC-UK-CE"
+            ],
+            "coverage": "reserve",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "英国",
+            "domain": "无线网络安全",
+            "object": "radio",
+            "instrument": "PSTI（SI 2023/1007，2024-04-29 起）",
+            "applicability": "非 IP 蓝牙产品须能同时连 ≥2 个产品且直连可上网产品才在范围，按协议设计待确认",
+            "status": "pending",
+            "source_ids": [
+              "SRC-UK-PSTI"
+            ],
+            "coverage": "reserve",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "英国",
+            "domain": "回收标签",
+            "object": "packaging",
+            "instrument": "WEEE Regulations 2013（SI 2013/3113，经 SI 2025/910 修订）；Waste Batteries and Accumulators Regulations 2009（SI 2009/890）",
+            "applicability": "适用；在线市场替境外卖家承担 WEEE 生产者责任；英国电池改革方案在制定",
+            "status": "verified",
+            "source_ids": [
+              "SRC-UK-WEEE-BATT"
+            ],
+            "coverage": "reserve",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "美国",
+            "domain": "EMC",
+            "object": "product",
+            "instrument": "FCC 47 CFR Part 15 Subpart B（SDoC）",
+            "applicability": "有数字控制/显示即适用",
+            "status": "verified",
+            "source_ids": [
+              "SRC-US-FCC15B"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "美国",
+            "domain": "无线",
+            "object": "radio",
+            "instrument": "FCC Part 15 有意辐射体规则（带蓝牙需 FCC ID）",
+            "applicability": "条件适用；具体条款号待确认",
+            "status": "pending",
+            "source_ids": [],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "美国",
+            "domain": "电气安全（自愿）",
+            "object": "product",
+            "instrument": "UL 1450（范围含 compressor-type inflators）",
+            "applicability": "非法定强制，常见于渠道或客户要求；是否必须按客户/渠道确认",
+            "status": "verified",
+            "source_ids": [
+              "SRC-US-UL1450"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "customer_channel",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "美国",
+            "domain": "电池安全",
+            "object": "battery",
+            "instrument": "IEC 62133-2 体系（美国对应 UL 标准编号待确认）",
+            "applicability": "渠道或客户常要求；具体标准待确认",
+            "status": "pending",
+            "source_ids": [
+              "SRC-IEC62133-2"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "customer_channel",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "美国",
+            "domain": "化学物质",
+            "object": "packaging",
+            "instrument": "California Proposition 65",
+            "applicability": "含清单化学物质且有暴露时须警告标签",
+            "status": "verified",
+            "source_ids": [
+              "SRC-US-P65"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "美国",
+            "domain": "能效",
+            "object": "charger",
+            "instrument": "美国能源部电池充电器能效法规",
+            "applicability": "DOE 的 battery charger 定义含嵌入其他消费产品内的充电装置；不随附适配器不能作为自动排除依据。按实际充电系统、产品配置及现行/过渡规则由认证负责人确认；官网所列撤销提案不当作已生效撤销。",
+            "status": "expert",
+            "source_ids": [
+              "SRC-US-DOE-BC"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "美国",
+            "domain": "运输",
+            "object": "battery",
+            "instrument": "49 CFR 173.185",
+            "applicability": "适用（锂电池运输）；现行版本待复核",
+            "status": "verified",
+            "source_ids": [
+              "SRC-US-49CFR"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "加拿大",
+            "domain": "EMC",
+            "object": "product",
+            "instrument": "ICES-003（数字装置）",
+            "applicability": "有数字电路即适用；电机类是否另需其他 ICES 待确认",
+            "status": "verified",
+            "source_ids": [
+              "SRC-CA-ICES"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "加拿大",
+            "domain": "无线 / 安全 / 标签",
+            "object": "all",
+            "instrument": "ISED 无线标准（RSS）、消费品安全、双语标签",
+            "applicability": "具体标准与义务待确认",
+            "status": "pending",
+            "source_ids": [],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "日本",
+            "domain": "电池安全",
+            "object": "battery",
+            "instrument": "电气用品安全法（PSE）锂离子蓄电池",
+            "applicability": "单电芯 ≥400 Wh/L 在范围；内置于充气泵是否豁免、带移动电源功能是否按移动电源管理待专家确认",
+            "status": "expert",
+            "source_ids": [
+              "SRC-JP-PSE"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "日本",
+            "domain": "充电器 / 无线 / 回收",
+            "object": "all",
+            "instrument": "AC 适配器 PSE、电波法技术基准适合证明、小型二次电池回收标识",
+            "applicability": "具体条款待确认",
+            "status": "pending",
+            "source_ids": [],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "韩国",
+            "domain": "电池安全",
+            "object": "battery",
+            "instrument": "KC 62133-2（安全确认，基于 IEC 62133-2）",
+            "applicability": "适用于便携锂二次电池",
+            "status": "verified",
+            "source_ids": [
+              "SRC-KR-KC62133"
+            ],
+            "coverage": "reserve",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "韩国",
+            "domain": "EMC / 无线",
+            "object": "product",
+            "instrument": "电波法适合性评估（KC EMC / 无线）",
+            "applicability": "具体类别与标准待确认",
+            "status": "pending",
+            "source_ids": [],
+            "coverage": "reserve",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "澳大利亚",
+            "domain": "电气安全",
+            "object": "product",
+            "instrument": "EESS",
+            "applicability": "本体为低压直流（<120 V 纹波直流），不在 EESS 范围",
+            "status": "verified",
+            "source_ids": [
+              "SRC-AU-EESS"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "澳大利亚",
+            "domain": "电气安全",
+            "object": "charger",
+            "instrument": "EESS",
+            "applicability": "若随附市电适配器，适配器在范围（风险等级待确认）",
+            "status": "verified",
+            "source_ids": [
+              "SRC-AU-EESS"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "澳大利亚",
+            "domain": "EMC / 无线",
+            "object": "product",
+            "instrument": "ACMA EMC 与无线制度、RCM 标志、供应商注册",
+            "applicability": "具体标准待确认",
+            "status": "pending",
+            "source_ids": [],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "中国大陆",
+            "domain": "电池安全",
+            "object": "battery",
+            "instrument": "CCC：锂离子电池和电池组、移动电源（GB 31241-2022，2024-08-01 起强制）",
+            "applicability": "充气泵内置电池是否属'便携式电子产品用'范围待专家确认",
+            "status": "expert",
+            "source_ids": [
+              "SRC-CN-CCC"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "中国大陆",
+            "domain": "移动电源",
+            "object": "product",
+            "instrument": "GB 47372—2026《移动电源安全技术规范》（2027-04-01 实施）",
+            "applicability": "带移动电源输出的充气泵是否被视为移动电源待专家确认",
+            "status": "expert",
+            "source_ids": [
+              "SRC-CN-GB47372"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "中国大陆",
+            "domain": "化学物质",
+            "object": "packaging",
+            "instrument": "电器电子产品有害物质限制使用管理办法 + SJ/T 11364-2014 标识",
+            "applicability": "适用（有害物质标识）",
+            "status": "verified",
+            "source_ids": [
+              "SRC-CN-ROHS"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "中国大陆",
+            "domain": "无线",
+            "object": "radio",
+            "instrument": "工信部 2019 年第 52 号公告（微功率短距离设备目录和技术要求）",
+            "applicability": "带蓝牙时按目录技术要求判断是否免型号核准，待确认",
+            "status": "pending",
+            "source_ids": [
+              "SRC-CN-SRD"
+            ],
+            "coverage": "primary",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "中国大陆",
+            "domain": "产品标准",
+            "object": "product",
+            "instrument": "车载充气泵 / 打气筒行业或团体标准",
+            "applicability": "本轮未检索到可核实的标准号，待确认",
+            "status": "pending",
+            "source_ids": [],
+            "coverage": "primary",
+            "requirement_kind": "voluntary_reference",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "全球",
+            "domain": "运输",
+            "object": "battery",
+            "instrument": "UN 38.3",
+            "applicability": "适用：内置锂电须通过并提供测试概要",
+            "status": "verified",
+            "source_ids": [
+              "SRC-UN38.3"
+            ],
+            "coverage": "cross_market",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "全球",
+            "domain": "航空运输",
+            "object": "battery",
+            "instrument": "IATA DGR / 锂电池指南（PI 966/967）",
+            "applicability": "适用：外壳标 Wh；≤100 Wh 可按 Section II",
+            "status": "verified",
+            "source_ids": [
+              "SRC-IATA-LB"
+            ],
+            "coverage": "cross_market",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "全球",
+            "domain": "电池安全",
+            "object": "battery",
+            "instrument": "IEC 62133-2:2017+AMD1:2021",
+            "applicability": "多数地区电池安全认证的基础标准",
+            "status": "verified",
+            "source_ids": [
+              "SRC-IEC62133-2"
+            ],
+            "coverage": "cross_market",
+            "requirement_kind": "voluntary_reference",
+            "classification_state": "ai_draft",
+            "source_state": "verified",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          },
+          {
+            "region": "各国",
+            "domain": "灯具",
+            "object": "product",
+            "instrument": "自行车灯具道路法规",
+            "applicability": "仅当宣传可作自行车灯使用时评估",
+            "status": "pending",
+            "source_ids": [],
+            "coverage": "cross_market",
+            "requirement_kind": "statutory",
+            "classification_state": "ai_draft",
+            "source_state": "pending",
+            "applicability_state": "expert_pending",
+            "compliance_state": "not_assessed"
+          }
+        ],
+        "decision_policy": {
+          "status": "user_confirmed",
+          "confirmed_on": "2026-10-08",
+          "confirmed_by": "用户本人（本会话逐项回答并最终回复“好的”）",
+          "reference": "README.md#cd-confirmed",
+          "scope": "C 品类边界与 D 法规资料/判定口径；不授予具体法规适用、合规通过或参数测试资格",
+          "coverage_regions": [
+            "欧盟",
+            "美国",
+            "加拿大",
+            "日本",
+            "澳大利亚",
+            "中国大陆"
+          ],
+          "reserve_regions": [
+            "英国",
+            "韩国"
+          ],
+          "proposal_selects_markets": true,
+          "consider_continued_sales": true,
+          "decision_owner_role": "认证负责人",
+          "requirement_kinds": {
+            "statutory": "法定要求",
+            "customer_channel": "客户/渠道要求",
+            "voluntary_reference": "自愿技术参考"
+          },
+          "assessment_dimensions": [
+            "型号/变体及配置版本",
+            "实际销售地区",
+            "实际客户/渠道",
+            "投放及持续销售时间",
+            "法规版本与生效/过渡时间"
+          ],
+          "customer_requirement_scope": "对应提案/变体；共享到品类须人工确认并去标识"
+        },
+        "customer_requirements": {
+          "scope": "对应提案或客户变体，遵循其私有受众；本种子没有真实客户要求",
+          "record_fields": [
+            "要求标识/版本",
+            "客户或渠道要求来源（私有引用）",
+            "要求内容与性质",
+            "提案/变体及配置版本",
+            "适用地区与期限",
+            "负责人",
+            "关联规格版本",
+            "关联测试与证据",
+            "确认状态/确认人/时间"
+          ],
+          "items": []
+        },
+        "coverage_gaps": [
+          "手动形态专用参数、工况和测试方法待专业确认",
+          "CO₂ 形态专用参数、耗材/气瓶、工况和法规覆盖待专业确认",
+          "手动/CO₂、搭电、补胎液等新增形态的法规资料与具体产品适用矩阵待认证负责人核对；现有 43/44 条目录不代表完整覆盖"
+        ]
+      },
+      "scenarios": {
+        "user_groups": [
+          {
+            "group": "公路车骑行者",
+            "note": "Presta、高压、重量体积敏感"
+          },
+          {
+            "group": "山地 / 越野骑行者",
+            "note": "低压精度、耐用防水"
+          },
+          {
+            "group": "通勤 / 城市车、电助力车用户",
+            "note": "Schrader、Dunlop 较常见（待研究）"
+          },
+          {
+            "group": "长途骑行 / 骑行旅行者",
+            "note": "续航、可靠性"
+          },
+          {
+            "group": "B2B：自行车配件品牌、电商品牌、车店与俱乐部（OEM/ODM）",
+            "note": "按规格书采购"
+          }
+        ],
+        "use_scenarios": [
+          "骑行前在家打气（替代落地打气筒）",
+          "路上爆胎补胎/换内胎后充到可骑行压力",
+          "山地骑行中按路况微调胎压",
+          "赛事与骑行活动保障（多车多次）"
+        ],
+        "jtbd": [
+          "骑行途中爆胎修补后，用一只能随身带的小泵把胎充到可骑行压力",
+          "出门前快速、准确地把胎压打到想要的值，不用费力"
+        ],
+        "buying_criteria": [
+          {
+            "criterion": "重量与体积",
+            "importance": "待研究"
+          },
+          {
+            "criterion": "能否到达公路胎压力及所需时间",
+            "importance": "待研究"
+          },
+          {
+            "criterion": "Presta 连接是否可靠",
+            "importance": "待研究"
+          },
+          {
+            "criterion": "压力精度",
+            "importance": "待研究"
+          },
+          {
+            "criterion": "续航次数",
+            "importance": "待研究"
+          },
+          {
+            "criterion": "防水",
+            "importance": "待研究"
+          },
+          {
+            "criterion": "价格",
+            "importance": "待研究"
+          },
+          {
+            "criterion": "品牌与评价",
+            "importance": "待研究"
+          }
+        ],
+        "regions_and_channels": "首批知识覆盖：欧盟、美国、加拿大、日本、澳大利亚、中国大陆；每份提案明确实际销售市场和客户/渠道；购买排序、细分占比与渠道差异仍待研究。",
+        "note": "购买标准排序、各细分占比、地区与渠道差异：待研究（不填市场数据）。"
+      },
+      "competitor_fields": {
+        "rule": "不填真实竞品数据；本节只定义字段。所有竞品指标必须引用本字典同参数同版本，不同测试条件不得同列比较。",
+        "aligned_with": "server/app/domain/competitors.py CompetitorContent / CompetitorMetric / PriceQuote / CertificationObservation",
+        "record": [
+          {
+            "field": "brand",
+            "label": "品牌",
+            "type": "string",
+            "note": "必填"
+          },
+          {
+            "field": "model",
+            "label": "型号",
+            "type": "string",
+            "note": "必填"
+          },
+          {
+            "field": "variant",
+            "label": "版本/配置名",
+            "type": "string",
+            "note": "必填；无则填'标准版'"
+          },
+          {
+            "field": "competitor_kind",
+            "label": "竞品类型",
+            "type": "enum: direct / indirect / emerging / substitute",
+            "note": "按对标对象和市场定位选择；品类归属与竞争关系分别记录，不因手动/CO₂ 形态自动标为 substitute"
+          },
+          {
+            "field": "region",
+            "label": "销售地区",
+            "type": "string",
+            "note": "如 US、DE、JP"
+          },
+          {
+            "field": "channel",
+            "label": "渠道",
+            "type": "string",
+            "note": "如 Amazon US、线下零售、B2B"
+          },
+          {
+            "field": "configuration",
+            "label": "配置说明",
+            "type": "text",
+            "note": "供电方式、随附配件"
+          },
+          {
+            "field": "lifecycle",
+            "label": "生命周期",
+            "type": "enum: unknown / announced / available / discontinued",
+            "note": ""
+          },
+          {
+            "field": "observed_on",
+            "label": "观察日期",
+            "type": "date",
+            "note": "不得晚于今天"
+          },
+          {
+            "field": "identity_sources",
+            "label": "身份来源",
+            "type": "SourceRef[]（≥1）",
+            "note": "产品页、说明书、实物照片"
+          },
+          {
+            "field": "segment_tags",
+            "label": "细分标签",
+            "type": "string[]",
+            "note": "本品类新增建议字段，供品类矩阵分组（待确认）"
+          },
+          {
+            "field": "notes",
+            "label": "备注",
+            "type": "text",
+            "note": ""
+          },
+          {
+            "field": "revision_reason",
+            "label": "修订理由",
+            "type": "text",
+            "note": "只追加修订"
+          }
+        ],
+        "metric": [
+          {
+            "field": "parameter_id",
+            "label": "参数 ID",
+            "type": "string",
+            "note": "引用本字典"
+          },
+          {
+            "field": "parameter_version",
+            "label": "参数版本",
+            "type": "int",
+            "note": "与 parameter_id 一起引用"
+          },
+          {
+            "field": "key / label / unit / conditions",
+            "label": "键 / 名称 / 单位 / 条件",
+            "type": "string",
+            "note": "必须与字典同版本一致；条件不同另列，不硬比"
+          },
+          {
+            "field": "number 或 text",
+            "label": "数值或文字值",
+            "type": "number | string",
+            "note": "二选一"
+          },
+          {
+            "field": "nature",
+            "label": "数据性质",
+            "type": "enum: measured 实测 / claimed 宣传 / inferred 推断 / unknown 未知",
+            "note": "推断须写 method；未知须写 missing_reason，不得填数"
+          },
+          {
+            "field": "method",
+            "label": "推断或测试方法",
+            "type": "text",
+            "note": ""
+          },
+          {
+            "field": "source_refs",
+            "label": "来源",
+            "type": "SourceRef[]",
+            "note": "已知值必须有来源"
+          },
+          {
+            "field": "missing_reason",
+            "label": "缺失原因",
+            "type": "text",
+            "note": "nature=unknown 时必填"
+          }
+        ],
+        "price_quote": [
+          {
+            "field": "amount",
+            "label": "金额",
+            "type": "number ≥0",
+            "note": ""
+          },
+          {
+            "field": "currency",
+            "label": "币种",
+            "type": "ISO 4217 三位代码",
+            "note": "如 USD、EUR"
+          },
+          {
+            "field": "as_of",
+            "label": "价格日期",
+            "type": "date",
+            "note": "不晚于观察日期"
+          },
+          {
+            "field": "quantity",
+            "label": "数量",
+            "type": "int",
+            "note": "零售为 1；B2B 写起订量"
+          },
+          {
+            "field": "basis",
+            "label": "价格口径",
+            "type": "enum: retail / list / promotion / wholesale",
+            "note": "零售、标价、促销、批发"
+          },
+          {
+            "field": "tax_included",
+            "label": "是否含税",
+            "type": "bool | null",
+            "note": "未知填 null"
+          },
+          {
+            "field": "shipping_included",
+            "label": "是否含运费",
+            "type": "bool | null",
+            "note": "未知填 null"
+          },
+          {
+            "field": "conditions",
+            "label": "价格条件",
+            "type": "text",
+            "note": "如会员价、券后价"
+          },
+          {
+            "field": "source_refs",
+            "label": "来源",
+            "type": "SourceRef[]（≥1）",
+            "note": "截图或页面存档"
+          }
+        ],
+        "certification": [
+          {
+            "field": "name",
+            "label": "认证名称",
+            "type": "string",
+            "note": "如 CE、FCC、UN 38.3"
+          },
+          {
+            "field": "status",
+            "label": "状态",
+            "type": "enum: reported / documented / unknown",
+            "note": "documented 须有证书编号与范围"
+          },
+          {
+            "field": "scope / document_number / valid_until",
+            "label": "范围 / 编号 / 有效期",
+            "type": "string / string / date",
+            "note": ""
+          },
+          {
+            "field": "source_refs / missing_reason",
+            "label": "来源 / 缺失原因",
+            "type": "",
+            "note": "unknown 须写缺失原因"
+          }
+        ]
+      }
+    }
+  ],
+  "source_ids_used": [
+    "SRC-AU-EESS",
+    "SRC-CA-ICES",
+    "SRC-CN-CCC",
+    "SRC-CN-GB47372",
+    "SRC-CN-ROHS",
+    "SRC-CN-SRD",
+    "SRC-DOC-BOSCH",
+    "SRC-DOC-RYOBI",
+    "SRC-EN12645",
+    "SRC-EU-2011-17",
+    "SRC-EU-BATT",
+    "SRC-EU-BATT-DEROG-2026",
+    "SRC-EU-CC",
+    "SRC-EU-EMC",
+    "SRC-EU-EPS",
+    "SRC-EU-GPSR",
+    "SRC-EU-LVD",
+    "SRC-EU-MR",
+    "SRC-EU-ODN",
+    "SRC-EU-PPWR",
+    "SRC-EU-REACH50",
+    "SRC-EU-RED",
+    "SRC-EU-REDDA",
+    "SRC-EU-ROHS",
+    "SRC-EU-WEEE",
+    "SRC-GBT35590",
+    "SRC-IATA-LB",
+    "SRC-IEC60068-1",
+    "SRC-IEC60335-1",
+    "SRC-IEC60529",
+    "SRC-IEC61672-1",
+    "SRC-IEC61960-3",
+    "SRC-IEC62133-2",
+    "SRC-ISO1217",
+    "SRC-ISO2151",
+    "SRC-ISO4570",
+    "SRC-ISO5775-1",
+    "SRC-ISO9413",
+    "SRC-JP-PSE",
+    "SRC-KR-KC62133",
+    "SRC-NIST-SP811",
+    "SRC-OIML-R23",
+    "SRC-SCHWALBE-CLIK",
+    "SRC-SCHWALBE-VALVES",
+    "SRC-UK-CE",
+    "SRC-UK-PSTI",
+    "SRC-UK-WEEE-BATT",
+    "SRC-UN38.3",
+    "SRC-US-49CFR",
+    "SRC-US-DOE-BC",
+    "SRC-US-FCC15B",
+    "SRC-US-P65",
+    "SRC-US-UL1450",
+    "SRC-USB-PD"
+  ],
+  "sources_file": "sources.md"
+}

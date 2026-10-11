@@ -41,7 +41,7 @@ class PartDraft(StrictModel):
     erp_number: str | None = Field(default=None, min_length=1, max_length=100)
     customer_number: str | None = Field(default=None, min_length=1, max_length=100)
     mapping_version: str | None = Field(default=None, min_length=1, max_length=100)
-    external_design_refs: list[ExternalDesignReference] = Field(default_factory=list, max_length=20)
+    external_design_refs: list[ExternalDesignReference] = Field(default_factory=list)
 
 
 class BomLineInput(StrictModel):
@@ -70,25 +70,26 @@ class BomLineInput(StrictModel):
 
 class _RevisionPayload(StrictModel):
     name: str = Field(min_length=2, max_length=200)
-    visibility: Literal["private", "product"] = "private"
+    visibility: Literal["private", "category", "audience"] = "private"
     previous_id: UUID | None = None
     expected_previous_revision: int | None = Field(default=None, ge=1)
     reason: str = Field(min_length=3, max_length=2000)
-    sources: list[DefinitionReference] = Field(min_length=1, max_length=20)
+    sources: list[DefinitionReference] = Field(min_length=1)
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 
     @model_validator(mode="after")
     def exact_previous_and_sources(self) -> Self:
         if (self.previous_id is None) != (self.expected_previous_revision is None):
             raise ValueError("固定旧版ID和版本须同时提供；初版均为null")
-        if len({(ref.artifact_id, ref.expected_revision, ref.line, ref.quote)
-                for ref in self.sources}) != len(self.sources):
+        if len(
+            {(ref.artifact_id, ref.expected_revision, ref.line, ref.quote) for ref in self.sources}
+        ) != len(self.sources):
             raise ValueError("精确原文依据不能重复")
         return self
 
 
 class EngineeringBomRevisePayload(_RevisionPayload):
-    lines: list[BomLineInput] = Field(min_length=1, max_length=500)
+    lines: list[BomLineInput] = Field(min_length=1)
 
     @model_validator(mode="after")
     def unique_lines(self) -> Self:
@@ -118,10 +119,10 @@ class ProcessOperation(StrictModel):
     key: str = Field(min_length=1, max_length=80, pattern=r"^[a-zA-Z0-9_-]+$")
     name: str = Field(min_length=1, max_length=200)
     kind: Literal["assembly", "inspection", "test", "packaging", "other"]
-    depends_on: list[str] = Field(default_factory=list, max_length=100)
-    bom_line_keys: list[str] = Field(default_factory=list, max_length=100)
+    depends_on: list[str] = Field(default_factory=list)
+    bom_line_keys: list[str] = Field(default_factory=list)
     sop: ExternalDesignReference | None = None
-    resource_requirements: list[ResourceRequirement] = Field(default_factory=list, max_length=50)
+    resource_requirements: list[ResourceRequirement] = Field(default_factory=list)
     cycle_time_minutes: Positive | None = None
     acceptance_criterion: str | None = Field(default=None, min_length=1, max_length=2000)
     notes: str | None = Field(default=None, min_length=1, max_length=2000)
@@ -132,7 +133,7 @@ class NpiProcessRevisePayload(_RevisionPayload):
     expected_engineering_revision: int = Field(ge=1)
     site: str | None = Field(default=None, min_length=1, max_length=200)
     line: str | None = Field(default=None, min_length=1, max_length=200)
-    operations: list[ProcessOperation] = Field(min_length=1, max_length=500)
+    operations: list[ProcessOperation] = Field(min_length=1)
 
     @model_validator(mode="after")
     def coherent_operations(self) -> Self:
@@ -149,7 +150,8 @@ class NpiProcessRevisePayload(_RevisionPayload):
         remaining = set(keys)
         while remaining:
             next_keys = {
-                operation.key for operation in self.operations
+                operation.key
+                for operation in self.operations
                 if operation.key in remaining and not remaining.intersection(operation.depends_on)
             }
             if not next_keys:

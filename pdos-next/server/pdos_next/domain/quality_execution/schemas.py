@@ -26,7 +26,7 @@ Token = Annotated[str, Field(min_length=20, max_length=128)]
 
 
 class IssueCreatePayload(IssueCreate):
-    visibility: Literal["private", "product"] = "private"
+    visibility: Literal["private", "category", "audience"] = "private"
 
 
 class IssueTarget(DTO):
@@ -70,7 +70,7 @@ class PolicyInput(DTO):
     previous_id: UUID | None = None
     expected_previous_revision: int = Field(default=0, strict=True, ge=0)
     approval: ApprovalBasis
-    sources: tuple[DefinitionReference, ...] = Field(min_length=1, max_length=20)
+    sources: tuple[DefinitionReference, ...] = Field(min_length=1)
     reason: Text
 
     @field_validator("valid_from", "valid_until")
@@ -114,7 +114,7 @@ class IssueView(DTO):
     revision: Revision
     project_id: UUID
     purpose: Text
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     owner_id: UUID
     status: str
     issue: Issue

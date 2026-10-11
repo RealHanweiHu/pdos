@@ -6,12 +6,12 @@ physical observations and samples here are explicitly synthetic and unqualified.
 
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
-from datetime import datetime, timedelta
+from datetime import datetime
 from uuid import UUID, uuid4
 
 import pytest
 from pydantic import ValidationError
-from sqlalchemy import func, select, text, update
+from sqlalchemy import func, insert, select, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 from test_build_execution import (  # noqa: F401 - imported fixture dependencies
@@ -35,7 +35,7 @@ from pdos_next.domain.verification_execution.models import (
 )
 from pdos_next.domain.verification_execution.schemas import PreparationRecordPayload
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Grant, Outbox, Product, Receipt, RequestKey, now
+from pdos_next.models import Artifact, Audit, Grant, Outbox, Product, Receipt, RequestKey
 from pdos_next.service import Context, digest, execute
 
 RECORD = "verification.preparation.record"
@@ -159,7 +159,8 @@ def command(setup, work, value=None, *, reads=None):
 
 def listed(setup, *, headers=None):
     response = setup.client.get(
-        f"/v1/products/{setup.product}/verification", headers=headers or setup.headers
+        f"/v1/categories/{setup.category}/products/{setup.product}/verification",
+        headers=headers or setup.headers,
     )
     assert response.status_code == 200, response.text
     return response.json()
@@ -257,7 +258,9 @@ def test_t1_records_unknowns_and_real_reference_samples_without_quality_authorit
     )
     assert confirmation_consumed(setup, prepared) is True
     assert count(setup, VerificationPreparation) == count(setup, VerificationCurrent) == 1
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as session:
         for model in (Audit, Outbox):
             assert (
                 session.scalar(
@@ -453,11 +456,11 @@ def test_confirmation_is_bound_to_actual_draft_and_complete_fixed_sources(
 
 
 @pytest.mark.parametrize("change", ["source", "inherited_source", "revision", "grant"])
-def test_current_sources_and_authority_are_checked_before_saved_receipt_replay(
+def test_saved_receipt_replay_survives_source_drift_and_requires_current_read_access(
     setup, verification_work, change
 ):
     work = verification_work
-    _, prepared, _ = saved(setup, work)
+    receipt, prepared, _ = saved(setup, work)
     if change == "grant":
         expire_grant(setup)
     elif change == "revision":
@@ -470,8 +473,17 @@ def test_current_sources_and_authority_are_checked_before_saved_receipt_replay(
     else:
         withdraw(setup, work["source" if change == "inherited_source" else "preparation_source"])
     refused = post(setup, prepared)
-    assert refused.status_code in {403, 409}, refused.text
-    assert count(setup, VerificationPreparation) == count(setup, Receipt, operation=RECORD) == 1
+    if change == "grant":
+        assert refused.status_code == 403 and refused.json()["code"] == "FORBIDDEN_SCOPE", (
+            refused.text
+        )
+    else:
+        assert refused.status_code == 200 and refused.json()["id"] == receipt["id"], refused.text
+    assert (
+        count(setup, VerificationPreparation, physical=True)
+        == count(setup, Receipt, operation=RECORD, physical=True)
+        == 1
+    )
 
 
 def test_final_receipt_failure_rolls_back_version_pointer_confirmation_and_outbox(
@@ -496,28 +508,32 @@ def test_final_receipt_failure_rolls_back_version_pointer_confirmation_and_outbo
     with monkeypatch.context() as patch:
         patch.setattr(service, "append_receipt", fail)
         refused = post(setup, prepared)
-    assert refused.json()["code"] == "SYNTHETIC_PREPARATION_RECEIPT_FAILURE", refused.text
+    assert refused.status_code == 500 and refused.json()["code"] == "INTERNAL_ERROR", refused.text
+    assert refused.json()["detail"]["reason"] == "UNREGISTERED_REASON"
     assert {model: count(setup, model) for model in models} == before
     assert confirmation_consumed(setup, prepared) is False
     assert post(setup, prepared).status_code == 200
     assert count(setup, Receipt, operation=RECORD) == 1
 
 
-def test_read_permission_does_not_keep_preparation_write_or_replay_authority(
+def test_read_permission_keeps_saved_replay_and_does_not_allow_new_preparation(
     setup, verification_work
 ):
     receipt, prepared, row = saved(setup, verification_work)
     with Session(setup.admin) as session, session.begin():
         session.execute(
             update(Grant)
-            .where(Grant.product_id == setup.product, Grant.principal_id == setup.human)
+            .where(Grant.category_id == setup.category, Grant.principal_id == setup.human)
             .values(can_write=False)
         )
     view = listed(setup)
     assert any(value["id"] == row["id"] for value in view["preparations"])
     assert view["capabilities"]["preparation_record"] is False
     refused = post(setup, prepared)
-    assert refused.status_code == 403, refused.text
+    assert refused.status_code == 200 and refused.json()["id"] == receipt["id"], refused.text
+    fresh = command(setup, verification_work)
+    fresh["payload"]["reason"] += "; new preparation under read-only permission"
+    assert post(setup, fresh, True).status_code == 403
     assert count(setup, Receipt, operation=RECORD) == 1
     assert receipt["subject_id"] == row["id"]
 
@@ -531,10 +547,12 @@ def test_private_preparation_and_sources_are_hidden_from_peer_and_other_tenant(
     data = listed(setup, headers=peer)
     assert data["preparations"] == [] and data["current_by_request"] == {}
     assert data["reference_samples"] == [] and data["runs"] == []
-    replay = setup.client.post("/v1/commands", headers=peer, json=prepared)
+    replay = setup.client.post(
+        f"/v1/categories/{setup.category}/commands", headers=peer, json=prepared
+    )
     assert replay.status_code == 403, replay.text
     outsider = setup.client.get(
-        f"/v1/products/{setup.product}/verification",
+        f"/v1/categories/{setup.category}/products/{setup.product}/verification",
         headers={"Authorization": f"Bearer {setup.tokens[setup.other_human]}"},
     )
     assert outsider.status_code == 403
@@ -580,21 +598,15 @@ def test_request_series_cannot_switch_build_or_use_another_product(setup, verifi
             Product(
                 id=foreign,
                 tenant_id=setup.tenant,
+                category_id=setup.category,
                 name="Other product",
                 purpose="Synthetic scope",
                 owner_id=setup.human,
             )
         )
         session.flush()
-        session.add(
-            Grant(
-                tenant_id=setup.tenant,
-                product_id=foreign,
-                principal_id=setup.human,
-                can_write=True,
-                expires_at=now() + timedelta(hours=1),
-            )
-        )
+        # The existing category grant covers both models; exact Build/request
+        # ownership must still reject using the other model's identity.
     request = command(setup, work)
     request["product_id"] = str(foreign)
     refused = post(setup, request, True)
@@ -617,8 +629,8 @@ def test_preparation_does_not_grant_professional_or_physical_authority(setup, ve
     }
     assert front.issubset(PAYLOADS)
     assert all(handler(operation) is not None for operation in front)
-    assert not (FORMAL_OPERATIONS - front).intersection(PAYLOADS)
-    assert all(handler(operation) is None for operation in FORMAL_OPERATIONS - front)
+    assert FORMAL_OPERATIONS.issubset(PAYLOADS)
+    assert all(handler(operation) is not None for operation in FORMAL_OPERATIONS)
     _, _, row = saved(setup, verification_work)
     request = cmd(
         setup,
@@ -633,9 +645,11 @@ def test_preparation_does_not_grant_professional_or_physical_authority(setup, ve
     )
     request["source_read_set"] = row["required_source_read_set"]
     denied = post(setup, request)
-    assert denied.status_code == 403 and denied.json()["code"] == "FORBIDDEN_OPERATION"
+    assert denied.status_code == 403 and denied.json()["code"] == "FORBIDDEN_SCOPE"
+    assert denied.json()["detail"]["reason"] == "FORBIDDEN_OPERATION"
     refused = post(setup, cmd(setup, "verification.handoff.accept", {"qualified": True}))
-    assert refused.status_code == 422 and refused.json()["code"] == "INVALID_PAYLOAD"
+    assert refused.status_code == 422 and refused.json()["code"] == "VALIDATION_FAILED"
+    assert refused.json()["detail"]["reason"] == "INVALID_PAYLOAD"
     assert listed(setup)["runs"] == []
     assert_plan_unchanged(setup, verification_work)
 
@@ -676,7 +690,9 @@ def test_database_history_rls_pointer_sequence_and_agent_zero_write(setup, verif
             .values(preparation_id=UUID(first["subject_id"]), preparation_revision=1)
         )
     with (
-        tenant_session(setup.engine, setup.tenant) as session,
+        tenant_session(
+            setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+        ) as session,
         pytest.raises(DomainError) as refused,
     ):
         execute(
@@ -695,9 +711,13 @@ def test_pointer_first_insert_cannot_skip_a_real_persisted_first_version(setup, 
     # cannot be explained by a duplicate pointer or a missing snapshot FK.
     request_id, first_id, second_id = uuid4(), uuid4(), uuid4()
     with Session(setup.admin) as session, session.begin():
-        original = session.get(VerificationPreparation, UUID(first["id"]))
+        original = session.execute(
+            select(VerificationPreparation.__table__).where(
+                VerificationPreparation.id == UUID(first["id"])
+            )
+        ).mappings().one()
         common = {
-            column.name: deepcopy(getattr(original, column.name))
+            column.name: deepcopy(original[column.name])
             for column in VerificationPreparation.__table__.columns
             if column.name
             not in {
@@ -711,10 +731,10 @@ def test_pointer_first_insert_cannot_skip_a_real_persisted_first_version(setup, 
             }
         }
         for identity, revision, previous in ((first_id, 1, None), (second_id, 2, first_id)):
-            snapshot = deepcopy(original.request_snapshot)
+            snapshot = deepcopy(original["request_snapshot"])
             snapshot.update(id=str(request_id), revision=revision)
-            session.add(
-                VerificationPreparation(
+            session.execute(
+                insert(VerificationPreparation.__table__).values(
                     **common,
                     id=identity,
                     request_id=request_id,
@@ -763,7 +783,9 @@ def test_pointer_first_insert_cannot_skip_a_real_persisted_first_version(setup, 
         )
         session.delete(pointer)
         session.flush()
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as session:
         pointer = session.scalar(
             select(VerificationCurrent).where(VerificationCurrent.request_id == request_id)
         )

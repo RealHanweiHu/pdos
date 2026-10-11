@@ -10,6 +10,7 @@ sentinel and occupancy table; SampleUnit identity and readiness are untouched.
 # ruff: noqa: I001
 
 from collections.abc import Callable
+from contextlib import contextmanager
 from copy import deepcopy
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -17,11 +18,13 @@ from decimal import Decimal
 from math import isfinite
 from types import SimpleNamespace
 from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
+import json
 
 from pydantic import BaseModel, ValidationError
-from sqlalchemy import select
+from sqlalchemy import inspect as inspect_row, select
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy.orm import Session
+from sqlalchemy.exc import UnboundExecutionError
+from sqlalchemy.orm import Session, SessionTransaction
 
 from pdos_next.models import Product, now
 
@@ -62,7 +65,6 @@ from pdos_next.schemas.resource_readiness.contracts import (
     ResourceSnapshot,
 )
 from pdos_next.schemas.verification.contracts import EventTime, SampleRef, Scope, SourceRef
-from pdos_next.service import Context
 
 from .models import (
     SampleRunUsage,
@@ -80,6 +82,20 @@ from .schemas import (
 )
 
 _TOKEN = object()
+
+
+def expired(value, at):
+    """Recheck each actual fact's boundary; no material-wide earliest TTL."""
+    return (
+        (
+            value.authority_basis is not None
+            and not professional.authority_time_current(value.authority_basis, at)
+        )
+        or (value.valid_until is not None and at >= value.valid_until)
+        or any(at >= deadline for deadline in value.expiry_boundaries)
+    )
+
+
 OPERATION = "test.run.start"
 
 
@@ -198,13 +214,11 @@ def _union(*groups):
                 "artifact_id": identity,
                 "expected_revision": value["expected_revision"],
             }
-    if len(result) > 20:
-        raise DomainError("MISSING_REQUIRED_EVIDENCE", "完整资源与样件出处超过20份上限。", 422)
     return [result[key] for key in sorted(result)]
 
 
 def _visible(row, ctx):
-    return row.visibility == "product" or row.owner_id == ctx.requester_id
+    return row.visibility in {"category", "audience"} or row.owner_id == ctx.requester_id
 
 
 def _parent_locks(s, ctx, product_id, binding, *, write=False):
@@ -213,13 +227,20 @@ def _parent_locks(s, ctx, product_id, binding, *, write=False):
     binding = TestPlanBinding.model_validate(binding)
     if len(binding.purpose) > 160:
         raise DomainError("RESOURCE_PURPOSE_LIMIT", "资源核支持的精确用途长度上限为160。", 422)
-    product = s.scalar(
-        select(Product)
-        .where(Product.tenant_id == ctx.tenant_id, Product.id == product_id)
-        .with_for_update()
-    )
-    if product is None:
-        raise DomainError("FORBIDDEN_SCOPE", "测试资源不在当前产品范围。", 403)
+    from pdos_next.request_proof import scoped_rows, snapshot_get, snapshot_scalar
+
+    if getattr(s, "info", {}).get("read_snapshot") and not write:
+        product = snapshot_get(s, Product, product_id, scope_id=product_id)
+    else:
+        products = scoped_rows(
+            s,
+            (Product, product_id),
+            select(Product).where(Product.tenant_id == ctx.tenant_id, Product.id == product_id),
+            lock=write,
+        )
+        product = products[0] if products else None
+    if product is None or product.tenant_id != ctx.tenant_id:
+        raise DomainError("FORBIDDEN_SCOPE", "测试资源不在当前型号范围。", 403)
     _human(s, ctx, product_id, write=write)
     row = front._row(s, ctx, product_id, binding.accepted_request_id)
     request = front._snapshot(row)
@@ -249,7 +270,13 @@ def _parent_locks(s, ctx, product_id, binding, *, write=False):
         VerificationRunIdentity.product_id == product_id,
         VerificationRunIdentity.id == binding.run_id,
     )
-    run = s.scalar(query.with_for_update() if write else query)
+    run = snapshot_scalar(
+        s,
+        (VerificationRunIdentity, product_id, binding.run_id),
+        query,
+        lock=write,
+        scope_id=product_id,
+    )
     if run and (
         (run.request_id, run.project_id, run.build_id)
         != (binding.request_id, binding.project_id, binding.build_id)
@@ -261,16 +288,32 @@ def _parent_locks(s, ctx, product_id, binding, *, write=False):
     return binding, row, request, reads
 
 
-def _lock_union(s, ctx, product_id, binding, data, *, create=False):
+def _lock_union(s, ctx, product_id, binding, data, *, create=False, lock=True):
     """Complete Build/Test asset union before any Start or physical sample inspector."""
-    pointer = s.scalar(
-        select(BuildOperationalCurrent).where(
-            BuildOperationalCurrent.tenant_id == ctx.tenant_id,
-            BuildOperationalCurrent.product_id == product_id,
-            BuildOperationalCurrent.build_id == binding.build_id,
+    from pdos_next.request_proof import snapshot_get, snapshot_scalar
+
+    if s.info.get("read_snapshot"):
+        from pdos_next.domain.build_operational_facts.service import _pointer
+
+        # The physical Start projection reads this exact pointer later in the
+        # same RR transaction. Use its canonical proof, keeping writers intact.
+        pointer = _pointer(s, ctx, product_id, binding.build_id)
+    else:
+        pointer = snapshot_scalar(
+            s,
+            (BuildOperationalCurrent, product_id, binding.build_id),
+            select(BuildOperationalCurrent).where(
+                BuildOperationalCurrent.tenant_id == ctx.tenant_id,
+                BuildOperationalCurrent.product_id == product_id,
+                BuildOperationalCurrent.build_id == binding.build_id,
+            ),
+            scope_id=product_id,
         )
+    manufacturing = (
+        snapshot_get(s, BuildOperationalFact, pointer.fact_id, scope_id=product_id)
+        if pointer
+        else None
     )
-    manufacturing = s.get(BuildOperationalFact, pointer.fact_id) if pointer else None
     specs = {v[1]: v for v in _specs(data)}
     tests = set(specs)
     if manufacturing:
@@ -286,8 +329,9 @@ def _lock_union(s, ctx, product_id, binding, data, *, create=False):
             BuildFactInput.model_validate(manufacturing.data), ctx.tenant_id
         ):
             specs[spec[1]] = spec
-    for spec in sorted(specs.values(), key=lambda v: (v[0], v[1].bytes)):
-        _locked_assets(s, ctx, [spec], create=create and spec[1] in tests)
+    if create:
+        _locked_assets(s, ctx, [specs[identity] for identity in tests], create=True, lock=lock)
+    _locked_assets(s, ctx, list(specs.values()), lock=lock)
 
 
 def lock_binding_assets(
@@ -305,7 +349,9 @@ def lock_binding_assets(
     ):
         raise DomainError("RESOURCE_FACT_VERSION_CONFLICT", "测试资源精确前置绑定不能核对。")
     _sources(s, ctx, product_id, fact.required_source_read_set, fact.sources)
-    _lock_union(s, ctx, product_id, binding, TestResourceFactInput.model_validate(fact.data))
+    _lock_union(
+        s, ctx, product_id, binding, TestResourceFactInput.model_validate(fact.data), lock=write
+    )
 
 
 def _require_sample_binding(reference, value):
@@ -348,7 +394,7 @@ def _scope(
 ):
     binding, row, request, reads = _parent_locks(s, ctx, product_id, binding, write=write)
     if resource_data is not None:
-        _lock_union(s, ctx, product_id, binding, resource_data, create=create_assets)
+        _lock_union(s, ctx, product_id, binding, resource_data, create=create_assets, lock=write)
     samples = {}
     for pair in sorted(binding.pairs, key=lambda v: (v.sample.id.bytes, v.item_id)):
         item = next((i for i in request.items if i.id == pair.item_id), None)
@@ -388,9 +434,6 @@ def _scope(
             method,
             retained_at=retained_at,
         )
-        samples[pair.sample.id].setdefault("_test_method_deadlines", []).append(
-            method.authority_snapshot.get("valid_until")
-        )
         reads = _union(reads, method.required_source_read_set)
     return binding, row, samples, reads
 
@@ -421,8 +464,8 @@ def _specs(data):
     ]
 
 
-def _assets(s, ctx, data, *, create=False):
-    values = _locked_assets(s, ctx, _specs(data), create=create)
+def _assets(s, ctx, data, *, create=False, lock=True):
+    values = _locked_assets(s, ctx, _specs(data), create=create, lock=lock)
     for resource in data.resources:
         row = values[resource.resource.id]
         if (
@@ -471,14 +514,194 @@ def _fact_hash(row):
     return digest({key: getattr(row, key) for key in _HASH_FIELDS})
 
 
-def _current(s, ctx, pid, run_id, *, lock=False):
+def _canonical_rr(s):
+    """Only this actual pristine RR transaction may share owner query sets."""
+    return (
+        isinstance(s, Session)
+        and s.is_active is True
+        and s.in_transaction()
+        and s.info.get("read_snapshot") is True
+        and not (s.new or s.dirty or s.deleted)
+    )
+
+
+_MAKER_FACT_STAGE = "test_resource_maker_fact_stage"
+_ABSENT_MAKER_ROW = object()
+
+
+def _held_owner_scope(s, ctx, pid):
+    """Exact clean writer scope; the acquired Product gate alone is not a row proof."""
+    if (
+        not isinstance(s, Session)
+        or s.is_active is not True
+        or not s.in_transaction()
+        or s.info.get("read_snapshot") is True
+        or s.new
+        or s.dirty
+        or s.deleted
+    ):
+        return None
+    from pdos_next.database import require_context
+    from pdos_next.request_proof import request_proof
+
+    require_context(s, ctx)
+    scope = s.info.get("scope")
+    if scope != (ctx.tenant_id, ctx.actor_id, ctx.requester_id, ctx.category_id):
+        return None
+    # A raw set cannot cross a SAVEPOINT, even when its root lock remains held.
+    chain, seen = [], set()
+    node = s._transaction
+    while node is not None:
+        if (
+            not isinstance(node, SessionTransaction)
+            or id(node) in seen
+            or len(chain) >= 128
+            or node.session is not s
+            or node.is_active is not True
+        ):
+            return None
+        seen.add(id(node))
+        chain.append(node)
+        node = node.parent
+    if not chain:
+        return None
+    proof = request_proof(s)
+    if pid not in proof.scope_locks or chain[-1] is not proof.transaction:
+        return None
+    if s.get_nested_transaction() is not next((value for value in chain if value.nested), None):
+        return None
+    try:
+        bind = s.get_bind()
+    except UnboundExecutionError:
+        return None
+    stage = s.info.get(_MAKER_FACT_STAGE)
+    token = stage.get("token") if isinstance(stage, dict) else None
+    return (
+        digest(vars(ctx)),
+        digest(scope),
+        pid,
+        proof.transaction,
+        tuple(chain),
+        proof.mutation_epoch,
+        id(bind),
+        token,
+    )
+
+
+@contextmanager
+def _maker_fact_scope(s):
+    """Keep an actual maker row only inside one retained owner inspection."""
+    if not isinstance(s, Session):
+        yield
+        return
+    previous = s.info.get(_MAKER_FACT_STAGE, _ABSENT_MAKER_ROW)
+    stage = {"token": object(), "rows": {}}
+    s.info[_MAKER_FACT_STAGE] = stage
+    try:
+        yield
+    finally:
+        if s.info.get(_MAKER_FACT_STAGE) is stage:
+            if previous is _ABSENT_MAKER_ROW:
+                s.info.pop(_MAKER_FACT_STAGE, None)
+            else:
+                s.info[_MAKER_FACT_STAGE] = previous
+
+
+def _remember_maker_fact(s, ctx, pid, run_id, row, *, identity, revision):
+    """Register only the complete RLS row returned by the owner's exact maker SELECT."""
+    scope = _held_owner_scope(s, ctx, pid)
+    stage = s.info.get(_MAKER_FACT_STAGE) if isinstance(s, Session) else None
+    if scope is None or not isinstance(stage, dict) or not isinstance(row, TestResourceFact):
+        return
+    state = inspect_row(row)
+    if (
+        not state.persistent
+        or state.session is not s
+        or state.expired
+        or state.unloaded & {attribute.key for attribute in row.__mapper__.column_attrs}
+        or (row.tenant_id, row.category_id, row.product_id, row.run_id, row.id, row.revision)
+        != (ctx.tenant_id, ctx.category_id, pid, run_id, identity, revision)
+    ):
+        return
+    stage["rows"][(scope, run_id, identity)] = row
+
+
+def _current_fact(s, ctx, pid, run_id, pointer, *, lock=False):
+    from pdos_next.request_proof import batch_read, request_proof
+
+    if pointer is None:
+        return None
+    scope = None if lock else _held_owner_scope(s, ctx, pid)
+    stage = s.info.get(_MAKER_FACT_STAGE) if isinstance(s, Session) else None
+    maker = (
+        stage["rows"].get((scope, run_id, pointer.fact_id))
+        if scope and isinstance(stage, dict) and isinstance(stage.get("rows"), dict)
+        else None
+    )
+    if maker is None:
+        return batch_read(s, TestResourceFact, [pointer.fact_id]).get(pointer.fact_id)
+    state = inspect_row(maker)
+    if (
+        state.session is not s
+        or not state.persistent
+        or state.expired
+        or state.unloaded & {attribute.key for attribute in maker.__mapper__.column_attrs}
+        or (maker.tenant_id, maker.category_id, maker.product_id, maker.run_id, maker.id)
+        != (ctx.tenant_id, ctx.category_id, pid, run_id, pointer.fact_id)
+    ):
+        return batch_read(s, TestResourceFact, [pointer.fact_id]).get(pointer.fact_id)
+    # Feed the existing exact-ID reader only for this invocation. Every owner
+    # scope/revision/hash/binding check still runs; no other consumer receives
+    # a new request-wide row or affirmative source/qualification decision.
+    proof = request_proof(s)
+    key = (TestResourceFact, pointer.fact_id)
+    previous = proof.read_rows.get(key, _ABSENT_MAKER_ROW)
+    proof.read_rows[key] = maker
+    try:
+        return batch_read(s, TestResourceFact, [pointer.fact_id]).get(pointer.fact_id)
+    finally:
+        if proof.read_rows.get(key) is maker:
+            if previous is _ABSENT_MAKER_ROW:
+                proof.read_rows.pop(key, None)
+            else:
+                proof.read_rows[key] = previous
+
+
+def _current_rows(s, ctx, pid, run_id, *, lock=False):
+    from pdos_next.request_proof import scoped_rows
+
     query = select(TestResourceCurrent).where(
         TestResourceCurrent.tenant_id == ctx.tenant_id,
         TestResourceCurrent.product_id == pid,
         TestResourceCurrent.run_id == run_id,
     )
-    pointer = s.scalar(query.with_for_update() if lock else query)
-    row = s.get(TestResourceFact, pointer.fact_id) if pointer else None
+    if not lock and _canonical_rr(s):
+        # Complete raw rows, with actual ctx/scope/query parameters in the key.
+        # Retained still requires exactly one; no affirmative status is stored.
+        return _owned_rows(s, ctx, pid, query)
+    scope = None if lock else _held_owner_scope(s, ctx, pid)
+    if scope is not None:
+        from pdos_next.request_proof import snapshot_rows
+
+        compiled = query.compile()
+        return snapshot_rows(
+            s,
+            (
+                "test-resource-current-owner",
+                scope,
+                str(compiled),
+                json.dumps(compiled.params, sort_keys=True, default=str),
+            ),
+            query.execution_options(populate_existing=True),
+            scope_id=pid,
+        )
+    return scoped_rows(s, (TestResourceCurrent, run_id), query, lock=lock)
+
+
+def _current(s, ctx, pid, run_id, *, lock=False):
+    pointers = _current_rows(s, ctx, pid, run_id, lock=lock)
+    pointer = pointers[0] if pointers else None
+    row = _current_fact(s, ctx, pid, run_id, pointer, lock=lock)
     if pointer and (
         row is None
         or row.revision != pointer.fact_revision
@@ -506,7 +729,7 @@ def trusted_import(s, ctx, product_id, issuer, payload):
     evidence_reads, private, basis = _evidence_basis(s, ctx, product_id, sources, reads)
     reads = _union(reads, evidence_reads)
     _, _, basis = _evidence_basis(s, ctx, product_id, sources, reads)
-    if request_row.visibility == "product" and private:
+    if request_row.visibility == "category" and private:
         raise DomainError("FORBIDDEN_SCOPE", "私人测试事实不能扩大到共享请求。", 403)
     prior = s.scalar(
         select(TestResourceFact).where(
@@ -609,7 +832,7 @@ def _fact_view(row, epoch, *, current=True, source_status="current"):
         "required_uses": row.data["required_uses"],
         "approved_conditions": row.data["approved_conditions"],
         "valid_from": row.valid_from.isoformat(),
-        "valid_until": row.valid_until.isoformat(),
+        "valid_until": row.valid_until.isoformat() if row.valid_until else None,
         "sources": row.sources,
         "required_source_read_set": row.required_source_read_set,
         "sha256": row.fact_sha256,
@@ -618,12 +841,17 @@ def _fact_view(row, epoch, *, current=True, source_status="current"):
 
 
 def _reservation(s, ctx, pid, binding):
-    row = s.scalar(
+    from pdos_next.request_proof import snapshot_scalar
+
+    row = snapshot_scalar(
+        s,
+        (TestResourceReservation, pid, binding.run_id),
         select(TestResourceReservation).where(
             TestResourceReservation.tenant_id == ctx.tenant_id,
             TestResourceReservation.product_id == pid,
             TestResourceReservation.run_id == binding.run_id,
-        )
+        ),
+        scope_id=pid,
     )
     if row and (
         not _visible(row, ctx)
@@ -634,33 +862,40 @@ def _reservation(s, ctx, pid, binding):
     return row
 
 
-def _sample_sentinels(s, ctx, pid, binding, *, create=False):
-    values = {}
-    for sample_id in sorted({p.sample.id for p in binding.pairs}, key=lambda v: v.bytes):
-        if create:
-            s.execute(
-                insert(SampleUsageSentinel)
-                .values(
-                    id=uuid5(NAMESPACE_URL, f"pdos:sample-use:{ctx.tenant_id}:{sample_id}"),
-                    tenant_id=ctx.tenant_id,
-                    product_id=pid,
-                    sample_id=sample_id,
-                    epoch=1,
-                )
-                .on_conflict_do_nothing()
+def _sample_sentinels(s, ctx, pid, binding, *, create=False, lock=True):
+    from pdos_next.request_proof import scoped_rows
+
+    sample_ids = sorted({p.sample.id for p in binding.pairs}, key=lambda v: v.bytes)
+    if create and sample_ids:
+        s.execute(
+            insert(SampleUsageSentinel)
+            .values(
+                [
+                    dict(
+                        id=uuid5(NAMESPACE_URL, f"pdos:sample-use:{ctx.tenant_id}:{sample_id}"),
+                        tenant_id=ctx.tenant_id,
+                        product_id=pid,
+                        sample_id=sample_id,
+                        epoch=1,
+                    )
+                    for sample_id in sample_ids
+                ]
             )
-        row = s.scalar(
-            select(SampleUsageSentinel)
-            .where(
-                SampleUsageSentinel.tenant_id == ctx.tenant_id,
-                SampleUsageSentinel.product_id == pid,
-                SampleUsageSentinel.sample_id == sample_id,
-            )
-            .with_for_update()
+            .on_conflict_do_nothing()
         )
-        if row:
-            values[sample_id] = row
-    return values
+    query = (
+        select(SampleUsageSentinel)
+        .where(
+            SampleUsageSentinel.tenant_id == ctx.tenant_id,
+            SampleUsageSentinel.product_id == pid,
+            SampleUsageSentinel.sample_id.in_(sample_ids),
+        )
+        .order_by(SampleUsageSentinel.sample_id)
+    )
+    return {
+        row.sample_id: row
+        for row in scoped_rows(s, (SampleUsageSentinel, pid, tuple(sample_ids)), query, lock=lock)
+    }
 
 
 def sample_usage_checks(binding, usages, *, owned_intent=None):
@@ -717,21 +952,22 @@ def _resource_source(fact, position):
     return SourceRef(id=fact.id, revision=fact.revision, kind="domain", position=position)
 
 
-def _occupancies(s, ctx, ids, data):
-    # No product/project ACL predicate: foreign occupancy blocks capacity without leaking labels.
+def _occupancies(s, ctx, ids, data, *, product_id, own_run_id):
+    from pdos_next.domain.build_operational_facts.physical_summary import capacity_summary
+
     result = [
         Occupancy(
-            reservation_id=o.owner_execution_id,
-            resource_id=o.resource_id,
-            window=o.reservation["request"]["window"]
-            if o.owner_kind == "test_run"
-            else {"start": o.window_start, "finish": o.window_finish, "original_timezone": "UTC"},
-            units=o.units,
+            reservation_id=UUID(value["id"]),
+            resource_id=UUID(value["resource_id"]),
+            window={
+                "start": value["window_start"],
+                "finish": value["window_finish"],
+                "original_timezone": "UTC",
+            },
+            units=Decimal(str(value["units"])),
         )
-        for o in s.scalars(
-            select(ResourceOccupancy).where(
-                ResourceOccupancy.tenant_id == ctx.tenant_id, ResourceOccupancy.resource_id.in_(ids)
-            )
+        for value in capacity_summary(
+            s, ctx, product_id, "resource", ids, own=own_run_id, own_kind="test_run"
         )
     ]
     for resource in data.resources:
@@ -929,13 +1165,17 @@ def _validate_fingerprint_v2_json(material):
         raise TypeError("Issuer project does not bind the actual test scope")
     # The full v1 producer validator checks nested authority, raw source/security
     # closure, complete dumped DTO keys, named proofs and actual sample hashes.
-    # Only its *validation copy* has the v1 issuer shape. Never hash or store that
-    # copy, fill defaults in the original, or treat validation as a current gate.
+    # Only its validation view has the v1 issuer shape. Never hash or store that
+    # view, fill defaults in the original, or treat validation as a current gate.
     try:
-        from .fingerprint_compatibility import validate_material
+        from .fingerprint_compatibility import _READ_ONLY_MATERIAL_VALIDATOR, validate_material
     except ImportError as exc:
         raise DomainError("INTEGRATION_REQUIRED", "v2缺少完整资源材料结构核对端口。", 503) from exc
-    validation_copy = deepcopy(material)
+    read_only = (
+        validate_material is _READ_ONLY_MATERIAL_VALIDATOR[0]
+        and validate_material.__code__ is _READ_ONLY_MATERIAL_VALIDATOR[1]
+    )
+    validation_copy = dict(material) if read_only else deepcopy(material)
     validation_copy["issuer"] = [issuer["key"], issuer["version"], issuer["epoch"], True]
     try:
         validate_material(validation_copy)
@@ -978,7 +1218,9 @@ def _verify_stored_fingerprint_v2(record):
         ) from exc
     if encoded != record:
         raise DomainError("RESOURCE_FINGERPRINT_MATERIAL_INVALID", "v2保存材料或摘要不可核对。")
-    return deepcopy(encoded)
+    # _fingerprint_json already rebuilt every dict/list from the caller's record.
+    # The complete verified tree is independent without another recursive copy.
+    return encoded
 
 
 def _reservation_fingerprint(row):
@@ -1058,11 +1300,11 @@ def _load(
     data = TestResourceFactInput.model_validate(fact.data)
     reads = _union(reads, fact.required_source_read_set)
     _sources(s, ctx, pid, reads, fact.sources)  # Current consumer, independent of provenance.
-    maker = Context(ctx.tenant_id, fact.owner_id, fact.owner_id)
-    _human(s, maker, pid)
-    _, _, basis = _evidence_basis(s, maker, pid, fact.sources, fact.required_source_read_set)
+    from pdos_next.domain.build_operational_facts.service import evidence_watermark
+
+    _, _, basis = _evidence_basis(s, ctx, pid, fact.sources, fact.required_source_read_set)
     checks = []
-    if basis != fact.source_basis:
+    if evidence_watermark(basis) != evidence_watermark(fact.source_basis):
         checks.append(
             Check(
                 code="resource_source_changed",
@@ -1087,7 +1329,11 @@ def _load(
         issuer = None
     else:
         _issuer(s, ctx, pid, binding.project_id, issuer)
-    if fact.state != "active" or not fact.valid_from <= at < fact.valid_until:
+    if (
+        fact.state != "active"
+        or fact.valid_from > at
+        or (fact.valid_until is not None and at >= fact.valid_until)
+    ):
         checks.append(
             Check(
                 code="test_fact_inactive",
@@ -1095,7 +1341,9 @@ def _load(
                 detail="Fixed test facts are withdrawn or outside their validity",
             )
         )
-    if fact.valid_from > binding.window.start or fact.valid_until < binding.window.finish:
+    if fact.valid_from > binding.window.start or (
+        fact.valid_until is not None and fact.valid_until < binding.window.finish
+    ):
         checks.append(
             Check(
                 code="test_fact_window_unknown",
@@ -1103,7 +1351,7 @@ def _load(
                 detail="Test facts do not cover the whole execution window",
             )
         )
-    assets = _assets(s, ctx, data)
+    assets = _assets(s, ctx, data, lock=write)
     existing = _reservation(s, ctx, pid, binding)
     if existing and own_intent is not None and existing.intent_digest != own_intent:
         raise DomainError("RUN_INTENT_CONFLICT", "该Run已有不同开测意图。")
@@ -1122,19 +1370,38 @@ def _load(
     # Current write authorization also protects saved-owner replay, but it must
     # never bootstrap a consuming reference again. Even a conflicting INSERT
     # fires the lifecycle BEFORE trigger and changes the Product watermark.
-    sentinels = _sample_sentinels(s, ctx, pid, binding, create=write and existing is None)
+    sentinels = _sample_sentinels(
+        s, ctx, pid, binding, create=write and existing is None, lock=write
+    )
     if existing is not None and set(sentinels) != {p.sample.id for p in binding.pairs}:
         raise DomainError("RUN_SAMPLE_USAGE_MISSING", "原Run样件使用门栓缺失，不能重建。")
-    usages = list(
-        s.scalars(
-            select(SampleRunUsage).where(
-                SampleRunUsage.tenant_id == ctx.tenant_id,
-                SampleRunUsage.sample_id.in_({p.sample.id for p in binding.pairs}),
-            )
+    from pdos_next.domain.build_operational_facts.physical_summary import capacity_summary
+
+    own_usages = _own_usages(s, ctx, pid, binding.run_id, write=write)
+    foreign_usages = [
+        SimpleNamespace(
+            sample_id=UUID(value["sample_id"]),
+            destructive=value["destructive"],
+            window_start=datetime.fromisoformat(value["window_start"]),
+            window_finish=datetime.fromisoformat(value["window_finish"]),
+            run_id=None,
+            intent_digest=None,
+            state="consumed" if value["destructive"] else "reserved",
         )
-    )
+        for value in capacity_summary(
+            s,
+            ctx,
+            pid,
+            "sample",
+            {pair.sample.id for pair in binding.pairs},
+            own=binding.run_id,
+            own_kind="test_run",
+            watermark=tuple((key, row.epoch) for key, row in sorted(sentinels.items())),
+        )
+    ]
+    usages = [*own_usages, *foreign_usages]
     if existing:
-        _own_proof(s, ctx, pid, binding, data, existing, usages)
+        _own_proof(s, ctx, pid, binding, data, existing, usages, write=write)
     owned = existing is not None and own_intent is not None
     own = own_intent if owned else None
     usage_views, usage_checks = sample_usage_checks(binding, usages, owned_intent=own)
@@ -1148,57 +1415,40 @@ def _load(
                     detail=f"Sample {sample_id} current purpose readiness is not ready",
                 )
             )
-    executor = Context(ctx.tenant_id, binding.executor_id, binding.executor_id)
-    authority = professional.assess(
-        s,
-        executor,
-        pid,
-        binding.project_id,
-        OPERATION,
-        binding.purpose,
-        at,
-        retained_fact_refs=retained_authority.get("fact_refs")
-        if retained and retained_authority
-        else None,
-    )
+    if retained and retained_authority:
+        retained_check = professional.recheck_snapshot(
+            s, ctx, pid, binding.project_id, retained_authority, at, retained=True
+        )
+        authority = retained_check["assessment"] if retained_check["current"] else {}
+    else:
+        authority = professional.assess(
+            s,
+            ctx,
+            pid,
+            binding.project_id,
+            OPERATION,
+            binding.purpose,
+            at,
+            subject_id=binding.executor_id,
+        )
     qualified = (
         authority.get("authorized") is True
         and authority.get("qualified") is True
         and "quality" in authority.get("roles", ())
     )
-    authority_until = authority.get("valid_until")
-    authority_until = (
-        datetime.fromisoformat(authority_until)
-        if isinstance(authority_until, str)
-        else authority_until
-    )
-    if authority_until is None or authority_until < binding.window.finish:
+    if not professional.authority_time_current(authority, at):
         qualified = False
         checks.append(
             Check(
                 code="executor_window_unknown",
                 status="UNKNOWN",
-                detail="Named quality qualification does not cover the entire window",
+                detail="Named quality qualification is not currently eligible",
             )
         )
     reads = _union(reads, authority.get("required_source_read_set", ()))
     _sources(s, ctx, pid, reads)
-    snapshots, proofs, deadlines = [], [], [fact.valid_until]
-    for value in samples.values():
-        for limit in [value.get("valid_until"), *value.get("_test_method_deadlines", ())]:
-            limit = datetime.fromisoformat(limit) if isinstance(limit, str) else limit
-            if limit is None or limit < binding.window.finish:
-                checks.append(
-                    Check(
-                        code="sample_method_window_unknown",
-                        status="UNKNOWN",
-                        detail="Readiness or method authority does not cover the whole window",
-                    )
-                )
-            if limit:
-                deadlines.append(limit)
-    if authority_until:
-        deadlines.append(authority_until)
+    snapshots, proofs = [], []
+    deadlines = []
     for resource in data.resources:
         asset = assets[resource.resource.id]
         facts = []
@@ -1213,8 +1463,7 @@ def _load(
             if status == "accepted" and (
                 proof is None
                 or not proof.current
-                or proof.valid_until is None
-                or proof.valid_until < binding.window.finish
+                or (proof.valid_until is not None and proof.valid_until < binding.window.finish)
             ):
                 status = "unknown"
             proofs.append(
@@ -1226,6 +1475,8 @@ def _load(
             )
             if proof and proof.valid_until:
                 deadlines.append(proof.valid_until)
+            if decision.valid_until:
+                deadlines.append(decision.valid_until)
             facts.append(
                 QualificationFact(
                     kind=decision.kind,
@@ -1336,7 +1587,9 @@ def _load(
         verified_actual_start=verified_actual_start.occurred_at if verified_actual_start else None,
     )
     request = _request(binding, data)
-    occupancies = _occupancies(s, ctx, tuple(assets), data)
+    occupancies = _occupancies(
+        s, ctx, tuple(assets), data, product_id=pid, own_run_id=binding.run_id
+    )
     report = evaluate(
         context,
         request,
@@ -1359,7 +1612,9 @@ def _load(
         resources=tuple(snapshots),
         uses=data.required_uses,
         required_source_read_set=reads,
-        valid_until=min(deadlines),
+        valid_until=fact.valid_until,
+        expiry_boundaries=tuple(deadlines),
+        authority_basis=deepcopy(authority),
         nature=fact.nature,
         sample_usage=usage_views,
     )
@@ -1378,7 +1633,7 @@ def _load(
     if (
         not retained
         and value.report.status in {"READY", "READY_WITH_CONDITIONS"}
-        and now() >= value.valid_until
+        and expired(value, now())
     ):
         raise DomainError("SOURCE_STALE", "资格在本次核对期间到期，请重新核对。")
     if _fingerprint_collector is not None:
@@ -1389,21 +1644,80 @@ def _load(
     return value, context, request, data, assets, sentinels, existing
 
 
-def _own_proof(s, ctx, pid, binding, data, existing, usages):
+def _owned_read_snapshot(s, pid=None, *, write=False):
+    if not isinstance(s, Session) or not s.in_transaction() or s.new or s.dirty or s.deleted:
+        return False
+    if not write and s.info.get("read_snapshot") is True:
+        return True
+    from pdos_next.request_proof import request_proof
+
+    return pid is not None and pid in request_proof(s).scope_locks
+
+
+def _owned_rows(s, ctx, pid, query, *, write=False, fresh=False):
+    """Share exact own rows under RR or their actual held Product fence.
+
+    Every own-row writer takes this same Product gate through the database's
+    lifecycle_reference BEFORE trigger. Full binding/hash/source checks still
+    run for every caller; the terminal owner uses fresh=True to catch writes
+    in this Session, including raw SQL that bypassed ORM invalidation.
+    """
+    from pdos_next.database import require_context
+    from pdos_next.request_proof import snapshot_rows
+
+    if isinstance(s, Session):
+        require_context(s, ctx)
+    if fresh or not _owned_read_snapshot(s, pid, write=write):
+        return list(s.scalars(query.execution_options(populate_existing=True)))
+    compiled = query.compile()
+    key = (
+        "test-resource-own-effects",
+        digest(vars(ctx)),
+        digest(s.info.get("scope")),
+        str(compiled),
+        json.dumps(compiled.params, sort_keys=True, default=str),
+    )
+    return snapshot_rows(s, key, query, scope_id=pid)
+
+
+def _own_occupancies(s, ctx, pid, run_id, *, write=False):
+    # Do not narrow product/project/build: malformed extra own rows must remain
+    # visible to the complete owner cardinality and binding checks.
+    return _owned_rows(
+        s,
+        ctx,
+        pid,
+        select(ResourceOccupancy).where(
+            ResourceOccupancy.tenant_id == ctx.tenant_id,
+            ResourceOccupancy.owner_kind == "test_run",
+            ResourceOccupancy.owner_execution_id == run_id,
+        ),
+        write=write,
+    )
+
+
+def _own_usages(s, ctx, pid, run_id, *, write=False):
+    # This is the original full Run collection, without project/build filtering.
+    return _owned_rows(
+        s,
+        ctx,
+        pid,
+        select(SampleRunUsage).where(
+            SampleRunUsage.tenant_id == ctx.tenant_id,
+            SampleRunUsage.product_id == pid,
+            SampleRunUsage.run_id == run_id,
+        ),
+        write=write,
+    )
+
+
+def _own_proof(s, ctx, pid, binding, data, existing, usages, *, write=False):
     """Only exact retained own effects permit subtracting one own epoch bump."""
     reservation = Reservation.model_validate(existing.reservation)
     request = _request(binding, data)
     if reservation.state != "formal" or reservation.request != request:
         raise DomainError("RUN_RESERVATION_MISSING", "原Run资源预约不等于当前固定绑定。")
-    own = list(
-        s.scalars(
-            select(ResourceOccupancy).where(
-                ResourceOccupancy.tenant_id == ctx.tenant_id,
-                ResourceOccupancy.owner_kind == "test_run",
-                ResourceOccupancy.owner_execution_id == binding.run_id,
-            )
-        )
-    )
+    own = _own_occupancies(s, ctx, pid, binding.run_id, write=write)
     if len(own) != len(request.uses) or {
         (
             o.resource_id,
@@ -1552,8 +1866,55 @@ class _Ports:
         self.expected_facts_revision = expected_facts_revision
         self.latest_record = None
         self.latest_runtime = None
+        self.latest_stamp = None
+
+    def _stamp(self):
+        from pdos_next.domain.capa_effectiveness.fact_atom_storage import _uow
+        from pdos_next.request_proof import request_proof
+
+        return (
+            _uow(self.s),
+            digest(vars(self.ctx)),
+            digest(
+                (
+                    self.pid,
+                    self.binding,
+                    self.fact_id,
+                    self.revision,
+                    self.intent,
+                    self.accepted,
+                    self.event,
+                    self.expected_facts_revision,
+                )
+            ),
+            _fingerprint_runtime(self.s),
+            request_proof(self.s).mutation_epoch,
+        )
+
+    def _close(self):
+        _same_fingerprint_runtime(self.s, self.latest_runtime)
+        at = now()
+        if expired(self.latest[0], at) or not (
+            self.binding.window.start <= at < self.binding.window.finish
+        ):
+            raise DomainError("SOURCE_STALE", "具名资格、资源或执行窗口在开测核对期间到期。")
 
     def fresh(self):
+        # First v2 load holds the complete parent, asset and sample sentinel
+        # locks. The kernel's context/lock/stage callbacks share that same UOW.
+        # Changes or mutations rebuild it; every hit still closes real time and
+        # issuer state. This private port never survives this one Start.
+        from pdos_next.request_proof import request_proof
+
+        memo = (
+            isinstance(self.s, Session)
+            and self.fingerprint_version == _FINGERPRINT_V2
+            and self.pid in request_proof(self.s).scope_locks
+            and not (self.s.new or self.s.dirty or self.s.deleted)
+        )
+        if memo and self.latest_stamp is not None and self.latest_stamp == self._stamp():
+            self._close()
+            return self.latest
         collector = [] if self.fingerprint_version == _FINGERPRINT_V2 else None
         runtime = _fingerprint_runtime(self.s) if collector is not None else None
         self.latest = _load(
@@ -1582,6 +1943,9 @@ class _Ports:
             self.latest_runtime = runtime
         if self.latest[0].report.status not in {"READY", "READY_WITH_CONDITIONS"}:
             raise DomainError("TEST_RESOURCES_NOT_READY", "完整测试资源或样件当前不可开测。")
+        if memo:
+            self.latest_stamp = self._stamp()
+            self._close()
         return self.latest
 
     def context(self, owner_run_id, purpose, operation_id):
@@ -1612,7 +1976,14 @@ class _Ports:
         return Reservation.model_validate(row.reservation) if row else None
 
     def occupancies(self, context, resource_ids):
-        return _occupancies(self.s, self.ctx, resource_ids, self.latest[3])
+        return _occupancies(
+            self.s,
+            self.ctx,
+            resource_ids,
+            self.latest[3],
+            product_id=self.pid,
+            own_run_id=self.binding.run_id,
+        )
 
     def confirm(self, context, preview):
         if (
@@ -1655,7 +2026,10 @@ class _Ports:
             }
         ]
         reads = _union(bundle.required_source_read_set, event_reads)
-        _sources(self.s, self.ctx, self.pid, reads)
+        if getattr(self, "direct_contract", False):
+            self._close()
+        else:
+            _sources(self.s, self.ctx, self.pid, reads)
         fields = {}
         if self.fingerprint_version == _FINGERPRINT_V2:
             if (
@@ -1664,7 +2038,10 @@ class _Ports:
                 or self.latest_record["facts_revision"] != bundle.facts_revision
             ):
                 raise DomainError("RESOURCE_FACTS_CHANGED", "保存预约须沿共同确认的完整v2材料。")
-            _same_fingerprint_runtime(self.s, self.latest_runtime)
+            if getattr(self, "direct_contract", False):
+                self._close()
+            else:
+                _same_fingerprint_runtime(self.s, self.latest_runtime)
             fields = {
                 "fingerprint_version": _FINGERPRINT_V2,
                 "dependency_proof": deepcopy(self.latest_record),
@@ -1752,11 +2129,14 @@ class _Ports:
             sentinels[sample_id].epoch += 1
         self.s.flush()  # Caller owns rollback, Receipt/Audit/Outbox and commit.
         if self.fingerprint_version == _FINGERPRINT_V2:
-            _same_fingerprint_runtime(self.s, self.latest_runtime)
+            if getattr(self, "direct_contract", False):
+                self._close()
+            else:
+                _same_fingerprint_runtime(self.s, self.latest_runtime)
             checked_at = now()
-            if checked_at >= bundle.valid_until or not (
-                self.binding.window.start <= checked_at < self.binding.window.finish
-            ):
+            if (
+                not getattr(self, "direct_contract", False) and expired(bundle, checked_at)
+            ) or not (self.binding.window.start <= checked_at < self.binding.window.finish):
                 raise DomainError("SOURCE_STALE", "v2资格或执行窗口在保存期间到期。")
             version, proof = _reservation_fingerprint(row)
             if version != _FINGERPRINT_V2 or proof != self.latest_record:
@@ -1858,7 +2238,7 @@ def stage_start(
             raise DomainError("INTEGRITY_MISMATCH", "实际预约、返回结果与v2完整材料不一致。")
         _same_fingerprint_runtime(s, ports.latest_runtime)
         checked_at = now()
-        if checked_at >= ports.latest[0].valid_until or not (
+        if expired(ports.latest[0], checked_at) or not (
             binding.window.start <= checked_at < binding.window.finish
         ):
             raise DomainError("SOURCE_STALE", "v2资格或执行窗口在最终核对期间到期。")
@@ -1979,20 +2359,18 @@ def recheck_running(
         ):
             raise DomainError("INTEGRITY_MISMATCH", "原v2预约在当前执行重核期间改变。")
         _same_fingerprint_runtime(s, runtime)
-        if now() >= value.valid_until:
+        if expired(value, now()):
             raise DomainError("SOURCE_STALE", "v2资格在当前执行重核期间到期。")
     return value
 
 
 def list_resources(s, ctx, product_id, *, request_id=None, build_id=None):
-    product = s.scalar(
-        select(Product)
-        .where(Product.tenant_id == ctx.tenant_id, Product.id == product_id)
-        .with_for_update()
-    )
-    if product is None:
-        raise DomainError("FORBIDDEN_SCOPE", "测试资源不在当前产品范围。", 403)
+    from pdos_next.request_proof import snapshot_get
+
     _human(s, ctx, product_id)
+    product = snapshot_get(s, Product, product_id, scope_id=product_id)
+    if product is None or product.tenant_id != ctx.tenant_id:
+        raise DomainError("FORBIDDEN_SCOPE", "测试资源不在当前型号范围。", 403)
     query = select(TestResourceFact).where(
         TestResourceFact.tenant_id == ctx.tenant_id, TestResourceFact.product_id == product_id
     )
@@ -2016,3 +2394,410 @@ def list_resources(s, ctx, product_id, *, request_id=None, build_id=None):
             _fact_view(row, pointer.epoch, current=pointer.fact_id == row.id, source_status=status)
         )
     return {"resource_facts": values}
+
+
+_DIRECT_START_CONTRACT = "s0-direct-v1"
+
+
+def _direct_start_inputs(s, ctx, pid, binding, fact_id, revision, *, write):
+    """One direct Current and the physical capacity watermarks, never their ancestors."""
+    from pdos_next.database import require_context
+    from pdos_next.request_proof import request_proof
+
+    if not isinstance(s, Session) or not s.is_active or not s.in_transaction():
+        raise DomainError("INVALID_READ_CONTEXT", "开测材料须来自实际调用事务。")
+    require_context(s, ctx)
+    if write and pid not in request_proof(s).scope_locks:
+        raise DomainError("FORBIDDEN_SCOPE", "实际开测须持有真实型号事务门栓。", 403)
+    pointer, fact = _current(s, ctx, pid, binding.run_id, lock=write)
+    if (
+        fact is None
+        or fact.id != fact_id
+        or fact.revision != revision
+        or fact.binding != binding.model_dump(mode="json")
+        or fact.project_id != binding.project_id
+        or fact.build_id != binding.build_id
+        or fact.request_id != binding.request_id
+        or not _visible(fact, ctx)
+    ):
+        raise DomainError("RESOURCE_FACTS_CHANGED", "直接测试资源Current或固定范围已变化。")
+    data = TestResourceFactInput.model_validate(fact.data)
+    if data.binding != binding or data.state != "active" or fact.state != "active":
+        raise DomainError("RESOURCE_NOT_READY", "当前测试资源整版事实不可执行。")
+    if fact.valid_from > binding.window.start or (
+        fact.valid_until is not None and fact.valid_until < binding.window.finish
+    ):
+        raise DomainError("RESOURCE_NOT_READY", "资源事实未覆盖固定执行窗口。")
+    assets = _assets(s, ctx, data, lock=write)
+    sentinels = _sample_sentinels(s, ctx, pid, binding, create=False, lock=write)
+    existing = _reservation(s, ctx, pid, binding)
+    if existing is not None:
+        raise DomainError("RUN_RESERVATION_CONFLICT", "该Run已有正式预约或历史使用。")
+    watermark = {
+        "resource": [
+            str(ctx.tenant_id),
+            str(pid),
+            str(binding.project_id),
+            str(binding.build_id),
+            str(binding.run_id),
+            str(binding.request_id),
+            str(fact.id),
+            fact.revision,
+            pointer.epoch,
+            fact.fact_sha256,
+        ],
+        "assets": [
+            [str(a.id), a.revision, a.data_sha256, a.occupancy_epoch]
+            for a in sorted(assets.values(), key=lambda a: a.id.bytes)
+        ],
+        "sample_usage": [
+            [str(identity), sentinels[identity].epoch if identity in sentinels else 0]
+            for identity in sorted({p.sample.id for p in binding.pairs}, key=lambda v: v.bytes)
+        ],
+    }
+    return fact, data, assets, sentinels, watermark
+
+
+def prepare_start_direct(
+    s,
+    ctx,
+    pid,
+    binding,
+    fact_id,
+    revision,
+    *,
+    authority,
+    samples,
+    source_basis,
+    reads,
+    verified_actual_start,
+):
+    """Prepare the resource rule once from signed summaries and direct capacity rows."""
+    from pdos_next.domain.build_operational_facts.physical_summary import capacity_summary
+    from pdos_next.engines.supply_cost.common import SnapshotRef
+
+    binding = TestPlanBinding.model_validate(binding)
+    write = not s.info.get("read_snapshot", False)
+    fact, data, assets, sentinels, watermark = _direct_start_inputs(
+        s, ctx, pid, binding, fact_id, revision, write=write
+    )
+    clock = now()
+    snapshots, proofs, checks = [], [], []
+    for resource in data.resources:
+        # These named decisions were checked at import/signature. Start consumes
+        # the current signed resource summary, never requalifies its old signer.
+        facts = tuple(
+            QualificationFact(
+                kind=d.kind,
+                purpose=d.purpose,
+                operation_id=d.operation_id,
+                status=d.status,
+                source=_resource_source(fact, f"resource:{resource.resource.id}:" + d.kind),
+                valid_from=d.valid_from,
+                valid_until=d.valid_until,
+                conditions=d.conditions,
+                named_decision_id=d.named_decision_id,
+                actor_id=d.actor_id,
+            )
+            for d in resource.facts
+        )
+        proofs.extend(
+            {
+                "resource": resource.resource.model_dump(mode="json"),
+                "decision": d.model_dump(mode="json"),
+                "proof": None,
+            }
+            for d in resource.facts
+        )
+        if not resource.external_occupancies_complete:
+            checks.append(
+                Check(
+                    resource=resource.resource,
+                    code="occupancy_scope_unknown",
+                    status="UNKNOWN",
+                    detail="External occupancy completeness unknown",
+                )
+            )
+        snapshots.append(
+            ResourceSnapshot(
+                ref=resource.resource,
+                scope=Scope(tenant_id=ctx.tenant_id, product_id=pid, project_id=binding.project_id),
+                source=_resource_source(fact, f"resource:{resource.resource.id}"),
+                purposes=resource.purposes,
+                operation_ids=resource.operation_ids,
+                lifecycle=resource.lifecycle,
+                facts=facts,
+                maintenance=tuple(
+                    MaintenanceFact(
+                        window=v.window,
+                        status=v.status,
+                        source=_resource_source(fact, f"maintenance:{resource.resource.id}:{i}"),
+                    )
+                    for i, v in enumerate(resource.maintenance)
+                )
+                if resource.maintenance is not None
+                else None,
+                calendar=resource.calendar,
+                calendar_source=_resource_source(fact, f"calendar:{resource.resource.id}")
+                if resource.calendar
+                else None,
+                capacity=resource.capacity,
+                occupancy_revision=assets[resource.resource.id].occupancy_epoch,
+            )
+        )
+    usages = [
+        SimpleNamespace(
+            sample_id=UUID(v["sample_id"]),
+            destructive=v["destructive"],
+            window_start=datetime.fromisoformat(v["window_start"]),
+            window_finish=datetime.fromisoformat(v["window_finish"]),
+            run_id=None,
+            intent_digest=None,
+            state="consumed" if v["destructive"] else "reserved",
+        )
+        for v in capacity_summary(
+            s,
+            ctx,
+            pid,
+            "sample",
+            {p.sample.id for p in binding.pairs},
+            own=binding.run_id,
+            own_kind="test_run",
+            watermark=tuple((k, row.epoch) for k, row in sorted(sentinels.items())),
+        )
+    ]
+    usage_views, usage_checks = sample_usage_checks(binding, usages)
+    checks.extend(usage_checks)
+    provenance = {
+        "refs": [
+            SnapshotRef(
+                source_id="artifact:" + v["id"],
+                version=str(v["revision"]),
+                sha256=v["hash"],
+                captured_at=clock,
+                state="current",
+            ).model_dump(mode="json")
+            for v in source_basis
+        ],
+        "security": [
+            {
+                "original_id": v["original"]["id"],
+                "security_epoch": v["original"]["epoch"],
+                "source_state": v["original"]["source_state"],
+                "disposition": v["original"]["disposition"],
+            }
+            for v in source_basis
+            if "original" in v
+        ],
+        "fixed_readset_security": [
+            {
+                "artifact_id": v["id"],
+                "original_id": v["original"]["id"],
+                "epoch": v["original"]["epoch"],
+                "source_state": v["original"]["source_state"],
+                "disposition": v["original"]["disposition"],
+            }
+            for v in source_basis
+            if "original" in v
+        ],
+    }
+    material = {
+        "binding": binding,
+        "fact": fact.fact_sha256,
+        "epoch": watermark["resource"][-2],
+        "issuer": {
+            "key": fact.issuer_key,
+            "scope": {
+                "tenant_id": str(ctx.tenant_id),
+                "product_id": str(pid),
+                "project_id": str(binding.project_id),
+            },
+            "version": fact.issuer_version,
+            "nature": fact.nature,
+            "epoch": fact.issuer_epoch,
+        },
+        "issuer_epochs": {fact.issuer_key: fact.issuer_epoch},
+        "assets": [
+            {
+                "id": a.id,
+                "revision": a.revision,
+                "sha256": a.data_sha256,
+                "epoch": a.occupancy_epoch,
+            }
+            for a in assets.values()
+        ],
+        "sample_epochs": {
+            str(identity): row.epoch if row else 1
+            for identity, row in ((p.sample.id, sentinels.get(p.sample.id)) for p in binding.pairs)
+        },
+        "samples": {str(k): v["facts_revision"] for k, v in samples.items()},
+        "authority": authority,
+        "source_basis": provenance,
+        "proofs": proofs,
+        "checks": [v.model_dump(mode="json") for v in checks],
+    }
+    proof = _stored_fingerprint_v2(material)
+    context = ResourceContext(
+        scope=Scope(tenant_id=ctx.tenant_id, product_id=pid, project_id=binding.project_id),
+        actor_id=ctx.requester_id,
+        owner_run_id=binding.run_id,
+        executor_id=binding.executor_id,
+        now=clock,
+        authorized=authority["authorized"],
+        qualified=authority["qualified"],
+        cancelled=False,
+        sources_current=True,
+        policy_registered=True,
+        facts_revision=proof["facts_revision"],
+        purpose=binding.purpose,
+        operation_id=OPERATION,
+        required_resources=data.required_uses,
+        approved_conditions=data.approved_conditions,
+        verified_actual_start=verified_actual_start.occurred_at
+        if verified_actual_start is not None
+        else None,
+    )
+    request = _request(binding, data)
+    report = evaluate(
+        context,
+        request,
+        tuple(snapshots),
+        _occupancies(s, ctx, tuple(assets), data, product_id=pid, own_run_id=binding.run_id),
+        tuple(checks),
+    )
+    if report.status not in {"READY", "READY_WITH_CONDITIONS"}:
+        raise DomainError("RESOURCE_NOT_READY", "直接资源、容量或样件使用未就绪。")
+    bundle = BoundTestResources(
+        binding=binding,
+        report=report,
+        fact_ref=FactRef(
+            id=fact.id,
+            revision=fact.revision,
+            epoch=watermark["resource"][-2],
+            sha256=fact.fact_sha256,
+            nature=fact.nature,
+        ),
+        facts_revision=proof["facts_revision"],
+        resources=tuple(snapshots),
+        uses=data.required_uses,
+        required_source_read_set=reads,
+        nature=fact.nature,
+        sample_usage=usage_views,
+    )
+    return {
+        "bundle": bundle.model_dump(mode="json"),
+        "context": context.model_dump(mode="json"),
+        "request": request.model_dump(mode="json"),
+        "data": data.model_dump(mode="json"),
+        "dependency_proof": proof,
+        "watermark": watermark,
+        "visibility": fact.visibility,
+    }
+
+
+class _PreparedDirectPorts(_Ports):
+    """One already-confirmed direct owner phase; no historical callback or graph load."""
+
+    direct_contract = True
+
+    def fresh(self):
+        from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow
+
+        _same_uow(self.s, self.direct_uow, self.ctx, self.direct_caller)
+        self.direct_close()
+        return self.latest
+
+    def _close(self):
+        self.fresh()
+
+
+def stage_start_prepared_direct(
+    s,
+    ctx,
+    product_id,
+    binding,
+    resource_fact_id,
+    expected_resource_fact_revision,
+    *,
+    prepared,
+    intent_digest,
+    accepted_confirmation,
+    verified_actual_start,
+    close_current,
+):
+    """Apply server preview material after direct version/epoch CAS, in caller UOW."""
+    from pdos_next.domain.capa_effectiveness.fact_atom_storage import _uow
+    from pdos_next.domain.resource_readiness.handlers import semantic_digest as resource_digest
+    from pdos_next.schemas.resource_readiness.contracts import ReservationEvent
+
+    if accepted_confirmation is not True or not callable(close_current):
+        raise DomainError("CONFIRMATION_REQUIRED", "须消费真实共同开测确认。", 403)
+    binding = TestPlanBinding.model_validate(binding)
+    fact, data, assets, sentinels, watermark = _direct_start_inputs(
+        s, ctx, product_id, binding, resource_fact_id, expected_resource_fact_revision, write=True
+    )
+    if watermark != prepared["watermark"] or data.model_dump(mode="json") != prepared["data"]:
+        raise DomainError("RESOURCE_FACTS_CHANGED", "预览后的直接资源或容量水位已变化。")
+    bundle = BoundTestResources.model_validate(prepared["bundle"])
+    request = ReservationRequest.model_validate(prepared["request"])
+    context = ResourceContext.model_validate(prepared["context"])
+    proof = _verify_stored_fingerprint_v2(prepared["dependency_proof"])
+    if (
+        bundle.binding != binding
+        or request != _request(binding, data)
+        or proof["facts_revision"] != bundle.facts_revision
+        or proof["material"]["binding"] != _fingerprint_json(binding)
+        or bundle.report.status not in {"READY", "READY_WITH_CONDITIONS"}
+        or ctx.requester_id != binding.executor_id
+    ):
+        raise DomainError("INTEGRITY_MISMATCH", "服务器预览资源材料未绑定本次完整Run。")
+    event = EventTime.model_validate(verified_actual_start)
+    close_current()
+    sentinels = _sample_sentinels(s, ctx, product_id, binding, create=True, lock=True)
+    if {str(k): row.epoch for k, row in sentinels.items()} != {
+        identity: epoch or 1 for identity, epoch in watermark["sample_usage"]
+    }:
+        raise DomainError("RESOURCE_FACTS_CHANGED", "样件使用水位在创建门栓期间变化。")
+    ports = _PreparedDirectPorts(
+        s,
+        ctx,
+        product_id,
+        binding,
+        resource_fact_id,
+        expected_resource_fact_revision,
+        intent=intent_digest,
+        accepted=True,
+        verified_actual_start=event,
+        fingerprint_version=_FINGERPRINT_V2,
+    )
+    ports.latest = bundle, context, request, data, assets, sentinels, None
+    ports.latest_record = proof
+    ports.direct_uow, ports.direct_caller = _uow(s), digest(vars(ctx))
+    ports.direct_close = close_current
+    record = Reservation(
+        id=binding.run_id,
+        revision=1,
+        scope=context.scope,
+        request=request,
+        semantic_digest=resource_digest(request),
+        state="formal",
+        fixed_resources=bundle.resources,
+        report=bundle.report,
+        events=(ReservationEvent(kind="formal", at=now(), actor_id=ctx.requester_id),),
+    )
+    ports.stage(
+        context, record, 0, tuple((v.ref.id, v.occupancy_revision) for v in bundle.resources)
+    )
+    close_current()
+    return TestReservationResult(
+        owner_run_id=binding.run_id,
+        reservation_id=binding.run_id,
+        occupancy_ids=tuple(
+            uuid5(binding.run_id, f"test-resource:{u.resource.id}") for u in bundle.uses
+        ),
+        sample_usage_ids=tuple(
+            uuid5(binding.run_id, f"test-sample:{sid}")
+            for sid in sorted(sentinels, key=lambda v: v.bytes)
+        ),
+        facts_revision=bundle.facts_revision,
+    )

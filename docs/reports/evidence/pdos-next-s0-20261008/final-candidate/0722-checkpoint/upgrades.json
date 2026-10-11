@@ -1,0 +1,32 @@
+{
+  "finished_at_utc": "2026-10-09T15:56:54.754394+00:00",
+  "synthetic_only": true,
+  "llm_calls": 0,
+  "migration_source_sha256": {
+    "pdos-next/server/migrations/schema_s0_0722.py": "173872a91effa33b42c06b65ce9cc01a36250fb4513674717e4bbfe97ba3477d",
+    "pdos-next/server/migrations/versions/s0_0722_batch_business_audience.py": "a880868fd7b2f6bd0acec42d94caa79807b15695968fa4960a2f4a07f6e0f95f"
+  },
+  "migration_source_unchanged": true,
+  "results": [
+    {
+      "target": "main",
+      "database": "pdos_test",
+      "port": 53502,
+      "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+      "from_head": "s0_0721",
+      "head": "s0_0722",
+      "private_backup_sha256": "9852190badd6a85406b01859db6310a08faab9814d1bcbb654fef9d1cb5d9da3",
+      "ordinary_owner_audit_passed": true
+    },
+    {
+      "target": "b8",
+      "database": "pdos_test",
+      "port": 62303,
+      "marker": "6712d849-f2c1-4b32-ae79-d50d9a31639d",
+      "from_head": "s0_0721",
+      "head": "s0_0722",
+      "private_backup_sha256": "64a6d420e9e37dcaa28c275f11afee37c5b868b3c0432aadf5bd622211e1f74e",
+      "ordinary_owner_audit_passed": true
+    }
+  ]
+}

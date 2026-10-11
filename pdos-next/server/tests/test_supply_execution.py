@@ -106,7 +106,7 @@ def capture_input(work, *, quantity="6", key=None):
 
 def prepare(setup, work, payload=None, *, headers=None, product=None):
     return setup.client.post(
-        f"/v1/products/{product or setup.product}/supply-captures",
+        f"/v1/categories/{setup.category}/products/{product or setup.product}/supply-captures",
         headers=headers or setup.headers,
         json=payload or capture_input(work),
     )
@@ -150,22 +150,40 @@ def kit_command(setup, work, receipt, *, reads=None):
 
 def listed(setup, *, headers=None):
     response = setup.client.get(
-        f"/v1/products/{setup.product}/supply", headers=headers or setup.headers
+        f"/v1/categories/{setup.category}/products/{setup.product}/supply",
+        headers=headers or setup.headers,
     )
     assert response.status_code == 200, response.text
     return response.json()
 
 
-def count(setup, model, *, operation=None):
-    with tenant_session(setup.engine, setup.tenant) as session:
-        query = select(func.count()).select_from(model)
+def count(setup, model, *, operation=None, physical=False):
+    context = (
+        Session(setup.admin)
+        if physical
+        else tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.human,
+            requester_id=setup.human,
+            category_id=setup.category,
+        )
+    )
+    with context as session:
+        query = select(func.count()).select_from(model).where(model.tenant_id == setup.tenant)
         if operation is not None:
             query = query.where(model.operation == operation)
         return session.scalar(query)
 
 
 def confirmation_consumed(setup, prepared):
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         confirmation = session.scalar(
             select(Confirmation).where(
                 Confirmation.token_hash == digest(prepared["payload"]["confirmation_token"])
@@ -178,7 +196,7 @@ def expire_grant(setup):
     with Session(setup.admin) as session, session.begin():
         session.execute(
             update(Grant)
-            .where(Grant.product_id == setup.product, Grant.principal_id == setup.human)
+            .where(Grant.category_id == setup.category, Grant.principal_id == setup.human)
             .values(expires_at=now() - timedelta(seconds=1))
         )
 
@@ -197,8 +215,7 @@ def test_capture_retry_keeps_fixed_identity_time_and_never_applies_stock(setup, 
     assert replay == first
     row = first["capture"]
     assert row["status"] == "unapplied" and row["applied_snapshot_id"] is None
-    assert row["expired"] is False
-    assert datetime.fromisoformat(row["created_at"]) < datetime.fromisoformat(row["expires_at"])
+    assert "expires_at" not in row and "expired" not in row
     assert (
         row["input_snapshot"] and row["snapshot_record_payload"] == first["snapshot_record_payload"]
     )
@@ -235,9 +252,16 @@ def test_capture_retry_still_checks_current_authority_and_fresh_revision(
         assert replay.json()["capture"]["id"] == first["capture"]["id"]
         fresh = {**payload, "capture_key": str(uuid4())}
         assert prepare(setup, supply_work, fresh).json()["code"] == "VERSION_CONFLICT"
+    elif change == "source":
+        assert replay.status_code == 200, replay.text
+        assert replay.json()["capture"]["source_status"] == "needs_recheck"
+        fresh = {**payload, "capture_key": str(uuid4())}
+        assert prepare(setup, supply_work, fresh).json()["code"] == "SOURCE_UNAVAILABLE"
     else:
-        assert replay.status_code in {403, 409}, replay.text
-    assert count(setup, SupplyCapture) == 1
+        assert replay.status_code == 403, replay.text
+    assert count(setup, SupplyCapture, physical=True) == 1
+    if change == "grant":
+        assert count(setup, SupplyCapture) == 0
 
 
 @pytest.mark.parametrize("actor", ["peer", "other_human"])
@@ -248,7 +272,9 @@ def test_private_build_and_source_are_not_visible_or_capturable_to_other_identit
     headers = {"Authorization": f"Bearer {setup.tokens[getattr(setup, actor)]}"}
     refused = prepare(setup, supply_work, headers=headers)
     assert refused.status_code == 403, refused.text
-    read = setup.client.get(f"/v1/products/{setup.product}/supply", headers=headers)
+    read = setup.client.get(
+        f"/v1/categories/{setup.category}/products/{setup.product}/supply", headers=headers
+    )
     if actor == "peer":
         assert read.status_code == 200, read.text
         data = read.json()
@@ -268,18 +294,11 @@ def test_capture_cannot_move_a_fixed_build_to_another_granted_product(setup, sup
                 owner_id=setup.human,
                 name="Other synthetic product",
                 purpose="Verify exact scope",
+                category_id=setup.category,
             )
         )
         session.flush()
-        session.add(
-            Grant(
-                tenant_id=setup.tenant,
-                product_id=product,
-                principal_id=setup.human,
-                can_write=True,
-                expires_at=now() + timedelta(hours=1),
-            )
-        )
+
     refused = prepare(setup, supply_work, product=product)
     assert refused.status_code == 403, refused.text
     assert count(setup, SupplyCapture) == 0
@@ -298,7 +317,13 @@ def test_snapshot_uses_one_common_confirmation_and_one_atomic_receipt(setup, sup
     assert count(setup, Confirmation, operation=SNAPSHOT) == 1
     assert count(setup, Receipt, operation=SNAPSHOT) == 1
     assert confirmation_consumed(setup, prepared) is True
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         draft = session.get(SupplyCapture, UUID(capture["capture"]["id"]))
         saved = session.get(SupplySnapshot, UUID(receipt["subject_id"]))
         assert saved.id == draft.snapshot_id
@@ -342,46 +367,52 @@ def test_snapshot_confirmation_does_not_cover_changed_command_scope(setup, suppl
         prepared["source_read_set"] = prepared["source_read_set"][:1]
     else:
         headers = {"Authorization": f"Bearer {setup.tokens[setup.peer]}"}
-    refused = setup.client.post("/v1/commands", headers=headers, json=prepared)
+    refused = setup.client.post(
+        f"/v1/categories/{setup.category}/commands", headers=headers, json=prepared
+    )
     assert refused.status_code in {403, 409}, refused.text
     assert count(setup, SupplySnapshot) == count(setup, SupplyCurrent) == 0
     assert confirmation_consumed(setup, original) is False
 
 
-def test_expired_capture_is_retrievable_but_its_review_cannot_apply(
-    setup, supply_work, monkeypatch
-):
-    from pdos_next.domain.supply_execution import service
+def test_capture_has_no_material_deadline_but_confirmation_still_expires(setup, supply_work):
+    from pdos_next.clock import using_clock
 
     payload = capture_input(supply_work)
     capture = captured(setup, supply_work, payload=payload)
     reviewed = post(setup, snapshot_command(setup, supply_work, capture), True)
     assert reviewed.status_code == 200, reviewed.text
     prepared = reviewed.json()["command"]
-    after_expiry = datetime.fromisoformat(capture["capture"]["expires_at"]) + timedelta(
-        microseconds=1
-    )
-    with monkeypatch.context() as patch:
-        patch.setattr(service, "now", lambda: after_expiry)
+    advanced = now() + timedelta(minutes=31)
+    with using_clock(lambda: advanced):
         replay = captured(setup, supply_work, payload=payload)
         assert replay["capture"]["id"] == capture["capture"]["id"]
-        assert replay["capture"]["expired"] is True
+        assert "expires_at" not in replay["capture"]
         refused = post(setup, prepared)
-        assert refused.status_code == 409 and refused.json()["code"] == "CAPTURE_EXPIRED"
+        assert refused.status_code == 409
+        assert refused.json()["code"] == "CONFIRMATION_REQUIRED"
         preview = post(setup, snapshot_command(setup, supply_work, capture), True)
-        assert preview.json()["code"] == "CAPTURE_EXPIRED"
+        assert preview.status_code == 200, preview.text
+        committed = post(setup, preview.json()["command"])
+        assert committed.status_code == 200, committed.text
     assert count(setup, SupplyCapture) == 1
-    assert count(setup, SupplySnapshot) == count(setup, SupplyCurrent) == 0
-    assert confirmation_consumed(setup, prepared) is False
+    assert count(setup, SupplySnapshot) == count(setup, SupplyCurrent) == 1
 
 
 @pytest.mark.parametrize("source", ["build", "supply"])
-def test_snapshot_confirmation_and_committed_replay_require_all_current_sources(
+def test_saved_snapshot_replays_but_new_decision_requires_current_sources(
     setup, supply_work, source
 ):
     _, receipt, prepared = recorded(setup, supply_work)
     withdraw(setup, supply_work["source" if source == "build" else "supply_source"])
-    refused = post(setup, prepared)
+    assert post(setup, prepared).json()["id"] == receipt["id"]
+    fresh = {
+        **prepared,
+        "command_id": str(uuid4()),
+        "idempotency_key": str(uuid4()),
+        "payload": {**prepared["payload"], "reason": "New decision on withdrawn source"},
+    }
+    refused = post(setup, fresh)
     assert refused.status_code in {403, 409}, refused.text
     assert count(setup, SupplySnapshot) == 1
     assert count(setup, Receipt, operation=SNAPSHOT) == 1
@@ -419,7 +450,13 @@ def test_parallel_successors_do_not_overwrite_history_or_advance_pointer_twice(s
         "snapshot_id": winner["subject_id"],
         "revision": 2,
     }
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         history = session.get(SupplySnapshot, UUID(first["subject_id"]))
         assert history.revision == 1 and history.snapshot["pools"][0]["quantity"] == "6"
 
@@ -436,7 +473,13 @@ def test_canonical_kit_is_t0_and_unknown_supply_never_authorizes_start(setup, su
     assert post(setup, command).json()["id"] == receipt["id"]
     assert count(setup, KitProjection) == count(setup, Receipt, operation=KIT) == 1
     assert count(setup, Confirmation) == before_confirmations
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         kit = session.get(KitProjection, UUID(receipt["subject_id"]))
         supply = session.get(SupplySnapshot, UUID(saved["subject_id"]))
         assert kit.bound_demand == supply.bound_demand
@@ -461,9 +504,14 @@ def test_committed_kit_replay_rechecks_current_scope_and_evidence(setup, supply_
         expire_grant(setup)
     else:
         withdraw(setup, supply_work["supply_source"])
-    refused = post(setup, command)
-    assert refused.status_code in {403, 409}, refused.text
-    assert count(setup, KitProjection) == 1
+    response = post(setup, command)
+    if change == "grant":
+        assert response.status_code == 403, response.text
+        assert count(setup, KitProjection) == 0
+    else:
+        assert response.status_code == 200, response.text
+        assert response.json()["subject_type"] == "supply_coverage"
+    assert count(setup, KitProjection, physical=True) == 1
 
 
 def test_old_snapshots_cannot_start_new_kit_but_saved_kit_replays_as_history(setup, supply_work):
@@ -475,7 +523,7 @@ def test_old_snapshots_cannot_start_new_kit_but_saved_kit_replays_as_history(set
         setup, supply_work, first, reads=first_capture["required_source_read_set"]
     )
     refused = post(setup, old_request)
-    assert refused.status_code == 409 and refused.json()["code"] == "SNAPSHOT_VERSION_CONFLICT"
+    assert refused.status_code == 409 and refused.json()["code"] == "VERSION_CONFLICT"
     assert count(setup, KitProjection) == 0
     command = kit_command(
         setup, supply_work, second, reads=second_capture["required_source_read_set"]
@@ -505,16 +553,24 @@ def test_agent_has_neither_human_api_session_nor_supply_write_qualification(setu
             )
         )
     refused = setup.client.post(
-        "/v1/commands", json=command, headers={"Authorization": f"Bearer {token}"}
+        f"/v1/categories/{setup.category}/commands",
+        json=command,
+        headers={"Authorization": f"Bearer {token}"},
     )
     assert refused.status_code == 401
     with (
-        tenant_session(setup.engine, setup.tenant) as session,
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.human,
+            requester_id=setup.human,
+            category_id=setup.category,
+        ) as session,
         pytest.raises(DomainError) as denied,
     ):
         execute(
             session,
-            Context(setup.tenant, setup.agent, setup.human),
+            Context(setup.tenant, setup.agent, setup.human, category_id=setup.category),
             Command.model_validate(command),
         )
     assert denied.value.code == "FORBIDDEN_SCOPE"
@@ -528,7 +584,13 @@ def test_unknown_source_quantity_stays_null_and_pool_scope_stays_incomplete(setu
     command = kit_command(setup, supply_work, receipt, reads=capture["required_source_read_set"])
     result = post(setup, command)
     assert result.status_code == 200, result.text
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         snapshot = session.get(SupplySnapshot, UUID(receipt["subject_id"]))
         assert snapshot.snapshot["pools"][0]["quantity"] is None
         assert snapshot.snapshot["supply_scope_complete"] is False
@@ -590,7 +652,7 @@ def test_final_receipt_failure_rolls_back_domain_pointer_token_and_outbox(
     with monkeypatch.context() as patch:
         patch.setattr(service, "append_receipt", fail_after_receipt)
         refused = post(setup, command)
-    assert refused.json()["code"] == "SYNTHETIC_RECEIPT_FAILURE", refused.text
+    assert refused.json()["code"] == "INTERNAL_ERROR", refused.text
     assert {model: count(setup, model) for model in tables} == before
     if operation == SNAPSHOT:
         assert confirmation_consumed(setup, command) is False
@@ -647,7 +709,13 @@ def test_current_pointer_cannot_move_build_or_rewind_valid_history(setup, supply
     other, _ = accepted(
         setup, build_command(setup, supply_work, name="Other fixed synthetic Build")
     )
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         pointer = session.scalar(
             select(SupplyCurrent).where(SupplyCurrent.build_id == UUID(supply_work["build_id"]))
         )
@@ -662,7 +730,13 @@ def test_current_pointer_cannot_move_build_or_rewind_valid_history(setup, supply
             session.execute(
                 update(SupplyCurrent).where(SupplyCurrent.id == pointer_id).values(**changed)
             )
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
         pointer = session.get(SupplyCurrent, pointer_id)
         assert pointer.build_id == UUID(supply_work["build_id"])
         assert pointer.snapshot_id == UUID(second["subject_id"])

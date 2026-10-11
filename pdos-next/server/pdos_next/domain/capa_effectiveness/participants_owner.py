@@ -5,6 +5,9 @@ Run versions remain fixed; new selections must match actual Current. No client
 participant list, owner Context, DML, new transaction or seven-gate attestation.
 """
 
+from pdos_next.database import category_for_product
+
+
 # Initialize the common registry before its domain children.
 # ruff: noqa: I001
 from copy import deepcopy
@@ -53,8 +56,6 @@ from .facts import FactRef, Participant
 from .paired import PairBinding
 from pdos_next.schemas.verification.contracts import TestRun
 
-MAX_ROWS = 128
-
 
 @dataclass(frozen=True)
 class ParticipantRead:
@@ -64,12 +65,13 @@ class ParticipantRead:
     sources: tuple[SourceRef, ...]
     required_source_read_set: tuple[a.SourceRead, ...]
     checked_at: datetime
-    valid_until: datetime
+    valid_until: datetime | None
     source_basis: list
     missing: tuple[str, ...]
     needs_lineage_owner: bool
     current_evidence_authorized: bool = False
     same_uow_consumption_attested: bool = False
+    time_constraints: tuple[datetime, ...] = ()
 
 
 def _require(value, code="PARTICIPANT_OWNER_MISSING", *, status=503):
@@ -111,7 +113,6 @@ class _Read:
         return tuple(refs)
 
     def one(self, table, *, columns=None, scoped=True, **keys):
-        _require(len(self.rows) < MAX_ROWS, "PARTICIPANT_OWNER_LIMIT_EXCEEDED")
         where = [table.c.tenant_id == self.ctx.tenant_id]
         if scoped:
             where.append(table.c.product_id == self.pid)
@@ -123,16 +124,18 @@ class _Read:
             .limit(2)
             .execution_options(autoflush=False, populate_existing=True)
         )
-        values = list(self.s.execute(statement).mappings())
+        from pdos_next.request_proof import snapshot_mappings
+
+        values = snapshot_mappings(self.s, statement, scope_id=self.pid)
         _require(len(values) == 1)
         row = deepcopy(dict(values[0]))
         self.tracked.append((statement, deepcopy(row)))
         self.rows.append({"table": table.name, "value": deepcopy(row)})
         if "owner_id" in row and "visibility" in row:
-            _require(row["visibility"] in ("product", "private"))
+            _require(row["visibility"] in ("category", "private", "audience"))
             if row["visibility"] == "private" and row["owner_id"] != self.ctx.requester_id:
                 raise DomainError("FORBIDDEN_SCOPE", "不能借原作者读取私人参与者材料。", 403)
-            if self.origin.visibility == "product" and row["visibility"] == "private":
+            if self.origin.visibility == "category" and row["visibility"] == "private":
                 raise DomainError("FORBIDDEN_SCOPE", "私人实绩不能扩大共享调查受众。", 403)
         if "project_id" in row:
             _require(
@@ -186,7 +189,9 @@ class _Read:
             .limit(1)
             .execution_options(autoflush=False, populate_existing=True)
         )
-        matches = list(self.s.execute(key).mappings())
+        from pdos_next.request_proof import snapshot_mappings
+
+        matches = snapshot_mappings(self.s, key, scope_id=self.pid)
         _require(len(matches) == 1, "PARTICIPANT_REQUEST_ASSOCIATION_MISSING")
         self.tracked.append((key, deepcopy(dict(matches[0]))))
         self.rows.append({"table": RequestKey.__tablename__, "value": deepcopy(dict(matches[0]))})
@@ -583,7 +588,9 @@ class _Read:
     def finish(self):
         # No cross-phase memo: every tracked raw group is independently reread.
         for statement, old in self.tracked:
-            rows = list(self.s.execute(statement).mappings())
+            from pdos_next.request_proof import snapshot_mappings
+
+            rows = snapshot_mappings(self.s, statement, scope_id=self.pid)
             _require(len(rows) == 1 and dict(rows[0]) == old, "PARTICIPANT_OWNER_CHANGED")
         guards._acl(self.s, self.ctx, self.pid)
         guards._same_uow(self.s, self.uow, self.ctx, self.caller)
@@ -595,12 +602,12 @@ class _Read:
             self.s,
             Grant,
             Grant.tenant_id == self.ctx.tenant_id,
-            Grant.product_id == self.pid,
+            Grant.category_id == category_for_product(self.pid),
             Grant.principal_id == self.ctx.actor_id,
         )
         guards._same_uow(self.s, self.uow, self.ctx, self.caller)
         at = datetime.now(UTC)
-        _require(grant.expires_at > at, "FORBIDDEN_SCOPE", status=403)
+        _require((grant.expires_at is None or grant.expires_at > at), "FORBIDDEN_SCOPE", status=403)
         return at, grant.expires_at
 
 
@@ -780,9 +787,13 @@ def read_participants(
                 "PARTICIPANT_OBSERVATION_CHANGED",
             )
         reader.finish()
-        checked, deadline = reader.finish_clock()
-        _require(closure.valid_until > checked, "PARTICIPANT_SOURCE_EXPIRED")
-        deadline = min(deadline, closure.valid_until)
+        checked, caller_expires_at = reader.finish_clock()
+        time_constraints = tuple(
+            value
+            for value in (caller_expires_at, closure.valid_until, *closure.time_constraints)
+            if value is not None
+        )
+        _require(all(checked < value for value in time_constraints), "PARTICIPANT_SOURCE_EXPIRED")
         material["source_closure_sha256"] = closure.material_sha256
         material_hash = digest(material)
     return ParticipantRead(
@@ -792,7 +803,7 @@ def read_participants(
         refs,
         reads,
         checked,
-        deadline,
+        None,
         closure.source_basis,
         tuple(
             sorted(
@@ -800,4 +811,5 @@ def read_participants(
             )
         ),
         descriptor.needs_lineage_owner,
+        time_constraints=time_constraints,
     )

@@ -11,7 +11,6 @@ from pdos_next.errors import DomainError
 from .schemas import OriginalApproval
 
 _TOKEN = object()
-MAX_APPROVALS = 100
 
 
 def require(ok, code="COVERAGE_OWNER_STALE", status=409):
@@ -51,7 +50,7 @@ def configure(engine, professional_issuer, *, scope, approvals):
     Reconfiguration always rotates the independent coverage epoch, including ABA.
     """
     require(isinstance(engine, Engine), "COVERAGE_ENGINE_REQUIRED", 503)
-    require(type(approvals) is tuple and 0 < len(approvals) <= MAX_APPROVALS, status=422)
+    require(type(approvals) is tuple and bool(approvals), status=422)
     issuer = professional_issuer
     require(isinstance(issuer, professional.IssuerContext), "TRUSTED_ISSUER_REQUIRED", 403)
     from pdos_next.schemas.verification.contracts import Scope

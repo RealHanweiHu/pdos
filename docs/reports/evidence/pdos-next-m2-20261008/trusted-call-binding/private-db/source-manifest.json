@@ -1,0 +1,169 @@
+{
+  "candidate": "m2-0716-private-postgres-20261008",
+  "previous_pure_snapshot_digest": "a6a50be5c48abe3768fe0eb36f4e7df73137d02301edbb905d4d7ac14d068419",
+  "files": [
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/b7-integration.md",
+      "sha256": "b098ec231704201fed5a6f98c5369dfb17ed1929a4760de81612abbeaedcc8d3"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/affected-pure.log",
+      "sha256": "1fcee5958cd6f5993586e99c857438c72fd5e571100bb9f1f1f633bd04c2949c"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/b7-port-contract.md",
+      "sha256": "f9eda8fc4c5eb5974d52a503e6a0e5547fa4b2c20a836281f2a9cef71ca84c94"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/private-db/environment-schema.json",
+      "sha256": "02ead4af1db5f6a2f95b4105b59c5865254cc594458e8a45657844cafd5fa5d2"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/private-db/final-owned-ports-candidate.log",
+      "sha256": "573c2556f47b88fc854f5cdd91d0add81418c0ffbbc9c0318a94b187ce353ffe"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/private-db/final-owned-ports.log",
+      "sha256": "3b8859a1df620dfa26c51de7be11fae84521f50ec7a67d875d8fc941f325b395"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/private-db/final-private-candidate.log",
+      "sha256": "68dc3c99f99f7e9ee32f8306ee15672c3071ee5c6dfabd74487c36e43e30ea3c"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/private-db/graph-resume-pure.log",
+      "sha256": "58a8fe1067bc6156e243a7b9b009e5ae258514d00f9016dae6fe34a1270d001e"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/private-db/migration-down-0715.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/private-db/migration-reup-0716.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/private-db/migration-up-0716.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/private-db/postgres-ports-candidate.log",
+      "sha256": "dd625a4c4b642c45bbeac8da5d6b41d2be215a7b3227f39cb40008ba35963f96"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/private-db/postgres-product-port-candidate.log",
+      "sha256": "dde2bf169e19b890cdcb7200ba98a59f4fcfaa26c198f24d7977f83a90d95b01"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/private-db/result.md",
+      "sha256": "edb29062b6b848f7351765adaa030b46d590077ba8152dc4cf4ac5a10a79f7ef"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/private-db/stale-epoch-before-fix.log",
+      "sha256": "82d8401ddff54f3c41983be539734ba766c3fa715aaf8c079b1cdec13babdf67"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/result.md",
+      "sha256": "e9275762fca2c9d51f424c132a9adb03fc1fe1b61f749b11ab78ff003ab895d2"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0716.py",
+      "sha256": "33aef3428e53a837813100288dfd36ff7604415dbe5f761ae69c6582062ce3b9"
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0716_trusted_execution_binding.py",
+      "sha256": "da928650926e81dca243531c1b7353ff0974e588cb066614c49398c4b091aeba"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/activities.py",
+      "sha256": "1077851ab9a7440242d3c5c892c009ac0577a8ce2b8dbb2f52aecea862d1e700"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/bindings.py",
+      "sha256": "5f6f20e45790be017d4aa56d16fcfd81b08f5e5f55a50fb528d605d842fae1d6"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/execution.py",
+      "sha256": "06514f276a2fa97e517f658b557092b9da576f3b7d8dc2e0c7c9a6a3eee5d511"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/execution_schema.py",
+      "sha256": "c5bfa70d8d36ddfab2d1aacf8e8867b2cec9c5c57346f6c8e60c8007394e62c4"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/gateway.py",
+      "sha256": "9b32c03049aee885efa05922fb2172776fc39c058c0ace5c7d63077d89718e27"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/graph.py",
+      "sha256": "bbf3d9e4f86faffc4726acc32093a5b5bcf189e524f554c1cd7a0c1cf99542fd"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/host.py",
+      "sha256": "1c61a4979b8ea102523aa8cf2a5583abf18cec62d314349da0cb30d1fb305f04"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/models.py",
+      "sha256": "320724d2abf65c5821c2a5acfe8ee907b7166ca981c4614dac33b4b732990e38"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/persistence.py",
+      "sha256": "5b98cf37dfc6ab82c0ab3be6a3fd4b38d0dc8c24f253b6d0c5dcead2156ffdc5"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/policy.py",
+      "sha256": "bcc2fa339ccf309a73efb43bfd91ce93678b4739c7bbeb23b584dd9204820454"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/registry.py",
+      "sha256": "0ee250d41533db062ec4ec463f69f64efe641de9aa1e84ab35e91641523b75b8"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/skills.py",
+      "sha256": "9a5d6fd0d31844b9648c4f04ad3287803e90b0bf5030f35feb6a916316adf97b"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/types.py",
+      "sha256": "aab9c330f051ad2616ae3263a10aa21063b481cf63319a2ad1bd6cc4463bbe05"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/postgres_execution_binding_cases.py",
+      "sha256": "77bc6d4ecbe4b59796b2b5ba876b10e1f2968b6b0d5de26abf037c302e17d98e"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_execution_binding.py",
+      "sha256": "0757866d7ed2ec803f5437e530fdd6aab8bf0c542784982eefc0b179f02b422a"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_graph.py",
+      "sha256": "7bb79b21e76ecf469db1197f68fe3402880916c89cf971e6dab11c9dbdbbaae7"
+    }
+  ],
+  "source_digest": "701785a12e32c159e212a944c1c51e1a968cbc32b8acbda6f1de2b7536638a62",
+  "port_selection": {
+    "passed": 76,
+    "seconds": 12.87,
+    "actual_postgresql_cases": 29,
+    "pure_cases": 47
+  },
+  "separate_graph_selection": {
+    "passed": 11,
+    "seconds": 1.9
+  },
+  "summed_as_single_selection": false,
+  "migration": {
+    "revision": "s0_0716",
+    "down_revision": "s0_0715",
+    "applied_on_private_fixture": true,
+    "roundtrip_before_new_bindings": true
+  },
+  "private_target": {
+    "port": 51698,
+    "database": "pdos_test",
+    "marker": "3749a9d8-a9de-4544-87c7-6766338a73a8"
+  },
+  "main_database_operations": 0,
+  "real_model_calls": 0,
+  "public_domain_adapter_verified": false,
+  "formal_exit": false
+}

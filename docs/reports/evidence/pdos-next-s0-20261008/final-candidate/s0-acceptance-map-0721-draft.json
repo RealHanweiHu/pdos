@@ -1,0 +1,1620 @@
+{
+  "draft": true,
+  "not_m1_completion_evidence": true,
+  "generated_at_utc": "2026-10-09T15:39:42.583020+00:00",
+  "review_scope": "本次仅修改s0-acceptance-map-draft.json；只读核对实际现有JSON/日志索引，没有运行测试、collect、PG、计时、迁移或服务；未改代码、工具、清单、M2/M3。",
+  "authority": {
+    "architecture": "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md",
+    "approved_plan": "docs/design/2026-10-08-pdos-next-s0-refactoring-plan.md",
+    "activity_source": "tasks/ai-native-integrated-todo.md#current-queue",
+    "source_precedence": "冻结 v1.1 与批准 P1/P2/P3/P4/P10；本映射不新增合同或审批。"
+  },
+  "checkpoint_snapshot": {
+    "m1_status": "B0–B7 功能批完成；B8 回归闭合、源码增量、当前0721迁移往返及非空业务链恢复已有实际证据；最终性能进行中，S0/M1未完成。",
+    "current_heads": {
+      "main": "s0_0721",
+      "independent_b8": "s0_0721"
+    },
+    "original_full_regression": {
+      "passed": 4839,
+      "failure": 368,
+      "error": 49,
+      "skipped": 1,
+      "total": 5257
+    },
+    "original_skip": {
+      "node": "tests/manufacturing_browser_seed/test_browser_seed.py::test_create_finite_synthetic_manufacturing_browser_seed",
+      "reason": "Explicit browser seed invocation only; ordinary test runs create no login export",
+      "not_business_test_pass": true
+    },
+    "actual_current_confirmed": [
+      "原417失败/错误：382实际复验通过、35旧接口逐项退役，0pending；原失败及后续失败诊断保留。",
+      "当前纯复验142项、配置runtime71项、最终6修复+4fences共10项均有精确三阶段pass与source_unchanged。",
+      "170项品质/覆盖/native受影响范围、8项事务边界与主库品类撤权单项保留真实范围。",
+      "21 profiles真实目标guard两项、101 OriginalApproval完整pins一项实际通过，去任意cap后的正向边界已补。",
+      "s0_0721空链upgrade→down→upgrade与普通属主审计实际通过。",
+      "s0_0721恢复142表指纹，非空配置→Build→Handoff→Run公共回读与原Start回执重放零新增效果。"
+    ],
+    "current_backend_final_scope": "原冻结s0_0720完整回归保留4839P/368F/49E/1S；417原失败/错误已逐节点闭合为382实际复验通过与35旧接口退役，0pending。当前范围由源码增量与105模块映射明确承接，不宣称第二次当前候选全量全通过。",
+    "performance": "已完成8短路径，各30真实成功样本、0失败、源码未漂移；其余24个B4/B5/B6路径及32组最终汇总仍待。进行中日志/计数不视为最终通过。",
+    "failure_closure": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/failure-closure-map.json",
+      "root_reviewed": true,
+      "original_failed_nodes": 417,
+      "actual_revalidated": 382,
+      "retired_not_retested_pass": 35,
+      "pending": 0
+    },
+    "module_and_source_coverage": {
+      "modules": 105,
+      "current_s0_collected_nodes": 5205,
+      "collection_is_pass_evidence": false,
+      "classified_modified_s0_runtime_contract_files": 10,
+      "additional_positive_gaps": 0,
+      "source_manifest_files": 1003,
+      "independent_m3_nodes_excluded": 50
+    },
+    "recovery": {
+      "head": "s0_0721",
+      "fingerprinted_tables": 142,
+      "chain_tables": {
+        "engineering_configurations": 162,
+        "process_revisions": 161,
+        "build_starts": 49,
+        "verification_handoff_facts": 92,
+        "verification_run_versions": 117,
+        "test_resource_reservations": 43
+      },
+      "public_read_after_restore": true,
+      "original_start_receipt_recovered": true,
+      "read_and_replay_added_no_effects": true,
+      "metadata_only_events_acknowledged": 5,
+      "workflow_starts": 0,
+      "external_sends": 0,
+      "source_store_scope": "Existing synthetic source bytes retained and re-read; DB restore only"
+    },
+    "performance_progress": {
+      "status": "partial_actual_results_final_pipeline_in_progress",
+      "required_groups": 32,
+      "completed_short_groups": 8,
+      "pending_other_groups": 24,
+      "required_successful_samples_per_group": 30,
+      "completed_short_summary": {
+        "draft_save": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.04234016700138454,
+          "p95_seconds": 0.16009083300014026,
+          "app_sql_range": [
+            9,
+            9
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        },
+        "draft_create": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.0876690420009254,
+          "p95_seconds": 0.13954641700183856,
+          "app_sql_range": [
+            18,
+            18
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        },
+        "t1_preview": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.06340808299864875,
+          "p95_seconds": 0.09771433299829368,
+          "app_sql_range": [
+            14,
+            14
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        },
+        "t1_confirmation": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.10499137499937206,
+          "p95_seconds": 0.12803750000239233,
+          "app_sql_range": [
+            23,
+            23
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        },
+        "same_key_replay": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.03123112499815761,
+          "p95_seconds": 0.04996454199863365,
+          "app_sql_range": [
+            7,
+            7
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        },
+        "workspace_read": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.12042762499913806,
+          "p95_seconds": 0.1411437089991523,
+          "app_sql_range": [
+            11,
+            11
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        },
+        "readiness_read": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.033404165998945246,
+          "p95_seconds": 0.05329345800055307,
+          "app_sql_range": [
+            11,
+            11
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        },
+        "configuration_read_21_sources": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.20415549999961513,
+          "p95_seconds": 0.2606670419991133,
+          "app_sql_range": [
+            24,
+            24
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        }
+      },
+      "scope": {
+        "synthetic_only": true,
+        "single_request": true,
+        "llm_calls": 0,
+        "authenticated_asgi_testclient": true,
+        "network_latency_included": false,
+        "setup_excluded_from_request_time": true,
+        "draft_save_semantics": "Equivalent new-key intent alias; comparable to B0/B2 label",
+        "draft_create_semantics": "Unique title for each new persisted draft",
+        "claims": 60,
+        "configuration_fixture": "2 BOM revisions, engineering, process; 21 direct sources",
+        "sql_successful_statements_only": true,
+        "all_same_engine_worker_threads_counted": true,
+        "readiness_fixture": "empty build collection; no actual launch measured",
+        "credential_or_source_text_emitted": false
+      },
+      "source_unchanged": true,
+      "all_32_pass_claim": false
+    }
+  },
+  "exit_criteria": [
+    {
+      "id": "M1-01",
+      "plan_exit_criterion": 1,
+      "required_result": "已有全部业务模块及暂停中的交样到制造登记覆盖或无改动理由；只保留品类根授权。",
+      "contract_refs": [
+        "v1.1 §09.6 S0",
+        "实施计划 §0、§4、§7.2(1)"
+      ],
+      "evidence": [
+        "b1",
+        "b3",
+        "b4_b6",
+        "b7",
+        "full",
+        "failure_closure_current",
+        "module_coverage_current",
+        "source_delta_current",
+        "legacy_gateway_replacement"
+      ],
+      "covered": [
+        "B0–B7功能批保留现有批次证据；105模块映射逐项保留原完整结果、当前收集与原失败处置，收集不是pass。",
+        "原417失败/错误全部闭合：382实际复验通过，35旧SourceWork/ClaimGateway接口逐项退役；原368F/49E与后续10个失败节点诊断保留。",
+        "10个修改的S0 runtime/API/contracts文件已分类并关联精确或root确认的实际覆盖；21 profile与101 approval两类正向缺口实际补齐，额外必要测试建议为0。",
+        "未变动模块沿用原冻结候选实际结果并说明源码适用性；独立M3与前端分别声明范围。"
+      ],
+      "remaining_b8": [
+        "最终性能结束后核对冻结manifest与汇总同源并链接最终候选报告。"
+      ],
+      "status": "existing_module_regression_and_source_delta_closed_final_snapshot_pending"
+    },
+    {
+      "id": "M1-02",
+      "plan_exit_criterion": 2,
+      "required_result": "品类成员和私有/指定受众在服务与 RLS 都成立；直接应用角色查库拒绝跨范围；AI 零业务 DML、T2 由具名人决定。",
+      "contract_refs": [
+        "v1.1 §07.5、§08.2",
+        "实施计划 §7.2(2)"
+      ],
+      "acceptance_ids": [
+        "AT-05",
+        "AT-35",
+        "AT-36",
+        "AT-37",
+        "AT-38",
+        "AT-39",
+        "AT-49"
+      ],
+      "evidence": [
+        "b1",
+        "m3_public_corrections",
+        "b3",
+        "b7_revocation",
+        "quality_followup_current",
+        "category_revoke_current",
+        "failure_closure_current",
+        "main_owner_current",
+        "b8_owner_current",
+        "empty_owner_current"
+      ],
+      "covered": [
+        "跨租户、品类、私有/具名受众、直接SQL、当前撤权负例已有实际PG证据并纳入原失败闭合。",
+        "主库、B8恢复库与新空链均为s0_0721；141受审表、43 definer为普通pdos_next_owner，AI零直接DML，运行角色无属主成员权。",
+        "140张租户表启用且强制RLS；login_sessions为租户绑定前的哈希登录可信根，仅auth角色SELECT，四运行角色权限表另列。",
+        "负责人普通Grant无期限；product_manager与can_write独立并由具名T2授予。"
+      ],
+      "remaining_b8": [],
+      "status": "actual_scope_roles_and_revocation_closed",
+      "limitations": [
+        "AT-49只登记已实现对象范围；私有立项提案与G0 reviewer能力消费仍归M3。"
+      ]
+    },
+    {
+      "id": "M1-03",
+      "plan_exit_criterion": 3,
+      "required_result": "保存、预览、确认、开测、影响分析及覆盖发布产生真实结果和回执，满足分档 p95；前后计时、SQL、失败率可核对。",
+      "contract_refs": [
+        "v1.1 §07.11、§09 S0、AT-62",
+        "实施计划 §2.3、§7.2(3)",
+        "确认稿 P3、P10"
+      ],
+      "acceptance_ids": [
+        "AT-31",
+        "AT-32",
+        "AT-33",
+        "AT-62"
+      ],
+      "evidence": [
+        "b0",
+        "b2",
+        "b3",
+        "b4_b6",
+        "b7_t0_t1",
+        "transaction_boundaries_current",
+        "performance_guards",
+        "performance_short_current",
+        "performance_pipeline_current"
+      ],
+      "covered": [
+        "8短路径各30真实成功样本、0失败、source_unchanged；最高p95约0.261秒，实际HTTP/认证/应用SQL分组可核对。",
+        "短路径scope明确为本地认证ASGI请求，fixture准备不计入请求时间；配置回读含21直接来源，readiness短路径为空Build集合，不代表实际开测。",
+        "B4–B6功能结果、实际确认/首次提交及原回执恢复已有实际功能证据；32组汇总工具守卫为合成检查而非性能通过。"
+      ],
+      "remaining_b8": [
+        "等待其余24个B4/B5/B6必测路径各30成功样本及最终32组汇总；进行中的路径不能按日志点数推定完成。",
+        "按原分档核对读取/保存输入≤1秒，预览/T1确认/提交≤2秒，开测/影响/发布重计算同步部分≤3秒；后台化时核对稳定工作ID与真实终态。",
+        "最终核对业务allowed/current/真实新回执、实际pytest/JUnit、提交、失败率、SQL范围、NaN/完整性与冻结源码。",
+        "只对同B0路径与同测量口径做前后比较；旧分钟级失败聚合与单样本不升级为可比p95/SQL基线。"
+      ],
+      "status": "eight_actual_short_groups_passed_final_24_groups_pending"
+    },
+    {
+      "id": "M1-04",
+      "plan_exit_criterion": 4,
+      "required_result": "同键同载荷在确认过期、来源/资格变化后回读原回执；只要求当前读权限；异载荷冲突、撤权后私有历史不泄漏。",
+      "contract_refs": [
+        "v1.1 §08.3、§08.11(5)",
+        "实施计划 §7.2(4)"
+      ],
+      "acceptance_ids": [
+        "AT-27",
+        "AT-38",
+        "AT-40",
+        "AT-44",
+        "AT-46",
+        "AT-62"
+      ],
+      "evidence": [
+        "b2",
+        "quality_followup_current",
+        "transaction_boundaries_current",
+        "failure_closure_current",
+        "affected_attempt_1",
+        "affected_attempt_2",
+        "affected_attempt_3",
+        "affected_tail_closed",
+        "affected_final_current",
+        "final_repairs_fences_current",
+        "restore_chain_current"
+      ],
+      "covered": [
+        "Build、方法/测试准备、交接、历史事实与已存Run证明的原失败均有当前精确复验或改名语义映射。",
+        "已存同键回执在来源/资格漂移后按当前读权限恢复；新材料仍须当前来源、资格/授权和期限；异载荷冲突及撤权后私有历史不泄漏。",
+        "历史执行证明保留；professional.assess在当前制造资格撤销时qualified=False、恢复后True，实际改名用例保存旧别名与失败。",
+        "恢复后公共配置→交接→Run读取及原Start同键回执重放未新增效果。"
+      ],
+      "remaining_b8": [],
+      "status": "actual_saved_replay_and_fresh_action_guards_closed"
+    },
+    {
+      "id": "M1-05",
+      "plan_exit_criterion": 5,
+      "required_result": "完整超过 20 来源不截断；授权/来源撤回、水位改变、并发新增依赖阻止过时新动作；不恢复重复全闭包扫描。",
+      "contract_refs": [
+        "v1.1 §08.11(1)(2)(3)(6)(7)(8)(9)",
+        "实施计划 §3、§7.2(5)"
+      ],
+      "acceptance_ids": [
+        "AT-05",
+        "AT-10",
+        "AT-27",
+        "AT-38",
+        "AT-46",
+        "AT-62"
+      ],
+      "evidence": [
+        "b3",
+        "b4_b6",
+        "quality_followup_current",
+        "transaction_boundaries_current",
+        "reader_guards_current",
+        "capture_guards_current",
+        "resource_locks_current",
+        "native_resources_current",
+        "final_repairs_fences_current",
+        "profile_count_current",
+        "approval_count_current",
+        "main_owner_current"
+      ],
+      "covered": [
+        "真实超过20来源与完整集合不截断、批量来源/授权读取、Current/专业/依赖水位和固定锁序均有已登记范围。",
+        "s0_0721引用扇出、共享引用/资产更新保护、末端owner SQL引发水位变化的整个事务回滚已有真实证据；4个权限fences实际全通过。",
+        "普通无期限资源Fact/T2期限合同保持；登录、临时授权、真实资格/政策/校准等独立期限仍生效。",
+        "101 OriginalApproval pins完整保留及epoch绑定、21 profiles仍须真实临时目标guard均实际通过；移除任意cap不截断集合。"
+      ],
+      "remaining_b8": [
+        "其余24性能路径及最终SQL范围汇总待完成；不新增统一SQL数值上限。"
+      ],
+      "status": "actual_complete_readsets_watermarks_and_fences_closed_performance_pending"
+    },
+    {
+      "id": "M1-06",
+      "plan_exit_criterion": 6,
+      "required_result": "T2 决定/放行前完整重证只执行一次；事实、Current、Receipt、Audit、Outbox 在故障后共同回滚。",
+      "contract_refs": [
+        "v1.1 §08.3、§08.4、§08.11(1)(3)(8)",
+        "实施计划 §7.2(6)"
+      ],
+      "acceptance_ids": [
+        "AT-32",
+        "AT-33",
+        "AT-41",
+        "AT-42",
+        "AT-44",
+        "AT-46"
+      ],
+      "evidence": [
+        "b2",
+        "b3",
+        "quality_followup_current",
+        "transaction_boundaries_current",
+        "b7_atomic_revert",
+        "capture_guards_current",
+        "failure_closure_current",
+        "affected_final_current",
+        "final_repairs_fences_current"
+      ],
+      "covered": [
+        "完整专业/批准注册表核对一次后，末端Current/权限/epoch/期限与owner SQL守卫保留；真实故障导致零部分业务效果。",
+        "事实、Current、Receipt、Audit、Outbox与确认消费的末尾失败、SAVEPOINT、版本首插/延迟约束和回执重放受影响选择器已实际闭合。",
+        "整次运行撤回只补偿已注册可逆owner，遇下游消费或人工保护整次拒绝。"
+      ],
+      "remaining_b8": [],
+      "status": "actual_publication_and_write_boundary_atomicity_closed",
+      "limitations": [
+        "合成记录不授予真实专业资格或执行权；M3新增owner与未实现能力不由本条验收承接。"
+      ]
+    },
+    {
+      "id": "M1-07",
+      "plan_exit_criterion": 7,
+      "required_result": "16 个统一顶层错误、detail.reason、现行术语和唯一三方差异；OpenAPI/契约/BFF/组件/Worker 一致；人工建项目 T1 过渡标记保留。",
+      "contract_refs": [
+        "v1.1 §08.6、§08.7",
+        "实施计划 §6、§7.2(7)",
+        "确认稿 P2"
+      ],
+      "evidence": [
+        "b3",
+        "b7",
+        "error_contract_current",
+        "public_api_contract",
+        "catalog",
+        "contract_export",
+        "legacy_gateway_replacement",
+        "model_runtime_current",
+        "source_delta_current",
+        "module_coverage_current",
+        "web_full",
+        "web_navigation",
+        "web_build",
+        "browser"
+      ],
+      "covered": [
+        "DomainError内部reason与公开16类code/detail.reason分离；旧错误断言经142项精确纯复验与相关实际PG逐项闭合，独立provider错误类型未盲改。",
+        "模型配置runtime71项精确受影响纯复验通过；旧ClaimGateway35接口退役保存原失败，替代职责使用确切full节点与源码资格说明。",
+        "型号术语、共同ConfirmationBatch/AutomationRule、唯一variants差异、人工project.create过渡标记与已实现导出合同按原批次证据保留。",
+        "前端548完整+7受影响及构建/类型/lint、双主题手机/桌面来源→T1撤回为其原候选证据；后端10文件增量另映射，不拼成新单次整链通过。"
+      ],
+      "remaining_b8": [
+        "最终性能结束后核对最终manifest、契约导出及前端/BFF未变动范围摘要并链接终稿。"
+      ],
+      "status": "current_error_contract_and_cross_surface_delta_mapped_final_snapshot_pending",
+      "limitations": [
+        "目录63AT设计覆盖不代表63个场景均已执行；M3 G0/私有提案/新业务namespace不在S0完成判断里。"
+      ]
+    },
+    {
+      "id": "M1-08",
+      "plan_exit_criterion": 8,
+      "required_result": "最终新链空库往返、备份恢复与事件重放通过；最终源码摘要一致，不拼接多个历史候选。",
+      "contract_refs": [
+        "v1.1 §07.11、§07.12、§09.3",
+        "实施计划 §5、§7.2(8)"
+      ],
+      "acceptance_ids": [
+        "AT-27",
+        "AT-38",
+        "AT-41",
+        "AT-44",
+        "AT-46",
+        "AT-47"
+      ],
+      "evidence": [
+        "b1",
+        "b7",
+        "empty_chain_current",
+        "restore_current",
+        "restore_chain_current",
+        "final_recovery_current",
+        "main_owner_current",
+        "b8_owner_current",
+        "empty_owner_current",
+        "final_source_manifest",
+        "source_delta_current",
+        "full"
+      ],
+      "covered": [
+        "s0_0721新独立空库实际upgrade→base→head通过；普通表/definer属主、AI权限与运行角色属主成员权审计通过，source_unchanged。",
+        "s0_0721备份恢复核对142张表完整指纹，配置/工艺/Build/交接/Run及资源预留表非空；恢复后公共读取与原Start回执回读零新增效果。",
+        "真实dispatcher角色与Temporal路由确认5个metadata-only事件已处理，workflow_starts=0、external_sends=0。",
+        "final-0721-recovery实际setup/call/teardown均pass并source_unchanged；当前主/B8 head都为s0_0721。"
+      ],
+      "remaining_b8": [
+        "最终性能完成后集中核对最终manifest与所有实际结果同源并完成环境收尾。"
+      ],
+      "status": "final_0721_emptychain_and_populated_database_recovery_verified_final_snapshot_pending",
+      "limitations": [
+        "现有合成源字节保留并重新读取；本证据为数据库恢复，不声明对象存储恢复、真实外发副作用、完整S1/S4或生产恢复。"
+      ]
+    }
+  ],
+  "m3_public_corrections": [
+    {
+      "request": 1,
+      "scope": "普通 Grant.expires_at 可空；负责人无期限；临时授权和独立安全/业务期限保留。",
+      "evidence": [
+        "m3_public_corrections",
+        "category_revoke_current",
+        "quality_followup_current"
+      ]
+    },
+    {
+      "request": 2,
+      "scope": "Receipt/对象范围唯一键在 product_id=NULL 时仍有效，真实重复写拒绝。",
+      "evidence": [
+        "m3_public_corrections"
+      ]
+    },
+    {
+      "request": 3,
+      "scope": "品类及真实 PlanProposal/Claim/AgentRun 主体可以 T1 预览/消费；M3 Proposal G0 owner 属 M3。",
+      "evidence": [
+        "m3_public_corrections",
+        "b7_atomic_revert"
+      ]
+    },
+    {
+      "request": 4,
+      "scope": "原件/Artifact 可无型号，实际品类/父键/受众与型号消费关系继续核对。",
+      "evidence": [
+        "m3_public_corrections",
+        "b3",
+        "b7"
+      ]
+    },
+    {
+      "request": 5,
+      "scope": "Grant 独立 product_manager 由 category.member.grant T2 授予；G0 reviewer 消费不登记成 S0 业务验收。",
+      "evidence": [
+        "m3_public_corrections",
+        "b1"
+      ]
+    },
+    {
+      "request": 6,
+      "scope": "共同 ai.run.revert 支持整次已注册可逆运行；下游/人工消费保护和历史保存；不承诺撤回未实现的新 M3 owner。",
+      "evidence": [
+        "m3_public_corrections",
+        "b7_atomic_revert",
+        "b7"
+      ]
+    }
+  ],
+  "appendix_b_scope": {
+    "scope_and_permissions": {
+      "ids": [
+        "AT-05",
+        "AT-35",
+        "AT-36",
+        "AT-37",
+        "AT-38",
+        "AT-39",
+        "AT-49"
+      ],
+      "limitation": "仅已有对象/执行保障；私有立项提案归 M3，合成负例不代表正式红队或真人资格验收。"
+    },
+    "confirmation_idempotency_runtime": {
+      "ids": [
+        "AT-31",
+        "AT-32",
+        "AT-33",
+        "AT-40",
+        "AT-41",
+        "AT-42",
+        "AT-44",
+        "AT-45",
+        "AT-46",
+        "AT-47",
+        "AT-48",
+        "AT-62"
+      ],
+      "limitation": "已有运行能力与当前受影响复验；真实模型未调用、未授予正式资格；AT-62已有8短路径实际样本，其余24路径及最终32组汇总待。"
+    },
+    "existing_business_preservation": {
+      "ids": [
+        "AT-04",
+        "AT-07",
+        "AT-08",
+        "AT-09",
+        "AT-10",
+        "AT-11",
+        "AT-12",
+        "AT-13",
+        "AT-14",
+        "AT-15",
+        "AT-17",
+        "AT-19",
+        "AT-20",
+        "AT-21",
+        "AT-22",
+        "AT-23",
+        "AT-24",
+        "AT-25",
+        "AT-26",
+        "AT-27"
+      ],
+      "limitation": "按已有用例原完整回归与受影响闭合、源码增量范围承接；原417失败已处置但不宣称新单次全量通过。未实现正式制造/客户放行、真实资源资格不勾选完整场景。"
+    },
+    "failure_and_recovery": {
+      "ids": [
+        "AT-27",
+        "AT-38",
+        "AT-41",
+        "AT-44",
+        "AT-46",
+        "AT-47"
+      ],
+      "limitation": "当前0721新空链与非空配置→Build→Handoff→Run数据库恢复已实际通过；metadata-only事件5个、workflow/外发0，现有合成源字节保留；不声明对象存储或真实外部副作用恢复。"
+    },
+    "not_auto_completed_by_s0": {
+      "ids": [
+        "AT-01",
+        "AT-02",
+        "AT-03",
+        "AT-06",
+        "AT-16",
+        "AT-18",
+        "AT-28",
+        "AT-29",
+        "AT-30",
+        "AT-34",
+        "AT-43",
+        "AT-50",
+        "AT-51",
+        "AT-52",
+        "AT-53",
+        "AT-54",
+        "AT-55",
+        "AT-56",
+        "AT-57",
+        "AT-58",
+        "AT-59",
+        "AT-60",
+        "AT-61",
+        "AT-63"
+      ],
+      "limitation": "这些完整新能力/后续阶段场景不因公共表、已有规则、目录、合成执行或 B7 汇合通过而整体验收；个别共同运行子保障可记录到 S0，不能宣称 S1–S5 已完成。"
+    }
+  },
+  "remaining_b8_priority": [
+    {
+      "id": "R2",
+      "work": "最终性能已完成8短路径各30成功样本；继续其余24个B4/B5/B6路径与32组最终p95/SQL/失败率/B0同口径比较，核对真实结果/提交/JUnit/manifest。",
+      "covers": [
+        "M1-03",
+        "M1-05"
+      ],
+      "status": "in_progress_partial_actual",
+      "evidence": [
+        "performance_short_current",
+        "performance_pipeline_current"
+      ]
+    },
+    {
+      "id": "R5",
+      "work": "源码增量与模块覆盖已完成；性能pipeline结束后核对所有最终结果、manifest与契约/前端适用范围同源并链接终稿。无新增变化不重跑不受影响验证。",
+      "covers": [
+        "M1-01",
+        "M1-07",
+        "M1-08"
+      ],
+      "status": "pending_final_pipeline_snapshot",
+      "evidence": [
+        "source_delta_current",
+        "module_coverage_current",
+        "final_source_manifest"
+      ]
+    },
+    {
+      "id": "R6",
+      "work": "按最终使用安排集中收尾本轮临时服务/fixture，保留测量、私有备份与原失败，不操作原工程历史备份或其他项目环境。",
+      "covers": [
+        "实施计划 §7.3"
+      ],
+      "status": "pending_concentrated_cleanup"
+    }
+  ],
+  "reporting_guards": [
+    "完整回归只跑过原冻结候选一次，4839原通过不是当前全量全通过；417原失败已分为382实际复验与35旧接口退役。",
+    "原失败/错误与后续失败、中断exit2保留；退役处置不把旧接口记为重测通过。各实际受影响范围有精确metadata或root确认的范围。",
+    "未知历史151/203/99/236与79聚合日志不作为当前明确覆盖；现有精确当前复验/模块映射和源码增量承接其相关义务。",
+    "当前5205 S0节点与50 M3节点是收集，不是pass；105模块映射与1003文件manifest不等于第二次完整回归。",
+    "8短路径各30样本为当前实际性能；其余24组及最终汇总尚待，合成工具守卫不代表p95通过。",
+    "0721恢复是合成数据库范围：142表指纹、非空业务链、5metadata-only事件、0workflow/外发；源字节保留重读不等于对象存储恢复。",
+    "86操作/85事件/63AT属于设计覆盖，不代表63场景全部执行；真实模型/专业资格、生产启用、M3/S1及未完成S2–S4能力不报告通过。",
+    "本映射保持草稿，使用现行M1判据，不新增批准关卡、重复攻防或真人试用；最终性能与收尾尚未闭合，M1未完成。"
+  ],
+  "evidence_catalog": {
+    "b0": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/baseline/baseline.md",
+      "scope": "180 个真实认证短路径请求；6 组各 30；旧重计算失败只作历史基线",
+      "candidate_kind": "B0 历史基线"
+    },
+    "b1": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/category-root/result.md",
+      "scope": "新链与真实 PG/RLS/HTTP 品类成员、私有/具名受众、跨租户/品类、撤权、AI 零 DML",
+      "candidate_kind": "B1 批次证据；最终摘要需解释源码增量"
+    },
+    "b2": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/common-command/result.md",
+      "scope": "101 项公共命令/证明；确认期限、C9 重放、事务原子性、有界重试、Outbox 角色",
+      "candidate_kind": "B2 批次证据；不作为最终性能"
+    },
+    "m3_public_corrections": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/common-command/m3-contract-corrections.md",
+      "scope": "用户六项 B1–B3 公共修订，63 项 PG/HTTP 与品类生命周期/原件引用增量；M3 G0 本身排除"
+    },
+    "b3": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/model-project/result.md",
+      "scope": "864 项型号/定义/派生/项目/配置/原件/受众/成本/供应；真正新草稿及 21 来源读取历史计时",
+      "candidate_kind": "B3 批次证据；14 个旧 Agent 入口失败明确留 B7"
+    },
+    "b4_b6": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/execution-resource/progress.md",
+      "scope": "B4–B6 功能批和保留的中间失败、真实资格期限、Current、完整集合、制造/变更消费；历史性能不替代 B8"
+    },
+    "b7": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/kernel-join/result.md",
+      "scope": "330 项内核/配置、68 项 BFF；真实 HTTP→Temporal→Activity→PG LangGraph→共同命令；合成模型"
+    },
+    "b7_t0_t1": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/kernel-join/0719-actual-t0-t1-temporal.log",
+      "scope": "7 个实际集成检查；真实 Claim/Receipt 和 AI 署名；非真实模型能力资格"
+    },
+    "b7_atomic_revert": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/kernel-join/0719-human-candidate-atomic-revert.log",
+      "scope": "9 项候选原子性与整次运行撤回；消费/人工保护与故障回滚"
+    },
+    "b7_revocation": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/kernel-join/0719-source-revocation-bound-final.log",
+      "scope": "实际运行/过程事件在来源受众撤销后隐藏，1 项通过"
+    },
+    "full": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/full-regression-results.json",
+      "xml_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/full-regression.xml",
+      "scope": "原冻结 s0_0720 候选完整回归，不是全通过",
+      "counts": {
+        "passed": 4839,
+        "failure": 368,
+        "error": 49,
+        "skipped": 1,
+        "total": 5257
+      }
+    },
+    "original_manifest": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/frozen-source-manifest.json",
+      "scope": "原完整回归 s0_0720 的 674 份源码/配置摘要；不能冒充最终修复后摘要"
+    },
+    "quality_followup_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/quality-followup-affected-continuation.log",
+      "scope": "170 项通过；真实品质跟进、T2 无统一期限、无期限原生资源、相关纯端口/覆盖 owner"
+    },
+    "transaction_boundaries_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/current-transaction-boundaries-fixed.log",
+      "scope": "8 项真实 PG 通过；末端覆盖发布及捕获失败回滚、并发读取、已存 Run 证明"
+    },
+    "category_revoke_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/primary-category-revocation.json",
+      "scope": "主库 s0_0721 实际品类撤权单项复验",
+      "test_exit": 0,
+      "source_unchanged": true
+    },
+    "affected_attempt_1": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/current-contract-affected.json",
+      "scope": "17 call 通过、1 call 失败后停止；不能宣称 89 个收集节点全部通过",
+      "test_exit": 1
+    },
+    "affected_attempt_2": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/current-contract-affected-rest.json",
+      "scope": "35 call 通过、1 call 失败后停止；不能宣称 67 个收集节点全部通过",
+      "test_exit": 1
+    },
+    "affected_attempt_3": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/current-contract-affected-remaining.json",
+      "scope": "5 call 通过、1 call 失败后停止；不能宣称 72 个收集节点全部通过",
+      "test_exit": 1
+    },
+    "error_contract_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/current-pure-closure.json",
+      "scope": "精确55个原失败纯函数展开142节点实际全通过，覆盖131原失败；含错误reason/code、HTTP、host、规则/handler与共同读取。",
+      "passed_count": 142,
+      "nodes": [
+        "tests/change_scope_only/test_scope.py::test_list_history_uses_scope_only_seed_without_complete_seed_walk",
+        "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes0-SOURCE_UNAVAILABLE]",
+        "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes1-FORBIDDEN_SCOPE]",
+        "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes2-SOURCE_STALE]",
+        "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes3-FORBIDDEN_SCOPE]",
+        "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes4-INTEGRITY_MISMATCH]",
+        "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes5-FORBIDDEN_SCOPE]",
+        "tests/discovery/test_discovery.py::test_original_page_cell_mapping_and_version_are_current_not_claimed",
+        "tests/discovery/test_discovery.py::test_partial_import_keeps_omitted_and_missing_with_explicit_reason",
+        "tests/discovery/test_discovery.py::test_payload_current_source_quote_substitution_and_ambiguous_mapping_rejected",
+        "tests/discovery/test_discovery.py::test_ports_unavailable_never_simulate_success",
+        "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[policy]",
+        "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[product_version]",
+        "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[selection_reason]",
+        "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[verdict]",
+        "tests/discovery/test_discovery.py::test_research_needs_no_product_project_or_placeholder",
+        "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen[change0]",
+        "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen[change1]",
+        "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen[change2]",
+        "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen[change3]",
+        "tests/discovery/test_discovery.py::test_same_id_different_payload_rejected_without_partial_record",
+        "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change0-SCOPE_BINDING_REQUIRED]",
+        "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change1-SCOPE_BINDING_REQUIRED]",
+        "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change2-FORBIDDEN_SCOPE]",
+        "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change3-FORBIDDEN_SCOPE]",
+        "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change4-CAPABILITY_DISABLED]",
+        "tests/discovery/test_discovery.py::test_source_package_mapping_limit_is_explicit_no_silent_truncation",
+        "tests/discovery/test_discovery.py::test_wrong_group_choice_is_rejected_not_silently_resolved",
+        "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[accepted]",
+        "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[actor_id]",
+        "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[authority]",
+        "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[basis]",
+        "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[build_id]",
+        "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[command_id]",
+        "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[opaque_token]",
+        "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[owner_id]",
+        "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[product_id]",
+        "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[scope]",
+        "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[source_read_set]",
+        "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[tenant_id]",
+        "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[bad_window]",
+        "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[bool_revision]",
+        "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[float_quantity]",
+        "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[missing_process]",
+        "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[nested_authority]",
+        "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[partial_fact]",
+        "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[string_revision]",
+        "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[wrong_kind]",
+        "tests/manufacturing_resource_api/test_routes.py::test_complete_20_source_readset_and_relation_originals_are_preserved",
+        "tests/manufacturing_resource_api/test_routes.py::test_failed_authentication_never_opens_tenant_uow",
+        "tests/manufacturing_resource_api/test_routes.py::test_historical_fact_and_exact_resource_are_passed_without_selecting_current",
+        "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?fact_id=x&fact_id=x]",
+        "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?resource_id=x]",
+        "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?revision=1]",
+        "tests/manufacturing_resource_api/test_routes.py::test_only_url_and_context_bind_roots_and_opaque_proof_stays_private",
+        "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[FORBIDDEN_SCOPE-403]",
+        "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[RESOURCE_PEOPLE_NOWAIT_REQUIRED-503]",
+        "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[RESOURCE_RECHECK_REQUIRED-409]",
+        "tests/manufacturing_resource_api/test_routes.py::test_real_owner_rejects_agent_context_before_any_owner_io",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-operational_synthetic_profile-operational_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-professional_synthetic_scope-professional_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-quality_synthetic_profile-quality_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-operational_synthetic_profile-operational_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-professional_synthetic_scope-professional_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-quality_synthetic_profile-quality_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-operational_synthetic_profile-operational_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-professional_synthetic_scope-professional_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-quality_synthetic_profile-quality_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-operational_synthetic_profile-operational_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-professional_synthetic_scope-professional_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-quality_synthetic_profile-quality_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-operational_synthetic_profile-operational_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-professional_synthetic_scope-professional_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-quality_synthetic_profile-quality_synthetic_profiles]",
+        "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+        "tests/test_launch_common.py::test_common_reader_accepts_running_only_with_matching_start_operation",
+        "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader[disposed]",
+        "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader[final_result]",
+        "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader[preliminary_result]",
+        "tests/test_launch_common.py::test_running_history_cannot_lose_its_required_clock[actual_start]",
+        "tests/test_launch_common.py::test_running_history_cannot_lose_its_required_clock[promised_start]",
+        "tests/test_operational_bootstrap_profiles.py::test_exact_scope_selects_real_issuer_before_finite_decision_callback",
+        "tests/test_test_resource_bootstrap_profiles.py::test_wrong_product_is_rejected_by_actual_domain_issuer_and_wrong_run_by_callback",
+        "tests/verification/test_handlers.py::test_acceptance_cannot_precede_current_selected_sample_ready_time",
+        "tests/verification/test_handlers.py::test_available_sample_without_physical_ready_fact_cannot_be_accepted",
+        "tests/verification/test_handlers.py::test_build_drift_after_preview_prevents_acceptance_record",
+        "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes0-FORBIDDEN_OPERATION]",
+        "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes1-FORBIDDEN_OPERATION]",
+        "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes2-RUN_CANCELLED]",
+        "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes3-NAMED_DECISION_REQUIRED]",
+        "tests/verification/test_handlers.py::test_default_ports_never_imply_an_enabled_handler",
+        "tests/verification/test_handlers.py::test_evidence_source_check_without_measurement_verifier_explicitly_blocks_import",
+        "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end[changes0-ACTUAL_END_REQUIRED]",
+        "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end[changes1-INCOMPLETE_FINAL_SCOPE]",
+        "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end[changes2-INVALID_EVENT_TIME]",
+        "tests/verification/test_handlers.py::test_fixed_run_methods_cannot_drift_to_current_request_methods",
+        "tests/verification/test_handlers.py::test_handler_rejects_port_returning_a_different_actual_configuration",
+        "tests/verification/test_handlers.py::test_method_update_cannot_change_already_received_item",
+        "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[builds]",
+        "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[commands]",
+        "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[evidence]",
+        "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[samples]",
+        "tests/verification/test_handlers.py::test_partial_acceptance_requires_return_reason_and_next_responsibility[changes0]",
+        "tests/verification/test_handlers.py::test_partial_acceptance_requires_return_reason_and_next_responsibility[changes1]",
+        "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[authorized]",
+        "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[draft]",
+        "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[planned]",
+        "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[preparing]",
+        "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[unknown]",
+        "tests/verification/test_handlers.py::test_planned_build_cannot_offer_fictitious_sample_even_when_payload_has_sample_ref",
+        "tests/verification/test_handlers.py::test_raw_measurement_cannot_be_overwritten_by_later_partial_import",
+        "tests/verification/test_handlers.py::test_repeated_acceptance_under_new_intent_cannot_duplicate_business_scope",
+        "tests/verification/test_handlers.py::test_run_cannot_be_planned_over_unaccepted_pairs",
+        "tests/verification/test_handlers.py::test_sample_availability_and_applicability_are_rechecked_on_acceptance[inapplicable]",
+        "tests/verification/test_handlers.py::test_sample_availability_and_applicability_are_rechecked_on_acceptance[unavailable]",
+        "tests/verification/test_handlers.py::test_start_cannot_precede_acceptance_of_its_specific_sample_pair",
+        "tests/verification/test_handlers.py::test_two_destructive_items_cannot_consume_same_sample",
+        "tests/verification/test_handlers.py::test_unknown_operation_or_mismatched_payload_is_rejected_before_begin",
+        "tests/verification/test_handlers.py::test_wrong_semantic_digest_is_refused_before_begin",
+        "tests/verification/test_rules.py::test_coverage_cannot_be_empty_or_repeat_exact_pair[selected0]",
+        "tests/verification/test_rules.py::test_coverage_cannot_be_empty_or_repeat_exact_pair[selected1]",
+        "tests/verification/test_rules.py::test_coverage_cannot_escape_supplied_sample_or_item_scope[selected0]",
+        "tests/verification/test_rules.py::test_coverage_cannot_escape_supplied_sample_or_item_scope[selected1]",
+        "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape[readings0]",
+        "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape[readings1]",
+        "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape[readings2]",
+        "tests/verification/test_rules.py::test_same_sample_cannot_have_two_actual_configuration_versions",
+        "tests/verification/test_rules.py::test_unrequested_cavity_cannot_silently_be_counted_as_applicable"
+      ],
+      "test_exit": 0,
+      "source_unchanged": true,
+      "sha256": "1f3a15005899dda2ffe60480c6f57ba5feb535fa06fee92abd10c7eab7c6876a"
+    },
+    "public_api_contract": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/public-api-contract.log",
+      "scope": "1 个实际公开 API 合同检查通过"
+    },
+    "catalog": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/contract-coverage-final.log",
+      "scope": "86 操作、85 事件、63 AT 设计覆盖；不是运行验收或制造/模型资格"
+    },
+    "contract_export": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/contract-export-final.log",
+      "scope": "73 个已实现 payload 与实际 OpenAPI 路由导出"
+    },
+    "native_resources_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/quality-followup-affected-continuation.log",
+      "scope": "root确认170范围中的native_read两项实际PG通过：无期限Fact及当前caller资源回读；不使用未知79项历史scope。",
+      "scope_selectors": [
+        "tests/manufacturing_resource_native_transactions/test_native_read.py"
+      ],
+      "scope_passed_nodes": 2,
+      "root_confirmed": true,
+      "sha256": "c3798da82016441013d4f8bf1c3ad02b079a364025ee17d5e0a62a161a9ea48a"
+    },
+    "legacy_gateway_replacement": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/legacy-gateway-closure-draft.json",
+      "scope": "root已审阅35旧接口逐项退役，原失败不算重测pass；广义替代职责引用确切原full/currentruntime71和源码差异资格，不推定旧236范围。",
+      "retired_nodes": 35,
+      "new_pass_claim_for_old_node": false,
+      "root_accepted": true,
+      "sha256": "daa1aa9fee95dfae416eb9fbeb24f1ba92a99fac896e1453cc786fd55cce2788"
+    },
+    "reader_guards_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/verification-reader-proofs-fixed.log",
+      "scope": "56 项读取证明纯检查；非真实资源/专业资格"
+    },
+    "capture_guards_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/change-capture-current-tail-fixed.log",
+      "scope": "14 项末端水位/期限纯检查；实际捕获/发布另见 8 项 PG"
+    },
+    "resource_locks_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/test-resource-lock-union-fixed.log",
+      "scope": "37 项完整去重/固定锁序纯检查"
+    },
+    "main_owner_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/main-ordinary-owner-0721-audit.json",
+      "scope": "主库当前0721：141表/43 definer普通属主、140租户表强制RLS；login_sessions可信根auth SELECT；AI零DML、运行角色无属主成员权。",
+      "head": "s0_0721",
+      "database": "pdos_test",
+      "port": 53502,
+      "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+      "ordinary_owner_read_passed": true,
+      "agent_direct_dml": false,
+      "runtime_owner_membership": false,
+      "tables": 141,
+      "functions": 43,
+      "tenant_rls_tables": 140,
+      "authentication_root": {
+        "table": "login_sessions",
+        "reason": "Hashed session lookup before tenant binding; auth SELECT only",
+        "role_privileges": [
+          [
+            "pdos_agent",
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            "pdos_next_app",
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            "pdos_next_auth",
+            true,
+            false,
+            false,
+            false
+          ],
+          [
+            "pdos_next_dispatch",
+            false,
+            false,
+            false,
+            false
+          ]
+        ]
+      },
+      "sha256": "7e742441e3166eea6b8ce0c733d9f48dcd4602cfa3c95c4d78558cbec0eb49e7"
+    },
+    "b8_owner_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0721-checkpoint/ordinary-owner-audit.json",
+      "scope": "恢复后的B8当前0721普通属主/强制RLS与auth可信根审计；AI零DML、运行角色无属主成员权。",
+      "head": "s0_0721",
+      "database": "pdos_test",
+      "port": 62303,
+      "marker": "6712d849-f2c1-4b32-ae79-d50d9a31639d",
+      "ordinary_owner_read_passed": true,
+      "agent_direct_dml": false,
+      "runtime_owner_membership": false,
+      "tables": 141,
+      "functions": 43,
+      "tenant_rls_tables": 140,
+      "authentication_root": {
+        "table": "login_sessions",
+        "reason": "Hashed session lookup before tenant binding; auth SELECT only",
+        "role_privileges": [
+          [
+            "pdos_agent",
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            "pdos_next_app",
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            "pdos_next_auth",
+            true,
+            false,
+            false,
+            false
+          ],
+          [
+            "pdos_next_dispatch",
+            false,
+            false,
+            false,
+            false
+          ]
+        ]
+      },
+      "sha256": "6a77d96c4b809208715a01dc4ba752f6a536124527daa6a9269bcaaf1cde061a"
+    },
+    "web_full": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/web-frozen-regression.log",
+      "scope": "548 项前端完整检查通过；不是后端完整回归"
+    },
+    "web_navigation": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/web-navigation-regression.log",
+      "scope": "导航/品类信封新增 7 项受影响检查通过"
+    },
+    "web_build": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/web-category-links-build.log",
+      "typecheck_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/web-category-links-typecheck.log",
+      "lint_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/web-category-links-lint.log",
+      "scope": "必要前端构建、类型、lint 通过；2 个既有生成契约未使用变量警告保留"
+    },
+    "browser": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/browser-verification.json",
+      "head": "s0_0720",
+      "scope": "真实 Next.js BFF/FastAPI/PG 的来源→Claim→T1 撤回，持久历史、运行失能/取消；1280 桌面/390 手机亮暗",
+      "limitations": "workflow-disabled 浏览器夹具；实际 Temporal/LangGraph 另见 B7；不代表制造全部 UI 或真实模型"
+    },
+    "empty_chain_prior": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/empty-chain-fixed-roundtrip.log",
+      "audit_path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/empty-chain-recovery.log",
+      "scope": "历史s0_0720空链往返证据；当前0721另见empty_chain_current，不再列为待执行。"
+    },
+    "restore_prior": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/backup-restore.json",
+      "head": "s0_0720",
+      "scope": "历史s0_0720恢复142表指纹与2个metadata-only事件；当前0721非空链恢复另列，不冒充当前head。",
+      "limitations": "未启动 workflow、没有外发；多数配置/测试/决定/交接表为空；未证明对象存储或完整业务链恢复"
+    },
+    "performance_guards": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/performance-summary-guards-current.json",
+      "scope": "当前16个合成汇总工具守卫通过；检测32组完整性、失败/缺失/漂移/NaN/阈值与运行契约配置冻结，不代表实际性能通过。",
+      "actual_performance_run": false,
+      "synthetic_tool_checks_only": true,
+      "passed_checks": 16,
+      "sha256": "8df3a750f23a798f6b65ecae8b70c52710cb4deb2f88795502274dea06148635"
+    },
+    "failure_closure_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/failure-closure-map.json",
+      "scope": "root审阅的417原失败/错误逐节点闭合：382实际复验、35退役，0pending；不是第二次当前全量全通过。",
+      "root_reviewed": true,
+      "original_failures_preserved": true,
+      "counts": {
+        "original_failed": 417,
+        "actual_passed": 382,
+        "retired_not_retested_pass": 35,
+        "pending": 0
+      },
+      "not_completion_evidence": true,
+      "sha256": "aeb95c7fad3c42f18562fce683f6e8b265324846c1de4c1d752273731d9fd3bd"
+    },
+    "source_delta_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/source-delta-coverage.json",
+      "scope": "root审阅的10个S0 runtime/API/contracts增量逐项分类与实际覆盖；两类正向缺口已补，额外建议测试0。",
+      "independent_m3_excluded": true,
+      "frontend_separate": true,
+      "sha256": "ad181c5b9c0b64d93e68201a06f40056f1138cfac89086239ff3faf5a7d6864b"
+    },
+    "module_coverage_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/module-regression-coverage.json",
+      "scope": "105模块原完整结果、当前5205 S0收集与失败处置映射；收集不计为pass，不宣称第二次完整全通过。",
+      "module_count": 105,
+      "collection_is_pass_evidence": false,
+      "sha256": "81a59f7466e8af630a3f5f9a6255d25cb1f520219820ee9d68a6536da7916c0f"
+    },
+    "final_source_manifest": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/performance-source-manifest.json",
+      "scope": "s0_0721最终性能冻结范围1003文件；S0当前收集5205、独立M3收集50另列；前端单独证据。",
+      "head": "s0_0721",
+      "files": 1003,
+      "collection_is_pass_evidence": false,
+      "sha256": "2d4b11df03da5efc5b09b7c671c359f4835efa9e21973742b6ad440a04b0c4d0"
+    },
+    "model_runtime_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/model-runtime-affected.json",
+      "scope": "模型配置runtime明确当前受影响模块71纯节点实际全通过，不代表真实模型资格。",
+      "passed_count": 71,
+      "nodes": [
+        "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-0]",
+        "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-32769]",
+        "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-True]",
+        "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[model-unsafe\\ntext]",
+        "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[model_version-]",
+        "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[openai_output_parameter-tools]",
+        "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[protocol-other]",
+        "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[response_bytes-1]",
+        "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[timeout_seconds-91.0]",
+        "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[timeout_seconds-nan]",
+        "tests/model_configuration/test_configuration.py::test_configuration_change_and_disable_invalidate_old_permit",
+        "tests/model_configuration/test_configuration.py::test_cross_tenant_and_actor_contexts_cannot_consume_plan",
+        "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[binding_digest-different-MODEL_POLICY_SCOPE_MISMATCH]",
+        "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[budget_available-False-MODEL_BUDGET_REQUIRED]",
+        "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[budget_available-None-MODEL_BUDGET_FACT_MISSING]",
+        "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[cancelled-None-MODEL_CANCEL_FACT_MISSING]",
+        "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[cancelled-True-MODEL_CANCELLED]",
+        "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[egress_allowed-False-MODEL_EGRESS_REQUIRED]",
+        "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[egress_allowed-None-MODEL_EGRESS_FACT_MISSING]",
+        "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[expires_at-value11-MODEL_POLICY_EXPIRED]",
+        "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[expires_at-value12-MODEL_POLICY_EXPIRED]",
+        "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[permitted-False-MODEL_PERMISSION_DENIED]",
+        "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[permitted-None-MODEL_PERMISSION_FACT_MISSING]",
+        "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-1-MODEL_QUALIFICATION_FACT_MISSING]",
+        "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-False-MODEL_QUALIFICATION_REQUIRED]",
+        "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-None-MODEL_QUALIFICATION_FACT_MISSING]",
+        "tests/model_configuration/test_configuration.py::test_currentness_compounds_main_guard_and_rechecks_after_cancellation",
+        "tests/model_configuration/test_configuration.py::test_disabled_not_configured_and_missing_secret",
+        "tests/model_configuration/test_configuration.py::test_expiry_stale_and_same_revision_digest_change",
+        "tests/model_configuration/test_configuration.py::test_forged_construct_payload_is_revalidated",
+        "tests/model_configuration/test_configuration.py::test_main_permit_guard_cannot_outlive_permit_expiry",
+        "tests/model_configuration/test_configuration.py::test_missing_interfaces_do_not_implicitly_enable",
+        "tests/model_configuration/test_configuration.py::test_non_admin_and_revocation_between_preview_and_save",
+        "tests/model_configuration/test_configuration.py::test_plan_save_masked_read_runtime_selection[anthropic-native]",
+        "tests/model_configuration/test_configuration.py::test_plan_save_masked_read_runtime_selection[openai-compatible]",
+        "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[cancel_epoch]",
+        "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[operation]",
+        "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[purpose]",
+        "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[run_id]",
+        "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[skill_version]",
+        "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[tenant_id]",
+        "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[tool_version]",
+        "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[writer_id]",
+        "tests/model_configuration/test_configuration.py::test_port_policy_exception_is_redacted_and_missing_facts_are_unavailable",
+        "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[file:///private]",
+        "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[http://synthetic.invalid/v1]",
+        "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/%2e%2e]",
+        "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/../v1]",
+        "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/v1 bad]",
+        "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/v1#private]",
+        "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/v1?api_key=private]",
+        "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid:bad/v1]",
+        "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid\\\\evil/v1]",
+        "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://user:password@synthetic.invalid/v1]",
+        "tests/model_configuration/test_configuration.py::test_public_common_preview_restores_without_secret_ref_or_second_store",
+        "tests/model_configuration/test_configuration.py::test_public_preview_reconstruction_rejects_rotated_secret_and_payload_changes",
+        "tests/model_configuration/test_configuration.py::test_scoped_ports_errors_and_secret_material_drift_fail_closed",
+        "tests/model_configuration/test_configuration.py::test_secret_resolution_exception_and_invalid_credential_never_escape",
+        "tests/model_configuration/test_configuration.py::test_secret_rotation_rejects_plan_and_previous_runtime_binding",
+        "tests/model_configuration/test_configuration.py::test_sensitive_port_exception_tracebacks_and_request_validation_are_redacted",
+        "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[actor_id]",
+        "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[api_key]",
+        "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[grant]",
+        "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[qualified]",
+        "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[run_id]",
+        "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[secret_reference]",
+        "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[secret_version]",
+        "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[tenant_id]",
+        "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[write_tier]",
+        "tests/model_configuration/test_configuration.py::test_unavailable_secret_and_wrong_tenant_storage_are_rejected",
+        "tests/model_configuration/test_configuration.py::test_version_and_metadata_are_immutable"
+      ],
+      "test_exit": 0,
+      "source_unchanged": true,
+      "sha256": "1a755bbc886f10e25378d061d2258c463629d9ee8f31a4e7b164dc113a4642fa"
+    },
+    "final_repairs_fences_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/final-repairs-and-fences-fixed.json",
+      "scope": "6个末尾修复与4个实际权限fences共10个PG节点三阶段全通过；退出2的中断前次另保留为诊断。",
+      "passed_count": 10,
+      "nodes": [
+        "tests/change_coverage_transactions/test_fences.py::test_actual_pending_grant_revocation_never_reset_by_fresh_lock[access_epoch]",
+        "tests/change_coverage_transactions/test_fences.py::test_actual_pending_grant_revocation_never_reset_by_fresh_lock[can_write]",
+        "tests/change_coverage_transactions/test_fences.py::test_actual_pending_grant_revocation_never_reset_by_fresh_lock[expires_at]",
+        "tests/change_coverage_transactions/test_fences.py::test_actual_publisher_a_reader_b_fenced_until_transaction_end",
+        "tests/test_retained_execution.py::test_retained_proof_keeps_history_without_current_manufacturing_qualification",
+        "tests/test_retained_execution.py::test_retained_proof_rejects_new_real_observation_of_configuration_deviation",
+        "tests/test_verification_execution.py::test_pointer_first_insert_cannot_skip_a_real_persisted_first_version",
+        "tests/test_verification_execution.py::test_preparation_does_not_grant_professional_or_physical_authority",
+        "tests/test_verification_execution.py::test_request_series_cannot_switch_build_or_use_another_product",
+        "tests/verification_handoff/test_transactions.py::test_source_withdrawal_keeps_saved_receipt_replay_and_blocks_new_material"
+      ],
+      "test_exit": 0,
+      "source_unchanged": true,
+      "sha256": "5093bc23457becc20cace8c6047ef5cc6383d2ce7bddff006e9e2991135e8762"
+    },
+    "profile_count_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/profile-count-guard.json",
+      "scope": "1与21 profiles都在issuer注册前要求真实临时目标guard，2纯节点通过。",
+      "passed_count": 2,
+      "nodes": [
+        "tests/test_host_profile_choices.py::test_professional_plural_requires_real_target_guard_before_issuer_registration[1]",
+        "tests/test_host_profile_choices.py::test_professional_plural_requires_real_target_guard_before_issuer_registration[21]"
+      ],
+      "test_exit": 0,
+      "source_unchanged": true,
+      "sha256": "36d44b72c0b976c2d3fb3ab20184f2903cdca19f9533f2498c22d046887296e7"
+    },
+    "approval_count_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/approval-count-guard.json",
+      "scope": "101唯一OriginalApproval pins完整保留、最后pin与当前issuer/epoch rotation核对，1纯节点通过。",
+      "passed_count": 1,
+      "nodes": [
+        "tests/change_coverage_owner/test_owner_boundary.py::test_original_approval_registry_keeps_pins_beyond_previous_cap"
+      ],
+      "test_exit": 0,
+      "source_unchanged": true,
+      "sha256": "5d07e4ba9ec31518c950bcf908eddc985e343e6e58c86bd88120dea1885bce0d"
+    },
+    "final_recovery_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/final-0721-recovery.json",
+      "scope": "当前0721实际恢复检查1节点三阶段通过，source_unchanged；复原非空业务链/公共读取/原Start零新效果。",
+      "passed_count": 1,
+      "nodes": [
+        "tools/checkpoints/b8_recovery.py::test_final_restore_keeps_configuration_to_handoff_and_started_run[launch_work0]"
+      ],
+      "test_exit": 0,
+      "source_unchanged": true,
+      "sha256": "fdf914345fd55fb78ac6e0aac45d14ca47772b2413c953a97475a1c4697ae3b7"
+    },
+    "empty_chain_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0721-emptychain/result.json",
+      "scope": "新独立临时库s0_0721升级→base→head与普通属主审计实际通过；source_unchanged。",
+      "head": "s0_0721",
+      "source_unchanged": true,
+      "sha256": "97be2d58f3558ab4f6025cefb33752e212e1d81bb88b1f392a60f5e9a7196a34"
+    },
+    "restore_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0721-checkpoint/backup-restore.json",
+      "scope": "当前s0_0721恢复142全表指纹及原回执零状态改变；5个metadata-only事件经真实dispatcher/Temporal路由ack，不启动workflow或外发。",
+      "head": "s0_0721",
+      "fingerprinted_tables": 142,
+      "synthetic_only": true,
+      "llm_calls": 0,
+      "event_count": 5,
+      "sha256": "61d45d784deec0f80accbadb74b8823344dd291b2aaf63b30f87462cc185b9ac"
+    },
+    "restore_chain_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0721-checkpoint/configuration-handoff-recovery.json",
+      "scope": "当前非空配置/工艺/Build/交接/Run/资源预留恢复后公共回读与原Start回执零新增效果；仅数据库恢复及现有合成源字节。",
+      "head": "s0_0721",
+      "workflow_starts": 0,
+      "external_sends": 0,
+      "chain_tables": {
+        "engineering_configurations": 162,
+        "process_revisions": 161,
+        "build_starts": 49,
+        "verification_handoff_facts": 92,
+        "verification_run_versions": 117,
+        "test_resource_reservations": 43
+      },
+      "sha256": "3d72e351cfd4f04c3a26051dfd85f9907a127c98f01bb68ebf6847ee6e550928"
+    },
+    "empty_owner_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/0721-emptychain/ordinary-owner-audit.json",
+      "scope": "新空链当前0721普通属主/强制RLS与auth可信根审计；AI零DML、运行角色无属主成员权。",
+      "head": "s0_0721",
+      "database": "pdos_test",
+      "port": 59006,
+      "marker": "cd2e357e-5b15-4893-b320-845637efbf8f",
+      "ordinary_owner_read_passed": true,
+      "agent_direct_dml": false,
+      "runtime_owner_membership": false,
+      "tables": 141,
+      "functions": 43,
+      "tenant_rls_tables": 140,
+      "authentication_root": {
+        "table": "login_sessions",
+        "reason": "Hashed session lookup before tenant binding; auth SELECT only",
+        "role_privileges": [
+          [
+            "pdos_agent",
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            "pdos_next_app",
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            "pdos_next_auth",
+            true,
+            false,
+            false,
+            false
+          ],
+          [
+            "pdos_next_dispatch",
+            false,
+            false,
+            false,
+            false
+          ]
+        ]
+      },
+      "sha256": "6a1b3c4f415ee917ab8ea63ed1415c864ad343cbe8d864e42fff3fa0067e81a9"
+    },
+    "affected_tail_closed": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/current-contract-affected-tail.json",
+      "scope": "2精确节点三阶段pass、1失败后停止；32仅收集，后续failure已在final/fixed批闭合。",
+      "test_exit": 1,
+      "actual_passed": 2,
+      "actual_failed": 1,
+      "diagnostic_preserved": true,
+      "sha256": "064a6c3b5ec73ae1351f1b9bf49a78e4f7910c15c96ed36c14eead6e04bceed5"
+    },
+    "affected_final_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/current-contract-affected-final.json",
+      "scope": "完整30实际执行为24pass/6fail；6失败在fixed10中闭合，原诊断保留，不能称此批本身全通过。",
+      "test_exit": 1,
+      "actual_passed": 24,
+      "actual_failed": 6,
+      "diagnostic_preserved": true,
+      "sha256": "ccc3813bab0c934e3dea5d91bd71357c5a6c3f4cc8d1e6858c616486bf9ac761"
+    },
+    "performance_short_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/performance/short-paths.json",
+      "scope": "8短路径各30成功样本、0失败、source_unchanged；本地认证ASGI、不含网络时延，准备不计时。其余24组与最终p95汇总仍待。",
+      "actual_performance_run": true,
+      "source_unchanged": true,
+      "completed_groups": 8,
+      "summary": {
+        "draft_save": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.04234016700138454,
+          "p95_seconds": 0.16009083300014026,
+          "app_sql_range": [
+            9,
+            9
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        },
+        "draft_create": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.0876690420009254,
+          "p95_seconds": 0.13954641700183856,
+          "app_sql_range": [
+            18,
+            18
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        },
+        "t1_preview": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.06340808299864875,
+          "p95_seconds": 0.09771433299829368,
+          "app_sql_range": [
+            14,
+            14
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        },
+        "t1_confirmation": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.10499137499937206,
+          "p95_seconds": 0.12803750000239233,
+          "app_sql_range": [
+            23,
+            23
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        },
+        "same_key_replay": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.03123112499815761,
+          "p95_seconds": 0.04996454199863365,
+          "app_sql_range": [
+            7,
+            7
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        },
+        "workspace_read": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.12042762499913806,
+          "p95_seconds": 0.1411437089991523,
+          "app_sql_range": [
+            11,
+            11
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        },
+        "readiness_read": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.033404165998945246,
+          "p95_seconds": 0.05329345800055307,
+          "app_sql_range": [
+            11,
+            11
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        },
+        "configuration_read_21_sources": {
+          "samples": 30,
+          "failures": 0,
+          "p50_seconds": 0.20415549999961513,
+          "p95_seconds": 0.2606670419991133,
+          "app_sql_range": [
+            24,
+            24
+          ],
+          "auth_sql_range": [
+            1,
+            1
+          ]
+        }
+      },
+      "scope_limitations": {
+        "synthetic_only": true,
+        "single_request": true,
+        "llm_calls": 0,
+        "authenticated_asgi_testclient": true,
+        "network_latency_included": false,
+        "setup_excluded_from_request_time": true,
+        "draft_save_semantics": "Equivalent new-key intent alias; comparable to B0/B2 label",
+        "draft_create_semantics": "Unique title for each new persisted draft",
+        "claims": 60,
+        "configuration_fixture": "2 BOM revisions, engineering, process; 21 direct sources",
+        "sql_successful_statements_only": true,
+        "all_same_engine_worker_threads_counted": true,
+        "readiness_fixture": "empty build collection; no actual launch measured",
+        "credential_or_source_text_emitted": false
+      },
+      "sha256": "638a7cf00c8e4a7ddce17bd44196f5841d3a64216eb37572db2036469ff98d77"
+    },
+    "performance_pipeline_current": {
+      "path": "docs/reports/evidence/pdos-next-s0-20261008/final-candidate/performance/pipeline-status.json",
+      "scope": "最终32组pipeline进行中；当前只使用已完成8短路径，不将B4/B5/B6日志进度记为最终通过。",
+      "status": "in_progress_snapshot",
+      "is_final_performance_pass_evidence": false
+    }
+  },
+  "completed_b8_items": [
+    {
+      "id": "R1",
+      "work": "原417失败/错误382实复验+35退役全部闭合，10源码增量与105模块覆盖已root审阅；原失败与后续诊断保留。",
+      "covers": [
+        "M1-01",
+        "M1-04",
+        "M1-05",
+        "M1-06",
+        "M1-07"
+      ],
+      "status": "completed_existing_scope",
+      "evidence": [
+        "failure_closure_current",
+        "source_delta_current",
+        "module_coverage_current"
+      ]
+    },
+    {
+      "id": "R3",
+      "work": "独立新空库s0_0721 upgrade→base→head及普通属主/权限审计实际通过，source_unchanged。",
+      "covers": [
+        "M1-02",
+        "M1-08"
+      ],
+      "status": "completed_actual",
+      "evidence": [
+        "empty_chain_current",
+        "empty_owner_current"
+      ]
+    },
+    {
+      "id": "R4",
+      "work": "s0_0721恢复142表指纹与非空配置→Build→Handoff→Run；公共读取、原Start回执重放零新增效果，5 metadata-only事件、0workflow/外发。合成源字节保留重读，不声明对象存储/生产恢复。",
+      "covers": [
+        "M1-04",
+        "M1-08"
+      ],
+      "status": "completed_actual_with_explicit_scope",
+      "evidence": [
+        "final_recovery_current",
+        "restore_current",
+        "restore_chain_current"
+      ]
+    }
+  ],
+  "unresolved_historical_scope_not_used_as_current_evidence": [
+    "pure-contract-fixed.log historical151",
+    "error-contract-and-plan-pure-fixed.log historical203",
+    "host-profile-choice-and-public-errors-fixed.log historical99",
+    "legacy-gateway-replacement-fixed.log historical236",
+    "resource-native-reader-fixed.log historical79"
+  ],
+  "root_remaining_checks": [
+    "等待最终24性能路径与32组汇总完成，核对各30真实成功样本/真实业务结果/提交及pytest/JUnit、分档p95/SQL/失败率与B0可比范围。",
+    "pipeline结束时核对最终source_unchanged及performance-source-manifest与回归/恢复/合同/前端适用性；不要把进行中状态作最终pass。",
+    "按用户既定边界集中清理本轮临时fixture/服务，保留本轮测量、备份和失败诊断；不触碰原工程历史备份或其他项目。"
+  ],
+  "evidence_index_missing_paths": []
+}

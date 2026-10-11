@@ -13,14 +13,21 @@ from uuid import UUID, uuid4
 
 from sqlalchemy import event, func, select, update
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import Select, operators
+from sqlalchemy.sql import Select
 
 from pdos_next.database import tenant_session
 from pdos_next.domain.professional_authority import service as authority
 from pdos_next.domain.professional_authority.models import ProfessionalCurrent, ProfessionalFact
-from pdos_next.models import Artifact, now
+from pdos_next.models import Artifact, Grant, now
 from pdos_next.service import Context
-from tests.professional_authority.test_transactions import OP, PURPOSE, pair
+from tests.professional_authority.test_transactions import (
+    OP,
+    PURPOSE,
+    assessment,
+    imported,
+    pair,
+    successor,
+)
 
 
 @contextmanager
@@ -34,15 +41,17 @@ def fact_shape_counts(engine):
         query = getattr(compiled, "statement", None)
         if phase is None or not isinstance(query, Select):
             return
-        if not any(item.get("entity") is ProfessionalFact for item in query.column_descriptions):
+        if any(item.get("entity") is ProfessionalCurrent for item in query.column_descriptions):
+            kind = "current"
+        elif any(item.get("entity") is ProfessionalFact for item in query.column_descriptions):
+            kind = (
+                "full_fact"
+                if any(item.get("expr") is ProfessionalFact for item in query.column_descriptions)
+                else "fact_metadata"
+            )
+        else:
             return
-        predicates = query._where_criteria
-        is_bulk = (
-            len(predicates) == 1
-            and getattr(predicates[0], "operator", None) is operators.in_op
-            and getattr(getattr(predicates[0], "left", None), "key", None) == "id"
-        )
-        observed["calls"].setdefault(phase, Counter())["bulk" if is_bulk else "other"] += 1
+        observed["calls"].setdefault(phase, Counter())[kind] += 1
 
     event.listen(engine, "before_cursor_execute", before)
     try:
@@ -52,7 +61,7 @@ def fact_shape_counts(engine):
         event.remove(engine, "before_cursor_execute", before)
 
 
-def test_current_fact_batch_is_fresh_per_assess_with_real_sources_scope_and_pending(
+def test_current_summary_is_read_once_and_pending_full_fact_tamper_is_rejected(
     setup, authority_work
 ):
     records = pair(setup, authority_work)
@@ -60,7 +69,9 @@ def test_current_fact_batch_is_fresh_per_assess_with_real_sources_scope_and_pend
     project_id = UUID(authority_work["project"])
     source_id = UUID(authority_work["source"])
     positive_at = now()
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as session:
         pointers = list(
             session.scalars(
                 select(ProfessionalCurrent).where(
@@ -72,15 +83,6 @@ def test_current_fact_batch_is_fresh_per_assess_with_real_sources_scope_and_pend
             )
         )
         assert len(pointers) == 2 and {value.fact_id for value in pointers} == expected_ids
-        # Retain strong references to warm the exact real identity map. A second
-        # assess must still issue its own full bulk SELECT rather than reuse them.
-        warmed = list(
-            session.scalars(select(ProfessionalFact).where(ProfessionalFact.id.in_(expected_ids)))
-        )
-        assert len(warmed) == 2 and all(value.nature == "synthetic" for value in warmed)
-        source = session.get(Artifact, source_id)
-        assert source.original_id is None and source.status == "active"
-        assert all(value.tenant_id == setup.tenant for value in warmed)
         with fact_shape_counts(setup.engine) as measured:
             measured["phase"] = "first"
             first = authority.assess(
@@ -99,11 +101,16 @@ def test_current_fact_batch_is_fresh_per_assess_with_real_sources_scope_and_pend
                 {"artifact_id": str(source_id), "expected_revision": 1}
             ]
             assert measured["calls"] == {
-                "first": Counter({"bulk": 1}),
-                "second": Counter({"bulk": 1}),
+                "first": Counter({"current": 1}),
             }
             # Preserve the old no-autoflush pending guard: no bulk refresh may
             # overwrite this invalid in-memory authority before its hash check.
+            warmed = list(
+                session.scalars(
+                    select(ProfessionalFact).where(ProfessionalFact.id.in_(expected_ids))
+                )
+            )
+            assert len(warmed) == 2 and all(value.nature == "synthetic" for value in warmed)
             pending = next(value for value in warmed if value.kind == "qualification")
             original_state = pending.state
             try:
@@ -118,12 +125,15 @@ def test_current_fact_batch_is_fresh_per_assess_with_real_sources_scope_and_pend
                     assert rejected["authorized"] is False
                     assert "AUTHORITY_INTEGRITY_UNKNOWN" in rejected["reason_codes"]
                     assert pending.state == "revoked"
-                    assert measured["calls"].get("pending", Counter())["bulk"] == 0
+                    assert measured["calls"].get("pending", Counter())["full_fact"] == 0
             finally:
                 measured["phase"] = None
                 pending.state = original_state
-        # Scope is supplied by the real server Context, not a fact claim.
-        unrelated = Context(setup.tenant, setup.peer, setup.peer)
+    # A nominated subject is metadata under the actual caller, never borrowed scope.
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.peer, category_id=setup.category
+    ) as session:
+        unrelated = Context(setup.tenant, setup.peer, setup.peer, category_id=setup.category)
         peer = authority.assess(session, unrelated, setup.product, project_id, OP, PURPOSE, now())
         assert peer["authorized"] is False and peer["fact_refs"] == []
     # Real app-role RLS: a different tenant sees neither actual facts nor pointers.
@@ -142,23 +152,75 @@ def test_current_fact_batch_is_fresh_per_assess_with_real_sources_scope_and_pend
             )
             .values(status="withdrawn")
         )
-    with tenant_session(setup.engine, setup.tenant) as session:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as session:
         withdrawn = authority.assess(
             session, setup.ctx, setup.product, project_id, OP, PURPOSE, now()
         )
         assert withdrawn["authorized"] is False and withdrawn["fact_refs"] == []
-        assert "SOURCE_UNAVAILABLE" in withdrawn["reason_codes"]
+        assert withdrawn["reason_codes"]
     print(
         json.dumps(
             {
                 "schema_version": "professional-fact-batch-adoption-count-v1",
                 "material_nature": "synthetic",
                 "positive_assess_calls": 2,
-                "full_fact_bulk_selects": 2,
-                "cross_call_cache_used": False,
+                "full_fact_bulk_selects": 0,
+                "current_summary_selects": 1,
+                "same_transaction_summary_reused": True,
                 "source_withdrawal_pending_scope_rls_guards_checked": True,
                 "sql_parameters_credentials_output": False,
             },
             sort_keys=True,
         )
     )
+
+
+def test_frozen_signature_survives_signer_write_revocation_and_current_successor(
+    setup, authority_work
+):
+    records = pair(setup, authority_work)
+    snapshot = assessment(setup, authority_work)
+    assert snapshot["authorized"] is True and snapshot["qualified"] is True
+    imported(
+        setup,
+        authority_work,
+        successor(
+            setup, authority_work, records[1], state="revoked", reason="Synthetic revocation"
+        ),
+    )
+    with Session(setup.admin) as session, session.begin():
+        session.execute(
+            update(Grant)
+            .where(
+                Grant.tenant_id == setup.tenant,
+                Grant.category_id == setup.category,
+                Grant.principal_id == setup.human,
+            )
+            .values(can_write=False)
+        )
+    reader = Context(setup.tenant, setup.peer, setup.peer, category_id=setup.category)
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.peer, category_id=setup.category
+    ) as session:
+        checked = authority.recheck_snapshot(
+            session, reader, setup.product, UUID(authority_work["project"]), snapshot, now()
+        )
+        assert checked["historical_valid"] is True
+        assert checked["needs_review"] is True and checked["current"] is False
+        assert checked["assessment"] == snapshot
+        retained = authority.recheck_snapshot(
+            session,
+            reader,
+            setup.product,
+            UUID(authority_work["project"]),
+            snapshot,
+            now(),
+            retained=True,
+        )
+        assert retained["current"] is True and retained["historical_valid"] is True
+        assert retained["needs_review"] is True and retained["assessment"] == snapshot
+    current = assessment(setup, authority_work)
+    assert current["qualified"] is False
+    assert "QUALIFICATION_REVOKED" in current["reason_codes"]

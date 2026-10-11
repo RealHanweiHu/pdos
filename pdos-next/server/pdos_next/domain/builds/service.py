@@ -6,6 +6,7 @@ from pdos_next.domain.configurations.service import get_engineering, get_process
 from pdos_next.domain.projects.service import _project
 from pdos_next.errors import DomainError
 from pdos_next.models import Principal, now
+from pdos_next.request_proof import snapshot_get
 
 from .models import Build, BuildReadiness
 from .schemas import BuildCreatePayload
@@ -20,12 +21,11 @@ def _execution(payload):
 
 
 def _build(s, ctx, product_id, build_id, *, write=False):
-    row = s.get(Build, build_id)
+    row = snapshot_get(s, Build, build_id, scope_id=product_id)
     if (
         not row
         or row.tenant_id != ctx.tenant_id
         or row.product_id != product_id
-        or (row.visibility == "private" and row.owner_id != ctx.requester_id)
         or (write and row.owner_id != ctx.requester_id)
     ):
         raise DomainError("FORBIDDEN_SCOPE", "试制轮次不在当前可用范围。", 403)
@@ -33,11 +33,24 @@ def _build(s, ctx, product_id, build_id, *, write=False):
 
 
 def _linked(s, ctx, product_id, value, *, write=False):
+    from pdos_next.request_proof import request_proof
+
     project, link, definition = _project(s, ctx, product_id, value.project_id, write=write)
+    proof = request_proof(s)
+    key = (
+        "build-configurations",
+        product_id,
+        value.project_id,
+        value.engineering_configuration_id,
+        value.manufacturing_configuration_id,
+        link.definition_id,
+    )
+    if key in proof.read_rows:
+        return proof.read_rows[key]
     _, engineering = get_engineering(s, ctx, product_id, value.engineering_configuration_id)
     _, manufacturing = get_process(s, ctx, product_id, value.manufacturing_configuration_id)
     if str(link.definition_id) != engineering["definition_id"]:
-        raise DomainError("CONFIGURATION_MISMATCH", "工程配置须使用该项目固定的产品定义。")
+        raise DomainError("CONFIGURATION_MISMATCH", "工程配置须使用该项目固定的型号定义。")
     if manufacturing["engineering_configuration_id"] != engineering["id"]:
         raise DomainError("CONFIGURATION_MISMATCH", "制造配置未关联本轮选择的工程配置版本。")
     reads = {}
@@ -52,16 +65,14 @@ def _linked(s, ctx, product_id, value, *, write=False):
             if previous and previous["expected_revision"] != ref["expected_revision"]:
                 raise DomainError("SOURCE_STALE", "所选配置引用了同一来源的不同版本，请先重核。")
             reads[ref["artifact_id"]] = ref
-    if len(reads) > 20:
-        raise DomainError(
-            "MISSING_REQUIRED_EVIDENCE", "固定来源超过本轮20份上限，请先收敛依据范围。", 422
-        )
-    return (
+    result = (
         project,
         engineering,
         manufacturing,
         sorted(reads.values(), key=lambda x: x["artifact_id"]),
     )
+    proof.read_rows[key] = result
+    return result
 
 
 def validate(s, ctx, command, product, payload):
@@ -107,15 +118,15 @@ def semantic(payload):
 
 
 def _visibility(s, ctx, product_id, payload, project, engineering, manufacturing):
-    private = any(view["visibility"] == "private" for view in (engineering, manufacturing))
+    private = any(view["visibility"] != "category" for view in (engineering, manufacturing))
     if payload.previous_build_id:
-        private |= _build(s, ctx, product_id, payload.previous_build_id).visibility == "private"
-    return "private" if private or project.visibility == "private" else "product"
+        private |= _build(s, ctx, product_id, payload.previous_build_id).visibility != "category"
+    return "private" if private or project.visibility != "category" else "category"
 
 
 def preview_view(s, ctx, command, product, payload):
     if command.expected_revision != product.revision:
-        raise DomainError("VERSION_CONFLICT", "产品范围版本已经变化。")
+        raise DomainError("VERSION_CONFLICT", "型号范围版本已经变化。")
     validate(s, ctx, command, product, payload)
     project, engineering, manufacturing, _ = _linked(s, ctx, product.id, payload, write=True)
     return {
@@ -138,7 +149,7 @@ def apply(s, ctx, command, product, payload):
 
         return apply_execution(s, ctx, command, product, execution)
     if command.expected_revision != product.revision:
-        raise DomainError("VERSION_CONFLICT", "产品范围版本已经变化。")
+        raise DomainError("VERSION_CONFLICT", "型号范围版本已经变化。")
     if isinstance(payload, BuildCreatePayload):
         project, engineering, manufacturing, _ = _linked(s, ctx, product.id, payload, write=True)
         if project.revision != payload.expected_project_revision:
@@ -265,17 +276,15 @@ def list_builds(s, ctx, product_id):
         select(Build)
         .where(
             Build.product_id == product_id,
-            (Build.visibility == "product") | (Build.owner_id == ctx.requester_id),
         )
         .order_by(Build.created_at.desc(), Build.id)
-        .limit(101)
     ).all()
     items, unavailable = [], 0
-    for row in rows[:100]:
+    for row in rows:
         try:
             project, engineering, manufacturing, reads = _linked(s, ctx, product_id, row)
         except DomainError as error:
-            if error.code not in {"SOURCE_UNAVAILABLE", "SOURCE_STALE", "FORBIDDEN_SCOPE"}:
+            if error.reason not in {"SOURCE_UNAVAILABLE", "SOURCE_STALE", "FORBIDDEN_SCOPE"}:
                 raise
             unavailable += 1
             continue
@@ -324,4 +333,4 @@ def list_builds(s, ctx, product_id):
                 else None,
             }
         )
-    return {"items": items, "unavailable_count": unavailable, "has_more": len(rows) > 100}
+    return {"items": items, "unavailable_count": unavailable, "has_more": False}

@@ -20,7 +20,13 @@ def test_actual_followup_savepoint_commits_and_orphan_consumption_rolls_back(fol
     work = followup_work
     before = fixed_issue(work)
     approved = Command.model_validate(prepared(work, root_command(work)))
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         with session.begin_nested():
             receipt = execute(session, work.quality.ctx, approved)
             saved = UUID(str(receipt["subject_id"]))
@@ -32,7 +38,13 @@ def test_actual_followup_savepoint_commits_and_orphan_consumption_rolls_back(fol
 
     completion = prepared(work, complete_command(work))
     token_hash = digest(completion["payload"]["confirmation_token"])
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         confirmation = session.scalar(
             select(Confirmation).where(Confirmation.token_hash == token_hash)
         )

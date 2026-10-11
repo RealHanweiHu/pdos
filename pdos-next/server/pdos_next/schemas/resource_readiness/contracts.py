@@ -1,6 +1,6 @@
 """Closed resource subprotocol; facts come from scoped server ports, never a model."""
 
-from datetime import UTC, timedelta
+from datetime import UTC
 from decimal import Decimal
 from typing import Annotated, Literal, Self
 from uuid import UUID
@@ -14,9 +14,7 @@ from pdos_next.schemas.verification.contracts import Scope, SourceRef
 Key = Annotated[str, Field(min_length=1, max_length=160)]
 Text = Annotated[str, Field(min_length=1, max_length=2000)]
 Revision = Annotated[int, Field(ge=1, strict=True)]
-Units = Annotated[
-    Decimal, Field(gt=0, le=1000, allow_inf_nan=False, max_digits=24, decimal_places=12)
-]
+Units = Annotated[Decimal, Field(gt=0, allow_inf_nan=False, max_digits=24, decimal_places=12)]
 Instant = Annotated[AwareDatetime, AfterValidator(lambda v: v.astimezone(UTC))]
 Status = Literal["UNKNOWN", "BLOCKED", "READY_WITH_CONDITIONS", "READY"]
 FactKind = Literal["acceptance", "calibration", "qualification"]
@@ -43,8 +41,6 @@ class ExecutionWindow(DTO):
     def ordered(self) -> Self:
         if self.finish <= self.start:
             raise ValueError("Execution interval must be positive")
-        if self.finish - self.start > timedelta(days=3660):
-            raise ValueError("Execution interval exceeds supported horizon")
         try:
             ZoneInfo(self.original_timezone)
         except (ValueError, ZoneInfoNotFoundError) as exc:
@@ -66,7 +62,7 @@ class ReservationRequest(DTO):
     purpose: Key
     operation_id: Key
     window: ExecutionWindow
-    uses: tuple[ResourceUse, ...] = Field(min_length=1, max_length=100)
+    uses: tuple[ResourceUse, ...] = Field(min_length=1)
 
     @model_validator(mode="after")
     def unique(self) -> Self:
@@ -84,7 +80,7 @@ class QualificationFact(DTO):
     status: Literal["accepted", "rejected", "revoked", "unknown"]
     valid_from: Instant | None = None
     valid_until: Instant | None = None
-    conditions: tuple[Text, ...] = Field(default=(), max_length=50)
+    conditions: tuple[Text, ...] = Field(default=())
     named_decision_id: UUID | None = None
     actor_id: UUID | None = None
 
@@ -111,11 +107,11 @@ class ResourceSnapshot(DTO):
     ref: ResourceRef
     scope: Scope
     source: SourceRef
-    purposes: tuple[Key, ...] = Field(max_length=100)
-    operation_ids: tuple[Key, ...] = Field(max_length=100)
+    purposes: tuple[Key, ...] = Field()
+    operation_ids: tuple[Key, ...] = Field()
     lifecycle: Literal["active", "withdrawn", "unknown"]
     required_facts: tuple[FactKind, ...] = ()
-    facts: tuple[QualificationFact, ...] = Field(default=(), max_length=100)
+    facts: tuple[QualificationFact, ...] = Field(default=())
     # None means missing maintenance evidence; () means server verified no maintenance.
     maintenance: tuple[MaintenanceFact, ...] | None = None
     calendar: CalendarSnapshot | None = None
@@ -194,7 +190,7 @@ class ResourceContext(DTO):
     actor_id: UUID
     owner_run_id: UUID
     executor_id: UUID
-    assigned_person_ids: tuple[UUID, ...] = Field(default=(), max_length=100)
+    assigned_person_ids: tuple[UUID, ...] = Field(default=())
     now: Instant
     authorized: bool
     qualified: bool | None
@@ -204,7 +200,7 @@ class ResourceContext(DTO):
     facts_revision: Key  # Include permission, qualification and cancellation epochs.
     purpose: Key
     operation_id: Key
-    required_resources: tuple[ResourceUse, ...] = Field(min_length=1, max_length=100)
+    required_resources: tuple[ResourceUse, ...] = Field(min_length=1)
     approved_conditions: tuple[Text, ...] = ()
     # Host-verified real RunStart source only; never fill from reservation/Forecast.
     verified_actual_start: Instant | None = None
@@ -228,7 +224,6 @@ class ReservationPreview(DTO):
     reason: Text | None = None
     digest: Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
     allowed: bool
-    expires_at: Instant
     effect: Text
 
 

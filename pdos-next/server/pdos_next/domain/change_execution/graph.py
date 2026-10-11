@@ -18,8 +18,6 @@ from pdos_next.schemas.change_control.contracts import (
 )
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
 
-MAX_NODES = 250
-MAX_OWNER_ROWS = 100
 UNKNOWN_REASONS = {
     "engineering": "仅已读固定定义、BOM与配置关系；完整工程依赖和正式发布未接入。",
     "manufacturing": "仅已读固定工序/SOP声明；正式治具、夹具、ControlPlan与PilotRun未接入。",
@@ -54,6 +52,46 @@ class OwnedObject:
         )
 
 
+class CapturedInputReader:
+    """Use fixed graph references after the host checks its persisted watermark.
+
+    This reader supplies the pure input projection only. It cannot traverse a
+    graph, reload an owner, or participate in a write command's preparation.
+    """
+
+    def __init__(self, capture, request, graph):
+        self.scope, self.target = request.scope, request.audience
+        if graph.scope != self.scope or graph.audience != self.target:
+            raise DomainError("FORBIDDEN_SCOPE", "固定影响图范围或受众不一致。", 403)
+        labels = {}
+        for node in graph.nodes:
+            if node.scope != self.scope or node.audience != self.target:
+                raise DomainError("FORBIDDEN_SCOPE", "固定影响节点范围或受众不一致。", 403)
+            labels[node.ref.identity] = node.label
+        basis = capture.source_basis["owners"]
+        self.objects = {}
+        for ref in (*request.roots, *request.references, *(n.ref for n in graph.nodes)):
+            if ref.identity not in basis:
+                raise DomainError("INTEGRITY_MISMATCH", "固定图缺少已登记的所有者依据。")
+            self.objects[ref.identity] = OwnedObject(
+                ref,
+                labels.get(ref.identity, ref.kind),
+                self.scope,
+                capture.owner_id,
+                capture.visibility,
+                {"source_status": "current"},
+                [],
+                basis[ref.identity],
+                True,
+            )
+
+    def resolve(self, ref):
+        value = self.objects.get(ref.identity)
+        if value is None or value.ref != ref:
+            raise DomainError("FIXED_REFERENCE_MISMATCH", "引用不属于已核对的固定影响图。")
+        return value
+
+
 def audience(product_id, owner_id, visibility):
     return (f"private:{owner_id}" if visibility == "private" else f"product:{product_id}",)
 
@@ -70,7 +108,7 @@ def _row(s, ctx, pid, model, identity):
     row = s.scalar(
         select(model)
         .where(model.id == identity, model.tenant_id == ctx.tenant_id, model.product_id == pid)
-        .execution_options(populate_existing=True, autoflush=False)
+        .execution_options(populate_existing=True, autoflush=False, yield_per=100)
     )
     if row is None or (row.visibility == "private" and row.owner_id != ctx.requester_id):
         raise DomainError("FORBIDDEN_SCOPE", "固定变更引用不在当前可读范围。", 403)
@@ -262,11 +300,8 @@ class OwnerReader:
                 *conditions,
             )
             .order_by(model.id)
-            .limit(MAX_OWNER_ROWS + 1)
-            .execution_options(populate_existing=True, autoflush=False)
+            .execution_options(populate_existing=True, autoflush=False, yield_per=100)
         ).all()
-        if len(rows) > MAX_OWNER_ROWS:
-            raise DomainError("GRAPH_LIMIT_EXCEEDED", "依赖枚举超过有界读取范围。", 422)
         return rows
 
     def _current_preparations(self, process_id, process_revision, *, operation_key=None):
@@ -304,8 +339,7 @@ class OwnerReader:
                 PreparationVersion.process_revision == process_revision,
             )
             .order_by(PreparationVersion.id)
-            .limit(MAX_OWNER_ROWS + 1)
-            .execution_options(populate_existing=True, autoflush=False)
+            .execution_options(populate_existing=True, autoflush=False, yield_per=100)
         )
         if operation_key is None:
             query = query.where(PreparationVersion.kind == "manufacturing_baseline")
@@ -315,8 +349,6 @@ class OwnerReader:
                 PreparationVersion.kind.in_(("work_instruction", "control_plan")),
             )
         rows = self.s.scalars(query).all()
-        if len(rows) > MAX_OWNER_ROWS:
-            raise DomainError("GRAPH_LIMIT_EXCEEDED", "当前制造文档超过有界读取范围。", 422)
         return rows
 
     def _current_runs(self, build_id):
@@ -345,11 +377,8 @@ class OwnerReader:
                 VerificationRunVersion.build_id == build_id,
             )
             .order_by(VerificationRunVersion.id)
-            .limit(MAX_OWNER_ROWS + 1)
-            .execution_options(populate_existing=True, autoflush=False)
+            .execution_options(populate_existing=True, autoflush=False, yield_per=100)
         ).all()
-        if len(rows) > MAX_OWNER_ROWS:
-            raise DomainError("GRAPH_LIMIT_EXCEEDED", "当前Run超过有界读取范围。", 422)
         return rows
 
     def links(self, obj):
@@ -465,17 +494,13 @@ class OwnerReader:
 
 
 def capture_graph(
-    reader, *, identity, roots, captured_at: datetime, expires_at: datetime, nature, sources
+    reader, *, identity, roots, captured_at: datetime, expires_at: datetime | None, nature, sources
 ):
     pending, nodes, edges = list(roots), {}, {}
     while pending:
         ref = pending.pop(0)
         if ref.identity in nodes:
             continue
-        if len(nodes) >= MAX_NODES:
-            raise DomainError(
-                "GRAPH_LIMIT_EXCEEDED", "影响子图超过250个固定节点，请缩小根范围。", 422
-            )
         obj = reader.resolve(ref)
         if not obj.current:
             if obj.view.get("owner_port") == "plan_not_integrated":

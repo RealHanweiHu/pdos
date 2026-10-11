@@ -77,7 +77,13 @@ def change_work(quality_work):
 
 
 def counts(work):
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         return {
             model.__tablename__: s.scalar(
                 select(func.count()).select_from(model).where(model.tenant_id == work.setup.tenant)
@@ -95,7 +101,13 @@ def counts(work):
 
 
 def current(work, change_id):
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         pointer = s.scalar(
             select(ChangeCurrent).where(
                 ChangeCurrent.product_id == work.setup.product,
@@ -131,7 +143,7 @@ def create_payload(work):
 def command(work, operation, payload):
     value = cmd(work.quality, operation, deepcopy(payload))
     response = work.quality.client.post(
-        f"/v1/products/{work.setup.product}/change-execution/inputs",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/change-execution/inputs",
         headers=work.quality.headers,
         json=value,
     )
@@ -158,7 +170,7 @@ def capture(work, change_id, *, key=None):
         "reason": "Capture only fixed owner reads; completeness remains unknown",
     }
     response = work.quality.client.post(
-        f"/v1/products/{work.setup.product}/change-execution/captures",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/change-execution/captures",
         headers=work.quality.headers,
         json=payload,
     )
@@ -168,7 +180,7 @@ def capture(work, change_id, *, key=None):
 
 def capture_post(work, payload):
     return work.quality.client.post(
-        f"/v1/products/{work.setup.product}/change-execution/captures",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/change-execution/captures",
         headers=work.quality.headers,
         json=payload,
     )
@@ -212,12 +224,12 @@ def test_current_issue_capa_create_cross_key_one_receipt_exact_sources_and_priva
     forged["payload"] = create_payload(work)
     forged["payload"]["references"][0]["key"] = str(uuid4())
     refused = post(work.quality, forged)
-    assert refused.status_code == 409 and refused.json()["code"] == "FIXED_REFERENCE_MISMATCH"
+    assert refused.status_code == 409 and refused.json()["code"] == "SOURCE_STALE"
     shared = deepcopy(alias)
     shared.update(command_id=str(uuid4()), idempotency_key=str(uuid4()))
-    shared["payload"]["visibility"] = "product"
+    shared["payload"]["visibility"] = "category"
     refused = post(work.quality, shared)
-    assert refused.status_code == 403 and refused.json()["code"] == "AUDIENCE_USE_FORBIDDEN"
+    assert refused.status_code == 403 and refused.json()["code"] == "FORBIDDEN_SCOPE"
     refused = post(work.engineer, alias)
     assert refused.status_code == 403 and refused.json()["code"] in {
         "FORBIDDEN_SCOPE",
@@ -228,13 +240,99 @@ def test_current_issue_capa_create_cross_key_one_receipt_exact_sources_and_priva
     source_id = UUID(work.policy_input["sources"][0]["artifact_id"])
     with Session(work.setup.admin) as s, s.begin():
         s.execute(update(Artifact).where(Artifact.id == source_id).values(status="withdrawn"))
-    refused = post(work.quality, value)
-    assert refused.status_code == 409 and refused.json()["code"] == "SOURCE_UNAVAILABLE"
+    recovered = post(work.quality, value)
+    assert recovered.status_code == 200 and recovered.json()["id"] == receipt["id"]
+    fresh = deepcopy(value)
+    fresh.update(command_id=str(uuid4()), idempotency_key=str(uuid4()))
+    fresh["payload"]["title"] += " new action after source withdrawal"
+    refused = post(work.quality, fresh)
+    assert refused.status_code in (403, 409) and refused.json()["code"] == "SOURCE_UNAVAILABLE"
     # Native sources without a safety epoch cannot undergo status ABA: the
     # deployed terminal-withdrawal constraint requires a new source identity.
     with pytest.raises(DBAPIError), Session(work.setup.admin) as s, s.begin():
         s.execute(update(Artifact).where(Artifact.id == source_id).values(status="active"))
     assert counts(work) == after and current(work, change_id)[1] == pointer
+
+
+def test_impact_inputs_reuse_current_capture_and_reject_late_source_clock_and_runtime_changes(
+    change_work, monkeypatch
+):
+    from pdos_next.domain.change_execution.graph import OwnerReader
+
+    work = change_work
+    _, _, change_id = created(work)
+    captured, _ = capture(work, change_id)
+    value = cmd(work.quality, "change.impact.compute", captured["impact_payload"])
+    path = (
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}"
+        "/change-execution/inputs"
+    )
+    baseline = counts(work)
+
+    def request():
+        return work.quality.client.post(path, headers=work.quality.headers, json=value)
+
+    with monkeypatch.context() as patch:
+
+        def no_owner_closure(*args, **kwargs):
+            raise AssertionError("Impact inputs must compare the captured dependency watermark")
+
+        patch.setattr(OwnerReader, "resolve", no_owner_closure)
+        response = request()
+    assert response.status_code == 200, response.text
+    inputs = response.json()
+    assert inputs["allowed"] is True
+    assert inputs["review"]["after"]["assessments"][-1]["graph"] == captured["capture"]["graph"]
+    assert {
+        (r["artifact_id"], r["expected_revision"]) for r in captured["required_source_read_set"]
+    } <= {(r["artifact_id"], r["expected_revision"]) for r in inputs["required_source_read_set"]}
+    assert counts(work) == baseline
+
+    actual_evidence = service._evidence
+    fired = []
+    with monkeypatch.context() as patch:
+
+        def withdraw_after_io(s, ctx, pid, reads, sources=(), *, io=True):
+            checked = actual_evidence(s, ctx, pid, reads, sources, io=io)
+            if io and not fired:
+                s.execute(
+                    update(Artifact)
+                    .where(Artifact.id == work.hypothesis_source.id)
+                    .values(status="withdrawn")
+                )
+                fired.append(True)
+            return checked
+
+        patch.setattr(service, "_evidence", withdraw_after_io)
+        refused = request()
+    assert fired and refused.status_code == 409, refused.text
+    assert refused.json()["code"] in {"SOURCE_STALE", "SOURCE_UNAVAILABLE"}
+    assert counts(work) == baseline
+    assert request().status_code == 200
+
+    actual_kernel = service._kernel
+    expiry = datetime.fromisoformat(work.change_credential_fields["valid_until"])
+    for fault in ("clock", "runtime"):
+        with monkeypatch.context() as patch:
+
+            def change_after_kernel(*args, fault=fault, **kwargs):
+                prepared = actual_kernel(*args, **kwargs)
+                if fault == "clock":
+                    patch.setattr(service, "now", lambda: expiry + timedelta(microseconds=1))
+                else:
+                    old_epochs = work.setup.engine._pdos_professional_issuer_epochs
+                    patch.setattr(
+                        work.setup.engine,
+                        "_pdos_professional_issuer_epochs",
+                        {key: epoch + 1 for key, epoch in old_epochs.items()},
+                    )
+                return prepared
+
+            patch.setattr(service, "_kernel", change_after_kernel)
+            refused = request()
+        assert refused.status_code == 409 and refused.json()["code"] == "SOURCE_STALE"
+        assert counts(work) == baseline
+    assert request().status_code == 200
 
 
 def test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualification_aba(
@@ -249,6 +347,24 @@ def test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualifica
     assert graph["roots"] == create_payload(work)["roots"]
     assert graph["scope"]["project_id"] == work.config["project"]
     assert graph["nature"] == "synthetic"
+    assert original["expires_at"] is None
+    from pdos_next.domain.change_execution.graph import OwnerReader
+
+    with monkeypatch.context() as read_only:
+
+        def unexpected_graph_read(*args, **kwargs):
+            raise AssertionError("Current GET must not rebuild owner closure")
+
+        read_only.setattr(OwnerReader, "resolve", unexpected_graph_read)
+        listing = work.quality.client.get(
+            f"/v1/categories/{work.setup.category}/products/{work.setup.product}"
+            f"/change-execution?issue_id={work.issue_id}",
+            headers=work.quality.headers,
+        )
+    assert listing.status_code == 200, listing.text
+    listed = listing.json()
+    assert listed["current_by_change"][str(change_id)]["revision"] == 1
+    assert any(item["id"] == original["id"] and item["current"] for item in listed["captures"])
     assert {c["facet"] for c in graph["coverage"]} == set(get_args(Facet))
     assert all(c["status"] == "unknown" and c["reason"] for c in graph["coverage"])
     assert {n["ref"]["kind"] for n in graph["nodes"]} >= {
@@ -270,7 +386,13 @@ def test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualifica
         VerificationRunVersion,
     )
 
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as session:
         pointed = session.scalar(
             select(VerificationRunCurrent).where(
                 VerificationRunCurrent.product_id == work.setup.product,
@@ -303,7 +425,7 @@ def test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualifica
     replay = capture_post(work, payload)
     assert replay.status_code == 200 and replay.json()["capture"] == original
     changed = capture_post(work, {**payload, "reason": "A different capture intent"})
-    assert changed.status_code == 409 and changed.json()["code"] == "IDEMPOTENCY_CONFLICT"
+    assert changed.status_code == 409 and changed.json()["code"] == "DUPLICATE_INTENT_CONFLICT"
     assert counts(work) == baseline
     impact, _ = command(work, "change.impact.compute", captured["impact_payload"])
     missing = {**deepcopy(impact), "source_read_set": []}
@@ -334,7 +456,13 @@ def test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualifica
         state="active",
         **work.change_credential_fields,
     )
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         p = s.scalar(
             select(ProfessionalCurrent).where(
                 ProfessionalCurrent.fact_id == UUID(restored["subject_id"])
@@ -349,15 +477,22 @@ def test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualifica
     fresh, _ = capture(work, change_id)
     assert fresh["capture"]["id"] != original["id"]
     fresh_impact, _ = command(work, "change.impact.compute", fresh["impact_payload"])
-    expiry = datetime.fromisoformat(fresh["capture"]["expires_at"])
+    assert fresh["capture"]["expires_at"] is None
+    expiry = datetime.fromisoformat(work.change_credential_fields["valid_until"])
     with monkeypatch.context() as patch:
         patch.setattr(service, "now", lambda: expiry + timedelta(microseconds=1))
         refused = post(work.quality, fresh_impact)
-    assert refused.status_code == 409 and refused.json()["code"] == "GRAPH_CAPTURE_EXPIRED"
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    assert refused.status_code == 403 and refused.json()["code"] == "QUALIFICATION_REQUIRED"
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         old = s.get(ChangeGraphCapture, UUID(original["id"]))
         assert old.graph_snapshot == graph
-        assert old.expires_at.isoformat() == original["expires_at"]
+        assert old.expires_at is None and original["expires_at"] is None
 
 
 def test_impact_terminal_outbox_failure_rolls_back_version_pointer_receipt_but_keeps_capture(
@@ -380,7 +515,13 @@ def test_impact_terminal_outbox_failure_rolls_back_version_pointer_receipt_but_k
     finally:
         event.remove(Outbox, "before_insert", fail)
     assert counts(work) == before and current(work, change_id) == (old, old_pointer)
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         fixed_capture = s.get(ChangeGraphCapture, UUID(captured["capture"]["id"]))
         assert fixed_capture.graph_snapshot == captured["capture"]["graph"]
 
@@ -402,7 +543,13 @@ def test_impact_terminal_outbox_failure_rolls_back_version_pointer_receipt_but_k
         assert after[model.__tablename__] == before[model.__tablename__] + 1
     for model in (ChangeCurrent, ChangeGraphCapture, Confirmation):
         assert after[model.__tablename__] == before[model.__tablename__]
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.quality.ctx.actor_id,
+        requester_id=work.quality.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         for model in (Audit, Outbox):
             assert (
                 s.scalar(
@@ -417,6 +564,14 @@ def test_impact_terminal_outbox_failure_rolls_back_version_pointer_receipt_but_k
     assert replay.status_code == 200 and replay.json()["id"] == receipt["id"]
     assert counts(work) == after
     professional.disable_issuer(work.setup.engine, work.professional_issuer.key)
-    refused = post(work.quality, value)
+    recovered = post(work.quality, value)
+    assert recovered.status_code == 200 and recovered.json()["id"] == receipt["id"]
+    new_action = cmd(work.quality, "change.request.create", create_payload(work))
+    new_action["payload"]["title"] += " new action after issuer revocation"
+    refused = work.quality.client.post(
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/change-execution/inputs",
+        headers=work.quality.headers,
+        json=new_action,
+    )
     assert refused.status_code == 403 and refused.json()["code"] == "QUALIFICATION_REQUIRED"
     assert counts(work) == after and current(work, change_id)[1] == pointer

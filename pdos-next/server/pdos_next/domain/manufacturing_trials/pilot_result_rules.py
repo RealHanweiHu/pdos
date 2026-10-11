@@ -205,7 +205,7 @@ def _compatibility(fixed):
 
 def aggregate(batches: tuple[RecordedBatch, ...], *, checked_at: datetime) -> AggregateProjection:
     _require(
-        type(batches) is tuple and 1 <= len(batches) <= 1000,
+        type(batches) is tuple and len(batches) >= 1,
         "INVALID_AGGREGATE",
         "须选择有界固定批次。",
     )

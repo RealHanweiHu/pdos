@@ -34,7 +34,7 @@ def fixed_request(monkeypatch, basis, context):  # noqa: F811 - imported pytest 
         product_id=basis.scope.product_id,
         project_id=basis.scope.project_id,
         owner_id=context.requester_id,
-        visibility="product",
+        visibility="category",
         status="draft",
         required_source_read_set=reads,
     )
@@ -113,7 +113,22 @@ def save_link(work, monkeypatch):
         "scope": work.basis.scope.model_dump(mode="json"),
         "operation": "quality.capa.followup.link",
         "purpose": work.basis.purpose,
-        "valid_until": deadline.isoformat(),
+        "valid_until": None,
+        "synthetic": True,
+        "roles": ["quality"],
+        "fact_refs": [
+            {
+                "kind": kind,
+                "role": "quality",
+                "nature": "synthetic",
+                "state": "active",
+                "operations": ["quality.capa.followup.link"],
+                "purposes": [work.basis.purpose],
+                "valid_from": (deadline - timedelta(days=2)).isoformat(),
+                "valid_until": deadline.isoformat(),
+            }
+            for kind in ("duty", "qualification")
+        ],
     }
     resolved = service.resolve_followup_outputs(
         None,
@@ -132,7 +147,7 @@ def save_link(work, monkeypatch):
         owner_id=work.context.requester_id,
         project_id=work.basis.scope.project_id,
         purpose=work.basis.purpose,
-        visibility="product",
+        visibility="category",
         action_id=resolved.action_id,
         basis_snapshot=work.basis.model_dump(mode="json"),
         basis_sha256=work.basis.basis_sha256,
@@ -143,7 +158,21 @@ def save_link(work, monkeypatch):
         ],
         source_basis={"artifact_sources": evidence},
         authority_snapshot=assessment,
-        policy_snapshot={"valid_until": deadline.isoformat(), "offline_substitute_only": True},
+        policy_snapshot={
+            "id": "offline-policy",
+            "revision": 1,
+            "valid_until": None,
+            "offline_substitute_only": True,
+            "source_basis": [
+                {
+                    "id": "offline-policy",
+                    "revision": 1,
+                    "state": "active",
+                    "valid_from": (deadline - timedelta(days=2)).isoformat(),
+                    "valid_until": deadline.isoformat(),
+                }
+            ],
+        },
     )
     monkeypatch.setattr(service, "_fixed_row", lambda *args: row)
     monkeypatch.setattr(
@@ -154,7 +183,6 @@ def save_link(work, monkeypatch):
     monkeypatch.setattr(service, "_link_runtime", lambda *args: "explicit offline runtime")
     monkeypatch.setattr(service, "_link_access", lambda *args, **kwargs: {"expires_at": deadline})
     monkeypatch.setattr(service, "_link_policy", lambda *args: row.policy_snapshot)
-    monkeypatch.setattr(service, "_link_authority_boundaries", lambda *args: (deadline,))
     work.link = row
     return resolved
 
@@ -281,7 +309,7 @@ def test_fixed_method_window_business_and_security_changes_still_require_recheck
         work.view["window_proposals"] = []
     with pytest.raises(DomainError) as raised:
         read_link(work)
-    assert raised.value.code == (
+    assert raised.value.reason == (
         "SOURCE_STALE" if change == "fixed_revision" else "RECHECK_REQUIRED"
     )
 
@@ -294,7 +322,7 @@ def test_original_fixed_source_withdrawal_is_not_hidden_by_stable_ui_status(
     work.withdrawn = True
     with pytest.raises(DomainError) as raised:
         read_link(work)
-    assert raised.value.code == "SOURCE_UNAVAILABLE"
+    assert raised.value.reason == "SOURCE_UNAVAILABLE"
 
 
 def test_fixed_request_private_scope_still_rejects_another_reader(fixed_request):
@@ -302,7 +330,7 @@ def test_fixed_request_private_scope_still_rejects_another_reader(fixed_request)
     work.row.visibility, work.row.owner_id = "private", uuid4()
     with pytest.raises(DomainError) as raised:
         reading(work)
-    assert (raised.value.code, raised.value.status) == ("FORBIDDEN_SCOPE", 403)
+    assert (raised.value.reason, raised.value.status) == ("FORBIDDEN_SCOPE", 403)
 
 
 def test_fixed_child_source_revision_cannot_be_boolean(fixed_request):

@@ -3,11 +3,16 @@
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
+from uuid import UUID as CategoryUUID
 from uuid import uuid4
 
 import httpx
 import psycopg
 import pytest
+from pydantic import ValidationError
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session, make_transient_to_detached
+
 from pdos_next import change_implementation_owner as implementation
 from pdos_next import change_order_integration as integration
 from pdos_next import change_order_service as owner
@@ -20,9 +25,6 @@ from pdos_next.errors import DomainError
 from pdos_next.models import Confirmation
 from pdos_next.service import Context, material_digest
 from pdos_next.service import digest as common_digest
-from pydantic import ValidationError
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session, make_transient_to_detached
 
 from . import kernel_helpers as helper
 
@@ -41,14 +43,14 @@ def no_connection(monkeypatch):
 def rejected(code, call):
     with pytest.raises(DomainError) as caught:
         call()
-    assert caught.value.code == code
+    assert caught.value.reason == code
 
 
 def payload(kind="approve"):
     raw = {
         "change_id": str(helper.uid("request")),
         "expected_change_revision": 3,
-        "visibility": "product",
+        "visibility": "category",
     }
     if kind == "prepare":
         cls = store.OrderPreparePayload
@@ -96,7 +98,7 @@ def test_real_semantic_omits_only_proof_and_keeps_full_plan_and_audience():
     first = cls.model_validate(raw)
     second = cls.model_validate({**raw, "confirmation_token": "actual-token-123456789"})
     assert owner.semantic(first) == owner.semantic(second)
-    assert owner.semantic(first)["visibility"] == "product"
+    assert owner.semantic(first)["visibility"] == "category"
     assert owner.semantic(first)["plan"] == first.plan.model_dump(mode="json")
     assert owner.semantic(first)["expected_change_revision"] == 3
     reordered = deepcopy(raw)
@@ -109,7 +111,12 @@ def consumed_work(kind="approve"):
     token = "actual-tx-token-1234567890"
     raw["approval_token" if kind == "approve" else "confirmation_token"] = token
     p = cls.model_validate(raw)
-    ctx = Context(helper.SCOPE.tenant_id, helper.uid("maker"), helper.uid("maker"))
+    ctx = Context(
+        helper.SCOPE.tenant_id,
+        helper.uid("maker"),
+        helper.uid("maker"),
+        category_id=CategoryUUID(int=1000000),
+    )
     op = {
         "approve": "change.order.approve",
         "prepare": "change.order.prepare",
@@ -123,6 +130,7 @@ def consumed_work(kind="approve"):
         expected_revision=7,
         source_read_set=[{"artifact_id": helper.SOURCE.id, "expected_revision": 1}],
         payload=p.model_dump(mode="json"),
+        category_id=CategoryUUID(int=1000000),
     )
     s = Session(bind=SimpleNamespace())
     s.begin()
@@ -285,7 +293,7 @@ def test_actual_orm_stage_appends_same_chain_and_retains_proof_uuid(monkeypatch)
         change_id=before.id,
         revision=before.revision,
         owner_id=before.requester_id,
-        visibility="product",
+        visibility="category",
         operation="change.order.prepare",
         status=before.status,
         request_snapshot=before.model_dump(mode="json"),

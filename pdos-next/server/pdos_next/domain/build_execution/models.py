@@ -32,8 +32,13 @@ class _Snapshot(Row):
 def build_fk(column, table):
     return ForeignKeyConstraint(
         ["tenant_id", "product_id", "project_id", "build_id", column],
-        [f"{table}.tenant_id", f"{table}.product_id", f"{table}.project_id",
-         f"{table}.build_id", f"{table}.id"],
+        [
+            f"{table}.tenant_id",
+            f"{table}.product_id",
+            f"{table}.project_id",
+            f"{table}.build_id",
+            f"{table}.id",
+        ],
     )
 
 
@@ -47,7 +52,8 @@ def scope_constraints(status):
         ),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint(
-            "visibility IN ('private','product') AND revision = 1 AND build_revision > 0"
+            "visibility IN ('private','category','audience') AND "
+            "revision = 1 AND build_revision > 0"
         ),
         CheckConstraint(f"status = '{status}'"),
     )
@@ -67,34 +73,78 @@ class ActualConfiguration(_Snapshot, Base):
     __table_args__ = (
         *scope_constraints("recorded"),
         ForeignKeyConstraint(
-            ["tenant_id", "product_id", "project_id", "build_id",
-             "planned_engineering_configuration_id", "planned_manufacturing_configuration_id"],
-            ["builds.tenant_id", "builds.product_id", "builds.project_id", "builds.id",
-             "builds.engineering_configuration_id", "builds.manufacturing_configuration_id"],
+            [
+                "tenant_id",
+                "product_id",
+                "project_id",
+                "build_id",
+                "planned_engineering_configuration_id",
+                "planned_manufacturing_configuration_id",
+            ],
+            [
+                "builds.tenant_id",
+                "builds.product_id",
+                "builds.project_id",
+                "builds.id",
+                "builds.engineering_configuration_id",
+                "builds.manufacturing_configuration_id",
+            ],
         ),
         ForeignKeyConstraint(
-            ["tenant_id", "product_id", "planned_engineering_configuration_id",
-             "planned_manufacturing_configuration_id"],
-            ["process_revisions.tenant_id", "process_revisions.product_id",
-             "process_revisions.engineering_configuration_id", "process_revisions.id"],
+            [
+                "tenant_id",
+                "product_id",
+                "planned_engineering_configuration_id",
+                "planned_manufacturing_configuration_id",
+            ],
+            [
+                "process_revisions.tenant_id",
+                "process_revisions.product_id",
+                "process_revisions.engineering_configuration_id",
+                "process_revisions.id",
+            ],
         ),
         ForeignKeyConstraint(
-            ["tenant_id", "product_id", "actual_engineering_configuration_id",
-             "actual_manufacturing_configuration_id"],
-            ["process_revisions.tenant_id", "process_revisions.product_id",
-             "process_revisions.engineering_configuration_id", "process_revisions.id"],
+            [
+                "tenant_id",
+                "product_id",
+                "actual_engineering_configuration_id",
+                "actual_manufacturing_configuration_id",
+            ],
+            [
+                "process_revisions.tenant_id",
+                "process_revisions.product_id",
+                "process_revisions.engineering_configuration_id",
+                "process_revisions.id",
+            ],
         ),
         ForeignKeyConstraint(
-            ["tenant_id", "product_id", "actual_engineering_configuration_id",
-             "actual_engineering_revision"],
-            ["engineering_configurations.tenant_id", "engineering_configurations.product_id",
-             "engineering_configurations.id", "engineering_configurations.revision"],
+            [
+                "tenant_id",
+                "product_id",
+                "actual_engineering_configuration_id",
+                "actual_engineering_revision",
+            ],
+            [
+                "engineering_configurations.tenant_id",
+                "engineering_configurations.product_id",
+                "engineering_configurations.id",
+                "engineering_configurations.revision",
+            ],
         ),
         ForeignKeyConstraint(
-            ["tenant_id", "product_id", "actual_manufacturing_configuration_id",
-             "actual_manufacturing_revision"],
-            ["process_revisions.tenant_id", "process_revisions.product_id",
-             "process_revisions.id", "process_revisions.revision"],
+            [
+                "tenant_id",
+                "product_id",
+                "actual_manufacturing_configuration_id",
+                "actual_manufacturing_revision",
+            ],
+            [
+                "process_revisions.tenant_id",
+                "process_revisions.product_id",
+                "process_revisions.id",
+                "process_revisions.revision",
+            ],
         ),
         CheckConstraint("actual_engineering_revision > 0 AND actual_manufacturing_revision > 0"),
         CheckConstraint("observed_at <= created_at"),
@@ -120,8 +170,9 @@ class BuildLot(_Snapshot, Base):
         UniqueConstraint(
             "tenant_id", "product_id", "observation_system", "observation_external_id"
         ),
-        UniqueConstraint("tenant_id", "product_id", "project_id", "build_id", "id",
-                         "actual_configuration_id"),
+        UniqueConstraint(
+            "tenant_id", "product_id", "project_id", "build_id", "id", "actual_configuration_id"
+        ),
         build_fk("actual_configuration_id", "actual_configurations"),
         CheckConstraint("observed_unit_count > 0 AND actual_configuration_revision > 0"),
         CheckConstraint("observation_nature IN ('real','synthetic')"),
@@ -140,12 +191,24 @@ class SampleAllocation(_Snapshot, Base):
         *scope_constraints("identified"),
         UniqueConstraint("tenant_id", "product_id", "project_id", "build_id", "lot_id", "id"),
         ForeignKeyConstraint(
-            ["tenant_id", "product_id", "project_id", "build_id", "lot_id",
-             "actual_configuration_id"],
-            ["build_lots.tenant_id", "build_lots.product_id", "build_lots.project_id",
-             "build_lots.build_id", "build_lots.id", "build_lots.actual_configuration_id"],
+            [
+                "tenant_id",
+                "product_id",
+                "project_id",
+                "build_id",
+                "lot_id",
+                "actual_configuration_id",
+            ],
+            [
+                "build_lots.tenant_id",
+                "build_lots.product_id",
+                "build_lots.project_id",
+                "build_lots.build_id",
+                "build_lots.id",
+                "build_lots.actual_configuration_id",
+            ],
         ),
-        CheckConstraint("unit_count > 0 AND unit_count <= 500"),
+        CheckConstraint("unit_count > 0"),
     )
 
 
@@ -168,18 +231,36 @@ class SampleUnit(_Snapshot, Base):
         UniqueConstraint("tenant_id", "product_id", "label"),
         ForeignKeyConstraint(
             ["tenant_id", "product_id", "project_id", "build_id", "lot_id", "allocation_id"],
-            ["sample_allocations.tenant_id", "sample_allocations.product_id",
-             "sample_allocations.project_id", "sample_allocations.build_id",
-             "sample_allocations.lot_id", "sample_allocations.id"],
+            [
+                "sample_allocations.tenant_id",
+                "sample_allocations.product_id",
+                "sample_allocations.project_id",
+                "sample_allocations.build_id",
+                "sample_allocations.lot_id",
+                "sample_allocations.id",
+            ],
         ),
         ForeignKeyConstraint(
-            ["tenant_id", "product_id", "project_id", "build_id", "lot_id",
-             "actual_configuration_id"],
-            ["build_lots.tenant_id", "build_lots.product_id", "build_lots.project_id",
-             "build_lots.build_id", "build_lots.id", "build_lots.actual_configuration_id"],
+            [
+                "tenant_id",
+                "product_id",
+                "project_id",
+                "build_id",
+                "lot_id",
+                "actual_configuration_id",
+            ],
+            [
+                "build_lots.tenant_id",
+                "build_lots.product_id",
+                "build_lots.project_id",
+                "build_lots.build_id",
+                "build_lots.id",
+                "build_lots.actual_configuration_id",
+            ],
         ),
         ForeignKeyConstraint(
-            ["tenant_id", "custodian_id"], ["principals.tenant_id", "principals.id"],
+            ["tenant_id", "custodian_id"],
+            ["principals.tenant_id", "principals.id"],
         ),
         CheckConstraint("availability IN ('unknown','hold')"),
     )

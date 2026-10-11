@@ -17,7 +17,7 @@ export type CandidateFailurePairMapping = Readonly<{
   projection_id: string | null;
   applicability_sources: readonly CandidateDefinitionReference[];
 }>;
-export type CandidateVisibility = "private" | "product";
+export type CandidateVisibility = "private" | "category" | "audience";
 /** Exactly the tokenless Python Payload fields. The host adds the common envelope later. */
 export type CandidateFormPayload = Readonly<{
   issue_id: string;
@@ -115,7 +115,7 @@ function validMapping(mapping: CandidateFailurePairMapping, scope: CandidateForm
     revision(mapping.actual_configuration_revision) && text(mapping.item_id, 120) &&
     (mapping.measurement_id === null || uuid(mapping.measurement_id)) &&
     (mapping.projection_id === null || uuid(mapping.projection_id)) &&
-    Array.isArray(mapping.applicability_sources) && mapping.applicability_sources.length <= 20 &&
+    Array.isArray(mapping.applicability_sources) &&
     mapping.applicability_sources.every(validSource) &&
     unique(mapping.applicability_sources.map(candidateSourceKey));
 }
@@ -123,7 +123,7 @@ export function validCandidateScope(scope: CandidateFormScope | null): scope is 
   return !!scope && [scope.tenant_id, scope.product_id, scope.project_id, scope.principal_id,
     scope.issue_id, scope.capa_id].every(uuid) && fixed(scope.current_issue) &&
     (scope.origin_issue === null || fixed(scope.origin_issue)) && visibility(scope.visibility) &&
-    Array.isArray(scope.failure_ids) && scope.failure_ids.length > 0 && scope.failure_ids.length <= 10000 &&
+    Array.isArray(scope.failure_ids) && scope.failure_ids.length > 0 &&
     scope.failure_ids.every(value => text(value)) && unique(scope.failure_ids);
 }
 export function validCandidateMaterials(scope: CandidateFormScope, materials: CandidateMaterials): boolean {
@@ -153,16 +153,16 @@ export function candidateFormBasisKey(scope: CandidateFormScope, materials: Cand
 export function candidatePayload(scope: CandidateFormScope, materials: CandidateMaterials,
   selection: CandidateFormSelection, allowProductVisibility = false): CandidateFormPayload | null {
   if (!validCandidateScope(scope) || !validCandidateMaterials(scope, materials) ||
-    !text(selection.reason) || !visibility(selection.visibility) || selection.links.length > 20 ||
-    selection.mappings.length > 10000 || selection.sources.length > 20 ||
+    !text(selection.reason) || !visibility(selection.visibility) ||
+
     !unique(selection.links) || !unique(selection.mappings) || !unique(selection.sources)) return null;
   const links = materials.links.filter(choice => selection.links.includes(candidateLinkKey(choice.ref)));
   const mappings = materials.mappings.filter(choice => selection.mappings.includes(candidateMappingKey(choice.mapping)));
   const sources = materials.sources.filter(choice => selection.sources.includes(candidateSourceKey(choice.reference)));
   if (links.length !== selection.links.length || mappings.length !== selection.mappings.length ||
     sources.length !== selection.sources.length) return null;
-  if (selection.visibility === "product" && (allowProductVisibility !== true || scope.visibility !== "product" ||
-    [...links, ...mappings, ...sources].some(choice => choice.visibility !== "product"))) return null;
+  if (selection.visibility === "category" && (allowProductVisibility !== true || scope.visibility !== "category" ||
+    [...links, ...mappings, ...sources].some(choice => choice.visibility !== "category"))) return null;
   const cloneSource = (ref: CandidateDefinitionReference): CandidateDefinitionReference => ({
     artifact_id: ref.artifact_id, expected_revision: ref.expected_revision, line: ref.line, quote: ref.quote,
   });

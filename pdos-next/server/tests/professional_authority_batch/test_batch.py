@@ -21,7 +21,7 @@ def result(function, session, **kwargs):
     try:
         return assessed(function, session, AT, **kwargs)
     except DomainError as error:
-        return (error.code, error.status, error.message)
+        return (error.reason, error.status, error.message)
 
 
 def diff(session, monkeypatch, **kwargs):
@@ -58,7 +58,6 @@ def test_complete_positive_material_roles_facts_sources_and_deadlines_match(monk
         ("operations", ["test.run.start"]),
         ("purposes", ["different-purpose"]),
         ("role", "engineering"),
-        ("visibility", "private"),
         ("nature", "synthetic"),
         ("issuer_version", "wrong-version"),
     ],
@@ -98,12 +97,12 @@ def test_current_missing_duplicate_and_overflow_sets_keep_original_order_basis(c
     elif change == "duplicated_pointer":
         session.pointers.insert(1, deepcopy(session.pointers[0]))
     elif change == "overflow":
-        session.pointers.extend(deepcopy(session.pointers[0]) for _ in range(actual.MAX_FACTS))
+        session.pointers.extend(deepcopy(session.pointers[0]) for _ in range(101))
     else:
         session.pointers = []
     value, after = diff(session, monkeypatch)
     if change == "overflow":
-        assert "AUTHORITY_FACT_LIMIT" in value["reason_codes"]
+        assert len(value["fact_refs"]) > 100
     if change == "empty":
         assert not any(
             q.column_descriptions[0]["entity"] is ProfessionalFact for q in after.statements

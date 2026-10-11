@@ -5,20 +5,22 @@ import pickle
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from types import SimpleNamespace
+from uuid import UUID as CategoryUUID
 from uuid import uuid4
 
 import pytest
-from pdos_next.contracts import Command
-from pdos_next.domain.manufacturing_baseline import consumption, models, rules, schemas, service
-from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Product
-from pdos_next.service import Context, digest, material_digest
 from pydantic import ValidationError
 from sqlalchemy import CheckConstraint, ForeignKeyConstraint, UniqueConstraint, inspect
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Session, make_transient_to_detached
 from sqlalchemy.schema import CreateTable
 from sqlalchemy.types import Uuid
+
+from pdos_next.contracts import Command
+from pdos_next.domain.manufacturing_baseline import consumption, models, rules, schemas, service
+from pdos_next.errors import DomainError
+from pdos_next.models import Confirmation, Product
+from pdos_next.service import Context, digest, material_digest
 
 
 def source():
@@ -52,7 +54,7 @@ def material(kind="work_instruction", **changes):
 def frame(operation="npi.work_instruction.record", *, nested=False):
     payload = material(schemas.KINDS[operation], confirmation_token="owned-pure-token-substitute")
     tenant, actor, pid = uuid4(), uuid4(), uuid4()
-    ctx = Context(tenant, actor, actor)
+    ctx = Context(tenant, actor, actor, category_id=CategoryUUID(int=1000000))
     command = Command(
         command_id=uuid4(),
         idempotency_key=str(uuid4()),
@@ -61,6 +63,7 @@ def frame(operation="npi.work_instruction.record", *, nested=False):
         expected_revision=4,
         payload=payload.model_dump(mode="json"),
         source_read_set=rules.source_reads(payload),
+        category_id=CategoryUUID(int=1000000),
     )
     proof = Confirmation(
         id=uuid4(),
@@ -182,11 +185,13 @@ def test_source_hash_uses_whole_utf8_quote_and_merges_distinct_artifact_reads():
         rules.source_reads(value)
 
 
-def test_full_source_closure_over_twenty_refused_not_truncated():
+def test_full_source_closure_over_twenty_remains_complete():
     value = material(sources=[source() for _ in range(20)])
-    with pytest.raises(DomainError) as error:
-        rules.source_reads(value)
-    assert error.value.code == "TOO_MANY_REQUIRED_EVIDENCE"
+    reads = rules.source_reads(value)
+    assert len(reads) > 20
+    assert {str(ref.id) for ref in rules.source_refs(value)} == {
+        str(read["artifact_id"]) for read in reads
+    }
 
 
 def documents_for(payload):
@@ -256,7 +261,7 @@ def test_incomplete_baseline_is_explicit_draft_not_false_negative_complete():
     ],
 )
 def test_baseline_exact_fixed_document_child_owner_boundaries(mutation):
-    value = baseline().model_copy(update={"visibility": "product"})
+    value = baseline().model_copy(update={"visibility": "category"})
     docs = documents_for(value)
     child = docs[("assemble", "work_instruction")]
     if mutation == "missing":
@@ -362,7 +367,7 @@ def test_actual_consumption_never_accepts_historical_bool_or_changed_material(fa
         kw = (
             {"command": f.command.model_copy(update={"idempotency_key": str(uuid4())})}
             if fault == "key"
-            else {"ctx": Context(f.tenant, uuid4(), f.actor)}
+            else {"ctx": Context(f.tenant, uuid4(), f.actor, category_id=CategoryUUID(int=1000000))}
         )
         with pytest.raises(DomainError):
             f.live(binding, marker, **kw)
@@ -393,7 +398,12 @@ def test_default_missing_common_host_fails_closed():
 def test_t1_phase_keeps_full_command_and_nested_uow_identity(monkeypatch):
     f = frame()
     product = Product(
-        id=f.pid, tenant_id=f.tenant, owner_id=f.actor, name="actual ORM substitute", revision=4
+        id=f.pid,
+        tenant_id=f.tenant,
+        owner_id=f.actor,
+        name="actual ORM substitute",
+        revision=4,
+        category_id=CategoryUUID(int=1000000),
     )
     make_transient_to_detached(product)
     f.s.add(product)
@@ -455,7 +465,7 @@ def test_final_owner_io_expiry_rechecked_with_fresh_clock(monkeypatch):
     monkeypatch.setattr(service, "now", lambda: datetime.now(UTC) + timedelta(seconds=3))
     with pytest.raises(DomainError) as error:
         service._refresh(f.s, f.ctx, f.command, None, f.payload, bound)
-    assert error.value.code == "QUALIFICATION_REQUIRED"
+    assert error.value.reason == "SOURCE_STALE"
 
 
 def test_end_owner_refresh_rejects_source_or_configuration_drift(monkeypatch):
@@ -469,7 +479,7 @@ def test_end_owner_refresh_rejects_source_or_configuration_drift(monkeypatch):
     monkeypatch.setattr(service, "_load", lambda *a, **k: latest)
     with pytest.raises(DomainError) as error:
         service._refresh(f.s, f.ctx, f.command, None, f.payload, bound)
-    assert error.value.code == "RECHECK_REQUIRED"
+    assert error.value.reason == "RECHECK_REQUIRED"
 
 
 def test_model_physical_scope_and_fixed_child_fks_offline_compile():
@@ -563,7 +573,7 @@ def test_actual_authority_cannot_be_borrowed_from_different_caller_or_project(mo
     monkeypatch.setattr(service.professional, "assess", lambda *a, **k: value)
     with pytest.raises(DomainError) as error:
         service._authority(f.s, f.ctx, f.command, project)
-    assert error.value.code == "INTEGRITY_MISMATCH"
+    assert error.value.reason == "INTEGRITY_MISMATCH"
 
 
 def test_explicit_public_registry_is_manufacturing_t1_without_release():
@@ -602,12 +612,21 @@ def test_whole_quote_duplicates_inside_step_rejected():
 def test_actual_phase_stages_one_draft_only_after_live_consumption(monkeypatch):
     f = frame()
     product = Product(
-        id=f.pid, tenant_id=f.tenant, owner_id=f.actor, name="ORM protocol substitute", revision=4
+        id=f.pid,
+        tenant_id=f.tenant,
+        owner_id=f.actor,
+        name="ORM protocol substitute",
+        revision=4,
+        category_id=CategoryUUID(int=1000000),
     )
     make_transient_to_detached(product)
     f.s.add(product)
     f.engine._pdos_manufacturing_preparation_consumption = f.host
-    authority = {"valid_until": (datetime.now(UTC) + timedelta(minutes=3)).isoformat()}
+    from .test_expiry import authority_result
+
+    authority = authority_result(
+        f, SimpleNamespace(id=f.payload.project_id, purpose="actual purpose"), datetime.now(UTC)
+    )
     bound = service.Bound(
         SimpleNamespace(id=f.payload.project_id, purpose="exact purpose"),
         None,

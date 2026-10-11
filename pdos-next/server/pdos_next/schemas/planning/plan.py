@@ -31,10 +31,9 @@ class Calendar(_DTO):
     timezone: str = Field(min_length=1, max_length=100)
     working_weekdays: tuple[Annotated[int, Field(ge=0, le=6, strict=True)], ...] = Field(
         min_length=1,
-        max_length=7,
     )
-    intervals: tuple[WorkInterval, ...] = Field(min_length=1, max_length=12)
-    holidays: tuple[date, ...] = Field(default=(), max_length=3660)
+    intervals: tuple[WorkInterval, ...] = Field(min_length=1)
+    holidays: tuple[date, ...] = Field(default=())
     timezone_rules_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
 
     @field_validator("timezone")
@@ -68,7 +67,7 @@ class PlanTask(_DTO):
     title: str = Field(min_length=1, max_length=200)
     # A discipline label is not an appointment, permission or personal qualification.
     discipline: str = Field(min_length=1, max_length=80)
-    depends_on: tuple[str, ...] = Field(default=(), max_length=100)
+    depends_on: tuple[str, ...] = Field(default=())
     duration_min_minutes: int | None = Field(default=None, ge=0, le=525600, strict=True)
     duration_max_minutes: int | None = Field(default=None, ge=0, le=525600, strict=True)
     estimate_source: str | None = Field(default=None, min_length=1, max_length=2000)
@@ -88,7 +87,7 @@ class PlanTask(_DTO):
 class ScheduleInput(_DTO):
     start: AwareDatetime
     calendar: Calendar
-    tasks: tuple[PlanTask, ...] = Field(min_length=1, max_length=500)
+    tasks: tuple[PlanTask, ...] = Field(min_length=1)
 
     @field_validator("start")
     @classmethod

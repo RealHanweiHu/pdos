@@ -1,8 +1,19 @@
 """A closed server registry; neither model nor client can choose their write tier."""
 
+CATEGORY_OPERATIONS = frozenset({
+    "model.configuration.save",
+    "evidence.artifact.register", "evidence.original.withdraw",
+    "evidence.lifecycle.upload.abandon", "evidence.lifecycle.quarantine",
+    "evidence.lifecycle.restore", "evidence.lifecycle.cancel",
+    "evidence.lifecycle.protection.record", "ai.run.revert",
+    "proposal.create", "proposal.item.patch", "proposal.question.create",
+    "proposal.g0.submit", "proposal.g0.decide",
+})
+
 T2_OPERATIONS = frozenset(
     {
         "change.order.approve",
+        "proposal.g0.decide",
         "change.selection.decide",
         "build.engineering.authorize",
         "build.manufacturing.authorize",
@@ -15,6 +26,9 @@ T2_OPERATIONS = frozenset(
 
 T1_OPERATIONS = frozenset(
     {
+        "model.configuration.save",
+        "ai.run.revert",
+        "proposal.create", "proposal.question.create", "proposal.g0.submit",
         "change.order.prepare",
         "change.implementation.record",
         "evidence.original.withdraw",
@@ -34,7 +48,6 @@ T1_OPERATIONS = frozenset(
         "npi.work_instruction.record",
         "npi.control_plan.record",
         "npi.manufacturing_baseline.record",
-
         "build.create",
         "build.configuration.actual.record",
         "build.output.record",
@@ -84,6 +97,22 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation == "evidence.claim.record":
+        from pdos_next.agent_kernel import claim_candidate
+
+        return claim_candidate
+    if operation == "model.configuration.save":
+        from pdos_next.model_configuration import commands
+
+        return commands
+    if operation.startswith("proposal."):
+        from pdos_next.domain.preproject import service
+
+        return service
+    if operation == "ai.run.revert":
+        from pdos_next import run_revert
+
+        return run_revert
     if operation in {
         "change.order.prepare",
         "change.order.approve",

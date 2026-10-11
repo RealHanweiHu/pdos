@@ -29,7 +29,7 @@ class FixedCohort(DTO):
     mode: Literal["entire_lot", "fixed_sampled_subset"]
     denominator_policy: Literal["all_fixed_input_units"] = "all_fixed_input_units"
     statistics_basis_key: Text
-    unit_refs: tuple[Ref, ...] | None = Field(max_length=10000)
+    unit_refs: tuple[Ref, ...] | None = Field()
     source: SourceRef
 
     @model_validator(mode="after")

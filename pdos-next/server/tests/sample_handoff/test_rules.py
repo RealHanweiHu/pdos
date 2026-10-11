@@ -90,7 +90,7 @@ def test_event_identity_cannot_be_an_unrelated_source_line(field):
     raw["event_source"]["quote"] = line
     with pytest.raises(DomainError, match="原文须") as error:
         assert_event(raw, line, identities)
-    assert error.value.code == "SAMPLE_EVENT_MISMATCH"
+    assert error.value.reason == "SAMPLE_EVENT_MISMATCH"
 
 
 @pytest.mark.parametrize(
@@ -116,7 +116,7 @@ def test_closed_full_line_event_rejects_ambiguity(kind):
     raw["event_source"]["quote"] = line if kind != "partial" else '"ready"'
     with pytest.raises(DomainError) as error:
         assert_event(raw, line, identities)
-    assert error.value.code == "SAMPLE_EVENT_MISMATCH"
+    assert error.value.reason == "SAMPLE_EVENT_MISMATCH"
 
 
 @pytest.mark.parametrize(
@@ -134,7 +134,7 @@ def test_event_clock_boundaries(parameters, code):
     inputs = {"at": AT, "actual_at": AT, "lot_at": AT, "start_at": AT, **parameters}
     with pytest.raises(DomainError) as error:
         validate_time(AT, **inputs)
-    assert error.value.code == code
+    assert error.value.reason == code
 
 
 def test_exact_ready_clock_allows_same_output_start_instant_and_newer_transition():
@@ -169,7 +169,7 @@ def test_product_write_or_other_professional_role_does_not_grant_manufacturing(c
     value = {"authorized": True, "qualified": True, "roles": ["manufacturing"], **changes}
     with pytest.raises(DomainError) as error:
         require_manufacturing(value)
-    assert error.value.code == "MANUFACTURING_AUTHORITY_REQUIRED"
+    assert error.value.reason == "MANUFACTURING_AUTHORITY_REQUIRED"
     assert error.value.status == 403
 
 

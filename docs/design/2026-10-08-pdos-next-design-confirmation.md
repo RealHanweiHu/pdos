@@ -437,3 +437,81 @@ v1.1 冻结后的设计变更记在这里，并同步到 v1.1 对应位置。
 - **决定**：M2（小Pai 内核：真实模型接入、Agent 图、工具注册表、技能包、公开研究、服务商数据协议、MCP 准入）在 S0 的 B3 完成后开始，与 B4–B6 并行。M3（品类研究到立项的第一个闭环）仍在 M1 全部完成（B8）之后开始。
 - **原因**：M2 涉及的模块与 B4–B6（交样、测试、CAPA、变更、制造）基本不重叠；M2 依赖的品类范围根、共同命令与证明、型号/项目已在 B1–B3 完成。
 - **规则**：文件归属、迁移号分段、公共验证见 [S0 实施计划](2026-10-08-pdos-next-s0-refactoring-plan.md) §4.1。这是对 C5"重构完成后再开始第一个闭环"的局部调整：只提前内核，不提前第一个闭环。
+
+### P5 小Pai 工具名单 v0.2（用户 2026-10-08）
+
+在 M3 实施合同和技能包草稿使用的工具名单基础上补充（依据技能包起草时发现的缺口）：
+- **客户原件隔离**：新增 `evidence.artifact.read`（READ，按定位分页读原件，只在隔离子任务中可用）和 `evidence.extract`（对提案挂载的客户原件做隔离抽取，交回带定位和逐字片段的结构化行）。带写工具的主循环不直接读客户原件，落实 v1.1 §06.1 的隔离原则。
+- **证据登记**：`evidence.claim.record`、`evidence.link.create`（T0，附录 A 已有）纳入名单。
+- **计算**：新增 `calc.price_band`（按口径分组、分档、带日期汇率换算）、`calc.derivation_diff`（包装现有派生/三方差异引擎）；计数由 Agent 图 verify 节点回填。
+- **读取**：新增 `category.list`、`platform.read`；`product.baseline.read` 返回已发布定义、BOM、认证、模具、平台引用；`proposal.items.read` 包含已有待决问题。
+- **写入**：`category.parameter.publish`（T1，附录 A 已有）纳入名单；`platform.link.create` 可在平台不存在时顺带新建。
+- **只准备不执行**：`proposal.share`、`proposal.g0.submit`、`proposal.g0.decide`、`category.member.grant`、`project.create`。
+
+### P6 M3 实施合同待定问题 Q1–Q10（用户 2026-10-08，全部按推荐）
+
+| # | 结论 |
+|---|---|
+| Q1 | G0 评审人需要 Grant 上的 `product_manager` 能力，不是有写权限即可；需在 S0 B1 的 Grant 表中增加 |
+| Q2 | G0 批准时，待决问题转为新表 `project_open_items`（带负责人和期限） |
+| Q3 | AT-63 在 M3 只做资格检查；资格登记界面留到 M4 |
+| Q4 | M3 不做规格冻结；AT-06 用定义成熟度视图列出冻结前会被阻断的内容 |
+| Q5 | `platform.link.create` 可顺带新建平台，不新增操作名 |
+| Q6 | 私有客户提案的待决问题不能分派给受众以外的专家 |
+| Q7 | G0 决定撤回、提案撤销本期不做 |
+| Q8 | 新建品类时研究快照先存运行作业库，`category.create` 在同一事务里登记为品类快照 |
+| Q9 | `proposal.share` 只给小Pai 准备材料，由负责人在页面执行 |
+| Q10 | 评审期间提案自身引用的原件被撤回，阻断批准并退回重提；品类资料变化仍不阻断 |
+
+### P7 M3 合同与技能包的 7 项细则（用户 2026-10-08，全部按推荐）
+
+| # | 问题 | 结论 |
+|---|---|---|
+| 1 | `evidence.search` 是否向主循环返回原件正文片段 | 不返回。主循环只拿定位和已登记的 Claim；读原文走隔离子任务（`evidence.extract`） |
+| 2 | G0 分派的处置负责人不在私有提案受众内 | 评审人在 G0 决定里分派处置负责人时，同一决定把他们加入该型号和项目的受众 |
+| 3 | price_band、jtbd、review_pain_clustering 在私有提案运行中能否登记事实 | 能，使用 `evidence.claim.record`；记录随提案保持私有 |
+| 4 | 导入的评论、退货文件（含客户投诉）是否走隔离抽取 | 是，所有外部文件按不可信内容处理，经 `evidence.extract` |
+| 5 | 数据性质"宣传"对应哪种 Claim 性质 | 对应 `extracted`，另加"厂商宣称"标记，与实测（`observed`）区分；推断对应 `inferred`，未知保持 unknown |
+| 6 | 接触过私有资料的运行所登记的公开来源 Claim 的可读范围 | 只给提案受众读，不按来源推定为品类可读 |
+| 7 | 私有提案运行中起草的规格字典新参数 | 发布前做与去标识沉淀相同的身份检查（`identity_not_removed`），拦截客户身份信息 |
+
+### P8 收尾三项（用户 2026-10-08，按推荐）
+
+| # | 问题 | 结论 |
+|---|---|---|
+| 1 | `evidence.search` 对公开网页快照是否也只返回定位 | 是。网页同样是不可信内容；主循环只拿定位和已登记的 Claim，读原文一律走隔离子任务（`research.fanout` / `evidence.extract`） |
+| 2 | G0 指定的项目负责人不在私有提案受众内 | 与处置负责人相同：同一 G0 决定把其加入型号和项目的受众，预览和回执列出 |
+| 3 | 提案改为品类共享时，私有上下文运行写下的 Claim 会随之品类可见 | `proposal.share` 预览列出这些 Claim，并做与去标识沉淀相同的身份检查（`identity_not_removed`）；负责人确认后才能共享 |
+
+### P9 新增 `evidence.claim.withdraw`（用户 2026-10-08，按推荐）
+
+问题：`proposal.share` 被某条私有上下文 Claim 的身份检查挡住，或某条 Claim 登记有误时，原来只能用 `ai.run.revert` 撤回整次运行，会连带撤掉同一运行里正确的条目与关联。
+
+结论：新增单条撤回命令 `evidence.claim.withdraw`，T1（人一次确认，小Pai 可预填候选）。
+- 执行者：私有 Claim 为所在提案负责人，品类可读 Claim 为品类写者。
+- 只追加撤回记录，原 Claim 保留为 withdrawn；该 Claim 的证据关联失效；引用它的提案条目与品类知识标记"来源已撤回"，条目值不变，由负责人决定是否修订。
+- 已被签署的 G0 决定或封存定义消费的 Claim 不能撤回（UNDO_BLOCKED_BY_DEPENDENCY）；在审提案引用的 Claim 撤回后，按原件撤回同样处理：批准时得 SOURCE_STALE，退回重提。
+- 事件 `claim.withdrawn`；落实位置：M3 合同 §3.1、§3.6–§3.8、§4、§5.4、§10、AT-50，技能包草稿 README §3 与 proposal_drafting，v1.1 附录 A。契约目录 `pdos-next/contracts/*.json` 由主会话同步（不在本次修改内）。
+
+### P10 S0 验证节奏提速（用户 2026-10-08）
+
+- B4 功能回归通过即关闭。P3 的性能门槛保持，读取/输入 p95 ≤1 秒等指标统一在 B8 最终候选做性能对比；B4–B6 不再为几十毫秒反复调优。
+- 按 AGENTS.md 按影响验证，每批只跑受影响测试、只写一段简短证据状态，不再逐迁移逐步写进度日志。全量回归和计时对比只在 B8 集中做一次。
+- 此调整改变批次关闭和测量时点，不免除权限、事务和已知缺陷的必要验证，也不表示此前未达标的性能已经通过。
+
+### P11 G0 批准前值未知的规格也要处置（用户 2026-10-09，按推荐）
+
+问题：M3 合同原写"每个 unknown / expert_pending 规格条目都有处置"，实现只按 item_status 判断。一条 AI 草稿规格若 availability 为 unknown 或 conflicted，可以不留任何待办直接进入封存的定义 v1。
+
+结论：G0 批准时，固定副本中满足任一条件的规格条目都必须逐条处置（task 或 risk、负责人、期限），否则 VALIDATION_FAILED（unknown_without_disposition）：
+- item_status 为 unknown 或 expert_pending；
+- availability 为 unknown 或 conflicted（不论 item_status，含 ai_draft）。
+
+availability=not_applicable（须写理由）只豁免值未知/冲突条件；item_status=unknown 或 expert_pending 仍须逐条处置（用户 2026-10-10 细化）。这条规则与成熟度视图的阻断项口径一致；只约束批准，不约束提交（未知项仍可带入 G0，AT-06）。落实位置：M3 合同 §3.4、§10、AT-52；技能包 gap_check 按此列出待处置项。
+
+### P12 S0 性能出口调整（用户 2026-10-10）
+
+- `coverage_publication` p95 4.09 秒/242 SQL（P3 门槛 3 秒）登记为 S0 的 1 项已知性能例外，停止继续调优及当前 30 样本采样，不开新一轮。
+- M6 恢复变更模块时按 P3 改为“同步受理 + 后台工作 ID”，并按 v1.1 §08.11 收窄读集；在系统负载低于 CPU 核数的机器上复测。压线的 `capa_candidate_inputs/read`、`quality_read`（0.88–0.97 秒）一并复测。
+- 其余 19 条沿用当前通过结果，不再重跑完整 32×30。历史失败、超载剔除和未完成样本原样保留，不补写通过。
+- B8 仍须完成当前候选完整回归、新链空库迁移往返、备份恢复及 HTTP/浏览器整链。出口完成后 S0 登记为“通过（带 1 项已知性能例外）”，不得写“全部达标”。

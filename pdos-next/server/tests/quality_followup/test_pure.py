@@ -100,7 +100,7 @@ def line(value=None):
 def code(expected, callback):
     with pytest.raises(DomainError) as error:
         callback()
-    assert error.value.code == expected
+    assert error.value.reason == expected
 
 
 @pytest.mark.parametrize("time", ["Z", "offset"])
@@ -621,7 +621,23 @@ def host(monkeypatch):
         "roles": ["quality"],
         "authorized": True,
         "qualified": True,
-        "valid_until": (NOW + timedelta(hours=1)).isoformat(),
+        "valid_until": None,
+        "operation": service.ROOT_CAUSE,
+        "purpose": "investigation",
+        "synthetic": True,
+        "fact_refs": [
+            {
+                "kind": kind,
+                "role": "quality",
+                "nature": "synthetic",
+                "state": "active",
+                "operations": [service.ROOT_CAUSE],
+                "purposes": ["investigation"],
+                "valid_from": (NOW - timedelta(hours=1)).isoformat(),
+                "valid_until": (NOW + timedelta(hours=1)).isoformat(),
+            }
+            for kind in ("duty", "qualification")
+        ],
         "facts_revision": digest("authority"),
     }
     published = {
@@ -629,7 +645,16 @@ def host(monkeypatch):
         "revision": 1,
         "risk": "high",
         "independent_verification": True,
-        "valid_until": (NOW + timedelta(hours=1)).isoformat(),
+        "valid_until": None,
+        "source_basis": [
+            {
+                "id": uid("policy"),
+                "revision": 1,
+                "state": "active",
+                "valid_from": (NOW - timedelta(hours=1)).isoformat(),
+                "valid_until": (NOW + timedelta(hours=1)).isoformat(),
+            }
+        ],
     }
     payload = root_payload()
     domain = service._domain(payload)

@@ -11,6 +11,7 @@ from verification_launch.test_pure import (
 )
 
 from pdos_next.domain.verification_front.service import _snapshot
+from pdos_next.error_catalog import REASONS
 from pdos_next.errors import DomainError
 from pdos_next.service import digest
 
@@ -41,7 +42,8 @@ def test_common_reader_accepts_running_only_with_matching_start_operation(work):
     row.operation = "verification.handoff.accept"
     with pytest.raises(DomainError) as error:
         _snapshot(row)
-    assert error.value.code == "INTEGRITY_MISMATCH"
+    assert error.value.reason == "INTEGRITY_MISMATCH"
+    assert error.value.code == REASONS["INTEGRITY_MISMATCH"]
 
 
 @pytest.mark.parametrize("clock", ["preliminary_result", "final_result", "disposed"])
@@ -56,7 +58,8 @@ def test_launch_cannot_smuggle_result_or_disposition_through_shared_reader(work,
     row.snapshot_sha256 = digest(request.model_dump(mode="json"))
     with pytest.raises(DomainError) as error:
         _snapshot(row)
-    assert error.value.code == "INTEGRITY_MISMATCH"
+    assert error.value.reason == "INTEGRITY_MISMATCH"
+    assert error.value.code == REASONS["INTEGRITY_MISMATCH"]
 
 
 @pytest.mark.parametrize("clock", ["promised_start", "actual_start"])
@@ -68,4 +71,5 @@ def test_running_history_cannot_lose_its_required_clock(work, clock):  # noqa: F
     row = launch_row(request, "test.run.start")
     with pytest.raises(DomainError) as error:
         _snapshot(row)
-    assert error.value.code == "INTEGRITY_MISMATCH"
+    assert error.value.reason == "INTEGRITY_MISMATCH"
+    assert error.value.code == REASONS["INTEGRITY_MISMATCH"]

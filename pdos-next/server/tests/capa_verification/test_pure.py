@@ -35,7 +35,7 @@ def basis():
         capa_id=uuid4(),
         purpose="Inspect actual investigation",
         owner_id=uuid4(),
-        visibility="product",
+        visibility="category",
         nature="synthetic",
         requirement=EffectivenessRequirement(
             method="Independent inspection",
@@ -75,7 +75,7 @@ def output(basis, *, kind="build", snapshot=None):
     return OutputReading(
         ref=OutputRef(kind=kind, id=uuid4(), revision=1),
         owner_id=basis.owner_id,
-        visibility="product",
+        visibility="category",
         project_id=basis.scope.project_id,
         title="Real fixed owner output",
         status="planned",
@@ -127,7 +127,7 @@ def test_candidate_cannot_be_claimed_positive(basis):
 def test_fake_full_observation_port_always_requires_integration():
     with pytest.raises(DomainError) as raised:
         require_effectiveness_bridge()
-    assert (raised.value.code, raised.value.status) == ("INTEGRATION_REQUIRED", 503)
+    assert (raised.value.reason, raised.value.status) == ("INTEGRATION_REQUIRED", 503)
 
 
 @pytest.mark.parametrize("problem", ["product", "project", "private", "revision"])
@@ -139,7 +139,7 @@ def test_owner_exact_scope_and_acl_survive_fixed_ref(monkeypatch, basis, context
         id=selected.ref.id,
         revision=1,
         owner_id=basis.owner_id,
-        visibility="product",
+        visibility="category",
         project_id=basis.scope.project_id,
         status="planned",
         required_source_read_set=basis.required_source_read_set,
@@ -167,13 +167,13 @@ def test_output_without_readable_source_is_not_a_fact(monkeypatch, basis, contex
         revision=1,
         project_id=basis.scope.project_id,
         owner_id=basis.owner_id,
-        visibility="product",
+        visibility="category",
         status="planned",
     )
     monkeypatch.setattr(service, "_owner", lambda *a: (row, {"status": "planned"}))
     with pytest.raises(DomainError) as raised:
         service._reading(None, context, basis.scope.product_id, basis, selected.ref)
-    assert raised.value.code == "INTEGRATION_REQUIRED"
+    assert raised.value.reason == "INTEGRATION_REQUIRED"
 
 
 def test_resolution_retains_unknown_fulfillment(monkeypatch, basis, context):
@@ -212,14 +212,14 @@ def test_resolution_rereads_after_owner_io(monkeypatch, basis, context):
         service.resolve_followup_outputs(
             None, context, basis.scope.product_id, basis, basis.actions[0].action_id, (first.ref,)
         )
-    assert raised.value.code == "SOURCE_STALE"
+    assert raised.value.reason == "SOURCE_STALE"
 
 
 def test_complete_readset_limit_is_not_truncated(basis):
     extra = [SourceRead(artifact_id=uuid4(), expected_revision=1) for _ in range(20)]
-    with pytest.raises(DomainError) as raised:
-        service._reads(basis.required_source_read_set, extra)
-    assert raised.value.code == "MISSING_REQUIRED_EVIDENCE"
+    result = service._reads(basis.required_source_read_set, extra)
+    assert len(result) == len(basis.required_source_read_set) + len(extra)
+    assert {v.artifact_id for v in extra} <= {v.artifact_id for v in result}
 
 
 def test_basis_version_only_addition_is_distinct_from_semantic_change(basis):
@@ -263,7 +263,7 @@ def test_common_proof_missing_is_fail_closed_before_qualification(monkeypatch, b
     command = SimpleNamespace(operation=commands.OPERATION, product_id=product.id)
     with pytest.raises(DomainError) as raised:
         commands._load(session, context, command, product, payload)
-    assert (raised.value.code, raised.value.status) == ("INTEGRATION_REQUIRED", 503)
+    assert (raised.value.reason, raised.value.status) == ("INTEGRATION_REQUIRED", 503)
 
 
 def test_unconfigured_professional_matrix_is_not_a_false_qualification(monkeypatch, basis, context):
@@ -277,13 +277,13 @@ def test_unconfigured_professional_matrix_is_not_a_false_qualification(monkeypat
     )
     with pytest.raises(DomainError) as raised:
         commands._authority(None, context, basis.scope.product_id, basis)
-    assert (raised.value.code, raised.value.status) == ("INTEGRATION_REQUIRED", 503)
+    assert (raised.value.reason, raised.value.status) == ("INTEGRATION_REQUIRED", 503)
 
 
 def test_future_inspection_clock_cannot_be_a_current_proof():
     with pytest.raises(DomainError) as raised:
         service._at(datetime.now(UTC) + timedelta(days=1))
-    assert raised.value.code == "INVALID_TIME"
+    assert raised.value.reason == "INVALID_TIME"
 
 
 @pytest.mark.parametrize("proof", [None, True, False, "b9cec78b-5ad8-46fb-8c12-14aed52f4795"])
@@ -291,7 +291,7 @@ def test_apply_rejects_non_uuid_common_proof(monkeypatch, basis, context, proof)
     bound, payload, product, command = apply_fixture(monkeypatch, basis, context, proof)
     with pytest.raises(DomainError) as raised:
         commands.apply(None, context, command, product, payload)
-    assert raised.value.code == "INTEGRATION_REQUIRED"
+    assert raised.value.reason == "INTEGRATION_REQUIRED"
     assert bound.proof_callback(None, context, command, product, payload) == proof
 
 
@@ -301,13 +301,13 @@ def apply_fixture(monkeypatch, basis, context, proof):
         basis=basis,
         action_id=basis.actions[0].action_id,
         outputs=(selected,),
-        visibility="product",
+        visibility="category",
         owner_id=basis.owner_id,
         required_source_read_set=basis.required_source_read_set,
         source_basis_sha256="a" * 64,
         resolution_sha256="b" * 64,
     )
-    bound = commands.Bound(resolved, {}, {}, (), [], {}, "product", lambda *args: proof)
+    bound = commands.Bound(resolved, {}, {}, (), [], {}, "category", lambda *args: proof)
     payload = FollowupLinkPayload(
         issue_id=basis.issue_id,
         expected_issue_revision=basis.issue_revision,
@@ -331,7 +331,7 @@ def test_apply_records_actual_proof_reference_without_token_or_issue_write(
     proof = uuid4()
     _, payload, product, command = apply_fixture(monkeypatch, basis, context, proof)
     row, family, visibility = commands.apply(None, context, command, product, payload)
-    assert family == "capa_remediation_link" and visibility == "product"
+    assert family == "capa_remediation_link" and visibility == "category"
     assert row.input_snapshot["shared_proof"] == {"id": str(proof), "tier": "T1"}
     assert "confirmation_token" not in row.input_snapshot
     assert (
@@ -344,12 +344,43 @@ def test_apply_records_actual_proof_reference_without_token_or_issue_write(
 def test_expiry_during_other_owner_reads_is_not_a_current_link_proof(monkeypatch):
     instant = datetime.now(UTC)
     monkeypatch.setattr(service, "now", lambda: instant)
+    authority = {
+        "valid_until": None,
+        "roles": ["quality"],
+        "synthetic": True,
+        "operation": commands.OPERATION,
+        "purpose": "review",
+        "fact_refs": [
+            {
+                "kind": kind,
+                "role": "quality",
+                "nature": "synthetic",
+                "state": "active",
+                "operations": [commands.OPERATION],
+                "purposes": ["review"],
+                "valid_from": (instant - timedelta(days=1)).isoformat(),
+                "valid_until": instant.isoformat(),
+            }
+            for kind in ("duty", "qualification")
+        ],
+    }
+    publication = {
+        "id": "policy",
+        "revision": 1,
+        "valid_until": None,
+        "source_basis": [
+            {
+                "id": "policy",
+                "revision": 1,
+                "state": "active",
+                "valid_from": (instant - timedelta(days=1)).isoformat(),
+                "valid_until": (instant + timedelta(days=1)).isoformat(),
+            }
+        ],
+    }
     with pytest.raises(DomainError) as raised:
-        commands._deadlines(
-            {"valid_until": instant.isoformat()},
-            {"valid_until": (instant + timedelta(days=1)).isoformat()},
-        )
-    assert raised.value.code == "SOURCE_STALE"
+        commands._deadlines(authority, publication)
+    assert raised.value.reason == "SOURCE_STALE"
 
 
 @pytest.mark.parametrize(
@@ -374,7 +405,7 @@ def test_original_replay_cannot_hide_epoch_aba_or_readset_drift(
     setattr(row, changed, [{"epoch": 2}] if changed == "required_source_read_set" else {"epoch": 2})
     with pytest.raises(DomainError) as raised:
         commands._guard_saved(row, payload, bound)
-    assert raised.value.code == "SOURCE_STALE"
+    assert raised.value.reason == "SOURCE_STALE"
 
 
 def test_unmapped_candidate_exposes_all_real_gaps(monkeypatch, basis, context):
@@ -460,7 +491,7 @@ def test_planned_mapping_cannot_invent_actual_measurement_or_scope(
             at=datetime.now(UTC),
         )
     assert (
-        raised.value.code
+        raised.value.reason
         == {
             "old_run": "ORIGINAL_FAILURE_RUN",
             "sample": "FORBIDDEN_SCOPE",

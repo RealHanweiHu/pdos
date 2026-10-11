@@ -36,7 +36,7 @@ def known_configuration(setup, configuration):
     bom_payload["name"] = "Synthetic fully known motor BOM"
     bom_payload["lines"] = bom_payload["lines"][:1]
     response = setup.client.get(
-        f"/v1/products/{setup.product}/configurations", headers=setup.headers
+        f"/v1/categories/{setup.category}/products/{setup.product}/configurations", headers=setup.headers
     )
     assert response.status_code == 200, response.text
     saved_bom = next(v for v in response.json()["boms"] if v["id"] == config["bom"]["subject_id"])
@@ -168,12 +168,12 @@ def imported(work, payload=None, *, request_key=None, session=None):
     kwargs = {"request_key": request_key or str(uuid4()), "command_id": uuid4()}
     if session is not None:
         return import_operational_fact(session, work.setup.ctx, work.issuer, data, **kwargs)
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(work.setup.engine, work.setup.tenant, actor_id=work.setup.human, category_id=work.setup.category) as s:
         return import_operational_fact(s, work.setup.ctx, work.issuer, data, **kwargs)
 
 
 def bundle(work, *, context=None, at=None):
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(work.setup.engine, work.setup.tenant, actor_id=work.setup.human, category_id=work.setup.category) as s:
         return load_bundle(
             s,
             context or work.setup.ctx,

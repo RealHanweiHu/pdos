@@ -3,9 +3,14 @@
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 from datetime import timedelta
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import pytest
+from build_operational_facts.fixtures import (  # noqa: F401
+    imported,
+    known_configuration,
+    operational_work,
+)
 from manufacturing_preparation_transactions.fixtures import (
     bootstrap_authority,
     effect_hashes,
@@ -47,7 +52,13 @@ def epoch(work, session=None):
 
     if session is not None:
         return read(session)
-    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.ctx.actor_id,
+        requester_id=work.setup.ctx.requester_id,
+        category_id=work.setup.category,
+    ) as s:
         return read(s)
 
 
@@ -55,7 +66,13 @@ def graph(work):
     setup = work.setup
     scope = Scope(tenant_id=setup.tenant, product_id=setup.product, project_id=work.project_id)
     at = now()
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.ctx.actor_id,
+        requester_id=setup.ctx.requester_id,
+        category_id=setup.category,
+    ) as s:
         reader = OwnerReader(
             s,
             setup.ctx,
@@ -79,8 +96,14 @@ def graph(work):
 
 def recheck(work, captured, expected=None):
     setup = work.setup
-    command = Command.model_validate(cmd(setup, "change.order.prepare", {}))
-    with tenant_session(setup.engine, setup.tenant) as s:
+    command = Command.model_validate(cmd(setup, "change.order.approve", {}))
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.ctx.actor_id,
+        requester_id=setup.ctx.requester_id,
+        category_id=setup.category,
+    ) as s:
         current = closure_stamp(s, setup.ctx, scope=captured.scope, audience=captured.audience)
         return recheck_graph_closure(
             s,
@@ -92,6 +115,7 @@ def recheck(work, captured, expected=None):
             roots=captured.roots,
             expected_closure=current if expected is None else expected,
             valid_until=captured.expires_at,
+            complete_recheck=True,
         )
 
 
@@ -157,7 +181,7 @@ def test_actual_manufacturing_nodes_current_children_and_dependency_clock(manufa
     assert epoch(work) == before_read[1] + 2
     with pytest.raises(DomainError) as changed:
         recheck(work, captured, checked.closure)
-    assert changed.value.code == "RECHECK_REQUIRED"
+    assert changed.value.reason == "RECHECK_REQUIRED"
     assert digest(
         graph(work).model_copy(
             update={
@@ -180,7 +204,7 @@ def test_actual_manufacturing_nodes_current_children_and_dependency_clock(manufa
     assert epoch(work) == stable.closure["dependency_epoch"] + 2
     with pytest.raises(DomainError) as changed:
         recheck(work, captured, stable.closure)
-    assert changed.value.code == "RECHECK_REQUIRED"
+    assert changed.value.reason == "RECHECK_REQUIRED"
     stable = recheck(work, captured)
     with Session(setup.admin) as s, s.begin():
         s.execute(update(Product).where(Product.id == setup.product).values(lifecycle_epoch=12345))
@@ -205,7 +229,16 @@ def test_actual_manufacturing_nodes_current_children_and_dependency_clock(manufa
     with pytest.raises(DBAPIError), Session(setup.admin) as s, s.begin():
         s.execute(update(ChangeDependencyClock).values(epoch=1))
     assert epoch(work) == before_rejection
-    with pytest.raises(DBAPIError), tenant_session(setup.engine, setup.tenant) as s:
+    with (
+        pytest.raises(DBAPIError),
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.ctx.actor_id,
+            requester_id=setup.ctx.requester_id,
+            category_id=setup.category,
+        ) as s,
+    ):
         s.execute(update(ChangeDependencyClock).values(epoch=1))
     assert epoch(work) == before_rejection
     with Session(setup.admin) as s:
@@ -232,7 +265,7 @@ def test_actual_manufacturing_nodes_current_children_and_dependency_clock(manufa
     assert epoch(work) > before_rejection
     with pytest.raises(DomainError) as new_dependency:
         recheck(work, old_graph, old_proof.closure)
-    assert new_dependency.value.code == "RECHECK_REQUIRED"
+    assert new_dependency.value.reason == "RECHECK_REQUIRED"
     assert build["subject_id"] not in str(new_dependency.value)
 
     # A new WI Current makes the captured fixed baseline need recheck. It is
@@ -247,14 +280,20 @@ def test_actual_manufacturing_nodes_current_children_and_dependency_clock(manufa
     assert wi2["revision"] == 2
     with pytest.raises(DomainError) as stale:
         graph(work)
-    assert stale.value.code == "RECHECK_REQUIRED"
+    assert stale.value.reason == "RECHECK_REQUIRED"
     response = setup.client.get(
-        f"/v1/products/{setup.product}/manufacturing-preparations/work_instruction/{wi['id']}?revision=1",
+        f"/v1/categories/{setup.category}/products/{setup.product}/manufacturing-preparations/work_instruction/{wi['id']}?revision=1",
         headers=setup.headers,
     )
     assert response.status_code == 200 and response.json()["body"] == saved_body
     assert response.json()["is_current"] is False
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.ctx.actor_id,
+        requester_id=setup.ctx.requester_id,
+        category_id=setup.category,
+    ) as s:
         assert (
             s.scalar(select(Confirmation.id).where(Confirmation.actor_id == setup.human))
             is not None
@@ -262,13 +301,25 @@ def test_actual_manufacturing_nodes_current_children_and_dependency_clock(manufa
 
 
 def test_new_product_clock_and_tenant_isolation(setup):
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.ctx.actor_id,
+        requester_id=setup.ctx.requester_id,
+        category_id=setup.category,
+    ) as s:
         rows = list(s.scalars(select(ChangeDependencyClock)))
         assert len(rows) == 1 and rows[0].product_id == setup.product and rows[0].epoch == 1
-    with tenant_session(setup.engine, setup.other_human) as s:
+    with tenant_session(
+        setup.engine,
+        setup.other_human,
+        actor_id=setup.ctx.actor_id,
+        requester_id=setup.ctx.requester_id,
+        category_id=setup.category,
+    ) as s:
         assert list(s.scalars(select(ChangeDependencyClock))) == []
     response = setup.client.post(
-        "/v1/commands",
+        f"/v1/categories/{setup.category}/commands",
         headers={"Authorization": f"Bearer {setup.tokens[setup.peer]}"},
         json=cmd(
             setup,
@@ -282,39 +333,36 @@ def test_new_product_clock_and_tenant_isolation(setup):
         ),
     )
     assert response.status_code == 200, response.text
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.ctx.actor_id,
+        requester_id=setup.ctx.requester_id,
+        category_id=setup.category,
+    ) as s:
         assert s.scalar(select(ChangeDependencyClock.epoch)) == 2
 
 
-def test_actual_tenant_shared_asset_fence_and_rejected_roles(setup):
+def test_actual_tenant_shared_asset_fence_and_rejected_roles(operational_work):  # noqa: F811
     """Real SQL clock isolation only; this creates no qualified resource fact."""
     from pdos_next.domain.build_operational_facts.models import OperationalAsset
 
-    second_product, asset = uuid4(), uuid4()
+    setup = operational_work.setup
+    imported(operational_work)
+    second_product, asset = uuid4(), operational_work.resource_id
     with Session(setup.admin) as s, s.begin():
         s.add(
             Product(
                 id=second_product,
                 tenant_id=setup.tenant,
                 owner_id=setup.human,
+                category_id=setup.category,
+                visibility="category",
                 name="Synthetic clock peer",
                 purpose="SQL isolation only",
             )
         )
         s.flush()
-        s.add(
-            OperationalAsset(
-                id=asset,
-                tenant_id=setup.tenant,
-                kind="resource",
-                external_key=str(asset),
-                identity={"id": str(asset)},
-                revision=1,
-                occupancy_epoch=1,
-                data_sha256="0" * 64,
-                data={"synthetic_clock_test_only": True},
-            )
-        )
     with Session(setup.admin) as s:
         before = dict(
             s.execute(
@@ -323,7 +371,8 @@ def test_actual_tenant_shared_asset_fence_and_rejected_roles(setup):
                 )
             ).all()
         )
-        assert before == {setup.product: 2, second_product: 2}
+        assert set(before) == {setup.product, second_product}
+        assert all(type(epoch) is int and epoch > 0 for epoch in before.values())
         for role in ("pdos_agent", "pdos_next_auth"):
             assert (
                 s.scalar(
@@ -360,10 +409,23 @@ def test_actual_tenant_shared_asset_fence_and_rejected_roles(setup):
             return error.orig.sqlstate
         return "UNEXPECTED_COMMIT"
 
-    scope = Scope(tenant_id=setup.tenant, product_id=setup.product, project_id=uuid4())
+    scope = Scope(
+        tenant_id=setup.tenant,
+        product_id=setup.product,
+        project_id=UUID(operational_work.config["project"]),
+    )
     target = audience(setup.product, setup.human, "private")
-    with tenant_session(setup.engine, setup.tenant) as s:
-        assert lock_dependency_clock(s, setup.ctx, scope=scope, audience=target) == 2
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.ctx.actor_id,
+        requester_id=setup.ctx.requester_id,
+        category_id=setup.category,
+    ) as s:
+        assert (
+            lock_dependency_clock(s, setup.ctx, scope=scope, audience=target)
+            == before[setup.product]
+        )
         with ThreadPoolExecutor(max_workers=1) as pool:
             assert pool.submit(contend).result(timeout=5) == "55P03"
         assert (
@@ -384,11 +446,26 @@ def test_actual_tenant_shared_asset_fence_and_rejected_roles(setup):
             .where(OperationalAsset.id == asset)
             .values(occupancy_epoch=OperationalAsset.occupancy_epoch + 1)
         )
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.ctx.actor_id,
+        requester_id=setup.ctx.requester_id,
+        category_id=setup.category,
+    ) as s:
         assert dict(
             s.execute(select(ChangeDependencyClock.product_id, ChangeDependencyClock.epoch)).all()
-        ) == {key: value + 1 for key, value in before.items()}
-    with pytest.raises(DBAPIError), tenant_session(setup.engine, setup.tenant) as s:
+        ) == {key: value + (key == setup.product) for key, value in before.items()}
+    with (
+        pytest.raises(DBAPIError),
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.ctx.actor_id,
+            requester_id=setup.ctx.requester_id,
+            category_id=setup.category,
+        ) as s,
+    ):
         s.execute(
             text("SELECT lock_change_dependency_clock(:tenant,:product)"),
             {"tenant": setup.other_human, "product": setup.product},

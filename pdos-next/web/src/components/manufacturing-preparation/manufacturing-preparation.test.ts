@@ -23,7 +23,7 @@ for (const number of [true, 0.1, "NaN", "Infinity", "1e", "0.0000000000001", "10
 test("declared decimal normalization only compares numeric meaning and cannot rewrite original source", () => { const c = command(); assert.ok("steps" in c.payload); c.payload.steps[0].parameters = [{ key:"gap", nominal:"01.2000", lower:null, upper:null, unit:"mm", sources:[source()] }]; const result = prepared(c); assert.ok("steps" in result.command.payload); result.command.payload.steps[0].parameters[0].nominal = "1.2000"; result.review.after.body.input = clone(result.command.payload); delete result.review.after.body.input.confirmation_token; assert.ok(mpPrepared(result,c,actor)); assert.equal(c.payload.steps[0].parameters[0].nominal,"01.2000"); assert.equal(c.payload.steps[0].parameters[0].sources[0].quote,source().quote); result.command.payload.steps[0].parameters[0].nominal="1.200000000001"; assert.equal(mpPrepared(result,c,actor),null); });
 test("known parameter requires unit+independent source and exact lower-upper order", () => { const p = { key:"pressure", nominal:null, lower:"-1.000000000001", upper:"-1.000000000002", unit:"bar", sources:[source()] }; assert.equal(validMpParameter(p),false); assert.equal(validMpParameter({...p,lower:"-2"}),true); assert.equal(validMpParameter({...p,lower:"-2",unit:null}),false); assert.equal(validMpParameter({...p,lower:null,upper:null,unit:null,sources:[]}),true); });
 test("source closure keeps multiple lines but refuses conflicting revision instead of overwrite", () => { const p = payload(); p.sources = [source(), { ...source(), line:2, quote:"另一整行" }]; assert.equal(mpPayloadReads(p).length,1); assert.ok("steps" in p); p.steps[0].sources = [{...source(),expected_revision:2}]; assert.throws(()=>mpPayloadReads(p),/冲突版本/); });
-test("source closure exceeds20 fails rather than trim", () => { const p=payload(); p.sources=Array.from({length:20},(_,i)=>source(i+30)); assert.ok("steps" in p); p.steps[0].sources=[source(60)]; assert.throws(()=>mpPayloadReads(p),/超过20/); });
+test("source closure keeps all 21 distinct exact sources", () => { const p=payload(); p.sources=Array.from({length:20},(_,i)=>source(i+30)); assert.ok("steps" in p); p.steps[0].sources=[source(60)]; assert.deepEqual(new Set(mpPayloadReads(p).map(row=>row.artifact_id)),new Set([...p.sources,source(60)].map(row=>row.artifact_id))); });
 test("inputs only allow server-supplied full reads change, never command/key/scope/payload", () => { const c=command(), server={...clone(c),source_read_set:[...c.source_read_set,{artifact_id:id(50),expected_revision:1}]}, r=review(server); assert.ok(mpInputs({command:server,review:r},c,actor)); for(const changed of [{...server,idempotency_key:id(51)},{...server,payload:{...server.payload,reason:"换内容"}},{...server,payload:{...server.payload,confirmation_token:"not-an-input-proof"}}]) assert.equal(mpInputs({command:changed,review:r},c,actor),null); });
 test("inputs complete readset must retain explicit exact selected source", () => { const c=command(), server={...clone(c),source_read_set:[]}; assert.equal(mpInputs({command:server,review:review(server)},c,actor),null); });
 test("preview keeps original prepared command and requires one actual server T1 token", () => { const c=command(), p=prepared(c), actual=mpPrepared(p,c,actor); assert.ok(actual); assert.equal(actual.command,p.command); const missing=clone(p); delete missing.command.payload.confirmation_token; assert.equal(mpPrepared(missing,c,actor),null); assert.equal(mpPrepared({...p,expires_at:"2000-01-01T00:00:00Z"},c,actor),null); });
@@ -63,7 +63,7 @@ test("incomplete current-scope local form survives reload without becoming a val
 });
 
 test("history cannot swap visibility/purpose/precise inputs behind a valid fixed body",()=>{
-  for(const patch of [{visibility:"product"},{purpose:"另一用途"},{sources:[]},{operation_key:"other"}]) {
+  for(const patch of [{visibility:"category"},{purpose:"另一用途"},{sources:[]},{operation_key:"other"}]) {
     const row=version(); Object.assign(row,patch); const reading={schema_version:"pdos-manufacturing-preparation-v1",versions:[row],has_more:false,unavailable_count:0,qualification:"unknown",manufacturing_release:null,negative_enumeration_complete:false};
     assert.equal(mpReading(reading,project,process.id),null);
   }
@@ -113,7 +113,7 @@ test("baseline keeps every fixed Process operation and rejects stale, wrong-scop
     assert.equal(mpFixedMaterial(p, process, [{ ...current, ...patch } as MpVersion]), false);
   }
   assert.equal(mpFixedMaterial(p, { ...process, operations: [...process.operations, { key: "inspect", name: "检验" }] }, [current]), false);
-  p.visibility = "product";
+  p.visibility = "category";
   assert.equal(mpFixedMaterial(p, process, [current]), false);
   p.visibility = "private"; p.operations[0].work_instruction = null;
   assert.equal(mpFixedMaterial(p, process, []), true); // An explicit missing document remains a server-reported gap.
@@ -190,4 +190,12 @@ test("wrong continuation receipt cannot be accepted as a saved outcome", async (
   const c = newMpCommand(product, "work_instruction", p, id(10), id(11)); c.payload.confirmation_token = "server-returned-token-substitute";
   const api: MpApi = async <T>() => ({ operation: c.operation, id: id(85), subject_id: id(86), subject_type: "work_instruction", subject_revision: 1 }) as T;
   await assert.rejects(runMpRequest(api, product.id, actor, { stage: "execute", command: c }, () => {}, () => true), /固定续版/);
+});
+
+test("ordinary authority has no aggregate deadline while T1 expiry remains required", () => {
+  const c = command(), p = prepared(c), at = Date.parse("2026-10-08T12:00:00Z");
+  p.review.authority.valid_until = null;
+  assert.ok(mpPrepared(p, c, actor, at));
+  p.expires_at = "2026-10-08T12:00:00Z";
+  assert.equal(mpPrepared(p, c, actor, at), null);
 });

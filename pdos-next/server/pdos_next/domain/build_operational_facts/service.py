@@ -32,7 +32,7 @@ from pdos_next.engines.supply_cost.dto import (
 )
 from pdos_next.engines.supply_cost.units import conversion
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Grant, OriginalSecurity, Principal, Product, now
+from pdos_next.models import Artifact, Principal, Product, now
 from pdos_next.schemas.resource_readiness.contracts import (
     Check,
     MaintenanceFact,
@@ -48,8 +48,8 @@ from pdos_next.schemas.resource_readiness.contracts import (
 )
 from pdos_next.schemas.supply_cost.dto import Scope as DemandScope
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
-from pdos_next.service import Context, require_access
 from pdos_next.service import digest as _raw_digest
+from pdos_next.service import require_access
 
 from .models import (
     BuildOperationalCurrent,
@@ -75,6 +75,9 @@ def digest(value):
     """Engine-compatible Decimal/time normalization plus scoped UUID support."""
 
     def canonical(v):
+        kind = type(v)
+        if v is None or kind is str or kind is bool or kind is int or kind is float:
+            return v
         if isinstance(v, BaseModel):
             return canonical(v.model_dump(mode="python"))
         if isinstance(v, UUID):
@@ -203,14 +206,18 @@ def _issuer(s, ctx, pid, project_id, issuer):
 def _scope(s, ctx, pid, bid, execution_scope, *, write=False):
     _session(s)
     execution_scope = OperationalScope.model_validate(execution_scope)
-    product = s.scalar(
-        select(Product)
-        .where(Product.id == pid, Product.tenant_id == ctx.tenant_id)
-        .with_for_update()
+    from pdos_next.request_proof import scoped_rows
+
+    products = scoped_rows(
+        s,
+        (Product, pid),
+        select(Product).where(Product.id == pid, Product.tenant_id == ctx.tenant_id),
+        lock=write,
     )
+    product = products[0] if products else None
     if product is None:
-        raise DomainError("FORBIDDEN_SCOPE", "实际事实不在当前产品范围。", 403)
-    require_access(s, ctx, pid, write=write, lock=True)
+        raise DomainError("FORBIDDEN_SCOPE", "实际事实不在当前型号范围。", 403)
+    require_access(s, ctx, pid, write=write, lock=write)
     principal = s.get(Principal, ctx.requester_id)
     if ctx.actor_id != ctx.requester_id or ctx.run_id or principal.kind != "human":
         raise DomainError("NAMED_PERSON_REQUIRED", "实际输入与开工事实由本人受控办理。", 403)
@@ -287,31 +294,36 @@ def _assets(data, tenant_id):
     return sorted(result, key=lambda value: (value[0], value[1].bytes))
 
 
-def _locked_assets(s, ctx, specifications, *, create=False):
-    result = {}
-    for kind, aid, key, identity, revision, data in specifications:
-        if create:
-            s.execute(
-                insert(OperationalAsset)
-                .values(
-                    id=aid,
-                    tenant_id=ctx.tenant_id,
-                    kind=kind,
-                    external_key=key,
-                    identity=identity,
-                    revision=revision,
-                    data_sha256=digest(data),
-                    data={"value": data, "state": "active"},
-                    occupancy_epoch=1,
-                )
-                .on_conflict_do_nothing()
+def _locked_assets(s, ctx, specifications, *, create=False, lock=True):
+    from pdos_next.request_proof import batch_read
+
+    specifications = list(specifications)
+    if create and specifications:
+        s.execute(
+            insert(OperationalAsset)
+            .values(
+                [
+                    dict(
+                        id=aid,
+                        tenant_id=ctx.tenant_id,
+                        kind=kind,
+                        external_key=key,
+                        identity=identity,
+                        revision=revision,
+                        data_sha256=digest(data),
+                        data={"value": data, "state": "active"},
+                        occupancy_epoch=1,
+                    )
+                    for kind, aid, key, identity, revision, data in specifications
+                ]
             )
-        row = s.scalar(
-            select(OperationalAsset)
-            .where(OperationalAsset.tenant_id == ctx.tenant_id, OperationalAsset.id == aid)
-            .with_for_update()
+            .on_conflict_do_nothing()
         )
-        if row is None:
+    rows = batch_read(s, OperationalAsset, [spec[1] for spec in specifications], lock=lock)
+    result = {}
+    for kind, aid, key, identity, _revision, _data in specifications:
+        row = rows.get(aid)
+        if row is None or row.tenant_id != ctx.tenant_id:
             raise DomainError("OPERATIONAL_ASSET_MISSING", "全局物理身份尚不可核对。")
         if row.kind != kind or row.external_key != key or row.identity != identity:
             raise DomainError("OPERATIONAL_IDENTITY_CONFLICT", "共享物理身份发生冲突。")
@@ -321,16 +333,20 @@ def _locked_assets(s, ctx, specifications, *, create=False):
     return result
 
 
-def _pointer(s, ctx, pid, bid):
-    return s.scalar(
-        select(BuildOperationalCurrent)
-        .where(
+def _pointer(s, ctx, pid, bid, *, lock=False):
+    from pdos_next.request_proof import scoped_rows
+
+    rows = scoped_rows(
+        s,
+        (BuildOperationalCurrent, bid),
+        select(BuildOperationalCurrent).where(
             BuildOperationalCurrent.tenant_id == ctx.tenant_id,
             BuildOperationalCurrent.product_id == pid,
             BuildOperationalCurrent.build_id == bid,
-        )
-        .with_for_update()
+        ),
+        lock=lock,
     )
+    return rows[0] if rows else None
 
 
 def _binding(build, engineering, manufacturing, scope):
@@ -348,25 +364,19 @@ def _binding(build, engineering, manufacturing, scope):
 
 def _evidence_basis(s, ctx, product_id, sources, required_reads=()):
     reads, private, basis = _evidence(s, ctx, product_id, sources)
-    principal = s.get(Principal, ctx.requester_id)
-    grant = s.scalar(
-        select(Grant).where(
-            Grant.tenant_id == ctx.tenant_id,
-            Grant.product_id == product_id,
-            Grant.principal_id == ctx.requester_id,
-        )
-    )
+    from pdos_next.domain.professional_authority.service import _subject_access
+    from pdos_next.original_security import security_row
+    from pdos_next.originals import require_original
+    from pdos_next.request_proof import batch_read
+
+    principal, grant = _subject_access(s, ctx, product_id, ctx.requester_id)
+    artifacts = batch_read(s, Artifact, [UUID(str(read["artifact_id"])) for read in required_reads])
     security = []
     for read in sorted(required_reads, key=lambda v: str(v["artifact_id"])):
-        artifact = s.get(Artifact, UUID(str(read["artifact_id"])))
+        artifact = artifacts[UUID(str(read["artifact_id"]))]
         if artifact.original_id:
-            state = s.scalar(
-                select(OriginalSecurity).where(
-                    OriginalSecurity.tenant_id == ctx.tenant_id,
-                    OriginalSecurity.product_id == product_id,
-                    OriginalSecurity.original_id == artifact.original_id,
-                )
-            )
+            original = require_original(s, ctx, product_id, artifact.original_id)
+            state = security_row(s, original, lock=False)
             security.append(
                 {
                     "artifact_id": str(artifact.id),
@@ -390,6 +400,11 @@ def _evidence_basis(s, ctx, product_id, sources, required_reads=()):
             },
         },
     )
+
+
+def evidence_watermark(basis):
+    """The importer's recorded access is provenance; readers prove their own access."""
+    return {key: value for key, value in basis.items() if key != "access"}
 
 
 def trusted_import(s, ctx, issuer, data):
@@ -437,7 +452,7 @@ def trusted_import(s, ctx, issuer, data):
                 "OPERATIONAL_FACTS_CHANGED", "原导入来源或权限已经变化，须重新核对新版。"
             )
         return replay
-    pointer = _pointer(s, ctx, build.product_id, build.id)
+    pointer = _pointer(s, ctx, build.product_id, build.id, lock=True)
     previous = s.get(BuildOperationalFact, pointer.fact_id) if pointer else None
     if (previous.id if previous else None) != data.expected_previous_id or (
         previous.revision if previous else 0
@@ -451,9 +466,7 @@ def trusted_import(s, ctx, issuer, data):
     ):
         raise DomainError("OPERATIONAL_SCOPE_MISMATCH", "事实续版不能换签发主体、范围或所有者。")
     required = {v["artifact_id"]: v for v in [*reads, *evidence_reads]}
-    if len(required) > 20:
-        raise DomainError("MISSING_REQUIRED_EVIDENCE", "权威输入完整出处超过20份上限。", 422)
-    if build.visibility == "product" and private:
+    if build.visibility == "category" and private:
         raise DomainError("FORBIDDEN_SCOPE", "私人事实不能扩大到共享Build。", 403)
     specs = _assets(data, ctx.tenant_id)
     assets = _locked_assets(s, ctx, specs, create=True)
@@ -622,26 +635,31 @@ def _material_coverage(s, ctx, fact, data, bound, assets, at, excluded_owner):
                     unit=held.unit,
                 )
             )
-    if material_assets:
-        query = select(MaterialHold).where(
-            MaterialHold.tenant_id == ctx.tenant_id, MaterialHold.asset_id.in_(material_assets)
-        )
-        if excluded_owner:
-            query = query.where(MaterialHold.owner_execution_id != excluded_owner)
-        for held in s.scalars(query):
-            asset = assets[held.asset_id]
-            material = asset_specs[digest(PoolKey.model_validate(asset.identity))]
-            reservations.append(
-                ReservationSnapshot(
-                    reservation_id=f"pdos:{held.id}",
-                    ref=_asset_ref(fact, asset, material.observed_at),
-                    pool=material.key,
-                    build_id=str(held.build_id),
-                    bom_item_id=held.bom_item_id,
-                    quantity=held.quantity,
-                    unit=held.unit,
-                )
+    from .physical_summary import capacity_summary
+
+    holds = capacity_summary(
+        s,
+        ctx,
+        fact.product_id,
+        "material",
+        material_assets,
+        own=excluded_owner,
+        watermark=tuple((aid, assets[aid].occupancy_epoch) for aid in sorted(material_assets)),
+    )
+    for held in holds:
+        asset = assets[UUID(held["asset_id"])]
+        material = asset_specs[digest(PoolKey.model_validate(asset.identity))]
+        reservations.append(
+            ReservationSnapshot(
+                reservation_id=f"physical-capacity:{asset.id}:{held['unit']}",
+                ref=_asset_ref(fact, asset, material.observed_at),
+                pool=material.key,
+                build_id="other-builds",
+                bom_item_id=None,
+                quantity=Decimal(str(held["quantity"])),
+                unit=held["unit"],
             )
+        )
     # Keep exact global rows for accounting, but never expose another Build's
     # private identity or per-line quantity in this Build's computation DTO.
     own, foreign = [], defaultdict(list)
@@ -743,7 +761,7 @@ def _resource_report(s, ctx, fact, data, bound, scope, assets, issuer, at, exclu
             current = (
                 proof is not None
                 and proof.current is True
-                and (proof.valid_until is not None and proof.valid_until >= scope.window.finish)
+                and (proof.valid_until is None or proof.valid_until >= scope.window.finish)
             )
             decisions.append(
                 QualificationFact(
@@ -800,31 +818,29 @@ def _resource_report(s, ctx, fact, data, bound, scope, assets, issuer, at, exclu
             )
             for v in resource.external_occupancies
         )
-    if required_ids:
-        query = select(ResourceOccupancy).where(
-            ResourceOccupancy.tenant_id == ctx.tenant_id,
-            ResourceOccupancy.resource_id.in_(required_ids),
-        )
-        if excluded_owner:
-            query = query.where(
-                or_(
-                    ResourceOccupancy.owner_kind != "build",
-                    ResourceOccupancy.owner_execution_id != excluded_owner,
-                )
-            )
-        for held in s.scalars(query):
-            from pdos_next.schemas.resource_readiness.contracts import ExecutionWindow
+    from pdos_next.schemas.resource_readiness.contracts import ExecutionWindow
 
-            occupancies.append(
-                Occupancy(
-                    reservation_id=held.id,
-                    resource_id=held.resource_id,
-                    window=ExecutionWindow(
-                        start=held.window_start, finish=held.window_finish, original_timezone="UTC"
-                    ),
-                    units=held.units,
-                )
-            )
+    from .physical_summary import capacity_summary
+
+    occupancies.extend(
+        Occupancy(
+            reservation_id=UUID(held["id"]),
+            resource_id=UUID(held["resource_id"]),
+            window=ExecutionWindow(
+                start=held["window_start"], finish=held["window_finish"], original_timezone="UTC"
+            ),
+            units=Decimal(str(held["units"])),
+        )
+        for held in capacity_summary(
+            s,
+            ctx,
+            fact.product_id,
+            "resource",
+            required_ids,
+            own=excluded_owner,
+            watermark=tuple((aid, assets[aid].occupancy_epoch) for aid in sorted(required_ids)),
+        )
+    )
     for requirement in data.requirements:
         for use in requirement.uses:
             total[use.resource.id] += use.units
@@ -871,7 +887,7 @@ def _resource_report(s, ctx, fact, data, bound, scope, assets, issuer, at, exclu
     # entire Build interval, so shared operations cannot double-book a resource.
     for identity, units in total.items():
         snapshot = snapshots.get(identity)
-        if units > 1000 or (
+        if (
             snapshot
             and snapshot.capacity is not None
             and capacity_exceeded(
@@ -1091,17 +1107,24 @@ def _load_bundle(
     ]
     demand_scope = DemandScope(
         tenant_id=str(ctx.tenant_id),
+        category_id=str(build.category_id),
         product_id=str(pid),
         project_id=str(build.project_id),
-        audience=f"private:{build.owner_id}" if build.visibility == "private" else f"product:{pid}",
+        audience=(
+            f"private:{build.owner_id}"
+            if build.visibility == "private"
+            else f"audience:build:{build.id}"
+            if build.visibility == "audience"
+            else f"category:{build.category_id}"
+        ),
     )
     try:
         bound = load_bound_demand(s, ctx, demand_scope, str(bid), build.revision, at)
     except DomainError as error:
-        if error.code not in {"PORT_UNCONNECTED", "DEMAND_SNAPSHOT_INCOMPLETE"}:
+        if error.reason not in {"PORT_UNCONNECTED", "DEMAND_SNAPSHOT_INCOMPLETE"}:
             raise
         checks.append(_check("binding", "demand_port_unavailable", "UNKNOWN", error.message))
-        fingerprint["missing"] = error.code
+        fingerprint["missing"] = error.reason
         return OperationalBundle(
             **basic,
             checks=tuple(checks),
@@ -1112,7 +1135,7 @@ def _load_bundle(
     fingerprint["demand"] = bound.model_dump(mode="json")
     if not bound.source_read_set_complete or not bound.demand.lines:
         raise DomainError("DEMAND_SNAPSHOT_INCOMPLETE", "固定需求及来源全集未完整绑定。")
-    pointer = _pointer(s, ctx, pid, bid)
+    pointer = _pointer(s, ctx, pid, bid, lock=write)
     if pointer is None:
         checks.append(
             _check(
@@ -1131,7 +1154,14 @@ def _load_bundle(
             facts_revision=digest(fingerprint),
             required_source_read_set=tuple(SourceRead.model_validate(v) for v in reads.values()),
         )
-    fact = s.get(BuildOperationalFact, pointer.fact_id)
+    from pdos_next.request_proof import snapshot_scalar
+
+    fact = snapshot_scalar(
+        s,
+        (BuildOperationalFact, pid, pointer.fact_id),
+        select(BuildOperationalFact).where(BuildOperationalFact.id == pointer.fact_id),
+        scope_id=pid,
+    )
     if fact is None or any(
         (
             fact.tenant_id != ctx.tenant_id,
@@ -1144,8 +1174,6 @@ def _load_bundle(
         )
     ):
         raise DomainError("INTEGRITY_MISMATCH", "当前权威事实固定范围或摘要无法核对。")
-    if fact.visibility == "private" and fact.owner_id != ctx.requester_id:
-        raise DomainError("FORBIDDEN_SCOPE", "私人权威事实不在当前本人范围。", 403)
     data = FactInput.model_validate(fact.data)
     if (
         data.scope != scope
@@ -1156,22 +1184,12 @@ def _load_bundle(
     # Caller ACL remains a current independent guard. Retained import-owner
     # provenance is read-only; it never authorizes this caller's writes.
     evidence_reads, private, _ = _evidence(s, ctx, pid, fact.sources)
-    owner_context = Context(ctx.tenant_id, fact.owner_id, fact.owner_id)
-    _, _, source_basis = _evidence_basis(s, owner_context, pid, fact.sources, build_reads)
-    if fact.owner_id != ctx.requester_id:
-        bound = load_bound_demand(s, owner_context, demand_scope, str(bid), build.revision, at)
+    _, _, source_basis = _evidence_basis(s, ctx, pid, fact.sources, build_reads)
     fingerprint["demand"] = bound.model_dump(mode="json")
-    grant = s.scalar(
-        select(Grant).where(
-            Grant.tenant_id == ctx.tenant_id,
-            Grant.product_id == pid,
-            Grant.principal_id == fact.owner_id,
-        )
-    )
-    if private and build.visibility == "product":
+    if private and build.visibility == "category":
         raise DomainError("FORBIDDEN_SCOPE", "私人来源不能扩大到共享Build。", 403)
     reads.update({str(v["artifact_id"]): v for v in evidence_reads})
-    if len(reads) > 20 or sorted(reads.values(), key=lambda v: str(v["artifact_id"])) != sorted(
+    if sorted(reads.values(), key=lambda v: str(v["artifact_id"])) != sorted(
         fact.required_source_read_set, key=lambda v: str(v["artifact_id"])
     ):
         raise DomainError("MISSING_REQUIRED_EVIDENCE", "固定权威事实完整读集不一致。")
@@ -1189,7 +1207,7 @@ def _load_bundle(
     )
     fingerprint.update(
         {
-            "source_basis": source_basis,
+            "source_basis": evidence_watermark(source_basis),
             "fact": fact.fact_sha256,
             "pointer_epoch": pointer.epoch,
             "issuer_current": current_issuer,
@@ -1207,7 +1225,7 @@ def _load_bundle(
                 "当前签发端口未配置或已换版、撤销。",
             )
         )
-    if source_basis != fact.source_basis:
+    if evidence_watermark(source_basis) != evidence_watermark(fact.source_basis):
         checks.append(
             _check(
                 "authority",
@@ -1218,8 +1236,10 @@ def _load_bundle(
         )
     valid = (
         fact.state == "active"
-        and fact.valid_from <= at < fact.valid_until
-        and (fact.valid_from <= scope.window.start and fact.valid_until >= scope.window.finish)
+        and fact.valid_from <= at
+        and (fact.valid_until is None or at < fact.valid_until)
+        and fact.valid_from <= scope.window.start
+        and (fact.valid_until is None or fact.valid_until >= scope.window.finish)
     )
     fingerprint["valid"] = valid
     checks.append(
@@ -1231,7 +1251,7 @@ def _load_bundle(
         )
     )
     specs = _assets(data, ctx.tenant_id)
-    assets = _locked_assets(s, ctx, specs)
+    assets = _locked_assets(s, ctx, specs, lock=write)
     asset_basis = []
     for _, aid, _, _, revision, physical in specs:
         asset = assets[aid]
@@ -1274,12 +1294,8 @@ def _load_bundle(
     # Readiness category transitions matter; the sampling clock, engine as_of
     # and checked_at do not change a still-current version/occupancy binding.
     fingerprint["checks"] = [v.model_dump(mode="json") for v in checks]
-    expiries = [fact.valid_until, grant.expires_at]
-    expiries.extend(
-        datetime.fromisoformat(v["proof"]["valid_until"])
-        for v in proofs
-        if v["proof"] and v["proof"]["valid_until"]
-    )
+    # Actual caller access was checked above. Its deadline does not shorten a
+    # physical fact or invalidate another authorized person's fixed assessment.
     return OperationalBundle(
         **basic,
         binding=bound,
@@ -1300,7 +1316,7 @@ def _load_bundle(
             SourceRead.model_validate(reads[key]) for key in sorted(reads)
         ),
         facts_revision=digest(fingerprint),
-        valid_until=min(expiries),
+        decision_watermarks=tuple(proofs),
         nature=fact.nature,
     )
 
@@ -1370,6 +1386,7 @@ def reserve(
             MaterialHold(
                 id=identity,
                 tenant_id=ctx.tenant_id,
+                category_id=fact.category_id,
                 product_id=product_id,
                 project_id=fact.project_id,
                 build_id=build_id,
@@ -1423,6 +1440,7 @@ def reserve(
             for aid, item, qty, unit in material_plan
         ],
         "asset_epochs": {str(aid): assets[aid].occupancy_epoch for aid in assets},
+        "decision_watermarks": list(bundle.decision_watermarks),
     }
     for aid in sorted(total, key=lambda k: k.bytes):
         identity = uuid5(owner_execution_id, f"resource:{aid}")
@@ -1430,6 +1448,7 @@ def reserve(
             ResourceOccupancy(
                 id=identity,
                 tenant_id=ctx.tenant_id,
+                category_id=fact.category_id,
                 product_id=product_id,
                 project_id=fact.project_id,
                 build_id=build_id,
@@ -1460,22 +1479,29 @@ def reserve(
     )
 
 
-def recheck_reservation(s, ctx, product_id, build_id, scope, owner_execution_id, intent_digest, at):
-    """Read-only replay safety: exact own proof, all other occupancy still counted."""
-    _scope(s, ctx, product_id, build_id, scope)
+def reservation_basis(s, ctx, product_id, build_id, scope, owner_execution_id, intent_digest):
+    """Read this owner's stored reservation and exact effects, without reallocating."""
     common = (
         MaterialHold.tenant_id == ctx.tenant_id,
         MaterialHold.owner_execution_id == owner_execution_id,
     )
-    holds = list(s.scalars(select(MaterialHold).where(*common)))
-    occupied = list(
-        s.scalars(
-            select(ResourceOccupancy).where(
-                ResourceOccupancy.tenant_id == ctx.tenant_id,
-                ResourceOccupancy.owner_kind == "build",
-                ResourceOccupancy.owner_execution_id == owner_execution_id,
-            )
-        )
+    from pdos_next.request_proof import snapshot_rows
+
+    holds = snapshot_rows(
+        s,
+        (MaterialHold, product_id, owner_execution_id),
+        select(MaterialHold).where(*common),
+        scope_id=product_id,
+    )
+    occupied = snapshot_rows(
+        s,
+        (ResourceOccupancy, product_id, "build", owner_execution_id),
+        select(ResourceOccupancy).where(
+            ResourceOccupancy.tenant_id == ctx.tenant_id,
+            ResourceOccupancy.owner_kind == "build",
+            ResourceOccupancy.owner_execution_id == owner_execution_id,
+        ),
+        scope_id=product_id,
     )
     if not occupied:
         raise DomainError("RESERVATION_PROOF_MISSING", "固定开工的完整占用证明缺失。")
@@ -1520,6 +1546,19 @@ def recheck_reservation(s, ctx, product_id, build_id, scope, owner_execution_id,
     ):
         raise DomainError("RESERVATION_PROOF_MISMATCH", "物料数量或资源完整区间与原证明不一致。")
     own_assets = frozenset(v.asset_id for v in [*holds, *occupied])
+    return proof, own_assets
+
+
+def recheck_reservation(s, ctx, product_id, build_id, scope, owner_execution_id, intent_digest, at):
+    """Read-only replay safety: exact own proof, all other occupancy still counted."""
+    _scope(s, ctx, product_id, build_id, scope)
+    proof, own_assets = reservation_basis(
+        s, ctx, product_id, build_id, scope, owner_execution_id, intent_digest
+    )
+    expected = {
+        (UUID(v["asset_id"]), v["item_id"]): (Decimal(v["quantity"]), v["unit"])
+        for v in proof["material_plan"]
+    }
     bundle = _load_bundle(
         s,
         ctx,

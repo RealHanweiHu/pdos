@@ -1,0 +1,147 @@
+- generic [active] [ref=f4e1]:
+  - alert [ref=f4e7]
+  - generic [ref=f4e72]:
+    - generic [ref=f4e73]: 品类 · 汽车充气泵
+    - button "切换品类" [ref=f4e74]
+  - generic [ref=f4e75]:
+    - link "跳到工作内容" [ref=f4e76] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=f4e77]:
+      - generic [ref=f4e78]:
+        - generic [ref=f4e81]: PDOS
+        - button "收起侧栏" [ref=f4e82]
+      - button "快速查找入口或产品" [ref=f4e83] [cursor=pointer]:
+        - generic [ref=f4e86]: 快速查找
+        - generic [ref=f4e87]: ⌘ K
+      - navigation "工作区导航" [ref=f4e88]:
+        - link "我的工作" [ref=f4e90] [cursor=pointer]:
+          - /url: "?area=work&view=overview&product=a0190b86-9f06-403c-85c8-98862df493f5"
+        - generic [ref=f4e94]:
+          - paragraph [ref=f4e95]: 工作区
+          - link "产品" [ref=f4e96] [cursor=pointer]:
+            - /url: "?area=products&view=overview&product=a0190b86-9f06-403c-85c8-98862df493f5"
+        - link "项目" [ref=f4e101] [cursor=pointer]:
+          - /url: "?area=projects&view=overview&product=a0190b86-9f06-403c-85c8-98862df493f5"
+        - link "组合与资源" [ref=f4e106] [cursor=pointer]:
+          - /url: "?area=resources&view=overview&product=a0190b86-9f06-403c-85c8-98862df493f5"
+        - link "知识" [ref=f4e111] [cursor=pointer]:
+          - /url: "?area=knowledge&view=sources&product=a0190b86-9f06-403c-85c8-98862df493f5"
+        - generic [ref=f4e115]:
+          - paragraph [ref=f4e116]: 当前产品
+          - paragraph [ref=f4e117]: 客户充气泵 · 合成 G0 评审
+          - paragraph [ref=f4e118]: 专业工作按此产品范围读取
+      - generic [ref=f4e119]:
+        - link "计划执行进度" [ref=f4e120] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=f4e123]: 计划进度
+        - link "小Pai 工作" [ref=f4e124] [cursor=pointer]:
+          - /url: "?area=work&view=overview&product=a0190b86-9f06-403c-85c8-98862df493f5"
+          - generic [ref=f4e127]: 小Pai
+          - generic [ref=f4e128]: 待配置
+        - link "设置" [ref=f4e129] [cursor=pointer]:
+          - /url: "?area=settings&view=preferences&product=a0190b86-9f06-403c-85c8-98862df493f5"
+        - generic [ref=f4e133]:
+          - generic [aria-hidden] [ref=f4e134]: S
+          - generic [ref=f4e135]:
+            - paragraph [ref=f4e136]: Synthetic peer
+            - paragraph [ref=f4e137]: 本地合成环境
+    - generic [ref=f4e138]:
+      - banner [ref=f4e139]:
+        - generic [ref=f4e140]:
+          - generic [ref=f4e141]: 产品
+          - generic [ref=f4e144]: 总览
+        - generic [ref=f4e145]:
+          - combobox "当前产品" [ref=f4e146]:
+            - option "Synthetic product"
+            - option "客户充气泵 · 合成 G0 评审" [selected]
+          - button "切换明暗主题" [ref=f4e147]
+      - navigation "产品视图" [ref=f4e148]:
+        - link "总览" [ref=f4e149] [cursor=pointer]:
+          - /url: "?area=products&view=overview&product=a0190b86-9f06-403c-85c8-98862df493f5"
+        - link "研究" [ref=f4e153] [cursor=pointer]:
+          - /url: "?area=products&view=research&task=sources&product=a0190b86-9f06-403c-85c8-98862df493f5"
+        - link "机会与实验 尚未接入" [ref=f4e157] [cursor=pointer]:
+          - /url: "?area=products&view=opportunities&product=a0190b86-9f06-403c-85c8-98862df493f5"
+          - generic [ref=f4e160]: 机会与实验
+          - generic "尚未接入" [ref=f4e161]
+        - link "定义与规格" [ref=f4e162] [cursor=pointer]:
+          - /url: "?area=products&view=definition&product=a0190b86-9f06-403c-85c8-98862df493f5"
+        - link "派生与配置" [ref=f4e166] [cursor=pointer]:
+          - /url: "?area=products&view=variants&product=a0190b86-9f06-403c-85c8-98862df493f5"
+        - link "矩阵与路线图 尚未接入" [ref=f4e170] [cursor=pointer]:
+          - /url: "?area=products&view=roadmap&product=a0190b86-9f06-403c-85c8-98862df493f5"
+          - generic [ref=f4e173]: 矩阵与路线图
+          - generic "尚未接入" [ref=f4e174]
+        - link "反馈 尚未接入" [ref=f4e175] [cursor=pointer]:
+          - /url: "?area=products&view=feedback&product=a0190b86-9f06-403c-85c8-98862df493f5"
+          - generic [ref=f4e178]: 反馈
+          - generic "尚未接入" [ref=f4e179]
+      - main [ref=f4e180]:
+        - generic [ref=f4e181]:
+          - generic [ref=f4e182]:
+            - heading "客户充气泵 · 合成 G0 评审" [level=1] [ref=f4e183]
+            - paragraph [ref=f4e184]: 合成新品评审
+          - button "新建产品" [ref=f4e185]
+        - generic [ref=f4e186]:
+          - generic [ref=f4e187]:
+            - generic [ref=f4e188]:
+              - term [ref=f4e189]: 定义版本
+              - definition [ref=f4e192]:
+                - button "查看定义版本" [ref=f4e193] [cursor=pointer]:
+                  - generic [ref=f4e194]: "1"
+            - generic [ref=f4e197]:
+              - term [ref=f4e198]: 研发项目
+              - definition [ref=f4e201]:
+                - button "查看研发项目" [ref=f4e202] [cursor=pointer]:
+                  - generic [ref=f4e203]: "1"
+            - generic [ref=f4e206]:
+              - term [ref=f4e207]: 试制
+              - definition [ref=f4e210]:
+                - button "查看试制" [ref=f4e211] [cursor=pointer]:
+                  - generic [ref=f4e212]: "0"
+          - generic [ref=f4e215]:
+            - generic [ref=f4e216]:
+              - generic [ref=f4e217]:
+                - heading "接下来" [level=2] [ref=f4e218]
+                - generic [ref=f4e219]: 按当前事实接续
+              - generic [ref=f4e220]:
+                - button "导入第一份资料 保留原件、定位原文，再登记有出处的事实" [ref=f4e221] [cursor=pointer]:
+                  - generic [ref=f4e225]:
+                    - generic [ref=f4e226]: 导入第一份资料
+                    - generic [ref=f4e227]: 保留原件、定位原文，再登记有出处的事实
+                - button "整理产品定义与规格 1 份可见定义版本，草稿与正式发布分别办理" [ref=f4e230] [cursor=pointer]:
+                  - generic [ref=f4e234]:
+                    - generic [ref=f4e235]: 整理产品定义与规格
+                    - generic [ref=f4e236]: 1 份可见定义版本，草稿与正式发布分别办理
+                - button "继续关联项目工作 1 个可见项目，分别固定定义与研发范围" [ref=f4e239] [cursor=pointer]:
+                  - generic [ref=f4e243]:
+                    - generic [ref=f4e244]: 继续关联项目工作
+                    - generic [ref=f4e245]: 1 个可见项目，分别固定定义与研发范围
+            - generic [ref=f4e248]:
+              - generic [ref=f4e249]:
+                - heading "证据状态" [level=2] [ref=f4e250]
+                - button "查看资料" [ref=f4e251] [cursor=pointer]
+              - generic [ref=f4e254]:
+                - generic [ref=f4e255]:
+                  - term [ref=f4e256]: 有效来源
+                  - definition [ref=f4e259]: 0份
+                - generic [ref=f4e260]:
+                  - term [ref=f4e261]: 有据事实
+                  - definition [ref=f4e264]: 0条
+                - generic [ref=f4e265]:
+                  - term [ref=f4e266]: 未知或冲突
+                  - definition [ref=f4e269]: 0条
+                - generic [ref=f4e270]:
+                  - term [ref=f4e271]: 来源待重核
+                  - definition [ref=f4e274]: 0条
+              - paragraph [ref=f4e275]: 计数仅来自当前授权范围，不表示专业结论或正式批准。
+          - generic [ref=f4e276]:
+            - generic [ref=f4e277]:
+              - heading "已保存定义" [level=2] [ref=f4e278]
+              - button "进入工作区" [ref=f4e279] [cursor=pointer]
+            - generic [ref=f4e282]:
+              - generic [ref=f4e285]:
+                - paragraph [ref=f4e286]: 客户充气泵 · 合成 G0 评审
+                - paragraph [ref=f4e287]: 2 项规格 · 0 处来源
+              - generic [ref=f4e288]: 草稿
+              - generic [ref=f4e289]: v1

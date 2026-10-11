@@ -128,7 +128,7 @@ def save(setup, *, enabled=True):
 def assert_code(code, function):
     with pytest.raises(DomainError) as error:
         function()
-    assert error.value.code == code
+    assert error.value.reason == code
     assert SYNTHETIC_KEY not in str(error.value)
 
 
@@ -275,7 +275,7 @@ def test_secret_rotation_rejects_plan_and_previous_runtime_binding(setup):
     )
     secrets.binding = replace(secrets.binding, version=uuid4())
     assert_code("MODEL_SECRET_CHANGED", lambda: service.apply_plan(ctx, plan, now=NOW))
-    assert runtime.select(query, now=NOW).code == "MODEL_SECRET_CHANGED"
+    assert runtime.select(query, now=NOW).reason == "MODEL_SECRET_CHANGED"
     assert service.reading(ctx).credential_status == "changed"
     assert store.history == [original]
     renewed = save(setup)
@@ -305,12 +305,12 @@ def permit_for(selection, query):
 def test_disabled_not_configured_and_missing_secret(setup):
     _, store, _, _, secrets, policy, _, query = setup
     runtime = RuntimeConfiguration(store, secrets, policy)
-    assert runtime.select(query, now=NOW).code == "MODEL_NOT_CONFIGURED"
+    assert runtime.select(query, now=NOW).reason == "MODEL_NOT_CONFIGURED"
     save(setup, enabled=False)
-    assert runtime.select(query, now=NOW).code == "MODEL_DISABLED"
+    assert runtime.select(query, now=NOW).reason == "MODEL_DISABLED"
     secrets.binding = None
     save(setup)
-    assert runtime.select(query, now=NOW).code == "MODEL_SECRET_MISSING"
+    assert runtime.select(query, now=NOW).reason == "MODEL_SECRET_MISSING"
     assert secrets.resolved == 0
 
 
@@ -338,7 +338,7 @@ def test_current_facts_fail_closed_before_secret_resolution(setup, field, value,
     save(setup)
     policy.overrides = {field: value}
     selected = RuntimeConfiguration(store, secrets, policy).select(query, now=NOW)
-    assert selected.code == code and selected.state == "unavailable" and selected.route is None
+    assert selected.reason == code and selected.state == "unavailable" and selected.route is None
     assert secrets.resolved == 0
 
 
@@ -360,7 +360,7 @@ def test_policy_query_must_match_all_bound_dimensions(setup, field):
     save(setup)
     value = uuid4() if field.endswith("_id") else 1 if field == "cancel_epoch" else "changed"
     policy.overrides = {"query": replace(query, **{field: value})}
-    assert RuntimeConfiguration(store, secrets, policy).select(query, now=NOW).code == (
+    assert RuntimeConfiguration(store, secrets, policy).select(query, now=NOW).reason == (
         "MODEL_POLICY_SCOPE_MISMATCH"
     )
     assert secrets.resolved == 0
@@ -392,10 +392,10 @@ def test_scoped_ports_errors_and_secret_material_drift_fail_closed(setup):
     save(setup)
     runtime = RuntimeConfiguration(store, secrets, policy)
     secrets.binding = replace(secrets.binding, tenant_id=uuid4())
-    assert runtime.select(query, now=NOW).code == "MODEL_SECRET_SCOPE_MISMATCH"
+    assert runtime.select(query, now=NOW).reason == "MODEL_SECRET_SCOPE_MISMATCH"
     secrets.binding = replace(secrets.binding, tenant_id=ctx.tenant_id)
     secrets.failure = True
-    assert runtime.select(query, now=NOW).code == "MODEL_SECRET_UNAVAILABLE"
+    assert runtime.select(query, now=NOW).reason == "MODEL_SECRET_UNAVAILABLE"
     assert service.reading(ctx).credential_status == "unavailable"
     assert_code(
         "MODEL_SECRET_UNAVAILABLE",
@@ -405,10 +405,10 @@ def test_scoped_ports_errors_and_secret_material_drift_fail_closed(setup):
     )
     secrets.failure = False
     secrets.wrong_material = True
-    assert runtime.select(query, now=NOW).code == "MODEL_SECRET_MISSING"
+    assert runtime.select(query, now=NOW).reason == "MODEL_SECRET_MISSING"
     secrets.wrong_material = False
     secrets.rotate_on_resolve = True
-    assert runtime.select(query, now=NOW).code == "MODEL_SECRET_CHANGED"
+    assert runtime.select(query, now=NOW).reason == "MODEL_SECRET_CHANGED"
 
 
 def test_configuration_change_and_disable_invalidate_old_permit(setup):
@@ -434,7 +434,7 @@ def test_configuration_change_and_disable_invalidate_old_permit(setup):
     disabled = save(setup, enabled=False)
     assert disabled.revision == 3
     assert len(store.history) == 3 and store.history[0].enabled is True
-    assert runtime.select(query, now=NOW).code == "MODEL_DISABLED"
+    assert runtime.select(query, now=NOW).reason == "MODEL_DISABLED"
 
 
 def test_missing_interfaces_do_not_implicitly_enable(setup):
@@ -445,10 +445,10 @@ def test_missing_interfaces_do_not_implicitly_enable(setup):
         "MODEL_ADMIN_INTERFACE_MISSING",
         lambda: ConfigurationService(store, None, secrets).plan(ctx, payload, now=NOW),
     )
-    assert RuntimeConfiguration(store, None, policy).select(query, now=NOW).code == (
+    assert RuntimeConfiguration(store, None, policy).select(query, now=NOW).reason == (
         "MODEL_SECRET_INTERFACE_MISSING"
     )
-    assert RuntimeConfiguration(store, secrets, None).select(query, now=NOW).code == (
+    assert RuntimeConfiguration(store, secrets, None).select(query, now=NOW).reason == (
         "MODEL_POLICY_INTERFACE_MISSING"
     )
 
@@ -480,7 +480,7 @@ def test_port_policy_exception_is_redacted_and_missing_facts_are_unavailable(set
         (BrokenPolicy(), "MODEL_POLICY_UNAVAILABLE"),
     ]:
         result = RuntimeConfiguration(store, secrets, policy).select(query, now=NOW)
-        assert result.code == code and result.route is None
+        assert result.reason == code and result.route is None
         assert SYNTHETIC_KEY not in repr(result)
 
 
@@ -489,9 +489,9 @@ def test_unavailable_secret_and_wrong_tenant_storage_are_rejected(setup):
     secrets.binding = replace(secrets.binding, available=False)
     save(setup)
     runtime = RuntimeConfiguration(store, secrets, policy)
-    assert runtime.select(query, now=NOW).code == "MODEL_SECRET_MISSING"
+    assert runtime.select(query, now=NOW).reason == "MODEL_SECRET_MISSING"
     store.rows[ctx.tenant_id] = replace(store.rows[ctx.tenant_id], tenant_id=uuid4())
-    assert runtime.select(query, now=NOW).code == "MODEL_CONFIGURATION_SCOPE_MISMATCH"
+    assert runtime.select(query, now=NOW).reason == "MODEL_CONFIGURATION_SCOPE_MISMATCH"
 
 
 def test_secret_resolution_exception_and_invalid_credential_never_escape(setup):
@@ -503,9 +503,9 @@ def test_secret_resolution_exception_and_invalid_credential_never_escape(setup):
         raise RuntimeError(SYNTHETIC_KEY)
 
     secrets.resolve = broken_resolve
-    assert runtime.select(query, now=NOW).code == "MODEL_SECRET_UNAVAILABLE"
+    assert runtime.select(query, now=NOW).reason == "MODEL_SECRET_UNAVAILABLE"
     secrets.resolve = lambda binding: SecretMaterial(binding, SecretStr("bad credential"))
-    assert runtime.select(query, now=NOW).code == "MODEL_SECRET_INVALID"
+    assert runtime.select(query, now=NOW).reason == "MODEL_SECRET_INVALID"
 
 
 def test_version_and_metadata_are_immutable(setup):

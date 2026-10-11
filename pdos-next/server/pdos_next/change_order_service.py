@@ -2,7 +2,7 @@
 
 from copy import deepcopy
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime
 from types import MappingProxyType
 from uuid import uuid4
 from weakref import WeakKeyDictionary
@@ -10,6 +10,9 @@ from weakref import WeakKeyDictionary
 from sqlalchemy import select
 
 from pdos_next import change_order_store as store
+from pdos_next.clock import deadline_current, earliest_deadline
+from pdos_next.clock import now as server_now
+from pdos_next.database import category_for_product
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.change_control.handlers import ChangeControlHandler
 from pdos_next.domain.change_control.ports import Invocation, Outcome, Policy, Ports
@@ -21,13 +24,15 @@ from pdos_next.domain.change_execution.models import ChangeCurrent, ChangeReques
 from pdos_next.domain.configurations.service import _merge_reads
 from pdos_next.domain.projects.models import Project
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal
+from pdos_next.models import Grant, Principal, Product
+from pdos_next.request_proof import snapshot_rows
 from pdos_next.schemas.change_control.contracts import (
     ChangeRequest,
     ImplementationRecord,
     OrderApprove,
     OrderPrepare,
 )
+from pdos_next.service import digest as common_digest
 
 PAYLOADS = MappingProxyType(
     {
@@ -48,7 +53,7 @@ _PHASES = WeakKeyDictionary()
 
 
 def clock():
-    return datetime.now(UTC)
+    return server_now()
 
 
 def require(test, code="SOURCE_STALE", status=409):
@@ -118,7 +123,29 @@ def _one(s, model, *where, lock=False, nowait=False):
     if lock:
         query = query.with_for_update(nowait=nowait)
     with s.no_autoflush:
-        values = list(s.scalars(query))
+        compiled = query.compile()
+        scope_id = next(
+            (
+                getattr(getattr(clause, "right", None), "value", None)
+                for clause in where
+                if getattr(getattr(clause, "left", None), "name", None) == "product_id"
+                or (
+                    model is Product
+                    and getattr(getattr(clause, "left", None), "name", None) == "id"
+                )
+            ),
+            None,
+        )
+        values = (
+            list(s.scalars(query))
+            if lock
+            else snapshot_rows(
+                s,
+                ("change-exact-row", model, str(compiled), common_digest(compiled.params)),
+                query,
+                scope_id=scope_id,
+            )
+        )
     require(len(values) == 1, "FIXED_REFERENCE_MISMATCH")
     return values[0]
 
@@ -141,7 +168,7 @@ def current_fixed(s, ctx, pid, identity, *, lock=False):
         ChangeRequestVersion.change_id == identity,
         ChangeRequestVersion.revision == pointer.revision,
     )
-    require(row.visibility == "product" or row.owner_id == ctx.requester_id, "FORBIDDEN_SCOPE", 403)
+    require(row.visibility != "private" or row.owner_id == ctx.requester_id, "FORBIDDEN_SCOPE", 403)
     return pointer, row
 
 
@@ -219,7 +246,7 @@ class Facts(adapters.Facts):
             "CHANGE_SELECTION_OWNER_REQUIRED",
             503,
         )
-        require(clock() < value.valid_until)
+        require(deadline_current(value.valid_until))
 
     def implementation(self, uow, authority, fact_id, order, item):
         value = self.phase.facts.get(fact_id)
@@ -277,7 +304,9 @@ def parsed_payload(payload):
     return ImplementationRecord(item_id=payload.item_id, fact_id=payload.fact_id)
 
 
-def read_phase(s, ctx, command, payload, *, require_reads=True, current_cas=False):
+def read_phase(
+    s, ctx, command, payload, *, require_reads=True, current_cas=False, complete_recheck=False
+):
     from pdos_next.change_implementation_owner import read_capture
 
     uow = _uow(s)
@@ -316,7 +345,7 @@ def read_phase(s, ctx, command, payload, *, require_reads=True, current_cas=Fals
     )
     require(
         project.status == "active"
-        and (project.visibility == "product" or project.owner_id == ctx.requester_id),
+        and (project.visibility != "private" or project.owner_id == ctx.requester_id),
         "FORBIDDEN_SCOPE",
         403,
     )
@@ -379,6 +408,7 @@ def read_phase(s, ctx, command, payload, *, require_reads=True, current_cas=Fals
         expected_closure=row.source_basis.get("closure"),
         valid_until=graph.expires_at,
         coverage_refresh=coverage_refresh,
+        complete_recheck=complete_recheck,
     )
     if coverage is not None:
         sources.extend(coverage.sources)
@@ -593,7 +623,7 @@ def read_phase(s, ctx, command, payload, *, require_reads=True, current_cas=Fals
         s,
         Grant,
         Grant.tenant_id == ctx.tenant_id,
-        Grant.product_id == command.product_id,
+        Grant.category_id == category_for_product(command.product_id),
         Grant.principal_id == ctx.requester_id,
     )
     require(
@@ -619,7 +649,7 @@ def read_phase(s, ctx, command, payload, *, require_reads=True, current_cas=Fals
             project.status,
         )
         == project_stamp
-        and (project.visibility == "product" or project.owner_id == ctx.requester_id),
+        and (project.visibility != "private" or project.owner_id == ctx.requester_id),
         "FORBIDDEN_SCOPE",
         403,
     )
@@ -635,7 +665,7 @@ def read_phase(s, ctx, command, payload, *, require_reads=True, current_cas=Fals
         "RECHECK_REQUIRED",
     )
     _same_uow(s, uow, ctx, __import__("pdos_next.service", fromlist=["digest"]).digest(vars(ctx)))
-    until = min(
+    until = earliest_deadline(
         grant.expires_at,
         authority_until,
         latest_until,
@@ -732,6 +762,18 @@ def validate(s, ctx, command, product, payload):
     )
 
 
+def prepare_preview(s, ctx, command, product, payload):
+    require(
+        command.product_id == product.id and command.expected_revision == product.revision,
+        "VERSION_CONFLICT",
+    )
+    return read_phase(s, ctx, command, payload, current_cas=True)
+
+
+def preview_prepared(s, ctx, command, product, payload, phase):
+    return _review(ctx, command, payload, phase)
+
+
 def preview_view(s, ctx, command, product, payload):
     require(
         command.product_id == product.id and command.expected_revision == product.revision,
@@ -741,7 +783,14 @@ def preview_view(s, ctx, command, product, payload):
 
 
 def prepare_write_review(s, ctx, command, product, payload, proof):
-    phase = read_phase(s, ctx, command, payload, current_cas=True)
+    phase = read_phase(
+        s,
+        ctx,
+        command,
+        payload,
+        current_cas=True,
+        complete_recheck=command.operation == "change.order.approve",
+    )
     reviewed = _review(ctx, command, payload, phase)
     require(proof.snapshot == reviewed, "CONFIRMATION_SCOPE_CHANGED")
     _PHASES.setdefault(s, {})[id(phase)] = (
@@ -776,7 +825,7 @@ def stage_mutation(s, ctx, command, payload, phase, mutation, marker, *, at, fin
         and mutation.event_name == EVENTS[command.operation],
         "INTEGRITY_MISMATCH",
     )
-    require(at < min(phase.valid_until, marker.expires_at))
+    require(at < earliest_deadline(phase.valid_until, marker.expires_at))
     require(
         (
             mutation.change.id,
@@ -811,7 +860,7 @@ def stage_mutation(s, ctx, command, payload, phase, mutation, marker, *, at, fin
     if final_guard is not None:
         final_guard()  # Actual common marker/UOW only; no source-result cache.
     saved_at = clock()
-    require(at <= saved_at < min(phase.valid_until, marker.expires_at))
+    require(at <= saved_at < earliest_deadline(phase.valid_until, marker.expires_at))
     request = mutation.change
     row = ChangeRequestVersion(
         id=uuid4(),
@@ -921,7 +970,7 @@ def apply_prepared(s, ctx, command, product, payload, phase, proof, host, module
     require(_review(ctx, command, payload, fresh) == saved[2], "CONFIRMATION_SCOPE_CHANGED")
     host.require_live(s, ctx, command, payload, module, proof, binding=binding, marker=marker)
     at = clock()
-    require(at < min(fresh.valid_until, marker.expires_at))
+    require(at < earliest_deadline(fresh.valid_until, marker.expires_at))
     result = []
 
     def save(mutation):

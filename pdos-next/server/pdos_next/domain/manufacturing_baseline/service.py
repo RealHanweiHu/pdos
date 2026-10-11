@@ -13,7 +13,7 @@ from types import MappingProxyType
 from uuid import uuid4
 
 from pydantic import ValidationError
-from sqlalchemy import event, inspect, or_, select
+from sqlalchemy import event, exists, inspect, select
 
 from pdos_next.contracts import Command, SourceRead
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
@@ -22,7 +22,6 @@ from pdos_next.domain.change_execution import service as evidence
 from pdos_next.domain.configurations import service as configurations
 from pdos_next.domain.configurations.models import EngineeringConfiguration, ProcessRevision
 from pdos_next.domain.professional_authority import service as professional
-from pdos_next.domain.professional_authority.models import ProfessionalFact
 from pdos_next.domain.projects import service as projects
 from pdos_next.domain.verification_front.service import _recheck
 from pdos_next.errors import DomainError
@@ -124,7 +123,7 @@ def _persistent_product(s, ctx, command, product):
     require(
         product.id == command.product_id and product.tenant_id == ctx.tenant_id,
         "FORBIDDEN_SCOPE",
-        "产品范围不一致。",
+        "型号范围不一致。",
         403,
     )
 
@@ -169,61 +168,19 @@ def _authority(s, ctx, command, project, *, write=False):
         "当前本人、制造职责及精确用途资格未满足。",
         403,
     )
-    # Keep the actual assessment unchanged. The stack-local deadline also binds
-    # every scope fact activation/expiry, including negative/product-wide facts.
-    # They stay private owner material and do not grant or widen qualification.
-    facts = list(
-        s.scalars(
-            select(ProfessionalFact)
-            .where(
-                ProfessionalFact.tenant_id == ctx.tenant_id,
-                ProfessionalFact.product_id == command.product_id,
-                ProfessionalFact.subject_id == ctx.requester_id,
-                or_(
-                    ProfessionalFact.project_id == project.id, ProfessionalFact.project_id.is_(None)
-                ),
-            )
-            .limit(1001)
-            .execution_options(populate_existing=True, autoflush=False)
-        )
-    )
-    require(len(facts) <= 1000, "PROFESSIONAL_SCOPE_LIMIT", "当前职责范围超过核对上限。", 422)
     _deadline(result, evaluated_at)
-    deadline = datetime.fromisoformat(result["valid_until"])
-    for fact in facts:
-        for boundary in (fact.valid_from, fact.valid_until):
-            require(
-                isinstance(boundary, datetime) and boundary.utcoffset() is not None,
-                "INTEGRITY_MISMATCH",
-                "专业事实的实际生效期限不能核对。",
-                503,
-            )
-            if boundary > evaluated_at:
-                deadline = min(deadline, boundary)
-    require(now() < deadline, "SOURCE_STALE", "职责来源读取期间已跨生效或失效边界。")
-    return result, deadline
+    _deadline(result, now())
+    return result, None
 
 
 def _deadline(authority, at, scope_deadline=None):
-    value = authority.get("valid_until")
-    try:
-        expiry = datetime.fromisoformat(value) if isinstance(value, str) else None
-    except ValueError:
-        expiry = None
     require(
-        expiry is not None and expiry.utcoffset() is not None and at < expiry,
-        "QUALIFICATION_REQUIRED",
-        "当前专业资格期限已到或不能核对。",
-        403,
+        professional.authority_time_current(authority, at),
+        "SOURCE_STALE",
+        "实际职责或资格区间不再满足当前操作。",
     )
     if scope_deadline is not None:
-        require(
-            isinstance(scope_deadline, datetime)
-            and scope_deadline.utcoffset() is not None
-            and at < scope_deadline,
-            "SOURCE_STALE",
-            "完整IO后已跨当前职责的生效或失效边界。",
-        )
+        require(at < scope_deadline, "SOURCE_STALE", "明确临时授权区间已到期。")
 
 
 def _row(s, ctx, pid, ref):
@@ -411,6 +368,7 @@ def _request_digest(command, payload):
     return digest(
         {
             "operation": command.operation,
+            "category_id": command.category_id,
             "product_id": command.product_id,
             "expected_revision": command.expected_revision,
             "source_read_set": [v.model_dump(mode="json") for v in command.source_read_set],
@@ -465,7 +423,9 @@ def _get_preparation(s, ctx, pid, ref):
         status = "needs_recheck"
     if status == "current":
         refs = source_refs(PAYLOADS[row.operation].model_validate(row.input_snapshot["semantic"]))
-        basis, _, _ = evidence._evidence(s, ctx, pid, row.required_source_read_set, refs)
+        basis, _, _ = evidence._evidence(
+            s, ctx, pid, row.required_source_read_set, refs, io=not s.info.get("read_snapshot")
+        )
         if basis != row.source_basis:
             status = "needs_recheck"
     if row.kind == "manufacturing_baseline":
@@ -1141,7 +1101,7 @@ def replay_subject(s, ctx, command, product, payload):
 
 
 def inputs(s, ctx, product_id, command):
-    require(command.product_id == product_id, "FORBIDDEN_SCOPE", "产品范围不一致。", 403)
+    require(command.product_id == product_id, "FORBIDDEN_SCOPE", "型号范围不一致。", 403)
     require_access(s, ctx, product_id, write=True, lock=True)
     product = s.scalar(
         select(Product)
@@ -1162,7 +1122,9 @@ def inputs(s, ctx, product_id, command):
         return {"command": updated.model_dump(mode="json"), "review": _review(payload, bound)}
 
 
-def list_preparations(s, ctx, product_id, *, project_id, process_id=None):
+def list_preparations(s, ctx, product_id, *, project_id, process_id=None, history_cursor=None):
+    from pdos_next.capa_history import page_query, page_rows
+
     require_access(s, ctx, product_id)
     projects._project(s, ctx, product_id, project_id)
     query = select(PreparationVersion).where(
@@ -1172,11 +1134,32 @@ def list_preparations(s, ctx, product_id, *, project_id, process_id=None):
     )
     if process_id is not None:
         query = query.where(PreparationVersion.process_id == process_id)
-    rows = list(
-        s.scalars(query.order_by(PreparationVersion.created_at, PreparationVersion.id).limit(101))
+    joined = (
+        (PreparationCurrent.tenant_id == PreparationVersion.tenant_id)
+        & (PreparationCurrent.product_id == PreparationVersion.product_id)
+        & (PreparationCurrent.project_id == PreparationVersion.project_id)
+        & (PreparationCurrent.kind == PreparationVersion.kind)
+        & (PreparationCurrent.series_id == PreparationVersion.series_id)
+        & (PreparationCurrent.version_id == PreparationVersion.id)
+        & (PreparationCurrent.revision == PreparationVersion.revision)
+    )
+    current_rows = list(s.scalars(query.join(PreparationCurrent, joined)))
+    historical, history_page = page_rows(
+        s.scalars(
+            page_query(
+                query.where(~exists(select(PreparationCurrent.id).where(joined))),
+                PreparationVersion.created_at,
+                PreparationVersion.id,
+                "preparation",
+                history_cursor,
+                kinds={"preparation"},
+            )
+        ),
+        "preparation",
+        kinds={"preparation"},
     )
     views, unavailable = [], 0
-    for row in rows[:100]:
+    for row in [*current_rows, *historical]:
         try:
             _, view = get_preparation(
                 s, ctx, product_id, ObjectRef(kind=row.kind, id=row.id, revision=row.revision)
@@ -1190,7 +1173,8 @@ def list_preparations(s, ctx, product_id, *, project_id, process_id=None):
     return {
         "schema_version": SCHEMA_VERSION,
         "versions": views,
-        "has_more": len(rows) > 100,
+        "has_more": bool(history_page["next_cursor"]),
+        "history_page": history_page,
         "unavailable_count": unavailable,
         "qualification": "unknown",
         "manufacturing_release": None,

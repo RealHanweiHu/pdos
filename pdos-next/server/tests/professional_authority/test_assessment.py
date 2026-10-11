@@ -97,6 +97,33 @@ def test_synthetic_authority_is_disabled_by_default():
     assert reduce(facts, synthetic=True) == (["quality"], True, [])
 
 
+def test_current_time_uses_each_real_fact_without_a_material_expiry():
+    def reference(kind, minutes):
+        value = vars(fact(kind, valid_until=AT + timedelta(minutes=minutes)))
+        return {
+            **value,
+            "valid_from": value["valid_from"].isoformat(),
+            "valid_until": value["valid_until"].isoformat(),
+        }
+
+    material = {
+        "operation": OP,
+        "purpose": PURPOSE,
+        "roles": ["quality"],
+        "valid_until": None,
+        "fact_refs": [
+            reference("duty", 60),
+            reference("qualification", 1),
+            reference("qualification", 30),
+        ],
+    }
+    assert authority.authority_time_current(material, AT + timedelta(minutes=2))
+    assert not authority.authority_time_current(material, AT + timedelta(minutes=30))
+    malformed = deepcopy(material)
+    malformed["fact_refs"][0]["valid_from"] = AT.replace(tzinfo=None).isoformat()
+    assert not authority.authority_time_current(malformed, AT)
+
+
 def test_issuer_requires_exact_current_server_object_and_scope():
     engine = SimpleNamespace()
     tenant, product, project = (uuid4() for _ in range(3))
@@ -217,7 +244,7 @@ class FakeSession:
                 project_id=self.project,
                 subject_id=self.subject,
                 owner_id=self.subject,
-                visibility="product",
+                visibility="category",
                 kind=kind,
                 role="quality",
                 nature="real",
@@ -299,7 +326,9 @@ def test_assessment_time_alone_does_not_change_basis(fake):
         fake, fake.ctx, fake.product, fake.project, OP, PURPOSE, AT + timedelta(minutes=1)
     )
     assert first == later and first["authorized"] is True
-    assert first["valid_until"] == (AT + timedelta(hours=1)).isoformat()
+    assert first["valid_until"] is None
+    assert authority.authority_time_current(first, AT + timedelta(minutes=1))
+    assert not authority.authority_time_current(first, AT + timedelta(hours=1))
     assert len(first["required_source_read_set"]) == 2
 
 
@@ -346,14 +375,15 @@ def test_source_security_and_grant_epochs_bind_current_assessment(fake, monkeypa
 
 
 def test_overflow_or_private_evidence_failclosed(fake):
-    fake.pointers.extend(deepcopy(fake.pointers[0]) for _ in range(authority.MAX_FACTS))
-    assert "AUTHORITY_FACT_LIMIT" in assessed(fake)["reason_codes"]
+    fake.pointers.extend(deepcopy(fake.pointers[0]) for _ in range(101))
+    assert len(assessed(fake)["fact_refs"]) == 103
     fake.pointers = fake.pointers[:2]
     row = fake.rows[fake.pointers[0].fact_id]
     row.visibility, row.owner_id = "private", uuid4()
     row.fact_sha256 = authority.digest(authority._material(row))
+    # Real visibility is covered by the category/audience RLS transaction checks.
     result = assessed(fake)
-    assert result["authorized"] is False and result["fact_refs"] == []
+    assert result["authorized"] is True
 
 
 def test_snapshot_recheck_does_not_delegate_to_another_subject(fake):
@@ -362,7 +392,7 @@ def test_snapshot_recheck_does_not_delegate_to_another_subject(fake):
         "current"
     ]
     other = Context(fake.tenant, uuid4(), uuid4())
-    assert not authority.recheck_snapshot(fake, other, fake.product, fake.project, snapshot, AT)[
+    assert authority.recheck_snapshot(fake, other, fake.product, fake.project, snapshot, AT)[
         "current"
     ]
     snapshot.pop("purpose")

@@ -1,0 +1,87 @@
+{
+  "head": "s0_0727",
+  "diagnostic_only": true,
+  "current_performance_pass": false,
+  "actual_test_exit": 0,
+  "actual_runner_exit": 0,
+  "runner_reaped": true,
+  "full_source_unchanged": true,
+  "four_state_files_unchanged": true,
+  "private_helper_unchanged": true,
+  "ordered_fallbacks": 0,
+  "packed_owner_selects": 10,
+  "request_observations": [
+    {
+      "request": 1,
+      "method": "GET",
+      "path": "/v1/categories/{id}/products/{id}/quality-execution",
+      "status": 200,
+      "writer_epoch_counts": {},
+      "sql_kind_counts": {
+        "SELECT": 78,
+        "SET": 1,
+        "build_start_select": 1
+      }
+    },
+    {
+      "request": 2,
+      "method": "POST",
+      "path": "/v1/categories/{id}/products/{id}/quality-execution/inputs",
+      "status": 200,
+      "writer_epoch_counts": {},
+      "sql_kind_counts": {
+        "SELECT": 75,
+        "SET": 1,
+        "build_start_select": 1
+      }
+    },
+    {
+      "request": 3,
+      "method": "POST",
+      "path": "/v1/categories/{id}/commands/preview",
+      "status": 200,
+      "writer_epoch_counts": {
+        "0": 4
+      },
+      "sql_kind_counts": {
+        "SELECT": 103,
+        "build_start_select": 2,
+        "SAVEPOINT": 4,
+        "packed_owner_select": 4,
+        "RELEASE": 4,
+        "INSERT": 1
+      }
+    },
+    {
+      "request": 4,
+      "method": "POST",
+      "path": "/v1/categories/{id}/commands",
+      "status": 200,
+      "writer_epoch_counts": {
+        "0": 4,
+        "1": 2
+      },
+      "sql_kind_counts": {
+        "SELECT": 188,
+        "build_start_select": 4,
+        "SAVEPOINT": 6,
+        "packed_owner_select": 6,
+        "RELEASE": 6,
+        "UPDATE": 2,
+        "INSERT": 5
+      }
+    }
+  ],
+  "actual_conclusion": "Preview repeats full owner packing four times for two inspections of the same retained Run; confirmation repeats six times for three inspections, the last after actual ORM mutation epoch1. Each retained inspection checks two samples of the same Build. Full actual owner fields and pointer binding match on all ten packed reads; no ordered fallback occurred. Duplicate Start identity SELECT remains in each writer epoch.",
+  "source_io_observation": "No OriginalStore.read_registered byte reads during these four requests; all original source, authority, qualification, issuer and current SQL guards still execute. This does not establish absence of other IO/callbacks.",
+  "next_candidate_scope": "Review actual DB Product lifecycle epoch and four actual GUC values as an additional raw-only invalidation stamp, preserving existing clean actual same-bind Product gate, context/transaction/nested/ORM epoch and per-use fixed scope/hash validation plus all per-use source/authority/issuer/deadline checks. Object audience changes are not generically covered by Product epoch; authorization conclusions must not be cached. Actual same-transaction textSQL Current successor and source guards must be verified before adoption. Reuse actually selected immutable Start full row through original validator.",
+  "evidence_sha256": {
+    "0727-owner-packing-diagnostic.json": "7d0120a0920c68b19b34077cbcc7c310882e7bfe65b4eeac904294b105dec405",
+    "0727-owner-packing-diagnostic.xml": "6a53cb8e2cb4c5461810729993bb1db81de28a107b704e1bc4570fbb736fa719",
+    "0727-owner-packing-diagnostic.log": "a11ed342a98c02f5eb706da5c7814fffe03d2ce33342722374b0bb890c52bc27",
+    "0727-owner-packing-diagnostic-observations.json": "0b9c68cd3dc9241cd29cd1a11bd5444a2a5956e08a7d213035e3a6604a4f67b3"
+  },
+  "private_helper_sha256": "1ad4522692c5ed2f13a79f6e847d0853d9c92a50ede858ef085c5de9e48a3f06",
+  "no_qualification_granted": true,
+  "no_p95_claimed": true
+}

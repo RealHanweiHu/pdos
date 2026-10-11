@@ -67,7 +67,7 @@ def safety(ref):
         hash=digest(str(ref.id)),
         status="active",
         owner_id=uid("owner"),
-        visibility="product",
+        visibility="category",
         source_kind="registered_native_text",
         registration={
             "receipt_id": uid(str(ref.id) + "-receipt"),
@@ -87,7 +87,7 @@ def origin_fixture():
         id=uid("issue"),
         revision=9,
         scope=run.scope,
-        audience=(f"product:{run.scope.product_id}",),
+        audience=(f"category:{uid('category')}",),
         title="Synthetic actual fixed failure",
         status="awaiting_verification",
         risk="high",
@@ -151,11 +151,12 @@ def origin_fixture():
         ref=VersionRef(id=uid("issue-v9"), revision=9, snapshot_sha256=digest(json_value(issue))),
         previous_ref=None,
         scope=issue.scope,
+        category_id=uid("category"),
         issue_id=issue.id,
         purpose=PURPOSE,
         owner_id=uid("owner"),
         writer_id=uid("owner"),
-        visibility="product",
+        visibility="category",
         nature="synthetic",
         operation="quality.capa.actions.complete",
         domain_intent_sha256=digest("original-domain-intent"),
@@ -185,7 +186,7 @@ def origin_fixture():
         rules_version="fixed-original-rules",
         rules_sha256=digest("fixed-rules"),
         verified=VerifiedRun(run=run, nature="synthetic"),
-        visibility="product",
+        visibility="category",
         owner_id=uid("tester"),
         sources=sources,
         required_source_read_set=reads,
@@ -227,16 +228,24 @@ def world(monkeypatch):
     s = Session(bind=bind)
     s.begin()
     ctx = Context(
-        origin.scope.tenant_id, uid("separate-shared-writer"), uid("separate-shared-writer")
+        origin.scope.tenant_id,
+        uid("separate-shared-writer"),
+        uid("separate-shared-writer"),
+        category_id=origin.category_id,
     )
-    product = Product(id=origin.scope.product_id, tenant_id=ctx.tenant_id, revision=400)
+    product = Product(
+        id=origin.scope.product_id,
+        tenant_id=ctx.tenant_id,
+        category_id=origin.category_id,
+        revision=400,
+    )
     principal = Principal(
         id=ctx.actor_id, tenant_id=ctx.tenant_id, kind="human", active=True, access_epoch=1
     )
     grant = Grant(
         id=uid("write-grant"),
         tenant_id=ctx.tenant_id,
-        product_id=product.id,
+        category_id=origin.category_id,
         principal_id=ctx.actor_id,
         can_write=True,
         access_epoch=1,
@@ -260,7 +269,14 @@ def world(monkeypatch):
     def one(session, model, *where):
         assert session is s and model in rows
         value = rows[model]
-        assert all(getattr(value, clause.left.key) == clause.right.value for clause in where)
+        for clause in where:
+            wanted = (
+                origin.category_id
+                if clause.left.key == "category_id"
+                and getattr(clause.right, "name", None) == "category_for_product"
+                else clause.right.value
+            )
+            assert getattr(value, clause.left.key) == wanted
         return value
 
     monkeypatch.setattr(preparation.guards, "_one", one)
@@ -277,7 +293,7 @@ def world(monkeypatch):
     project = preparation.anchor_storage.StoredProjectScope(
         scope=origin.scope,
         owner_id=uid("different-project-owner"),
-        visibility="product",
+        visibility="category",
         declared_scope="Actual shared project synthetic fixture",
     )
     pointer = preparation.anchor_storage.StoredIssueCurrent(
@@ -342,11 +358,39 @@ def world(monkeypatch):
         "facts_revision": digest("synthetic fixed professional test return"),
         "authorized": True,
         "qualified": True,
-        "valid_until": (clock.at + timedelta(hours=1)).isoformat(),
+        "valid_until": None,
+        "operation": commands.OPERATION,
+        "purpose": origin.purpose,
+        "roles": ["quality"],
+        "synthetic": True,
+        "fact_refs": [
+            {
+                "kind": kind,
+                "role": "quality",
+                "nature": "synthetic",
+                "state": "active",
+                "operations": [commands.OPERATION],
+                "purposes": [origin.purpose],
+                "valid_from": NOW.isoformat(),
+                "valid_until": (clock.at + timedelta(hours=1)).isoformat(),
+            }
+            for kind in ("duty", "qualification")
+        ],
     }
     policy = {
         "facts_revision": digest("synthetic policy return"),
-        "valid_until": (clock.at + timedelta(hours=1)).isoformat(),
+        "valid_until": None,
+        "id": str(uid("policy")),
+        "revision": 1,
+        "source_basis": [
+            {
+                "id": str(uid("policy")),
+                "revision": 1,
+                "state": "active",
+                "valid_from": NOW.isoformat(),
+                "valid_until": (clock.at + timedelta(hours=1)).isoformat(),
+            }
+        ],
     }
     state = SimpleNamespace(current_calls=0, owner_calls=0, hook=None, sql_calls=0, sql_hook=None)
 
@@ -382,7 +426,7 @@ def world(monkeypatch):
         expected_issue_revision=origin.ref.revision,
         capa_id=origin.issue.capa.id,
         reason="New incomplete verification candidate",
-        visibility="product",
+        visibility="category",
         confirmation_token="real-persistent-fixture-proof-token",
     )
 
@@ -409,11 +453,8 @@ def world(monkeypatch):
             preparation.guards._uow(s),
             preparation._runtime(s),
             clock.at,
-            min(
-                grant.expires_at,
-                datetime.fromisoformat(authority["valid_until"]),
-                datetime.fromisoformat(policy["valid_until"]),
-            ),
+            None,
+            caller_expires_at=grant.expires_at,
         )
 
     monkeypatch.setattr(preparation, "_read", read)
@@ -422,6 +463,7 @@ def world(monkeypatch):
         command_id=uid("candidate-write-command"),
         idempotency_key="candidate-write-key",
         operation=commands.OPERATION,
+        category_id=ctx.category_id,
         product_id=product.id,
         expected_revision=product.revision,
         source_read_set=[r.model_dump(mode="json") for r in initial.required_source_read_set],
@@ -430,6 +472,8 @@ def world(monkeypatch):
     proof = Confirmation(
         id=uid("candidate-write-proof"),
         tenant_id=ctx.tenant_id,
+        category_id=ctx.category_id,
+        subject_type="product",
         product_id=product.id,
         actor_id=ctx.actor_id,
         subject_id=product.id,
@@ -499,7 +543,7 @@ def prepare(f, **override):
 def reject(code, fn):
     with pytest.raises(DomainError) as caught:
         fn()
-    assert caught.value.code == code
+    assert caught.value.reason == code
     return caught.value
 
 
@@ -520,9 +564,17 @@ def test_write_prepare_restores_true_first_anchor_and_keeps_incomplete_nulls(wor
         is phase.inspection.observation_complete
         is None
     )
-    assert phase.owner_id != f.ctx.actor_id and phase.visibility == "product"
+    assert phase.owner_id != f.ctx.actor_id and phase.visibility == "category"
     assert f.state.current_calls == 2 and f.state.owner_calls == 2
     assert f.proof.consumed is False and not f.s.new and not f.s.dirty
+
+
+def test_unbounded_member_grant_keeps_actual_t1_proof_deadline(world):
+    world.grant.expires_at = None
+    phase = prepare(world)
+    assert phase.valid_until == world.proof.expires_at
+    assert phase.caller_expires_at is None
+    assert world.proof.consumed is False
 
 
 def test_actual_consumption_then_independent_refresh_preserves_original_snapshot(world):
@@ -595,7 +647,7 @@ def test_real_review_and_written_jsonb_use_ordered_json_refs_without_string_fall
         consumption_marker=marker,
     )
     jsonb = {
-        column.key: getattr(row, column.key)
+        column.key: getattr(row, column.key, None)
         for column in row.__table__.columns
         if isinstance(column.type, JSONB)
     }
@@ -604,7 +656,7 @@ def test_real_review_and_written_jsonb_use_ordered_json_refs_without_string_fall
     assert jsonb["required_source_read_set"] == expected_reads
     assert jsonb["candidate_snapshot"]["required_source_read_set"] == expected_reads
     assert jsonb["input_snapshot"]["stable_anchor"] == decoded["stable_anchor"]
-    assert subject == "capa_verification_candidate" and visibility == "product"
+    assert subject == "capa_verification_candidate" and visibility == "category"
     receipt_result = {
         "id": str(row.id),
         "revision": row.revision,
@@ -641,9 +693,9 @@ def test_proof_expiry_during_current_owner_io_rejects_before_registration(world)
     assert not world.s.new and world.proof.consumed is False
 
 
-def test_future_professional_activation_boundary_caps_final_post_io_clock(world):
+def test_actual_qualification_expiry_during_owner_io_blocks_new_confirmation(world):
     boundary = world.clock.at + timedelta(seconds=2)
-    world.authority["valid_until"] = boundary.isoformat()
+    world.authority["fact_refs"][1]["valid_until"] = boundary.isoformat()
     world.database["snapshot"]["authority_snapshot"] = deepcopy(world.authority)
     from sqlalchemy.orm import attributes
 

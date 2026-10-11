@@ -18,6 +18,7 @@ from pdos_next.service import Context
 
 def command(setup, operation, payload, artifact=None):
     return {
+        "category_id": str(setup.category),
         "command_id": str(uuid4()),
         "idempotency_key": str(uuid4()),
         "operation": operation,
@@ -29,7 +30,9 @@ def command(setup, operation, payload, artifact=None):
 
 
 def post(setup, cmd):
-    return setup.client.post("/v1/commands", headers=setup.headers, json=cmd)
+    return setup.client.post(
+        f"/v1/categories/{setup.category}/commands", headers=setup.headers, json=cmd
+    )
 
 
 def source(setup, visibility="private"):
@@ -81,7 +84,8 @@ def payload(artifact, **overrides):
 
 def definitions(setup, headers=None):
     return setup.client.get(
-        f"/v1/products/{setup.product}/definitions", headers=headers or setup.headers
+        f"/v1/categories/{setup.category}/products/{setup.product}/definitions",
+        headers=headers or setup.headers,
     )
 
 
@@ -96,7 +100,13 @@ def test_draft_group_receipt_and_exact_unknown_source(setup):
     assert item["status"] == "draft" and item["revision"] == 1
     assert item["specs"][0]["value"] is None
     assert item["sources"][0]["quote"] == "Pressure: 150 PSI"
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         assert s.scalar(select(Audit.id).where(Audit.receipt_id == UUID(receipt["id"])))
         assert (
             s.scalar(select(Outbox.type).where(Outbox.receipt_id == UUID(receipt["id"])))
@@ -111,7 +121,7 @@ def test_private_source_cannot_expand_and_private_definition_is_hidden(setup):
     bad = post(
         setup,
         command(
-            setup, "product.definition.draft", payload(artifact, visibility="product"), artifact
+            setup, "product.definition.draft", payload(artifact, visibility="category"), artifact
         ),
     )
     assert bad.status_code == 403 and bad.json()["code"] == "FORBIDDEN_SCOPE"
@@ -127,7 +137,13 @@ def test_wrong_quote_rolls_back_all_definition_members(setup):
     body["sources"][0]["quote"] = "Pressure: 200 PSI"
     result = post(setup, command(setup, "product.definition.draft", body, artifact))
     assert result.status_code == 409 and result.json()["code"] == "MISSING_REQUIRED_EVIDENCE"
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         for model in (DefinitionRevision, DefinitionSource, DefinitionSpecRow):
             assert s.scalar(select(func.count()).select_from(model)) == 0
 
@@ -172,7 +188,16 @@ def test_definition_and_members_are_database_immutable(setup):
         (DefinitionSpecRow, {"reason": "Changed"}),
         (DefinitionSource, {"quote": "Changed"}),
     ]:
-        with pytest.raises(DBAPIError), tenant_session(setup.engine, setup.tenant) as s:
+        with (
+            pytest.raises(DBAPIError),
+            tenant_session(
+                setup.engine,
+                setup.tenant,
+                actor_id=setup.human,
+                requester_id=setup.human,
+                category_id=setup.category,
+            ) as s,
+        ):
             s.execute(update(model).values(**changes))
 
 
@@ -207,8 +232,17 @@ def test_agent_cannot_bypass_manual_definition_handler(setup):
     cmd = Command.model_validate(
         command(setup, "product.definition.draft", payload(artifact), artifact)
     )
-    ctx = Context(setup.tenant, setup.agent, setup.human)
-    with pytest.raises(DomainError) as failed, tenant_session(setup.engine, setup.tenant) as s:
+    ctx = Context(setup.tenant, setup.agent, setup.human, category_id=setup.category)
+    with (
+        pytest.raises(DomainError) as failed,
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=setup.category,
+        ) as s,
+    ):
         validate(
             s,
             ctx,
@@ -228,7 +262,13 @@ def test_receipt_failure_does_not_leave_half_definition(setup, monkeypatch):
     monkeypatch.setattr("pdos_next.service.append_receipt", fail)
     with pytest.raises(RuntimeError, match="Synthetic receipt failure"):
         post(setup, command(setup, "product.definition.draft", payload(artifact), artifact))
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as s:
         for model in (DefinitionRevision, DefinitionSpecRow, DefinitionSource):
             assert s.scalar(select(func.count()).select_from(model)) == 0
         assert (

@@ -2,7 +2,6 @@
 
 from dataclasses import replace
 from datetime import timedelta
-from uuid import UUID
 
 from sqlalchemy import select, text
 
@@ -11,13 +10,12 @@ from pdos_next.domain.original_lifecycle_execution.runtime import BoundFacts
 from pdos_next.errors import DomainError
 from pdos_next.lifecycle_catalog import COVERED_COLUMNS, GUARDED
 from pdos_next.models import (
-    Base,
+    Category,
     Grant,
     LifecycleIntentRecord,
     LifecycleObject,
     Principal,
     Product,
-    Receipt,
     UploadAttempt,
     UploadedOriginal,
     now,
@@ -42,6 +40,8 @@ from pdos_next.upload_lifecycle import exact_reference
 # consuming business references. Column additions still invalidate coverage.
 NON_CONSUMING = frozenset(
     {
+        "categories",
+        "object_audiences",
         "principals",
         "login_sessions",
         "grants",
@@ -59,12 +59,28 @@ NON_CONSUMING = frozenset(
         # Derived physical identity/capacity mirror only. Immutable scoped fact
         # bundles and committed occupancy proofs retain every original reference.
         "operational_asset_sentinels",
+        # The Run's server-bound read_sources consume originals. Model replies,
+        # input answers and tool arguments are untrusted technical records.
+        "agent_sessions",
+        "agent_tool_calls",
+        "agent_run_events",
+        "agent_run_inputs",
+        "agent_validation_budgets",
+        "mcp_connectors",
+        "mcp_tool_grants",
+        "provider_data_agreements",
+        "public_web_snapshots",
+        "tenant_administrators",
+        "tenant_skill_enablements",
+        "model_configuration_heads",
+        "model_configuration_versions",
     }
 )
 IDENTITY_KEYS = frozenset(
     {
         "id",
         "tenant_id",
+        "category_id",
         "product_id",
         "owner_id",
         "actor_id",
@@ -79,10 +95,9 @@ IDENTITY_KEYS = frozenset(
 
 
 def product_gate(s, ctx, product_id):
-    product = s.scalar(select(Product).where(Product.id == product_id).with_for_update())
-    if not product:
-        raise DomainError("FORBIDDEN_SCOPE", "产品范围不可用。", 403)
-    require_access(s, ctx, product_id, write=True, lock=True)
+    product = require_access(s, ctx, product_id, write=True, lock=True)
+    if product_id is not None:
+        product = s.scalar(select(Product).where(Product.id == product_id).with_for_update())
     actor = s.get(Principal, ctx.requester_id)
     if actor.kind != "human" or ctx.run_id or ctx.actor_id != ctx.requester_id:
         raise DomainError("NAMED_DECISION_REQUIRED", "原件保留由具名本人核对。", 403)
@@ -103,7 +118,9 @@ def _scope_owner(s, ctx, product_id, object_id, store):
             item = store.inspect(object_id)
         except StorageFailure:
             raise DomainError("SOURCE_UNAVAILABLE", "当前范围内未能核对这个原件。", 403) from None
-        if item.scope == JournalScope(ctx.tenant_id, product_id):
+        if item.scope == JournalScope(
+            ctx.tenant_id, product_id, ctx.category_id if product_id is None else None
+        ):
             owner, reference = item.requester_id, item.reference
     if owner != ctx.requester_id or reference is None:
         raise DomainError("SOURCE_UNAVAILABLE", "原件保留不在当前本人范围。", 403)
@@ -120,11 +137,19 @@ def read_facts(s, ctx, product_id, reference, previous, store):
         raise LifecycleFailure("BINDING_MISMATCH", "原件字节绑定不一致。")
     item, journal_error = None, None
     try:
-        item = store.lookup_original(reference, JournalScope(ctx.tenant_id, product_id))
+        item = store.lookup_original(
+            reference,
+            JournalScope(
+                ctx.tenant_id, product_id, ctx.category_id if product_id is None else None
+            ),
+        )
     except StorageFailure as failure:
         journal_error = failure.code
     grant = s.scalar(
-        select(Grant).where(Grant.product_id == product_id, Grant.principal_id == ctx.requester_id)
+        select(Grant).where(
+            Grant.category_id == ctx.category_id,
+            Grant.principal_id == ctx.requester_id,
+        )
     )
     principal = s.get(Principal, ctx.requester_id)
     projection = s.get(LifecycleObject, reference.id)
@@ -168,7 +193,9 @@ def read_facts(s, ctx, product_id, reference, previous, store):
     )
     state = OriginalState(
         reference=reference,
-        scope=LifecycleScope(ctx.tenant_id, product_id),
+        scope=LifecycleScope(
+            ctx.tenant_id, product_id, ctx.category_id if product_id is None else None
+        ),
         revision=previous.revision if previous else 1,
         inventory_revision=inventory,
         created_at=created,
@@ -184,21 +211,6 @@ def read_facts(s, ctx, product_id, reference, previous, store):
         pending_intent_id=previous.pending_intent_id if previous else None,
     )
     return BoundFacts(ctx.requester_id, state)
-
-
-def _uuids(value):
-    if isinstance(value, UUID):
-        return {value}
-    if isinstance(value, str):
-        try:
-            return {UUID(value)}
-        except ValueError:
-            return set()
-    if isinstance(value, dict):
-        return set().union(*(_uuids(v) for k, v in value.items() if k not in IDENTITY_KEYS))
-    if isinstance(value, (tuple, list)):
-        return set().union(*(_uuids(v) for v in value))
-    return set()
 
 
 def schema_covered(s):
@@ -234,13 +246,27 @@ def schema_covered(s):
         ).all()
     )
     required = {
-        (name, "lifecycle_reference", "lifecycle_reference_gate")
+        (
+            name,
+            "lifecycle_reference",
+            "kernel_source_reference_gate" if name == "agent_runs" else "lifecycle_reference_gate",
+        )
+        for name in (*GUARDED, "upload_attempts")
+        if name != "inbox_deliveries"
+    }
+    required |= {
+        (
+            name,
+            "category_lifecycle_clock",
+            "kernel_source_reference_clock" if name == "agent_runs" else "category_lifecycle_clock",
+        )
         for name in (*GUARDED, "upload_attempts")
         if name != "inbox_deliveries"
     }
     required |= {
         ("products", "lifecycle_epoch", "lifecycle_product_epoch"),
         ("uploaded_originals", "upload_registration", "protect_upload_registration"),
+        ("object_audiences", "audience_reference_fence", "protect_object_audience_target"),
     }
     required |= {
         (name, "retained_record", "protect_lifecycle_record")
@@ -255,96 +281,90 @@ def schema_covered(s):
 
 def journal_inventory(store, scope):
     cursor, items = None, {}
-    for _ in range(100):
+    visited = set()
+    while True:
         page = store.inventory(scope, limit=100, cursor=cursor)
         items.update({item.upload_id: item for item in page.items})
         if page.unavailable_count:
             return items, False
         if not page.has_more:
             return items, page.complete
-        if not page.next_cursor or page.next_cursor == cursor:
+        if not page.next_cursor or page.next_cursor in visited:
             return items, False
+        visited.add(page.next_cursor)
         cursor = page.next_cursor
-    return items, False
 
 
 class References:
     def __init__(self, s, ctx, product_id, store):
         self.s, self.ctx, self.product_id, self.store = s, ctx, product_id, store
 
-    def read_current(self, reference):
+    def prefetch(self, identities):
+        from pdos_next.request_proof import request_proof
+
         product = product_gate(self.s, self.ctx, self.product_id)
+        if self.product_id is None:
+            product = self.s.get(Category, self.ctx.category_id)
         self.s.refresh(product, attribute_names=["lifecycle_epoch"])
+        proof = request_proof(self.s)
+        key = ("lifecycle_references", self.ctx, self.product_id, product.lifecycle_epoch)
+        values = proof.read_rows.setdefault(key, {})
+        missing = set(identities) - values.keys()
+        if missing:
+            rows = self.s.execute(
+                text(
+                    "SELECT object_id,reference_count,formal_history,read_version FROM "
+                    "lifecycle_reference_summary(:tenant,:category,:product,"
+                    "CAST(:originals AS uuid[]))"
+                ),
+                {
+                    "tenant": self.ctx.tenant_id,
+                    "category": self.ctx.category_id,
+                    "product": self.product_id,
+                    "originals": sorted(missing, key=str),
+                },
+            ).all()
+            values.update({identity: None for identity in missing})
+            values.update({row[0]: row[1:] for row in rows})
+        return values, str(product.lifecycle_epoch)
+
+    def read_current(self, reference):
+        _, complete = journal_inventory(
+            self.store,
+            JournalScope(
+                self.ctx.tenant_id,
+                self.product_id,
+                self.ctx.category_id if self.product_id is None else None,
+            ),
+        )
+        count, history = None, None
+        product = product_gate(self.s, self.ctx, self.product_id)
         version = str(product.lifecycle_epoch)
-        _, inventory_complete = journal_inventory(
-            self.store, JournalScope(self.ctx.tenant_id, self.product_id)
-        )
-        known = schema_covered(self.s) and inventory_complete
-        rows = []
-        if known:
-            control_receipts = set(
-                self.s.scalars(
-                    select(Receipt.id).where(
-                        Receipt.product_id == self.product_id,
-                        Receipt.operation.startswith("evidence.lifecycle."),
-                    )
-                )
-            )
-            # Scoped, bounded closure across all reviewed current/history business rows.
-            for name, table in Base.metadata.tables.items():
-                if name in NON_CONSUMING:
-                    continue
-                query = select(table).where(table.c.tenant_id == self.ctx.tenant_id)
-                if "product_id" in table.c:
-                    query = query.where(table.c.product_id == self.product_id)
-                batch = self.s.execute(query.limit(2001)).mappings().all()
-                if len(batch) > 2000 or len(rows) + len(batch) > 12000:
-                    known = False
-                    break
-                for value in batch:
-                    row = dict(value)
-                    if row.get("receipt_id") in control_receipts:
-                        continue
-                    if name == "action_receipts" and row["operation"].startswith(
-                        "evidence.lifecycle."
-                    ):
-                        continue
-                    rows.append((name, row.get("id"), _uuids(row)))
-        reached, referenced = {reference.id}, set()
-        if known:
-            changed = True
-            while changed:
-                changed = False
-                for index, (_, identity, links) in enumerate(rows):
-                    if index not in referenced and (identity == reference.id or links & reached):
-                        referenced.add(index)
-                        if identity:
-                            reached.add(identity)
-                        changed = True
-        formal = any(
-            rows[i][0]
-            not in {
-                "uploaded_originals",
-                "artifact_versions",
-                "original_security",
-                "original_scan_requests",
-                "original_scan_results",
-                "outbox_events",
-                "audit_entries",
-            }
-            for i in referenced
-        )
+        if schema_covered(self.s) and complete:
+            values, version = self.prefetch([reference.id])
+            summary = values.get(reference.id)
+            if summary is not None:
+                count, history, epoch = summary
+                version = str(epoch)
         return ReferenceState(
             reference,
-            LifecycleScope(self.ctx.tenant_id, self.product_id),
+            LifecycleScope(
+                self.ctx.tenant_id,
+                self.product_id,
+                self.ctx.category_id if self.product_id is None else None,
+            ),
             version,
             now(),
-            len(referenced) if known else None,
-            formal if known else None,
+            count,
+            history,
         )
 
     def read_under_fence(self, fence):
-        if fence.original.scope != LifecycleScope(self.ctx.tenant_id, self.product_id):
+        if fence.original.scope != LifecycleScope(
+            self.ctx.tenant_id,
+            self.product_id,
+            self.ctx.category_id if self.product_id is None else None,
+        ):
             raise LifecycleFailure("BINDING_MISMATCH", "保护栅栏不在当前范围。")
         return self.read_current(fence.original.reference)
 
@@ -355,13 +375,14 @@ def inventory(s, ctx, product_id, store):
     product_gate(s, ctx, product_id)
     service = runtime_for(s, ctx, product_id)
     scope, cursor, complete, journal_items = (
-        JournalScope(ctx.tenant_id, product_id),
+        JournalScope(ctx.tenant_id, product_id, ctx.category_id if product_id is None else None),
         None,
         False,
         {},
     )
-    # Full scoped enumeration is bounded; any corrupt page or cap preserves unknown.
-    for _ in range(100):
+    # All pages participate; a corrupt or cyclic cursor preserves unknown.
+    visited = set()
+    while True:
         page = store.inventory(scope, limit=100, cursor=cursor)
         journal_items.update(
             {i.upload_id: i for i in page.items if i.requester_id == ctx.requester_id}
@@ -371,8 +392,9 @@ def inventory(s, ctx, product_id, store):
         if not page.has_more:
             complete = page.complete
             break
-        if not page.next_cursor or page.next_cursor == cursor:
+        if not page.next_cursor or page.next_cursor in visited:
             break
+        visited.add(page.next_cursor)
         cursor = page.next_cursor
     originals = {
         r.id: r
@@ -401,10 +423,8 @@ def inventory(s, ctx, product_id, store):
         )
     }
     ids = set(originals) | set(attempts) | set(journal_items) | set(objects)
-    if len(ids) > 1000:
-        raise DomainError(
-            "INVENTORY_INCOMPLETE", "原件范围超出当前完整核对上限，未给出回收资格。", 409
-        )
+    if complete and schema_covered(s):
+        service.references.prefetch(ids)
     result = []
     for identity in sorted(ids, key=str):
         reference = resolve_reference(s, ctx, product_id, identity, store)

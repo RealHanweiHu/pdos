@@ -1,11 +1,9 @@
 from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import ConfigDict, Field, field_validator, model_validator
 
-
-class StrictModel(BaseModel):
-    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+from pdos_next.schema_base import StrictModel
 
 
 class SourceRead(StrictModel):
@@ -17,9 +15,10 @@ class Command(StrictModel):
     command_id: UUID
     idempotency_key: str = Field(min_length=8, max_length=160)
     operation: str = Field(min_length=1, max_length=80)
-    product_id: UUID
+    category_id: UUID
+    product_id: UUID | None = None
     expected_revision: int = Field(ge=1)
-    source_read_set: list[SourceRead] = Field(default_factory=list, max_length=20)
+    source_read_set: list[SourceRead] = Field(default_factory=list)
     payload: dict
 
 
@@ -27,7 +26,7 @@ class ArtifactPayload(StrictModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=False)
     title: str = Field(min_length=1, max_length=200)
     content: str = Field(min_length=1, max_length=200_000)
-    visibility: Literal["private", "product"] = "private"
+    visibility: Literal["private", "category", "audience"] = "private"
     source_label: str = Field(min_length=1, max_length=200)
 
     @field_validator("content")
@@ -49,34 +48,21 @@ class ClaimPayload(StrictModel):
     statement: str = Field(min_length=1, max_length=4000)
     nature: Literal["observed", "extracted", "inferred"] = "extracted"
     availability: Literal["known", "unknown", "conflicted"] = "known"
-    visibility: Literal["private", "product"] = "private"
-
-
-class OutcomeSpec(StrictModel):
-    object_type: Literal["claim"] = "claim"
-    minimum_records: Literal[1] = 1
-    source_required: Literal[True] = True
-
-
-class WorkPayload(StrictModel):
-    goal: str = Field(min_length=3, max_length=2000)
-    artifact_id: UUID
-    source_revision: int = Field(ge=1)
-    outcome_spec: OutcomeSpec = Field(default_factory=OutcomeSpec)
-    max_actions: int = Field(default=1, ge=1, le=3)
-    stop_condition: Literal["one_sourced_claim_or_input_required"] = (
-        "one_sourced_claim_or_input_required"
-    )
+    visibility: Literal["private", "category", "audience"] = "private"
+    prepared_event_id: UUID | None = None
+    confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 
 
 class RevertPayload(StrictModel):
-    receipt_id: UUID
-    confirmation_token: str = Field(min_length=20, max_length=128)
+    receipt_id: UUID | None = None
+    run_id: UUID | None = None
+    confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 
-
-class CancelPayload(StrictModel):
-    work_id: UUID
-    confirmation_token: str = Field(min_length=20, max_length=128)
+    @model_validator(mode="after")
+    def exact_target(self):
+        if (self.receipt_id is None) == (self.run_id is None):
+            raise ValueError("Choose exactly one receipt or entire run")
+        return self
 
 
 class OriginalScanInput(StrictModel):
@@ -103,10 +89,16 @@ PAYLOADS = {
     "evidence.original.withdraw": OriginalWithdrawPayload,
     "evidence.artifact.register": ArtifactPayload,
     "evidence.claim.record": ClaimPayload,
-    "ai.work.start": WorkPayload,
     "ai.run.revert": RevertPayload,
-    "ai.run.cancel": CancelPayload,
 }
+
+from pdos_next.domain.preproject.schemas import PAYLOADS as PREPROJECT_PAYLOADS  # noqa: E402
+
+PAYLOADS.update(PREPROJECT_PAYLOADS)
+
+from pdos_next.model_configuration.commands import SavePayload  # noqa: E402
+
+PAYLOADS["model.configuration.save"] = SavePayload
 
 
 class ProductInput(StrictModel):
@@ -119,7 +111,7 @@ class UploadInput(StrictModel):
     title: str = Field(min_length=1, max_length=200)
     filename: str = Field(min_length=1, max_length=200)
     source_label: str = Field(min_length=1, max_length=200)
-    visibility: Literal["private", "product"] = "private"
+    visibility: Literal["private", "category", "audience"] = "private"
     content_base64: str = Field(min_length=4, max_length=11_184_812)
     idempotency_key: str = Field(min_length=8, max_length=160)
     expected_revision: int = Field(ge=1)
@@ -400,8 +392,10 @@ from pdos_next.domain.manufacturing_baseline.schemas import (  # noqa: E402
     InstructionPayload,
 )
 
-PAYLOADS.update({
-    "npi.work_instruction.record": InstructionPayload,
-    "npi.control_plan.record": ControlPlanPayload,
-    "npi.manufacturing_baseline.record": BaselinePayload,
-})
+PAYLOADS.update(
+    {
+        "npi.work_instruction.record": InstructionPayload,
+        "npi.control_plan.record": ControlPlanPayload,
+        "npi.manufacturing_baseline.record": BaselinePayload,
+    }
+)

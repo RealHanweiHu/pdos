@@ -10,6 +10,7 @@ from pdos_next import change_controlled_owner as owner
 from pdos_next import change_controlled_store as models
 from pdos_next.change_order_service import _one, current_fixed, snapshot
 from pdos_next.change_selection_consumption import ConsumptionHost
+from pdos_next.clock import deadline_current, earliest_deadline
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.change_control.rules import digest
 from pdos_next.domain.change_execution import service as old
@@ -110,7 +111,7 @@ def _read(s, ctx, command, payload, *, new_write, require_reads=True):
     )
     owner.require(
         selected.visibility == payload.visibility
-        and (selected.visibility == "product" or selected.owner_id == ctx.requester_id),
+        and (selected.visibility == "category" or selected.owner_id == ctx.requester_id),
         "CHANGE_AUDIENCE_MISMATCH",
         403,
     )
@@ -312,7 +313,9 @@ def _read(s, ctx, command, payload, *, new_write, require_reads=True):
     )
     _same_uow(s, uow, ctx, common_digest(vars(ctx)))
     at = owner.clock()
-    end = min(caller_until, auth_until, last_auth_until, material.valid_until, policy.valid_until)
+    end = earliest_deadline(
+        caller_until, auth_until, last_auth_until, material.valid_until, policy.valid_until
+    )
     owner.require(at < end, "SOURCE_STALE")
     phase = PreparedSelection(
         selected,
@@ -436,7 +439,10 @@ def record_consumption(s, ctx, command, product, payload, phase, proof, binding)
 
 def _stage_without_io(s, ctx, command, phase, marker, saved_at):
     """No owner IO/flush/Receipt: common tail must flush Fact BEFORE Current."""
-    owner.require(saved_at < min(phase.deadline, marker.expires_at), "SOURCE_STALE")
+    owner.require(
+        deadline_current(earliest_deadline(phase.deadline, marker.expires_at), saved_at),
+        "SOURCE_STALE",
+    )
     material, prior = phase.material, phase.prior
     atom = models.ChangeSelectionFact(
         id=uuid4(),
@@ -543,7 +549,10 @@ def apply_prepared_write(s, ctx, command, product, payload, phase, *, consumptio
         )
         at = owner.clock()
         _same_uow(s, saved[1], ctx, saved[2])
-        owner.require(at < min(fresh.deadline, marker.expires_at), "SOURCE_STALE")
+        owner.require(
+            deadline_current(earliest_deadline(fresh.deadline, marker.expires_at), at),
+            "SOURCE_STALE",
+        )
         return _stage_without_io(s, ctx, command, fresh, marker, at)
     finally:
         _PHASES.pop(phase, None)
@@ -589,12 +598,12 @@ def replay_subject(s, ctx, command, payload):
                 models.ChangeSelectionFact.change_id == payload.change_id,
                 models.ChangeSelectionFact.item_id == payload.item.id,
                 models.ChangeSelectionFact.actor_id == ctx.actor_id,
+                models.ChangeSelectionFact.input_snapshot["semantic"] == semantic(payload),
             )
-            .limit(101)
+            .limit(2)
             .execution_options(populate_existing=True, autoflush=False)
         )
     )
-    owner.require(len(rows) <= 100, "SELECTION_HISTORY_LIMIT", 422)
     matches = [row for row in rows if row.input_snapshot["semantic"] == semantic(payload)]
     owner.require(len(matches) <= 1, "INTEGRITY_MISMATCH")
     return matches[0].id if matches else None

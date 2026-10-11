@@ -4,6 +4,9 @@ This is not a StableCapaAnchor builder or a current-authorization host. Stored
 SourceSafety fields are original declarations, never fresh byte/security proof.
 """
 
+from pdos_next.database import category_for_product
+
+
 # Initialize the actual common registry before its domain children.
 # ruff: noqa: I001
 from copy import deepcopy
@@ -14,8 +17,8 @@ from uuid import UUID
 
 from pdos_next.service import Context, digest
 
-from . import anchor as a  
-from . import fact_atom_storage as guards  
+from . import anchor as a
+from . import fact_atom_storage as guards
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
 from pdos_next.domain.projects.models import Project
 from pdos_next.domain.quality_followup import service as followup
@@ -34,7 +37,7 @@ EVENT = "capa.actions_completed"
 class StoredProjectScope(DTO):
     scope: a.Scope
     owner_id: UUID
-    visibility: Literal["private", "product"]
+    visibility: Literal["private", "category", "audience"]
     declared_scope: str
 
 
@@ -102,7 +105,7 @@ def _project(s, ctx, pid, project_id):
         Project.id == project_id,
     )
     _require(
-        row.visibility in {"private", "product"}
+        row.visibility in {"private", "category", "audience"}
         and (row.visibility != "private" or row.owner_id == ctx.requester_id),
         "FORBIDDEN_SCOPE",
         "Product Grant不能扩大实际私人Project的读取范围。",
@@ -130,7 +133,7 @@ def _snapshot(row, ctx, pid, issue_id):
         403,
     )
     _require(
-        row.visibility in {"private", "product"}
+        row.visibility in {"private", "category", "audience"}
         and (row.visibility != "private" or row.owner_id == ctx.requester_id),
         "FORBIDDEN_SCOPE",
         "当前本人不可读取该私有Issue版本。",
@@ -140,7 +143,9 @@ def _snapshot(row, ctx, pid, issue_id):
         issue = Issue.model_validate(deepcopy(row.issue_snapshot))
     except (ValidationError, TypeError, ValueError):
         raise DomainError("ORIGIN_SNAPSHOT_INVALID", "保存的Issue结构无法精确核对。", 503) from None
-    audience = (f"private:{row.owner_id}" if row.visibility == "private" else f"product:{pid}",)
+    audience = (
+        f"private:{row.owner_id}" if row.visibility == "private" else f"category:{row.category_id}",
+    )
     _require(
         (
             issue.id,
@@ -322,6 +327,7 @@ def _descriptor(row, issue, before):
                 id=before.id, revision=before.revision, snapshot_sha256=before.snapshot_sha256
             ),
             scope=issue.scope,
+            category_id=row.category_id,
             issue_id=issue.id,
             purpose=row.purpose,
             owner_id=row.owner_id,
@@ -384,6 +390,7 @@ def _group(s, ctx, pid, row, issue, before, previous, payload):
     common = digest(
         {
             "operation": OPERATION,
+            "category": ctx.category_id,
             "product": pid,
             "payload": semantic,
             "named_actor": row.writer_id,
@@ -481,6 +488,7 @@ def _group(s, ctx, pid, row, issue, before, previous, payload):
             "actor": row.writer_id,
             "requester": row.writer_id,
             "operation": OPERATION,
+            "category": ctx.category_id,
             "product": pid,
             "expected_revision": proof.revision,
             "read_set": sorted(
@@ -630,7 +638,7 @@ def read_origin_descriptor(
         s,
         Grant,
         Grant.tenant_id == ctx.tenant_id,
-        Grant.product_id == product_id,
+        Grant.category_id == category_for_product(product_id),
         Grant.principal_id == ctx.actor_id,
     )
     _require(
@@ -644,7 +652,9 @@ def read_origin_descriptor(
         "末端Project实际scope/owner/visibility已改变。",
     )
     _require(
-        person.kind == "human" and person.active is True and grant.expires_at > _now(),
+        person.kind == "human"
+        and person.active is True
+        and (grant.expires_at is None or grant.expires_at > _now()),
         "FORBIDDEN_SCOPE",
         "全部存储IO结束时当前本人读取授权已失效。",
         403,

@@ -15,13 +15,14 @@ class _DTO(BaseModel):
 
 class _Fact(_DTO):
     reason: str = Field(min_length=3, max_length=2000)
-    sources: list[DefinitionReference] = Field(min_length=1, max_length=20)
+    sources: list[DefinitionReference] = Field(min_length=1)
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 
     @model_validator(mode="after")
     def unique_sources(self) -> Self:
-        if len({(ref.artifact_id, ref.expected_revision, ref.line, ref.quote)
-                for ref in self.sources}) != len(self.sources):
+        if len(
+            {(ref.artifact_id, ref.expected_revision, ref.line, ref.quote) for ref in self.sources}
+        ) != len(self.sources):
             raise ValueError("事实来源不能重复")
         return self
 
@@ -29,7 +30,7 @@ class _Fact(_DTO):
 class ConfigurationDifference(_DTO):
     path: str = Field(min_length=1, max_length=500)
     reason: str = Field(min_length=3, max_length=2000)
-    sources: list[DefinitionReference] = Field(min_length=1, max_length=20)
+    sources: list[DefinitionReference] = Field(min_length=1)
 
 
 class ActualConfigurationPayload(_Fact):
@@ -40,7 +41,7 @@ class ActualConfigurationPayload(_Fact):
     actual_manufacturing_configuration_id: UUID
     expected_actual_manufacturing_revision: int = Field(ge=1)
     observed_at: AwareDatetime
-    differences: list[ConfigurationDifference] = Field(default_factory=list, max_length=3000)
+    differences: list[ConfigurationDifference] = Field(default_factory=list)
 
     @field_validator("observed_at")
     @classmethod
@@ -72,7 +73,7 @@ class OutputPayload(_Fact):
     actual_configuration_id: UUID
     expected_actual_configuration_revision: int = Field(ge=1)
     lot_label: str = Field(min_length=1, max_length=100)
-    observed_unit_count: int = Field(ge=1, le=1_000_000, strict=True)
+    observed_unit_count: int = Field(ge=1, strict=True)
     unit: str = Field(min_length=1, max_length=80)
     observation: ExternalObservation
 
@@ -98,7 +99,7 @@ class SampleIdentity(_DTO):
 class SampleAllocatePayload(_Fact):
     lot_id: UUID
     expected_lot_revision: int = Field(ge=1)
-    samples: list[SampleIdentity] = Field(min_length=1, max_length=500)
+    samples: list[SampleIdentity] = Field(min_length=1)
 
     @model_validator(mode="after")
     def unique_labels(self) -> Self:

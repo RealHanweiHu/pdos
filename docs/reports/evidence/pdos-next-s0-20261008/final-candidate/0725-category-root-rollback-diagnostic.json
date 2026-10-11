@@ -1,0 +1,724 @@
+{
+  "outcome": "passed",
+  "passed": true,
+  "head": "s0_0725",
+  "database": "pdos_test",
+  "port": 62303,
+  "rollback_only": true,
+  "category_access_only_transactional_proposal": true,
+  "diagnostic_only": true,
+  "performance_acceptance": "Not evaluated: single scoped observations are not 30-sample p95",
+  "environments_created": false,
+  "state_written": false,
+  "business_dml_executed": true,
+  "synthetic_mutations_savepoint_rollback_only": true,
+  "catalog_restored": true,
+  "data_unchanged": true,
+  "source_unchanged": true,
+  "transaction_only_category_access_definition_changed": true,
+  "scoped_select_comparisons": {
+    "quality_current_issue": {
+      "rows_equal": true,
+      "before_rows": 1,
+      "after_rows": 1,
+      "before_elapsed_seconds": 0.015300790997571312,
+      "after_elapsed_seconds": 0.017344541003694758,
+      "before_explain": {
+        "planning_ms": 1.025,
+        "execution_ms": 8.95,
+        "actual_rows": 1,
+        "actual_loops": 1,
+        "shared_hit_blocks": 593,
+        "shared_read_blocks": 0
+      },
+      "after_explain": {
+        "planning_ms": 0.95,
+        "execution_ms": 7.357,
+        "actual_rows": 1,
+        "actual_loops": 1,
+        "shared_hit_blocks": 515,
+        "shared_read_blocks": 0
+      }
+    },
+    "quality_failure_map": {
+      "rows_equal": true,
+      "before_rows": 1,
+      "after_rows": 1,
+      "before_elapsed_seconds": 0.0024110829981509596,
+      "after_elapsed_seconds": 0.0025241670009563677,
+      "before_explain": {
+        "planning_ms": 0.295,
+        "execution_ms": 0.423,
+        "actual_rows": 1,
+        "actual_loops": 1,
+        "shared_hit_blocks": 29,
+        "shared_read_blocks": 0
+      },
+      "after_explain": {
+        "planning_ms": 0.346,
+        "execution_ms": 0.598,
+        "actual_rows": 1,
+        "actual_loops": 1,
+        "shared_hit_blocks": 17,
+        "shared_read_blocks": 0
+      }
+    }
+  },
+  "case_comparisons": {
+    "actual_same_actor_requester:writing=False": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "actual_same_actor_requester:writing=True": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "actual_same_actor_requester:writing=None": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "null_tenant_argument:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "null_tenant_argument:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "null_tenant_argument:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "null_category_argument:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "null_category_argument:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "null_category_argument:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_tenant_argument:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_tenant_argument:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_tenant_argument:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_tenant_context:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_tenant_context:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_tenant_context:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_tenant_both:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_tenant_both:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_tenant_both:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_category_context:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_category_context:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_category_context:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "distinct_ungranted_actor:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "distinct_ungranted_actor:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "distinct_ungranted_actor:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "distinct_ungranted_requester:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "distinct_ungranted_requester:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "distinct_ungranted_requester:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_tenant:writing=False": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_tenant:writing=True": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_tenant:writing=None": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_tenant:writing=False": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_tenant:writing=True": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_tenant:writing=None": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_actor:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_actor:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_actor:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_actor:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_actor:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_actor:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_requester:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_requester:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_requester:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_requester:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_requester:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_requester:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_category:writing=False": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_category:writing=True": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_category:writing=None": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_category:writing=False": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_category:writing=True": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_category:writing=None": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_all:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_all:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_all:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_all:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_all:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_all:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "malformed_tenant:writing=False": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_tenant:writing=True": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_tenant:writing=None": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "wrong_tenant_malformed_tenant:writing=False": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "wrong_tenant_malformed_tenant:writing=True": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "wrong_tenant_malformed_tenant:writing=None": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_actor:writing=False": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_actor:writing=True": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_actor:writing=None": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "wrong_tenant_malformed_actor:writing=False": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "wrong_tenant_malformed_actor:writing=True": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "wrong_tenant_malformed_actor:writing=None": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_requester:writing=False": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_requester:writing=True": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_requester:writing=None": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "wrong_tenant_malformed_requester:writing=False": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "wrong_tenant_malformed_requester:writing=True": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "wrong_tenant_malformed_requester:writing=None": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_category:writing=False": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_category:writing=True": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_category:writing=None": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "wrong_tenant_malformed_category:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_tenant_malformed_category:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_tenant_malformed_category:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "inactive_actor:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "inactive_actor:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "inactive_actor:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "read_only_grant:writing=False": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "read_only_grant:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "read_only_grant:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "unlimited_grant:writing=False": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "unlimited_grant:writing=True": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "unlimited_grant:writing=None": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "expired_grant:writing=False": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "expired_grant:writing=True": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "expired_grant:writing=None": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    }
+  },
+  "helper_metadata_restored": true,
+  "sequence_values_unchanged": true,
+  "state_file_unchanged": true,
+  "private_diagnostic": ".local/s0-category-root-diagnostics/486c22ee-6e41-4bc1-994a-82dfd32111e0.json"
+}

@@ -235,7 +235,7 @@ def test_count_scalar_strictness(field, value):
 def test_overlap_and_count_conflict_are_rejected(changes):
     with pytest.raises(DomainError) as error:
         project(batch(count_changes=changes), checked_at=AT)
-    assert error.value.code == "COUNT_CONFLICT"
+    assert error.value.reason == "COUNT_CONFLICT"
 
 
 def test_fixed_denominator_change_rejected():
@@ -244,7 +244,7 @@ def test_fixed_denominator_change_rejected():
     data["fixed"]["cohort"].update(population_count=11, fixed_input_count=11, unit_refs=None)
     with pytest.raises(DomainError) as error:
         project(RecordedBatch.model_validate(data), checked_at=AT)
-    assert error.value.code == "FIXED_DENOMINATOR_CHANGED"
+    assert error.value.reason == "FIXED_DENOMINATOR_CHANGED"
 
 
 def test_weighted_aggregation_not_percent_average():
@@ -300,7 +300,7 @@ def test_full_scope_incompatibility_cannot_aggregate(path, value):
     b = replace(b, path, value)
     with pytest.raises(DomainError) as error:
         aggregate((a, b), checked_at=AT)
-    assert error.value.code == "INCOMPATIBLE_SCOPE"
+    assert error.value.reason == "INCOMPATIBLE_SCOPE"
 
 
 def test_repeated_lot_pilot_or_sample_ref_rejected():
@@ -308,20 +308,20 @@ def test_repeated_lot_pilot_or_sample_ref_rejected():
     b = batch(10, 6, compatible=a)
     with pytest.raises(DomainError) as error:
         aggregate((a, a), checked_at=AT)
-    assert error.value.code == "OVERLAPPING_SCOPE"
+    assert error.value.reason == "OVERLAPPING_SCOPE"
     b = replace(
         b, "fixed.yield_scope.basis.lot", a.fixed.yield_scope.basis.lot.model_dump(mode="json")
     )
     with pytest.raises(DomainError) as error:
         aggregate((a, b), checked_at=AT)
-    assert error.value.code == "OVERLAPPING_SCOPE"
+    assert error.value.reason == "OVERLAPPING_SCOPE"
     b = batch(10, 6, compatible=a)
     refs = list(b.fixed.cohort.unit_refs)
     refs[0] = a.fixed.cohort.unit_refs[0]
     b = replace(b, "fixed.cohort.unit_refs", [r.model_dump(mode="json") for r in refs])
     with pytest.raises(DomainError) as error:
         aggregate((a, b), checked_at=AT)
-    assert error.value.code == "OVERLAPPING_UNITS"
+    assert error.value.reason == "OVERLAPPING_UNITS"
 
 
 def test_missing_member_owner_is_unknown_not_disjoint_positive():
@@ -330,7 +330,7 @@ def test_missing_member_owner_is_unknown_not_disjoint_positive():
     assert "COHORT_MEMBERSHIP_NOT_ENUMERATED" in p.metrics.warnings
     with pytest.raises(DomainError) as error:
         aggregate((a,), checked_at=AT)
-    assert error.value.code == "COHORT_MEMBERSHIP_UNKNOWN" and error.value.status == 503
+    assert error.value.reason == "COHORT_MEMBERSHIP_UNKNOWN" and error.value.status == 503
 
 
 def test_no_draft_or_missing_baseline_line_scope():
@@ -366,7 +366,7 @@ def test_append_correction_keeps_exact_scope_and_members():
             replace(b, "fixed.yield_scope.line", ref("line").model_dump(mode="json")),
             checked_at=AT,
         )
-    assert error.value.code == "FIXED_SCOPE_CHANGED"
+    assert error.value.reason == "FIXED_SCOPE_CHANGED"
 
 
 def test_correction_cannot_reuse_original_observation_identity():
@@ -374,7 +374,7 @@ def test_correction_cannot_reuse_original_observation_identity():
     b = replace(corrected(a), "record.observation_id", str(a.record.observation_id))
     with pytest.raises(DomainError) as error:
         revision(a, b, checked_at=AT)
-    assert error.value.code == "OBSERVATION_REVISION_CONFLICT"
+    assert error.value.reason == "OBSERVATION_REVISION_CONFLICT"
 
 
 def test_unknown_batch_input_never_invents_aggregate_input():
@@ -427,10 +427,10 @@ def test_native_clock_micros_offset_and_freshness():
     assert original.microsecond == 160086 and a.record.observed.occurred_at == original
     with pytest.raises(DomainError) as error:
         project(a, checked_at=AT - timedelta(microseconds=1))
-    assert error.value.code == "FUTURE_OBSERVATION"
+    assert error.value.reason == "FUTURE_OBSERVATION"
     with pytest.raises(DomainError) as error:
         project(a, checked_at=AT.replace(tzinfo=None))
-    assert error.value.code == "FRESH_SERVER_CLOCK_REQUIRED"
+    assert error.value.reason == "FRESH_SERVER_CLOCK_REQUIRED"
 
 
 def test_decimal_precision_does_not_use_global_float_context():
@@ -455,4 +455,4 @@ def test_sampling_subset_is_fixed_not_silent_full_lot():
 def test_missing_host_fails_closed_no_writes():
     with pytest.raises(DomainError) as error:
         Ports().require()
-    assert error.value.code == "INTEGRATION_REQUIRED" and error.value.status == 503
+    assert error.value.reason == "INTEGRATION_REQUIRED" and error.value.status == 503

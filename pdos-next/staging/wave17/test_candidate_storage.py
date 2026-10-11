@@ -228,6 +228,7 @@ def seal(w):
     row.intent_digest = digest(
         {
             "operation": OPERATION,
+            "category": w.ctx.category_id,
             "product": row.product_id,
             "payload": row.input_snapshot["semantic"],
             "named_actor": row.writer_id,
@@ -250,6 +251,7 @@ def seal(w):
             "actor": row.writer_id,
             "requester": row.writer_id,
             "operation": OPERATION,
+            "category": w.ctx.category_id,
             "product": row.product_id,
             "expected_revision": w.candidate_proof.revision,
             "read_set": sorted(

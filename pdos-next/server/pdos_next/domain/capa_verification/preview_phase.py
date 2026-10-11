@@ -86,7 +86,7 @@ def _binding(s, ctx, command, product, payload):
     ):
         raise DomainError("FORBIDDEN_SCOPE", "预览操作或完整载荷不匹配。", 403)
     if type(product) is not Product:
-        raise DomainError("INTEGRATION_REQUIRED", "预览缺少实际宿主产品对象。", 503)
+        raise DomainError("INTEGRATION_REQUIRED", "预览缺少实际宿主型号对象。", 503)
     state = inspect(product)
     if state.session is not s or state.persistent is not True:
         raise DomainError("INTEGRATION_REQUIRED", "产品须为本Session实际已保存对象。", 503)
@@ -141,7 +141,7 @@ def _material(bound, ctx, product, payload):
         or resolution.action_id != payload.action_id
         or tuple(output.ref for output in resolution.outputs) != payload.output_refs
         or resolution.owner_id != ctx.requester_id
-        or bound.visibility not in {"private", "product"}
+        or bound.visibility not in {"private", "category", "audience"}
         or (resolution.visibility == "private" and bound.visibility != "private")
     ):
         _fail("回链准备结果不能改换真实范围、措施、输出或受众。")
@@ -216,7 +216,7 @@ def prepare_preview(s, ctx, command, product, payload) -> PreviewPhase:
 
 def _assert_phase(s, ctx, command, product, payload, phase):
     if phase._session is not s or phase._product is not product:
-        _fail("预览不能跨Session或改换宿主产品对象。")
+        _fail("预览不能跨Session或改换宿主型号对象。")
     # Check before ORM attribute access: rollback may expire objects, and must
     # never cause a stale phase to re-load material in a different transaction.
     current = _uow(s)

@@ -8,7 +8,7 @@ from sqlalchemy import select
 from pdos_next.contracts import Command
 from pdos_next.errors import DomainError
 from pdos_next.models import Product, Receipt, RequestKey
-from pdos_next.service import append_receipt, digest, receipt_view, require_access
+from pdos_next.service import append_receipt, digest, receipt_view, remember_key, require_access
 
 
 def import_operational_fact(s, ctx, issuer, payload, *, request_key: str, command_id: UUID):
@@ -22,15 +22,9 @@ def import_operational_fact(s, ctx, issuer, payload, *, request_key: str, comman
         raise DomainError(
             "NAMED_DECISION_REQUIRED", "操作事实权威导入必须由可信具名入口办理。", 403
         )
-    product = s.scalar(
-        select(Product)
-        .where(Product.id == issuer.product_id, Product.tenant_id == ctx.tenant_id)
-        .with_for_update()
-    )
-    if product is None:
-        raise DomainError("FORBIDDEN_SCOPE", "操作事实权威范围不可用。", 403)
-    require_access(s, ctx, product.id, write=True, lock=True)
+    product = require_access(s, ctx, issuer.product_id)
     command = Command(
+        category_id=product.category_id,
         command_id=command_id,
         idempotency_key=request_key,
         operation="build.operational_facts.import",
@@ -52,7 +46,26 @@ def import_operational_fact(s, ctx, issuer, payload, *, request_key: str, comman
     )
     if key and key.digest != fingerprint:
         raise DomainError("DUPLICATE_INTENT_CONFLICT", "同一导入编号对应了不同的权威事实。")
-    # Revalidates the opaque issuer, current human scope and source read-set on replay too.
+    old = (
+        s.get(Receipt, key.receipt_id)
+        if key
+        else s.scalar(
+            select(Receipt).where(
+                Receipt.tenant_id == ctx.tenant_id,
+                Receipt.product_id == product.id,
+                Receipt.actor_id == ctx.actor_id,
+                Receipt.operation == command.operation,
+                Receipt.intent_digest == fingerprint,
+            )
+        )
+    )
+    if old is not None:
+        remember_key(s, ctx, request_key, fingerprint, old)
+        return receipt_view(old)
+    if key:
+        raise DomainError("FORBIDDEN_SCOPE", "原导入回执不在当前可读范围。", 403)
+    product = s.scalar(select(Product).where(Product.id == product.id).with_for_update())
+    require_access(s, ctx, product.id, write=True, lock=True)
     fact = trusted_import(s, ctx, issuer, data)
     if fact is None:
         raise DomainError("INTEGRITY_MISMATCH", "导入结果无法绑定持久操作事实。")
@@ -87,14 +100,5 @@ def import_operational_fact(s, ctx, issuer, payload, *, request_key: str, comman
             fingerprint,
             fact.visibility,
         )
-    s.add(
-        RequestKey(
-            tenant_id=ctx.tenant_id,
-            actor_id=ctx.actor_id,
-            key=request_key,
-            digest=fingerprint,
-            receipt_id=old.id,
-        )
-    )
-    s.flush()
+    remember_key(s, ctx, request_key, fingerprint, old)
     return receipt_view(old)

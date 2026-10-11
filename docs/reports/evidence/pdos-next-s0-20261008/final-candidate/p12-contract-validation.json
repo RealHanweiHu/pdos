@@ -1,0 +1,10 @@
+{
+  "exit_code": 0,
+  "check": "pdos-next/tools/validate_contracts.py",
+  "check_sha256": "84b218121d1ac80897c85ebdd33c3780a20f396b475b110c68a8d935e532b2ca",
+  "design_sha256": "2820b72159622c2131774b9b0a0b548d63b44fa948af882aa795c26e231246f4",
+  "operations": 86,
+  "events": 85,
+  "acceptance_ids": 63,
+  "scope": "Design catalog/source coverage only; no runtime acceptance inferred"
+}

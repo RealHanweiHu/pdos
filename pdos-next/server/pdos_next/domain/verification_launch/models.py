@@ -55,7 +55,7 @@ class VerificationRunIdentity(Row, Base):
             [f"builds.{name}" for name in ("tenant_id", "product_id", "project_id", "id")],
         ),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
-        CheckConstraint("visibility IN ('private','product')"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
     )
 
 
@@ -100,7 +100,7 @@ class VerificationRunVersion(Row, Base):
         ForeignKeyConstraint(["tenant_id", "writer_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint("build_revision > 0 AND request_revision > 0 AND revision > 0"),
         CheckConstraint(
-            "visibility IN ('private','product') AND "
+            "visibility IN ('private','category','audience') AND "
             "status IN ('planned','running','results_pending','reviewed','disposed')"
         ),
         CheckConstraint(
@@ -189,7 +189,7 @@ class VerificationLaunchFact(Row, Base):
         ),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint("revision = 1 AND request_revision > 0 AND run_revision > 0"),
-        CheckConstraint("visibility IN ('private','product')"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
         CheckConstraint(
             "operation IN ('test.run.plan','verification.schedule.promise','test.run.start')"
         ),

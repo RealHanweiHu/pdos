@@ -86,24 +86,25 @@ def test_tentative_can_record_missing_resource_but_formal_cannot():
 
 
 @pytest.mark.parametrize(
-    "field,value",
+    "field,value,reason",
     [
-        ("authorized", False),
-        ("qualified", False),
-        ("qualified", None),
-        ("policy_registered", False),
-        ("cancelled", True),
-        ("sources_current", False),
+        ("authorized", False, "authority_forbidden"),
+        ("qualified", False, "qualification_required"),
+        ("qualified", None, "qualification_required"),
+        ("policy_registered", False, "policy_unavailable"),
+        ("cancelled", True, "run_cancelled"),
+        ("sources_current", False, "sources_stale"),
     ],
 )
-def test_current_authority_and_policy_revocation_rejects_staging(field, value):
+def test_current_authority_and_policy_revocation_rejects_staging(field, value, reason):
     req = request()
     host = SyntheticHost(req)
     preview = host.handler.preview(req)
     ctx = host.contexts[req.owner_run_id]
     host.contexts[req.owner_run_id] = ctx.model_copy(update={field: value})
-    with pytest.raises(ResourceError), host.uow():
+    with pytest.raises(ResourceError) as error, host.uow():
         host.handler.stage_formal(req, preview)
+    assert error.value.code == reason
     assert not host.records and not host.confirmed
 
 
@@ -162,16 +163,16 @@ def test_fixed_readset_drift_rejects(change):
     assert not host.records
 
 
-def test_expired_preview_and_backdated_new_reservation_fail():
+def test_unchanged_material_survives_five_minutes_but_backdated_new_reservation_fails():
     req = request()
     host = SyntheticHost(req)
     preview = host.handler.preview(req)
     host.contexts[req.owner_run_id] = host.contexts[req.owner_run_id].model_copy(
         update={"now": NOW + timedelta(minutes=5)}
     )
-    with pytest.raises(ResourceError) as error, host.uow():
+    with host.uow():
         host.handler.stage_formal(req, preview)
-    assert error.value.code == "preview_expired_or_blocked"
+    assert host.records[req.reservation_id].state == "formal"
     host.contexts[req.owner_run_id] = host.contexts[req.owner_run_id].model_copy(
         update={"now": req.window.start + timedelta(seconds=1)}
     )
@@ -439,11 +440,11 @@ def test_counterexample_separate_uows_leave_orphan_resource_occupancy():
     assert host.records[req.reservation_id].state == "formal"  # Forbidden orphan occupancy.
 
 
-def test_preview_expiry_tampering_changes_digest_and_cannot_extend_window():
+def test_preview_context_tampering_cannot_replace_the_bound_readset():
     req = request()
     host = SyntheticHost(req)
     preview = host.handler.preview(req)
-    extended = preview.model_copy(update={"expires_at": preview.expires_at + timedelta(days=1)})
+    extended = preview.model_copy(update={"context_revision": "fabricated-authority"})
     with pytest.raises(ResourceError) as error, host.uow():
         host.handler.stage_formal(req, extended)
     assert error.value.code == "readset_changed"

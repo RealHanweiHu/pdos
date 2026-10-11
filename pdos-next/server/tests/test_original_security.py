@@ -68,7 +68,7 @@ def uploaded(work, **changes):
         "content", b"Synthetic original\nUnverified synthetic fixture\nPressure: 150 PSI\n"
     )
     response = work.client.post(
-        f"/v1/products/{work.setup.product}/originals",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/originals",
         headers=work.setup.headers,
         json=upload_input(content, **changes).model_dump(mode="json"),
     )
@@ -78,7 +78,7 @@ def uploaded(work, **changes):
 
 def scan(work, original_id, *, expected_epoch=1, key=None, headers=None):
     response = work.client.post(
-        f"/v1/products/{work.setup.product}/originals/{original_id}/scan",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/originals/{original_id}/scan",
         headers=headers or work.setup.headers,
         json={"expected_epoch": expected_epoch, "idempotency_key": key or str(uuid4())},
     )
@@ -90,6 +90,9 @@ def scan_result(work, receipt):
     return scan_requested(
         work.setup.engine,
         {
+            "category_id": str(work.setup.category),
+            "actor_id": str(work.setup.human),
+            "requester_id": str(work.setup.human),
             "tenant_id": str(work.setup.tenant),
             "product_id": str(work.setup.product),
             "subject_id": receipt["subject_id"],
@@ -99,6 +102,9 @@ def scan_result(work, receipt):
 
 def reference(work, original_id):
     return {
+        "category_id": str(work.setup.category),
+        "actor_id": str(work.setup.human),
+        "requester_id": str(work.setup.human),
         "tenant_id": str(work.setup.tenant),
         "product_id": str(work.setup.product),
         "subject_id": str(original_id),
@@ -112,19 +118,56 @@ def parsed(work, original_id):
         parse_uploaded(work.setup.engine, reference(work, original_id), work.store)["status"]
         == "parsed"
     )
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         return session.scalar(select(Artifact.id).where(Artifact.original_id == original_id))
 
 
 def download(work, original_id, headers=None):
     return work.client.get(
-        f"/v1/products/{work.setup.product}/originals/{original_id}/download",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/originals/{original_id}/download",
         headers=headers or work.setup.headers,
     )
 
 
+def test_original_workspace_read_reuses_authority_and_takes_no_write_locks(security_work):
+    work = security_work
+    original = uploaded(work)
+    parsed(work, original)
+    statements = []
+
+    def observed(_conn, _cursor, statement, _params, _context, _many):
+        statements.append(statement)
+
+    event.listen(work.setup.engine, "before_cursor_execute", observed)
+    try:
+        response = work.client.get(
+            f"/v1/categories/{work.setup.category}/products/{work.setup.product}/workspace",
+            headers=work.setup.headers,
+        )
+    finally:
+        event.remove(work.setup.engine, "before_cursor_execute", observed)
+    assert response.status_code == 200, response.text
+    assert response.json()["sources"][0]["status"] == "active"
+    assert not any(
+        "FOR UPDATE" in statement or "FOR SHARE" in statement for statement in statements
+    )
+    assert sum("JOIN grants" in statement for statement in statements) == 1
+
+
 def count(work, model, *where):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         return session.scalar(select(func.count()).select_from(model).where(*where))
 
 
@@ -142,7 +185,9 @@ def withdraw_command(work, original_id, *, expected_epoch=2):
 
 def preview(work, command_value):
     response = work.client.post(
-        "/v1/commands/preview", headers=work.setup.headers, json=command_value
+        f"/v1/categories/{work.setup.category}/commands/preview",
+        headers=work.setup.headers,
+        json=command_value,
     )
     assert response.status_code == 200, response.text
     return response.json()["command"]
@@ -150,7 +195,9 @@ def preview(work, command_value):
 
 def execute(work, command_value, headers=None):
     return work.client.post(
-        "/v1/commands", headers=headers or work.setup.headers, json=command_value
+        f"/v1/categories/{work.setup.category}/commands",
+        headers=headers or work.setup.headers,
+        json=command_value,
     )
 
 
@@ -158,17 +205,17 @@ def test_unscanned_noruntime_parse_and_download_fail_without_reading_bytes(secur
     work = security_work
     original = uploaded(work)
     assert work.store.inspect(original).registration_state == "registered"
-    assert download(work, original).json()["code"] == "ORIGINAL_SECURITY_BLOCKED"
+    assert download(work, original).json()["code"] == "SOURCE_UNAVAILABLE"
     with pytest.raises(DomainError) as error:
         parse_uploaded(work.setup.engine, reference(work, original), work.store)
-    assert error.value.code == "ORIGINAL_SECURITY_BLOCKED"
+    assert error.value.code == "SOURCE_UNAVAILABLE"
     configure(work.setup.engine, None)
     response = work.client.post(
-        f"/v1/products/{work.setup.product}/originals/{original}/scan",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/originals/{original}/scan",
         headers=work.setup.headers,
         json={"expected_epoch": 1, "idempotency_key": str(uuid4())},
     )
-    assert response.status_code == 503 and response.json()["code"] == "SCANNER_UNAVAILABLE"
+    assert response.status_code == 503 and response.json()["code"] == "SOURCE_UNAVAILABLE"
     assert (
         count(work, OriginalScanRequest)
         == count(work, OriginalScanResult)
@@ -196,12 +243,18 @@ def test_nonclean_worker_results_preserve_original_and_cannot_derive_or_download
     original = uploaded(work)
     receipt = scan(work, original)
     assert scan_result(work, receipt)["status"] == status.value
-    assert download(work, original).json()["code"] == "ORIGINAL_SECURITY_BLOCKED"
+    assert download(work, original).json()["code"] == "SOURCE_UNAVAILABLE"
     with pytest.raises(DomainError) as error:
         parse_uploaded(work.setup.engine, reference(work, original), work.store)
-    assert error.value.code == "ORIGINAL_SECURITY_BLOCKED"
+    assert error.value.code == "SOURCE_UNAVAILABLE"
     assert count(work, Artifact) == 0 and count(work, OriginalScanResult) == 1
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         row = session.get(UploadedOriginal, original)
         assert row.status == "uploaded" and row.scan_status == status.value
         assert work.store.read_original(object_reference(row)).startswith(b"Synthetic original")
@@ -213,7 +266,7 @@ def test_http_cannot_supply_scan_authority_or_internal_byte_identity(security_wo
     work = security_work
     original = uploaded(work)
     response = work.client.post(
-        f"/v1/products/{work.setup.product}/originals/{original}/scan",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/originals/{original}/scan",
         headers=work.setup.headers,
         json={"expected_epoch": 1, "idempotency_key": str(uuid4()), field: "forged"},
     )
@@ -232,7 +285,7 @@ def test_private_cross_product_tenant_and_agent_cannot_request_or_replay_scan(se
         headers = {"Authorization": f"Bearer {work.setup.tokens[human]}"}
         assert download(work, original, headers).status_code == 403
         response = work.client.post(
-            f"/v1/products/{work.setup.product}/originals/{original}/scan",
+            f"/v1/categories/{work.setup.category}/products/{work.setup.product}/originals/{original}/scan",
             headers=headers,
             json={"expected_epoch": 1, "idempotency_key": owner_key},
         )
@@ -246,31 +299,35 @@ def test_private_cross_product_tenant_and_agent_cannot_request_or_replay_scan(se
                 owner_id=work.setup.human,
                 name="Synthetic second product",
                 purpose="Cross-scope original test",
+                category_id=work.setup.category,
             )
         )
         session.flush()
-        session.add(
-            Grant(
-                tenant_id=work.setup.tenant,
-                product_id=other_product,
-                principal_id=work.setup.human,
-                can_write=True,
-                expires_at=now() + timedelta(hours=1),
-            )
-        )
+
     response = work.client.post(
-        f"/v1/products/{other_product}/originals/{original}/scan",
+        f"/v1/categories/{work.setup.category}/products/{other_product}/originals/{original}/scan",
         headers=work.setup.headers,
         json={"expected_epoch": 1, "idempotency_key": str(uuid4())},
     )
     assert response.status_code == 403
     with (
         pytest.raises(DomainError) as error,
-        tenant_session(work.setup.engine, work.setup.tenant) as session,
+        tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.setup.agent,
+            requester_id=work.setup.human,
+            category_id=work.setup.category,
+        ) as session,
     ):
         request_scan(
             session,
-            Context(work.setup.tenant, work.setup.agent, work.setup.human),
+            Context(
+                work.setup.tenant,
+                work.setup.agent,
+                work.setup.human,
+                category_id=work.setup.category,
+            ),
             work.setup.product,
             original,
             expected_epoch=2,
@@ -297,9 +354,9 @@ def test_wrong_trusted_worker_receipt_binding_cannot_certify_original(security_w
         work.scanner.transform = lambda value: replace(value, request_id=uuid4())
     with pytest.raises(DomainError) as error:
         scan_result(work, receipt)
-    assert error.value.code == "SCAN_BASIS_CHANGED"
+    assert error.value.code == "SOURCE_STALE"
     assert count(work, OriginalScanResult) == count(work, Artifact) == 0
-    assert download(work, original).json()["code"] == "ORIGINAL_SECURITY_BLOCKED"
+    assert download(work, original).json()["code"] == "SOURCE_UNAVAILABLE"
 
 
 def test_access_revoked_during_scan_discards_clean_reply_before_domain_commit(security_work):
@@ -311,7 +368,7 @@ def test_access_revoked_during_scan_discards_clean_reply_before_domain_commit(se
         with Session(work.setup.admin) as session, session.begin():
             grant = session.scalar(
                 select(Grant).where(
-                    Grant.product_id == work.setup.product, Grant.principal_id == work.setup.human
+                    Grant.category_id == work.setup.category, Grant.principal_id == work.setup.human
                 )
             )
             grant.expires_at = now() - timedelta(seconds=1)
@@ -321,7 +378,15 @@ def test_access_revoked_during_scan_discards_clean_reply_before_domain_commit(se
         scan_result(work, receipt)
     assert error.value.code == "FORBIDDEN_SCOPE"
     assert count(work, OriginalScanResult) == count(work, Artifact) == 0
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
+        assert session.get(UploadedOriginal, original) is None
+    with Session(work.setup.admin) as session:
         assert session.get(UploadedOriginal, original).scan_status == "not_scanned"
 
 
@@ -333,7 +398,13 @@ def test_epoch_changed_during_parse_prevents_fact_receipt_and_locator_commit(sec
 
     def changing_parser(*args, **kwargs):
         result = parse_original(*args, **kwargs)
-        with tenant_session(work.setup.engine, work.setup.tenant) as session:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.setup.human,
+            requester_id=work.setup.human,
+            category_id=work.setup.category,
+        ) as session:
             state = session.scalar(
                 select(OriginalSecurity).where(OriginalSecurity.original_id == original)
             )
@@ -343,8 +414,14 @@ def test_epoch_changed_during_parse_prevents_fact_receipt_and_locator_commit(sec
     configure(work.setup.engine, replace(work.runtime, parser=changing_parser))
     with pytest.raises(DomainError) as error:
         parse_uploaded(work.setup.engine, reference(work, original), work.store)
-    assert error.value.code == "ORIGINAL_SECURITY_BLOCKED"
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    assert error.value.code == "SOURCE_UNAVAILABLE"
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         row = session.get(UploadedOriginal, original)
         assert row.status == "uploaded" and row.revision == 1 and row.locator_map == []
     assert count(work, Artifact) == 0 and count(work, Receipt) == 3
@@ -368,7 +445,13 @@ def test_two_workers_and_request_replay_commit_one_scan_result_and_one_receipt(s
     assert count(work, Receipt) == count(work, Audit) == count(work, Outbox) == 3
     with (
         pytest.raises(DomainError) as error,
-        tenant_session(work.setup.engine, work.setup.tenant) as session,
+        tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.setup.human,
+            requester_id=work.setup.human,
+            category_id=work.setup.category,
+        ) as session,
     ):
         request_scan(
             session,
@@ -397,7 +480,15 @@ def test_scan_result_outbox_failure_rolls_back_result_and_safety_label(security_
     finally:
         event.remove(Outbox, "before_insert", failing)
     assert count(work, OriginalScanResult) == 0 and count(work, Receipt) == 2
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
+        assert session.get(UploadedOriginal, original).scan_status == "not_scanned"
+    with Session(work.setup.admin) as session:
         assert session.get(UploadedOriginal, original).scan_status == "not_scanned"
     assert scan_result(work, request)["status"] == "clean"
     assert count(work, OriginalScanResult) == 1 and count(work, Receipt) == 3
@@ -412,10 +503,16 @@ def test_configuration_or_expiry_drift_blocks_old_clean_derived_source_and_downl
     assert download(work, original).status_code == 200
     later = now() + timedelta(days=2)
     monkeypatch.setattr("pdos_next.original_security.now", lambda: later)
-    assert download(work, original).json()["code"] == "ORIGINAL_SECURITY_BLOCKED"
+    assert download(work, original).json()["code"] == "SOURCE_UNAVAILABLE"
     with (
         pytest.raises(DomainError),
-        tenant_session(work.setup.engine, work.setup.tenant) as session,
+        tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.setup.human,
+            requester_id=work.setup.human,
+            category_id=work.setup.category,
+        ) as session,
     ):
         source_for(session, work.setup.ctx, work.setup.product, artifact, 1)
     monkeypatch.undo()
@@ -424,7 +521,7 @@ def test_configuration_or_expiry_drift_blocks_old_clean_derived_source_and_downl
         work.runtime.configuration.policy,
     )
     configure(work.setup.engine, replace(work.runtime, configuration=configuration))
-    assert download(work, original).json()["code"] == "ORIGINAL_SECURITY_BLOCKED"
+    assert download(work, original).json()["code"] == "SOURCE_UNAVAILABLE"
     assert count(work, Artifact) == 1 and count(work, OriginalScanResult) == 1
 
 
@@ -437,7 +534,7 @@ def test_access_revoke_then_restore_is_not_aba_permission_for_old_clean(security
         if authority == "grant":
             row = session.scalar(
                 select(Grant).where(
-                    Grant.product_id == work.setup.product, Grant.principal_id == work.setup.human
+                    Grant.category_id == work.setup.category, Grant.principal_id == work.setup.human
                 )
             )
             saved_expiry, original_epoch = row.expires_at, row.access_epoch
@@ -450,7 +547,7 @@ def test_access_revoke_then_restore_is_not_aba_permission_for_old_clean(security
         if authority == "grant":
             row = session.scalar(
                 select(Grant).where(
-                    Grant.product_id == work.setup.product, Grant.principal_id == work.setup.human
+                    Grant.category_id == work.setup.category, Grant.principal_id == work.setup.human
                 )
             )
             row.expires_at = saved_expiry
@@ -461,13 +558,13 @@ def test_access_revoke_then_restore_is_not_aba_permission_for_old_clean(security
         if authority == "grant":
             epoch = session.scalar(
                 select(Grant.access_epoch).where(
-                    Grant.product_id == work.setup.product, Grant.principal_id == work.setup.human
+                    Grant.category_id == work.setup.category, Grant.principal_id == work.setup.human
                 )
             )
         else:
             epoch = session.get(Principal, work.setup.human).access_epoch
         assert epoch == original_epoch + 2
-    assert download(work, original).json()["code"] == "ORIGINAL_SECURITY_BLOCKED"
+    assert download(work, original).json()["code"] == "SOURCE_UNAVAILABLE"
     assert count(work, OriginalScanResult) == 1
 
 
@@ -486,7 +583,7 @@ def test_withdrawal_during_scan_preserves_bytes_and_discards_late_clean(security
     assert count(work, OriginalScanResult) == count(work, Artifact) == 0
     assert count(work, Receipt, Receipt.operation == "evidence.original.withdraw") == 1
     assert work.store.inspect(original).byte_status == "intact"
-    assert download(work, original).json()["code"] == "ORIGINAL_SECURITY_BLOCKED"
+    assert download(work, original).json()["code"] == "SOURCE_UNAVAILABLE"
 
 
 def test_new_scan_epoch_invalidates_prepared_withdrawal_without_consuming_t1(security_work):
@@ -499,7 +596,13 @@ def test_new_scan_epoch_invalidates_prepared_withdrawal_without_consuming_t1(sec
     response = execute(work, prepared)
     assert response.status_code == 409 and response.json()["code"] == "VERSION_CONFLICT"
     assert count(work, Receipt, Receipt.operation == "evidence.original.withdraw") == 0
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         confirmation = session.scalar(
             select(Confirmation).where(Confirmation.operation == "evidence.original.withdraw")
         )
@@ -507,7 +610,7 @@ def test_new_scan_epoch_invalidates_prepared_withdrawal_without_consuming_t1(sec
         assert session.scalar(select(OriginalSecurity.source_state)).strip() == "active"
 
 
-def test_t1_withdrawal_preserves_history_and_bytes_but_blocks_current_claim_replay(security_work):
+def test_t1_withdrawal_preserves_readable_receipts_but_blocks_new_source_use(security_work):
     work = security_work
     original = uploaded(work)
     artifact = parsed(work, original)
@@ -539,9 +642,22 @@ def test_t1_withdrawal_preserves_history_and_bytes_but_blocks_current_claim_repl
     receipt = execute(work, prepared)
     assert receipt.status_code == 200, receipt.text
     assert execute(work, prepared).json()["id"] == receipt.json()["id"]
-    assert execute(work, claim).json()["code"] == "SOURCE_UNAVAILABLE"
-    assert download(work, original).json()["code"] == "ORIGINAL_SECURITY_BLOCKED"
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    assert execute(work, claim).json()["id"] == saved.json()["id"]
+    fresh_claim = {
+        **claim,
+        "command_id": str(uuid4()),
+        "idempotency_key": str(uuid4()),
+        "payload": {**claim["payload"], "statement": "New withdrawn-source claim"},
+    }
+    assert execute(work, fresh_claim).json()["code"] == "SOURCE_UNAVAILABLE"
+    assert download(work, original).json()["code"] == "SOURCE_UNAVAILABLE"
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         source = session.get(Artifact, artifact)
         row = session.get(UploadedOriginal, original)
         state = session.scalar(
@@ -560,16 +676,25 @@ def test_t1_withdrawal_preserves_history_and_bytes_but_blocks_current_claim_repl
         assert evidence.source_revision == 1 and evidence.quote == "Pressure: 150 PSI"
     assert count(work, Receipt, Receipt.operation == "evidence.original.withdraw") == 1
     workspace = work.client.get(
-        f"/v1/products/{work.setup.product}/workspace", headers=work.setup.headers
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/workspace",
+        headers=work.setup.headers,
     ).json()
     assert workspace["originals"][0]["security"]["source_state"] == "withdrawn"
     assert workspace["originals"][0]["security"]["lifecycle"]["physical_actions_available"] is False
     definitions = work.client.get(
-        f"/v1/products/{work.setup.product}/definitions", headers=work.setup.headers
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/definitions",
+        headers=work.setup.headers,
     )
     assert definitions.status_code == 200, definitions.text
     assert definitions.json()["items"][0]["source_status"] == "needs_recheck"
-    assert execute(work, definition_command).json()["code"] == "SOURCE_UNAVAILABLE"
+    assert execute(work, definition_command).json()["id"] == definition.json()["id"]
+    fresh_definition = {
+        **definition_command,
+        "command_id": str(uuid4()),
+        "idempotency_key": str(uuid4()),
+        "payload": {**definition_command["payload"], "title": "New withdrawn-source definition"},
+    }
+    assert execute(work, fresh_definition).json()["code"] == "SOURCE_UNAVAILABLE"
 
 
 def test_t1_stale_scope_and_final_receipt_failure_roll_back_withdrawal_and_confirmation(
@@ -591,7 +716,13 @@ def test_t1_stale_scope_and_final_receipt_failure_roll_back_withdrawal_and_confi
             execute(work, prepared)
     finally:
         event.remove(Outbox, "before_insert", failing)
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         state = session.scalar(
             select(OriginalSecurity).where(OriginalSecurity.original_id == original)
         )
@@ -607,11 +738,18 @@ def test_t1_stale_scope_and_final_receipt_failure_roll_back_withdrawal_and_confi
     with Session(work.setup.admin) as session, session.begin():
         grant = session.scalar(
             select(Grant).where(
-                Grant.product_id == work.setup.product, Grant.principal_id == work.setup.human
+                Grant.category_id == work.setup.category, Grant.principal_id == work.setup.human
             )
         )
         grant.can_write = False
-    assert execute(work, prepared).json()["code"] == "FORBIDDEN_SCOPE"
+    assert execute(work, prepared).status_code == 200
+    fresh = {
+        **prepared,
+        "command_id": str(uuid4()),
+        "idempotency_key": str(uuid4()),
+        "payload": {**prepared["payload"], "reason": "New decision after write revocation"},
+    }
+    assert execute(work, fresh).json()["code"] == "FORBIDDEN_SCOPE"
     assert count(work, Receipt, Receipt.operation == "evidence.original.withdraw") == 1
 
 
@@ -623,7 +761,13 @@ def test_scan_facts_immutable_security_epoch_scope_guard_rls_and_agent_zero_writ
     for model in (OriginalScanRequest, OriginalScanResult):
         with (
             pytest.raises(DBAPIError, match="permission denied") as denied,
-            tenant_session(work.setup.engine, work.setup.tenant) as session,
+            tenant_session(
+                work.setup.engine,
+                work.setup.tenant,
+                actor_id=work.setup.human,
+                requester_id=work.setup.human,
+                category_id=work.setup.category,
+            ) as session,
         ):
             row = session.scalar(select(model))
             row_id = row.id
@@ -644,7 +788,13 @@ def test_scan_facts_immutable_security_epoch_scope_guard_rls_and_agent_zero_writ
     for mutation in ("epoch", "product_id"):
         with (
             pytest.raises(DBAPIError),
-            tenant_session(work.setup.engine, work.setup.tenant) as session,
+            tenant_session(
+                work.setup.engine,
+                work.setup.tenant,
+                actor_id=work.setup.human,
+                requester_id=work.setup.human,
+                category_id=work.setup.category,
+            ) as session,
         ):
             row = session.scalar(select(OriginalSecurity))
             if mutation == "epoch":
@@ -673,3 +823,144 @@ def test_scan_facts_immutable_security_epoch_scope_guard_rls_and_agent_zero_writ
                 {"table": table},
             ).one()
             assert row.relrowsecurity and row.relforcerowsecurity
+
+
+def test_category_original_scan_parse_download_and_t1_withdraw(security_work):
+    work, setup = security_work, security_work.setup
+    base = f"/v1/categories/{setup.category}/originals"
+    payload = upload_input(
+        b"Synthetic pre-model customer original\nPressure: 150 PSI\n"
+    ).model_dump(mode="json")
+    uploaded_response = work.client.post(base, headers=setup.headers, json=payload)
+    assert uploaded_response.status_code == 200, uploaded_response.text
+    original_id = uploaded_response.json()["subject_id"]
+    assert uploaded_response.json()["product_id"] is None
+    scan_response = work.client.post(
+        f"{base}/{original_id}/scan",
+        headers=setup.headers,
+        json={"expected_epoch": 1, "idempotency_key": str(uuid4())},
+    )
+    assert scan_response.status_code == 200, scan_response.text
+    envelope = reference(work, UUID(original_id))
+    envelope["product_id"] = None
+    assert (
+        scan_requested(
+            setup.engine, {**envelope, "subject_id": scan_response.json()["subject_id"]}
+        )["status"]
+        == "clean"
+    )
+    assert parse_uploaded(setup.engine, envelope, work.store)["status"] == "parsed"
+    from test_trusted_source_work import claim_cmd
+
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
+        artifact = session.scalar(select(Artifact).where(Artifact.original_id == UUID(original_id)))
+        artifact_id = artifact.id
+        before = session.execute(
+            text(
+                "SELECT reference_count,read_version FROM lifecycle_reference_summary"
+                "(:tenant,:category,NULL,CAST(:roots AS uuid[]))"
+            ),
+            {"tenant": setup.tenant, "category": setup.category, "roots": [UUID(original_id)]},
+        ).one()
+        assert before.read_version is not None
+    adopted = work.client.post(
+        f"/v1/categories/{setup.category}/commands",
+        headers=setup.headers,
+        json=claim_cmd(setup, str(artifact_id), line=2),
+    )
+    assert adopted.status_code == 200, adopted.text
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
+        after = session.execute(
+            text(
+                "SELECT reference_count,formal_history,read_version FROM lifecycle_reference_summary"
+                "(:tenant,:category,NULL,CAST(:roots AS uuid[]))"
+            ),
+            {"tenant": setup.tenant, "category": setup.category, "roots": [UUID(original_id)]},
+        ).one()
+        assert after.reference_count > before.reference_count and after.formal_history
+        assert after.read_version > before.read_version
+    downloaded = work.client.get(f"{base}/{original_id}/download", headers=setup.headers)
+    assert downloaded.status_code == 200 and b"Pressure: 150 PSI" in downloaded.content
+    peer = {"Authorization": f"Bearer {setup.tokens[setup.peer]}"}
+    assert work.client.get(base, headers=peer).json() == []
+    assert work.client.get(f"{base}/{original_id}/download", headers=peer).status_code == 403
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
+        row = session.get(UploadedOriginal, UUID(original_id))
+        assert row.product_id is None and row.category_id == setup.category
+        artifact = session.scalar(select(Artifact).where(Artifact.original_id == row.id))
+        assert artifact.product_id is None and artifact.category_id == setup.category
+        epoch = session.scalar(
+            select(OriginalSecurity.epoch).where(OriginalSecurity.original_id == row.id)
+        )
+    cmd = command(
+        setup,
+        "evidence.original.withdraw",
+        {"original_id": original_id, "expected_epoch": epoch, "reason": "Synthetic withdrawal"},
+    )
+    cmd["product_id"] = None
+    preview = work.client.post(
+        f"/v1/categories/{setup.category}/commands/preview", headers=setup.headers, json=cmd
+    )
+    assert preview.status_code == 200, preview.text
+    confirmed = preview.json()["command"]
+    result = work.client.post(
+        f"/v1/categories/{setup.category}/commands", headers=setup.headers, json=confirmed
+    )
+    assert result.status_code == 200, result.text
+    with Session(setup.admin) as session:
+        confirmation = session.scalar(
+            select(Confirmation).where(
+                Confirmation.operation == "evidence.original.withdraw",
+                Confirmation.category_id == setup.category,
+            )
+        )
+        assert confirmation.product_id is None and confirmation.subject_type == "category"
+        assert confirmation.subject_id == setup.category and confirmation.consumed
+
+
+def test_category_artifact_intent_deduplication_and_direct_sql_null_fence(setup):
+    cmd = command(
+        setup,
+        "evidence.artifact.register",
+        {
+            "title": "Category research",
+            "source_label": "Synthetic",
+            "content": "Category input",
+            "visibility": "category",
+        },
+    )
+    cmd["product_id"] = None
+    path = f"/v1/categories/{setup.category}/commands"
+    first = setup.client.post(path, headers=setup.headers, json=cmd)
+    assert first.status_code == 200, first.text
+    repeated = setup.client.post(
+        path,
+        headers=setup.headers,
+        json={**cmd, "idempotency_key": str(uuid4()), "command_id": str(uuid4())},
+    )
+    assert repeated.status_code == 200 and repeated.json()["id"] == first.json()["id"]
+    with Session(setup.admin) as session:
+        stored = session.get(Receipt, UUID(first.json()["id"]))
+        values = {col.name: getattr(stored, col.name) for col in Receipt.__table__.columns}
+    values.update(id=uuid4(), command_id=uuid4())
+    with pytest.raises(DBAPIError), Session(setup.admin) as session, session.begin():
+        session.add(Receipt(**values))
+        session.flush()

@@ -6,6 +6,7 @@ import pytest
 from verification_handoff.test_pure import offered, work  # noqa: F401
 
 from pdos_next.domain.verification_front.service import _snapshot, professional_key
+from pdos_next.error_catalog import REASONS
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import DocumentRequirement
 from pdos_next.service import digest
@@ -23,6 +24,9 @@ def row_for(request):
         build_id=request.build.id,
         build_revision=request.build.revision,
         status=request.status,
+        operation="verification.request.create"
+        if request.status == "draft"
+        else "verification.handoff.offer",
     )
 
 
@@ -62,11 +66,13 @@ def test_formal_handoff_cannot_smuggle_a_future_execution_clock(work, name):  # 
     )
     with pytest.raises(DomainError) as error:
         _snapshot(row_for(forged))
-    assert error.value.code == "INTEGRITY_MISMATCH"
+    assert error.value.reason == "INTEGRITY_MISMATCH"
+    assert error.value.code == REASONS["INTEGRITY_MISMATCH"]
 
 
 def test_draft_cannot_hide_actual_sample_or_offer_history(work):  # noqa: F811
     request = documented(offered(work)).model_copy(update={"status": "draft"})
     with pytest.raises(DomainError) as error:
         _snapshot(row_for(request))
-    assert error.value.code == "INTEGRITY_MISMATCH"
+    assert error.value.reason == "INTEGRITY_MISMATCH"
+    assert error.value.code == REASONS["INTEGRITY_MISMATCH"]

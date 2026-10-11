@@ -53,7 +53,7 @@ def observation_raw():
         "coverage_sources": [source()],
         "sources": [source()],
         "reason": "Actual source record including an explicit missing value",
-        "visibility": "product",
+        "visibility": "category",
     }
 
 
@@ -161,7 +161,7 @@ def test_actual_semantic_only_removes_corresponding_token_keeps_order_and_nulls(
     payload = commands.payload_for(kind, raw)
     with_token = payload.model_copy(update={token: "actual-named-public-token-1234"})
     assert commands.semantic(payload) == commands.semantic(with_token)
-    assert commands.semantic(payload)["visibility"] == "product"
+    assert commands.semantic(payload)["visibility"] == "category"
     assert token not in commands.semantic(with_token)
     if kind == "observation":
         assert commands.semantic(payload)["records"][0]["raw_material"]["value"] is None

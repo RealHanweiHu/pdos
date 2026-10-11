@@ -55,7 +55,7 @@ class TestResourceFact(Row, Base):
     previous_revision: Mapped[int | None] = mapped_column(Integer)
     state: Mapped[str] = mapped_column(String(16))
     valid_from: Mapped[datetime] = mapped_column(DateTime(timezone=True))
-    valid_until: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    valid_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     binding: Mapped[dict] = mapped_column(JSONB)
     data: Mapped[dict] = mapped_column(JSONB)
     sources: Mapped[list] = mapped_column(JSONB)
@@ -131,7 +131,7 @@ class TestResourceFact(Row, Base):
         ),
         CheckConstraint(
             "state IN ('active','withdrawn') AND nature IN ('real','synthetic') "
-            "AND visibility IN ('private','product')"
+            "AND visibility IN ('private','category','audience')"
         ),
         CheckConstraint(
             "(revision=1 AND previous_id IS NULL AND previous_revision IS NULL "
@@ -212,7 +212,7 @@ class TestResourceReservation(Row, Base):
         ),
         CheckConstraint(
             "revision=1 AND fact_revision>0 AND state='formal' "
-            "AND visibility IN ('private','product')"
+            "AND visibility IN ('private','category','audience')"
         ),
         CheckConstraint(
             "((fingerprint_version IS NULL AND dependency_proof IS NULL) OR "
@@ -297,7 +297,7 @@ class SampleRunUsage(Row, Base):
         ),
         CheckConstraint(
             "revision=1 AND sample_revision>0 AND actual_configuration_revision>0 "
-            "AND window_finish>window_start AND visibility IN ('private','product')"
+            "AND window_finish>window_start AND visibility IN ('private','category','audience')"
         ),
         CheckConstraint(
             "(destructive AND state='consumed') OR (NOT destructive AND state='reserved')"

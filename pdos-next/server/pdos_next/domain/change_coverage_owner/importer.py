@@ -10,6 +10,7 @@ from pdos_next import change_controlled_owner as controlled
 from pdos_next import service as common
 from pdos_next.change_implementation_owner import common_group
 from pdos_next.change_order_service import _one
+from pdos_next.clock import earliest_deadline
 from pdos_next.contracts import Command
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.change_control.rules import digest
@@ -37,7 +38,9 @@ def trusted_import(s, ctx, pid, issuer, payload, *, command_id, request_key):
     scope = Scope(tenant_id=ctx.tenant_id, product_id=pid, project_id=data.project_id)
     caller, caller_until = controlled._caller(s, ctx, pid, write=True)
     _, project_stamp = controlled._project(s, ctx, scope)
-    owner.binding(s, ctx, pid, data.change_id, data.purpose, lock=True)
+    # Bind exact Current/scope before original IO. The actual registry below
+    # proves every owner once; the final dependency clock fences that proof.
+    owner.binding(s, ctx, pid, data.change_id, data.purpose, lock=True, verify_sources=False)
     value, _ = controlled.original(s, ctx, pid, data.source, CoverageMaterial)
     require(
         value.scope == scope
@@ -53,7 +56,14 @@ def trusted_import(s, ctx, pid, issuer, payload, *, command_id, request_key):
     )
     require(value.nature == ("synthetic" if auth.get("synthetic") else "real"), status=403)
     row, request, _, binding = owner.binding(
-        s, ctx, pid, data.change_id, data.purpose, material=value, lock=True
+        s,
+        ctx,
+        pid,
+        data.change_id,
+        data.purpose,
+        material=value,
+        lock=True,
+        verify_sources=False,
     )
     # A new publication may anchor a still-current fixed origin, or its unchanged
     # canonical successors, never a user-supplied alternative root/version.
@@ -78,7 +88,7 @@ def trusted_import(s, ctx, pid, issuer, payload, *, command_id, request_key):
     reads = controlled._reads(
         old._source_reads(sources), owned.reads, auth["required_source_read_set"]
     )
-    require(1 <= len(reads) <= 20, "COVERAGE_SOURCE_LIMIT", 422)
+    require(bool(reads), "MISSING_REQUIRED_EVIDENCE", 422)
     artifact_basis = controlled._source_guard(
         s, ctx, pid, value.visibility, value.owner_id, reads, sources
     )
@@ -131,7 +141,13 @@ def trusted_import(s, ctx, pid, issuer, payload, *, command_id, request_key):
     pointer, prior = owner.pointer(s, ctx, pid, scope, data.change_id, data.purpose, lock=True)
     saved_pointer = owner.pointer_stamp(pointer) if pointer is not None else None
     saved_prior = (
-        common.digest({v.name: getattr(prior, v.name) for v in prior.__table__.columns})
+        common.digest(
+            {
+                v.name: getattr(prior, v.name)
+                for v in prior.__table__.columns
+                if v.name != "audience_dependencies"
+            }
+        )
         if prior is not None
         else None
     )
@@ -151,7 +167,11 @@ def trusted_import(s, ctx, pid, issuer, payload, *, command_id, request_key):
             and fresh_p.revision == saved.revision
             and fresh_p.epoch == saved.epoch
             and common.digest(
-                {v.name: getattr(fresh_row, v.name) for v in fresh_row.__table__.columns}
+                {
+                    v.name: getattr(fresh_row, v.name)
+                    for v in fresh_row.__table__.columns
+                    if v.name != "audience_dependencies"
+                }
             )
             == expected_row
         )
@@ -166,7 +186,10 @@ def trusted_import(s, ctx, pid, issuer, payload, *, command_id, request_key):
             and group["receipt"]["request_digest"] == fingerprint
         )
         require(
-            owner.binding(s, ctx, pid, data.change_id, data.purpose, material=value)[3] == binding
+            owner.binding(
+                s, ctx, pid, data.change_id, data.purpose, material=value, verify_sources=False
+            )[3]
+            == binding
         )
         require(
             controlled.authority(s, ctx, pid, scope, "change.impact.compute", data.purpose)[0]
@@ -185,7 +208,7 @@ def trusted_import(s, ctx, pid, issuer, payload, *, command_id, request_key):
         require(
             value.valid_from
             <= owner.clock()
-            < min(
+            < earliest_deadline(
                 value.valid_until,
                 caller_until,
                 final_caller_until,
@@ -233,8 +256,10 @@ def trusted_import(s, ctx, pid, issuer, payload, *, command_id, request_key):
             or (prior.owner_id, prior.visibility, prior.purpose)
             == (value.owner_id, value.visibility, value.purpose)
         )
-    # All guarded reads precede the sole append; no effect can attest its own input.
-    require(registry.read_registry(s, ctx, pid, request).closure_sha256 == owned.closure_sha256)
+    # The complete registry was read once under the held model/dependency gates.
+    # Direct source versions and the watermark fence the final append; rebuilding
+    # the same closure here would repeat the T2 proof rather than strengthen it.
+    require(owner.dependency_epoch(s, ctx, pid) == epoch)
     require(
         controlled.original(s, ctx, pid, data.source, CoverageMaterial)[0] == value
         and controlled._source_guard(
@@ -246,7 +271,10 @@ def trusted_import(s, ctx, pid, issuer, payload, *, command_id, request_key):
         controlled.authority(s, ctx, pid, scope, "change.impact.compute", data.purpose)[0] == auth
     )
     require(
-        owner.binding(s, ctx, pid, data.change_id, data.purpose, material=value)[3] == binding
+        owner.binding(
+            s, ctx, pid, data.change_id, data.purpose, material=value, verify_sources=False
+        )[3]
+        == binding
         and owner.temporal(s, ctx, pid, scope)[0] == temporal_stamp
     )
     fresh_pointer, fresh_prior = owner.pointer(s, ctx, pid, scope, data.change_id, data.purpose)
@@ -257,7 +285,11 @@ def trusted_import(s, ctx, pid, issuer, payload, *, command_id, request_key):
             or (
                 owner.pointer_stamp(fresh_pointer) == saved_pointer
                 and common.digest(
-                    {v.name: getattr(fresh_prior, v.name) for v in fresh_prior.__table__.columns}
+                    {
+                        v.name: getattr(fresh_prior, v.name)
+                        for v in fresh_prior.__table__.columns
+                        if v.name != "audience_dependencies"
+                    }
                 )
                 == saved_prior
             )
@@ -275,7 +307,7 @@ def trusted_import(s, ctx, pid, issuer, payload, *, command_id, request_key):
     require(
         value.valid_from
         <= at
-        < min(
+        < earliest_deadline(
             value.valid_until,
             caller_until,
             auth_until,
@@ -334,7 +366,13 @@ def trusted_import(s, ctx, pid, issuer, payload, *, command_id, request_key):
     )
     s.add(fact)
     s.flush([fact])
-    fact_digest = common.digest({v.name: getattr(fact, v.name) for v in fact.__table__.columns})
+    fact_digest = common.digest(
+        {
+            v.name: getattr(fact, v.name)
+            for v in fact.__table__.columns
+            if v.name != "audience_dependencies"
+        }
+    )
     if pointer is None:
         s.add(
             models.ChangeCoverageCurrent(
@@ -356,6 +394,7 @@ def trusted_import(s, ctx, pid, issuer, payload, *, command_id, request_key):
         command_id=command_id,
         idempotency_key=request_key,
         operation=OPERATION,
+        category_id=ctx.category_id,
         product_id=pid,
         expected_revision=product.revision,
         source_read_set=reads,

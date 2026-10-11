@@ -35,7 +35,11 @@ class BatchSession(FakeSession):
         self.statements.append(query)
         entity = query.column_descriptions[0]["entity"]
         if entity is ProfessionalCurrent:
-            return self.pointers[: query._limit_clause.value]
+            return (
+                self.pointers[: query._limit_clause.value]
+                if query._limit_clause is not None
+                else self.pointers
+            )
         assert entity in (ProfessionalFact, Artifact)
         assert query.get_execution_options()["autoflush"] is False
         assert query.get_execution_options()["populate_existing"] is True

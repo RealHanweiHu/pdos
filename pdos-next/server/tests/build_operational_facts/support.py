@@ -162,6 +162,7 @@ def example():
         {
             "scope": {
                 "tenant_id": str(ctx.tenant_id),
+                "category_id": str(UUID(int=7)),
                 "product_id": str(UUID(int=4)),
                 "project_id": str(UUID(int=5)),
                 "audience": f"private:{ctx.requester_id}",

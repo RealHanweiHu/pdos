@@ -4,14 +4,25 @@ Import the adopted actual read owner. These cases prove MVCC Asset/Clock and
 NOWAIT transaction behavior, not the complete native Source owner positive path.
 """
 
+# ruff: noqa: F811 -- explicit pytest fixture imports
+
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
-from datetime import timedelta
 from queue import Queue
 from time import monotonic, sleep
 from uuid import uuid4
 
 import pytest
+
+# Actual native publication supplies the physical reference; no invented Fact.
+from manufacturing_resource_native_transactions.conftest import (  # noqa: F401
+    configuration,
+    definition,
+    known_configuration,
+    operational_work,
+    project,
+)
+from manufacturing_resource_native_transactions.fixtures import native_resource_case  # noqa: F401
 from sqlalchemy import select, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
@@ -23,60 +34,52 @@ from pdos_next.domain.build_operational_facts.models import OperationalAsset
 from pdos_next.domain.change_execution.graph import audience
 from pdos_next.domain.manufacturing_resource_owner import owner
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Product, now
+from pdos_next.models import Product
 from pdos_next.schemas.verification.contracts import Scope
 from pdos_next.service import Context, digest, require_access
 
 
 @pytest.fixture
-def shared_asset(setup):
-    product, asset = uuid4(), uuid4()
-    value = {"synthetic_clock_test_only": str(asset)}
+def shared_asset(native_resource_case):
+    case = native_resource_case
+    setup = case.setup
+    # A peer model shares category permissions but has no reference to this asset.
     with Session(setup.admin) as s, s.begin():
         s.add(
             Product(
-                id=product,
+                id=uuid4(),
                 tenant_id=setup.tenant,
+                category_id=setup.category,
                 owner_id=setup.peer,
-                name="Synthetic readonly lock peer",
+                name="Synthetic unrelated lock peer",
                 purpose="SQL fences only",
             )
         )
-        s.flush()
-        s.add_all(
-            [
-                Grant(
-                    tenant_id=setup.tenant,
-                    product_id=product,
-                    principal_id=person,
-                    can_write=True,
-                    expires_at=now() + timedelta(minutes=15),
-                )
-                for person in (setup.human, setup.peer)
-            ]
+    asset = case.work.resource_id
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as s:
+        row = s.get(OperationalAsset, asset)
+        spec = (
+            row.kind,
+            row.id,
+            row.external_key,
+            deepcopy(row.identity),
+            row.revision,
+            deepcopy(row.data["value"]),
         )
-        s.add(
-            OperationalAsset(
-                id=asset,
-                tenant_id=setup.tenant,
-                kind="resource",
-                external_key=str(asset),
-                identity={"id": str(asset)},
-                revision=1,
-                occupancy_epoch=1,
-                data_sha256=digest(value),
-                data={"value": value, "state": "active"},
-            )
-        )
-    ctx = Context(setup.tenant, setup.peer, setup.peer)
-    scope = Scope(tenant_id=setup.tenant, product_id=product, project_id=uuid4())
-    target = audience(product, setup.peer, "private")
-    spec = ("resource", asset, str(asset), {"id": str(asset)}, 1, value)
-    return product, asset, ctx, scope, target, spec
+    ctx = Context(setup.tenant, setup.peer, setup.peer, category_id=setup.category)
+    scope = Scope(
+        tenant_id=setup.tenant, product_id=setup.product, project_id=case.request.scope.project_id
+    )
+    target = audience(setup.product, setup.peer, "private")
+    return setup, setup.product, asset, ctx, scope, target, spec
 
 
 def clocks(setup):
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as s:
         return dict(
             s.execute(select(ChangeDependencyClock.product_id, ChangeDependencyClock.epoch)).all()
         )
@@ -98,7 +101,9 @@ def wait_for_lock(setup, pid, future):
 
 
 def writer(setup, asset, queue):
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+    ) as s:
         s.execute(text("SET LOCAL statement_timeout='10s'"))
         require_access(s, setup.ctx, setup.product, write=True, lock=True)
         queue.put(s.scalar(text("SELECT pg_backend_pid()")))
@@ -116,13 +121,19 @@ def writer(setup, asset, queue):
     return "COMMITTED_NEW_SYNTHETIC_ASSET"
 
 
-def test_actual_mvcc_read_returns_prior_asset_while_global_clock_blocks_writer(setup, shared_asset):
-    product, asset, ctx, scope, target, spec = shared_asset
+def test_actual_mvcc_read_returns_prior_asset_while_referenced_clock_blocks_writer(shared_asset):
+    setup, product, asset, ctx, scope, target, spec = shared_asset
     before = clocks(setup)
     queue = Queue()
     with ThreadPoolExecutor(max_workers=1) as pool:
-        with tenant_session(setup.engine, setup.tenant) as s:
-            require_access(s, ctx, product, lock=True)
+        with tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=setup.category,
+        ) as s:
+            require_access(s, ctx, product)
             assert lock_dependency_clock(s, ctx, scope=scope, audience=target) == before[product]
             future = pool.submit(writer, setup, asset, queue)
             wait_for_lock(setup, queue.get(timeout=5), future)
@@ -131,37 +142,59 @@ def test_actual_mvcc_read_returns_prior_asset_while_global_clock_blocks_writer(s
             assert rows[asset].data == {"value": spec[5], "state": "active"}
             assert not future.done()
         assert future.result(timeout=5) == "COMMITTED_NEW_SYNTHETIC_ASSET"
-    assert clocks(setup) == {key: epoch + 1 for key, epoch in before.items()}
-    with tenant_session(setup.engine, setup.tenant) as s:
+    assert clocks(setup) == {
+        key: epoch + (1 if key == product else 0) for key, epoch in before.items()
+    }
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=ctx.actor_id,
+        requester_id=ctx.requester_id,
+        category_id=setup.category,
+    ) as s:
         lock_dependency_clock(s, ctx, scope=scope, audience=target)
         rows = owner._read_assets(s, ctx, [spec])
         assert rows[asset].revision == 2 and rows[asset].occupancy_epoch == 2
         assert rows[asset].data["value"]["changed"] is True
 
 
-def test_actual_outer_clock_people_nowait_rolls_back_uow_and_releases_writer(setup, shared_asset):
-    product, asset, ctx, scope, target, _spec = shared_asset
+def test_actual_outer_clock_people_nowait_rolls_back_uow_and_releases_writer(shared_asset):
+    setup, product, asset, ctx, scope, target, _spec = shared_asset
     before = clocks(setup)
     queue = Queue()
     with ThreadPoolExecutor(max_workers=1) as pool:
         with pytest.raises(DomainError) as rejected:
-            with tenant_session(setup.engine, setup.tenant) as s:
-                require_access(s, ctx, product, lock=True)
+            with tenant_session(
+                setup.engine,
+                setup.tenant,
+                actor_id=ctx.actor_id,
+                requester_id=ctx.requester_id,
+                category_id=setup.category,
+            ) as s:
+                require_access(s, ctx, product)
                 lock_dependency_clock(s, ctx, scope=scope, audience=target)
                 future = pool.submit(writer, setup, asset, queue)
                 wait_for_lock(setup, queue.get(timeout=5), future)
                 owner._people_nowait(s, ctx, product, setup.human)
-        assert rejected.value.code == "RESOURCE_RECHECK_REQUIRED"
+        assert rejected.value.reason == "RESOURCE_RECHECK_REQUIRED"
         assert rejected.value.status == 409
         assert future.result(timeout=5) == "COMMITTED_NEW_SYNTHETIC_ASSET"
-    assert clocks(setup) == {key: epoch + 1 for key, epoch in before.items()}
+    assert clocks(setup) == {
+        key: epoch + (1 if key == product else 0) for key, epoch in before.items()
+    }
 
 
-def test_actual_same_uow_asset_aba_keeps_mirror_but_advances_exact_clock(setup, shared_asset):
-    product, asset, ctx, scope, target, spec = shared_asset
+def test_actual_same_uow_asset_aba_keeps_mirror_but_advances_exact_clock(shared_asset):
+    setup, product, asset, ctx, scope, target, spec = shared_asset
     before = clocks(setup)
-    with tenant_session(setup.engine, setup.tenant) as s:
-        require_access(s, ctx, product, lock=True)
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=ctx.actor_id,
+        requester_id=ctx.requester_id,
+        category_id=setup.category,
+    ) as s:
+        require_access(s, ctx, product)
         lock_dependency_clock(s, ctx, scope=scope, audience=target)
         initial = closure_stamp(s, ctx, scope=scope, audience=target)
         original = owner._read_assets(s, ctx, [spec])[asset]
@@ -193,15 +226,23 @@ def test_actual_same_uow_asset_aba_keeps_mirror_but_advances_exact_clock(setup, 
         assert reread.occupancy_epoch == 3 and reread.revision == 3
         assert final != initial
         assert final["dependency_epoch"] == initial["dependency_epoch"] + 2
-    assert clocks(setup) == {key: epoch + 2 for key, epoch in before.items()}
+    assert clocks(setup) == {
+        key: epoch + (2 if key == product else 0) for key, epoch in before.items()
+    }
 
 
-def test_actual_asset_counter_reset_refused_and_whole_uow_unchanged(setup, shared_asset):
-    product, asset, ctx, scope, target, spec = shared_asset
+def test_actual_asset_counter_reset_refused_and_whole_uow_unchanged(shared_asset):
+    setup, product, asset, ctx, scope, target, spec = shared_asset
     before = clocks(setup)
     with pytest.raises(DBAPIError) as rejected:
-        with tenant_session(setup.engine, setup.tenant) as s:
-            require_access(s, ctx, product, lock=True)
+        with tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=setup.category,
+        ) as s:
+            require_access(s, ctx, product)
             lock_dependency_clock(s, ctx, scope=scope, audience=target)
             s.execute(
                 update(OperationalAsset)
@@ -215,7 +256,13 @@ def test_actual_asset_counter_reset_refused_and_whole_uow_unchanged(setup, share
             )
     assert rejected.value.orig.sqlstate == "P0001"
     assert clocks(setup) == before
-    with tenant_session(setup.engine, setup.tenant) as s:
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=ctx.actor_id,
+        requester_id=ctx.requester_id,
+        category_id=setup.category,
+    ) as s:
         row = owner._read_assets(s, ctx, [spec])[asset]
         assert row.revision == 1 and row.occupancy_epoch == 1
         assert row.data == {"value": spec[5], "state": "active"}

@@ -103,13 +103,13 @@ class GraphSnapshot(DTO):
     revision: Revision
     scope: Scope
     audience: tuple[Key, ...] = Field(min_length=1)
-    roots: tuple[Ref, ...] = Field(min_length=1, max_length=100)
-    nodes: tuple[Node, ...] = Field(min_length=1, max_length=5000)
-    edges: tuple[Edge, ...] = Field(max_length=20000)
-    coverage: tuple[Coverage, ...] = Field(max_length=40000)
+    roots: tuple[Ref, ...] = Field(min_length=1)
+    nodes: tuple[Node, ...] = Field(min_length=1)
+    edges: tuple[Edge, ...] = Field()
+    coverage: tuple[Coverage, ...] = Field()
     sources: tuple[SourceRef, ...] = Field(min_length=1)
     captured_at: AwareDatetime
-    expires_at: AwareDatetime
+    expires_at: AwareDatetime | None = None
     nature: Literal["real", "synthetic"]
 
     @model_validator(mode="after")
@@ -131,7 +131,7 @@ class GraphSnapshot(DTO):
             c.node.identity not in identities for c in self.coverage
         ):
             raise ValueError("范围覆盖须引用唯一固定节点/切片")
-        if self.expires_at <= self.captured_at:
+        if self.expires_at is not None and self.expires_at <= self.captured_at:
             raise ValueError("快照有效期必须晚于固定时点")
         return self
 
@@ -160,8 +160,8 @@ class ImpactAssessment(DTO):
 
 
 class Selection(DTO):
-    objects: tuple[Ref, ...] = Field(min_length=1, max_length=100)
-    units: tuple[Key, ...] = Field(min_length=1, max_length=1000)
+    objects: tuple[Ref, ...] = Field(min_length=1)
+    units: tuple[Key, ...] = Field(min_length=1)
     conditions: tuple[Text, ...] = Field(min_length=1)
     sources: tuple[SourceRef, ...] = Field(min_length=1)
 
@@ -218,9 +218,9 @@ class Disposition(DTO):
 
 class EffectivityPlan(DTO):
     id: UUID
-    items: tuple[PlanItem, ...] = Field(min_length=1, max_length=100)
-    expires_at: AwareDatetime
-    dispositions: tuple[Disposition, ...] = Field(min_length=1, max_length=5000)
+    items: tuple[PlanItem, ...] = Field(min_length=1)
+    expires_at: AwareDatetime | None = None
+    dispositions: tuple[Disposition, ...] = Field(min_length=1)
 
     @model_validator(mode="after")
     def unique(self):
@@ -248,7 +248,7 @@ class Approval(NamedRecord):
     discipline: Discipline
     decision_id: UUID
     content_digest: Key
-    expires_at: AwareDatetime
+    expires_at: AwareDatetime | None = None
 
 
 class ImplementationFact(DTO):
@@ -344,8 +344,8 @@ class ChangeRequest(DTO):
     requester_id: UUID
     title: Text
     reason: Text
-    roots: tuple[Ref, ...] = Field(min_length=1, max_length=100)
-    references: tuple[Ref, ...] = Field(max_length=100)
+    roots: tuple[Ref, ...] = Field(min_length=1)
+    references: tuple[Ref, ...] = Field()
     sources: tuple[SourceRef, ...] = Field(min_length=1)
     status: State = "draft"
     assessments: tuple[ImpactAssessment, ...] = ()
@@ -365,8 +365,8 @@ class ChangeRequest(DTO):
 class RequestCreate(DTO):
     title: Text
     reason: Text
-    roots: tuple[Ref, ...] = Field(min_length=1, max_length=100)
-    references: tuple[Ref, ...] = Field(default=(), max_length=100)
+    roots: tuple[Ref, ...] = Field(min_length=1)
+    references: tuple[Ref, ...] = Field(default=())
     sources: tuple[SourceRef, ...] = Field(min_length=1)
 
 
@@ -379,7 +379,7 @@ class ImpactCompute(DTO):
             raise ValueError("影响计算必须引用精确依赖快照")
         return self
 
-    hypotheses: tuple[Hypothesis, ...] = Field(default=(), max_length=100)
+    hypotheses: tuple[Hypothesis, ...] = Field(default=())
 
 
 class OrderPrepare(DTO):
@@ -391,7 +391,7 @@ class OrderPrepare(DTO):
 class OrderApprove(DTO):
     discipline: Discipline
     text: Text
-    expires_at: AwareDatetime
+    expires_at: AwareDatetime | None = None
 
 
 class ImplementationRecord(DTO):

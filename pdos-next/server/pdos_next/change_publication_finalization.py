@@ -8,6 +8,8 @@ from copy import deepcopy
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
+from pdos_next.clock import deadline_current, earliest_deadline
+
 _TOKEN = object()
 _ATTRIBUTE = "_pdos_change_publication_finalization"
 _OPERATIONS = frozenset(
@@ -35,7 +37,11 @@ def _digest(value):
 
 def _row_pin(subject):
     return _digest(
-        {column.key: getattr(subject, column.key) for column in subject.__table__.columns}
+        {
+            column.key: getattr(subject, column.key)
+            for column in subject.__table__.columns
+            if column.key != "audience_dependencies"
+        }
     )
 
 
@@ -109,8 +115,10 @@ def _attach(
         == (ctx.tenant_id, command.product_id)
         and isinstance(closure, dict)
         and closure == subject.source_basis.get("closure")
-        and isinstance(valid_until, datetime)
-        and valid_until.tzinfo is not None
+        and (
+            valid_until is None
+            or (isinstance(valid_until, datetime) and valid_until.tzinfo is not None)
+        )
     )
     _require(
         (runtime_kind == "impact" and command.operation == "change.impact.compute")
@@ -136,7 +144,7 @@ def _attach(
         runtime_kind,
         deepcopy(runtime_stamp),
         deepcopy(closure),
-        min(valid_until, coverage.valid_until),
+        earliest_deadline(valid_until, coverage.valid_until),
         consumer,
         module,
         proof,
@@ -176,7 +184,7 @@ def attach_impact(s, ctx, command, subject, bound):
         runtime_kind="impact",
         runtime_stamp=bound.runtime_stamp,
         closure=bound.source_basis.get("closure"),
-        valid_until=min(deadlines),
+        valid_until=earliest_deadline(*deadlines),
     )
 
 
@@ -192,7 +200,7 @@ def attach_formal(s, ctx, command, subject, phase, *, consumer, module, proof, b
         runtime_kind="formal",
         runtime_stamp=phase.runtime_stamp,
         closure=phase.source_basis.get("closure"),
-        valid_until=min(phase.valid_until, marker.expires_at),
+        valid_until=earliest_deadline(phase.valid_until, marker.expires_at),
         consumer=consumer,
         module=module,
         proof=proof,
@@ -291,6 +299,8 @@ def finalize(s, ctx, command, subject):
                 marker=state.marker,
             )
         _same_material(s, ctx, command, subject, state)
-        _require(datetime.now(UTC) < min(state.valid_until, access_until))
+        _require(
+            deadline_current(earliest_deadline(state.valid_until, access_until), datetime.now(UTC))
+        )
     finally:
         discard(subject)

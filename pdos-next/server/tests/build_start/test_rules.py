@@ -144,7 +144,7 @@ def test_operational_unknown_conditions_or_blocked_cannot_enter_bypass(state):
         require_candidate(
             readiness_result(operational(state), build_type="prototype", purpose=scope().purpose)
         )
-    assert denied.value.code == "BUILD_NOT_REVIEWABLE"
+    assert denied.value.reason == "BUILD_NOT_REVIEWABLE"
 
 
 def test_pilot_manufacturing_baseline_missing_is_hard_unknown():
@@ -161,6 +161,17 @@ def test_exact_professional_pair_and_all_controls_can_be_reviewed(role):
     validate_professional_review(approval(role), role, scope(), AT)
 
 
+@pytest.mark.parametrize("role", ["engineering", "manufacturing"])
+def test_ordinary_named_applicability_has_no_forced_expiry(role):
+    raw = approval(role).model_dump(mode="json")
+    raw.pop("valid_until")
+    for review in raw["professional_assessments"]:
+        review.pop("valid_until")
+    value = BuildAuthorizationPayload.model_validate(raw)
+    validate_professional_review(value, role, scope(), AT)
+    assert value.valid_until is None
+
+
 @pytest.mark.parametrize(
     "change,code",
     [
@@ -171,7 +182,7 @@ def test_exact_professional_pair_and_all_controls_can_be_reviewed(role):
 def test_partial_controls_or_missing_professional_pair_rejected(change, code):
     with pytest.raises(DomainError) as denied:
         validate_professional_review(approval(**change), "engineering", scope(), AT)
-    assert denied.value.code == code
+    assert denied.value.reason == code
 
 
 @pytest.mark.parametrize(
@@ -190,7 +201,7 @@ def test_professional_unknown_no_source_and_expired_do_not_pass(change, code):
         validate_professional_review(
             BuildAuthorizationPayload.model_validate(raw), "engineering", scope(), AT
         )
-    assert denied.value.code == code
+    assert denied.value.reason == code
 
 
 @pytest.mark.parametrize("value", [True, 10.0, "0", "-1", "NaN"])
@@ -269,7 +280,7 @@ def test_event_allows_actual_equivalent_offset_not_recording_time():
 def test_event_binds_exact_actual_and_fixed_build(change):
     with pytest.raises(DomainError) as denied:
         check_event(event(**change))
-    assert denied.value.code == "START_EVENT_MISMATCH"
+    assert denied.value.reason == "START_EVENT_MISMATCH"
 
 
 def test_duplicate_json_field_cannot_override_event():
@@ -296,7 +307,7 @@ def test_clock_future_outside_scope_and_before_signoff_rejected(instant, created
                 SimpleNamespace(created_at=AT - timedelta(hours=3)),
             ],
         )
-    assert denied.value.code == code
+    assert denied.value.reason == code
 
 
 def test_end_exclusive_and_equal_approval_time():
@@ -310,7 +321,7 @@ def test_end_exclusive_and_equal_approval_time():
 def test_late_recording_does_not_create_past_reservations_from_current_facts():
     with pytest.raises(DomainError) as denied:
         validate_start_time(scope(), AT, scope().window_end, [SimpleNamespace(created_at=AT)] * 2)
-    assert denied.value.code == "CURRENT_EXECUTION_WINDOW_REQUIRED"
+    assert denied.value.reason == "CURRENT_EXECUTION_WINDOW_REQUIRED"
 
 
 @pytest.mark.parametrize(
@@ -326,7 +337,7 @@ def test_epoch_aba_or_actual_configuration_drift_blocks_old_assessment(change):
     service._match_bundle(assessment, result, AT)
     with pytest.raises(DomainError) as denied:
         service._match_bundle(assessment, {**result, **change}, AT)
-    assert denied.value.code == "OPERATIONAL_FACTS_CHANGED"
+    assert denied.value.reason == "OPERATIONAL_FACTS_CHANGED"
 
 
 @pytest.mark.parametrize(
@@ -338,10 +349,10 @@ def test_product_write_or_wrong_role_without_qualification_never_authorizes(qual
         service._require_authority(
             {"authorized": True, "roles": roles, "qualified": qualified}, "manufacturing"
         )
-    assert denied.value.code == "PROFESSIONAL_AUTHORITY_REQUIRED"
+    assert denied.value.reason == "PROFESSIONAL_AUTHORITY_REQUIRED"
 
 
-def test_historical_reviewer_epoch_checked_in_own_readonly_context(monkeypatch):
+def test_historical_signature_is_checked_under_actual_reader_context(monkeypatch):
     import pdos_next.domain.professional_authority.service as authority
 
     calls = []
@@ -356,8 +367,8 @@ def test_historical_reviewer_epoch_checked_in_own_readonly_context(monkeypatch):
     ctx = SimpleNamespace(tenant_id=uuid4(), actor_id=uuid4(), requester_id=uuid4())
     with pytest.raises(DomainError) as denied:
         service._recheck_authority(None, ctx, PID, uuid4(), {"subject_id": str(person)}, AT)
-    assert denied.value.code == "PROFESSIONAL_AUTHORITY_CHANGED"
-    assert calls[0][1].actor_id == person and calls[0][1].requester_id == person
+    assert denied.value.reason == "PROFESSIONAL_AUTHORITY_CHANGED"
+    assert calls[0][1] is ctx
 
 
 def test_semantic_tokens_and_order_do_not_duplicate_business_intent():
@@ -386,7 +397,7 @@ def test_old_assessment_cas_cannot_move_new_pointer(monkeypatch):
             SimpleNamespace(id=BID),
             SimpleNamespace(previous_assessment_id=uuid4(), expected_previous_revision=1),
         )
-    assert denied.value.code == "ASSESSMENT_VERSION_CONFLICT"
+    assert denied.value.reason == "ASSESSMENT_VERSION_CONFLICT"
 
 
 def test_revoke_cannot_target_different_current_assessment(monkeypatch):
@@ -407,4 +418,4 @@ def test_revoke_cannot_target_different_current_assessment(monkeypatch):
     )
     with pytest.raises(DomainError) as denied:
         service._decision_cas(None, None, PID, SimpleNamespace(id=BID), "engineering", payload)
-    assert denied.value.code == "AUTHORIZATION_SCOPE_MISMATCH"
+    assert denied.value.reason == "AUTHORIZATION_SCOPE_MISMATCH"

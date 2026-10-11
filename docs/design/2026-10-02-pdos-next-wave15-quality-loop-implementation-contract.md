@@ -1,5 +1,7 @@
 # 第十五波：确定失败、Issue/CAPA 与双线变更施工合同
 
+**2026-10-08：本施工合同已被[完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md)整体取代，仅作只读历史对照。下方旧“当前/下一步/冻结”不再作为施工指令。** 范围根、一致性、期限与数量限制按 v1.1 和已批准的 [S0 实施计划](2026-10-08-pdos-next-s0-refactoring-plan.md)执行；[旧条款对照与 B0 基线](../reports/evidence/pdos-next-s0-20261008/baseline/baseline.md)保留取代依据。原证据、失败与当时范围不改写。
+
 状态：2026-10-02 冻结独立施工接口。Wave14 的实际结果闭环与429项影响验证已收口，其600份历史候选保留；本波独占目录已交付，当前开始公共接线。当前完成状态只见唯一清单。
 
 [实施草案](2026-10-02-pdos-next-wave15-quality-loop-implementation-contract-draft.md)、[复用审阅](../reports/evidence/pdos-next-wave14-20261002/quality-reuse-review.md)与[共同适配审查](../reports/evidence/pdos-next-wave14-20261002/quality-common-adapter-review.md)中的范围、原对象所有权、失败准入、共同事务、来源/资格刷新、UNKNOWN 与人工出口边界保留。以下决定覆盖草案待定项。

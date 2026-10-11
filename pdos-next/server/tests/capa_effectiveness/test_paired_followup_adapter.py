@@ -49,9 +49,12 @@ def frame(monkeypatch, operation="test.run.start"):
             facts_revision="f" * 64,
             required_source_read_set=work.material.fact.reads,
             valid_until=work.sources.valid_until,
+            expiry_boundaries=work.sources.time_constraints,
         )
         monkeypatch.setattr(live_samples.bridge, "_execution", lambda *a: (None, plan))
-        monkeypatch.setattr(live_samples.bridge, "_planned_deadlines", lambda *a: ())
+        monkeypatch.setattr(
+            live_samples.bridge.resources, "expired", lambda value, at: at >= value.valid_until
+        )
     if operation in {"test.results.import", "test.run.review", "test.disposition.decide"}:
         actual = live_samples.NumericalRead(work.read())
         monkeypatch.setattr(
@@ -68,7 +71,7 @@ def frame(monkeypatch, operation="test.run.start"):
         capa_id=samples.uid("followup-capa"),
         purpose=work.binding.purpose,
         owner_id=work.ctx.requester_id,
-        visibility="product",
+        visibility="category",
         nature="synthetic",
         requirement=EffectivenessRequirement(
             method="actual new Run, controlled owner test substitute",
@@ -147,7 +150,7 @@ def frame(monkeypatch, operation="test.run.start"):
 def code(call, expected):
     with pytest.raises(DomainError) as error:
         call()
-    assert error.value.code == expected
+    assert error.value.reason == expected
 
 
 @pytest.mark.parametrize(
@@ -221,14 +224,14 @@ def test_two_authorized_shared_callers_have_identical_fixed_output_and_separate_
         Grant(
             id=samples.uid("independent-grant"),
             tenant_id=work.ctx.tenant_id,
-            product_id=work.binding.scope.product_id,
+            category_id=work.ctx.category_id,
             principal_id=other,
             can_write=True,
             access_epoch=3,
             expires_at=samples.AT + timedelta(hours=2),
         )
     )
-    work.active_ctx = Context(work.ctx.tenant_id, other, other)
+    work.active_ctx = Context(work.ctx.tenant_id, other, other, category_id=work.ctx.category_id)
     second = work.read_output()
     assert second.output == first.output
     assert second.output.owner_id != other
@@ -326,7 +329,7 @@ def test_runtime_configuration_changed_by_final_owner_io_invalidates_phase(monke
     code(work.read_output, "PAIR_OWNER_CONFIGURATION_CHANGED")
 
 
-def test_complete_child_source_union_over_twenty_fails_without_truncation(monkeypatch):
+def test_complete_child_source_union_over_twenty_is_returned_without_truncation(monkeypatch):
     work = frame(monkeypatch)
     work.extra_children = [
         {
@@ -338,7 +341,9 @@ def test_complete_child_source_union_over_twenty_fails_without_truncation(monkey
             ],
         }
     ]
-    code(work.read_output, "MISSING_REQUIRED_EVIDENCE")
+    result = work.read_output()
+    wanted = {value["artifact_id"] for value in work.extra_children[0]["required_source_read_set"]}
+    assert wanted <= {str(value.artifact_id) for value in result.output.required_source_read_set}
 
 
 @pytest.mark.parametrize("mutation", ["clone", "snapshot", "receipt"])
@@ -449,6 +454,6 @@ def test_expired_original_handle_cannot_be_refreshed_as_another_permission_phase
     work = frame(monkeypatch)
     handle = work.read_output()
     calls = len(work.calls)
-    work.clock[0] = handle.host_gate.valid_until
+    work.clock[0] = min(handle.host_gate.time_constraints)
     code(lambda: work.refresh_output(handle), "PAIR_LIVE_PROOF_EXPIRED")
     assert len(work.calls) == calls

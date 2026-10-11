@@ -38,9 +38,7 @@ def lifecycle_work(setup, tmp_path):
         "synthetic-pg-retention-v1",
         timedelta(microseconds=1),
         timedelta(days=1),
-        timedelta(minutes=5),
         timedelta(seconds=20),
-        timedelta(minutes=1),
     )
     client = TestClient(
         create_app(
@@ -65,7 +63,7 @@ def lifecycle_work(setup, tmp_path):
 
 def inventory(work, *, headers=None):
     result = work.client.get(
-        f"/v1/products/{work.setup.product}/original-lifecycle",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/original-lifecycle",
         headers=headers or work.setup.headers,
     )
     assert result.status_code == 200, result.text
@@ -77,19 +75,31 @@ def item_for(work, object_id):
 
 
 def execute(work, prepared, *, headers=None):
-    return work.client.post("/v1/commands", headers=headers or work.setup.headers, json=prepared)
+    return work.client.post(
+        f"/v1/categories/{work.setup.category}/commands",
+        headers=headers or work.setup.headers,
+        json=prepared,
+    )
 
 
 def preview_command(work, value, *, headers=None):
     result = work.client.post(
-        "/v1/commands/preview", headers=headers or work.setup.headers, json=value
+        f"/v1/categories/{work.setup.category}/commands/preview",
+        headers=headers or work.setup.headers,
+        json=value,
     )
     assert result.status_code == 200, result.text
     return result.json()
 
 
 def make_command(work, operation, payload, *, key=None):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         revision = session.get(Product, work.setup.product).revision
     return command(work.setup, operation, payload, key=key, revision=revision)
 
@@ -103,7 +113,7 @@ def accepted(work, operation, payload, *, key=None):
 
 def candidate_response(work, object_id, *, action="quarantine", headers=None):
     return work.client.post(
-        f"/v1/products/{work.setup.product}/original-lifecycle/{object_id}/candidate",
+        f"/v1/categories/{work.setup.category}/products/{work.setup.product}/original-lifecycle/{object_id}/candidate",
         headers=headers or work.setup.headers,
         json={"action": action},
     )
@@ -130,7 +140,13 @@ def candidate_command(work, value, *, key=None, reason="Synthetic named exact-by
 
 def reserve_bytes(work, *, content=b"Synthetic retained bytes; no external material.\n"):
     data = upload_input(content, title="Synthetic lifecycle reservation")
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         identity = reserve(session, work.setup.ctx, work.setup.product, data)
     content, media, _, _ = upload_contents(data)
     reference = work.store.put_scoped(
@@ -147,7 +163,13 @@ def reserve_bytes(work, *, content=b"Synthetic retained bytes; no external mater
 def rolled_back_registration(work):
     identity, reference, data = reserve_bytes(work)
     with pytest.raises(RuntimeError, match="Synthetic after-bytes rollback"):
-        with tenant_session(work.setup.engine, work.setup.tenant) as session:
+        with tenant_session(
+            work.setup.engine,
+            work.setup.tenant,
+            actor_id=work.setup.human,
+            requester_id=work.setup.human,
+            category_id=work.setup.category,
+        ) as session:
             attempt = session.get(UploadAttempt, identity)
             upload(session, work.setup.ctx, work.setup.product, data, work.store, attempt=attempt)
             raise RuntimeError("Synthetic after-bytes rollback")
@@ -198,6 +220,9 @@ def request_intent(work, object_id, *, action="quarantine"):
 
 def worker_reference(work, identity):
     return {
+        "category_id": str(work.setup.category),
+        "actor_id": str(work.setup.human),
+        "requester_id": str(work.setup.human),
         "tenant_id": str(work.setup.tenant),
         "product_id": str(work.setup.product),
         "subject_id": str(identity),
@@ -205,5 +230,11 @@ def worker_reference(work, identity):
 
 
 def count(work, model, *where):
-    with tenant_session(work.setup.engine, work.setup.tenant) as session:
+    with tenant_session(
+        work.setup.engine,
+        work.setup.tenant,
+        actor_id=work.setup.human,
+        requester_id=work.setup.human,
+        category_id=work.setup.category,
+    ) as session:
         return session.scalar(select(func.count()).select_from(model).where(*where))

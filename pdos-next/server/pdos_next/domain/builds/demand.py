@@ -18,7 +18,7 @@ from sqlalchemy.orm import Session
 from pdos_next.engines.supply_cost.common import FrozenDTO, SnapshotRef, digest, source_issues
 from pdos_next.engines.supply_cost.dto import CoverageResult, DemandLine, FixedBasis
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Product, now
+from pdos_next.models import now
 from pdos_next.schemas.supply_cost.dto import BoundDemand, DemandSnapshot, Scope
 
 from .models import Build, BuildReadiness
@@ -121,6 +121,7 @@ def load_bound_demand(
     rechecks access at real server time, including replay after an old preview.
     """
     from pdos_next.originals import object_reference, require_original
+    from pdos_next.request_proof import snapshot_scalar
     from pdos_next.service import digest as source_digest
     from pdos_next.service import require_access, source_for
 
@@ -139,31 +140,29 @@ def load_bound_demand(
     product_id = _identity(scope.product_id)
     if scope.tenant_id != str(ctx.tenant_id):
         raise DomainError("FORBIDDEN_SCOPE", "固定需求不在当前服务器绑定租户。", 403)
-    product = s.scalar(
-        select(Product)
-        .where(
-            Product.id == product_id,
-            Product.tenant_id == ctx.tenant_id,
-        )
-        .with_for_update()
-    )
-    if product is None:
-        raise DomainError("FORBIDDEN_SCOPE", "固定需求不在当前授权产品范围。", 403)
-    require_access(s, ctx, product_id, lock=True)
-    build = s.scalar(
+    product = require_access(s, ctx, product_id)
+    build = snapshot_scalar(
+        s,
+        (Build, product_id, _identity(build_id)),
         select(Build).where(
             Build.id == _identity(build_id),
             Build.tenant_id == ctx.tenant_id,
             Build.product_id == product_id,
-        )
+        ),
+        scope_id=product_id,
     )
-    if build is None or (build.visibility == "private" and build.owner_id != ctx.requester_id):
+    if build is None:
         raise DomainError("FORBIDDEN_SCOPE", "固定需求不在当前可读的试制范围。", 403)
     audience = (
-        f"private:{build.owner_id}" if build.visibility == "private" else f"product:{product_id}"
+        f"private:{build.owner_id}"
+        if build.visibility == "private"
+        else f"audience:build:{build.id}"
+        if build.visibility == "audience"
+        else f"category:{build.category_id}"
     )
     trusted_scope = Scope(
         tenant_id=str(ctx.tenant_id),
+        category_id=str(product.category_id),
         product_id=str(product_id),
         project_id=str(build.project_id),
         audience=audience,
@@ -172,13 +171,16 @@ def load_bound_demand(
         raise DomainError("FORBIDDEN_SCOPE", "项目或受众与真实试制需求范围不一致。", 403)
     if build.revision != expected_revision:
         raise DomainError("VERSION_CONFLICT", "本轮需求与固定 Build 版本不一致。")
-    readiness = s.scalar(
+    readiness = snapshot_scalar(
+        s,
+        (BuildReadiness, product_id, build.id, build.revision),
         select(BuildReadiness).where(
             BuildReadiness.tenant_id == ctx.tenant_id,
             BuildReadiness.product_id == product_id,
             BuildReadiness.build_id == build.id,
             BuildReadiness.build_revision == build.revision,
-        )
+        ),
+        scope_id=product_id,
     )
     if readiness is None:
         raise DomainError("PORT_UNCONNECTED", "本轮尚未保存权威需求准备快照。")
@@ -198,15 +200,6 @@ def load_bound_demand(
     ):
         raise DomainError("SOURCE_STALE", "固定工程、制造或原件来源已失效。")
     data, basis, lines = _saved_bundle(readiness, build, engineering, manufacturing)
-    expiry = min(
-        s.scalars(
-            select(Grant.expires_at).where(
-                Grant.tenant_id == ctx.tenant_id,
-                Grant.product_id == product_id,
-                Grant.principal_id.in_({ctx.actor_id, ctx.requester_id}),
-            )
-        ).all()
-    )
     references = {}
     for read in reads:
         source = source_for(
@@ -216,24 +209,23 @@ def load_bound_demand(
             source.content
         ):
             raise DomainError("INTEGRITY_MISMATCH", "原件派生内容摘要无法核对。")
-        if build.visibility == "product" and source.visibility != "product":
-            raise DomainError("FORBIDDEN_SCOPE", "私人原件不能扩大到产品共享需求。", 403)
+        if build.visibility == "category" and source.visibility != "category":
+            raise DomainError("FORBIDDEN_SCOPE", "私人原件不能扩大到品类共享需求。", 403)
         reference = SnapshotRef(
             source_id=f"artifact:{source.id}",
             version=str(source.revision),
             sha256=source.content_hash,
             captured_at=source.created_at,
-            valid_until=expiry,
             state="current",
         )
         _current(reference, as_of)
         references[reference.source_id] = reference
         if source.original_id is not None:
-            original = require_original(s, ctx, product_id, source.original_id, lock=True)
+            original = require_original(s, ctx, product_id, source.original_id)
             if (
                 original.tenant_id != ctx.tenant_id
                 or original.status != "parsed"
-                or (build.visibility == "product" and original.visibility != "product")
+                or (build.visibility == "category" and original.visibility != "category")
             ):
                 raise DomainError("SOURCE_UNAVAILABLE", "派生需求的固定原件范围或解析状态不可用。")
             # Validate the private object identity without reading bytes, exposing
@@ -249,7 +241,6 @@ def load_bound_demand(
                 version=str(original.revision),
                 sha256=original.content_hash,
                 captured_at=max(original.created_at, source.created_at),
-                valid_until=expiry,
                 state="current",
             )
             _current(reference, as_of)
@@ -273,7 +264,6 @@ def load_bound_demand(
         version=str(readiness.revision),
         sha256=digest(fingerprint),
         captured_at=readiness.created_at,
-        valid_until=expiry,
         state="current",
     )
     for reference in (

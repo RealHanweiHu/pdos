@@ -10,7 +10,7 @@ from pdos_next.schemas.verification.contracts import DTO, EventTime
 
 
 class ObservationSelection(DTO):
-    line: int = Field(strict=True, ge=1, le=10000)
+    line: int = Field(strict=True, ge=1)
     sample_id: UUID
     item_id: str = Field(min_length=1, max_length=120)
 
@@ -24,7 +24,7 @@ class CaptureInput(DTO):
     expected_run_revision: Revision
     report_artifact_id: UUID
     expected_report_revision: Revision
-    selections: tuple[ObservationSelection, ...] = Field(min_length=1, max_length=10000)
+    selections: tuple[ObservationSelection, ...] = Field(min_length=1)
     reason: Text
 
     @model_validator(mode="after")
@@ -52,7 +52,7 @@ class ImportPayload(ResultBase):
     actual_end: EventTime | None = None
     incomplete_reason: Text | None = None
     next_owner_id: UUID | None = None
-    sources: tuple[DefinitionReference, ...] = Field(default=(), max_length=20)
+    sources: tuple[DefinitionReference, ...] = Field(default=())
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 
     @model_validator(mode="after")
@@ -80,7 +80,7 @@ class ReviewPayload(ResultBase):
     expected_basis_sha256: Sha256
     text: Text
     at: EventTime
-    sources: tuple[DefinitionReference, ...] = Field(default=(), max_length=20)
+    sources: tuple[DefinitionReference, ...] = Field(default=())
     approval_token: str | None = Field(default=None, min_length=20, max_length=128)
 
 

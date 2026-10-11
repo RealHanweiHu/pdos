@@ -37,7 +37,7 @@ function OriginalPanel({ product, originals, api, onSaved }: Props) {
   const currentPreview = preview && previewOriginal && preview.scope === originalScope(product, previewOriginal) ? preview : null;
   const editing = !busy && !pending && !currentPreview;
   useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
-  useEffect(() => { if (currentPreview) { if (!dialog.current?.open) dialog.current?.showModal(); } else { dialog.current?.close(); if (preview) void Promise.resolve().then(() => { if (alive.current) { setPreview(null); setNotice("产品范围、来源状态或权限已变化；旧预览已废弃，请刷新后重新核对。"); } }); } }, [currentPreview, preview]);
+  useEffect(() => { if (currentPreview) { if (!dialog.current?.open) dialog.current?.showModal(); } else { dialog.current?.close(); if (preview) void Promise.resolve().then(() => { if (alive.current) { setPreview(null); setNotice("型号范围、来源状态或权限已变化；旧预览已废弃，请刷新后重新核对。"); } }); } }, [currentPreview, preview]);
   function waiting(value: OriginalPending | null) { pendingRef.current = value; setPending(value); }
   function closePreview() { if (lock.current) return; setPreview(null); dialog.current?.close(); trigger.current?.focus(); }
   async function refresh() { if (lock.current) return; lock.current = true; setBusy(true); setError(""); try { await onSaved(); } catch { if (alive.current) setError("列表读取暂未完成，请再次刷新；这不改变已保存的回执。"); } finally { lock.current = false; if (alive.current) setBusy(false); } }
@@ -89,11 +89,11 @@ function OriginalPanel({ product, originals, api, onSaved }: Props) {
     <details><summary className="cursor-pointer font-medium">上传并保留资料原件</summary><form className="mt-4" onSubmit={event => { event.preventDefault(); upload(event.currentTarget); }}><fieldset disabled={!editing}>
       <label>文件<input ref={fileInput} type="file" accept=".txt,.md,.pdf,.xlsx" required onChange={event => setFile(event.target.files?.[0] ?? null)}/></label>
       <label>来源说明<input value={label} required maxLength={200} onChange={event => setLabel(event.target.value)} placeholder="谁提供的，或来自哪里"/></label>
-      <label>资料受众<select value={visibility} onChange={event => setVisibility(event.target.value)}><option value="private">仅我可见</option><option value="product">产品授权成员</option></select></label>
+      <label>资料受众<select value={visibility} onChange={event => setVisibility(event.target.value)}><option value="private">仅我可见</option><option value="category">品类授权成员</option></select></label>
       <Button type="submit"><UploadSimple/>保存原件</Button><p className="subtle mt-3">保存不等于扫描通过；文件本身不写入本机长期草稿。未知回执先核对原请求。</p>
     </fieldset></form></details>
     <div className="mt-5 space-y-4">{originals.map(original => { const actions = originalActions(original), security = securityFor(original); return <article key={original.id} className="space-y-4 rounded-lg border border-border p-3 sm:p-4">
-      <div><h3 className="font-medium [overflow-wrap:anywhere]">{original.title}</h3><p className="subtle mt-1 [overflow-wrap:anywhere]">{original.filename} · {(original.byte_count / 1024).toFixed(1)} KB{original.visibility && ` · ${original.visibility === "private" ? "仅本人" : "产品授权成员"}`}</p>{original.source_label && <p className="mt-1 text-sm whitespace-pre-wrap [overflow-wrap:anywhere]">来源：{original.source_label}</p>}</div>
+      <div><h3 className="font-medium [overflow-wrap:anywhere]">{original.title}</h3><p className="subtle mt-1 [overflow-wrap:anywhere]">{original.filename} · {(original.byte_count / 1024).toFixed(1)} KB{original.visibility && ` · ${original.visibility === "private" ? "仅本人" : original.visibility === "audience" ? "指定评审人" : "品类授权成员"}`}</p>{original.source_label && <p className="mt-1 text-sm whitespace-pre-wrap [overflow-wrap:anywhere]">来源：{original.source_label}</p>}</div>
       <OriginalStatus original={original}/><div className="flex flex-wrap gap-2">
         <Button variant="outline" disabled={!editing || !actions.scan} onClick={event => scan(original, event.currentTarget)}><ShieldCheck/>{security.scan ? "重新请求扫描" : "请求扫描"}</Button>
         {actions.download && editing ? <a className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-primary [overflow-wrap:anywhere]" href={`/api/v1/products/${product.id}/originals/${original.id}/download`}><DownloadSimple/>下载原件</a> : <Button variant="outline" disabled><DownloadSimple/>下载 · 当前不可用</Button>}
