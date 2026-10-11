@@ -21,6 +21,10 @@ def state():
 def run(arguments, name):
     current = state()
     env = local.environment(current)
+    if "m3_checkpoint_url" in current:
+        env["M2_TEST_CHECKPOINT_URL"] = current["m3_checkpoint_url"]
+        env["PDOS_STATE_DB_PORT"] = str(current["port"])
+        env["PDOS_STATE_DB_MARKER"] = current["marker"]
     env["PYTHONPATH"] = (
         str(local.ROOT.parent / "packages/pdos-agent-runtime/src") + ":" + str(local.SERVER)
     )

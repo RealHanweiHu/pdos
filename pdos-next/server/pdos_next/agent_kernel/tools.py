@@ -49,6 +49,10 @@ M3_TIERS = {
 
 def default_registry():
     from .domain_reads import SCHEMAS
+    from .m3_calculators import SCHEMAS as COMPUTE_SCHEMAS
+    from .m3_object_reads import SCHEMAS as OBJECT_SCHEMAS
+
+    schemas = {**SCHEMAS, **COMPUTE_SCHEMAS, **OBJECT_SCHEMAS}
 
     registry = ToolRegistry(command_tools())
     for name in sorted(READS | COMPUTE | {"skill.load"}):
@@ -57,7 +61,7 @@ def default_registry():
             ToolSpec(
                 name,
                 f"读取或计算 {name}；范围由服务器运行绑定。",
-                SCHEMAS[name].model_json_schema() if name in SCHEMAS else {"type": "object"},
+                schemas[name].model_json_schema() if name in schemas else {"type": "object"},
                 {"type": "object"},
                 kind,
                 "READ",

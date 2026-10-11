@@ -25,7 +25,7 @@ from pdos_next.service import digest, execute
 from tests.agent_kernel.test_execution_binding import ledger
 
 
-def fixture(setup, *, artifact_id=None):
+def fixture(setup, *, artifact_id=None, proposal_id=None, skill_key="public_research"):
     verify_test_target(setup.admin)
     f = ledger()
     f.scope = replace(
@@ -35,8 +35,9 @@ def fixture(setup, *, artifact_id=None):
         writer_id=setup.agent,
         category_id=setup.category,
         product_id=setup.product,
+        proposal_id=proposal_id,
     )
-    skill = f.catalog._skills["public_research"]
+    skill = f.catalog._skills[skill_key]
     bound = SkillBinding(
         key=skill.key, version=skill.version, digest=skill.digest, load_event_id=uuid4()
     )
@@ -75,7 +76,9 @@ def fixture(setup, *, artifact_id=None):
     }
     f.spec = f.registry.get("evidence.claim.record")
     run = f.run
-    for name in ("tenant_id", "requester_id", "writer_id", "category_id", "product_id"):
+    for name in (
+        "tenant_id", "requester_id", "writer_id", "category_id", "product_id", "proposal_id",
+    ):
         setattr(run, name, getattr(f.scope, name))
     run.trigger, run.goal = "page", "Synthetic actual common domain adapter"
     run.intent_key, run.intent_digest = str(uuid4()), digest(str(uuid4()))
@@ -124,6 +127,7 @@ def fixture(setup, *, artifact_id=None):
                 tenant_id=setup.tenant,
                 category_id=setup.category,
                 product_id=setup.product,
+                proposal_id=proposal_id,
                 owner_id=setup.human,
             )
         )

@@ -10,7 +10,7 @@ from pydantic import ValidationError
 from pdos_next.agent_kernel import domain_adapter as module
 from pdos_next.agent_kernel.bindings import execution_key
 from pdos_next.agent_kernel.domain_adapter import DomainCommands
-from pdos_next.agent_kernel.models import AgentRun, PublicWebSnapshot
+from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, PublicWebSnapshot
 from pdos_next.agent_kernel.registry import PREPARE_ONLY
 from pdos_next.agent_kernel.tools import default_registry
 from pdos_next.agent_kernel.types import RunScope
@@ -25,6 +25,13 @@ class MemorySession:
 
     def get(self, model, identity):
         return self.rows.get((model, identity))
+
+    def scalars(self, query):
+        assert query.column_descriptions[0]["entity"] is AgentToolCall
+        # This adapter fixture contains no read Call: another Run's registration
+        # cannot provide current-Run page authority.
+        assert not any(model is AgentToolCall for model, _ in self.rows)
+        return SimpleNamespace(all=lambda: [])
 
 
 @pytest.fixture

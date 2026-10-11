@@ -228,6 +228,14 @@ class KernelStore:
                 ):
                     raise DomainError("DUPLICATE_INTENT_CONFLICT", "原调用绑定了不同载荷。")
                 if call.state == "completed":
+                    if binding.get("kind") == "read" and (
+                        call.error_code is not None or call.receipt_id is not None
+                        or not isinstance(call.result, dict)
+                    ):
+                        raise DomainError(
+                            "SOURCE_UNAVAILABLE", "原读取没有成功完成的可信结果。",
+                            detail={"reason": "read_call_invalid"},
+                        )
                     return call.id, call.result
                 raise DomainError(
                     "EXTERNAL_OUTCOME_UNKNOWN",

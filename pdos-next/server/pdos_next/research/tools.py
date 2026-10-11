@@ -37,7 +37,7 @@ def research_tools():
             "research.search",
             "搜索公开线索；查询须经服务器出站政策检查。",
             SearchInput.model_json_schema(),
-            {"type": "array"},
+            {"type": "object"},
             "research",
             "READ",
             taint="external_metadata",

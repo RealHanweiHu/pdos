@@ -256,7 +256,8 @@ class PublicWebSnapshot(KernelRow, Base):
             ["tenant_id", "registered_by_run_id"], ["agent_runs.tenant_id", "agent_runs.id"]
         ),
         ForeignKeyConstraint(
-            ["tenant_id", "receipt_id"], ["action_receipts.tenant_id", "action_receipts.id"]
+            ["tenant_id", "receipt_id"], ["action_receipts.tenant_id", "action_receipts.id"],
+            deferrable=True, initially="DEFERRED",
         ),
     )
 

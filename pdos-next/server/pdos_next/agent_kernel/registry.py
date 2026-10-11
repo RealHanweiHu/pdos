@@ -132,6 +132,14 @@ class ToolRegistry:
         if not isinstance(arguments, Mapping) or authority:
             raise DomainError("FORBIDDEN_SCOPE", "模型参数不能声明运行权限或身份。")
         for key in ("category_id", "product_id", "proposal_id"):
+            if (
+                key == "product_id" and name == "product.baseline.read"
+                and scope.product_id is None and scope.category_id is not None
+                and spec.tier == "READ"
+            ):
+                # This is a read selector inside the actual category. The port
+                # rechecks ordinary product RLS; it never changes Run authority.
+                continue
             if key in arguments and str(arguments[key]) != str(getattr(scope, key)):
                 raise DomainError("FORBIDDEN_SCOPE", "工具对象与服务器绑定范围不同。")
         if name in ISOLATED and scope.isolation != ISOLATED[name]:

@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 from pdos_next.errors import DomainError
 from pdos_next.models import Receipt
-from pdos_next.service import receipt_view
+from pdos_next.service import digest, receipt_view
 
 from . import policy
 from .bindings import WriteSource, execution_key
@@ -12,6 +12,7 @@ from .execution import verify_source
 from .gateway import AgentGateway
 from .models import AgentToolCall
 from .persistence import KernelStore
+from .read_execution import ReadSource, build_read_binding, verify_read_source
 from .skills import SkillCatalog
 
 
@@ -31,6 +32,8 @@ class KernelAdapters:
     skill_catalog: object | None = None
     tool_registry: object | None = None
     recover_command: object | None = None
+    compute_engines: dict = field(default_factory=dict)
+    read_restores: dict = field(default_factory=dict)
 
 
 class BoundHost:
@@ -75,23 +78,73 @@ class BoundHost:
     def model(self, scope, **kwargs):
         return self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
 
-    def read(self, scope, spec, arguments, intent_key):
+    def read(self, scope, spec, arguments, intent_key, *, source: ReadSource | None = None):
         callback = self.adapters.read_tools.get(spec.name)
         if callback is None:
             raise DomainError(
                 "SOURCE_UNAVAILABLE", "此读取能力尚未配置。", detail={"tool": spec.name}
             )
-        if spec.name in {"research.read", "evidence.artifact.read"}:
-            return callback(scope, arguments)
-        call_id, previous = self.store.claim(scope, intent_key, spec.name, arguments)
-        if previous is not None:
-            return previous
+        engine = self.adapters.compute_engines.get(spec.name)
+        restore = self.adapters.read_restores.get(spec.name)
+        return self.read_callback(
+            scope, spec, arguments, intent_key, source=source,
+            callback=callback, engine=engine,
+            restore=(lambda previous: restore(scope, arguments, previous)) if restore else None,
+        )
+
+    def read_callback(
+        self, scope, spec, arguments, intent_key, *, source, callback,
+        engine=None, read_kind="ordinary/v1", metadata=None, restore=None,
+    ):
+        """Registered graph composition supplies callbacks and proof policy.
+
+        The provider sees only the tool arguments. Even isolated raw reads bind
+        the actual completed model response, and replay rechecks its source data.
+        Pure results exist before claim so their immutable digest is never patched.
+        """
+        from .deterministic_proofs import canonical_hash
+        from .tools import default_registry
+        with self.store.transaction(scope) as (session, run):
+            model = verify_read_source(
+                session, scope, run, spec, arguments, source,
+                self.adapters.tool_registry or default_registry(),
+                self.adapters.route_for(scope),
+                intent_key=intent_key,
+            )
+            computed = engine.calculate(arguments) if engine is not None else None
+            if engine is not None:
+                read_kind = "compute/v1"
+                metadata = {
+                    "engine_version": engine.version, "result_digest": canonical_hash(computed)
+                }
+            binding = build_read_binding(
+                scope, run, spec, source, model,
+                read_kind=read_kind, server_metadata=metadata,
+            ).model_dump(mode="json")
+        call_id, previous = self.store.claim(
+            scope, intent_key, spec.name, arguments, execution_binding=binding,
+        )
         try:
-            result = callback(scope, arguments)
-            self.store.settle(scope, call_id, result=result)
-            return result
+            if previous is not None and restore is not None:
+                result = restore(previous)
+            else:
+                result = computed if engine is not None else callback(scope, arguments)
+            if previous is not None:
+                fingerprint = canonical_hash if engine is not None else digest
+                if fingerprint(result) != fingerprint(previous):
+                    raise DomainError(
+                        "SOURCE_STALE", "读取结果已变化，请使用新的运行重新读取。",
+                        detail={"reason": "read_result_changed"},
+                    )
+            else:
+                self.store.settle(scope, call_id, result=result)
+            return {
+                **result,
+                "execution_ref": {"call_id": str(call_id), "read_kind": read_kind},
+            } if isinstance(result, dict) else result
         except Exception:
-            self.store.release_call(scope, call_id, error="SOURCE_UNAVAILABLE")
+            if previous is None:
+                self.store.release_call(scope, call_id, error="SOURCE_UNAVAILABLE")
             raise
 
     def prepare(self, scope, spec, arguments, intent_key):

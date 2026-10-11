@@ -38,8 +38,9 @@ class ExistingResult(Exception):
 
 
 class DomainCommands:
-    def __init__(self, engine, *, catalog, registry, route):
+    def __init__(self, engine, *, catalog, registry, route, artifacts=None):
         self.engine, self.catalog, self.registry, self.route = engine, catalog, registry, route
+        self.artifacts = artifacts
 
     @staticmethod
     def context(scope, *, call_id=None):
@@ -133,7 +134,9 @@ class DomainCommands:
             if source.kind == "artifact":
                 self._require_artifact_read(pinned, source.id, source.version)
             else:
-                self._require_snapshot_read(session, run, source.id, source.version)
+                self._require_snapshot_read(
+                    session, run, source.id, source.version, line=source.line, quote=source.quote,
+                )
         else:
             source_id = getattr(normalized, "artifact_id", None)
             if source_id is not None:
@@ -143,7 +146,9 @@ class DomainCommands:
             if evidence.type == "artifact":
                 self._require_artifact_read(pinned, evidence.id, evidence.version)
             elif evidence.type == "snapshot":
-                self._require_snapshot_read(session, run, evidence.id, evidence.version)
+                self._require_snapshot_read(
+                    session, run, evidence.id, evidence.version, locator=evidence.locator,
+                )
         return Command(
             command_id=uuid5(NAMESPACE_URL, intent_key),
             idempotency_key=intent_key,
@@ -195,7 +200,9 @@ class DomainCommands:
             )
 
     @staticmethod
-    def _require_snapshot_read(session, run, identity, version):
+    def _require_snapshot_read(
+        session, run, identity, version, *, line=None, quote=None, locator=None,
+    ):
         snapshot = session.get(PublicWebSnapshot, identity)
         if (
             not snapshot
@@ -206,6 +213,33 @@ class DomainCommands:
         ):
             fail("SOURCE_UNAVAILABLE", "snapshot_unavailable", "快照不在运行实际可用的品类范围。")
         if snapshot.registered_by_run_id != run.id:
+            from .execution import scope_for_run
+            from .snapshot_read_ledger import validate_snapshot_read
+
+            candidates = session.scalars(select(AgentToolCall).where(
+                AgentToolCall.run_id == run.id,
+                AgentToolCall.tool == "research.read",
+                AgentToolCall.state == "completed",
+                AgentToolCall.execution_binding["read_kind"].astext == "registered_snapshot/v1",
+                AgentToolCall.result["snapshot_id"].astext == str(identity),
+            )).all()
+            for call in candidates:
+                try:
+                    if line is not None and quote:
+                        validate_snapshot_read(
+                            session, scope_for_run(run), identity, version, line, quote,
+                            call_id=call.id,
+                        )
+                    else:
+                        from .snapshot_locator import validate_snapshot_locator
+
+                        validate_snapshot_locator(
+                            session, scope_for_run(run), identity, version, locator,
+                            call_id=call.id,
+                        )
+                except DomainError:
+                    continue
+                return
             fail(
                 "SOURCE_UNAVAILABLE",
                 "snapshot_read_not_bound",

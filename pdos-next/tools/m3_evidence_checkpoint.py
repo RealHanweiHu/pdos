@@ -11,7 +11,8 @@ if __name__ == "__main__":
     parser.add_argument("--from-revision", default="s0_0732")
     parser.add_argument("--to-revision", default="s0_0733")
     parser.add_argument(
-        "--section", choices=["evidence-sharing", "derivation"], default="evidence-sharing"
+        "--section", choices=["evidence-sharing", "derivation", "read-proof"],
+        default="evidence-sharing",
     )
     args = parser.parse_args()
     if not args.evidence.endswith(".json") or "/" in args.evidence:

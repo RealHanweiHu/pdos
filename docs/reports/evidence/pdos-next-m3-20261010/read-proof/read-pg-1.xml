@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="11" skipped="0" tests="11" time="7.164" timestamp="2026-10-11T00:11:00.504426-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_real_compute_call_retains_complete_digest_and_exact_replay" time="1.350"><failure message="TypeError: 'dict' object is not callable">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_real_compute_call_retains_complete_digest_and_exact_replay(setup):
+&gt;       f = read_fixture(setup)
+            ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_read_proof_transactions.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, tool = 'calc.cost_subtotal'
+arguments = {'lines': [{'label': '合成零件', 'qty': '2', 'unit_cost': '3.125', 'currency': 'CNY', ...}]}
+
+    def read_fixture(setup, *, tool="calc.cost_subtotal", arguments=None):
+        f = fixture(setup)
+        if arguments is None:
+            arguments = {"lines": [{
+                "label": "合成零件", "qty": "2", "unit_cost": "3.125", "currency": "CNY",
+                "as_of": "2026-10-10", "source_ref": {
+                    "type": "artifact", "id": f.arguments["artifact_id"], "version": 1,
+                    "line": 1, "quote": "Synthetic exact source",
+                },
+            }]}
+        store = KernelStore(setup.engine)
+        model_id, _ = store.claim(
+            f.scope, "synthetic-read-model:" + str(uuid4()), "model", {"fixture": True},
+            execution_binding=f.model.execution_binding,
+        )
+        store.settle(f.scope, model_id, result={"calls": [{"name": tool, "arguments": arguments}]})
+        f.read_arguments, f.store = arguments, store
+        f.read_spec = f.registry.get(tool)
+        f.read_source = ReadSource(model_call_id=model_id, response_index=0)
+        f.read_key = execution_key(f.scope.run_id, model_id, 0)
+        f.host = BoundHost(store, KernelAdapters(
+            route_for=lambda *_: f.route, project_context=lambda *_: {},
+            verify_result=lambda *a: a[1], prepare_candidate=lambda *_: None,
+&gt;           execute_command=lambda *_: None, read_tools=handlers(), compute_engines=ENGINES,
+                                                        ^^^^^^^^^^
+            tool_registry=f.registry,
+        ))
+E       TypeError: 'dict' object is not callable
+
+tests/agent_kernel/test_read_proof_transactions.py:48: TypeError</failure></testcase><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[writer_id-ed1d58be-4d24-4cc6-9c92-5b8b17bbd53c]" time="0.538"><failure message="TypeError: 'dict' object is not callable">setup = &lt;isolated synthetic test scope&gt;, field = 'writer_id'
+value = 'ed1d58be-4d24-4cc6-9c92-5b8b17bbd53c'
+
+    @pytest.mark.parametrize("field,value", [
+        ("writer_id", str(uuid4())), ("category_id", str(uuid4())), ("cancel_epoch", 1),
+        ("isolation", "research"), ("private_context", True), ("model_call_id", str(uuid4())),
+        ("tool_definitions_digest", "a" * 64),
+    ])
+    def test_sql_cannot_accept_forged_read_binding(setup, field, value):
+&gt;       f = read_fixture(setup)
+            ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_read_proof_transactions.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, tool = 'calc.cost_subtotal'
+arguments = {'lines': [{'label': '合成零件', 'qty': '2', 'unit_cost': '3.125', 'currency': 'CNY', ...}]}
+
+    def read_fixture(setup, *, tool="calc.cost_subtotal", arguments=None):
+        f = fixture(setup)
+        if arguments is None:
+            arguments = {"lines": [{
+                "label": "合成零件", "qty": "2", "unit_cost": "3.125", "currency": "CNY",
+                "as_of": "2026-10-10", "source_ref": {
+                    "type": "artifact", "id": f.arguments["artifact_id"], "version": 1,
+                    "line": 1, "quote": "Synthetic exact source",
+                },
+            }]}
+        store = KernelStore(setup.engine)
+        model_id, _ = store.claim(
+            f.scope, "synthetic-read-model:" + str(uuid4()), "model", {"fixture": True},
+            execution_binding=f.model.execution_binding,
+        )
+        store.settle(f.scope, model_id, result={"calls": [{"name": tool, "arguments": arguments}]})
+        f.read_arguments, f.store = arguments, store
+        f.read_spec = f.registry.get(tool)
+        f.read_source = ReadSource(model_call_id=model_id, response_index=0)
+        f.read_key = execution_key(f.scope.run_id, model_id, 0)
+        f.host = BoundHost(store, KernelAdapters(
+            route_for=lambda *_: f.route, project_context=lambda *_: {},
+            verify_result=lambda *a: a[1], prepare_candidate=lambda *_: None,
+&gt;           execute_command=lambda *_: None, read_tools=handlers(), compute_engines=ENGINES,
+                                                        ^^^^^^^^^^
+            tool_registry=f.registry,
+        ))
+E       TypeError: 'dict' object is not callable
+
+tests/agent_kernel/test_read_proof_transactions.py:48: TypeError</failure></testcase><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[category_id-193e820f-5b05-4929-8293-b557f90f7586]" time="0.596"><failure message="TypeError: 'dict' object is not callable">setup = &lt;isolated synthetic test scope&gt;, field = 'category_id'
+value = '193e820f-5b05-4929-8293-b557f90f7586'
+
+    @pytest.mark.parametrize("field,value", [
+        ("writer_id", str(uuid4())), ("category_id", str(uuid4())), ("cancel_epoch", 1),
+        ("isolation", "research"), ("private_context", True), ("model_call_id", str(uuid4())),
+        ("tool_definitions_digest", "a" * 64),
+    ])
+    def test_sql_cannot_accept_forged_read_binding(setup, field, value):
+&gt;       f = read_fixture(setup)
+            ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_read_proof_transactions.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, tool = 'calc.cost_subtotal'
+arguments = {'lines': [{'label': '合成零件', 'qty': '2', 'unit_cost': '3.125', 'currency': 'CNY', ...}]}
+
+    def read_fixture(setup, *, tool="calc.cost_subtotal", arguments=None):
+        f = fixture(setup)
+        if arguments is None:
+            arguments = {"lines": [{
+                "label": "合成零件", "qty": "2", "unit_cost": "3.125", "currency": "CNY",
+                "as_of": "2026-10-10", "source_ref": {
+                    "type": "artifact", "id": f.arguments["artifact_id"], "version": 1,
+                    "line": 1, "quote": "Synthetic exact source",
+                },
+            }]}
+        store = KernelStore(setup.engine)
+        model_id, _ = store.claim(
+            f.scope, "synthetic-read-model:" + str(uuid4()), "model", {"fixture": True},
+            execution_binding=f.model.execution_binding,
+        )
+        store.settle(f.scope, model_id, result={"calls": [{"name": tool, "arguments": arguments}]})
+        f.read_arguments, f.store = arguments, store
+        f.read_spec = f.registry.get(tool)
+        f.read_source = ReadSource(model_call_id=model_id, response_index=0)
+        f.read_key = execution_key(f.scope.run_id, model_id, 0)
+        f.host = BoundHost(store, KernelAdapters(
+            route_for=lambda *_: f.route, project_context=lambda *_: {},
+            verify_result=lambda *a: a[1], prepare_candidate=lambda *_: None,
+&gt;           execute_command=lambda *_: None, read_tools=handlers(), compute_engines=ENGINES,
+                                                        ^^^^^^^^^^
+            tool_registry=f.registry,
+        ))
+E       TypeError: 'dict' object is not callable
+
+tests/agent_kernel/test_read_proof_transactions.py:48: TypeError</failure></testcase><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[cancel_epoch-1]" time="0.585"><failure message="TypeError: 'dict' object is not callable">setup = &lt;isolated synthetic test scope&gt;, field = 'cancel_epoch', value = 1
+
+    @pytest.mark.parametrize("field,value", [
+        ("writer_id", str(uuid4())), ("category_id", str(uuid4())), ("cancel_epoch", 1),
+        ("isolation", "research"), ("private_context", True), ("model_call_id", str(uuid4())),
+        ("tool_definitions_digest", "a" * 64),
+    ])
+    def test_sql_cannot_accept_forged_read_binding(setup, field, value):
+&gt;       f = read_fixture(setup)
+            ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_read_proof_transactions.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, tool = 'calc.cost_subtotal'
+arguments = {'lines': [{'label': '合成零件', 'qty': '2', 'unit_cost': '3.125', 'currency': 'CNY', ...}]}
+
+    def read_fixture(setup, *, tool="calc.cost_subtotal", arguments=None):
+        f = fixture(setup)
+        if arguments is None:
+            arguments = {"lines": [{
+                "label": "合成零件", "qty": "2", "unit_cost": "3.125", "currency": "CNY",
+                "as_of": "2026-10-10", "source_ref": {
+                    "type": "artifact", "id": f.arguments["artifact_id"], "version": 1,
+                    "line": 1, "quote": "Synthetic exact source",
+                },
+            }]}
+        store = KernelStore(setup.engine)
+        model_id, _ = store.claim(
+            f.scope, "synthetic-read-model:" + str(uuid4()), "model", {"fixture": True},
+            execution_binding=f.model.execution_binding,
+        )
+        store.settle(f.scope, model_id, result={"calls": [{"name": tool, "arguments": arguments}]})
+        f.read_arguments, f.store = arguments, store
+        f.read_spec = f.registry.get(tool)
+        f.read_source = ReadSource(model_call_id=model_id, response_index=0)
+        f.read_key = execution_key(f.scope.run_id, model_id, 0)
+        f.host = BoundHost(store, KernelAdapters(
+            route_for=lambda *_: f.route, project_context=lambda *_: {},
+            verify_result=lambda *a: a[1], prepare_candidate=lambda *_: None,
+&gt;           execute_command=lambda *_: None, read_tools=handlers(), compute_engines=ENGINES,
+                                                        ^^^^^^^^^^
+            tool_registry=f.registry,
+        ))
+E       TypeError: 'dict' object is not callable
+
+tests/agent_kernel/test_read_proof_transactions.py:48: TypeError</failure></testcase><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[isolation-research]" time="0.497"><failure message="TypeError: 'dict' object is not callable">setup = &lt;isolated synthetic test scope&gt;, field = 'isolation', value = 'research'
+
+    @pytest.mark.parametrize("field,value", [
+        ("writer_id", str(uuid4())), ("category_id", str(uuid4())), ("cancel_epoch", 1),
+        ("isolation", "research"), ("private_context", True), ("model_call_id", str(uuid4())),
+        ("tool_definitions_digest", "a" * 64),
+    ])
+    def test_sql_cannot_accept_forged_read_binding(setup, field, value):
+&gt;       f = read_fixture(setup)
+            ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_read_proof_transactions.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, tool = 'calc.cost_subtotal'
+arguments = {'lines': [{'label': '合成零件', 'qty': '2', 'unit_cost': '3.125', 'currency': 'CNY', ...}]}
+
+    def read_fixture(setup, *, tool="calc.cost_subtotal", arguments=None):
+        f = fixture(setup)
+        if arguments is None:
+            arguments = {"lines": [{
+                "label": "合成零件", "qty": "2", "unit_cost": "3.125", "currency": "CNY",
+                "as_of": "2026-10-10", "source_ref": {
+                    "type": "artifact", "id": f.arguments["artifact_id"], "version": 1,
+                    "line": 1, "quote": "Synthetic exact source",
+                },
+            }]}
+        store = KernelStore(setup.engine)
+        model_id, _ = store.claim(
+            f.scope, "synthetic-read-model:" + str(uuid4()), "model", {"fixture": True},
+            execution_binding=f.model.execution_binding,
+        )
+        store.settle(f.scope, model_id, result={"calls": [{"name": tool, "arguments": arguments}]})
+        f.read_arguments, f.store = arguments, store
+        f.read_spec = f.registry.get(tool)
+        f.read_source = ReadSource(model_call_id=model_id, response_index=0)
+        f.read_key = execution_key(f.scope.run_id, model_id, 0)
+        f.host = BoundHost(store, KernelAdapters(
+            route_for=lambda *_: f.route, project_context=lambda *_: {},
+            verify_result=lambda *a: a[1], prepare_candidate=lambda *_: None,
+&gt;           execute_command=lambda *_: None, read_tools=handlers(), compute_engines=ENGINES,
+                                                        ^^^^^^^^^^
+            tool_registry=f.registry,
+        ))
+E       TypeError: 'dict' object is not callable
+
+tests/agent_kernel/test_read_proof_transactions.py:48: TypeError</failure></testcase><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[private_context-True]" time="0.551"><failure message="TypeError: 'dict' object is not callable">setup = &lt;isolated synthetic test scope&gt;, field = 'private_context', value = True
+
+    @pytest.mark.parametrize("field,value", [
+        ("writer_id", str(uuid4())), ("category_id", str(uuid4())), ("cancel_epoch", 1),
+        ("isolation", "research"), ("private_context", True), ("model_call_id", str(uuid4())),
+        ("tool_definitions_digest", "a" * 64),
+    ])
+    def test_sql_cannot_accept_forged_read_binding(setup, field, value):
+&gt;       f = read_fixture(setup)
+            ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_read_proof_transactions.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, tool = 'calc.cost_subtotal'
+arguments = {'lines': [{'label': '合成零件', 'qty': '2', 'unit_cost': '3.125', 'currency': 'CNY', ...}]}
+
+    def read_fixture(setup, *, tool="calc.cost_subtotal", arguments=None):
+        f = fixture(setup)
+        if arguments is None:
+            arguments = {"lines": [{
+                "label": "合成零件", "qty": "2", "unit_cost": "3.125", "currency": "CNY",
+                "as_of": "2026-10-10", "source_ref": {
+                    "type": "artifact", "id": f.arguments["artifact_id"], "version": 1,
+                    "line": 1, "quote": "Synthetic exact source",
+                },
+            }]}
+        store = KernelStore(setup.engine)
+        model_id, _ = store.claim(
+            f.scope, "synthetic-read-model:" + str(uuid4()), "model", {"fixture": True},
+            execution_binding=f.model.execution_binding,
+        )
+        store.settle(f.scope, model_id, result={"calls": [{"name": tool, "arguments": arguments}]})
+        f.read_arguments, f.store = arguments, store
+        f.read_spec = f.registry.get(tool)
+        f.read_source = ReadSource(model_call_id=model_id, response_index=0)
+        f.read_key = execution_key(f.scope.run_id, model_id, 0)
+        f.host = BoundHost(store, KernelAdapters(
+            route_for=lambda *_: f.route, project_context=lambda *_: {},
+            verify_result=lambda *a: a[1], prepare_candidate=lambda *_: None,
+&gt;           execute_command=lambda *_: None, read_tools=handlers(), compute_engines=ENGINES,
+                                                        ^^^^^^^^^^
+            tool_registry=f.registry,
+        ))
+E       TypeError: 'dict' object is not callable
+
+tests/agent_kernel/test_read_proof_transactions.py:48: TypeError</failure></testcase><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[model_call_id-e4bf79d1-30eb-4a05-b8ee-2f48d3633e1e]" time="0.482"><failure message="TypeError: 'dict' object is not callable">setup = &lt;isolated synthetic test scope&gt;, field = 'model_call_id'
+value = 'e4bf79d1-30eb-4a05-b8ee-2f48d3633e1e'
+
+    @pytest.mark.parametrize("field,value", [
+        ("writer_id", str(uuid4())), ("category_id", str(uuid4())), ("cancel_epoch", 1),
+        ("isolation", "research"), ("private_context", True), ("model_call_id", str(uuid4())),
+        ("tool_definitions_digest", "a" * 64),
+    ])
+    def test_sql_cannot_accept_forged_read_binding(setup, field, value):
+&gt;       f = read_fixture(setup)
+            ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_read_proof_transactions.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, tool = 'calc.cost_subtotal'
+arguments = {'lines': [{'label': '合成零件', 'qty': '2', 'unit_cost': '3.125', 'currency': 'CNY', ...}]}
+
+    def read_fixture(setup, *, tool="calc.cost_subtotal", arguments=None):
+        f = fixture(setup)
+        if arguments is None:
+            arguments = {"lines": [{
+                "label": "合成零件", "qty": "2", "unit_cost": "3.125", "currency": "CNY",
+                "as_of": "2026-10-10", "source_ref": {
+                    "type": "artifact", "id": f.arguments["artifact_id"], "version": 1,
+                    "line": 1, "quote": "Synthetic exact source",
+                },
+            }]}
+        store = KernelStore(setup.engine)
+        model_id, _ = store.claim(
+            f.scope, "synthetic-read-model:" + str(uuid4()), "model", {"fixture": True},
+            execution_binding=f.model.execution_binding,
+        )
+        store.settle(f.scope, model_id, result={"calls": [{"name": tool, "arguments": arguments}]})
+        f.read_arguments, f.store = arguments, store
+        f.read_spec = f.registry.get(tool)
+        f.read_source = ReadSource(model_call_id=model_id, response_index=0)
+        f.read_key = execution_key(f.scope.run_id, model_id, 0)
+        f.host = BoundHost(store, KernelAdapters(
+            route_for=lambda *_: f.route, project_context=lambda *_: {},
+            verify_result=lambda *a: a[1], prepare_candidate=lambda *_: None,
+&gt;           execute_command=lambda *_: None, read_tools=handlers(), compute_engines=ENGINES,
+                                                        ^^^^^^^^^^
+            tool_registry=f.registry,
+        ))
+E       TypeError: 'dict' object is not callable
+
+tests/agent_kernel/test_read_proof_transactions.py:48: TypeError</failure></testcase><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[tool_definitions_digest-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]" time="0.491"><failure message="TypeError: 'dict' object is not callable">setup = &lt;isolated synthetic test scope&gt;, field = 'tool_definitions_digest'
+value = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+
+    @pytest.mark.parametrize("field,value", [
+        ("writer_id", str(uuid4())), ("category_id", str(uuid4())), ("cancel_epoch", 1),
+        ("isolation", "research"), ("private_context", True), ("model_call_id", str(uuid4())),
+        ("tool_definitions_digest", "a" * 64),
+    ])
+    def test_sql_cannot_accept_forged_read_binding(setup, field, value):
+&gt;       f = read_fixture(setup)
+            ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_read_proof_transactions.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, tool = 'calc.cost_subtotal'
+arguments = {'lines': [{'label': '合成零件', 'qty': '2', 'unit_cost': '3.125', 'currency': 'CNY', ...}]}
+
+    def read_fixture(setup, *, tool="calc.cost_subtotal", arguments=None):
+        f = fixture(setup)
+        if arguments is None:
+            arguments = {"lines": [{
+                "label": "合成零件", "qty": "2", "unit_cost": "3.125", "currency": "CNY",
+                "as_of": "2026-10-10", "source_ref": {
+                    "type": "artifact", "id": f.arguments["artifact_id"], "version": 1,
+                    "line": 1, "quote": "Synthetic exact source",
+                },
+            }]}
+        store = KernelStore(setup.engine)
+        model_id, _ = store.claim(
+            f.scope, "synthetic-read-model:" + str(uuid4()), "model", {"fixture": True},
+            execution_binding=f.model.execution_binding,
+        )
+        store.settle(f.scope, model_id, result={"calls": [{"name": tool, "arguments": arguments}]})
+        f.read_arguments, f.store = arguments, store
+        f.read_spec = f.registry.get(tool)
+        f.read_source = ReadSource(model_call_id=model_id, response_index=0)
+        f.read_key = execution_key(f.scope.run_id, model_id, 0)
+        f.host = BoundHost(store, KernelAdapters(
+            route_for=lambda *_: f.route, project_context=lambda *_: {},
+            verify_result=lambda *a: a[1], prepare_candidate=lambda *_: None,
+&gt;           execute_command=lambda *_: None, read_tools=handlers(), compute_engines=ENGINES,
+                                                        ^^^^^^^^^^
+            tool_registry=f.registry,
+        ))
+E       TypeError: 'dict' object is not callable
+
+tests/agent_kernel/test_read_proof_transactions.py:48: TypeError</failure></testcase><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_real_read_proof_content_mismatch_and_cancelled_replay_refused" time="0.483"><failure message="TypeError: 'dict' object is not callable">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_real_read_proof_content_mismatch_and_cancelled_replay_refused(setup):
+&gt;       f = read_fixture(setup)
+            ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_read_proof_transactions.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, tool = 'calc.cost_subtotal'
+arguments = {'lines': [{'label': '合成零件', 'qty': '2', 'unit_cost': '3.125', 'currency': 'CNY', ...}]}
+
+    def read_fixture(setup, *, tool="calc.cost_subtotal", arguments=None):
+        f = fixture(setup)
+        if arguments is None:
+            arguments = {"lines": [{
+                "label": "合成零件", "qty": "2", "unit_cost": "3.125", "currency": "CNY",
+                "as_of": "2026-10-10", "source_ref": {
+                    "type": "artifact", "id": f.arguments["artifact_id"], "version": 1,
+                    "line": 1, "quote": "Synthetic exact source",
+                },
+            }]}
+        store = KernelStore(setup.engine)
+        model_id, _ = store.claim(
+            f.scope, "synthetic-read-model:" + str(uuid4()), "model", {"fixture": True},
+            execution_binding=f.model.execution_binding,
+        )
+        store.settle(f.scope, model_id, result={"calls": [{"name": tool, "arguments": arguments}]})
+        f.read_arguments, f.store = arguments, store
+        f.read_spec = f.registry.get(tool)
+        f.read_source = ReadSource(model_call_id=model_id, response_index=0)
+        f.read_key = execution_key(f.scope.run_id, model_id, 0)
+        f.host = BoundHost(store, KernelAdapters(
+            route_for=lambda *_: f.route, project_context=lambda *_: {},
+            verify_result=lambda *a: a[1], prepare_candidate=lambda *_: None,
+&gt;           execute_command=lambda *_: None, read_tools=handlers(), compute_engines=ENGINES,
+                                                        ^^^^^^^^^^
+            tool_registry=f.registry,
+        ))
+E       TypeError: 'dict' object is not callable
+
+tests/agent_kernel/test_read_proof_transactions.py:48: TypeError</failure></testcase><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_real_completed_read_result_and_binding_cannot_be_rewritten" time="0.632"><failure message="TypeError: 'dict' object is not callable">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_real_completed_read_result_and_binding_cannot_be_rewritten(setup):
+&gt;       f = read_fixture(setup)
+            ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_read_proof_transactions.py:127: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, tool = 'calc.cost_subtotal'
+arguments = {'lines': [{'label': '合成零件', 'qty': '2', 'unit_cost': '3.125', 'currency': 'CNY', ...}]}
+
+    def read_fixture(setup, *, tool="calc.cost_subtotal", arguments=None):
+        f = fixture(setup)
+        if arguments is None:
+            arguments = {"lines": [{
+                "label": "合成零件", "qty": "2", "unit_cost": "3.125", "currency": "CNY",
+                "as_of": "2026-10-10", "source_ref": {
+                    "type": "artifact", "id": f.arguments["artifact_id"], "version": 1,
+                    "line": 1, "quote": "Synthetic exact source",
+                },
+            }]}
+        store = KernelStore(setup.engine)
+        model_id, _ = store.claim(
+            f.scope, "synthetic-read-model:" + str(uuid4()), "model", {"fixture": True},
+            execution_binding=f.model.execution_binding,
+        )
+        store.settle(f.scope, model_id, result={"calls": [{"name": tool, "arguments": arguments}]})
+        f.read_arguments, f.store = arguments, store
+        f.read_spec = f.registry.get(tool)
+        f.read_source = ReadSource(model_call_id=model_id, response_index=0)
+        f.read_key = execution_key(f.scope.run_id, model_id, 0)
+        f.host = BoundHost(store, KernelAdapters(
+            route_for=lambda *_: f.route, project_context=lambda *_: {},
+            verify_result=lambda *a: a[1], prepare_candidate=lambda *_: None,
+&gt;           execute_command=lambda *_: None, read_tools=handlers(), compute_engines=ENGINES,
+                                                        ^^^^^^^^^^
+            tool_registry=f.registry,
+        ))
+E       TypeError: 'dict' object is not callable
+
+tests/agent_kernel/test_read_proof_transactions.py:48: TypeError</failure></testcase><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_original_agent_authority_is_rechecked_when_human_consumes_compute_proof" time="0.466"><failure message="TypeError: 'dict' object is not callable">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_original_agent_authority_is_rechecked_when_human_consumes_compute_proof(setup):
+&gt;       f = read_fixture(setup)
+            ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_read_proof_transactions.py:138: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, tool = 'calc.cost_subtotal'
+arguments = {'lines': [{'label': '合成零件', 'qty': '2', 'unit_cost': '3.125', 'currency': 'CNY', ...}]}
+
+    def read_fixture(setup, *, tool="calc.cost_subtotal", arguments=None):
+        f = fixture(setup)
+        if arguments is None:
+            arguments = {"lines": [{
+                "label": "合成零件", "qty": "2", "unit_cost": "3.125", "currency": "CNY",
+                "as_of": "2026-10-10", "source_ref": {
+                    "type": "artifact", "id": f.arguments["artifact_id"], "version": 1,
+                    "line": 1, "quote": "Synthetic exact source",
+                },
+            }]}
+        store = KernelStore(setup.engine)
+        model_id, _ = store.claim(
+            f.scope, "synthetic-read-model:" + str(uuid4()), "model", {"fixture": True},
+            execution_binding=f.model.execution_binding,
+        )
+        store.settle(f.scope, model_id, result={"calls": [{"name": tool, "arguments": arguments}]})
+        f.read_arguments, f.store = arguments, store
+        f.read_spec = f.registry.get(tool)
+        f.read_source = ReadSource(model_call_id=model_id, response_index=0)
+        f.read_key = execution_key(f.scope.run_id, model_id, 0)
+        f.host = BoundHost(store, KernelAdapters(
+            route_for=lambda *_: f.route, project_context=lambda *_: {},
+            verify_result=lambda *a: a[1], prepare_candidate=lambda *_: None,
+&gt;           execute_command=lambda *_: None, read_tools=handlers(), compute_engines=ENGINES,
+                                                        ^^^^^^^^^^
+            tool_registry=f.registry,
+        ))
+E       TypeError: 'dict' object is not callable
+
+tests/agent_kernel/test_read_proof_transactions.py:48: TypeError</failure></testcase></testsuite></testsuites>

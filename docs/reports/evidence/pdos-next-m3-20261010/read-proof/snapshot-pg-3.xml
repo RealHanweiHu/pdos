@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="7" time="14.933" timestamp="2026-10-11T00:30:59.033630-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_snapshot_proof_transactions" name="test_actual_atomic_snapshot_registration_t0_and_t1[False]" time="2.295" /><testcase classname="tests.agent_kernel.test_snapshot_proof_transactions" name="test_actual_atomic_snapshot_registration_t0_and_t1[True]" time="1.892" /><testcase classname="tests.agent_kernel.test_snapshot_proof_transactions" name="test_actual_cross_requester_snapshot_read_keeps_original_run_private" time="2.128" /><testcase classname="tests.agent_kernel.test_snapshot_proof_transactions" name="test_marked_snapshot_without_actual_call_cannot_be_inserted" time="1.392" /><testcase classname="tests.agent_kernel.test_snapshot_proof_transactions" name="test_cross_run_snapshot_claim_needs_actual_current_run_page" time="2.852" /><testcase classname="tests.agent_kernel.test_snapshot_proof_transactions" name="test_cross_run_snapshot_link_requires_whole_locator_in_actual_page" time="1.726"><failure message="sqlalchemy.exc.ProgrammingError: (psycopg.errors.RaiseException) Kernel run scope invalid&#10;CONTEXT:  PL/pgSQL function kernel_run_guard() line 22 at RAISE&#10;[SQL: INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, intent_key, intent_digest, cancel_epoch, state, private_context, data_categories, customer_identities, versions, read_sources, token_limit, validation_budget_id, held_tokens, used_tokens, error_code, reverted_at, reverted_by, revert_receipt_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(product_id)s::UUID, %(proposal_id)s::UUID, %(session_id)s::UUID, %(requester_id)s::UUID, %(writer_id)s::UUID, %(trigger)s::VARCHAR, %(goal)s::VARCHAR, %(intent_key)s::VARCHAR, %(intent_digest)s::VARCHAR, %(cancel_epoch)s::INTEGER, %(state)s::VARCHAR, %(private_context)s, %(data_categories)s::JSONB, %(customer_identities)s::JSONB, %(versions)s::JSONB, %(read_sources)s::JSONB, %(token_limit)s::INTEGER, %(validation_budget_id)s::UUID, %(held_tokens)s::INTEGER, %(used_tokens)s::INTEGER, %(error_code)s::VARCHAR, %(reverted_at)s::TIMESTAMP WITH TIME ZONE, %(reverted_by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)]&#10;[SQL parameters hidden due to hide_parameters=True]&#10;(Background on this error at: https://sqlalche.me/e/21/f405)">self = &lt;sqlalchemy.engine.base.Connection object at 0x12e0cffb0&gt;
+dialect = &lt;sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x11ee54b90&gt;
+context = &lt;sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x12e0ce150&gt;
+statement = &lt;sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x12adccc80&gt;
+parameters = [{'category_id': UUID('d70b7932-288a-4d5a-99e8-5e75c4d50359'), 'product_id': None, 'proposal_id': UUID('b801eb8a-d23a-48dc-a233-2d52bd75a811'), 'session_id': UUID('34306ea4-3d89-4d96-b8b3-6947ddba2a7b'), ...}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+    
+            if self._echo:
+                self._log_info(str_statement)
+    
+                stats = context._get_cache_stats()
+    
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x12dd253d0&gt;
+query = 'INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, int..._by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)'
+params = {'category_id': UUID('d70b7932-288a-4d5a-99e8-5e75c4d50359'), 'product_id': None, 'proposal_id': UUID('b801eb8a-d23a-48dc-a233-2d52bd75a811'), 'session_id': UUID('34306ea4-3d89-4d96-b8b3-6947ddba2a7b'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.RaiseException: Kernel run scope invalid
+E           CONTEXT:  PL/pgSQL function kernel_run_guard() line 22 at RAISE
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: RaiseException
+
+The above exception was the direct cause of the following exception:
+
+setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-117/test_cross_run_snapshot_link_r0')
+
+    def test_cross_run_snapshot_link_requires_whole_locator_in_actual_page(setup, tmp_path):
+        _, snapshot, _ = registration(setup, tmp_path)
+        proposal_id, _ = create(setup)
+        item = read_proposal(setup, proposal_id).json()["items"][0]
+        category_scope = SimpleNamespace(**vars(setup))
+        category_scope.product = None
+&gt;       f = read_fixture(category_scope, proposal_id=UUID(proposal_id))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_snapshot_proof_transactions.py:210: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_read_proof_transactions.py:25: in read_fixture
+    f = fixture(setup, proposal_id=proposal_id)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_domain_adapter_transactions.py:135: in fixture
+    session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4536: in flush
+    self._flush(objects)
+&lt;sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush&gt;:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4679: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4640: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:643: in execute
+    util.preloaded.orm_persistence._save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:92: in _save_obj
+    _emit_insert_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:1052: in _emit_insert_statements
+    result = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x12dd253d0&gt;
+query = 'INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, int..._by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)'
+params = {'category_id': UUID('d70b7932-288a-4d5a-99e8-5e75c4d50359'), 'product_id': None, 'proposal_id': UUID('b801eb8a-d23a-48dc-a233-2d52bd75a811'), 'session_id': UUID('34306ea4-3d89-4d96-b8b3-6947ddba2a7b'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           sqlalchemy.exc.ProgrammingError: (psycopg.errors.RaiseException) Kernel run scope invalid
+E           CONTEXT:  PL/pgSQL function kernel_run_guard() line 22 at RAISE
+E           [SQL: INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, intent_key, intent_digest, cancel_epoch, state, private_context, data_categories, customer_identities, versions, read_sources, token_limit, validation_budget_id, held_tokens, used_tokens, error_code, reverted_at, reverted_by, revert_receipt_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(product_id)s::UUID, %(proposal_id)s::UUID, %(session_id)s::UUID, %(requester_id)s::UUID, %(writer_id)s::UUID, %(trigger)s::VARCHAR, %(goal)s::VARCHAR, %(intent_key)s::VARCHAR, %(intent_digest)s::VARCHAR, %(cancel_epoch)s::INTEGER, %(state)s::VARCHAR, %(private_context)s, %(data_categories)s::JSONB, %(customer_identities)s::JSONB, %(versions)s::JSONB, %(read_sources)s::JSONB, %(token_limit)s::INTEGER, %(validation_budget_id)s::UUID, %(held_tokens)s::INTEGER, %(used_tokens)s::INTEGER, %(error_code)s::VARCHAR, %(reverted_at)s::TIMESTAMP WITH TIME ZONE, %(reverted_by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)]
+E           [SQL parameters hidden due to hide_parameters=True]
+E           (Background on this error at: https://sqlalche.me/e/21/f405)
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: ProgrammingError</failure></testcase><testcase classname="tests.agent_kernel.test_snapshot_proof_transactions" name="test_computed_claim_can_consume_proven_cross_run_snapshot" time="1.941"><failure message="pydantic_core._pydantic_core.ValidationError: 1 validation error for CostSubtotalInput&#10;lines.0.source_ref.locator&#10;  Extra inputs are not permitted [type=extra_forbidden, input_value='line:2', input_type=str]&#10;    For further information visit https://errors.pydantic.dev/2.13/v/extra_forbidden">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-117/test_computed_claim_can_consum0')
+
+    def test_computed_claim_can_consume_proven_cross_run_snapshot(setup, tmp_path):
+        _, snapshot, _ = registration(setup, tmp_path)
+        f = read_fixture(setup)
+        cursor = len(snapshot.markdown.splitlines(keepends=True)[0])
+        registered_page(f, snapshot, cursor=cursor, page_chars=20)
+        source_ref = {"type": "snapshot", "id": str(snapshot.id), "version": 1,
+                      "line": 2, "quote": "单价 3.125 CNY", "locator": "line:2"}
+        arguments = {"lines": [{"label": "合成报价", "qty": "2", "unit_cost": "3.125",
+                                "currency": "CNY", "as_of": "2026-10-10",
+                                "source_ref": source_ref}]}
+        source = model_for(f, "calc.cost_subtotal", arguments)
+&gt;       computed = f.host.read(
+            f.scope, f.registry.get("calc.cost_subtotal"), arguments,
+            execution_key(f.scope.run_id, source.model_call_id, 0), source=source,
+        )
+
+tests/agent_kernel/test_snapshot_proof_transactions.py:250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/agent_kernel/host.py:89: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:114: in read_callback
+    computed = engine.calculate(arguments) if engine is not None else None
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/m3_calculators.py:536: in cost_subtotal
+    return calculate("calc.cost_subtotal", arguments)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'calc.cost_subtotal'
+arguments = {'lines': [{'label': '合成报价', 'qty': '2', 'unit_cost': '3.125', 'currency': 'CNY', ...}]}
+
+    def calculate(name, arguments):
+        """Validate and calculate without I/O or mutation of the caller's arguments."""
+&gt;       payload = SCHEMAS[name].model_validate(arguments)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for CostSubtotalInput
+E       lines.0.source_ref.locator
+E         Extra inputs are not permitted [type=extra_forbidden, input_value='line:2', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.13/v/extra_forbidden
+
+pdos_next/agent_kernel/m3_calculators.py:499: ValidationError</failure></testcase></testsuite></testsuites>

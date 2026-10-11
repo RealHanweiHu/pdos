@@ -36,6 +36,9 @@ class RuntimePorts:
     provider_client: object | None = None
     read_tools: dict = field(default_factory=dict)
     preload: object | None = None
+    research_service: object | None = None
+    research_artifacts: object | None = None
+    research_checkpointer_factory: object | None = None
 
 
 class Bootstrap:
@@ -48,7 +51,10 @@ class Bootstrap:
             catalog=self.catalog,
             registry=self.registry,
             route=self.route,
+            artifacts=self.ports.research_artifacts,
         )
+        if self.ports.research_artifacts is not None:
+            self.engine._pdos_research_artifacts = self.ports.research_artifacts
 
     def route(self, session, scope):
         # Lock the actual head without giving an Agent identity configuration write access.
@@ -230,6 +236,11 @@ class Bootstrap:
                 from .claim_candidate import prepare
 
                 return prepare(session, scope, spec, arguments, intent_key, self)
+            if spec.name == "research.snapshot.register":
+                from .snapshot_command import prepare
+
+                session.info["domain_command_owner"] = self.commands
+                return prepare(session, scope, spec, arguments, intent_key, self)
             from pdos_next.domain.preproject.provenance import (
                 CONTENT_OPERATIONS,
                 prepare_from_intent,
@@ -315,8 +326,10 @@ class Bootstrap:
 
     def adapters(self):
         from .domain_reads import DomainReads
+        from .m3_calculators import ENGINES, handlers
+        from .m3_object_reads import M3ObjectReads
 
-        return KernelAdapters(
+        adapters = KernelAdapters(
             route_for=self.route_for,
             project_context=self.project_context,
             verify_result=self.verify_result,
@@ -325,6 +338,8 @@ class Bootstrap:
             recover_command=self.commands.recover,
             read_tools={
                 **DomainReads(self.store, self.commands).handlers(),
+                **M3ObjectReads(self.store, self.commands).handlers(),
+                **handlers,
                 **self.ports.read_tools,
             },
             provider_client=self.ports.provider_client,
@@ -334,7 +349,54 @@ class Bootstrap:
             cost_required=True,
             skill_catalog=self.catalog,
             tool_registry=self.registry,
+            compute_engines=ENGINES,
         )
+        if self.ports.research_service is not None:
+            from pdos_next.research.tools import ResearchToolHost
+
+            from .host import BoundHost
+            from .registered_snapshot_reads import RegisteredSnapshotReads
+            from .research_adapter import ResearchReadAdapter
+            from .research_graph import ResearchGraph
+
+            artifacts = self.ports.research_artifacts
+            if artifacts is None:
+                raise DomainError("SOURCE_UNAVAILABLE", "研究作业存储尚未绑定。")
+            researcher = ResearchGraph(
+                BoundHost(self.store, adapters), artifacts=artifacts,
+                checkpointer_factory=self.ports.research_checkpointer_factory,
+                registered_reads=RegisteredSnapshotReads(self.store),
+            )
+            tool_host = ResearchToolHost(
+                self.ports.research_service, researcher=researcher,
+                parameter_versions=self.research_parameters,
+            )
+            research_adapter = ResearchReadAdapter(
+                tool_host, artifacts, user_messages=self.research_messages,
+            )
+            adapters.read_tools.update(research_adapter.handlers())
+            adapters.read_restores.update(research_adapter.restores())
+        return adapters
+
+    def research_messages(self, scope):
+        from .models import AgentInput
+
+        with self.store.transaction(scope) as (session, run):
+            answers = session.scalars(select(AgentInput).where(AgentInput.run_id == run.id)).all()
+            # Only persisted human input supplies URL grants; model text does not.
+            import json
+
+            return [run.goal, *[json.dumps(row.answers, ensure_ascii=False) for row in answers]]
+
+    def research_parameters(self, scope):
+        from pdos_next.domain.preproject.category_models import ParameterCurrent
+        from pdos_next.research.types import ParameterVersion
+
+        with self.store.transaction(scope) as (session, _):
+            return tuple(ParameterVersion(row.parameter_id, row.current_version) for row in
+                         session.scalars(select(ParameterCurrent).where(
+                             ParameterCurrent.category_id == scope.category_id,
+                         ))) if scope.category_id is not None else ()
 
     def api_ports(self, temporal):
         return ApiPorts(

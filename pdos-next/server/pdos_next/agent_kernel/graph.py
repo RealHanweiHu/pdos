@@ -14,6 +14,7 @@ from pydantic import ValidationError
 from pdos_next.errors import DomainError
 
 from .bindings import SkillBinding, WriteSource, execution_key
+from .read_execution import ReadSource
 from .registry import ToolRegistry
 from .skills import SkillCatalog
 from .types import AgentOutput, ModelTurn, RunScope, ToolCall, WireAgentOutput
@@ -37,7 +38,10 @@ class HostPorts(Protocol):
     def model(
         self, scope: RunScope, *, system, messages, tools, output_schema, loaded_skills=()
     ) -> ModelTurn: ...
-    def read(self, scope: RunScope, spec, arguments: dict, intent_key: str) -> dict: ...
+    def read(
+        self, scope: RunScope, spec, arguments: dict, intent_key: str,
+        *, source: ReadSource | None = None,
+    ) -> dict: ...
     def prepare(self, scope: RunScope, spec, arguments: dict, intent_key: str) -> dict: ...
     def write(
         self, scope: RunScope, spec, arguments: dict, intent_key: str, *, source: WriteSource
@@ -283,7 +287,17 @@ class AgentKernel:
                 spec = registry.authorize(scope, call.name, call.arguments, loaded, ports.enabled)
                 ports.emit(scope, {"type": "tool_started", "tool": spec.name, "call_id": call.id})
                 if spec.kind != "write":
-                    result = ports.read(scope, spec, call.arguments, intent)
+                    if state["model_call_id"]:
+                        result = ports.read(
+                            scope, spec, call.arguments, intent,
+                            source=ReadSource(
+                                model_call_id=UUID(state["model_call_id"]), response_index=index,
+                            ),
+                        )
+                    else:
+                        # Pure graph harnesses may have no persistent model row.
+                        # BoundHost refuses this path; it never creates trusted reads.
+                        result = ports.read(scope, spec, call.arguments, intent)
                 elif spec.tier in {"T1", "T2-prepare-only"}:
                     result = ports.prepare(scope, spec, call.arguments, intent)
                 else:

@@ -21,6 +21,7 @@ CATEGORY_OPERATIONS = frozenset(
         "category.knowledge.promote",
         "category.parameter.publish",
         "evidence.claim.record",
+        "research.snapshot.register",
         "evidence.link.create",
         "evidence.claim.withdraw",
         "proposal.share",
@@ -121,6 +122,10 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation == "research.snapshot.register":
+        from pdos_next.agent_kernel import snapshot_command
+
+        return snapshot_command
     if operation in {"evidence.link.create", "evidence.claim.withdraw", "proposal.share"}:
         from pdos_next.domain.preproject import evidence_service
 

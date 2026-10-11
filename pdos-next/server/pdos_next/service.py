@@ -83,6 +83,7 @@ def command_digest(command: Command) -> str:
 
 
 EVENTS = {
+    "research.snapshot.register": "research.snapshot_registered",
     "category.knowledge.add": "category.knowledge_added",
     "category.knowledge.withdraw": "category.knowledge_withdrawn",
     "category.knowledge.promote": "category.knowledge_promoted",
@@ -1023,6 +1024,7 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
             "category.knowledge.promote",
             "category.parameter.publish",
             "evidence.claim.record",
+            "research.snapshot.register",
             "evidence.claim.withdraw",
             "proposal.share",
             "ai.run.revert",

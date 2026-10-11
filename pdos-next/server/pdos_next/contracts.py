@@ -109,6 +109,10 @@ from pdos_next.domain.preproject.evidence_schemas import (  # noqa: E402
 PAYLOADS.update(PREPROJECT_EVIDENCE_PAYLOADS)
 ClaimPayload = PAYLOADS["evidence.claim.record"]
 
+from pdos_next.agent_kernel.snapshot_command import SnapshotRegister  # noqa: E402
+
+PAYLOADS["research.snapshot.register"] = SnapshotRegister
+
 from pdos_next.model_configuration.commands import SavePayload  # noqa: E402
 
 PAYLOADS["model.configuration.save"] = SavePayload

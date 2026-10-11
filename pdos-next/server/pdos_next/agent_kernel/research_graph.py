@@ -10,18 +10,25 @@ from pdos_next.research.tools import ReadInput, SearchInput
 from pdos_next.research.types import LedgerDraft
 
 from .graph import AgentKernel, Budget
+from .host import BoundHost
+from .read_execution import ReadSource
+from .research_read_ledger import page_result, restore_page, restore_search
 from .tools import default_registry
 
 
 class ResearchGraph:
-    def __init__(self, host, *, checkpointer_factory=None):
+    def __init__(self, host, *, checkpointer_factory=None, artifacts=None, registered_reads=None):
         self.host, self.checkpointer_factory = host, checkpointer_factory
+        self.artifacts = artifacts
+        self.registered_reads = registered_reads
 
     async def __call__(self, task, child):
         loop = asyncio.get_running_loop()
         scope = child._scope  # Already created by the server's ResearchService, never model input.
         context = json.loads(json.dumps(asdict(task), default=str))
         host = self.host
+        artifacts = self.artifacts
+        registered_read = getattr(self.registered_reads, "read", None)
 
         class ReadOnlyHost:
             def current(self, bound):
@@ -49,24 +56,66 @@ class ResearchGraph:
                     )
                 return host.model(bound, **kwargs)
 
-            def read(self, bound, spec, arguments, intent_key):
+            def read(self, bound, spec, arguments, intent_key, *, source: ReadSource | None = None):
                 self.current(bound)
                 if spec.name == "research.search":
                     data = SearchInput.model_validate(arguments)
-                    hits = asyncio.run_coroutine_threadsafe(child.search(data.query), loop).result()
-                    return {"hits": [asdict(h) for h in hits]}
-                if spec.name == "research.read":
+
+                    def callback(*_):
+                        hits = asyncio.run_coroutine_threadsafe(
+                            child.search(data.query), loop
+                        ).result()
+                        return {
+                            "hits": [asdict(h) for h in hits],
+                            "provider": child._service.search_adapter.provider,
+                        }
+
+                    def restore(previous):
+                        return restore_search(child, data.query, previous, current=self.current)
+
+                elif spec.name == "research.read":
                     data = ReadInput.model_validate(arguments)
-                    page = asyncio.run_coroutine_threadsafe(
-                        child.read(data.url, cursor=data.cursor), loop
-                    ).result()
-                    return {
-                        "snapshot_id": str(page.snapshot.id),
-                        "locator": page.locator,
-                        "markdown": page.markdown,
-                        "next_cursor": page.next_cursor,
-                    }
-                raise DomainError("FORBIDDEN_SCOPE", "研究子任务只拥有 search/read。")
+                    if (
+                        isinstance(host, BoundHost) and callable(registered_read)
+                        and callable(getattr(host, "read_callback", None))
+                    ):
+                        if not isinstance(source, ReadSource):
+                            raise DomainError("FORBIDDEN_SCOPE", "研究读取缺少实际模型账本来源。")
+                        registered = registered_read(
+                            host, child, spec, arguments, intent_key, source=source,
+                        )
+                        if registered is not None:
+                            if artifacts is not None:
+                                for page in child.pages.values():
+                                    if str(page.snapshot.id) == registered["snapshot_id"]:
+                                        artifacts.save_snapshot(bound, page.snapshot)
+                            return registered
+
+                    def callback(*_):
+                        page = asyncio.run_coroutine_threadsafe(
+                            child.read(data.url, cursor=data.cursor), loop
+                        ).result()
+                        if artifacts is not None:
+                            artifacts.save_snapshot(bound, page.snapshot)
+                        return page_result(page)
+
+                    def restore(previous):
+                        return restore_page(
+                            child, data, previous, artifacts=artifacts, current=self.current
+                        )
+
+                else:
+                    raise DomainError("FORBIDDEN_SCOPE", "研究子任务只拥有 search/read。")
+                read_callback = getattr(host, "read_callback", None)
+                if callable(read_callback):
+                    return read_callback(
+                        bound, spec, arguments, intent_key, source=source,
+                        callback=callback, restore=restore, read_kind="ordinary/v1",
+                    )
+                if source is not None:
+                    raise DomainError("FORBIDDEN_SCOPE", "研究读取缺少实际模型账本宿主。")
+                # Legacy pure graph harnesses produce no trusted execution reference.
+                return callback()
 
             def prepare(self, *_):
                 raise DomainError("FORBIDDEN_SCOPE", "研究子任务无写权。")

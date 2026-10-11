@@ -1,0 +1,18 @@
+{
+  "head": "s0_0745",
+  "source_digest": "71a312a4b69b8aef8bd8480ef797dca846d6cee4def8425bf0f7078708099710",
+  "source_count": 1456,
+  "unique_passed_cases": 819,
+  "unresolved_selected_failures": [],
+  "evidence_files": [
+    "final-1.xml",
+    "final-repair-1.xml"
+  ],
+  "schema_evidence": [
+    "schema-1.json",
+    "schema-2.json",
+    "schema-3.json"
+  ],
+  "real_llm_calls": 0,
+  "formal_m3_s1_complete": false
+}

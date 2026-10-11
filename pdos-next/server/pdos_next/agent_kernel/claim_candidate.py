@@ -222,17 +222,20 @@ def _candidate_run(session, ctx, command, scope, payload):
     return run
 
 
-def _nature(payload, run):
+def _nature(payload, run, *, session=None, ctx=None):
     from pdos_next.domain.preproject.access import fail
 
     if run and payload.nature in {"observed", "decided"}:
         fail("FORBIDDEN_SCOPE", "human_fact_required", "AI 不能冒充亲历观察或具名人工决定。", 403)
     if payload.nature == "computed":
-        fail(
-            "SOURCE_UNAVAILABLE",
-            "deterministic_proof_required",
-            "计算事实须绑定可信确定性计算回执；当前登记入口尚未接入该证明。",
-        )
+        if session is None or ctx is None:
+            fail(
+                "SOURCE_UNAVAILABLE", "deterministic_proof_required",
+                "计算事实须绑定实际计算证明。",
+            )
+        from .computed_claim import verify_computed_claim
+
+        verify_computed_claim(session, ctx, run, payload)
     if payload.availability == "not_applicable":
         reason = payload.content.get("text") or payload.statement
         if not isinstance(reason, str) or not reason.strip():
@@ -283,7 +286,7 @@ def prepared(session, ctx, command, scope, payload):
     if command.expected_revision != scope.revision:
         raise DomainError("VERSION_CONFLICT", "当前范围版本已变化。")
     run = _candidate_run(session, ctx, command, scope, payload)
-    _nature(payload, run)
+    _nature(payload, run, session=session, ctx=ctx)
     reference = _reference(command, payload)
     source = load_source(session, ctx, reference, product_id=scope.id, lock=True)
     identity, privacy, visibility = _placement(session, ctx, scope, payload, reference, run)
