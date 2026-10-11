@@ -185,11 +185,15 @@ def test_agent_database_role_has_no_business_dml(setup):
 
 def test_category_create_is_confirmed_atomic_and_replayable(setup):
     payload = {
+        "key": "category-" + uuid4().hex,
         "name": "汽车配件",
         "purpose": "合成品类创建验证",
         "idempotency_key": str(uuid4()),
-        "confirmed": True,
+        "deidentified_confirmed": True,
     }
+    preview = setup.client.post("/v1/categories/preview", headers=setup.headers, json=payload)
+    assert preview.status_code == 200, preview.text
+    payload["confirmation_token"] = preview.json()["confirmation_token"]
     first = setup.client.post("/v1/categories", headers=setup.headers, json=payload)
     assert first.status_code == 201, first.text
     repeated = setup.client.post("/v1/categories", headers=setup.headers, json=payload)
@@ -207,9 +211,9 @@ def test_category_create_is_confirmed_atomic_and_replayable(setup):
     denied = setup.client.post(
         "/v1/categories",
         headers=setup.headers,
-        json={**payload, "idempotency_key": str(uuid4()), "confirmed": False},
+        json={**payload, "idempotency_key": str(uuid4()), "deidentified_confirmed": False},
     )
-    assert denied.status_code == 403
+    assert denied.status_code == 409
 
 
 def test_category_path_body_and_product_must_agree(setup):

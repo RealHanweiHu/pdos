@@ -439,6 +439,7 @@ def create_app(
             return [
                 {
                     "id": str(c.id),
+                    "key": c.key,
                     "name": c.name,
                     "purpose": c.purpose,
                     "revision": c.revision,
@@ -455,6 +456,21 @@ def create_app(
             engine, ctx.tenant_id, actor_id=ctx.actor_id, requester_id=ctx.requester_id
         ) as s:
             return create_category(s, ctx, data)
+
+    @app.post("/v1/categories/preview")
+    def category_create_preview(data: CategoryCreate, ctx: Context = auth_dependency):
+        from pdos_next.domain.preproject.category_creation import preview
+
+        with tenant_session(
+            engine, ctx.tenant_id, actor_id=ctx.actor_id, requester_id=ctx.requester_id
+        ) as s:
+            return preview(s, ctx, data)
+
+    @app.get("/v1/category-seeds/{seed_key}")
+    def category_seed_preview(seed_key: str, ctx: Context = auth_dependency):
+        from pdos_next.domain.preproject.category_creation import load_seed
+
+        return load_seed(seed_key)
 
     @app.post("/v1/categories/{category_id}/members")
     def category_member_grant(data: MemberGrant, ctx: Context = auth_dependency):

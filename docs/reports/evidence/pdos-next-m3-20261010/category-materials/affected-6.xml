@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="5" time="5.702" timestamp="2026-10-10T21:53:03.200552-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_material_proofs_pg" name="test_t0_material_actual_controlled_call_adds_replays_and_supersedes_ai_draft" time="2.446" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_t0_material_private_run_cannot_add_shared_knowledge" time="0.581" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_t0_material_cannot_supersede_protected_material[human]" time="0.726" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_t0_material_cannot_supersede_protected_material[confirmed_ai]" time="0.968" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_t0_material_cannot_supersede_protected_material[imported]" time="0.232"><failure message="pdos_next.errors.DomainError: 初始资料组与服务器原稿不符。">work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x125a5f830&gt;
+protected_origin = 'imported'
+
+    @pytest.mark.parametrize("protected_origin", ["human", "confirmed_ai", "imported"])
+    def test_t0_material_cannot_supersede_protected_material(work, monkeypatch, protected_origin):
+        from pdos_next.errors import DomainError
+    
+        if protected_origin == "human":
+            response = post(work, request(work, OPERATIONS[0], knowledge()))
+            assert response.status_code == 200, response.text
+            identity = UUID(response.json()["result"]["lineage_id"])
+        elif protected_origin == "confirmed_ai":
+            command, _proof_id = material_command(work, monkeypatch, OPERATIONS[0])
+            result = commit_command(work, command)
+            identity = UUID(result["result"]["lineage_id"])
+        else:
+&gt;           work, identity = imported_material_work(work)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_material_proofs_pg.py:543: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_material_proofs_pg.py:509: in imported_material_work
+    view = creation.preview(session, ctx, body)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/preproject/category_creation.py:297: in preview
+    material = _validate(s, ctx, data)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/preproject/category_creation.py:264: in _validate
+    fail(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+code = 'VALIDATION_FAILED', reason = 'seed_material_changed'
+message = '初始资料组与服务器原稿不符。', status = 422, detail = {}
+
+    def fail(code, reason, message, status=409, **detail):
+        error = DomainError(code, message, status, detail=detail)
+        error.detail["reason"] = reason
+&gt;       raise error
+E       pdos_next.errors.DomainError: 初始资料组与服务器原稿不符。
+
+pdos_next/domain/preproject/access.py:11: DomainError</failure></testcase></testsuite></testsuites>

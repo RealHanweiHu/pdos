@@ -72,15 +72,24 @@ class LoginSession(Base):
 
 class Category(Row, Base):
     __tablename__ = "categories"
+    key: Mapped[str] = mapped_column(Text, default=lambda: "category-" + uuid4().hex)
     name: Mapped[str] = mapped_column(String(160))
     purpose: Mapped[str] = mapped_column(Text)
     owner_id: Mapped[UUID]
     revision: Mapped[int] = mapped_column(Integer, default=1)
     status: Mapped[str] = mapped_column(String(16), default="active")
     lifecycle_epoch: Mapped[int] = mapped_column(Integer, default=1, server_default="1")
+    created_by_run_id: Mapped[UUID | None]
     __table_args__ = (
         UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "key"),
+        CheckConstraint("key ~ '^[a-z0-9]+(-[a-z0-9]+)*$'", name="category_key_shape"),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
+        ForeignKeyConstraint(
+            ["tenant_id", "created_by_run_id"],
+            ["agent_runs.tenant_id", "agent_runs.id"],
+            use_alter=True, name="category_created_by_run_fk",
+        ),
         CheckConstraint("revision > 0 AND status IN ('active','archived')"),
     )
 
@@ -339,9 +348,15 @@ class Receipt(Row, Base):
     intent_digest: Mapped[str] = mapped_column(String(64))
     run_id: Mapped[UUID | None]
     agent_run_id: Mapped[UUID | None]
+    confirmation_id: Mapped[UUID | None]
     result: Mapped[dict] = mapped_column(JSONB)
     __table_args__ = (
         UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "confirmation_id", name="material_receipt_confirmation_once"),
+        ForeignKeyConstraint(
+            ["tenant_id", "confirmation_id"], ["confirmations.tenant_id", "confirmations.id"],
+            name="material_receipt_confirmation_fk", use_alter=True,
+        ),
         UniqueConstraint(
             "tenant_id",
             "category_id",
@@ -1016,3 +1031,4 @@ import pdos_next.model_configuration.persistence  # noqa: E402,F401
 
 # M3 is part of the active schema after its frozen candidate migration.
 import pdos_next.domain.preproject.category_models  # noqa: E402,F401
+import pdos_next.domain.preproject.category_creation_models  # noqa: E402,F401

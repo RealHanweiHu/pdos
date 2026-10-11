@@ -1,5 +1,6 @@
 """M3 reads use the same authenticated category root and common command endpoints."""
 
+from typing import Annotated
 from uuid import UUID
 
 from fastapi import Query
@@ -19,6 +20,59 @@ def register_routes(app, engine, auth_dependency):
             category_id=ctx.category_id,
             read_snapshot=True,
         )
+
+    @app.get("/v1/categories/{category_id}/parameters")
+    def parameters(
+        parameter_ids: Annotated[list[UUID] | None, Query()] = None,
+        include_history: bool = False,
+        cursor: str | None = None,
+        page_size: int = Query(default=50, ge=1, le=200),
+        ctx: Context = auth_dependency,
+    ):
+        from .category_reads import parameters as read_parameters
+
+        with scope(ctx) as s:
+            return read_parameters(
+                s,
+                ctx,
+                parameter_ids=parameter_ids,
+                include_history=include_history,
+                cursor=cursor,
+                page_size=page_size,
+            )
+
+    @app.get("/v1/categories/{category_id}/knowledge")
+    def knowledge(
+        kind: str | None = None,
+        status: str | None = "active",
+        origin: str | None = None,
+        region: str | None = None,
+        include_history: bool = False,
+        cursor: str | None = None,
+        page_size: int = Query(default=50, ge=1, le=200),
+        ctx: Context = auth_dependency,
+    ):
+        from .category_reads import knowledge as read_knowledge
+
+        with scope(ctx) as s:
+            return read_knowledge(
+                s,
+                ctx,
+                kind=kind,
+                status=status,
+                origin=origin,
+                region=region,
+                include_history=include_history,
+                cursor=cursor,
+                page_size=page_size,
+            )
+
+    @app.get("/v1/categories/{category_id}/promotion-proofs/{proof_id}")
+    def promotion_proof(proof_id: UUID, ctx: Context = auth_dependency):
+        from .category_reads import promotion_proof as read_proof
+
+        with scope(ctx) as s:
+            return read_proof(s, ctx, proof_id)
 
     @app.get("/v1/categories/{category_id}/proposals")
     def proposals(

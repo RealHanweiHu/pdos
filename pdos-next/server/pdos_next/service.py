@@ -83,6 +83,10 @@ def command_digest(command: Command) -> str:
 
 
 EVENTS = {
+    "category.knowledge.add": "category.knowledge_added",
+    "category.knowledge.withdraw": "category.knowledge_withdrawn",
+    "category.knowledge.promote": "category.knowledge_promoted",
+    "category.parameter.publish": "category.parameter_published",
     "model.configuration.save": "model.configuration_saved",
     "proposal.create": "proposal.created",
     "proposal.item.patch": "proposal.item_patched",
@@ -310,6 +314,20 @@ def confirmation_subject(s, ctx, command, scope, payload, module):
     """A registered owner resolves the actual category/model/proposal to confirm."""
     if hasattr(module, "confirmation_subject"):
         kind, row = module.confirmation_subject(s, ctx, command, scope, payload)
+        if kind in {"parameter", "category_knowledge"}:
+            from pdos_next.domain.preproject.category_models import (
+                KnowledgeCurrent,
+                ParameterCurrent,
+            )
+
+            model = ParameterCurrent if kind == "parameter" else KnowledgeCurrent
+            key = row.parameter_id if kind == "parameter" else row.lineage_id
+            if not isinstance(row, model) or scope.id is not None:
+                raise DomainError("INTEGRATION_REQUIRED", "品类资料确认主体未注册。", 503)
+            actual = s.get(model, (ctx.tenant_id, key))
+            if not actual or actual.category_id != ctx.category_id:
+                raise DomainError("FORBIDDEN_SCOPE", "确认主体不在当前品类。", 403)
+            return kind, key, actual.current_version
         if kind not in {"category", "product", "proposal", "claim", "agent_run"}:
             raise DomainError("INTEGRATION_REQUIRED", "确认主体未注册。", 503)
         # RLS-read the owner-selected stored object; a payload cannot supply policy facts.
@@ -317,7 +335,7 @@ def confirmation_subject(s, ctx, command, scope, payload, module):
         if (
             actual is None
             or actual.tenant_id != ctx.tenant_id
-            or actual.category_id != ctx.category_id
+            or (actual.id if kind == "category" else actual.category_id) != ctx.category_id
             or getattr(actual, "product_id", scope.id) != scope.id
         ):
             raise DomainError("FORBIDDEN_SCOPE", "确认主体不在当前范围。", 403)
@@ -477,6 +495,7 @@ def append_receipt(s, ctx, command, subject_type, subject, request_digest, inten
         intent_digest=intent,
         run_id=ctx.run_id,
         agent_run_id=ctx.agent_run_id or getattr(subject, "prepared_by_run_id", None),
+        confirmation_id=getattr(subject, "confirmation_id", None),
         result={
             "id": str(subject.id),
             "revision": subject.revision,
@@ -786,6 +805,7 @@ def consume_material_confirmation(
         from pdos_next.quality_followup_host import record_consumed_confirmation
 
         record_consumed_confirmation(s, ctx, command, payload, module, confirmation)
+    return confirmation
 
 
 def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
@@ -961,6 +981,7 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
     visibility = getattr(payload, "visibility", "private")
     if module:
         write_phase, prepared_review, consumption = None, None, None
+        material_confirmation = None
         direct_confirmation = command.operation in MINIMAL_CURRENT_OPERATIONS
         if direct_confirmation:
             write_phase = consume_direct_confirmation(s, ctx, command, product, payload, module)
@@ -984,7 +1005,9 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
                     write_phase=write_phase,
                 )
             else:
-                consume_material_confirmation(s, ctx, command, product, payload, module)
+                material_confirmation = consume_material_confirmation(
+                    s, ctx, command, product, payload, module
+                )
         if direct_confirmation:
             subject, subject_type, visibility = module.apply_confirmed(
                 s, ctx, command, product, payload, write_phase
@@ -1004,6 +1027,13 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
             )
         else:
             subject, subject_type, visibility = module.apply(s, ctx, command, product, payload)
+        if material_confirmation is not None and command.operation in {
+            "category.knowledge.add",
+            "category.knowledge.withdraw",
+            "category.knowledge.promote",
+            "category.parameter.publish",
+        }:
+            subject.confirmation_id = material_confirmation.id
         if hasattr(subject, "budget_exceeded"):
             subject.action_result = {"budget_exceeded": subject.budget_exceeded}
     elif isinstance(payload, DefinitionDraftPayload):

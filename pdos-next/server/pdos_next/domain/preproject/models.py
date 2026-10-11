@@ -37,7 +37,9 @@ class PreparedCandidate(Row, Base):
             ["agent_runs.tenant_id", "agent_runs.category_id", "agent_runs.id"],
         ),
         CheckConstraint(
-            "operation IN ('proposal.create','proposal.item.patch','proposal.question.create')"
+            "operation IN ('proposal.create','proposal.item.patch','proposal.question.create',"
+            "'category.knowledge.add','category.knowledge.withdraw','category.knowledge.promote',"
+            "'category.parameter.publish')"
         ),
     )
 

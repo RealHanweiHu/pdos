@@ -16,8 +16,6 @@ from pdos_next.agent_kernel.models import AgentSession, AgentToolCall, TenantSki
 from pdos_next.contracts import Command
 from pdos_next.database import tenant_session
 from pdos_next.domain.preproject.category_models import (
-    KnowledgeCurrent,
-    KnowledgeEntry,
     ProductTargetSegment,
 )
 from pdos_next.domain.preproject.models import ProjectOpenItem, ProposalSource
@@ -155,34 +153,19 @@ def test_actual_owner_and_definers_are_non_superuser(work):
 
 
 def test_g0_target_price_and_pinned_target_segment(work):
-    entry = KnowledgeEntry(
-        id=uuid4(),
-        tenant_id=work.tenant,
-        category_id=work.category,
-        lineage_id=uuid4(),
-        version=1,
-        action="add",
-        kind="segment",
-        content={"segment": "车主", "jtbd": "随车充气", "channels": ["retail"]},
-        origin="human",
-        writer_id=work.human,
+    registered, _ = save(
+        work,
+        request(
+            work,
+            "category.knowledge.add",
+            {
+                "kind": "segment",
+                "content": {"segment": "车主", "jtbd": ["随车充气"], "channels": ["retail"]},
+            },
+        ),
     )
-    with Session(work.admin) as s, s.begin():
-        s.add(entry)
-        s.flush()
-        s.add(
-            KnowledgeCurrent(
-                tenant_id=work.tenant,
-                category_id=work.category,
-                lineage_id=entry.lineage_id,
-                kind="segment",
-                current_entry_id=entry.id,
-                current_version=1,
-                status="active",
-                origin="human",
-            )
-        )
-        identity, lineage = entry.id, entry.lineage_id
+    identity = UUID(registered["result"]["entry_id"])
+    lineage = UUID(registered["result"]["lineage_id"])
     data = payload(work)
     data["context_refs"] = [{"type": "knowledge", "id": str(identity), "version": 1}]
     data["groups"]["items"].append(

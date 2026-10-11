@@ -1,0 +1,727 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="19" time="8.947" timestamp="2026-10-10T21:35:27.692512-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_material_commands_pg" name="test_parameter_versions_are_atomic_immutable_and_replayable" time="1.515"><failure message="sqlalchemy.exc.NoInspectionAvailable: No inspection system is available for object of type &lt;class 'type'&gt;">work = &lt;isolated synthetic test scope&gt;
+
+    def test_parameter_versions_are_atomic_immutable_and_replayable(work):
+&gt;       receipt, command = save(work, request(work, "category.parameter.publish", parameter()))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_material_commands_pg.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_g0.py:92: in save
+    checked = post(work, req, actor=actor, preview=True)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_g0.py:86: in post
+    return work.client.post(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1204: in post
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1310: in handle
+    await super().handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:282: in handle
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+pdos_next/api.py:603: in material_preview
+    return category_transaction(engine, ctx, preview)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:81: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/api.py:601: in preview
+    return preview_command(s, ctx, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:670: in preview_command
+    kind, subject_id, revision = confirmation_subject(s, ctx, command, product, payload, module)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:320: in confirmation_subject
+    actual = s.get(type(row), row.id)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:3845: in get
+    return self._get_impl(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:3943: in _get_impl
+    mapper: Optional[Mapper[_O]] = inspect(entity)
+                                   ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+subject = &lt;class 'types.SimpleNamespace'&gt;, raiseerr = True
+
+    def inspect(subject: Any, raiseerr: bool = True) -&gt; Any:
+        """Produce an inspection object for the given target.
+    
+        The returned value in some cases may be the
+        same object as the one given, such as if a
+        :class:`_orm.Mapper` object is passed.   In other
+        cases, it will be an instance of the registered
+        inspection type for the given object, such as
+        if an :class:`_engine.Engine` is passed, an
+        :class:`_reflection.Inspector` object is returned.
+    
+        :param subject: the subject to be inspected.
+        :param raiseerr: When ``True``, if the given subject
+         does not
+         correspond to a known SQLAlchemy inspected type,
+         :class:`sqlalchemy.exc.NoInspectionAvailable`
+         is raised.  If ``False``, ``None`` is returned.
+    
+        """
+        type_ = type(subject)
+        for cls in type_.__mro__:
+            if cls in _registrars:
+                reg = _registrars.get(cls, None)
+                if reg is None:
+                    continue
+                elif reg is True:
+                    return subject
+                ret = reg(subject)
+                if ret is not None:
+                    return ret
+        else:
+            reg = ret = None
+    
+        if raiseerr and (reg is None or ret is None):
+&gt;           raise exc.NoInspectionAvailable(
+                "No inspection system is "
+                "available for object of type %s" % type_
+            )
+E           sqlalchemy.exc.NoInspectionAvailable: No inspection system is available for object of type &lt;class 'type'&gt;
+
+.venv/lib/python3.12/site-packages/sqlalchemy/inspection.py:148: NoInspectionAvailable</failure></testcase><testcase classname="tests.preproject.test_material_commands_pg" name="test_old_parameter_reference_hints_draft_and_preserves_submitted_g0" time="0.363"><failure message="sqlalchemy.exc.NoInspectionAvailable: No inspection system is available for object of type &lt;class 'type'&gt;">work = &lt;isolated synthetic test scope&gt;
+
+    def test_old_parameter_reference_hints_draft_and_preserves_submitted_g0(work):
+&gt;       registered, _ = save(work, request(work, "category.parameter.publish", parameter()))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_material_commands_pg.py:102: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_g0.py:92: in save
+    checked = post(work, req, actor=actor, preview=True)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_g0.py:86: in post
+    return work.client.post(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1204: in post
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1310: in handle
+    await super().handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:282: in handle
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+pdos_next/api.py:603: in material_preview
+    return category_transaction(engine, ctx, preview)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:81: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/api.py:601: in preview
+    return preview_command(s, ctx, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:670: in preview_command
+    kind, subject_id, revision = confirmation_subject(s, ctx, command, product, payload, module)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:320: in confirmation_subject
+    actual = s.get(type(row), row.id)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:3845: in get
+    return self._get_impl(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:3943: in _get_impl
+    mapper: Optional[Mapper[_O]] = inspect(entity)
+                                   ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+subject = &lt;class 'types.SimpleNamespace'&gt;, raiseerr = True
+
+    def inspect(subject: Any, raiseerr: bool = True) -&gt; Any:
+        """Produce an inspection object for the given target.
+    
+        The returned value in some cases may be the
+        same object as the one given, such as if a
+        :class:`_orm.Mapper` object is passed.   In other
+        cases, it will be an instance of the registered
+        inspection type for the given object, such as
+        if an :class:`_engine.Engine` is passed, an
+        :class:`_reflection.Inspector` object is returned.
+    
+        :param subject: the subject to be inspected.
+        :param raiseerr: When ``True``, if the given subject
+         does not
+         correspond to a known SQLAlchemy inspected type,
+         :class:`sqlalchemy.exc.NoInspectionAvailable`
+         is raised.  If ``False``, ``None`` is returned.
+    
+        """
+        type_ = type(subject)
+        for cls in type_.__mro__:
+            if cls in _registrars:
+                reg = _registrars.get(cls, None)
+                if reg is None:
+                    continue
+                elif reg is True:
+                    return subject
+                ret = reg(subject)
+                if ret is not None:
+                    return ret
+        else:
+            reg = ret = None
+    
+        if raiseerr and (reg is None or ret is None):
+&gt;           raise exc.NoInspectionAvailable(
+                "No inspection system is "
+                "available for object of type %s" % type_
+            )
+E           sqlalchemy.exc.NoInspectionAvailable: No inspection system is available for object of type &lt;class 'type'&gt;
+
+.venv/lib/python3.12/site-packages/sqlalchemy/inspection.py:148: NoInspectionAvailable</failure></testcase><testcase classname="tests.preproject.test_material_commands_pg" name="test_parameter_type_and_unit_must_match_actual_dictionary" time="0.267"><failure message="sqlalchemy.exc.NoInspectionAvailable: No inspection system is available for object of type &lt;class 'type'&gt;">work = &lt;isolated synthetic test scope&gt;
+
+    def test_parameter_type_and_unit_must_match_actual_dictionary(work):
+&gt;       registered, _ = save(work, request(work, "category.parameter.publish", parameter()))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_material_commands_pg.py:141: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_g0.py:92: in save
+    checked = post(work, req, actor=actor, preview=True)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_g0.py:86: in post
+    return work.client.post(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1204: in post
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1310: in handle
+    await super().handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:282: in handle
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+pdos_next/api.py:603: in material_preview
+    return category_transaction(engine, ctx, preview)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:81: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/api.py:601: in preview
+    return preview_command(s, ctx, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:670: in preview_command
+    kind, subject_id, revision = confirmation_subject(s, ctx, command, product, payload, module)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:320: in confirmation_subject
+    actual = s.get(type(row), row.id)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:3845: in get
+    return self._get_impl(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:3943: in _get_impl
+    mapper: Optional[Mapper[_O]] = inspect(entity)
+                                   ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+subject = &lt;class 'types.SimpleNamespace'&gt;, raiseerr = True
+
+    def inspect(subject: Any, raiseerr: bool = True) -&gt; Any:
+        """Produce an inspection object for the given target.
+    
+        The returned value in some cases may be the
+        same object as the one given, such as if a
+        :class:`_orm.Mapper` object is passed.   In other
+        cases, it will be an instance of the registered
+        inspection type for the given object, such as
+        if an :class:`_engine.Engine` is passed, an
+        :class:`_reflection.Inspector` object is returned.
+    
+        :param subject: the subject to be inspected.
+        :param raiseerr: When ``True``, if the given subject
+         does not
+         correspond to a known SQLAlchemy inspected type,
+         :class:`sqlalchemy.exc.NoInspectionAvailable`
+         is raised.  If ``False``, ``None`` is returned.
+    
+        """
+        type_ = type(subject)
+        for cls in type_.__mro__:
+            if cls in _registrars:
+                reg = _registrars.get(cls, None)
+                if reg is None:
+                    continue
+                elif reg is True:
+                    return subject
+                ret = reg(subject)
+                if ret is not None:
+                    return ret
+        else:
+            reg = ret = None
+    
+        if raiseerr and (reg is None or ret is None):
+&gt;           raise exc.NoInspectionAvailable(
+                "No inspection system is "
+                "available for object of type %s" % type_
+            )
+E           sqlalchemy.exc.NoInspectionAvailable: No inspection system is available for object of type &lt;class 'type'&gt;
+
+.venv/lib/python3.12/site-packages/sqlalchemy/inspection.py:148: NoInspectionAvailable</failure></testcase><testcase classname="tests.preproject.test_material_commands_pg" name="test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0" time="1.022"><failure message="AssertionError: {&quot;code&quot;:&quot;INTERNAL_ERROR&quot;,&quot;message&quot;:&quot;确认主体未注册。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;INTEGRATION_REQUIRED&quot;}}&#10;assert 503 == 200&#10; +  where 503 = &lt;Response [503 Service Unavailable]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;
+
+    def test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0(work):
+        added = post(work, request(work, "category.knowledge.add", knowledge()))
+        assert added.status_code == 200, added.text
+        entry = added.json()["result"]
+        body = payload(work)
+        body["context_refs"] = [{"type": "knowledge", "id": entry["entry_id"], "version": 1}]
+        proposal_id, _ = create(work, body)
+        submit(work, proposal_id)
+&gt;       save(
+            work,
+            request(
+                work,
+                "category.knowledge.withdraw",
+                {"lineage_id": entry["lineage_id"], "expected_version": 1, "reason": "边界需重新研究"},
+            ),
+        )
+
+tests/preproject/test_material_commands_pg.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': 'af0fb70d-4e63-408c-8c4c-02e0894150bb', 'idempotency_key': 'b0a2389c-70d4-44be-915f-82c68493b4cd', 'category_id': '662b3250-1018-4a92-a12d-dddf298ac5b7', 'product_id': None, ...}
+actor = None
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+&gt;       assert checked.status_code == 200, checked.text
+E       AssertionError: {"code":"INTERNAL_ERROR","message":"确认主体未注册。","detail":{"reason":"INTEGRATION_REQUIRED"}}
+E       assert 503 == 200
+E        +  where 503 = &lt;Response [503 Service Unavailable]&gt;.status_code
+
+tests/preproject/test_g0.py:93: AssertionError</failure></testcase><testcase classname="tests.preproject.test_material_commands_pg" name="test_promotion_identity_preview_and_private_proof" time="1.067" /><testcase classname="tests.preproject.test_material_commands_pg" name="test_receipt_failure_rolls_back_version_and_current" time="0.265"><failure message="sqlalchemy.exc.NoInspectionAvailable: No inspection system is available for object of type &lt;class 'type'&gt;">work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x11d27ec90&gt;
+
+    def test_receipt_failure_rolls_back_version_and_current(work, monkeypatch):
+        import pdos_next.service as common
+    
+        req = request(work, "category.parameter.publish", parameter())
+&gt;       preview = post(work, req, preview=True)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_material_commands_pg.py:234: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_g0.py:86: in post
+    return work.client.post(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1204: in post
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1310: in handle
+    await super().handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:282: in handle
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+pdos_next/api.py:603: in material_preview
+    return category_transaction(engine, ctx, preview)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:81: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/api.py:601: in preview
+    return preview_command(s, ctx, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:670: in preview_command
+    kind, subject_id, revision = confirmation_subject(s, ctx, command, product, payload, module)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:320: in confirmation_subject
+    actual = s.get(type(row), row.id)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:3845: in get
+    return self._get_impl(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:3943: in _get_impl
+    mapper: Optional[Mapper[_O]] = inspect(entity)
+                                   ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+subject = &lt;class 'types.SimpleNamespace'&gt;, raiseerr = True
+
+    def inspect(subject: Any, raiseerr: bool = True) -&gt; Any:
+        """Produce an inspection object for the given target.
+    
+        The returned value in some cases may be the
+        same object as the one given, such as if a
+        :class:`_orm.Mapper` object is passed.   In other
+        cases, it will be an instance of the registered
+        inspection type for the given object, such as
+        if an :class:`_engine.Engine` is passed, an
+        :class:`_reflection.Inspector` object is returned.
+    
+        :param subject: the subject to be inspected.
+        :param raiseerr: When ``True``, if the given subject
+         does not
+         correspond to a known SQLAlchemy inspected type,
+         :class:`sqlalchemy.exc.NoInspectionAvailable`
+         is raised.  If ``False``, ``None`` is returned.
+    
+        """
+        type_ = type(subject)
+        for cls in type_.__mro__:
+            if cls in _registrars:
+                reg = _registrars.get(cls, None)
+                if reg is None:
+                    continue
+                elif reg is True:
+                    return subject
+                ret = reg(subject)
+                if ret is not None:
+                    return ret
+        else:
+            reg = ret = None
+    
+        if raiseerr and (reg is None or ret is None):
+&gt;           raise exc.NoInspectionAvailable(
+                "No inspection system is "
+                "available for object of type %s" % type_
+            )
+E           sqlalchemy.exc.NoInspectionAvailable: No inspection system is available for object of type &lt;class 'type'&gt;
+
+.venv/lib/python3.12/site-packages/sqlalchemy/inspection.py:148: NoInspectionAvailable</failure></testcase><testcase classname="tests.preproject.test_category_creation" name="test_unit_seed_preserves_uncertainty_and_independent_groups[auto-tire-inflator]" time="0.048" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_seed_preserves_uncertainty_and_independent_groups[bicycle-pump]" time="0.172" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_inputs_reject_origin_duplicate_keys_and_unpaired_candidate" time="0.000" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_sources_and_model_ports_fail_closed" time="0.000" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_actor_and_deidentification" time="0.000" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_preview_writes_only_proof_and_create_consumes_once" time="0.001"><failure message="AttributeError: 'MemorySession' object has no attribute 'get'">def test_unit_preview_writes_only_proof_and_create_consumes_once():
+        actor, ctx = actor_context()
+        payload = data(
+            groups={
+                "parameters": [
+                    {
+                        "key": "pressure",
+                        "name": "压力",
+                        "value_type": "number",
+                        "direction": "higher",
+                        "change_note": "初始",
+                    }
+                ]
+            }
+        )
+        preview_session = MemorySession(actor, None)
+        view = creation.preview(preview_session, ctx, payload)
+        assert len(preview_session.added) == 1
+        proof = preview_session.added[0]
+        assert isinstance(proof, CategoryCreationConfirmation)
+        assert proof.token_hash != view["confirmation_token"]
+        payload.confirmation_token = view["confirmation_token"]
+        write_session = MemorySession(actor, None, None, proof, None)
+        result = creation.create(write_session, ctx, payload)
+        assert result["category_id"] == str(proof.reserved_category_id)
+        assert proof.consumed
+        assert {type(row) for row in write_session.added} == {
+            Category,
+            Grant,
+            ParameterVersion,
+            ParameterCurrent,
+            Receipt,
+            RequestKey,
+            Audit,
+            Outbox,
+        }
+        parameter = next(row for row in write_session.added if isinstance(row, ParameterVersion))
+        assert parameter.origin == "human" and parameter.unit is None and parameter.run_id is None
+        with pytest.raises(DomainError) as error:
+&gt;           creation.create(MemorySession(actor, None, None, proof), ctx, payload)
+
+tests/preproject/test_category_creation.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/domain/preproject/category_creation.py:406: in create
+    category_scope(s, replace(ctx, category_id=proof.reserved_category_id), lock=True)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = &lt;test_category_creation.MemorySession object at 0x11f423dd0&gt;
+ctx = Context(tenant_id=UUID('1a18dca7-9ae4-4285-8d84-e2980436ebef'), actor_id=UUID('5a11771d-aa3a-424a-8175-262354a957fb'),...ne, cancel_epoch=None, category_id=UUID('57869499-9f4b-48f9-93bb-d517230fcea6'), agent_run_id=None, agent_call_id=None)
+write = False, lock = True
+
+    def category_scope(s, ctx, *, write=False, lock=False):
+        from pdos_next.database import require_context
+        from pdos_next.request_proof import request_proof
+    
+        require_context(s, ctx)
+&gt;       category = s.get(Category, ctx.category_id)
+                   ^^^^^
+E       AttributeError: 'MemorySession' object has no attribute 'get'
+
+pdos_next/category_scope.py:37: AttributeError</failure></testcase><testcase classname="tests.preproject.test_category_creation" name="test_unit_confirmation_binds_content_authority_and_deadline[payload]" time="0.001" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_confirmation_binds_content_authority_and_deadline[epoch]" time="0.001" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_confirmation_binds_content_authority_and_deadline[expiry]" time="0.001" /><testcase classname="tests.preproject.test_category_creation" name="test_database_seed_atomic_provenance_and_idempotency[auto-tire-inflator]" time="1.027" /><testcase classname="tests.preproject.test_category_creation" name="test_database_seed_atomic_provenance_and_idempotency[bicycle-pump]" time="1.066" /><testcase classname="tests.preproject.test_category_creation" name="test_database_rollback_restores_token_and_rows" time="0.351" /><testcase classname="tests.test_category_scope" name="test_category_create_is_confirmed_atomic_and_replayable" time="0.444" /></testsuite></testsuites>

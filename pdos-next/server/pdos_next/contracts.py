@@ -96,6 +96,12 @@ from pdos_next.domain.preproject.schemas import PAYLOADS as PREPROJECT_PAYLOADS 
 
 PAYLOADS.update(PREPROJECT_PAYLOADS)
 
+from pdos_next.domain.preproject.category_schemas import (  # noqa: E402
+    PAYLOADS as CATEGORY_MATERIAL_PAYLOADS,
+)
+
+PAYLOADS.update(CATEGORY_MATERIAL_PAYLOADS)
+
 from pdos_next.model_configuration.commands import SavePayload  # noqa: E402
 
 PAYLOADS["model.configuration.save"] = SavePayload

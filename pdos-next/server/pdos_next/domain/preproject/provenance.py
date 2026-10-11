@@ -14,8 +14,24 @@ from .access import fail, human
 from .models import PreparedCandidate
 
 CONTENT_OPERATIONS = frozenset(
-    {"proposal.create", "proposal.item.patch", "proposal.question.create"}
+    {
+        "proposal.create",
+        "proposal.item.patch",
+        "proposal.question.create",
+        "category.knowledge.add",
+        "category.knowledge.withdraw",
+        "category.knowledge.promote",
+        "category.parameter.publish",
+    }
 )
+
+
+def _scope_matches(payload, proposal_id):
+    if hasattr(payload, "proposal_id") and payload.proposal_id != proposal_id:
+        return False
+    if hasattr(payload, "source_proposal_id") and payload.source_proposal_id != proposal_id:
+        return False
+    return True
 
 
 def content(payload):
@@ -30,8 +46,7 @@ def content(payload):
 def prepare_candidate(s, scope, operation, arguments, source, *, catalog, registry, route):
     """Trusted host port. The candidate must equal one actual completed model response."""
     from pdos_next.agent_kernel.execution import _check_session
-
-    from .schemas import PAYLOADS
+    from pdos_next.contracts import PAYLOADS
 
     _check_session(s, scope)
     if operation not in CONTENT_OPERATIONS:
@@ -53,9 +68,7 @@ def prepare_candidate(s, scope, operation, arguments, source, *, catalog, regist
     payload = PAYLOADS[operation].model_validate(arguments)
     if payload.prepared_by_run_id or payload.candidate_digest or payload.confirmation_token:
         fail("FORBIDDEN_SCOPE", "server_candidate_binding", "候选身份与摘要由服务器绑定。", 403)
-    if scope.product_id is not None or (
-        hasattr(payload, "proposal_id") and payload.proposal_id != scope.proposal_id
-    ):
+    if scope.product_id is not None or not _scope_matches(payload, scope.proposal_id):
         fail("FORBIDDEN_SCOPE", "proposal_run_mismatch", "候选不属于运行绑定提案。", 403)
     body = content(payload)
     fingerprint = digest(
@@ -140,7 +153,10 @@ def _t0(s, ctx, command, payload):
 
     run = command_run(s, ctx, None)
     command_call(s, ctx, command.operation)
-    if command.operation != "proposal.item.patch" or run.proposal_id != payload.proposal_id:
+    if command.operation not in {
+        "proposal.item.patch",
+        "category.knowledge.add",
+    } or not _scope_matches(payload, run.proposal_id):
         fail("FORBIDDEN_SCOPE", "proposal_run_mismatch", "写入不属于运行绑定的提案。", 403)
     return {
         "origin": "ai_draft",
@@ -184,7 +200,7 @@ def writing_path(s, ctx, command, payload):
         or candidate.execution_binding["model"]["cancel_epoch"] != run.cancel_epoch
         or candidate.operation != command.operation
         or candidate.payload != content(payload)
-        or (hasattr(payload, "proposal_id") and run.proposal_id != payload.proposal_id)
+        or not _scope_matches(payload, run.proposal_id)
     ):
         fail(
             "FORBIDDEN_SCOPE", "candidate_binding_invalid", "候选不属于本人、本品类或原运行。", 403

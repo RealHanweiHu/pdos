@@ -102,6 +102,21 @@ class DefinitionSpecRow(Row, Base):
     confirmed_by: Mapped[UUID | None]
     receipt_id: Mapped[UUID | None]
     __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "parameter_id", "parameter_version"],
+            [
+                "parameter_versions.tenant_id",
+                "parameter_versions.category_id",
+                "parameter_versions.parameter_id",
+                "parameter_versions.version",
+            ],
+            name="definition_spec_parameter_version_fk",
+        ),
+        CheckConstraint(
+            "(parameter_id IS NULL AND parameter_version IS NULL) OR "
+            "(parameter_id IS NOT NULL AND parameter_version IS NOT NULL AND parameter_version>0)",
+            name="definition_spec_parameter_pair",
+        ),
         CheckConstraint(
             "item_status IN ('ai_draft','confirmed','expert_pending','unknown')",
             name="m3_spec_status",

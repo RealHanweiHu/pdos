@@ -12,6 +12,6 @@
 - [非空降级拒绝](downgrade-nonempty-1.xml)通过：已有合成提案时拒绝降级，事务回滚后 head 和公开文档保持一致。
 - 受影响 Ruff 检查通过。第一轮遗漏函数/SQL 边界在执行前修复；首次目录往返的旧约束 ARRAY 表达式重解析差异修正后复验通过，初始结果保存在 `attempt-1/`。
 
-Claude 审查未完成：[实际失败结果](claude-stage1-review.json)为 `OAuth session expired and could not be refreshed`；桌面入口尝试反复回到原页面，未提交。只读完整审查包已准备在工作树 `pdos-next/.local/claude-m3-stage1.md`，待用户恢复 Claude Code 登录后重交，不以 Astra 静态复核替代 Claude。
+用户 2026-10-10 后续明确取消 Claude 审查要求，改为 Astra 自审与必要验证。先前 OAuth 失败结果保留在[历史记录](claude-stage1-review.json)，不再是施工阻塞。Astra 复核中发现的三个迁移问题已修复并完成以上数据库复验。
 
 该段本地验证通过，M3/S1 尚未完成。下一段为两份种子导入、规格字典与品类知识/PromotionProof；真实小Pai模型调用与资格未启用。没有 push、合并、生产操作或真实数据出站。合并仍须等原聊天将 B8 登记“通过（带 1 项已知性能例外）”。

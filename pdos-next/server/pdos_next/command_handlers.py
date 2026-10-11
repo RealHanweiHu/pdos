@@ -8,6 +8,8 @@ CATEGORY_OPERATIONS = frozenset({
     "evidence.lifecycle.protection.record", "ai.run.revert",
     "proposal.create", "proposal.item.patch", "proposal.question.create",
     "proposal.g0.submit", "proposal.g0.decide",
+    "category.knowledge.add", "category.knowledge.withdraw", "category.knowledge.promote",
+    "category.parameter.publish",
 })
 
 T2_OPERATIONS = frozenset(
@@ -29,6 +31,7 @@ T1_OPERATIONS = frozenset(
         "model.configuration.save",
         "ai.run.revert",
         "proposal.create", "proposal.question.create", "proposal.g0.submit",
+        "category.knowledge.withdraw", "category.knowledge.promote", "category.parameter.publish",
         "change.order.prepare",
         "change.implementation.record",
         "evidence.original.withdraw",
@@ -97,6 +100,13 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation in {
+        "category.knowledge.add", "category.knowledge.withdraw", "category.knowledge.promote",
+        "category.parameter.publish",
+    }:
+        from pdos_next.domain.preproject import category_service
+
+        return category_service
     if operation == "evidence.claim.record":
         from pdos_next.agent_kernel import claim_candidate
 

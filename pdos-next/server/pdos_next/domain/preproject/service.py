@@ -98,10 +98,37 @@ def _references(s, ctx, refs, *, approved=False):
                 or source.version != ref.version
                 or source.action == "withdraw"
                 or not current
-                or current.status != "active"
+                or (not approved and current.status != "active")
             ):
                 fail("SOURCE_UNAVAILABLE", "knowledge_unreadable", "所选知识固定版本不可读。")
             privacy = "shared"
+        elif ref.type == "parameter":
+            from .category_service import parameter_version
+
+            parameter_version(s, ctx, ref.id, ref.version)
+            privacy = "shared"
+        elif ref.type == "snapshot":
+            from pdos_next.agent_kernel.models import PublicWebSnapshot
+
+            source = s.get(PublicWebSnapshot, ref.id)
+            if not source or source.category_id != ctx.category_id or ref.version != 1:
+                fail("SOURCE_UNAVAILABLE", "snapshot_unreadable", "快照版本不在当前可读范围内。")
+            if source.status not in {"ok", "partial"}:
+                fail("SOURCE_STALE", "snapshot_unavailable", "快照不可用。")
+            if ref.line is not None or ref.quote is not None:
+                lines = source.markdown.splitlines()
+                if (
+                    not ref.line
+                    or not ref.quote
+                    or ref.line > len(lines)
+                    or ref.quote not in lines[ref.line - 1]
+                ):
+                    fail(
+                        "VALIDATION_FAILED",
+                        "quote_not_in_snapshot",
+                        "引用须为快照指定行的逐字片段。",
+                    )
+            privacy = "shared" if source.visibility == "category" else "private"
         else:
             fail(
                 "SOURCE_UNAVAILABLE",
@@ -128,12 +155,18 @@ def _all_refs(payload):
 def _check_items(s, ctx, candidate_items, *, question_owners=None):
     for item in candidate_items:
         if item.kind == "spec" and item.content.get("parameter_id"):
-            fail(
-                "SOURCE_UNAVAILABLE",
-                "parameter_dictionary_pending",
-                "参数字典尚待下一切片接入；此候选支持未映射规格。",
-                503,
+            from .category_service import check_parameter
+
+            parameter = check_parameter(
+                s,
+                ctx,
+                UUID(item.content["parameter_id"]),
+                item.content["parameter_version"],
+                item.content.get("unit"),
+                item.content["value_type"],
             )
+            if item.content["key"] != parameter.key:
+                fail("VALIDATION_FAILED", "parameter_key_mismatch", "规格键须与参数版本一致。")
         if item.kind == "question":
             member(s, ctx, UUID(item.content["owner_id"]))
             if UUID(item.content["owner_id"]) not in (question_owners or {ctx.requester_id}):
@@ -668,6 +701,9 @@ def apply_validated(s, ctx, command, scope, payload, validated):
             doc = document(s, row)
             own_refs = [r.model_dump(mode="json") for r in _all_refs_from_document(doc)]
             doc["source_refs"] = own_refs
+            doc["context_refs"] = [
+                ref for ref in own_refs if ref["type"] in {"knowledge", "parameter"}
+            ]
             sub = ProposalSubmission(
                 id=uuid4(),
                 tenant_id=ctx.tenant_id,
@@ -678,7 +714,7 @@ def apply_validated(s, ctx, command, scope, payload, validated):
                 reviewer_id=payload.reviewer_id,
                 frozen_document=doc,
                 document_digest=digest(doc),
-                context_refs=row.context_refs,
+                context_refs=doc["context_refs"],
                 option_count=sum(item["kind"] == "option" for item in doc["items"]),
                 no_alternative_reason=payload.no_alternative_reason,
                 receipt_id=receipt_id,
@@ -770,8 +806,22 @@ def apply_validated(s, ctx, command, scope, payload, validated):
 def _all_refs_from_document(doc):
     from .schemas import Reference
 
-    refs = [*doc.get("source_refs", []), *(r for item in doc["items"] for r in item["source_refs"])]
-    return [Reference.model_validate(r) for r in refs]
+    refs = [
+        *doc.get("source_refs", []),
+        *doc.get("context_refs", []),
+        *(r for item in doc["items"] for r in item["source_refs"]),
+        *(
+            {
+                "type": "parameter",
+                "id": item["content"]["parameter_id"],
+                "version": item["content"]["parameter_version"],
+            }
+            for item in doc["items"]
+            if item["kind"] == "spec" and item["content"].get("parameter_id")
+        ),
+    ]
+    typed = [Reference.model_validate(r) for r in refs]
+    return list({digest(ref.model_dump(mode="json")): ref for ref in typed}.values())
 
 
 def finalize_receipt(s, ctx, command, scope, payload, subject, receipt):

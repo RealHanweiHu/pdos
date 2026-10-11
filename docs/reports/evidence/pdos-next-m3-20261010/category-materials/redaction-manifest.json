@@ -1,0 +1,7 @@
+{
+  "source": "docs/reports/evidence/pdos-next-m3-20261010/category-materials/commands-1.xml",
+  "private_archive": "/Users/huhanwei/pdos-evidence-archive/m3-category-materials-20261010/commands-1.xml",
+  "raw_sha256": "316d34ee420259d05324d269b5ebda1f9bb1efc3ab34bbc4f397858a65a1740c",
+  "public_sha256": "a998618bcbd7351c602b02621de26e591ed05f57c302b0c6f9678b085b7fab71",
+  "reason": "Connection address in first failed fixture traceback redacted before commit"
+}

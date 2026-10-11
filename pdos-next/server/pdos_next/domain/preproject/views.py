@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy import select
 
 from .access import proposal
@@ -48,6 +50,7 @@ def document(s, row):
         "target_kind": row.target_kind,
         "items": items(s, row),
         "source_refs": row.source_refs,
+        "context_refs": row.context_refs,
     }
 
 
@@ -112,11 +115,87 @@ def maturity(doc):
     }
 
 
+def context_changes(s, ctx, row, doc):
+    """Resolve changes under the reader's RLS scope, including private drafts."""
+    from .category_models import KnowledgeCurrent, KnowledgeEntry, ParameterCurrent
+
+    refs = [*row.context_refs, *row.source_refs]
+    for item in doc["items"]:
+        refs.extend(item["source_refs"])
+        content = item["content"]
+        if item["kind"] == "spec" and content.get("parameter_id"):
+            refs.append(
+                {
+                    "type": "parameter",
+                    "id": content["parameter_id"],
+                    "version": content["parameter_version"],
+                }
+            )
+    parameter_refs = {
+        (UUID(ref["id"]), ref["version"]) for ref in refs if ref["type"] == "parameter"
+    }
+    knowledge_refs = {
+        (UUID(ref["id"]), ref["version"]) for ref in refs if ref["type"] == "knowledge"
+    }
+    changes = []
+    if parameter_refs:
+        current = {
+            value.parameter_id: value.current_version
+            for value in s.scalars(
+                select(ParameterCurrent).where(
+                    ParameterCurrent.tenant_id == ctx.tenant_id,
+                    ParameterCurrent.category_id == ctx.category_id,
+                    ParameterCurrent.parameter_id.in_([ref[0] for ref in parameter_refs]),
+                )
+            )
+        }
+        for identity, version in sorted(parameter_refs, key=lambda item: (str(item[0]), item[1])):
+            if current.get(identity) != version:
+                changes.append(
+                    {
+                        "type": "parameter",
+                        "id": str(identity),
+                        "version": version,
+                        "current_version": current.get(identity),
+                    }
+                )
+    if knowledge_refs:
+        rows = s.execute(
+            select(KnowledgeEntry, KnowledgeCurrent)
+            .join(
+                KnowledgeCurrent,
+                (KnowledgeCurrent.tenant_id == KnowledgeEntry.tenant_id)
+                & (KnowledgeCurrent.category_id == KnowledgeEntry.category_id)
+                & (KnowledgeCurrent.lineage_id == KnowledgeEntry.lineage_id),
+            )
+            .where(
+                KnowledgeEntry.tenant_id == ctx.tenant_id,
+                KnowledgeEntry.category_id == ctx.category_id,
+                KnowledgeEntry.id.in_([ref[0] for ref in knowledge_refs]),
+            )
+        ).all()
+        current = {entry.id: pointer for entry, pointer in rows}
+        for identity, version in sorted(knowledge_refs, key=lambda item: (str(item[0]), item[1])):
+            pointer = current.get(identity)
+            if not pointer or pointer.current_version != version or pointer.status != "active":
+                changes.append(
+                    {
+                        "type": "knowledge",
+                        "id": str(identity),
+                        "version": version,
+                        "current_version": pointer.current_version if pointer else None,
+                        "status": pointer.status if pointer else "unavailable",
+                    }
+                )
+    return changes
+
+
 def read(s, ctx, proposal_id):
     from .models import ProposalDecision, ProposalSubmission
 
     row = proposal(s, ctx, proposal_id)
     doc = document(s, row)
+    changes = context_changes(s, ctx, row, doc)
     submission = (
         s.get(ProposalSubmission, row.current_submission_id) if row.current_submission_id else None
     )
@@ -134,7 +213,8 @@ def read(s, ctx, proposal_id):
         "status": row.status,
         "visibility": row.effective_visibility,
         "private_source_count": row.private_source_count,
-        "context_hint": row.context_hint,
+        "context_hint": bool(changes),
+        "context_changes": changes,
         **doc,
         "maturity": maturity(doc),
         "submission": {

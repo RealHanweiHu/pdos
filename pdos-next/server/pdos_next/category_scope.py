@@ -9,6 +9,8 @@ from pydantic import Field
 from sqlalchemy import select
 
 from pdos_next.contracts import Command, StrictModel
+from pdos_next.domain.preproject.category_creation import CategoryCreate as CategoryCreate
+from pdos_next.domain.preproject.category_creation import create as create_category  # noqa: F401
 from pdos_next.errors import DomainError
 from pdos_next.models import Audit, Category, Grant, Outbox, Principal, Receipt, RequestKey, now
 from pdos_next.service import digest, receipt_view
@@ -76,13 +78,6 @@ def category_scope(s, ctx, *, write=False, lock=False):
     return CategoryScope(
         category.id, category.revision, category.owner_id, category.name, category.lifecycle_epoch
     )
-
-
-class CategoryCreate(StrictModel):
-    name: str = Field(min_length=2, max_length=160)
-    purpose: str = Field(min_length=3, max_length=1000)
-    idempotency_key: str = Field(min_length=8, max_length=160)
-    confirmed: bool
 
 
 class MemberGrant(StrictModel):
@@ -185,98 +180,6 @@ def grant_member(s, ctx, data):
                 receipt_id=receipt.id,
                 actor_id=ctx.actor_id,
                 type="category.member_granted",
-                subject_id=category.id,
-                subject_revision=category.revision,
-                correlation_id=receipt.command_id,
-            ),
-            RequestKey(
-                tenant_id=ctx.tenant_id,
-                category_id=category.id,
-                actor_id=ctx.actor_id,
-                key=data.idempotency_key,
-                digest=semantic,
-                receipt_id=receipt.id,
-            ),
-        ]
-    )
-    s.flush()
-    return receipt_view(receipt)
-
-
-def create_category(s, ctx, data):
-    from pdos_next.database import require_context
-
-    require_context(s, ctx)
-    actor = s.get(Principal, ctx.actor_id)
-    if (
-        not actor
-        or not actor.active
-        or actor.kind != "human"
-        or ctx.run_id
-        or ctx.agent_run_id
-        or ctx.actor_id != ctx.requester_id
-        or not data.confirmed
-    ):
-        raise DomainError("CONFIRMATION_REQUIRED", "品类创建须本人确认载荷。", 403)
-    semantic = digest(data.model_dump())
-    prior = s.scalar(
-        select(RequestKey).where(
-            RequestKey.actor_id == ctx.actor_id,
-            RequestKey.key == data.idempotency_key,
-        )
-    )
-    if prior:
-        if prior.digest != semantic:
-            raise DomainError("DUPLICATE_INTENT_CONFLICT", "请求编号已绑定其他内容。")
-        return receipt_view(s.get(Receipt, prior.receipt_id))
-    category = Category(
-        tenant_id=ctx.tenant_id, owner_id=ctx.actor_id, name=data.name, purpose=data.purpose
-    )
-    s.add(category)
-    s.flush()
-    s.add(
-        Grant(
-            tenant_id=ctx.tenant_id,
-            category_id=category.id,
-            principal_id=ctx.actor_id,
-            can_write=True,
-            expires_at=None,
-        )
-    )
-    s.flush()
-    receipt = Receipt(
-        tenant_id=ctx.tenant_id,
-        category_id=category.id,
-        product_id=None,
-        command_id=uuid4(),
-        actor_id=ctx.actor_id,
-        requester_id=ctx.requester_id,
-        operation="category.create",
-        subject_type="category",
-        subject_id=category.id,
-        subject_revision=category.revision,
-        visibility="category",
-        request_digest=semantic,
-        intent_digest=digest(["category.create", ctx.actor_id, data.idempotency_key]),
-        result={"id": str(category.id), "revision": category.revision, "status": category.status},
-    )
-    s.add(receipt)
-    s.flush()
-    s.add_all(
-        [
-            Audit(
-                tenant_id=ctx.tenant_id,
-                category_id=category.id,
-                receipt_id=receipt.id,
-                actor_id=ctx.actor_id,
-                operation="category.create",
-            ),
-            Outbox(
-                tenant_id=ctx.tenant_id,
-                category_id=category.id,
-                receipt_id=receipt.id,
-                actor_id=ctx.actor_id,
-                type="category.created",
                 subject_id=category.id,
                 subject_revision=category.revision,
                 correlation_id=receipt.command_id,
