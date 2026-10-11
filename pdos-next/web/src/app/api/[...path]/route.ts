@@ -6,6 +6,7 @@ import { candidateTransportOptions } from "@/lib/candidate-transport";
 const paths = /^(?:v1\/(?:session|products|commands(?:\/preview)?)|v1\/products\/[a-f0-9-]+\/(?:workspace|definitions|projects|configurations|builds|supply|supply-captures|costs|cost-captures|verification|verification-professional|verification-handoff|verification-launch(?:\/inputs)?|verification-results(?:\/(?:inputs|captures))?|sample-handoff|build-start(?:\/assessment-inputs)?|build-execution(?:\/compare)?|model-calls|variants(?:\/[a-f0-9-]+\/compare)?|original-lifecycle(?:\/[a-f0-9-]+\/candidate|\/intents\/[a-f0-9-]+\/reconcile)?|originals(?:\/[a-f0-9-]+\/(?:download|scan))?|receipts\/[a-f0-9-]+\/revert-preview))$/;
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|cancel|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
+const personalAgentPaths = /^v1\/personal\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|cancel|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
 const preprojectPaths = /^v1\/(?:proposals(?:\/[a-f0-9-]{36}(?:\/(?:items|participants))?)?|views\/definition-maturity|g0-definitions\/[a-f0-9-]{36}|projects\/[a-f0-9-]{36}\/open-items)$/i;
 const resourceInspectPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/builds\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/resources\/inspect$/;
 const manufacturingPreparationPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/manufacturing-preparations(?:\/inputs|\/(?:work_instruction|control_plan|manufacturing_baseline)\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})?$/;
@@ -50,32 +51,40 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const { path: forwardPath } = await context.params;
   const categoryId = forwardPath[0] === "v1" && forwardPath[1] === "categories" && uuid.test(forwardPath[2] ?? "") ? forwardPath[2] : undefined;
   const categoryRoot = forwardPath.join("/") === "v1/categories";
+  const categoryPreview = forwardPath.join("/") === "v1/categories/preview";
+  const categorySeed = /^v1\/category-seeds\/(?:auto-tire-inflator|bicycle-pump)$/.test(forwardPath.join("/"));
+  const personalAgent = personalAgentPaths.test(forwardPath.join("/"));
   const categoryMembers = categoryId && forwardPath.length === 4 && forwardPath[3] === "members";
-  if (!categoryId && !categoryRoot && forwardPath.join("/") !== "v1/session") return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryId && !categoryRoot && !categoryPreview && !categorySeed && !personalAgent && forwardPath.join("/") !== "v1/session") return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const path = categoryId ? ["v1", ...forwardPath.slice(3)] : forwardPath;
   const pathname = path.join("/");
   const resourceInspect = resourceInspectPaths.test(pathname);
   const preproject = preprojectPaths.test(pathname);
-  const agent = agentPaths.test(pathname);
+  const agent = agentPaths.test(pathname) || personalAgent;
   const modelConfiguration = pathname === "v1/model-configuration";
   const qualityChange = qualityChangePaths.test(pathname);
   const manufacturingPreparation = manufacturingPreparationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !preproject && !agent && !modelConfiguration) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !preproject && !agent && !modelConfiguration) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
-  if (modelConfiguration) {
+  if (categoryPreview || categorySeed || categoryRoot) {
+    const allowed = categoryRoot ? ["GET", "POST"] : categorySeed ? ["GET"] : ["POST"];
+    if (!allowed.includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405 });
+    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "品类入口不接受额外查询条件。" }, { status: 422 });
+  } else if (modelConfiguration) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405 });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "模型设置不接受额外查询条件。" }, { status: 422 });
   } else if (agent) {
-    if ((path[2] && !uuid.test(path[2])) || (path[3] === "calls" && !uuid.test(path[4] ?? ""))) return Response.json({ code: "VALIDATION_FAILED", message: "运行或调用编号无效。" }, { status: 422 });
-    const create = pathname === "v1/agent-runs" && request.method === "POST";
+    const agentPath = personalAgent ? ["v1", ...path.slice(2)] : path;
+    if ((agentPath[2] && !uuid.test(agentPath[2])) || (agentPath[3] === "calls" && !uuid.test(agentPath[4] ?? ""))) return Response.json({ code: "VALIDATION_FAILED", message: "运行或调用编号无效。" }, { status: 422 });
+    const collection = agentPath.length === 2;
+    const create = collection && request.method === "POST";
     const action = /\/(?:answers|cancel|recover)$/.test(pathname);
     const method = create || action ? "POST" : "GET";
     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405 });
     for (const [key, value] of request.nextUrl.searchParams) {
       const events = pathname.endsWith("/events");
-      const collection = pathname === "v1/agent-runs";
       const valid = method === "GET" && (events || collection) && (key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 200 : key === "cursor" ? collection && uuid.test(value) : key === "after" && events && /^\d+$/.test(value) && Number.isSafeInteger(Number(value)));
       if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "运行分页条件无效。" }, { status: 422 });
       query.set(key, value);

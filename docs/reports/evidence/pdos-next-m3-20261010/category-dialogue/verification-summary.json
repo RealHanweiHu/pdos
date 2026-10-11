@@ -1,0 +1,28 @@
+{
+  "head": "s0_0747",
+  "source_digest": "18f886d401769925ddbf7c4c438b4e010ab363c5413e888f862dd097475d82c8",
+  "source_count": 1483,
+  "unique_passed_cases": 1862,
+  "case_identity": "classname + test name, random UUID parameter values normalized; reruns not added",
+  "unresolved_selected_failures": [],
+  "evidence_files": [
+    "final-1.xml",
+    "repair-1.xml",
+    "repair-4.xml",
+    "order-1.xml",
+    "order-2.xml"
+  ],
+  "schema_evidence": [
+    "schema-3.json",
+    "schema-4.json"
+  ],
+  "frontend_cases": 25,
+  "frontend_checks": [
+    "affected ESLint",
+    "Next.js production build and TypeScript after banner repair"
+  ],
+  "browser_evidence": "browser.json",
+  "self_review": "Astra static review found unordered candidate adoption; fixed by matching actual pending event/digest, 2 new recovery cases passed",
+  "real_llm_calls": 0,
+  "formal_m3_s1_complete": false
+}

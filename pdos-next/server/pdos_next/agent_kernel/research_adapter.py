@@ -5,6 +5,7 @@ import json
 import os
 import re
 import tempfile
+from copy import deepcopy
 from dataclasses import asdict, fields
 from pathlib import Path
 from uuid import UUID
@@ -97,8 +98,9 @@ class ResearchArtifacts:
 
 
 class ResearchReadAdapter:
-    def __init__(self, tool_host, artifacts: ResearchArtifacts, *, user_messages):
+    def __init__(self, tool_host, artifacts: ResearchArtifacts, *, user_messages, read_refs=None):
         self.tool_host, self.artifacts, self.user_messages = tool_host, artifacts, user_messages
+        self.read_refs = read_refs
 
     def __call__(self, scope, arguments, *, name):
         # URLs are extracted from actual persisted human messages at the host.
@@ -110,6 +112,8 @@ class ResearchReadAdapter:
             # the same object envelope as the isolated research graph.
             return {"hits": result, "provider": self.tool_host.service.search_adapter.provider}
         if name == "research.fanout":
+            if "snapshot_read_refs" in result:
+                raise DomainError("SOURCE_UNAVAILABLE", "研究结果不能自行声明服务器读取引用。")
             result = {
                 **result,
                 "snapshot_digests": {
@@ -118,6 +122,8 @@ class ResearchReadAdapter:
                 },
             }
             self._fanout_material(scope, arguments, result)
+            if self.read_refs is not None:
+                result["snapshot_read_refs"] = self._snapshot_read_refs(scope, result)
             self.artifacts.put(
                 scope, UUID(result["job_id"]), {"kind": "research_ledger", "value": result}
             )
@@ -154,7 +160,7 @@ class ResearchReadAdapter:
         try:
             data = FanoutInput.model_validate(arguments)
             if (
-                set(previous) != {
+                set(previous) - {"snapshot_read_refs"} != {
                     "job_id", "status", "ledger", "coverage", "failures", "snapshots",
                     "snapshot_digests",
                 }
@@ -228,6 +234,55 @@ class ResearchReadAdapter:
                 "SOURCE_UNAVAILABLE", "原研究作业、快照或逐字读取位置无法核对。"
             ) from exc
 
+    def _snapshot_read_refs(self, scope, result):
+        """Only a server ledger callback can mint or revalidate references.
+
+        Fresh results omit the field. On replay the callback receives the exact
+        saved field and must recheck those call IDs, not substitute later reads.
+        Its private copy prevents a callback from changing the research receipt.
+        """
+        self.artifacts.current(scope)
+        if self.read_refs is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "原研究读取引用缺少服务器核对端口。")
+        try:
+            refs = self.read_refs(scope, deepcopy(result))
+            if not isinstance(refs, list):
+                raise ValueError("Read references must be a list")
+            snapshots = {ref["id"]: ref for ref in result["snapshots"]}
+            pages = {(read["snapshot_id"], read["locator"])
+                     for coverage in result["coverage"] for read in coverage["reads"]
+                     if read["error"] is None}
+            calls, covered = set(), set()
+            for ref in refs:
+                if not isinstance(ref, dict) or set(ref) != {
+                    "call_id", "snapshot_id", "content_hash", "locator",
+                }:
+                    raise ValueError("Invalid read reference fields")
+                for field in ("call_id", "snapshot_id"):
+                    if not isinstance(ref[field], str) or str(UUID(ref[field])) != ref[field]:
+                        raise ValueError("Invalid read identity")
+                if (
+                    not isinstance(ref["content_hash"], str)
+                    or re.fullmatch(r"[a-f0-9]{64}", ref["content_hash"]) is None
+                    or ref["content_hash"] != snapshots[ref["snapshot_id"]]["content_hash"]
+                    or not isinstance(ref["locator"], str)
+                    or (ref["snapshot_id"], ref["locator"]) not in pages
+                    or ref["call_id"] in calls
+                ):
+                    raise ValueError("Read reference differs from actual fanout coverage")
+                calls.add(ref["call_id"])
+                covered.add((ref["snapshot_id"], ref["locator"]))
+            if covered != pages:
+                raise ValueError("Actual read references do not cover all fanout pages")
+            refs = sorted(deepcopy(refs), key=lambda ref: ref["call_id"])
+            if ("snapshot_read_refs" in result
+                    and digest(refs) != digest(result["snapshot_read_refs"])):
+                raise ValueError("Saved read references cannot be replaced on replay")
+            self.artifacts.current(scope)
+            return refs
+        except (KeyError, TypeError, ValueError, AttributeError) as exc:
+            raise DomainError("SOURCE_UNAVAILABLE", "研究读取引用与实际作业账本不一致。") from exc
+
     @staticmethod
     def _page_bounds(snapshot, locator):
         match = re.fullmatch(r"chars:(0|[1-9][0-9]*):(0|[1-9][0-9]*)", locator)
@@ -253,6 +308,8 @@ class ResearchReadAdapter:
         except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
             raise DomainError("SOURCE_UNAVAILABLE", "原运行研究作业文件缺失或与回执不同。") from exc
         snapshots, urls = self._fanout_material(scope, arguments, previous)
+        if "snapshot_read_refs" in previous:
+            self._snapshot_read_refs(scope, previous)
         self.artifacts.current(scope)
         service = self.tool_host.service
         key = scope.tenant_id, scope.requester_id, scope.session_id, scope.run_id

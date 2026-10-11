@@ -53,6 +53,7 @@ class Bootstrap:
             route=self.route,
             artifacts=self.ports.research_artifacts,
         )
+        self.engine._pdos_category_candidate_owner = self
         if self.ports.research_artifacts is not None:
             self.engine._pdos_research_artifacts = self.ports.research_artifacts
 
@@ -232,6 +233,10 @@ class Bootstrap:
             raise DomainError("FORBIDDEN_SCOPE", "该工具不是领域候选。", 403)
         with self.commands.transaction(scope) as session:
             self.store.authority(session, scope)
+            if spec.name == "category.create":
+                from .category_candidate import prepare
+
+                return prepare(session, scope, spec, arguments, intent_key, self)
             if spec.name == "evidence.claim.record":
                 from .claim_candidate import prepare
 
@@ -324,6 +329,46 @@ class Bootstrap:
                     self.commands.read_receipt(session, scope, row)
         return result
 
+    def default_preload(self, scope):
+        if scope.isolation != "main":
+            return ()
+        with self.store.transaction(scope) as (session, run):
+            self.store.authority(session, scope)
+            if scope.category_id is None:
+                return ("category_framing",)
+            if scope.proposal_id is None:
+                return ("proposal_drafting",)
+            from pdos_next.domain.preproject.models import Proposal, ProposalSubmission
+
+            proposal = session.get(Proposal, scope.proposal_id)
+            if not proposal:
+                raise DomainError("FORBIDDEN_SCOPE", "立项提案不可读。")
+            submission = session.get(ProposalSubmission, proposal.current_submission_id) \
+                if proposal.current_submission_id else None
+            if (proposal.status == "in_review" and submission
+                    and submission.reviewer_id == scope.requester_id):
+                return ("gap_check", "option_comparison")
+            skills = ["proposal_drafting", "gap_check"]
+            original_ids = {
+                UUID(ref["id"]) for ref in proposal.source_refs
+                if ref.get("type") == "original"
+            }
+            customer_original = False
+            for ref in run.read_sources:
+                artifact = session.get(Artifact, UUID(ref["artifact_id"]))
+                if (
+                    artifact and artifact.tenant_id == scope.tenant_id
+                    and artifact.category_id == scope.category_id
+                    and artifact.status == "active"
+                    and artifact.revision == ref["expected_revision"]
+                    and artifact.original_id in original_ids
+                ):
+                    customer_original = True
+                    break
+            if customer_original:
+                skills.append("rfq_extraction")
+            return tuple(skills)
+
     def adapters(self):
         from .domain_reads import DomainReads
         from .m3_calculators import ENGINES, handlers
@@ -344,7 +389,7 @@ class Bootstrap:
             },
             provider_client=self.ports.provider_client,
             provider_for=self.provider_for,
-            preload=self.ports.preload,
+            preload=self.ports.preload or self.default_preload,
             rate_card_for=self.ports.rate_card_for,
             cost_required=True,
             skill_catalog=self.catalog,
@@ -354,10 +399,12 @@ class Bootstrap:
         if self.ports.research_service is not None:
             from pdos_next.research.tools import ResearchToolHost
 
+            from .category_research_refs import CategoryResearchRefs
             from .host import BoundHost
             from .registered_snapshot_reads import RegisteredSnapshotReads
             from .research_adapter import ResearchReadAdapter
             from .research_graph import ResearchGraph
+            from .research_instruction import ResearchInstruction
 
             artifacts = self.ports.research_artifacts
             if artifacts is None:
@@ -366,6 +413,7 @@ class Bootstrap:
                 BoundHost(self.store, adapters), artifacts=artifacts,
                 checkpointer_factory=self.ports.research_checkpointer_factory,
                 registered_reads=RegisteredSnapshotReads(self.store),
+                instruction_for=ResearchInstruction(self.store, self.catalog),
             )
             tool_host = ResearchToolHost(
                 self.ports.research_service, researcher=researcher,
@@ -373,6 +421,7 @@ class Bootstrap:
             )
             research_adapter = ResearchReadAdapter(
                 tool_host, artifacts, user_messages=self.research_messages,
+                read_refs=CategoryResearchRefs(self.store, artifacts),
             )
             adapters.read_tools.update(research_adapter.handlers())
             adapters.read_restores.update(research_adapter.restores())

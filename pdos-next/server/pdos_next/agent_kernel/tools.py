@@ -48,6 +48,7 @@ M3_TIERS = {
 
 
 def default_registry():
+    from .category_candidate import CategoryCandidateInput
     from .domain_reads import SCHEMAS
     from .m3_calculators import SCHEMAS as COMPUTE_SCHEMAS
     from .m3_object_reads import SCHEMAS as OBJECT_SCHEMAS
@@ -80,7 +81,8 @@ def default_registry():
                 ToolSpec(
                     name,
                     f"准备 {name} 候选。",
-                    {"type": "object"},
+                    CategoryCandidateInput.model_json_schema()
+                    if name == "category.create" else {"type": "object"},
                     {"type": "object"},
                     "write",
                     tier,

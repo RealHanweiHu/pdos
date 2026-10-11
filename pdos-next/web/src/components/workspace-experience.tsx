@@ -18,6 +18,7 @@ export type ExperienceData = {
 };
 type Props = {
   categoryId: string;
+  categoryBanner?: ReactNode;
   auth: "loading" | "signed_out" | "ready"; session: { name: string; principal_id: string } | null;
   products: ExperienceProduct[]; productId: string; data: ExperienceData | null;
   locked: boolean; onProductChange: (id: string) => void; onCreateProduct: () => void; onOpenPai: () => void;
@@ -52,7 +53,7 @@ const plannedDescriptions: Record<string, PlannedDescription> = {
   resources: { summary: "跨项目查看投入、优先级与资源冲突。组合工作区尚未接入，当前资源条件在试制和开测时核对。", items: ["项目组合与投入", "共享资源及占用", "冲突与待决定事项"], next: ["projects", "builds", "start"], action: "查看试制资源条件" },
 };
 
-export function WorkspaceExperience({ categoryId, auth, session, products, productId, data, locked, onProductChange, onCreateProduct, onOpenPai, api, children }: Props) {
+export function WorkspaceExperience({ categoryId, categoryBanner, auth, session, products, productId, data, locked, onProductChange, onCreateProduct, onOpenPai, api, children }: Props) {
   const [location, setLocation] = useState(defaultWorkspaceLocation);
   const [collapsed, setCollapsed] = useState(false);
   const [query, setQuery] = useState("");
@@ -165,6 +166,7 @@ export function WorkspaceExperience({ categoryId, auth, session, products, produ
       <aside className="workspace-sidebar">{navigation()}</aside>
       <dialog ref={mobileDialog} className="workspace-mobile-navigation" aria-label="工作区导航" onCancel={event => { event.preventDefault(); closeMobile(); }}>{navigation(true)}</dialog>
       <div className="workspace-body">
+        {categoryBanner}
         <header className="workspace-header"><Button ref={mobileTrigger} size="icon" variant="ghost" className="workspace-mobile-trigger" aria-label="打开导航" onClick={() => mobileDialog.current?.showModal()}><List/></Button><div className="workspace-breadcrumb"><span>{workspaceAreas.find(item => item.id === location.area)?.label}</span><CaretRight size={12} aria-hidden="true"/><span className="font-medium">{section.label}</span></div><div className="workspace-header-actions"><select aria-label="当前型号" value={productId} disabled={locked} onChange={event => navigate(location.area, location.section, location.task, event.target.value)}>{products.length === 0 && <option value="">尚无型号</option>}{products.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select><Button size="icon" variant="ghost" aria-label="切换明暗主题" onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>{resolvedTheme === "dark" ? <Sun/> : <Moon/>}</Button></div></header>
         <nav className="workspace-tabs" aria-label={`${workspaceAreas.find(item => item.id === location.area)?.label}视图`}>{workspaceSections[location.area].map(item => { const Icon = entryIcons[item.id] ?? SquaresFour; return <a key={item.id} href={href(location.area, item.id)} aria-current={location.section === item.id ? "page" : undefined} onClick={event => follow(event, location.area, item.id)}><Icon size={16} aria-hidden="true"/><span>{item.label}</span>{item.planned && <span className="workspace-planned-dot" aria-label="尚未接入" title="尚未接入"/>}</a>; })}</nav>
         <main ref={content} id="workspace-content" tabIndex={-1} className="workspace-content">

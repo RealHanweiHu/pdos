@@ -1,7 +1,9 @@
 """The sole 小Pai graph. Domain and provider ports remain server bound on every node."""
 
 import json
+import re
 from concurrent.futures import ThreadPoolExecutor
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import Protocol, TypedDict
 from uuid import UUID, uuid4
@@ -55,6 +57,61 @@ class HostPorts(Protocol):
     def finish(self, scope: RunScope, result: dict) -> None: ...
 
 
+@dataclass(frozen=True)
+class VerifiedCategoryAdoption:
+    """Construct only after the Activity validates the persisted adoption/receipt.
+
+    A dictionary from the public answers endpoint never acquires this server type.
+    Only the JSON envelope, not this in-memory witness, enters graph checkpoints.
+    """
+
+    input_ref: str
+    category_adoption: dict
+
+    def envelope(self):
+        value = {"input_ref": self.input_ref, "category_adoption": deepcopy(self.category_adoption)}
+        adoption = value["category_adoption"]
+        try:
+            if not isinstance(adoption, dict) or set(adoption) != {
+                "candidate_event_id", "candidate_digest", "run_id", "receipt_id",
+                "category_id", "cancel_epoch",
+            }:
+                raise ValueError
+            for identity in [value["input_ref"], *[adoption[key] for key in (
+                "candidate_event_id", "run_id", "receipt_id", "category_id",
+            )]]:
+                if not isinstance(identity, str) or str(UUID(identity)) != identity:
+                    raise ValueError
+            if (type(adoption["cancel_epoch"]) is not int or adoption["cancel_epoch"] < 0
+                    or not isinstance(adoption["candidate_digest"], str)
+                    or re.fullmatch(r"[a-f0-9]{64}", adoption["candidate_digest"]) is None):
+                raise ValueError
+        except (KeyError, TypeError, ValueError):
+            raise DomainError("FORBIDDEN_SCOPE", "采用证明不是服务器核对的完整引用。") from None
+        return value
+
+
+def _match_adoption(scope, pending, envelope):
+    adoption = envelope["category_adoption"]
+    if (
+        not pending or adoption["candidate_event_id"] != pending["event_id"]
+        or adoption["candidate_digest"] != pending["candidate_digest"]
+        or adoption["run_id"] != pending["run_id"] or adoption["run_id"] != str(scope.run_id)
+        or adoption["cancel_epoch"] != scope.cancel_epoch
+    ):
+        raise DomainError("FORBIDDEN_SCOPE", "采用证明不属于当前运行的待采用候选。")
+
+
+def _adoption_index(scope, pending, envelope):
+    # Human confirmations and durable signals may arrive in any candidate order.
+    event_id = envelope["category_adoption"]["candidate_event_id"]
+    for index, candidate in enumerate(pending):
+        if candidate["event_id"] == event_id:
+            _match_adoption(scope, candidate, envelope)
+            return index
+    raise DomainError("FORBIDDEN_SCOPE", "采用证明不属于当前运行的待采用候选。")
+
+
 class GraphState(TypedDict, total=False):
     goal: str
     messages: list[dict]
@@ -69,6 +126,8 @@ class GraphState(TypedDict, total=False):
     validation_failures: int
     tool_results: list[dict]
     exhausted: bool
+    pending_categories: list[dict]
+    consumed_input_refs: list[str]
 
 
 @dataclass(frozen=True)
@@ -90,7 +149,9 @@ class AgentKernel:
         # This tuple is captured once; loading skills never mutates the prefix or definitions.
         self.definitions = self.registry.definitions()
 
-    def compile(self, scope: RunScope, *, checkpointer=None, preload=()):
+    def compile(
+        self, scope: RunScope, *, checkpointer=None, preload=(), trusted_adoption=None
+    ):
         ports, registry, catalog, budget = self.ports, self.registry, self.catalog, self.budget
         definitions = json.loads(json.dumps(registry.definitions(scope.isolation)))
 
@@ -145,6 +206,8 @@ class AgentKernel:
                 "tools_used": 0,
                 "validation_failures": 0,
                 "tool_results": [],
+                "pending_categories": [],
+                "consumed_input_refs": [],
                 "exhausted": False,
                 "output": {},
                 "calls": [],
@@ -358,6 +421,34 @@ class AgentKernel:
                     if exc.code == "CANCELLED_RUN":
                         raise
                     answers[call.id] = {"error": exc.payload()}
+            pending = list(state.get("pending_categories", []))
+            for call in calls:
+                value = answers[call.id]
+                if (call.name != "category.create" or not isinstance(value, dict)
+                        or value.get("requires_human") is not True):
+                    continue
+                try:
+                    event_id = value["event_id"]
+                    payload = value["payload"]
+                    fingerprint = payload["candidate_digest"]
+                    if (
+                        not isinstance(event_id, str) or str(UUID(event_id)) != event_id
+                        or payload["prepared_by_run_id"] != str(scope.run_id)
+                        or not isinstance(fingerprint, str)
+                        or re.fullmatch(r"[a-f0-9]{64}", fingerprint) is None
+                    ):
+                        raise ValueError
+                except (KeyError, TypeError, ValueError):
+                    raise DomainError(
+                        "SOURCE_UNAVAILABLE", "品类候选缺少服务器等待引用。",
+                    ) from None
+                item = {"event_id": event_id, "run_id": str(scope.run_id),
+                        "candidate_digest": fingerprint}
+                same = [row for row in pending if row["event_id"] == event_id]
+                if same and same != [item]:
+                    raise DomainError("DUPLICATE_INTENT_CONFLICT", "候选等待引用已变化。")
+                if not same:
+                    pending.append(item)
             messages = [
                 *state["messages"],
                 *[
@@ -386,6 +477,35 @@ class AgentKernel:
                     ],
                 ],
                 "tools_used": state["tools_used"] + len(calls),
+                "pending_categories": pending,
+            }
+
+        def await_category_adoption(state):
+            ports.current(scope)
+            pending = state.get("pending_categories", [])
+            if not pending:
+                return {}
+            current = pending[0]
+            answer = interrupt({"type": "category_adoption", **current})
+            ports.current(scope)
+            if not isinstance(trusted_adoption, VerifiedCategoryAdoption):
+                raise DomainError("FORBIDDEN_SCOPE", "普通答复不能代替实际品类采用回执。")
+            envelope = trusted_adoption.envelope()
+            if answer != envelope or envelope["input_ref"] in state.get("consumed_input_refs", []):
+                raise DomainError("FORBIDDEN_SCOPE", "采用输入未核对或已被消费。")
+            adopted_index = _adoption_index(scope, pending, envelope)
+            return {
+                "pending_categories": pending[:adopted_index] + pending[adopted_index + 1:],
+                "consumed_input_refs": [
+                    *state.get("consumed_input_refs", []), envelope["input_ref"],
+                ],
+                "messages": [*state["messages"], {
+                    "role": "user", "content": json.dumps(envelope, ensure_ascii=False),
+                }],
+                "tool_results": [*state["tool_results"], {
+                    "tool": "category.create", "tier": "T1", "taint": "trusted",
+                    "value": {"state": "adopted", **envelope},
+                }],
             }
 
         def verify(state):
@@ -433,6 +553,7 @@ class AgentKernel:
             "model": model,
             "route": route,
             "tools": tools,
+            "await_category_adoption": await_category_adoption,
             "verify": verify,
             "finalize": finalize,
         }.items():
@@ -441,7 +562,13 @@ class AgentKernel:
         graph.add_edge("prepare_context", "model")
         graph.add_edge("model", "route")
         graph.add_conditional_edges("route", choose, ["tools", "model", "verify"])
-        graph.add_edge("tools", "model")
+        def after_tools(state):
+            return "await_category_adoption" if state.get("pending_categories") else "model"
+
+        graph.add_conditional_edges("tools", after_tools, ["await_category_adoption", "model"])
+        graph.add_conditional_edges(
+            "await_category_adoption", after_tools, ["await_category_adoption", "model"]
+        )
         graph.add_conditional_edges("verify", lambda s: "finalize" if s["output"] else "model")
         graph.add_edge("finalize", END)
         return graph.compile(checkpointer=checkpointer)
@@ -451,7 +578,11 @@ class AgentKernel:
     ):
         from pdos_agent_runtime.graph import registered_graph_context
 
-        compiled = self.compile(scope, checkpointer=checkpointer, preload=preload)
+        trusted = answer if isinstance(answer, VerifiedCategoryAdoption) else None
+        envelope = trusted.envelope() if trusted else answer
+        compiled = self.compile(
+            scope, checkpointer=checkpointer, preload=preload, trusted_adoption=trusted,
+        )
         thread_id = f"xiaopai:{scope.tenant_id}:{scope.session_id}:{scope.run_id}"
         if scope.isolation != "main":
             from pdos_next.service import digest
@@ -465,10 +596,47 @@ class AgentKernel:
         }
         self.ports.current(scope)
         saved = compiled.get_state(config) if checkpointer is not None else None
-        payload = (
-            GraphCommand(resume=answer)
-            if answer is not None and saved and saved.next
-            else {"goal": goal}
-        )
+        if saved and saved.values:
+            if not saved.next:
+                return saved.values
+            pending = saved.values.get("pending_categories", [])
+            duplicate = trusted and envelope["input_ref"] in saved.values.get(
+                "consumed_input_refs", []
+            )
+            interruptions = [i for task in saved.tasks for i in task.interrupts]
+            if interruptions and (answer is None or duplicate):
+                return {**saved.values, "__interrupt__": interruptions}
+            if answer is not None and not duplicate:
+                if pending:
+                    if trusted is None:
+                        raise DomainError("FORBIDDEN_SCOPE", "普通答复不能释放品类采用等待。")
+                    _adoption_index(scope, pending, envelope)
+                elif trusted and interruptions:
+                    raise DomainError("FORBIDDEN_SCOPE", "当前检查点没有该待采用候选。")
+                if not interruptions:
+                    # Finish an interrupted Activity from its last checkpoint first.
+                    # Its committed input remains available for the subsequent wait.
+                    payload = None
+                else:
+                    payload = GraphCommand(resume=envelope)
+            else:
+                payload = None
+        else:
+            if answer is not None:
+                raise DomainError("SOURCE_UNAVAILABLE", "恢复输入缺少原运行的持久检查点。")
+            payload = {"goal": goal}
         with registered_graph_context("xiaopai"):
-            return compiled.invoke(payload, config)
+            result = compiled.invoke(payload, config)
+            if (payload is None and answer is not None and not duplicate
+                    and result.get("__interrupt__")):
+                # Adoption can commit after tools checkpoint but before interrupt is saved.
+                # Keep the same verified input while advancing to that durable wait.
+                pending = result.get("pending_categories", [])
+                if trusted:
+                    if envelope["input_ref"] in result.get("consumed_input_refs", []):
+                        return result
+                    _adoption_index(scope, pending, envelope)
+                elif pending:
+                    raise DomainError("FORBIDDEN_SCOPE", "普通答复不能释放品类采用等待。")
+                result = compiled.invoke(GraphCommand(resume=envelope), config)
+            return result

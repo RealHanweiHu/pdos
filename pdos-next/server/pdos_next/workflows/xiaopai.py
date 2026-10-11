@@ -1,6 +1,7 @@
 """One durable 小Pai workflow; questions and confirmations resume its same graph thread."""
 
 from datetime import timedelta
+from uuid import UUID
 
 from temporalio import workflow
 from temporalio.common import RetryPolicy
@@ -9,12 +10,22 @@ from temporalio.common import RetryPolicy
 @workflow.defn
 class XiaopaiWork:
     def __init__(self):
-        self.answer_ref = None
+        self.answer_refs = []
+        self.seen_answer_refs = set()
 
     @workflow.signal
     def resume(self, answer_ref: str):
         # This is a committed answer reference, not model text or authorization in history.
-        self.answer_ref = answer_ref
+        # Duplicate/out-of-order delivery is normal for the transactional Outbox.
+        try:
+            if not isinstance(answer_ref, str):
+                return
+            canonical = str(UUID(answer_ref))
+        except ValueError:
+            return
+        if canonical not in self.seen_answer_refs:
+            self.answer_refs.append(canonical)
+            self.seen_answer_refs.add(canonical)
 
     @workflow.run
     async def run(self, reference: dict):
@@ -23,9 +34,8 @@ class XiaopaiWork:
             raise ValueError("小Pai workflow requires its fixed server scope envelope")
         while True:
             payload = dict(reference)
-            if self.answer_ref:
-                payload["answer_ref"] = self.answer_ref
-                self.answer_ref = None
+            if self.answer_refs:
+                payload["answer_ref"] = self.answer_refs.pop(0)
             result = await workflow.execute_activity(
                 "advance_xiaopai_run",
                 payload,
@@ -35,4 +45,4 @@ class XiaopaiWork:
             )
             if result["status"] in {"completed", "partial", "cancelled", "failed"}:
                 return result
-            await workflow.wait_condition(lambda: self.answer_ref is not None)
+            await workflow.wait_condition(lambda: bool(self.answer_refs))

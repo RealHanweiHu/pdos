@@ -12,10 +12,24 @@ from .definitions import (
 
 
 class TemporalSender:
-    def __init__(self, client, task_queue="pdos-next-domain-v1"):
+    def __init__(self, client, task_queue="pdos-next-domain-v1", *, dispatch_engine=None):
         self.client, self.task_queue = client, task_queue
+        self.dispatch_engine = dispatch_engine
 
     async def __call__(self, event: Envelope):
+        if event.event_type == "category.created":
+            if self.dispatch_engine is None:
+                raise RuntimeError("Category continuation requires the metadata dispatcher")
+            from pdos_next.agent_kernel.category_adoption import dispatch_reference
+            from pdos_next.agent_kernel.temporal_port import TemporalPort, workflow_id
+
+            adoption = dispatch_reference(self.dispatch_engine, event)
+            if adoption is None:
+                return None
+            await TemporalPort(self.client, task_queue=self.task_queue).signal(
+                adoption["tenant_id"], adoption["run_id"], adoption["input_ref"],
+            )
+            return workflow_id(adoption["tenant_id"], adoption["run_id"])
         reference = {
             "tenant_id": event.tenant_id,
             "category_id": event.category_id,

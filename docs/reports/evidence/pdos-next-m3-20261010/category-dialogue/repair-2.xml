@@ -1,0 +1,1241 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="6" time="5.036" timestamp="2026-10-11T01:30:49.257804-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_public_run_revert" name="test_actual_whole_run_preview_and_human_t1_command_revert_all_drafts_once" time="1.184"><failure message="sqlalchemy.exc.IntegrityError: (psycopg.errors.CheckViolation) Run sources currently unreadable&#10;CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE&#10;[SQL: INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, intent_key, intent_digest, cancel_epoch, state, private_context, data_categories, customer_identities, versions, read_sources, token_limit, validation_budget_id, held_tokens, used_tokens, error_code, reverted_at, reverted_by, revert_receipt_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(product_id)s::UUID, %(proposal_id)s::UUID, %(session_id)s::UUID, %(requester_id)s::UUID, %(writer_id)s::UUID, %(trigger)s::VARCHAR, %(goal)s::VARCHAR, %(intent_key)s::VARCHAR, %(intent_digest)s::VARCHAR, %(cancel_epoch)s::INTEGER, %(state)s::VARCHAR, %(private_context)s, %(data_categories)s::JSONB, %(customer_identities)s::JSONB, %(versions)s::JSONB, %(read_sources)s::JSONB, %(token_limit)s::INTEGER, %(validation_budget_id)s::UUID, %(held_tokens)s::INTEGER, %(used_tokens)s::INTEGER, %(error_code)s::VARCHAR, %(reverted_at)s::TIMESTAMP WITH TIME ZONE, %(reverted_by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)]&#10;[SQL parameters hidden due to hide_parameters=True]&#10;(Background on this error at: https://sqlalche.me/e/21/gkpj)">self = &lt;sqlalchemy.engine.base.Connection object at 0x124478bf0&gt;
+dialect = &lt;sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x117a41cd0&gt;
+context = &lt;sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x12447ab40&gt;
+statement = &lt;sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x124479ca0&gt;
+parameters = [{'category_id': UUID('09751074-ba33-43aa-bb30-f30a02272455'), 'product_id': UUID('1baef37a-cbb2-4a59-80a4-8ea8d43f2d40'), 'proposal_id': None, 'session_id': UUID('53253a22-5bd4-4548-9233-4a38216144e1'), ...}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+    
+            if self._echo:
+                self._log_info(str_statement)
+    
+                stats = context._get_cache_stats()
+    
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x1244e8a10&gt;
+query = 'INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, int..._by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)'
+params = {'category_id': UUID('09751074-ba33-43aa-bb30-f30a02272455'), 'product_id': UUID('1baef37a-cbb2-4a59-80a4-8ea8d43f2d40'), 'proposal_id': None, 'session_id': UUID('53253a22-5bd4-4548-9233-4a38216144e1'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.CheckViolation: Run sources currently unreadable
+E           CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: CheckViolation
+
+The above exception was the direct cause of the following exception:
+
+setup = &lt;isolated synthetic test scope&gt;
+
+    def test_actual_whole_run_preview_and_human_t1_command_revert_all_drafts_once(setup):
+&gt;       scope, artifact, claim = history(setup)
+                                 ^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_public_run_revert.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_public_run_revert.py:89: in history
+    f = None if category_only else claim_ledger(setup, artifact)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_public_run_revert.py:74: in claim_ledger
+    session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4536: in flush
+    self._flush(objects)
+&lt;sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush&gt;:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4679: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4640: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:643: in execute
+    util.preloaded.orm_persistence._save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:92: in _save_obj
+    _emit_insert_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:1052: in _emit_insert_statements
+    result = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x1244e8a10&gt;
+query = 'INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, int..._by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)'
+params = {'category_id': UUID('09751074-ba33-43aa-bb30-f30a02272455'), 'product_id': UUID('1baef37a-cbb2-4a59-80a4-8ea8d43f2d40'), 'proposal_id': None, 'session_id': UUID('53253a22-5bd4-4548-9233-4a38216144e1'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           sqlalchemy.exc.IntegrityError: (psycopg.errors.CheckViolation) Run sources currently unreadable
+E           CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE
+E           [SQL: INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, intent_key, intent_digest, cancel_epoch, state, private_context, data_categories, customer_identities, versions, read_sources, token_limit, validation_budget_id, held_tokens, used_tokens, error_code, reverted_at, reverted_by, revert_receipt_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(product_id)s::UUID, %(proposal_id)s::UUID, %(session_id)s::UUID, %(requester_id)s::UUID, %(writer_id)s::UUID, %(trigger)s::VARCHAR, %(goal)s::VARCHAR, %(intent_key)s::VARCHAR, %(intent_digest)s::VARCHAR, %(cancel_epoch)s::INTEGER, %(state)s::VARCHAR, %(private_context)s, %(data_categories)s::JSONB, %(customer_identities)s::JSONB, %(versions)s::JSONB, %(read_sources)s::JSONB, %(token_limit)s::INTEGER, %(validation_budget_id)s::UUID, %(held_tokens)s::INTEGER, %(used_tokens)s::INTEGER, %(error_code)s::VARCHAR, %(reverted_at)s::TIMESTAMP WITH TIME ZONE, %(reverted_by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)]
+E           [SQL parameters hidden due to hide_parameters=True]
+E           (Background on this error at: https://sqlalche.me/e/21/gkpj)
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: IntegrityError</failure></testcase><testcase classname="tests.agent_kernel.test_public_run_revert" name="test_category_only_run_reverts_category_artifact_through_public_human_owner" time="0.743" /><testcase classname="tests.agent_kernel.test_public_run_revert" name="test_public_revert_refuses_external_consumption_and_changes_nothing" time="0.339"><failure message="sqlalchemy.exc.IntegrityError: (psycopg.errors.CheckViolation) Run sources currently unreadable&#10;CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE&#10;[SQL: INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, intent_key, intent_digest, cancel_epoch, state, private_context, data_categories, customer_identities, versions, read_sources, token_limit, validation_budget_id, held_tokens, used_tokens, error_code, reverted_at, reverted_by, revert_receipt_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(product_id)s::UUID, %(proposal_id)s::UUID, %(session_id)s::UUID, %(requester_id)s::UUID, %(writer_id)s::UUID, %(trigger)s::VARCHAR, %(goal)s::VARCHAR, %(intent_key)s::VARCHAR, %(intent_digest)s::VARCHAR, %(cancel_epoch)s::INTEGER, %(state)s::VARCHAR, %(private_context)s, %(data_categories)s::JSONB, %(customer_identities)s::JSONB, %(versions)s::JSONB, %(read_sources)s::JSONB, %(token_limit)s::INTEGER, %(validation_budget_id)s::UUID, %(held_tokens)s::INTEGER, %(used_tokens)s::INTEGER, %(error_code)s::VARCHAR, %(reverted_at)s::TIMESTAMP WITH TIME ZONE, %(reverted_by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)]&#10;[SQL parameters hidden due to hide_parameters=True]&#10;(Background on this error at: https://sqlalche.me/e/21/gkpj)">self = &lt;sqlalchemy.engine.base.Connection object at 0x158969820&gt;
+dialect = &lt;sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x117a41cd0&gt;
+context = &lt;sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x1247f0f80&gt;
+statement = &lt;sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x124479ca0&gt;
+parameters = [{'category_id': UUID('68e77d83-bdd8-4f57-a1d8-d979e9b61de9'), 'product_id': UUID('290728c0-6e7a-4baa-8e84-b9ac691c8fd4'), 'proposal_id': None, 'session_id': UUID('2a886fe8-7cae-48c5-9710-4332e827e880'), ...}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+    
+            if self._echo:
+                self._log_info(str_statement)
+    
+                stats = context._get_cache_stats()
+    
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x1247a3ad0&gt;
+query = 'INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, int..._by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)'
+params = {'category_id': UUID('68e77d83-bdd8-4f57-a1d8-d979e9b61de9'), 'product_id': UUID('290728c0-6e7a-4baa-8e84-b9ac691c8fd4'), 'proposal_id': None, 'session_id': UUID('2a886fe8-7cae-48c5-9710-4332e827e880'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.CheckViolation: Run sources currently unreadable
+E           CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: CheckViolation
+
+The above exception was the direct cause of the following exception:
+
+setup = &lt;isolated synthetic test scope&gt;
+
+    def test_public_revert_refuses_external_consumption_and_changes_nothing(setup):
+&gt;       scope, artifact, claim = history(setup)
+                                 ^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_public_run_revert.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_public_run_revert.py:89: in history
+    f = None if category_only else claim_ledger(setup, artifact)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_public_run_revert.py:74: in claim_ledger
+    session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4536: in flush
+    self._flush(objects)
+&lt;sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush&gt;:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4679: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4640: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:643: in execute
+    util.preloaded.orm_persistence._save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:92: in _save_obj
+    _emit_insert_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:1052: in _emit_insert_statements
+    result = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x1247a3ad0&gt;
+query = 'INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, int..._by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)'
+params = {'category_id': UUID('68e77d83-bdd8-4f57-a1d8-d979e9b61de9'), 'product_id': UUID('290728c0-6e7a-4baa-8e84-b9ac691c8fd4'), 'proposal_id': None, 'session_id': UUID('2a886fe8-7cae-48c5-9710-4332e827e880'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           sqlalchemy.exc.IntegrityError: (psycopg.errors.CheckViolation) Run sources currently unreadable
+E           CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE
+E           [SQL: INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, intent_key, intent_digest, cancel_epoch, state, private_context, data_categories, customer_identities, versions, read_sources, token_limit, validation_budget_id, held_tokens, used_tokens, error_code, reverted_at, reverted_by, revert_receipt_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(product_id)s::UUID, %(proposal_id)s::UUID, %(session_id)s::UUID, %(requester_id)s::UUID, %(writer_id)s::UUID, %(trigger)s::VARCHAR, %(goal)s::VARCHAR, %(intent_key)s::VARCHAR, %(intent_digest)s::VARCHAR, %(cancel_epoch)s::INTEGER, %(state)s::VARCHAR, %(private_context)s, %(data_categories)s::JSONB, %(customer_identities)s::JSONB, %(versions)s::JSONB, %(read_sources)s::JSONB, %(token_limit)s::INTEGER, %(validation_budget_id)s::UUID, %(held_tokens)s::INTEGER, %(used_tokens)s::INTEGER, %(error_code)s::VARCHAR, %(reverted_at)s::TIMESTAMP WITH TIME ZONE, %(reverted_by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)]
+E           [SQL parameters hidden due to hide_parameters=True]
+E           (Background on this error at: https://sqlalche.me/e/21/gkpj)
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: IntegrityError</failure></testcase><testcase classname="tests.agent_kernel.test_public_run_revert" name="test_public_revert_tail_failure_rolls_back_every_business_and_technical_effect[finish]" time="0.442"><failure message="sqlalchemy.exc.IntegrityError: (psycopg.errors.CheckViolation) Run sources currently unreadable&#10;CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE&#10;[SQL: INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, intent_key, intent_digest, cancel_epoch, state, private_context, data_categories, customer_identities, versions, read_sources, token_limit, validation_budget_id, held_tokens, used_tokens, error_code, reverted_at, reverted_by, revert_receipt_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(product_id)s::UUID, %(proposal_id)s::UUID, %(session_id)s::UUID, %(requester_id)s::UUID, %(writer_id)s::UUID, %(trigger)s::VARCHAR, %(goal)s::VARCHAR, %(intent_key)s::VARCHAR, %(intent_digest)s::VARCHAR, %(cancel_epoch)s::INTEGER, %(state)s::VARCHAR, %(private_context)s, %(data_categories)s::JSONB, %(customer_identities)s::JSONB, %(versions)s::JSONB, %(read_sources)s::JSONB, %(token_limit)s::INTEGER, %(validation_budget_id)s::UUID, %(held_tokens)s::INTEGER, %(used_tokens)s::INTEGER, %(error_code)s::VARCHAR, %(reverted_at)s::TIMESTAMP WITH TIME ZONE, %(reverted_by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)]&#10;[SQL parameters hidden due to hide_parameters=True]&#10;(Background on this error at: https://sqlalche.me/e/21/gkpj)">self = &lt;sqlalchemy.engine.base.Connection object at 0x12422a5a0&gt;
+dialect = &lt;sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x117a41cd0&gt;
+context = &lt;sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x123e50830&gt;
+statement = &lt;sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x124479ca0&gt;
+parameters = [{'category_id': UUID('a691dc2c-bd24-4e05-873a-5ac6b40ddca0'), 'product_id': UUID('1f8fda26-6785-4228-993e-430f8d9b49a6'), 'proposal_id': None, 'session_id': UUID('8a325027-d614-461d-b856-068f349942b3'), ...}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+    
+            if self._echo:
+                self._log_info(str_statement)
+    
+                stats = context._get_cache_stats()
+    
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x123eb34d0&gt;
+query = 'INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, int..._by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)'
+params = {'category_id': UUID('a691dc2c-bd24-4e05-873a-5ac6b40ddca0'), 'product_id': UUID('1f8fda26-6785-4228-993e-430f8d9b49a6'), 'proposal_id': None, 'session_id': UUID('8a325027-d614-461d-b856-068f349942b3'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.CheckViolation: Run sources currently unreadable
+E           CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: CheckViolation
+
+The above exception was the direct cause of the following exception:
+
+setup = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1244c9160&gt;
+stage = 'finish'
+
+    @pytest.mark.parametrize("stage", ["finish", "outbox"])
+    def test_public_revert_tail_failure_rolls_back_every_business_and_technical_effect(
+        setup, monkeypatch, stage
+    ):
+&gt;       scope, artifact, claim = history(setup)
+                                 ^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_public_run_revert.py:202: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_public_run_revert.py:89: in history
+    f = None if category_only else claim_ledger(setup, artifact)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_public_run_revert.py:74: in claim_ledger
+    session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4536: in flush
+    self._flush(objects)
+&lt;sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush&gt;:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4679: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4640: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:643: in execute
+    util.preloaded.orm_persistence._save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:92: in _save_obj
+    _emit_insert_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:1052: in _emit_insert_statements
+    result = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x123eb34d0&gt;
+query = 'INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, int..._by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)'
+params = {'category_id': UUID('a691dc2c-bd24-4e05-873a-5ac6b40ddca0'), 'product_id': UUID('1f8fda26-6785-4228-993e-430f8d9b49a6'), 'proposal_id': None, 'session_id': UUID('8a325027-d614-461d-b856-068f349942b3'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           sqlalchemy.exc.IntegrityError: (psycopg.errors.CheckViolation) Run sources currently unreadable
+E           CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE
+E           [SQL: INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, intent_key, intent_digest, cancel_epoch, state, private_context, data_categories, customer_identities, versions, read_sources, token_limit, validation_budget_id, held_tokens, used_tokens, error_code, reverted_at, reverted_by, revert_receipt_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(product_id)s::UUID, %(proposal_id)s::UUID, %(session_id)s::UUID, %(requester_id)s::UUID, %(writer_id)s::UUID, %(trigger)s::VARCHAR, %(goal)s::VARCHAR, %(intent_key)s::VARCHAR, %(intent_digest)s::VARCHAR, %(cancel_epoch)s::INTEGER, %(state)s::VARCHAR, %(private_context)s, %(data_categories)s::JSONB, %(customer_identities)s::JSONB, %(versions)s::JSONB, %(read_sources)s::JSONB, %(token_limit)s::INTEGER, %(validation_budget_id)s::UUID, %(held_tokens)s::INTEGER, %(used_tokens)s::INTEGER, %(error_code)s::VARCHAR, %(reverted_at)s::TIMESTAMP WITH TIME ZONE, %(reverted_by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)]
+E           [SQL parameters hidden due to hide_parameters=True]
+E           (Background on this error at: https://sqlalche.me/e/21/gkpj)
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: IntegrityError</failure></testcase><testcase classname="tests.agent_kernel.test_public_run_revert" name="test_public_revert_tail_failure_rolls_back_every_business_and_technical_effect[outbox]" time="0.441"><failure message="sqlalchemy.exc.IntegrityError: (psycopg.errors.CheckViolation) Run sources currently unreadable&#10;CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE&#10;[SQL: INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, intent_key, intent_digest, cancel_epoch, state, private_context, data_categories, customer_identities, versions, read_sources, token_limit, validation_budget_id, held_tokens, used_tokens, error_code, reverted_at, reverted_by, revert_receipt_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(product_id)s::UUID, %(proposal_id)s::UUID, %(session_id)s::UUID, %(requester_id)s::UUID, %(writer_id)s::UUID, %(trigger)s::VARCHAR, %(goal)s::VARCHAR, %(intent_key)s::VARCHAR, %(intent_digest)s::VARCHAR, %(cancel_epoch)s::INTEGER, %(state)s::VARCHAR, %(private_context)s, %(data_categories)s::JSONB, %(customer_identities)s::JSONB, %(versions)s::JSONB, %(read_sources)s::JSONB, %(token_limit)s::INTEGER, %(validation_budget_id)s::UUID, %(held_tokens)s::INTEGER, %(used_tokens)s::INTEGER, %(error_code)s::VARCHAR, %(reverted_at)s::TIMESTAMP WITH TIME ZONE, %(reverted_by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)]&#10;[SQL parameters hidden due to hide_parameters=True]&#10;(Background on this error at: https://sqlalche.me/e/21/gkpj)">self = &lt;sqlalchemy.engine.base.Connection object at 0x12528b380&gt;
+dialect = &lt;sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x117a41cd0&gt;
+context = &lt;sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x124ee0f80&gt;
+statement = &lt;sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x124479ca0&gt;
+parameters = [{'category_id': UUID('2c5e3a81-82f0-446a-948e-e6a48032977a'), 'product_id': UUID('cf4bf2dc-70ff-4cf4-b97e-80be851826f2'), 'proposal_id': None, 'session_id': UUID('5a4b20b4-f8f4-479a-a501-5a4df153f961'), ...}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+    
+            if self._echo:
+                self._log_info(str_statement)
+    
+                stats = context._get_cache_stats()
+    
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x1247e9910&gt;
+query = 'INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, int..._by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)'
+params = {'category_id': UUID('2c5e3a81-82f0-446a-948e-e6a48032977a'), 'product_id': UUID('cf4bf2dc-70ff-4cf4-b97e-80be851826f2'), 'proposal_id': None, 'session_id': UUID('5a4b20b4-f8f4-479a-a501-5a4df153f961'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.CheckViolation: Run sources currently unreadable
+E           CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: CheckViolation
+
+The above exception was the direct cause of the following exception:
+
+setup = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x158995850&gt;
+stage = 'outbox'
+
+    @pytest.mark.parametrize("stage", ["finish", "outbox"])
+    def test_public_revert_tail_failure_rolls_back_every_business_and_technical_effect(
+        setup, monkeypatch, stage
+    ):
+&gt;       scope, artifact, claim = history(setup)
+                                 ^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_public_run_revert.py:202: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_public_run_revert.py:89: in history
+    f = None if category_only else claim_ledger(setup, artifact)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_public_run_revert.py:74: in claim_ledger
+    session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4536: in flush
+    self._flush(objects)
+&lt;sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush&gt;:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4679: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4640: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:643: in execute
+    util.preloaded.orm_persistence._save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:92: in _save_obj
+    _emit_insert_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:1052: in _emit_insert_statements
+    result = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x1247e9910&gt;
+query = 'INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, int..._by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)'
+params = {'category_id': UUID('2c5e3a81-82f0-446a-948e-e6a48032977a'), 'product_id': UUID('cf4bf2dc-70ff-4cf4-b97e-80be851826f2'), 'proposal_id': None, 'session_id': UUID('5a4b20b4-f8f4-479a-a501-5a4df153f961'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           sqlalchemy.exc.IntegrityError: (psycopg.errors.CheckViolation) Run sources currently unreadable
+E           CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE
+E           [SQL: INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, intent_key, intent_digest, cancel_epoch, state, private_context, data_categories, customer_identities, versions, read_sources, token_limit, validation_budget_id, held_tokens, used_tokens, error_code, reverted_at, reverted_by, revert_receipt_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(product_id)s::UUID, %(proposal_id)s::UUID, %(session_id)s::UUID, %(requester_id)s::UUID, %(writer_id)s::UUID, %(trigger)s::VARCHAR, %(goal)s::VARCHAR, %(intent_key)s::VARCHAR, %(intent_digest)s::VARCHAR, %(cancel_epoch)s::INTEGER, %(state)s::VARCHAR, %(private_context)s, %(data_categories)s::JSONB, %(customer_identities)s::JSONB, %(versions)s::JSONB, %(read_sources)s::JSONB, %(token_limit)s::INTEGER, %(validation_budget_id)s::UUID, %(held_tokens)s::INTEGER, %(used_tokens)s::INTEGER, %(error_code)s::VARCHAR, %(reverted_at)s::TIMESTAMP WITH TIME ZONE, %(reverted_by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)]
+E           [SQL parameters hidden due to hide_parameters=True]
+E           (Background on this error at: https://sqlalche.me/e/21/gkpj)
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: IntegrityError</failure></testcase><testcase classname="tests.agent_kernel.test_public_run_revert" name="test_private_external_definition_consumption_is_opaque_but_blocks_whole_run" time="0.340"><failure message="sqlalchemy.exc.IntegrityError: (psycopg.errors.CheckViolation) Run sources currently unreadable&#10;CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE&#10;[SQL: INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, intent_key, intent_digest, cancel_epoch, state, private_context, data_categories, customer_identities, versions, read_sources, token_limit, validation_budget_id, held_tokens, used_tokens, error_code, reverted_at, reverted_by, revert_receipt_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(product_id)s::UUID, %(proposal_id)s::UUID, %(session_id)s::UUID, %(requester_id)s::UUID, %(writer_id)s::UUID, %(trigger)s::VARCHAR, %(goal)s::VARCHAR, %(intent_key)s::VARCHAR, %(intent_digest)s::VARCHAR, %(cancel_epoch)s::INTEGER, %(state)s::VARCHAR, %(private_context)s, %(data_categories)s::JSONB, %(customer_identities)s::JSONB, %(versions)s::JSONB, %(read_sources)s::JSONB, %(token_limit)s::INTEGER, %(validation_budget_id)s::UUID, %(held_tokens)s::INTEGER, %(used_tokens)s::INTEGER, %(error_code)s::VARCHAR, %(reverted_at)s::TIMESTAMP WITH TIME ZONE, %(reverted_by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)]&#10;[SQL parameters hidden due to hide_parameters=True]&#10;(Background on this error at: https://sqlalche.me/e/21/gkpj)">self = &lt;sqlalchemy.engine.base.Connection object at 0x15a238170&gt;
+dialect = &lt;sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x117a41cd0&gt;
+context = &lt;sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x12483b710&gt;
+statement = &lt;sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x124479ca0&gt;
+parameters = [{'category_id': UUID('d0317cb7-68ec-41a0-b9c3-ce14e865ec6a'), 'product_id': UUID('6aea5dbd-41f7-4c4e-bc58-6e7f9d8f71d7'), 'proposal_id': None, 'session_id': UUID('7460b5d2-5954-41db-8c2f-5a3a83f1fef9'), ...}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+    
+            if self._echo:
+                self._log_info(str_statement)
+    
+                stats = context._get_cache_stats()
+    
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x125054950&gt;
+query = 'INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, int..._by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)'
+params = {'category_id': UUID('d0317cb7-68ec-41a0-b9c3-ce14e865ec6a'), 'product_id': UUID('6aea5dbd-41f7-4c4e-bc58-6e7f9d8f71d7'), 'proposal_id': None, 'session_id': UUID('7460b5d2-5954-41db-8c2f-5a3a83f1fef9'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.CheckViolation: Run sources currently unreadable
+E           CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: CheckViolation
+
+The above exception was the direct cause of the following exception:
+
+setup = &lt;isolated synthetic test scope&gt;
+
+    def test_private_external_definition_consumption_is_opaque_but_blocks_whole_run(setup):
+&gt;       scope, artifact, claim = history(setup)
+                                 ^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_public_run_revert.py:248: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_public_run_revert.py:89: in history
+    f = None if category_only else claim_ledger(setup, artifact)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_public_run_revert.py:74: in claim_ledger
+    session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4536: in flush
+    self._flush(objects)
+&lt;sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush&gt;:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4679: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4640: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:643: in execute
+    util.preloaded.orm_persistence._save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:92: in _save_obj
+    _emit_insert_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:1052: in _emit_insert_statements
+    result = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x125054950&gt;
+query = 'INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, int..._by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)'
+params = {'category_id': UUID('d0317cb7-68ec-41a0-b9c3-ce14e865ec6a'), 'product_id': UUID('6aea5dbd-41f7-4c4e-bc58-6e7f9d8f71d7'), 'proposal_id': None, 'session_id': UUID('7460b5d2-5954-41db-8c2f-5a3a83f1fef9'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           sqlalchemy.exc.IntegrityError: (psycopg.errors.CheckViolation) Run sources currently unreadable
+E           CONTEXT:  PL/pgSQL function kernel_source_reference_gate() line 28 at RAISE
+E           [SQL: INSERT INTO agent_runs (category_id, product_id, proposal_id, session_id, requester_id, writer_id, trigger, goal, intent_key, intent_digest, cancel_epoch, state, private_context, data_categories, customer_identities, versions, read_sources, token_limit, validation_budget_id, held_tokens, used_tokens, error_code, reverted_at, reverted_by, revert_receipt_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(product_id)s::UUID, %(proposal_id)s::UUID, %(session_id)s::UUID, %(requester_id)s::UUID, %(writer_id)s::UUID, %(trigger)s::VARCHAR, %(goal)s::VARCHAR, %(intent_key)s::VARCHAR, %(intent_digest)s::VARCHAR, %(cancel_epoch)s::INTEGER, %(state)s::VARCHAR, %(private_context)s, %(data_categories)s::JSONB, %(customer_identities)s::JSONB, %(versions)s::JSONB, %(read_sources)s::JSONB, %(token_limit)s::INTEGER, %(validation_budget_id)s::UUID, %(held_tokens)s::INTEGER, %(used_tokens)s::INTEGER, %(error_code)s::VARCHAR, %(reverted_at)s::TIMESTAMP WITH TIME ZONE, %(reverted_by)s::UUID, %(revert_receipt_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)]
+E           [SQL parameters hidden due to hide_parameters=True]
+E           (Background on this error at: https://sqlalche.me/e/21/gkpj)
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: IntegrityError</failure></testcase></testsuite></testsuites>

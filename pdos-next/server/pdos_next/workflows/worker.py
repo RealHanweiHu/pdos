@@ -126,7 +126,7 @@ async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
         os.environ["PDOS_TEMPORAL_ADDRESS"], namespace=os.environ["PDOS_TEMPORAL_NAMESPACE"]
     )
     activities = Activities(engine, store, os.environ["PDOS_CHECKPOINT_DATABASE_URL"])
-    sender = TemporalSender(client)
+    sender = TemporalSender(client, dispatch_engine=dispatch_engine)
     from pdos_next.agent_kernel.temporal_port import TemporalPort, dispatch_pending_runs
 
     kernel_sender = TemporalPort(client, task_queue=sender.task_queue)

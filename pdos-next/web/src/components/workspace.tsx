@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ArrowCounterClockwise, CheckCircle, FileText } from "@phosphor-icons/react";
 import { originalLocation, type LocatedSource } from "@/lib/original-location";
 import { sourceLines } from "@/lib/product-view";
@@ -54,7 +54,7 @@ async function rawApi<T>(path: string, body?: unknown): Promise<T> {
   return value;
 }
 
-export function Workspace({ categoryId }: { categoryId: string }) {
+export function Workspace({ categoryId, categoryBanner }: { categoryId: string; categoryBanner?: ReactNode }) {
   const transport = useMemo(() => categoryTransport(categoryId, rawApi), [categoryId]);
   const [products, setProducts] = useState<Product[]>([]);
   const [productId, setProductId] = useState("");
@@ -182,7 +182,7 @@ export function Workspace({ categoryId }: { categoryId: string }) {
 
 
   return <>
-    <WorkspaceExperience categoryId={categoryId} auth={auth} session={session} products={products} productId={productId} data={data} locked={busy || !!pending} onProductChange={setProductId} onCreateProduct={() => setNewProduct(!newProduct)} onOpenPai={() => setPaiOpen(true)} api={api}>
+    <WorkspaceExperience categoryId={categoryId} categoryBanner={categoryBanner} auth={auth} session={session} products={products} productId={productId} data={data} locked={busy || !!pending} onProductChange={setProductId} onCreateProduct={() => setNewProduct(!newProduct)} onOpenPai={() => setPaiOpen(true)} api={api}>
       <div className="workspace-alerts">
       {pending && !error && <div role="status" className="panel mt-5"><p>有一项原操作等待核对回执，重试会沿用同一请求。</p><Button variant="outline" className="mt-3" disabled={busy} onClick={() => void mutate(pending.path, pending.body, "原操作已取得回执。")}>重试原操作</Button></div>}
       {error && <div role="alert" className="panel mt-5 border-destructive"><p>{error}</p>{pending && <Button className="mt-3" variant="outline" disabled={busy} onClick={() => void mutate(pending.path, pending.body, "原操作已取得回执。")}>重试原操作</Button>}</div>}

@@ -11,7 +11,7 @@ if __name__ == "__main__":
     parser.add_argument("--from-revision", default="s0_0732")
     parser.add_argument("--to-revision", default="s0_0733")
     parser.add_argument(
-        "--section", choices=["evidence-sharing", "derivation", "read-proof"],
+        "--section", choices=["evidence-sharing", "derivation", "read-proof", "category-dialogue"],
         default="evidence-sharing",
     )
     args = parser.parse_args()

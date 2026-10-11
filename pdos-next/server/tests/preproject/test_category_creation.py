@@ -121,9 +121,14 @@ def test_unit_sources_and_model_ports_fail_closed():
     with pytest.raises(DomainError) as error:
         creation._validate(None, None, data(groups={"knowledge": [source]}))
     assert error.value.detail["reason"] == "private_source_in_shared"
+    _, ctx = actor_context()
     with pytest.raises(DomainError) as error:
-        creation._validate(None, None, data(prepared_by_run_id=uuid4(), candidate_digest="forged"))
-    assert error.value.detail["reason"] == "category_candidate_port_pending"
+        creation._validate(
+            MemorySession(None),
+            ctx,
+            data(prepared_by_run_id=uuid4(), candidate_digest="forged"),
+        )
+    assert error.value.detail["reason"] == "category_candidate_requester_mismatch"
 
 
 def test_unit_actor_and_deidentification():

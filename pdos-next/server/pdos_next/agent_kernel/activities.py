@@ -18,7 +18,7 @@ from pdos_next.workflows.checkpoints import verified_checkpoint_url
 
 from .graph import AgentKernel
 from .host import BoundHost
-from .models import AgentInput, AgentRun
+from .models import AgentRun
 from .persistence import KernelStore
 from .tools import default_registry
 
@@ -115,12 +115,6 @@ class KernelActivities:
                 "error_code": "SOURCE_UNAVAILABLE",
             }
         answer = None
-        if reference.get("answer_ref"):
-            with self.store.transaction(scope) as (session, _):
-                answer_row = session.get(AgentInput, UUID(reference["answer_ref"]))
-                if not answer_row or answer_row.run_id != scope.run_id:
-                    raise DomainError("FORBIDDEN_SCOPE", "答复引用不属于当前运行。")
-                answer = answer_row.answers
         host = BoundHost(self.store, adapters)
         with self.store.transaction(scope, lock=True) as (_, row):
             row.state, row.error_code = "running", None
@@ -136,6 +130,10 @@ class KernelActivities:
 
         thread = Thread(target=lambda: heartbeat_context.run(heartbeat), daemon=True)
         try:
+            if reference.get("answer_ref"):
+                from .category_adoption import resolve
+
+                answer = resolve(self.engine, scope, reference["answer_ref"])
             activity.heartbeat(str(scope.run_id))
             thread.start()
             # No in-memory fallback in the production Activity.

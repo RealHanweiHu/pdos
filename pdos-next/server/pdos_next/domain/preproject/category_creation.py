@@ -1,13 +1,8 @@
-"""New category T1 creation; selected static seed material retains its uncertainty.
-
-Personal-run candidates and pre-category research require a registered M2 admission
-port. Until that port exists, those inputs fail closed instead of manufacturing
-runs, model calls, research snapshots, or qualifications.
-"""
+"""Human-confirmed category creation from human, static seed, or sealed AI material."""
 
 import json
 import secrets
-from dataclasses import replace
+from dataclasses import asdict, replace
 from datetime import timedelta
 from pathlib import Path
 from typing import Literal
@@ -239,16 +234,17 @@ def _validate(s, ctx, data):
     if not data.deidentified_confirmed:
         fail("CONFIRMATION_REQUIRED", "deidentification_not_confirmed", "请确认已去除客户身份。")
     if data.prepared_by_run_id:
-        fail(
-            "SOURCE_UNAVAILABLE",
-            "category_candidate_port_pending",
-            "新建品类的实际模型候选入口尚未接通。",
-        )
+        from pdos_next.agent_kernel.category_candidate import validate
+
+        candidate = validate(s, ctx, data)
+        for item in data.groups.knowledge:
+            _initial_parameters(item)
+        return {"candidate": candidate, "material_digest": data.candidate_digest}
     if data.groups.snapshot_refs:
         fail(
             "SOURCE_UNAVAILABLE",
-            "category_research_port_pending",
-            "新建品类的研究作业引用入口尚未接通。",
+            "category_candidate_required",
+            "研究快照须由实际模型候选和原运行读取证明办理。",
         )
     material = None
     if data.seed_key:
@@ -282,14 +278,45 @@ def _validate(s, ctx, data):
                 422,
             )
         check_shared_sources(s, ctx, refs)
-        if item.kind == "competitor" and (item.content["metrics"] or item.content["features"]):
-            fail(
-                "VALIDATION_FAILED",
-                "parameter_not_in_category",
-                "初始竞品指标须待本品类参数建立后引用。",
-                422,
-            )
+        _initial_parameters(item)
     return material
+
+
+def _initial_parameters(item):
+    if item.kind == "competitor" and (item.content["metrics"] or item.content["features"]):
+        fail(
+            "VALIDATION_FAILED",
+            "parameter_not_in_category",
+            "初始竞品指标须待本品类参数建立后引用。",
+            422,
+        )
+
+
+def _candidate(material):
+    return material.get("candidate") if material else None
+
+
+def _candidate_event(material):
+    candidate = _candidate(material)
+    return str(candidate.event.id) if candidate else None
+
+
+def _origin(material):
+    return "ai_draft" if _candidate(material) else "imported" if material else "human"
+
+
+def _snapshot_manifest(candidate):
+    snapshots = {}
+    for item in candidate.snapshots if candidate else ():
+        snapshots.setdefault(
+            item.snapshot.id,
+            {
+                "snapshot_id": str(item.snapshot.id),
+                "content_hash": item.snapshot.content_hash,
+                "call_id": str(item.read_call_id),
+            },
+        )
+    return list(snapshots.values())
 
 
 def preview(s, ctx, data):
@@ -315,21 +342,58 @@ def preview(s, ctx, data):
             "payload": payload,
             "actor_access_epoch": actor.access_epoch,
             "material_digest": material["material_digest"] if material else None,
+            "category_candidate_event_id": _candidate_event(material),
         },
     )
     s.add(proof)
     s.flush()
+    candidate = _candidate(material)
     return {
         "operation": "category.create",
         "tier": "T1",
         "payload": payload,
         "confirmation_token": token,
         "expires_at": expires.isoformat(),
-        "origin": "imported" if material else "human",
-        "import_material": material["material"] if material else None,
-        "parameter_projection_notes": material["parameter_projection_notes"] if material else [],
+        "origin": _origin(material),
+        "writer_id": str(candidate.run.writer_id) if candidate else str(ctx.actor_id),
+        "prepared_by_run_id": str(candidate.run.id) if candidate else None,
+        "category_candidate_event_id": _candidate_event(material),
+        "candidate": {
+            "digest": data.candidate_digest,
+            "input": candidate.event.body["input"],
+            "checks": {
+                "actual_model": True,
+                "actual_source_reads": True,
+                "complete_groups_only": True,
+                "deidentified_confirmed": True,
+            },
+            "sources": [
+                {
+                    "snapshot_id": str(item.snapshot.id),
+                    "url": item.snapshot.url,
+                    "title": item.snapshot.title,
+                    "content_hash": item.snapshot.content_hash,
+                    "read_call_id": str(item.read_call_id),
+                }
+                for item in candidate.snapshots
+            ],
+        }
+        if candidate
+        else None,
+        "import_material": material.get("material") if material else None,
+        "parameter_projection_notes": material.get("parameter_projection_notes", [])
+        if material
+        else [],
         "groups": {
-            key: {"selected_count": len(getattr(data.groups, key)), "depends_on": "category"}
+            key: {
+                "selected_count": len(getattr(data.groups, key)),
+                "available_count": len(candidate.event.body["input"]["groups"][key])
+                if candidate
+                else len(getattr(data.groups, key)),
+                "depends_on": "snapshot_refs"
+                if candidate and key == "knowledge" and data.groups.snapshot_refs
+                else "category",
+            }
             for key in ("knowledge", "parameters", "snapshot_refs")
         },
         "effect": "创建品类并授予本人管理权限；按所选组保存初始知识与规格字典。",
@@ -412,6 +476,7 @@ def create(s, ctx, data):
         or proof.snapshot.get("actor_access_epoch") != actor.access_epoch
         or proof.snapshot.get("material_digest")
         != (material["material_digest"] if material else None)
+        or proof.snapshot.get("category_candidate_event_id") != _candidate_event(material)
     ):
         fail("CONFIRMATION_REQUIRED", "preview_required", "请重新查看并确认服务器预览。")
     if s.scalar(
@@ -435,6 +500,7 @@ def create(s, ctx, data):
 
 def _apply(s, ctx, data, proof, semantic, intent, material):
     category_id, receipt_id = proof.reserved_category_id, uuid4()
+    candidate = _candidate(material)
     category = Category(
         id=category_id,
         tenant_id=ctx.tenant_id,
@@ -443,7 +509,7 @@ def _apply(s, ctx, data, proof, semantic, intent, material):
         purpose=data.purpose,
         owner_id=ctx.actor_id,
         revision=1,
-        created_by_run_id=None,
+        created_by_run_id=candidate.run.id if candidate else None,
     )
     s.add(category)
     s.flush([category])
@@ -457,13 +523,33 @@ def _apply(s, ctx, data, proof, semantic, intent, material):
     s.add(grant)
     s.flush([grant])
     provenance = dict(
-        origin="imported" if material else "human",
-        writer_id=ctx.actor_id,
-        run_id=None,
-        confirmed_by=None,
+        origin=_origin(material),
+        writer_id=candidate.run.writer_id if candidate else ctx.actor_id,
+        run_id=candidate.run.id if candidate else None,
+        confirmed_by=ctx.actor_id if candidate else None,
         prepared_candidate_id=None,
         receipt_id=receipt_id,
     )
+    snapshot_refs = _snapshot_manifest(candidate)
+    if candidate:
+        from pdos_next.agent_kernel.models import PublicWebSnapshot
+
+        registered = set()
+        for item in candidate.snapshots:
+            if item.snapshot.id in registered:
+                continue
+            registered.add(item.snapshot.id)
+            snapshot = PublicWebSnapshot(
+                **asdict(item.snapshot),
+                tenant_id=ctx.tenant_id,
+                category_id=category_id,
+                owner_id=ctx.actor_id,
+                visibility="category",
+                registered_by_run_id=candidate.run.id,
+                receipt_id=receipt_id,
+            )
+            s.add(snapshot)
+            s.flush([snapshot])
     knowledge, parameters = [], []
     for item in data.groups.knowledge:
         content = dict(item.content)
@@ -529,6 +615,8 @@ def _apply(s, ctx, data, proof, semantic, intent, material):
         tenant_id=ctx.tenant_id,
         category_id=category_id,
         product_id=None,
+        run_id=None,
+        agent_run_id=None,
         command_id=uuid4(),
         actor_id=ctx.actor_id,
         requester_id=ctx.requester_id,
@@ -546,12 +634,29 @@ def _apply(s, ctx, data, proof, semantic, intent, material):
             "tier": "T1",
             "knowledge": knowledge,
             "parameters": parameters,
-            "snapshot_refs": [],
+            "snapshot_refs": snapshot_refs,
+            "groups": data.groups.model_dump(mode="json"),
+            "groups_digest": digest(data.groups.model_dump(mode="json")),
             "origin": provenance["origin"],
             "seed_key": data.seed_key,
-            "import_material": material["material"] if material else None,
+            "import_material": material.get("material") if material else None,
+            **(
+                {
+                    "proof_version": 1,
+                    "prepared_by_run_id": str(candidate.run.id),
+                    "registered_by_run_id": str(candidate.run.id),
+                    "category_candidate_event_id": str(candidate.event.id),
+                    "candidate_digest": data.candidate_digest,
+                }
+                if candidate
+                else {}
+            ),
         },
     )
+    if candidate:
+        from pdos_next.agent_kernel.category_adoption import record
+
+        record(s, candidate, receipt)
     s.add(receipt)
     s.flush([receipt])
     s.add_all(

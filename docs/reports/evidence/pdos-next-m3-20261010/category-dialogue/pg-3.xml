@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="11" time="12.635" timestamp="2026-10-11T00:54:14.094739-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_personal_candidate_actual_t1_sources_signature_and_replay" time="2.257"><failure message="AssertionError: {'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}&#10;assert 422 == 201&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-125/test_personal_candidate_actual0')
+
+    def test_personal_candidate_actual_t1_sources_signature_and_replay(setup, tmp_path):
+        f = personal_fixture(setup, tmp_path)
+        assert f.bootstrap.prepare_candidate(f.scope, f.spec, f.arguments, f.key) == f.candidate
+        before = counts(setup)
+&gt;       receipt, payload = adopted(setup, f)
+                           ^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:264: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+f = namespace(scope=RunScope(tenant_id=UUID('b19db7a0-223b-455a-a93c-49b89f849899'), requester_id=UUID('5dbb5885-8c36-4858... 'requires_human': True, 'write_tier': 'T1', 'state': 'candidate', 'event_id': 'd312065f-5928-4bb5-aeb2-8d993a32104f'})
+omit = ()
+
+    def adopted(setup, f, *, omit=()):
+        payload = deepcopy(f.candidate["payload"])
+        payload["deidentified_confirmed"] = True
+        for group in omit:
+            payload["groups"][group] = []
+        preview = setup.client.post("/v1/categories/preview", headers=setup.headers, json=payload)
+        assert preview.status_code == 200, preview.json()
+        payload["confirmation_token"] = preview.json()["confirmation_token"]
+        response = setup.client.post("/v1/categories", headers=setup.headers, json=payload)
+&gt;       assert response.status_code == 201, response.json()
+E       AssertionError: {'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}
+E       assert 422 == 201
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/agent_kernel/test_category_candidate_transactions.py:237: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_personal_candidate_whole_groups_may_be_omitted[omit0]" time="1.071"><failure message="AssertionError: {'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}&#10;assert 422 == 201&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-125/test_personal_candidate_whole_0')
+omit = ('knowledge',)
+
+    @pytest.mark.parametrize(
+        "omit", [("knowledge",), ("parameters",), ("knowledge", "parameters", "snapshot_refs")]
+    )
+    def test_personal_candidate_whole_groups_may_be_omitted(setup, tmp_path, omit):
+        f = personal_fixture(setup, tmp_path)
+&gt;       receipt, payload = adopted(setup, f, omit=omit)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:298: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+f = namespace(scope=RunScope(tenant_id=UUID('698629d8-9bf0-42bb-b2a2-00323d4a6e8c'), requester_id=UUID('990d6be6-a89e-4fa5... 'requires_human': True, 'write_tier': 'T1', 'state': 'candidate', 'event_id': 'ef4032fd-cfde-4053-9056-6d3a5b1882f3'})
+omit = ('knowledge',)
+
+    def adopted(setup, f, *, omit=()):
+        payload = deepcopy(f.candidate["payload"])
+        payload["deidentified_confirmed"] = True
+        for group in omit:
+            payload["groups"][group] = []
+        preview = setup.client.post("/v1/categories/preview", headers=setup.headers, json=payload)
+        assert preview.status_code == 200, preview.json()
+        payload["confirmation_token"] = preview.json()["confirmation_token"]
+        response = setup.client.post("/v1/categories", headers=setup.headers, json=payload)
+&gt;       assert response.status_code == 201, response.json()
+E       AssertionError: {'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}
+E       assert 422 == 201
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/agent_kernel/test_category_candidate_transactions.py:237: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_personal_candidate_whole_groups_may_be_omitted[omit1]" time="1.046"><failure message="AssertionError: {'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}&#10;assert 422 == 201&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-125/test_personal_candidate_whole_1')
+omit = ('parameters',)
+
+    @pytest.mark.parametrize(
+        "omit", [("knowledge",), ("parameters",), ("knowledge", "parameters", "snapshot_refs")]
+    )
+    def test_personal_candidate_whole_groups_may_be_omitted(setup, tmp_path, omit):
+        f = personal_fixture(setup, tmp_path)
+&gt;       receipt, payload = adopted(setup, f, omit=omit)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:298: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+f = namespace(scope=RunScope(tenant_id=UUID('81a348e6-d05b-4a84-a0d1-1c8d0a111b85'), requester_id=UUID('59525c0f-1aed-4984... 'requires_human': True, 'write_tier': 'T1', 'state': 'candidate', 'event_id': '0e9dc286-8fdc-48b5-9331-d5e558a407f3'})
+omit = ('parameters',)
+
+    def adopted(setup, f, *, omit=()):
+        payload = deepcopy(f.candidate["payload"])
+        payload["deidentified_confirmed"] = True
+        for group in omit:
+            payload["groups"][group] = []
+        preview = setup.client.post("/v1/categories/preview", headers=setup.headers, json=payload)
+        assert preview.status_code == 200, preview.json()
+        payload["confirmation_token"] = preview.json()["confirmation_token"]
+        response = setup.client.post("/v1/categories", headers=setup.headers, json=payload)
+&gt;       assert response.status_code == 201, response.json()
+E       AssertionError: {'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}
+E       assert 422 == 201
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/agent_kernel/test_category_candidate_transactions.py:237: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_personal_candidate_whole_groups_may_be_omitted[omit2]" time="1.061"><failure message="AssertionError: {'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}&#10;assert 422 == 201&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-125/test_personal_candidate_whole_2')
+omit = ('knowledge', 'parameters', 'snapshot_refs')
+
+    @pytest.mark.parametrize(
+        "omit", [("knowledge",), ("parameters",), ("knowledge", "parameters", "snapshot_refs")]
+    )
+    def test_personal_candidate_whole_groups_may_be_omitted(setup, tmp_path, omit):
+        f = personal_fixture(setup, tmp_path)
+&gt;       receipt, payload = adopted(setup, f, omit=omit)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:298: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+f = namespace(scope=RunScope(tenant_id=UUID('5f59396b-0fe2-45c6-846e-99d5f602d5de'), requester_id=UUID('f955a6ec-8ef3-4cd5... 'requires_human': True, 'write_tier': 'T1', 'state': 'candidate', 'event_id': '18bdecd1-91eb-4886-8c0c-7ab2e04bf408'})
+omit = ('knowledge', 'parameters', 'snapshot_refs')
+
+    def adopted(setup, f, *, omit=()):
+        payload = deepcopy(f.candidate["payload"])
+        payload["deidentified_confirmed"] = True
+        for group in omit:
+            payload["groups"][group] = []
+        preview = setup.client.post("/v1/categories/preview", headers=setup.headers, json=payload)
+        assert preview.status_code == 200, preview.json()
+        payload["confirmation_token"] = preview.json()["confirmation_token"]
+        response = setup.client.post("/v1/categories", headers=setup.headers, json=payload)
+&gt;       assert response.status_code == 201, response.json()
+E       AssertionError: {'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}
+E       assert 422 == 201
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/agent_kernel/test_category_candidate_transactions.py:237: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[wrong_person]" time="0.863" /><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[name]" time="0.852" /><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[partial_group]" time="1.070" /><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[unread_quote]" time="1.014" /><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[cancelled]" time="0.927" /><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_category_transaction_failure_rolls_back_every_fact_and_confirmation" time="1.238"><failure message="AssertionError: assert 422 == 201&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code&#10; +    where &lt;Response [422 Unprocessable Content]&gt; = post('/v1/categories', headers={'Authorization': 'Bearer KYovd4auIQlYJhxyoSANLJeNzzB4TBQvLcqPmhm3clw'}, json={'key': 'synthetic-744590ec96c2415cbc6ce11c551d9e27', 'name': '合成品类', 'purpose': '明确范围', 'groups': {'knowledge': [{'ki...7b-48cd-b9b1-1b9dbea266d8', 'content_hash': '706aacc791845181ac563d3028ed2c1952387530af2b40dce2bd3ca4df1d545d'}]}, ...})&#10; +      where post = &lt;starlette.testclient.TestClient object at 0x122c7bf50&gt;.post&#10; +        where &lt;starlette.testclient.TestClient object at 0x122c7bf50&gt; = &lt;isolated synthetic test scope&gt;.client&#10; +      and   {'Authorization': 'Bearer KYovd4auIQlYJhxyoSANLJeNzzB4TBQvLcqPmhm3clw'} = &lt;isolated synthetic test scope&gt;.headers">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-125/test_category_transaction_fail0')
+
+    def test_category_transaction_failure_rolls_back_every_fact_and_confirmation(setup, tmp_path):
+        f = personal_fixture(setup, tmp_path)
+        payload = deepcopy(f.candidate["payload"])
+        payload["deidentified_confirmed"] = True
+        preview = setup.client.post("/v1/categories/preview", headers=setup.headers, json=payload)
+        assert preview.status_code == 200
+        payload["confirmation_token"] = preview.json()["confirmation_token"]
+        before = counts(setup)
+    
+        def fail(session, *_):
+            if any(isinstance(row, Outbox) and row.tenant_id == setup.tenant for row in session.new):
+                raise RuntimeError("synthetic category outbox failure")
+    
+        event.listen(Session, "before_flush", fail)
+        try:
+            with pytest.raises(RuntimeError, match="category outbox"):
+                setup.client.post("/v1/categories", headers=setup.headers, json=payload)
+        finally:
+            event.remove(Session, "before_flush", fail)
+        assert counts(setup) == before
+        with Session(setup.admin) as session:
+            confirmation = session.scalar(
+                select(CategoryCreationConfirmation).where(
+                    CategoryCreationConfirmation.token_hash == digest(payload["confirmation_token"])
+                )
+            )
+            assert not confirmation.consumed
+&gt;       assert (
+            setup.client.post("/v1/categories", headers=setup.headers, json=payload).status_code == 201
+        )
+E       AssertionError: assert 422 == 201
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+E        +    where &lt;Response [422 Unprocessable Content]&gt; = post('/v1/categories', headers={'Authorization': 'Bearer KYovd4auIQlYJhxyoSANLJeNzzB4TBQvLcqPmhm3clw'}, json={'key': 'synthetic-744590ec96c2415cbc6ce11c551d9e27', 'name': '合成品类', 'purpose': '明确范围', 'groups': {'knowledge': [{'ki...7b-48cd-b9b1-1b9dbea266d8', 'content_hash': '706aacc791845181ac563d3028ed2c1952387530af2b40dce2bd3ca4df1d545d'}]}, ...})
+E        +      where post = &lt;starlette.testclient.TestClient object at 0x122c7bf50&gt;.post
+E        +        where &lt;starlette.testclient.TestClient object at 0x122c7bf50&gt; = &lt;isolated synthetic test scope&gt;.client
+E        +      and   {'Authorization': 'Bearer KYovd4auIQlYJhxyoSANLJeNzzB4TBQvLcqPmhm3clw'} = &lt;isolated synthetic test scope&gt;.headers
+
+tests/agent_kernel/test_category_candidate_transactions.py:354: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_sql_cannot_insert_ai_category_without_actual_receipt_or_change_run_identity" time="0.756"><failure message="AssertionError: {'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}&#10;assert 422 == 201&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-125/test_sql_cannot_insert_ai_cate0')
+
+    def test_sql_cannot_insert_ai_category_without_actual_receipt_or_change_run_identity(
+        setup, tmp_path
+    ):
+        f = personal_fixture(setup, tmp_path, sources=False)
+        with pytest.raises(DBAPIError):
+            with tenant_session(setup.engine, setup.tenant, actor_id=setup.human) as session:
+                session.add(
+                    Category(
+                        tenant_id=setup.tenant,
+                        owner_id=setup.human,
+                        key="forged-" + uuid4().hex,
+                        name="forged",
+                        purpose="forged",
+                        created_by_run_id=f.run.id,
+                    )
+                )
+&gt;       receipt, _ = adopted(setup, f)
+                     ^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+f = namespace(scope=RunScope(tenant_id=UUID('2a39e7af-5f79-4a83-8c85-ca51957049dd'), requester_id=UUID('23752008-97f1-412a... 'requires_human': True, 'write_tier': 'T1', 'state': 'candidate', 'event_id': 'd7929dde-4be7-47dd-9667-75ea19b8a783'})
+omit = ()
+
+    def adopted(setup, f, *, omit=()):
+        payload = deepcopy(f.candidate["payload"])
+        payload["deidentified_confirmed"] = True
+        for group in omit:
+            payload["groups"][group] = []
+        preview = setup.client.post("/v1/categories/preview", headers=setup.headers, json=payload)
+        assert preview.status_code == 200, preview.json()
+        payload["confirmation_token"] = preview.json()["confirmation_token"]
+        response = setup.client.post("/v1/categories", headers=setup.headers, json=payload)
+&gt;       assert response.status_code == 201, response.json()
+E       AssertionError: {'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}
+E       assert 422 == 201
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/agent_kernel/test_category_candidate_transactions.py:237: AssertionError</failure></testcase></testsuite></testsuites>

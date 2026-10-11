@@ -17,10 +17,14 @@ from .tools import default_registry
 
 
 class ResearchGraph:
-    def __init__(self, host, *, checkpointer_factory=None, artifacts=None, registered_reads=None):
+    def __init__(
+        self, host, *, checkpointer_factory=None, artifacts=None, registered_reads=None,
+        instruction_for=None,
+    ):
         self.host, self.checkpointer_factory = host, checkpointer_factory
         self.artifacts = artifacts
         self.registered_reads = registered_reads
+        self.instruction_for = instruction_for
 
     async def __call__(self, task, child):
         loop = asyncio.get_running_loop()
@@ -29,10 +33,14 @@ class ResearchGraph:
         host = self.host
         artifacts = self.artifacts
         registered_read = getattr(self.registered_reads, "read", None)
+        instruction_for = self.instruction_for
+        instruction = instruction_for(scope) if instruction_for else None
 
         class ReadOnlyHost:
             def current(self, bound):
                 host.current(bound)
+                if instruction_for and instruction_for(bound) != instruction:
+                    raise DomainError("VERSION_CONFLICT", "原研究子任务说明不能静默替换。")
 
             def enabled(self, *_):
                 return False
@@ -47,9 +55,22 @@ class ResearchGraph:
                     "instruction": "Return result.rows as LedgerDraft objects. "
                     "Search then read sources. "
                     "Quote only exact substrings at a location you actually read.",
+                    **({"research_skill": instruction.context()} if instruction else {}),
                 }
 
             def model(self, bound, **kwargs):
+                self.current(bound)
+                if instruction:
+                    try:
+                        initial = kwargs["messages"][0]
+                        actual = json.loads(initial["content"])["context"]["research_skill"]
+                        if initial["role"] != "user" or actual != instruction.context():
+                            raise ValueError
+                    except (KeyError, IndexError, TypeError, ValueError):
+                        raise DomainError(
+                            "VERSION_CONFLICT", "原研究检查点未包含固定的子任务说明。"
+                        ) from None
+                    kwargs["loaded_skills"] = (instruction.skill,)
                 if hasattr(host, "gateway"):
                     return host.gateway.turn(
                         bound, emit=lambda event: self.emit(bound, event), **kwargs

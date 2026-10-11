@@ -451,11 +451,29 @@ def create_app(
     from pdos_next.category_scope import CategoryCreate, MemberGrant, create_category, grant_member
 
     @app.post("/v1/categories", status_code=201)
-    def category_create(data: CategoryCreate, ctx: Context = auth_dependency):
+    async def category_create(data: CategoryCreate, ctx: Context = auth_dependency):
         with tenant_session(
             engine, ctx.tenant_id, actor_id=ctx.actor_id, requester_id=ctx.requester_id
         ) as s:
-            return create_category(s, ctx, data)
+            value = create_category(s, ctx, data)
+            proof = value.get("result", {})
+            continuation = None
+            if proof.get("adoption_input_ref"):
+                from pdos_next.agent_kernel.models import AgentRun
+
+                run = s.get(AgentRun, UUID(proof["prepared_by_run_id"]))
+                if run and run.state in {"queued", "running", "waiting_input"}:
+                    continuation = (run.id, UUID(proof["adoption_input_ref"]))
+        if continuation:
+            signal = agent_api_ports.signal_workflow if agent_api_ports else kernel_temporal.signal
+            try:
+                await signal(ctx.tenant_id, *continuation)
+            except Exception:
+                # Creation committed; the Outbox preserves the same resume reference.
+                value["continuation_state"] = "awaiting_delivery"
+            else:
+                value["continuation_state"] = "signalled"
+        return value
 
     @app.post("/v1/categories/preview")
     def category_create_preview(data: CategoryCreate, ctx: Context = auth_dependency):

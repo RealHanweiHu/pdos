@@ -673,6 +673,10 @@ def record_answers(session, ctx, run_id, *, answers, idempotency_key):
     from .models import AgentInput
 
     require_context(session, ctx)
+    if answers.get("type") == "category_adoption" or idempotency_key.startswith(
+        "category-adoption:"
+    ):
+        raise DomainError("FORBIDDEN_SCOPE", "品类采用须经本人确认创建并取得实际回执。")
     run = session.scalar(select(AgentRun).where(AgentRun.id == run_id).with_for_update())
     if (
         not run

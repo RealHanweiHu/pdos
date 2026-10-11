@@ -1,0 +1,34 @@
+{
+  "environment": {
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d"
+  },
+  "category_id": "f2acfe63-fdf4-4981-814b-7939197921d4",
+  "receipt_id": "6407ad7c-d225-4309-aa5a-f4b102e72b93",
+  "candidate_run_id": "b023531f-f9e3-4b8d-9bc3-8671c398e43a",
+  "counts": {
+    "categories": 1,
+    "receipts": 1,
+    "adoption_inputs": 1,
+    "adoption_events": 1,
+    "outbox": 1,
+    "snapshots": 1,
+    "parameters": 1,
+    "knowledge": 1,
+    "agent_grants": 0,
+    "synthetic_model_ledger": 2
+  },
+  "real_model_calls": 0,
+  "workflow_signal_delivery": "intentionally unavailable; creation committed with awaiting_delivery",
+  "browser_checks": [
+    "actual Human T1 whole groups preview and confirm",
+    "actual category and receipt",
+    "switch category after sidebar overlap repair",
+    "historical adopted candidate retains original receipt",
+    "390px light and dark workspace without horizontal overflow"
+  ],
+  "not_browser_tested": [
+    "live-model clarification dialog; component scenarios only"
+  ]
+}

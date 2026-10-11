@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Workspace } from "@/components/workspace";
+import { CategoryCreateForm } from "@/components/category-create/category-create-form";
+import { PersonalXiaopai } from "@/components/category-create/personal-xiaopai";
+import type { CreatedCategory } from "@/components/category-create/contracts";
 
 type Category = { id: string; name: string; purpose: string };
 
@@ -23,8 +26,7 @@ export function CategoryWorkspace() {
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [name, setName] = useState("");
-  const [purpose, setPurpose] = useState("");
+  const [creationNotice, setCreationNotice] = useState("");
   useEffect(() => {
     let active = true;
     categoryApi<Category[]>().then(list => {
@@ -37,17 +39,23 @@ export function CategoryWorkspace() {
   }, []);
   function selectCategory(id: string) {
     const url = new URL(window.location.href);
-    url.searchParams.set("category", id); url.searchParams.delete("product");
+    if (id) url.searchParams.set("category", id); else url.searchParams.delete("category");
+    url.searchParams.delete("product");
     window.history.replaceState(null, "", url);
     setCategoryId(id);
   }
-  if (categoryId) return <>
+  function created(category: CreatedCategory) {
+    setCategories(old => [...old.filter(item => item.id !== category.id), category]);
+    selectCategory(category.id);
+    setCreationNotice(`品类已创建。${category.receiptId ? `回执：${category.receiptId}。` : ""}${category.continuationState === "awaiting_delivery" ? "小 Pai 的后续通知等待派送，创建已完成。" : ""}`);
+  }
+  if (categoryId) return <Workspace key={categoryId} categoryId={categoryId} categoryBanner={<>
     <div className="flex items-center gap-3 border-b bg-background px-5 py-2">
       <span className="text-sm">品类 · {categories.find(c => c.id === categoryId)?.name}</span>
-      <Button variant="ghost" size="sm" onClick={() => setCategoryId("")}>切换品类</Button>
+      <Button variant="ghost" size="sm" onClick={() => { setCreationNotice(""); selectCategory(""); }}>切换品类</Button>
     </div>
-    <Workspace key={categoryId} categoryId={categoryId} />
-  </>;
+    {creationNotice && <p role="status" className="break-all px-5 py-2 text-sm text-muted-foreground">{creationNotice}</p>}
+  </>} />;
   return <main className="mx-auto max-w-3xl space-y-6 p-6">
     <h1 className="text-2xl font-semibold">品类工作区</h1>
     <p className="text-muted-foreground">选择品类，查看其中的型号与研发工作。</p>
@@ -57,20 +65,8 @@ export function CategoryWorkspace() {
       <button key={c.id} className="panel text-left" onClick={() => selectCategory(c.id)}>
         <strong>{c.name}</strong><p className="mt-2 text-sm text-muted-foreground">{c.purpose}</p>
       </button>)}</div>
-    <form className="panel" onSubmit={async e => {
-      e.preventDefault(); setBusy(true); setError("");
-      try {
-        const result = await categoryApi<{ subject_id: string }>({ name, purpose,
-          idempotency_key: crypto.randomUUID(), confirmed: true });
-        setCategories(await categoryApi<Category[]>()); selectCategory(result.subject_id);
-      } catch (failure) { setError((failure as Error).message); }
-      finally { setBusy(false); }
-    }}>
-      <h2 className="mb-4 font-semibold">建立品类</h2>
-      <label>品类名称<input required minLength={2} maxLength={160} value={name} onChange={e => setName(e.target.value)} /></label>
-      <label>用途与范围<textarea required minLength={3} maxLength={1000} value={purpose} onChange={e => setPurpose(e.target.value)} /></label>
-      <Button disabled={busy}>确认创建品类</Button>
-    </form>
+    <CategoryCreateForm onCreated={created} />
+    <PersonalXiaopai onCreated={created} />
     {error && <Button variant="outline" disabled={busy} onClick={async () => {
       setBusy(true); setError("");
       try {
