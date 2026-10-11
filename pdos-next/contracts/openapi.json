@@ -4829,11 +4829,26 @@
         }
       }
     },
-    "/v1/categories/{category_id}/views/definition-maturity": {
+    "/v1/categories/{category_id}/views/{view_name}": {
       "get": {
-        "summary": "Definition Maturity",
-        "operationId": "definition_maturity_v1_categories__category_id__views_definition_maturity_get",
+        "summary": "Proposal View",
+        "operationId": "proposal_view_v1_categories__category_id__views__view_name__get",
         "parameters": [
+          {
+            "name": "view_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "enum": [
+                "positioning",
+                "spec-benchmark",
+                "feature-config",
+                "definition-maturity"
+              ],
+              "type": "string",
+              "title": "View Name"
+            }
+          },
           {
             "name": "proposal_id",
             "in": "query",
@@ -4842,6 +4857,26 @@
               "type": "string",
               "format": "uuid",
               "title": "Proposal Id"
+            }
+          },
+          {
+            "name": "parameter_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Parameter Ids"
             }
           },
           {

@@ -52,8 +52,9 @@ def default_registry():
     from .domain_reads import SCHEMAS
     from .m3_calculators import SCHEMAS as COMPUTE_SCHEMAS
     from .m3_object_reads import SCHEMAS as OBJECT_SCHEMAS
+    from .m3_spec_compare import SCHEMAS as COMPARE_SCHEMAS
 
-    schemas = {**SCHEMAS, **COMPUTE_SCHEMAS, **OBJECT_SCHEMAS}
+    schemas = {**SCHEMAS, **COMPUTE_SCHEMAS, **OBJECT_SCHEMAS, **COMPARE_SCHEMAS}
 
     registry = ToolRegistry(command_tools())
     for name in sorted(READS | COMPUTE | {"skill.load"}):

@@ -1,6 +1,6 @@
 """M3 reads use the same authenticated category root and common command endpoints."""
 
-from typing import Annotated
+from typing import Annotated, Literal
 from uuid import UUID
 
 from fastapi import Query
@@ -163,11 +163,11 @@ def register_routes(app, engine, auth_dependency):
 
     @app.get("/v1/categories/{category_id}/proposals/{proposal_id}")
     def proposal_read(proposal_id: UUID, ctx: Context = auth_dependency):
-        from .views import read
+        from .proposal_views import read_document
 
         with scope(ctx) as s:
             require_access(s, ctx, None)
-            return read(s, ctx, proposal_id)
+            return read_document(s, ctx, proposal_id)
 
     @app.get("/v1/categories/{category_id}/proposals/{proposal_id}/items")
     def proposal_items(
@@ -217,14 +217,20 @@ def register_routes(app, engine, auth_dependency):
                 ]
             }
 
-    @app.get("/v1/categories/{category_id}/views/definition-maturity")
-    def definition_maturity(proposal_id: UUID, ctx: Context = auth_dependency):
-        from .access import proposal
-        from .views import document, maturity
+    @app.get("/v1/categories/{category_id}/views/{view_name}")
+    def proposal_view(
+        view_name: Literal[
+            "positioning", "spec-benchmark", "feature-config", "definition-maturity"
+        ],
+        proposal_id: UUID,
+        parameter_ids: Annotated[list[UUID] | None, Query()] = None,
+        ctx: Context = auth_dependency,
+    ):
+        from .proposal_views import read
 
         with scope(ctx) as s:
             require_access(s, ctx, None)
-            return maturity(document(s, proposal(s, ctx, proposal_id)))
+            return read(s, ctx, view_name, proposal_id, parameter_ids)
 
     @app.get("/v1/categories/{category_id}/projects/{project_id}/open-items")
     def project_items(project_id: UUID, ctx: Context = auth_dependency):

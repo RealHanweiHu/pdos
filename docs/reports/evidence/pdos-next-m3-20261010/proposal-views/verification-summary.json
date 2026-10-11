@@ -1,0 +1,929 @@
+{
+  "schema_head": "s0_0752",
+  "source_count": 1521,
+  "source_digest": "815d1e51f621531af3f9dd225e96f982e1133d5f745f2184ecb6d985342ab5a9",
+  "unique_backend_cases": 226,
+  "selected_failures": [],
+  "backend_evidence": [
+    "check-1.xml",
+    "check-2.xml"
+  ],
+  "real_postgresql_cases": 18,
+  "frontend_unique_cases": 59,
+  "frontend_latest": {
+    "31 view/document cases": "frontend-3.txt",
+    "other 28 BFF/plan cases": "frontend-1.txt"
+  },
+  "production_build": "build-3.txt",
+  "build_scope": "final source including member names/status labels",
+  "ruff": "ruff-1.txt",
+  "frontend_lint": "frontend-lint-2.txt",
+  "schema_changes": false,
+  "real_model_calls": 0,
+  "case_latest": {
+    "tests.preproject.test_proposal_views::test_parameter_version_unit_and_test_conditions_keep_separate_facets[parameter_id-other-parameter]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_parameter_version_unit_and_test_conditions_keep_separate_facets[parameter_version-3]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_parameter_version_unit_and_test_conditions_keep_separate_facets[unit-bar]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_parameter_version_unit_and_test_conditions_keep_separate_facets[condition_note-40 C]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_parameter_version_unit_and_test_conditions_keep_separate_facets[test_conditions-value4]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_every_price_context_dimension_separates_facets[currency-USD]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_every_price_context_dimension_separates_facets[basis-promo]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_every_price_context_dimension_separates_facets[as_of-2026-10-10]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_every_price_context_dimension_separates_facets[includes_tax-False]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_every_price_context_dimension_separates_facets[includes_tax-None]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_every_price_context_dimension_separates_facets[includes_shipping-True]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_every_price_context_dimension_separates_facets[includes_shipping-None]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_every_price_context_dimension_separates_facets[channel-online]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_every_price_context_dimension_separates_facets[region-US]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_prices_are_individual_observations_and_never_averaged": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_zero_is_a_valid_price_and_parameter_coordinate": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_unknown_or_non_numeric_parameters_do_not_become_points[None]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_unknown_or_non_numeric_parameters_do_not_become_points[True]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_unknown_or_non_numeric_parameters_do_not_become_points[False]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_unknown_or_non_numeric_parameters_do_not_become_points[NaN]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_unknown_or_non_numeric_parameters_do_not_become_points[Infinity]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_unknown_or_non_numeric_parameters_do_not_become_points[]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_unknown_or_non_numeric_parameters_do_not_become_points[not-number]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_range_and_noncomparable_observations_have_no_invented_midpoint": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_incomplete_or_unknown_prices_only_report_reasons[changes0-price_amount_unknown]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_incomplete_or_unknown_prices_only_report_reasons[changes1-price_amount_unknown]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_incomplete_or_unknown_prices_only_report_reasons[changes2-price_currency_unknown]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_incomplete_or_unknown_prices_only_report_reasons[changes3-price_basis_unknown]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_incomplete_or_unknown_prices_only_report_reasons[changes4-price_date_unknown]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_incomplete_or_unknown_prices_only_report_reasons[changes5-price_unavailable]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_competitor_price_names_and_observation_nature_sources_are_preserved": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_nature_is_not_reclassified_by_the_positioning_projection[observed]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_nature_is_not_reclassified_by_the_positioning_projection[claimed]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_nature_is_not_reclassified_by_the_positioning_projection[inferred]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_nature_is_not_reclassified_by_the_positioning_projection[target]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_nature_is_not_reclassified_by_the_positioning_projection[computed]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_nature_is_not_reclassified_by_the_positioning_projection[other]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_missing_price_unmapped_and_unavailable_subjects_stay_visible": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_price_with_missing_source_is_not_drawn_even_when_amount_is_known": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_unknown_positioning_preserves_filtered_sources_without_reopening_them[numeric_unknown]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_unknown_positioning_preserves_filtered_sources_without_reopening_them[price_missing]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_unknown_positioning_preserves_filtered_sources_without_reopening_them[price_unavailable]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_maturity_returns_exact_blockers_questions_counts_and_no_score": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_feature_projection_keeps_only_explicit_boolean_enum_mappings": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_maturity_specification_count_is_guidance_not_a_new_gate[0]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_maturity_specification_count_is_guidance_not_a_new_gate[9]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_maturity_specification_count_is_guidance_not_a_new_gate[21]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_document_identity_matches_the_actual_displayed_copy[reviewer]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_document_identity_matches_the_actual_displayed_copy[owner]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_returned_submission_does_not_replace_current_document": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_withdrawn_references_remain_redacted_without_reopening_raw_document": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_maturity_endpoint_preserves_frozen_identity_and_context_changes": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_unknown_view_does_not_read_any_document": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_comparison_view_keeps_actual_proposal_baseline_parameter_scope[spec-benchmark]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_comparison_view_keeps_actual_proposal_baseline_parameter_scope[feature-config]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views::test_comparison_view_keeps_actual_proposal_baseline_parameter_scope[positioning]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_actual_reader_zero_and_no_caller_values": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_exact_versions_units_and_conditions_form_separate_groups[change0]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_exact_versions_units_and_conditions_form_separate_groups[change1]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_exact_versions_units_and_conditions_form_separate_groups[change2]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_exact_versions_units_and_conditions_form_separate_groups[change3]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_dictionary_standard_is_explicit_not_null_wildcard": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_unavailable_never_inherits_a_stored_value[unknown]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_unavailable_never_inherits_a_stored_value[conflicted]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_unavailable_never_inherits_a_stored_value[not_applicable]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_boolean_false_enum_and_unmapped_free_key_are_preserved": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_missing_historical_version_is_not_replaced_with_current": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_withdrawn_source_redacts_quote_and_disables_value": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_competitor_observations_and_prices_are_not_averaged_or_replaced": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_product_uses_proposals_exact_fixed_baseline_and_honest_kind[False]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_product_uses_proposals_exact_fixed_baseline_and_honest_kind[True]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_selected_definition_guard_failure_stops_comparison_before_body": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_proposal_prices_and_unmapped_feature_text_keep_actual_sources": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_extra_parameter_choices_do_not_fabricate_observations": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_unauthorized_proposal_stops_before_reading_comparison_data": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_invalid_numeric_values_are_not_converted_to_zero[True]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_invalid_numeric_values_are_not_converted_to_zero[1.5]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_invalid_numeric_values_are_not_converted_to_zero[NaN]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_invalid_numeric_values_are_not_converted_to_zero[Infinity]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_invalid_numeric_values_are_not_converted_to_zero[marketing text]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_competitor_query_requires_current_entry_and_scope": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_claim_reference_uses_actual_resolver_and_compares_location": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_fixed_knowledge_preserves_version_and_actual_product_source[active]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_fixed_knowledge_preserves_version_and_actual_product_source[withdrawn]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_fixed_knowledge_preserves_version_and_actual_product_source[None]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_product_artifact_scope_does_not_bypass_source_guards[head]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_product_artifact_scope_does_not_bypass_source_guards[original]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_product_artifact_scope_does_not_bypass_source_guards[quote]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_proposal_uses_reviewers_selected_frozen_document": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_product_stale_redacted_sources_cannot_crash_or_supply_values": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_unverifiable_feature_text_is_not_returned[absent]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_unverifiable_feature_text_is_not_returned[unavailable]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_spec_compare::test_complete_price_without_source_stays_unknown_and_is_not_plotted": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_views_pg::test_private_view_rechecks_actual_audience_tenant_and_category[positioning]": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.preproject.test_proposal_views_pg::test_private_view_rechecks_actual_audience_tenant_and_category[spec-benchmark]": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.preproject.test_proposal_views_pg::test_private_view_rechecks_actual_audience_tenant_and_category[feature-config]": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.preproject.test_proposal_views_pg::test_private_view_rechecks_actual_audience_tenant_and_category[definition-maturity]": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.preproject.test_proposal_views_pg::test_http_comparison_preserves_parameter_versions_conditions_nature_and_zero": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.preproject.test_proposal_views_pg::test_reviewer_views_bind_actual_frozen_submission_identity[positioning]": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.preproject.test_proposal_views_pg::test_reviewer_views_bind_actual_frozen_submission_identity[spec-benchmark]": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.preproject.test_proposal_views_pg::test_reviewer_views_bind_actual_frozen_submission_identity[feature-config]": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.preproject.test_proposal_views_pg::test_reviewer_views_bind_actual_frozen_submission_identity[definition-maturity]": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.preproject.test_proposal_views_pg::test_withdrawn_claim_disables_comparison_and_redacts_unmapped_feature_text": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.preproject.test_proposal_views_pg::test_real_g0_product_retains_honest_fixed_baseline_and_target_price_uncertainty": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.preproject.test_baseline_guard_callback::test_published_receipt_and_human_precede_guard_then_body_without_reading_later_draft": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline_guard_callback::test_callback_denial_propagates_original_error_and_never_falls_back[FORBIDDEN_SCOPE]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline_guard_callback::test_callback_denial_propagates_original_error_and_never_falls_back[SOURCE_UNAVAILABLE]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline_guard_callback::test_callback_denial_propagates_original_error_and_never_falls_back[VERSION_CONFLICT]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline_guard_callback::test_g0_and_draft_guard_precede_body[g0]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline_guard_callback::test_g0_and_draft_guard_precede_body[draft]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline_guard_callback::test_invalid_publication_metadata_never_reaches_guard_or_body[receipt]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline_guard_callback::test_invalid_publication_metadata_never_reaches_guard_or_body[signer]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline_guard_callback::test_excluded_blocks_skip_all_block_reads_and_retain_explicit_unknown": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_digest_preserves_decimal_precision_and_uuid_representation": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_source_labels_statuses_ui_and_publication_pointer_are_not_fixed_content": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_digest_binds_complete_m3_spec_semantics[parameter_version-3]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_digest_binds_complete_m3_spec_semantics[item_status-expert_pending]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_digest_binds_complete_m3_spec_semantics[condition_note-0C]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_digest_binds_complete_m3_spec_semantics[origin-human]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_digest_binds_complete_m3_spec_semantics[writer_id-00000000-0000-0000-0000-000000000050]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_digest_binds_complete_m3_spec_semantics[run_id-00000000-0000-0000-0000-000000000051]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_digest_binds_complete_m3_spec_semantics[confirmed_by-00000000-0000-0000-0000-000000000052]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_digest_binds_complete_m3_spec_semantics[receipt_id-00000000-0000-0000-0000-000000000053]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_digest_binds_complete_m3_spec_semantics[exceptions-value8]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_digest_binds_complete_m3_spec_semantics[applicable_variants-value9]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_digest_binds_fixed_source_ids_versions_quotes_and_spec_relations": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_digest_ignores_collection_order_and_decimal_scale": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_unknown_spec_field_cannot_escape_digest": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_published_baseline_reads_exact_scope_and_receipt": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_synthetic_publication_stays_explicit": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_current_caller_and_historical_signer_need_not_be_same_human": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_unpublished_or_wrong_scope_definition_never_becomes_baseline[tenant_id-value0]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_unpublished_or_wrong_scope_definition_never_becomes_baseline[category_id-value1]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_unpublished_or_wrong_scope_definition_never_becomes_baseline[product_id-value2]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_unpublished_or_wrong_scope_definition_never_becomes_baseline[variant_id-value3]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_unpublished_or_wrong_scope_definition_never_becomes_baseline[status-draft]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_unpublished_or_wrong_scope_definition_never_becomes_baseline[sealed-False]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_unpublished_or_wrong_scope_definition_never_becomes_baseline[publication_receipt_id-None]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_invalid_receipt_is_not_publication[tenant_id-value0]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_invalid_receipt_is_not_publication[category_id-value1]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_invalid_receipt_is_not_publication[product_id-value2]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_invalid_receipt_is_not_publication[operation-proposal.g0.decide]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_invalid_receipt_is_not_publication[subject_type-proposal_decision]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_invalid_receipt_is_not_publication[subject_id-value5]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_invalid_receipt_is_not_publication[subject_revision-2]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_invalid_receipt_is_not_publication[actor_id-value7]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_invalid_receipt_is_not_publication[requester_id-value8]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_invalid_receipt_is_not_publication[run_id-value9]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_invalid_receipt_is_not_publication[agent_run_id-value10]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_invalid_receipt_is_not_publication[result-value11]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_invalid_receipt_is_not_publication[result-value12]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_publication_signer_must_be_same_tenant_human[kind-agent]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_publication_signer_must_be_same_tenant_human[tenant_id-value1]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_rls_hidden_rows_are_unavailable[0]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_rls_hidden_rows_are_unavailable[1]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_rls_hidden_rows_are_unavailable[2]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_rls_hidden_rows_are_unavailable[3]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_version_mismatch_is_explicit_conflict": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_variant_baseline_requires_visible_matching_variant": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_source_read_guard_failure_is_preserved": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_digest_mismatch_after_content_change_is_unavailable": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_read_prefers_publication_over_later_draft_and_g0": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_g0_fallback_is_not_a_published_baseline": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_draft_and_empty_fallbacks_are_explicit": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_unreadable_definition_is_not_returned_by_fallback": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_source_tree_uses_one_union_lock_and_actual_products": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_definition_source_cycle_rejected_before_claim_locks": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_source_failure_blocks_derivation_without_falling_back": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_read_exact_revision_filters_query_and_keeps_draft": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_real_traversal_propagates_resolver_rejection[artifact]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_real_traversal_propagates_resolver_rejection[snapshot]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_real_traversal_propagates_resolver_rejection[parameter]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_real_traversal_propagates_resolver_rejection[knowledge]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_tree_and_extra_claims_share_order_and_complete_frozen_consumption[False]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_tree_and_extra_claims_share_order_and_complete_frozen_consumption[True]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_ancestor_knowledge_claim_closure_uses_actual_fixed_versions[derived_from_definition_id]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_ancestor_knowledge_claim_closure_uses_actual_fixed_versions[parent_definition_id]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_ancestry_and_knowledge_cycles_fail_before_locks[knowledge]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_ancestry_and_knowledge_cycles_fail_before_locks[parent_definition_id]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_ancestry_and_knowledge_cycles_fail_before_locks[derived_from_definition_id]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_all_baseline_kinds_hide_unreadable_typed_spec_sources[claim-published]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_all_baseline_kinds_hide_unreadable_typed_spec_sources[claim-g0]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_all_baseline_kinds_hide_unreadable_typed_spec_sources[claim-draft]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_all_baseline_kinds_hide_unreadable_typed_spec_sources[artifact-published]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_all_baseline_kinds_hide_unreadable_typed_spec_sources[artifact-g0]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_all_baseline_kinds_hide_unreadable_typed_spec_sources[artifact-draft]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_all_baseline_kinds_hide_unreadable_typed_spec_sources[knowledge-published]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_all_baseline_kinds_hide_unreadable_typed_spec_sources[knowledge-g0]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_all_baseline_kinds_hide_unreadable_typed_spec_sources[knowledge-draft]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_withdrawn_claim_history_is_preserved_only_after_body_access": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_metadata_only_withdrawal_does_not_authorize_history": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_baseline::test_unreadable_candidate_falls_back_to_older_readable_definition": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_actual_run_session_authority_and_readonly_scope_before_compare": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_actual_run_identity_cannot_be_replaced_by_scope[session_id]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_actual_run_identity_cannot_be_replaced_by_scope[requester_id]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_actual_run_identity_cannot_be_replaced_by_scope[writer_id]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_actual_run_identity_cannot_be_replaced_by_scope[category_id]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_actual_session_owner_cannot_be_replaced": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_private_proposal_head_denied_before_document_or_compute[effective_visibility-private]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_private_proposal_head_denied_before_document_or_compute[private_source_count-1]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_private_proposal_head_denied_before_document_or_compute[customer_identities-value2]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_private_run_context_denied_even_if_compared_objects_are_public": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_cancel_epoch_and_model_supplied_values_never_reach_reader": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_private_product_head_denied_before_product_body": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_product_bound_run_does_not_accept_other_product_selector": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_private_actual_run_artifact_is_denied_before_source_reader": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_shared_artifact_cannot_escape_private_original_parent": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_nested_competitor_metric_source_is_checked_before_comparison": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_historical_parameter_is_checked_as_actual_version": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_fixed_knowledge_survives_current_change_but_competitor_requires_current[active]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_fixed_knowledge_survives_current_change_but_competitor_requires_current[withdrawn]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_fixed_knowledge_survives_current_change_but_competitor_requires_current[None]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_fixed_knowledge_product_artifact_metadata_precedes_source_body[None]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_fixed_knowledge_product_artifact_metadata_precedes_source_body[product]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_fixed_knowledge_product_artifact_metadata_precedes_source_body[original]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_returned_source_is_rechecked_before_result_crosses_port": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_restore_rereads_actual_sources_and_rejects_changed_result": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_metadata_sql_does_not_read_private_proposal_body": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare::test_actual_selected_definition_guard_does_not_scan_unrelated_history": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare_pg::test_actual_bound_comparison_is_ordinary_read_without_computed_claim_authority": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare_pg::test_actual_private_objects_stop_before_comparison_or_source_projection[product]": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare_pg::test_actual_private_objects_stop_before_comparison_or_source_projection[proposal]": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare_pg::test_actual_private_objects_stop_before_comparison_or_source_projection[source]": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare_pg::test_actual_g0_baseline_ignores_unselected_private_definition_history": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare_pg::test_actual_claim_withdrawal_invalidates_completed_comparison_recovery": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    },
+    "tests.agent_kernel.test_m3_spec_compare_pg::test_actual_public_document_change_rejects_old_read_without_overwriting_receipt": {
+      "passed": true,
+      "evidence": "check-2.xml"
+    }
+  }
+}

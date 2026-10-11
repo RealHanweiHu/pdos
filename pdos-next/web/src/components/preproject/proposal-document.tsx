@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Dialog } from "radix-ui";
 import { ArrowLeft, LockKey, CheckCircle, WarningCircle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
+import { ProposalViews } from "@/components/preproject/proposal-views";
+import { isProposalViewResponse, matchesProposalDocument } from "@/components/preproject/proposal-view-contracts";
+import type { ProposalViewDocument, ProposalViewName, ProposalViewResponse } from "@/components/preproject/proposal-view-contracts";
 
 type Item = { item_id: string; version: number; kind: string; content: Record<string, unknown>; source_refs: unknown[]; origin: string };
 type Person = { id: string; name: string; reviewer_eligible: boolean; can_write: boolean };
@@ -12,6 +15,8 @@ type Disposition = { subject_type: string; subject_id: string; title: string };
 type Proposal = {
   id: string; title: string; brief: string; owner_id: string; revision: number; status: string;
   visibility: string; private_source_count: number; items: Item[];
+  document_identity: ProposalViewDocument;
+  display_document: { title: string; brief: string; items: Item[] };
   maturity: { spec_count: number; option_count: number; required_dispositions: Disposition[]; freeze_blockers: Item[] };
   submission: { id: string; reviewer_id: string; frozen_document: { items: Item[] } | null } | null;
   decision: { outcome: string; rationale: string; product_id: string | null; project_id: string | null } | null;
@@ -23,9 +28,9 @@ type Assignment = { kind: string; owner_id: string; due_date: string };
 const statuses: Record<string, string> = { draft: "草稿", returned: "已退回", in_review: "G0 评审中", approved: "已立项", rejected: "不立项" };
 const itemStatuses: Record<string, string> = { confirmed: "人工确认", ai_draft: "AI 草稿", expert_pending: "待专家确认", unknown: "未知" };
 
-async function api<T>(path: string, body?: unknown): Promise<T> {
+async function api<T>(path: string, body?: unknown, signal?: AbortSignal): Promise<T> {
   const response = await fetch(`/api/v1/${path}`, {
-    method: body === undefined ? "GET" : "POST", cache: "no-store",
+    method: body === undefined ? "GET" : "POST", cache: "no-store", signal,
     headers: { "Content-Type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
@@ -43,9 +48,26 @@ function ItemEditor({ item, save, busy }: { item: Item; save: (content: Record<s
   </form>;
 }
 
-export function ProposalDocument({ categoryId, proposalId }: { categoryId: string; proposalId: string }) {
+export function ProposalDocument(props: { categoryId: string; proposalId: string }) {
+  return <ScopedProposalDocument key={`${props.categoryId}:${props.proposalId}`} {...props} />;
+}
+
+function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string; proposalId: string }) {
   const root = `categories/${categoryId}`;
   const [proposal, setProposal] = useState<Proposal | null>(null);
+  const [documentReady, setDocumentReady] = useState(false);
+  const [documentError, setDocumentError] = useState("");
+  const [readVersion, setReadVersion] = useState(0);
+  const [selectedView, setSelectedView] = useState<ProposalViewName>("spec-benchmark");
+  const [viewResult, setViewResult] = useState<ProposalViewResponse | null>(null);
+  const [viewLoading, setViewLoading] = useState(true);
+  const [viewError, setViewError] = useState("");
+  const live = useRef(true);
+  const initialized = useRef(false);
+  const documentRequest = useRef(0);
+  const viewRequest = useRef(0);
+  const documentController = useRef<AbortController | null>(null);
+  const viewController = useRef<AbortController | null>(null);
   const [people, setPeople] = useState<Person[]>([]);
   const [me, setMe] = useState("");
   const [error, setError] = useState("");
@@ -60,21 +82,102 @@ export function ProposalDocument({ categoryId, proposalId }: { categoryId: strin
   const [projectOwner, setProjectOwner] = useState("");
   const [dispositions, setDispositions] = useState<Record<string, Assignment>>({});
   const reviewTrigger = useRef<HTMLButtonElement>(null);
-  async function reload() { setProposal(await api<Proposal>(`${root}/proposals/${proposalId}`)); }
-  useEffect(() => {
-    let active = true;
-    Promise.all([
-      api<Proposal>(`${root}/proposals/${proposalId}`),
-      api<{ items: Person[] }>(`${root}/proposals/${proposalId}/participants`),
-      api<{ principal_id: string }>("session"),
-    ]).then(([value, participants, session]) => {
-      if (active) {
-        setProposal(value); setPeople(participants.items); setMe(session.principal_id);
-        setProjectName(value.title); setProjectOwner(value.owner_id);
+  const loadDocument = useCallback(() => {
+    if (!live.current) return;
+    const request = ++documentRequest.current;
+    documentController.current?.abort();
+    const controller = new AbortController();
+    documentController.current = controller;
+    return Promise.all([
+        api<Proposal>(`${root}/proposals/${proposalId}`, undefined, controller.signal),
+        api<{ items: Person[] }>(`${root}/proposals/${proposalId}/participants`, undefined, controller.signal),
+        api<{ principal_id: string }>("session", undefined, controller.signal),
+      ]).then(([value, participants, session]) => {
+      if (!live.current || controller.signal.aborted || request !== documentRequest.current) return;
+      const identity = value.document_identity;
+      if (value.id !== proposalId || !identity || identity.proposal_id !== proposalId
+        || !Number.isSafeInteger(identity.revision) || identity.revision < 1
+        || typeof identity.document_digest !== "string" || !identity.document_digest || !["frozen", "current"].includes(identity.document_mode)
+        || (identity.document_mode === "frozen" ? typeof identity.submission_id !== "string" : identity.submission_id !== null)
+        || !value.display_document || !Array.isArray(value.display_document.items)
+        || typeof value.display_document.title !== "string" || typeof value.display_document.brief !== "string"
+        || (value.status === "in_review" && value.submission?.reviewer_id === session.principal_id
+          && (!value.submission.frozen_document || identity.document_mode !== "frozen"))) {
+        throw new Error("当前接口未提供可读的提案文档身份，请重新读取。");
       }
-    }).catch(failure => { if (active) setError(failure.message); });
-    return () => { active = false; };
+      setProposal(value); setPeople(participants.items); setMe(session.principal_id);
+      if (!initialized.current) {
+        setProjectName(value.display_document.title); setProjectOwner(value.owner_id);
+        initialized.current = true;
+      }
+      // A frozen identity can remain unchanged after source withdrawal or ACL changes.
+      setReadVersion(previous => previous + 1);
+      setDocumentReady(true);
+    }).catch(failure => {
+      if (live.current && !controller.signal.aborted && request === documentRequest.current) {
+        controller.abort();
+        setProposal(null); setPeople([]); setDocumentError((failure as Error).message);
+        setViewResult(null); setViewLoading(false);
+      }
+    });
   }, [root, proposalId]);
+  const reload = useCallback(() => {
+    if (!live.current) return Promise.resolve();
+    ++viewRequest.current; viewController.current?.abort();
+    setDocumentReady(false); setDocumentError("");
+    setViewResult(null); setViewLoading(true); setViewError("");
+    return loadDocument();
+  }, [loadDocument]);
+  useEffect(() => {
+    live.current = true;
+    void loadDocument();
+    return () => {
+      live.current = false;
+      documentController.current?.abort(); viewController.current?.abort();
+    };
+  }, [loadDocument]);
+  useEffect(() => {
+    if (!documentReady || !proposal) return;
+    const request = ++viewRequest.current;
+    const controller = new AbortController();
+    viewController.current?.abort(); viewController.current = controller;
+    const identity = proposal.document_identity;
+    const query = new URLSearchParams({ proposal_id: proposalId });
+    void api<unknown>(`${root}/views/${selectedView}?${query}`, undefined, controller.signal).then(value => {
+      if (!live.current || controller.signal.aborted || request !== viewRequest.current) return;
+      if (!isProposalViewResponse(value) || value.view !== selectedView || !matchesProposalDocument(value, identity)) {
+        throw new Error("视图与当前提案文档不一致，请刷新文档与视图。");
+      }
+      setViewResult(value);
+    }).catch(failure => {
+      if (live.current && !controller.signal.aborted && request === viewRequest.current) {
+        setViewResult(null); setViewError((failure as Error).message);
+      }
+    }).finally(() => {
+      if (live.current && !controller.signal.aborted && request === viewRequest.current) setViewLoading(false);
+    });
+    return () => controller.abort();
+  }, [documentReady, proposal, readVersion, selectedView, root, proposalId]);
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const refreshVisible = () => {
+      if (document.visibilityState !== "visible" || busy) return;
+      clearTimeout(timer);
+      timer = setTimeout(() => { void reload(); }, 0);
+    };
+    window.addEventListener("focus", refreshVisible);
+    document.addEventListener("visibilitychange", refreshVisible);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("focus", refreshVisible);
+      document.removeEventListener("visibilitychange", refreshVisible);
+    };
+  }, [reload, busy]);
+  function changeView(next: ProposalViewName) {
+    if (next === selectedView) return;
+    ++viewRequest.current; viewController.current?.abort();
+    setViewResult(null); setViewError(""); setViewLoading(true); setSelectedView(next);
+  }
   function command(operation: string, payload: Record<string, unknown>): Command {
     return { command_id: crypto.randomUUID(), idempotency_key: crypto.randomUUID(), operation,
       category_id: categoryId, product_id: null, expected_revision: proposal!.revision,
@@ -82,9 +185,9 @@ export function ProposalDocument({ categoryId, proposalId }: { categoryId: strin
   }
   async function preview(operation: string, payload: Record<string, unknown>) {
     setBusy(true); setError("");
-    try { setPrepared(await api<Prepared>(`${root}/commands/preview`, command(operation, payload))); }
-    catch (failure) { setError((failure as Error).message); }
-    finally { setBusy(false); }
+    try { const value = await api<Prepared>(`${root}/commands/preview`, command(operation, payload)); if (live.current) setPrepared(value); }
+    catch (failure) { if (live.current) setError((failure as Error).message); }
+    finally { if (live.current) setBusy(false); }
   }
   async function patch(item: Item, content: Record<string, unknown>) {
     setBusy(true); setError("");
@@ -93,24 +196,28 @@ export function ProposalDocument({ categoryId, proposalId }: { categoryId: strin
         ops: [{ op: "upsert", item_id: item.item_id, base_version: item.version, kind: item.kind,
           content, source_refs: item.source_refs }] }));
       await reload();
-    } catch (failure) { setError((failure as Error).message); }
-    finally { setBusy(false); }
+    } catch (failure) { if (live.current) setError((failure as Error).message); }
+    finally { if (live.current) setBusy(false); }
   }
   const owner = proposal?.owner_id === me;
   const editable = people.some(person => person.id === me && person.can_write) && ["draft", "returned"].includes(proposal?.status ?? "");
   const deciding = proposal?.status === "in_review" && proposal.submission?.reviewer_id === me;
   const frozenAvailable = !!proposal?.submission?.frozen_document;
-  const docItems = deciding ? proposal?.submission?.frozen_document?.items ?? [] : proposal?.items ?? [];
+  const docItems = proposal?.display_document.items ?? [];
   const options = docItems.filter(item => item.kind === "option");
   return <main className="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:px-8">
     <Link href={`/?category=${categoryId}`} className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft />品类工作区</Link>
+    <Button type="button" variant="outline" disabled={busy} onClick={() => { void reload(); }}>刷新文档与视图</Button>
+    {documentError && <p role="alert">{documentError}</p>}
     {error && <div role="alert" className="panel flex items-start gap-2"><WarningCircle size={20} /><span>{error}</span></div>}
-    {!proposal ? <p role="status">{error ? "请核对当前会话与提案受众。" : "正在读取提案…"}</p> : <>
+    {!proposal || !documentReady ? <p role="status">{documentError ? "请核对当前会话与提案受众后重新读取。" : "正在读取提案…"}</p> : <>
       <header className="space-y-3">
-        <div className="flex flex-wrap items-center gap-3"><h1 className="text-2xl font-semibold">{proposal.title}</h1><span className="rounded-md border px-2 py-1 text-xs">{statuses[proposal.status] ?? proposal.status}</span><span className="inline-flex items-center gap-1 text-sm text-muted-foreground"><LockKey />{proposal.visibility === "private" ? "私有提案" : "已共享"}</span></div>
-        <p className="text-muted-foreground">{proposal.brief}</p>
+        <div className="flex flex-wrap items-center gap-3"><h1 className="text-2xl font-semibold">{proposal.display_document.title}</h1><span className="rounded-md border px-2 py-1 text-xs">{statuses[proposal.status] ?? proposal.status}</span><span className="inline-flex items-center gap-1 text-sm text-muted-foreground"><LockKey />{proposal.visibility === "private" ? "私有提案" : "已共享"}</span></div>
+        <p className="text-muted-foreground">{proposal.display_document.brief}</p>
         {proposal.private_source_count > 0 && <p className="text-sm">引用了私有来源，内容只对提案受众可见。</p>}
       </header>
+      <ProposalViews view={selectedView} result={viewResult} document={proposal.document_identity} people={people}
+        loading={viewLoading} error={viewError} onViewChange={changeView} onRetry={() => { void reload(); }} />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]"><div className="space-y-4">
         {deciding && <p className="panel text-sm">{frozenAvailable ? "当前评审的是提交时的固定副本。未知规格可带入立项，须逐条明确后续处置。" : "提交副本的来源不在当前可读范围，请核对权限后刷新。"}</p>}
         {docItems.map(item => <section key={`${item.item_id}:${item.version}`} className="panel space-y-3">
@@ -151,7 +258,7 @@ export function ProposalDocument({ categoryId, proposalId }: { categoryId: strin
         <p className="text-xs text-muted-foreground">小Pai 接入后可起草与查漏。人工编辑与 G0 可独立办理。</p>
       </aside></div>
     </>}
-    {prepared && <Dialog.Root open onOpenChange={open => { if (!open && !busy) setPrepared(null); }}><Dialog.Portal><Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" /><Dialog.Content onCloseAutoFocus={event => { event.preventDefault(); reviewTrigger.current?.focus(); }} onEscapeKeyDown={event => { if (busy) event.preventDefault(); }} onPointerDownOutside={event => { if (busy) event.preventDefault(); }} className="fixed left-1/2 top-1/2 z-50 max-h-[85vh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-lg border bg-background p-6 shadow-lg">
+    {prepared && documentReady && <Dialog.Root open onOpenChange={open => { if (!open && !busy) setPrepared(null); }}><Dialog.Portal><Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" /><Dialog.Content onCloseAutoFocus={event => { event.preventDefault(); reviewTrigger.current?.focus(); }} onEscapeKeyDown={event => { if (busy) event.preventDefault(); }} onPointerDownOutside={event => { if (busy) event.preventDefault(); }} className="fixed left-1/2 top-1/2 z-50 max-h-[85vh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-lg border bg-background p-6 shadow-lg">
       <Dialog.Title className="text-lg font-semibold">{prepared.command.operation === "proposal.g0.decide" ? "确认具名 G0 决定" : "确认提交 G0"}</Dialog.Title><Dialog.Description className="my-4">{prepared.review.effect ?? "提交副本将锁定，评审人获得此提案读取权限。"}</Dialog.Description>
       {error && <p role="alert" className="mb-4 text-sm text-destructive">{error}</p>}
       {prepared.command.operation === "proposal.g0.submit" && <p className="mb-4 text-sm">评审人：{people.find(person => person.id === prepared.command.payload.reviewer_id)?.name}</p>}
@@ -164,9 +271,9 @@ export function ProposalDocument({ categoryId, proposalId }: { categoryId: strin
       {prepared.review.project_owner_audience_added && <p className="text-sm">项目负责人会获得型号与项目读取权限。</p>}
       <div className="mt-6 flex gap-3"><Button disabled={busy} onClick={async () => {
         setBusy(true); setError("");
-        try { await api(`${root}/commands`, prepared.command); setPrepared(null); await reload(); }
-        catch (failure) { setError((failure as Error).message); }
-        finally { setBusy(false); }
+        try { await api(`${root}/commands`, prepared.command); if (live.current) { setPrepared(null); await reload(); } }
+        catch (failure) { if (live.current) setError((failure as Error).message); }
+        finally { if (live.current) setBusy(false); }
       }}>确认办理</Button><Button variant="outline" disabled={busy} onClick={() => setPrepared(null)}>返回修改</Button></div><p className="mt-3 text-xs text-muted-foreground">暂未取得回执时可重试本次办理，重复请求会返回原结果。</p>
     </Dialog.Content></Dialog.Portal></Dialog.Root>}
   </main>;

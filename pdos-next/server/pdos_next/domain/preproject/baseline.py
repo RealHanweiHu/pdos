@@ -177,17 +177,36 @@ def _row_scope(row, ctx, product_id, variant_id):
         _unavailable("固定定义不在当前可读范围。")
 
 
-def _published_view(s, ctx, row):
+def _published_view(s, ctx, row, *, before_definition_read=None):
     if row.status != "published" or row.sealed is not True or not row.publication_receipt_id:
         _unavailable()
-    receipt = s.scalar(
-        select(Receipt).where(
-            Receipt.id == row.publication_receipt_id,
-            Receipt.tenant_id == ctx.tenant_id,
-            Receipt.category_id == ctx.category_id,
-            Receipt.product_id == row.product_id,
-        )
+    receipt_query = select(Receipt).where(
+        Receipt.id == row.publication_receipt_id,
+        Receipt.tenant_id == ctx.tenant_id,
+        Receipt.category_id == ctx.category_id,
+        Receipt.product_id == row.product_id,
     )
+    if before_definition_read is not None:
+        from sqlalchemy.orm import load_only
+
+        receipt_query = receipt_query.options(
+            load_only(
+                Receipt.id,
+                Receipt.tenant_id,
+                Receipt.category_id,
+                Receipt.product_id,
+                Receipt.operation,
+                Receipt.subject_type,
+                Receipt.subject_id,
+                Receipt.subject_revision,
+                Receipt.actor_id,
+                Receipt.requester_id,
+                Receipt.run_id,
+                Receipt.agent_run_id,
+                Receipt.result,
+            )
+        )
+    receipt = s.scalar(receipt_query)
     if not receipt or (
         receipt.id != row.publication_receipt_id
         or receipt.tenant_id != ctx.tenant_id
@@ -203,17 +222,22 @@ def _published_view(s, ctx, row):
         or not isinstance(receipt.result, dict)
     ):
         _unavailable()
-    signer = s.scalar(
-        select(Principal).where(
-            Principal.id == receipt.actor_id,
-            Principal.tenant_id == ctx.tenant_id,
-        )
+    signer_query = select(Principal).where(
+        Principal.id == receipt.actor_id,
+        Principal.tenant_id == ctx.tenant_id,
     )
+    if before_definition_read is not None:
+        signer_query = signer_query.options(
+            load_only(Principal.id, Principal.tenant_id, Principal.kind)
+        )
+    signer = s.scalar(signer_query)
     # Current membership/activity is not re-interpreted as signing-time authority.
     if not signer or (
         signer.id != receipt.actor_id or signer.tenant_id != ctx.tenant_id or signer.kind != "human"
     ):
         _unavailable()
+    if before_definition_read is not None:
+        before_definition_read(row)
     view = definition_view(s, ctx, row)  # Preserves the existing source-read guard.
     if (
         str(view["id"]) != str(row.id)
@@ -541,7 +565,16 @@ def published_baseline(
     return view
 
 
-def read_baseline(s, ctx, product_id, variant_id=None, definition_revision=None):
+def read_baseline(
+    s,
+    ctx,
+    product_id,
+    variant_id=None,
+    definition_revision=None,
+    *,
+    before_definition_read=None,
+    include_blocks=True,
+):
     """Present an honest fallback; only a verified publication is derivation eligible."""
     _scope(s, ctx, product_id, variant_id)
     query = _query(ctx, product_id, variant_id).order_by(DefinitionRevision.revision.desc())
@@ -549,6 +582,23 @@ def read_baseline(s, ctx, product_id, variant_id=None, definition_revision=None)
         if type(definition_revision) is not int or definition_revision < 1:
             fail("VERSION_CONFLICT", "baseline_version_changed", "请选择明确的固定定义版本。")
         query = query.where(DefinitionRevision.revision == definition_revision)
+    if before_definition_read is not None:
+        from sqlalchemy.orm import load_only
+
+        query = query.options(
+            load_only(
+                DefinitionRevision.id,
+                DefinitionRevision.tenant_id,
+                DefinitionRevision.category_id,
+                DefinitionRevision.product_id,
+                DefinitionRevision.variant_id,
+                DefinitionRevision.revision,
+                DefinitionRevision.status,
+                DefinitionRevision.sealed,
+                DefinitionRevision.g0_decision_id,
+                DefinitionRevision.publication_receipt_id,
+            )
+        )
     rows = list(s.scalars(query))
     for row in rows:
         _row_scope(row, ctx, product_id, variant_id)
@@ -580,17 +630,32 @@ def read_baseline(s, ctx, product_id, variant_id=None, definition_revision=None)
         "SOURCE_STALE",
         "VALIDATION_FAILED",
     }
+    callback_failed = False
+
+    def authorize(row):
+        nonlocal callback_failed
+        if before_definition_read is not None:
+            try:
+                before_definition_read(row)
+            except DomainError:
+                callback_failed = True
+                raise
+
     for candidate_kind, candidates in groups:
         for row in candidates:
             if row.id in visited:
                 continue
             visited.add(row.id)
             try:
-                candidate = (
-                    _published_view(s, ctx, row)
-                    if candidate_kind == "published"
-                    else definition_view(s, ctx, row)
-                )
+                if candidate_kind == "published":
+                    candidate = (
+                        _published_view(s, ctx, row, before_definition_read=authorize)
+                        if before_definition_read is not None
+                        else _published_view(s, ctx, row)
+                    )
+                else:
+                    authorize(row)
+                    candidate = definition_view(s, ctx, row)
                 # Traverse the complete tree even if an earlier edge is withdrawn.
                 # A stale metadata projection never proves historical body access.
                 validate_sources(s, ctx, candidate, history_permissions=True)
@@ -608,7 +673,7 @@ def read_baseline(s, ctx, product_id, variant_id=None, definition_revision=None)
                     )
                     candidate = _redact_source_metadata(candidate)
             except DomainError as error:
-                if error.code not in hidden_errors:
+                if callback_failed or error.code not in hidden_errors:
                     raise
                 unavailable += 1
                 continue
@@ -623,7 +688,8 @@ def read_baseline(s, ctx, product_id, variant_id=None, definition_revision=None)
             for name in ("certification", "tooling", "platform")
         },
     }
-    blocks.update(read_blocks(s, ctx, chosen))
+    if include_blocks:
+        blocks.update(read_blocks(s, ctx, chosen))
     return {
         "definition": chosen,
         "baseline_kind": kind,
