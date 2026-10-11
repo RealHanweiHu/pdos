@@ -2,6 +2,7 @@ from decimal import Decimal
 from uuid import UUID
 
 from sqlalchemy import (
+    Boolean,
     CheckConstraint,
     ForeignKeyConstraint,
     Integer,
@@ -21,7 +22,7 @@ class DefinitionRevision(Row, Base):
     product_id: Mapped[UUID]
     owner_id: Mapped[UUID]
     parent_definition_id: Mapped[UUID | None]
-    title: Mapped[str] = mapped_column(String(200))
+    title: Mapped[str] = mapped_column(Text)
     purpose: Mapped[str] = mapped_column(Text)
     revision: Mapped[int] = mapped_column(Integer)
     status: Mapped[str] = mapped_column(String(16), default="draft")
@@ -32,7 +33,22 @@ class DefinitionRevision(Row, Base):
     unknowns: Mapped[list] = mapped_column(JSONB)
     exclusions: Mapped[list] = mapped_column(JSONB)
     change_reason: Mapped[str] = mapped_column(Text)
+    sealed: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
+    source_proposal_id: Mapped[UUID | None]
+    source_submission_id: Mapped[UUID | None]
+    source_proposal_revision: Mapped[int | None]
+    g0_decision_id: Mapped[UUID | None]
     __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "g0_decision_id"],
+            [
+                "proposal_decisions.tenant_id",
+                "proposal_decisions.category_id",
+                "proposal_decisions.id",
+            ],
+            name="m3_definition_decision_fk",
+            use_alter=True,
+        ),
         UniqueConstraint("tenant_id", "product_id", "id"),
         UniqueConstraint("tenant_id", "product_id", "revision"),
         ForeignKeyConstraint(["tenant_id", "product_id"], ["products.tenant_id", "products.id"]),
@@ -55,15 +71,15 @@ class DefinitionSpecRow(Row, Base):
     __tablename__ = "definition_specs"
     product_id: Mapped[UUID]
     definition_id: Mapped[UUID]
-    key: Mapped[str] = mapped_column(String(80))
-    parameter: Mapped[str] = mapped_column(String(200))
+    key: Mapped[str] = mapped_column(Text)
+    parameter: Mapped[str] = mapped_column(Text)
     value_type: Mapped[str] = mapped_column(String(16))
     availability: Mapped[str] = mapped_column(String(24))
     value: Mapped[Decimal | None] = mapped_column(Numeric(38, 12))
     lower: Mapped[Decimal | None] = mapped_column(Numeric(38, 12))
     upper: Mapped[Decimal | None] = mapped_column(Numeric(38, 12))
     text: Mapped[str | None] = mapped_column(Text)
-    unit: Mapped[str | None] = mapped_column(String(80))
+    unit: Mapped[str | None] = mapped_column(Text)
     tolerance: Mapped[Decimal | None] = mapped_column(Numeric(38, 12))
     test_conditions: Mapped[list] = mapped_column(JSONB)
     method: Mapped[str | None] = mapped_column(Text)
@@ -72,7 +88,29 @@ class DefinitionSpecRow(Row, Base):
     state: Mapped[str] = mapped_column(String(24))
     owner_id: Mapped[UUID | None]
     reason: Mapped[str] = mapped_column(Text)
+    parameter_id: Mapped[UUID | None]
+    parameter_version: Mapped[int | None]
+    item_status: Mapped[str] = mapped_column(Text, default="unknown", server_default="unknown")
+    condition_note: Mapped[str | None] = mapped_column(Text)
+    modality: Mapped[str | None] = mapped_column(Text)
+    exceptions: Mapped[list] = mapped_column(JSONB, default=list, server_default="[]")
+    applicable_variants: Mapped[list] = mapped_column(JSONB, default=list, server_default="[]")
+    source_refs: Mapped[list] = mapped_column(JSONB, default=list, server_default="[]")
+    origin: Mapped[str] = mapped_column(Text, default="human", server_default="human")
+    writer_id: Mapped[UUID | None]
+    run_id: Mapped[UUID | None]
+    confirmed_by: Mapped[UUID | None]
+    receipt_id: Mapped[UUID | None]
     __table_args__ = (
+        CheckConstraint(
+            "item_status IN ('ai_draft','confirmed','expert_pending','unknown')",
+            name="m3_spec_status",
+        ),
+        CheckConstraint(
+            "origin IN ('human','ai_draft','imported') "
+            "AND (origin<>'ai_draft' OR run_id IS NOT NULL)",
+            name="m3_spec_origin",
+        ),
         UniqueConstraint("tenant_id", "product_id", "definition_id", "id"),
         UniqueConstraint("tenant_id", "definition_id", "key"),
         ForeignKeyConstraint(
@@ -84,7 +122,9 @@ class DefinitionSpecRow(Row, Base):
             ],
         ),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
-        CheckConstraint("value_type IN ('number','range','text')"),
+        CheckConstraint(
+            "value_type IN ('number','range','text','boolean','enum')", name="m3_spec_value_type"
+        ),
         CheckConstraint("availability IN ('known','unknown','conflicted','not_applicable')"),
         CheckConstraint("nature IN ('observed','extracted','computed','inferred','decided')"),
         CheckConstraint("state IN ('proposed','needs_confirmation')"),
@@ -95,13 +135,14 @@ class DefinitionSpecRow(Row, Base):
             "AND upper IS NULL AND text IS NULL AND tolerance IS NULL)"
         ),
         CheckConstraint(
-            "availability <> 'known' OR "
-            "(value_type = 'number' AND value IS NOT NULL AND lower IS NULL "
-            "AND upper IS NULL AND text IS NULL AND unit IS NOT NULL) OR "
-            "(value_type = 'range' AND lower IS NOT NULL AND upper IS NOT NULL "
-            "AND value IS NULL AND text IS NULL AND unit IS NOT NULL) OR "
-            "(value_type = 'text' AND text IS NOT NULL AND value IS NULL "
-            "AND lower IS NULL AND upper IS NULL AND tolerance IS NULL)"
+            "availability<>'known' OR "
+            "(value_type='number' AND value IS NOT NULL "
+            "AND lower IS NULL AND upper IS NULL AND text IS NULL) OR "
+            "(value_type='range' AND lower IS NOT NULL AND upper IS NOT NULL "
+            "AND value IS NULL AND text IS NULL) OR "
+            "(value_type IN ('text','boolean','enum') AND text IS NOT NULL AND value IS NULL "
+            "AND lower IS NULL AND upper IS NULL)",
+            name="m3_spec_known_shape",
         ),
     )
 

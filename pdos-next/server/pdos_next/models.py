@@ -1,5 +1,6 @@
 # ruff: noqa: I001 -- register child tables after their shared parent definitions
-from datetime import datetime
+from datetime import date, datetime
+from decimal import Decimal
 from uuid import UUID, uuid4
 
 from sqlalchemy import (
@@ -11,6 +12,8 @@ from sqlalchemy import (
     FetchedValue,
     Index,
     Integer,
+    Numeric,
+    Date,
     String,
     Text,
     UniqueConstraint,
@@ -103,7 +106,7 @@ class ObjectAudience(Row, Base):
 
 class Product(Row, Base):
     __tablename__ = "products"
-    name: Mapped[str] = mapped_column(String(160))
+    name: Mapped[str] = mapped_column(Text)
     purpose: Mapped[str] = mapped_column(Text)
     revision: Mapped[int] = mapped_column(Integer, default=1)
     lifecycle_epoch: Mapped[int] = mapped_column(Integer, default=1)
@@ -111,7 +114,16 @@ class Product(Row, Base):
     owner_id: Mapped[UUID]
     category_id: Mapped[UUID] = mapped_column(index=True)
     visibility: Mapped[str] = mapped_column(String(16), default="category")
+    target_price: Mapped[Decimal | None] = mapped_column(Numeric(38, 12))
+    target_price_currency: Mapped[str | None] = mapped_column(Text)
+    target_price_basis: Mapped[str | None] = mapped_column(Text)
+    target_price_includes_tax: Mapped[bool | None] = mapped_column(Boolean)
+    target_price_as_of: Mapped[date | None] = mapped_column(Date)
     __table_args__ = (
+        CheckConstraint(
+            "target_price_basis IS NULL OR target_price_basis IN ('retail','promo','unknown')",
+            name="m3_target_price_basis",
+        ),
         UniqueConstraint("tenant_id", "id"),
         UniqueConstraint("tenant_id", "category_id", "id"),
         ForeignKeyConstraint(
@@ -1001,3 +1013,6 @@ import pdos_next.agent_kernel.models  # noqa: E402,F401
 
 # Tenant model metadata is part of the actual shared schema; credentials stay in host ports.
 import pdos_next.model_configuration.persistence  # noqa: E402,F401
+
+# M3 is part of the active schema after its frozen candidate migration.
+import pdos_next.domain.preproject.category_models  # noqa: E402,F401

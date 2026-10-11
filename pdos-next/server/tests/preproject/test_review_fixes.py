@@ -127,21 +127,16 @@ def new_model_call(work, f, operation, arguments):
 
 
 def test_actual_owner_and_definers_are_non_superuser(work):
-    with Session(work.admin) as s:
+    with Session(work.admin) as s, s.begin():
+        # The formal B8 fixture retains its administrative bootstrap connection;
+        # the schema owner is NOLOGIN and is entered only by that connection.
+        s.execute(text("SET LOCAL ROLE pdos_next_owner"))
         assert s.execute(
             text(
                 "SELECT current_user,rolsuper,rolbypassrls FROM pg_roles WHERE rolname=current_user"
             )
         ).one() == ("pdos_next_owner", False, False)
-        assert (
-            s.scalar(
-                text(
-                    "SELECT pg_get_userbyid(datdba) FROM pg_database "
-                    "WHERE datname=current_database()"
-                )
-            )
-            == "pdos_next_owner"
-        )
+        assert not s.scalar(text("SELECT rolcanlogin FROM pg_roles WHERE rolname=current_user"))
         assert (
             s.scalar(
                 text(

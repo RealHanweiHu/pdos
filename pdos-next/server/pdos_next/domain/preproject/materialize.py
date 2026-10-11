@@ -141,7 +141,7 @@ def approve(s, ctx, row, sub, decision, *, provenance):
         for r in doc["source_refs"]
         if r["type"] in {"artifact", "original"}
     }
-    from .definition_columns import SPEC_TABLE
+    from pdos_next.domain.products.models import DefinitionSpecRow
 
     definition = definitions.create_revision(
         s,
@@ -162,7 +162,7 @@ def approve(s, ctx, row, sub, decision, *, provenance):
             "exclusions": [],
             "change_reason": decision.rationale,
         },
-        spec_table=SPEC_TABLE,
+        spec_table=DefinitionSpecRow.__table__,
         specs=specs,
         sources=[
             {

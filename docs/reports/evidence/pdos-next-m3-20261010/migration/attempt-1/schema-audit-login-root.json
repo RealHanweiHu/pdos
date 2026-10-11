@@ -1,0 +1,547 @@
+{
+  "head": "s0_0729",
+  "frozen_b8_commit": "0eccfe0376d387de7a5211c2852f50f2432ca7b4",
+  "port": 64245,
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "synthetic_only": true,
+  "catalog_before": {
+    "tables": "440970d41ca75fc66726d78db94e4edfdff26e2f618dfbd3fd9cab25247a0c10",
+    "columns": "85a25931b00e212cb411c6bd5d9de8fe8a48b874eb2a3b788c3ed77941e6aaf5",
+    "constraints": "b72e8a7a4219defcee686b80533ca2b66b17a94e5c636dd1968e0d2433b38e9a",
+    "functions": "03a0d905267fbbe8d1b415c9c249132c0e56a7af3895dbf383913ff5c6f70c59",
+    "triggers": "a9e8119f4d880a8a23fb2b58c9c54d13c452c2f8638a921a26324bd57a6bfdf0",
+    "policies": "ed324f5a9990b0950bd7aaaa63ec7552a30023dabe517153b29457b953c9f472",
+    "grants": "7af5fc1765b7c35aa8d2f4eafe20f2e130ec22fa1ab52469468564ba97772e5f",
+    "column_grants": "1476399ed050c71d3d16d57d6e1f202a9dd2fe5e30347931ba9cc49a737199ef",
+    "indexes": "88061477d35b6e612472037e1b2eea0aeecfb61bf5eb31153ed9be422c09b48b"
+  },
+  "catalog_downgrade_restored": true,
+  "catalog_reupgrade_exact": true,
+  "orm_differences": "[]",
+  "business_tables": 153,
+  "definers": [
+    {
+      "signature": "advance_change_dependency_clock()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "advance_product_change_dependencies()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "assert_category_source_consumer()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "assert_optional_source_parent()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "build_actual_count(uuid,uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "business_audience_collect(uuid,uuid,uuid,text,jsonb,text[])",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "business_audience_summary_visible(uuid,uuid,uuid,jsonb)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "category_access(uuid,uuid,boolean)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "category_bootstrap(uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "category_lifecycle_clock()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "category_owner(uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "claim_domain_events(uuid,integer)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "definition_sources_visible(uuid,uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "direct_source_set_visible(uuid,uuid,uuid,jsonb)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "finish_domain_delivery(uuid,uuid,uuid,character varying,boolean)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "initialize_change_dependency_clock()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_admin_authorized()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_agreement_atom()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_cost_settled()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_model_configuration_access(uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_model_configuration_atom()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_model_configuration_lock(uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_model_configuration_provision()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_pending_runs(uuid,integer)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_read_set_visible(uuid,uuid,jsonb)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_record_cost(uuid,uuid,integer,integer,integer)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_release_call(uuid,uuid,text,boolean,integer,text)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_run_receipt_ids(uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_scope_failed(uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_source_reference_clock()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_source_reference_gate()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "lifecycle_reference_summary(uuid,uuid,uuid,uuid[])",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "lock_change_dependency_clock(uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "lock_qualification(uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_atom_guard()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_audience_member(uuid,uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_decision_actor(uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_owner(uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_proposal_reader(uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_result_access(uuid,uuid,text,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_reviewer(uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_review_source_access(uuid,uuid,text,uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_writer(uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "maintain_business_audience_summary()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "physical_capacity_summary(uuid,uuid,uuid,text,uuid[],uuid,text)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "professional_current_summary()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "professional_summary_visible(uuid,uuid,uuid,jsonb)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "project_definition_visible(uuid,uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "require_test_launch_atom()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "require_test_resource_dependency_atom()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "revert_subjects_consumed(uuid,uuid,jsonb,uuid[])",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "source_object_audience(uuid,uuid,text,uuid,uuid,text)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "login": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    }
+  ],
+  "agent_write_tables": [],
+  "runtime_owner_membership": false,
+  "llm_calls": 0
+}

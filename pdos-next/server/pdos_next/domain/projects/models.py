@@ -43,14 +43,26 @@ class Project(Row, Base):
     __tablename__ = "projects"
     product_id: Mapped[UUID]
     owner_id: Mapped[UUID]
-    name: Mapped[str] = mapped_column(String(160))
+    name: Mapped[str] = mapped_column(Text)
     purpose: Mapped[str] = mapped_column(Text)
     scope: Mapped[str] = mapped_column(Text)
     visibility: Mapped[str] = mapped_column(String(16))
     status: Mapped[str] = mapped_column(String(16), default="active")
     revision: Mapped[int] = mapped_column(Integer, default=1)
     current_plan_id: Mapped[UUID | None]
+    trigger_type: Mapped[str | None] = mapped_column(Text)
+    trigger_id: Mapped[UUID | None]
+    g0_decision_id: Mapped[UUID | None]
     __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "g0_decision_id"],
+            [
+                "proposal_decisions.tenant_id",
+                "proposal_decisions.category_id",
+                "proposal_decisions.id",
+            ],
+            name="m3_project_decision_fk",
+        ),
         UniqueConstraint("tenant_id", "product_id", "id"),
         product_fk(),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
