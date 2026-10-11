@@ -281,16 +281,17 @@ def test_actual_read_tools_keep_root_metadata_and_exact_isolated_source_scope(se
     assert [row["artifact_id"] for row in metadata] == [f.arguments["artifact_id"]]
     assert all("content" not in row and "lines" not in row for row in metadata)
     identity = UUID(f.arguments["artifact_id"])
-    args = {"artifact_id": str(identity)}
+    args = {"artifact_version_id": str(identity)}
     with pytest.raises(DomainError) as denied:
         reads.call(f.scope, args, name="evidence.artifact.read")
     assert denied.value.code == "FORBIDDEN_SCOPE"
     child = f.scope.child("extract", artifact_ids={identity})
     actual = reads.call(child, args, name="evidence.artifact.read")
-    assert actual["lines"] == [{"line": 1, "text": f.arguments["quote"]}]
+    assert actual["blocks"] == [{"locator": "line:1", "text": f.arguments["quote"],
+                                 "derived_line_start": 1, "derived_line_end": 1}]
     assert actual["next_cursor"] is None and actual["revision"] == 1
     with pytest.raises(DomainError):
-        reads.call(child, {"artifact_id": str(uuid4())}, name="evidence.artifact.read")
+        reads.call(child, {"artifact_version_id": str(uuid4())}, name="evidence.artifact.read")
     with Session(setup.admin) as session, session.begin():
         session.get(Artifact, identity).status = "withdrawn"
     with pytest.raises(DomainError) as stale:

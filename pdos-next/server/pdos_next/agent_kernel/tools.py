@@ -76,7 +76,7 @@ def default_registry():
                 "READ",
                 taint="external" if name in RESEARCH or name.startswith("evidence.") else "trusted",
                 parallel_safe=name != "skill.load",
-                version="2" if name == "calc.spec_compare" else "1",
+                version="2" if name in {"calc.spec_compare", "evidence.artifact.read"} else "1",
             )
         )
     from pdos_next.research.tools import research_tools

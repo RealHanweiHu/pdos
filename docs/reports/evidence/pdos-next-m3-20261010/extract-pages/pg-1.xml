@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="27" time="29.186" timestamp="2026-10-11T07:57:11.886180-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_extract_pages_pg" name="test_new_located_page_has_actual_completed_read_and_replays_exactly" time="3.159"><failure message="pdos_next.errors.DomainError: 须当前租户管理员本人批准协议登记。">work = &lt;isolated synthetic test scope&gt;
+security_work = namespace(setup=&lt;isolated synthetic test scope&gt;, store=&lt;pdos_next.object_journal.store.JournaledLocalObjectStore objec...3c0&gt;, parser=&lt;function parse_original at 0x106ed20c0&gt;), client=&lt;starlette.testclient.TestClient object at 0x10aa504d0&gt;)
+
+    def test_new_located_page_has_actual_completed_read_and_replays_exactly(work, security_work):
+&gt;       owner, scope, args, host, client, source = fixture(work, security_work, locator="line:1")
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_extract_pages_pg.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_extract_pages_pg.py:39: in fixture
+    register_agreement(session, work.ctx, AgreementInput(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = &lt;sqlalchemy.orm.session.Session object at 0x10b8b7890&gt;
+ctx = Context(tenant_id=UUID('f6800ed6-4ab1-4b45-9155-1e02352fc715'), actor_id=UUID('830edc60-93c9-46f1-b6d9-93c54c6b447c'),...ne, cancel_epoch=None, category_id=UUID('6e8201a4-3d2b-4177-a256-04df4e2f6b2f'), agent_run_id=None, agent_call_id=None)
+data = AgreementInput(provider='synthetic-extract-fixture-no-real-egress', expected_revision=0, signed_on=datetime.datetime(2...407, tzinfo=datetime.timezone.utc), active=True, decision='批准', idempotency_key='f5501c5b-600a-4c50-b194-eed62d9b4766')
+
+    def register_agreement(session, ctx, data: AgreementInput):
+        require_context(session, ctx)
+        actor = session.get(Principal, ctx.actor_id)
+        admin = session.scalar(text("SELECT kernel_admin_authorized()"))
+        if (
+            not actor
+            or actor.kind != "human"
+            or not actor.active
+            or not admin
+            or ctx.run_id
+            or getattr(ctx, "agent_run_id", None)
+            or ctx.actor_id != ctx.requester_id
+            or data.decision != "批准"
+        ):
+&gt;           raise DomainError("NAMED_DECISION_REQUIRED", "须当前租户管理员本人批准协议登记。")
+E           pdos_next.errors.DomainError: 须当前租户管理员本人批准协议登记。
+
+pdos_next/agent_kernel/management.py:46: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_extract_pages_pg" name="test_read_at_eof_keeps_an_empty_page_and_does_not_claim_body_coverage" time="1.761"><failure message="pdos_next.errors.DomainError: 须当前租户管理员本人批准协议登记。">work = &lt;isolated synthetic test scope&gt;
+security_work = namespace(setup=&lt;isolated synthetic test scope&gt;, store=&lt;pdos_next.object_journal.store.JournaledLocalObjectStore objec...7b0&gt;, parser=&lt;function parse_original at 0x106ed20c0&gt;), client=&lt;starlette.testclient.TestClient object at 0x10db3ba40&gt;)
+
+    def test_read_at_eof_keeps_an_empty_page_and_does_not_claim_body_coverage(work, security_work):
+&gt;       owner, scope, args, host, client, source = fixture(work, security_work)
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_extract_pages_pg.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_extract_pages_pg.py:39: in fixture
+    register_agreement(session, work.ctx, AgreementInput(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = &lt;sqlalchemy.orm.session.Session object at 0x10e160290&gt;
+ctx = Context(tenant_id=UUID('3bd74bdd-11c0-4667-bcb0-338369621a3d'), actor_id=UUID('0f4437c8-bffb-485d-8d25-81df98657dd2'),...ne, cancel_epoch=None, category_id=UUID('64cb1e66-6012-4602-ac37-d2a369a97b90'), agent_run_id=None, agent_call_id=None)
+data = AgreementInput(provider='synthetic-extract-fixture-no-real-egress', expected_revision=0, signed_on=datetime.datetime(2...845, tzinfo=datetime.timezone.utc), active=True, decision='批准', idempotency_key='80ecddc1-e36c-4afc-8e77-139458777742')
+
+    def register_agreement(session, ctx, data: AgreementInput):
+        require_context(session, ctx)
+        actor = session.get(Principal, ctx.actor_id)
+        admin = session.scalar(text("SELECT kernel_admin_authorized()"))
+        if (
+            not actor
+            or actor.kind != "human"
+            or not actor.active
+            or not admin
+            or ctx.run_id
+            or getattr(ctx, "agent_run_id", None)
+            or ctx.actor_id != ctx.requester_id
+            or data.decision != "批准"
+        ):
+&gt;           raise DomainError("NAMED_DECISION_REQUIRED", "须当前租户管理员本人批准协议登记。")
+E           pdos_next.errors.DomainError: 须当前租户管理员本人批准协议登记。
+
+pdos_next/agent_kernel/management.py:46: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_actual_common_claim_and_completed_recovery_need_only_current_read_access" time="0.849" /><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_actual_common_domain_failure_rolls_back_call_fact_and_receipt_group" time="0.997" /><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_actual_model_arguments_and_current_route_cannot_be_substituted" time="0.763" /><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_cross_run_existing_result_keeps_original_ownership_and_has_no_new_call" time="1.312" /><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_actual_read_tools_keep_root_metadata_and_exact_isolated_source_scope" time="0.635" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_real_compute_call_retains_complete_digest_and_exact_replay" time="0.814" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[writer_id-effd2893-1cf0-4660-8bf6-72ea8ea50e73]" time="0.674" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[category_id-ea35e8db-46f2-484b-a607-1deb46ce9351]" time="0.584" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[cancel_epoch-1]" time="0.672" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[isolation-research]" time="0.813" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[private_context-True]" time="0.619" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[model_call_id-802e4589-e4f5-4915-9929-0504056a8780]" time="0.603" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[tool_definitions_digest-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]" time="0.797" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_real_read_proof_content_mismatch_and_cancelled_replay_refused" time="0.685" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_real_completed_read_result_and_binding_cannot_be_rewritten" time="0.724" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_original_agent_authority_is_rechecked_when_human_consumes_compute_proof" time="0.797" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_actual_domain_computed_claim_uses_complete_server_result" time="1.029" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_actual_computed_candidate_can_be_adopted_once_without_t0_qualification" time="1.343" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_actual_postgres_canonical_json_matches_server_digest[value0]" time="0.226" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_actual_postgres_canonical_json_matches_server_digest[value1]" time="0.202" /><testcase classname="tests.agent_kernel.test_m3_original_binding_pg" name="test_actual_original_reference_binds_only_mounted_version_and_provider_taint" time="2.425" /><testcase classname="tests.agent_kernel.test_m3_original_binding_pg" name="test_original_root_id_and_wrong_artifact_version_are_not_read_authority" time="1.228" /><testcase classname="tests.agent_kernel.test_m3_original_binding_pg" name="test_unmounted_original_in_run_does_not_activate_rfq" time="1.566" /><testcase classname="tests.agent_kernel.test_m3_original_binding_pg" name="test_current_new_scan_blocks_preload_and_new_proposal_run" time="1.917" /><testcase classname="tests.agent_kernel.test_m3_original_binding_pg" name="test_registered_text_called_original_does_not_substitute_uploaded_bytes" time="1.387" /></testsuite></testsuites>
