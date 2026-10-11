@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="3" time="5.942" timestamp="2026-10-11T04:23:08.517417-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_proposal_share_recovery_pg" name="test_version_rejection_can_repreview_original_key_and_commit_once" time="1.835"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;内容不符合此操作的专用格式。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;INVALID_PAYLOAD&quot;}}&#10;assert 422 == 200&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;
+
+    def test_version_rejection_can_repreview_original_key_and_commit_once(work):
+        source = artifact(work)
+        proposal, _ = create(work)
+&gt;       human_private_claim(work, source, proposal, "通用便携需求")
+
+tests/preproject/test_proposal_share_recovery_pg.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+source = UUID('f3d60bad-f7ca-4534-bc47-e81bcc781653')
+proposal_id = '90871925-cc82-45d1-bea7-8a49ab827e65', statement = '通用便携需求'
+
+    def human_private_claim(work, source, proposal_id, statement):
+        command = evidence_request(work, "evidence.claim.record", {
+            "artifact_id": str(source), "line": 1,
+            "quote": "Synthetic exact public source", "statement": statement,
+            "visibility": "private", "proposal_id": proposal_id,
+            "content": {"text": statement},
+        })
+        command["source_read_set"] = [{
+            "artifact_id": str(source), "expected_revision": 1, "product_id": None,
+        }]
+        response = post(work, command)
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"内容不符合此操作的专用格式。","detail":{"reason":"INVALID_PAYLOAD"}}
+E       assert 422 == 200
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/preproject/test_proposal_share_recovery_pg.py:43: AssertionError</failure></testcase><testcase classname="tests.preproject.test_proposal_share_recovery_pg" name="test_consumption_after_withdraw_preview_is_definitive_without_side_effect" time="3.150" /><testcase classname="tests.preproject.test_proposal_share_recovery_pg" name="test_human_identity_hit_withdraw_then_share_keeps_item_value_and_future_scope" time="0.562"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;内容不符合此操作的专用格式。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;INVALID_PAYLOAD&quot;}}&#10;assert 422 == 200&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;
+
+    def test_human_identity_hit_withdraw_then_share_keeps_item_value_and_future_scope(work):
+        source = artifact(work)
+        body = payload(work)
+        body.update(entry_kind="customer_request", customer_identities=["合成客户秘密甲"])
+        proposal, _ = create(work, body)
+&gt;       bad = human_private_claim(work, source, proposal, "合成客户秘密甲的便携需求")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_proposal_share_recovery_pg.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+source = UUID('7c5aaeb7-4251-4f89-b57f-1984ba0e9e4e')
+proposal_id = 'd4d7822e-cded-4e7f-9a5c-75c790949c5e', statement = '合成客户秘密甲的便携需求'
+
+    def human_private_claim(work, source, proposal_id, statement):
+        command = evidence_request(work, "evidence.claim.record", {
+            "artifact_id": str(source), "line": 1,
+            "quote": "Synthetic exact public source", "statement": statement,
+            "visibility": "private", "proposal_id": proposal_id,
+            "content": {"text": statement},
+        })
+        command["source_read_set"] = [{
+            "artifact_id": str(source), "expected_revision": 1, "product_id": None,
+        }]
+        response = post(work, command)
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"内容不符合此操作的专用格式。","detail":{"reason":"INVALID_PAYLOAD"}}
+E       assert 422 == 200
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/preproject/test_proposal_share_recovery_pg.py:43: AssertionError</failure></testcase></testsuite></testsuites>

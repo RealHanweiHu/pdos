@@ -149,3 +149,52 @@ test("existing command body and same-origin write protection remain unchanged", 
   assert.equal((await h.send(`${root}/commands`, { method: "POST", body, origin: "https://foreign.invalid" })).status, 403);
   assert.equal(h.calls.length, 1);
 });
+
+test("proposal claims collection and fixed detail preserve the authenticated category scope", async () => {
+  const h = harness({ response: { items: [{ id: parameter, content: { text: "Synthetic private fact" } }] } });
+  const query = `proposal_id=${proposal}&status=active&page_size=50&cursor=${parameter}`;
+  assert.equal((await h.send(`${root}/claims`, { query })).status, 200);
+  assert.equal(h.calls[0].url, `http://synthetic-api.invalid/${root}/claims?${query}`);
+  assert.equal(h.calls[0].init.method, "GET");
+  assert.equal(h.calls[0].init.headers.Authorization, "Bearer synthetic-session");
+  assert.equal((await h.send(`${root}/claims/${parameter}`)).status, 200);
+  assert.equal(h.calls[1].url, `http://synthetic-api.invalid/${root}/claims/${parameter}`);
+});
+
+test("claim reads reject ambiguous filters, unbound collections and extra scopes before forwarding", async () => {
+  const h = harness();
+  for (const query of ["", "proposal_id=invalid", `proposal_id=${proposal}&proposal_id=${proposal}`,
+    `proposal_id=${proposal}&status=unknown`, `proposal_id=${proposal}&status=active&status=withdrawn`,
+    `proposal_id=${proposal}&page_size=0`, `proposal_id=${proposal}&page_size=201`, `proposal_id=${proposal}&page_size=1&page_size=2`,
+    `proposal_id=${proposal}&cursor=invalid`, `proposal_id=${proposal}&cursor=${parameter}&cursor=${parameter}`,
+    ...["tenant_id", "category_id", "product_id", "include_history", "run_id"].map(key => `proposal_id=${proposal}&${key}=${parameter}`)]) {
+    assert.equal((await h.send(`${root}/claims`, { query })).status, 422, query);
+  }
+  for (const query of [`proposal_id=${proposal}`, "status=active", "page_size=20"]) {
+    assert.equal((await h.send(`${root}/claims/${parameter}`, { query })).status, 422);
+  }
+  assert.equal(h.calls.length, 0);
+});
+
+test("only exact claim GET routes are opened and writes remain domain commands", async () => {
+  const h = harness();
+  for (const endpoint of [`v1/claims/${parameter}`, `${root}/claims/invalid`, `${root}/claims/${"-".repeat(36)}`,
+    `${root}/claims/${parameter}/withdraw`, `${root}/products/${parameter}/claims`, `${root}/claims/`]) {
+    assert.equal((await h.send(endpoint, { query: `proposal_id=${proposal}` })).status, 404, endpoint);
+  }
+  for (const endpoint of [`${root}/claims`, `${root}/claims/${parameter}`]) for (const method of ["POST", "PATCH", "DELETE"]) {
+    assert.equal((await h.send(endpoint, { method, body: "{}" })).status, 405);
+  }
+  assert.equal(h.calls.length, 0);
+});
+
+test("claim reads propagate privacy denial and missing sessions without rewriting results", async () => {
+  for (const status of [401, 403, 404]) {
+    const h = harness({ status, response: { code: "FORBIDDEN_SCOPE", message: "Synthetic denial" } });
+    assert.equal((await h.send(`${root}/claims/${parameter}`)).status, status);
+    assert.equal(h.calls.length, 1);
+  }
+  const h = harness({ session: false });
+  assert.equal((await h.send(`${root}/claims`, { query: `proposal_id=${proposal}` })).status, 401);
+  assert.equal(h.calls.length, 0);
+});

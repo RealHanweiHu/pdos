@@ -1,0 +1,24 @@
+{
+  "candidate_files_before_audit": 36,
+  "private_local_state": false,
+  "virtual_environments": false,
+  "node_modules": false,
+  "credential_preview_files": false,
+  "cancelled_claude_output": false,
+  "files_over_5MB": false,
+  "runtime_secret_matches": 0,
+  "source_diff_check": "passed; original failing test XML retained",
+  "source_count": 1524,
+  "source_digest": "9bd3244b8d1d03f9c514a8d9a7009515f0a56b1f38475675a8795ab06d5e1466",
+  "changed_source_files": [
+    "pdos-next/server/tests/preproject/test_proposal_share_recovery_pg.py",
+    "pdos-next/web/src/app/api/[...path]/route.ts",
+    "pdos-next/web/src/app/api/route-proposal-views.test.mjs",
+    "pdos-next/web/src/components/preproject/proposal-document.test.mjs",
+    "pdos-next/web/src/components/preproject/proposal-document.tsx",
+    "pdos-next/web/src/components/preproject/proposal-share.test.mjs",
+    "pdos-next/web/src/components/preproject/proposal-share.tsx"
+  ],
+  "push": false,
+  "real_model_calls": 0
+}

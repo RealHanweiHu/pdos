@@ -9,6 +9,7 @@ const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|canc
 const personalAgentPaths = /^v1\/personal\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|cancel|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
 const preprojectPaths = /^v1\/(?:proposals(?:\/[a-f0-9-]{36}(?:\/(?:items|participants))?)?|g0-definitions\/[a-f0-9-]{36}|projects\/[a-f0-9-]{36}\/open-items)$/i;
 const proposalViewPaths = /^v1\/views\/(?:positioning|spec-benchmark|feature-config|definition-maturity)$/;
+const proposalClaimPaths = /^v1\/claims(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
 const resourceInspectPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/builds\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/resources\/inspect$/;
 const manufacturingPreparationPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/manufacturing-preparations(?:\/inputs|\/(?:work_instruction|control_plan|manufacturing_baseline)\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})?$/;
 const manufacturingPreparationCommands = new Set(["npi.work_instruction.record", "npi.control_plan.record", "npi.manufacturing_baseline.record"]);
@@ -62,13 +63,14 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const resourceInspect = resourceInspectPaths.test(pathname);
   const preproject = preprojectPaths.test(pathname);
   const proposalView = proposalViewPaths.test(pathname);
+  const proposalClaim = proposalClaimPaths.test(pathname);
   const agent = agentPaths.test(pathname) || personalAgent;
   const modelConfiguration = pathname === "v1/model-configuration";
   const qualityChange = qualityChangePaths.test(pathname);
   const manufacturingPreparation = manufacturingPreparationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !preproject && !proposalView && !agent && !modelConfiguration) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (categoryPreview || categorySeed || categoryRoot) {
     const allowed = categoryRoot ? ["GET", "POST"] : categorySeed ? ["GET"] : ["POST"];
@@ -91,6 +93,16 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "运行分页条件无效。" }, { status: 422 });
       query.set(key, value);
     }
+  } else if (proposalClaim) {
+    if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
+    const collection = pathname === "v1/claims";
+    if (!collection && request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "事实详情不接受额外查询条件。" }, { status: 422 });
+    for (const [key, value] of request.nextUrl.searchParams) {
+      const valid = collection && (key === "status" ? ["active", "withdrawn", "reverted"].includes(value) : key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 200 : ["proposal_id", "cursor"].includes(key) && uuid.test(value));
+      if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "请使用明确的提案事实范围与分页条件。" }, { status: 422 });
+      query.set(key, value);
+    }
+    if (collection && !query.has("proposal_id")) return Response.json({ code: "VALIDATION_FAILED", message: "请明确选择一个提案。" }, { status: 422 });
   } else if (proposalView) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
     const proposalIds = request.nextUrl.searchParams.getAll("proposal_id");

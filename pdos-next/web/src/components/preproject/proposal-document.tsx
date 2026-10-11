@@ -6,6 +6,8 @@ import { Dialog } from "radix-ui";
 import { ArrowLeft, LockKey, CheckCircle, WarningCircle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { ProposalViews } from "@/components/preproject/proposal-views";
+import { ProposalShare } from "@/components/preproject/proposal-share";
+import type { ProposalShareReceipt } from "@/components/preproject/proposal-share";
 import { isProposalViewResponse, matchesProposalDocument } from "@/components/preproject/proposal-view-contracts";
 import type { ProposalViewDocument, ProposalViewName, ProposalViewResponse } from "@/components/preproject/proposal-view-contracts";
 
@@ -71,6 +73,7 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
   const [people, setPeople] = useState<Person[]>([]);
   const [me, setMe] = useState("");
   const [error, setError] = useState("");
+  const [shareReceipt, setShareReceipt] = useState<ProposalShareReceipt | null>(null);
   const [busy, setBusy] = useState(false);
   const [prepared, setPrepared] = useState<Prepared | null>(null);
   const [reviewer, setReviewer] = useState("");
@@ -258,6 +261,9 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
         <p className="text-xs text-muted-foreground">小Pai 接入后可起草与查漏。人工编辑与 G0 可独立办理。</p>
       </aside></div>
     </>}
+    {owner && <ProposalShare categoryId={categoryId} proposalId={proposalId} principalId={me}
+      onChanged={receipt => { setShareReceipt(receipt); return reload(); }} />}
+    {shareReceipt && !owner && <p role="status" className="panel text-sm">{shareReceipt.operation === "proposal.share" ? "共享成功" : "事实已撤回，引用条目值保留"} · 回执：{shareReceipt.id}</p>}
     {prepared && documentReady && <Dialog.Root open onOpenChange={open => { if (!open && !busy) setPrepared(null); }}><Dialog.Portal><Dialog.Overlay className="fixed inset-0 z-50 bg-black/40" /><Dialog.Content onCloseAutoFocus={event => { event.preventDefault(); reviewTrigger.current?.focus(); }} onEscapeKeyDown={event => { if (busy) event.preventDefault(); }} onPointerDownOutside={event => { if (busy) event.preventDefault(); }} className="fixed left-1/2 top-1/2 z-50 max-h-[85vh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-lg border bg-background p-6 shadow-lg">
       <Dialog.Title className="text-lg font-semibold">{prepared.command.operation === "proposal.g0.decide" ? "确认具名 G0 决定" : "确认提交 G0"}</Dialog.Title><Dialog.Description className="my-4">{prepared.review.effect ?? "提交副本将锁定，评审人获得此提案读取权限。"}</Dialog.Description>
       {error && <p role="alert" className="mb-4 text-sm text-destructive">{error}</p>}
