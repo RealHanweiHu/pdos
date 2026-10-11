@@ -18,11 +18,22 @@ class Variant(Row, Base):
     __tablename__ = "product_variants"
     product_id: Mapped[UUID]
     owner_id: Mapped[UUID]
-    name: Mapped[str] = mapped_column(String(160))
+    name: Mapped[str] = mapped_column(Text)
     kind: Mapped[str] = mapped_column(String(24))
     visibility: Mapped[str] = mapped_column(String(16))
     status: Mapped[str] = mapped_column(String(16), default="draft")
+    g0_decision_id: Mapped[UUID | None]
     __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "g0_decision_id"],
+            [
+                "proposal_decisions.tenant_id",
+                "proposal_decisions.category_id",
+                "proposal_decisions.id",
+            ],
+            name="m3_variant_decision_fk",
+            use_alter=True,
+        ),
         UniqueConstraint("tenant_id", "product_id", "id"),
         ForeignKeyConstraint(["tenant_id", "product_id"], ["products.tenant_id", "products.id"]),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
@@ -38,6 +49,7 @@ class VariantRevision(Row, Base):
     variant_id: Mapped[UUID]
     owner_id: Mapped[UUID]
     parent_definition_id: Mapped[UUID]
+    definition_id: Mapped[UUID | None]
     parent_revision: Mapped[int] = mapped_column(Integer)
     previous_revision_id: Mapped[UUID | None]
     revision: Mapped[int] = mapped_column(Integer)
@@ -50,6 +62,15 @@ class VariantRevision(Row, Base):
     choices: Mapped[list] = mapped_column(JSONB)
     reason: Mapped[str] = mapped_column(Text)
     __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "product_id", "definition_id"],
+            [
+                "definition_revisions.tenant_id",
+                "definition_revisions.product_id",
+                "definition_revisions.id",
+            ],
+            name="m3_variant_revision_definition_fk",
+        ),
         UniqueConstraint("tenant_id", "product_id", "variant_id", "id"),
         UniqueConstraint("tenant_id", "variant_id", "revision"),
         ForeignKeyConstraint(

@@ -53,28 +53,45 @@ def grant_review_sources(s, ctx, row, sub):
             )
 
 
-def approve(s, ctx, row, sub, decision, *, provenance):
+def approve(s, ctx, row, sub, decision, *, provenance, baseline=None):
     from .schemas import ItemInput, Reference
     from .service import _version
 
     doc = sub.frozen_document
+    from .derivation import calculation
+
+    compared = (
+        calculation(baseline, doc, proposal_id=row.id, revision=sub.revision) if baseline else None
+    )
     people = {
         row.owner_id,
         sub.reviewer_id,
         decision.project_owner_id,
         *(UUID(d["owner_id"]) for d in decision.dispositions),
     }
-    product = create_product(
-        s,
-        ctx,
-        product_id=decision.created_product_id,
-        owner_id=row.owner_id,
-        name=decision.creation["product_name"],
-        purpose=row.brief,
-        visibility=row.effective_visibility,
-        decision=decision,
-    )
-    audience(s, ctx, "products", product.id, row.owner_id, people)
+    variant = None
+    if decision.created_variant_id:
+        from pdos_next.domain.products.variants import create_g0_variant
+        from pdos_next.models import Product
+
+        product = s.get(Product, decision.created_product_id)
+        variant = create_g0_variant(
+            s, ctx, product, decision, owner_id=row.owner_id, visibility=row.effective_visibility
+        )
+        audience(s, ctx, "product_variants", variant.id, row.owner_id, people)
+    else:
+        product = create_product(
+            s,
+            ctx,
+            product_id=decision.created_product_id,
+            owner_id=row.owner_id,
+            name=decision.creation["product_name"],
+            purpose=row.brief,
+            visibility=row.effective_visibility,
+            decision=decision,
+            parent_product_id=row.baseline_product_id,
+        )
+        audience(s, ctx, "products", product.id, row.owner_id, people)
     prices = [
         i["content"].get("target_price")
         for i in doc["items"]
@@ -89,7 +106,8 @@ def approve(s, ctx, row, sub, decision, *, provenance):
             entry = s.get(KnowledgeEntry, UUID(ref["id"]))
             if entry and entry.kind == "segment":
                 segments[entry.lineage_id] = entry
-    set_g0_targets(s, ctx, product, decision, price=price, segments=segments.values())
+    if variant is None:
+        set_g0_targets(s, ctx, product, decision, price=price, segments=segments.values())
     specs, supplements = [], []
     for item in doc["items"]:
         if item["kind"] != "spec":
@@ -107,7 +125,7 @@ def approve(s, ctx, row, sub, decision, *, provenance):
                 "text": spec.get("text_value"),
                 "unit": spec.get("unit"),
                 "tolerance": spec.get("tolerance"),
-                "test_conditions": [],
+                "test_conditions": spec.get("test_conditions", []),
                 "method": spec.get("verification_method"),
                 "acceptance_criterion": spec.get("acceptance_criterion"),
                 "nature": spec["nature"],
@@ -152,6 +170,9 @@ def approve(s, ctx, row, sub, decision, *, provenance):
         definition_id=decision.created_definition_id,
         decision=decision,
         fields={
+            "variant_id": variant.id if variant else None,
+            "derived_from_definition_id": UUID(baseline["id"]) if baseline else None,
+            "derived_from_definition_revision": baseline["revision"] if baseline else None,
             "title": decision.creation["product_name"],
             "purpose": row.brief,
             "visibility": row.effective_visibility,
@@ -193,6 +214,13 @@ def approve(s, ctx, row, sub, decision, *, provenance):
             "tenant": ctx.tenant_id,
         },
     )
+    if variant:
+        from pdos_next.domain.products.variants import bind_g0_definition
+
+        variant_revision = bind_g0_definition(
+            s, ctx, variant, definition, baseline, decision, compared
+        )
+        audience(s, ctx, "variant_revisions", variant_revision.id, row.owner_id, people)
     project = create_project(
         s,
         ctx,
@@ -206,6 +234,7 @@ def approve(s, ctx, row, sub, decision, *, provenance):
         definition_id=definition.id,
         definition_revision=1,
         decision=decision,
+        variant_id=variant.id if variant else None,
     )
     audience(s, ctx, "projects", project.id, project.owner_id, people)
     s.execute(
@@ -214,8 +243,12 @@ def approve(s, ctx, row, sub, decision, *, provenance):
             "WHERE id=:id AND tenant_id=:tenant"
         ),
         {
-            "type": "customer_request" if row.entry_kind == "customer_request" else "proposal",
-            "proposal": row.id,
+            "type": "parent_product"
+            if baseline
+            else "customer_request"
+            if row.entry_kind == "customer_request"
+            else "proposal",
+            "proposal": row.baseline_product_id if baseline else row.id,
             "decision": decision.id,
             "id": project.id,
             "tenant": ctx.tenant_id,

@@ -5,6 +5,7 @@ from uuid import UUID
 from sqlalchemy import (
     CheckConstraint,
     ForeignKeyConstraint,
+    Index,
     Integer,
     String,
     Text,
@@ -85,12 +86,34 @@ class Project(Row, Base):
 class ProjectProductLink(Row, Base):
     __tablename__ = "project_product_links"
     product_id: Mapped[UUID]
+    variant_id: Mapped[UUID | None] = mapped_column()
     project_id: Mapped[UUID]
     definition_id: Mapped[UUID]
     definition_revision: Mapped[int] = mapped_column(Integer)
     scope: Mapped[str] = mapped_column(Text)
     __table_args__ = (
-        UniqueConstraint("tenant_id", "project_id"),
+        Index(
+            "m3_project_model_scope",
+            "tenant_id",
+            "project_id",
+            "product_id",
+            unique=True,
+            postgresql_where=variant_id.is_(None),
+        ),
+        Index(
+            "m3_project_variant_scope",
+            "tenant_id",
+            "project_id",
+            "product_id",
+            "variant_id",
+            unique=True,
+            postgresql_where=variant_id.is_not(None),
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "product_id", "variant_id"],
+            ["product_variants.tenant_id", "product_variants.product_id", "product_variants.id"],
+            name="m3_project_variant_fk",
+        ),
         project_fk(),
         ForeignKeyConstraint(
             ["tenant_id", "product_id", "definition_id"],

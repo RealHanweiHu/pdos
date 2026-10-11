@@ -111,6 +111,7 @@ def apply_draft(s, ctx, command, product, payload: DefinitionDraftPayload):
         .where(
             DefinitionRevision.tenant_id == ctx.tenant_id,
             DefinitionRevision.product_id == product.id,
+            DefinitionRevision.variant_id.is_(None),
         )
         .order_by(DefinitionRevision.revision.desc())
         .limit(1)
@@ -124,6 +125,7 @@ def apply_draft(s, ctx, command, product, payload: DefinitionDraftPayload):
             select(func.max(DefinitionRevision.revision)).where(
                 DefinitionRevision.tenant_id == ctx.tenant_id,
                 DefinitionRevision.product_id == product.id,
+                DefinitionRevision.variant_id.is_(None),
             )
         )
         or 0
@@ -324,9 +326,12 @@ def definition_view(s, ctx, row) -> dict:
             if column.name
             not in {"id", "tenant_id", "category_id", "product_id", "definition_id", "created_at"}
         }
-        for name in ("value", "lower", "upper", "tolerance", "owner_id"):
-            if data[name] is not None:
-                data[name] = str(data[name])
+        from decimal import Decimal
+        from uuid import UUID
+
+        for name, value in data.items():
+            if isinstance(value, (Decimal, UUID)):
+                data[name] = str(value)
         data["sources"] = [
             {
                 k: value
@@ -341,10 +346,23 @@ def definition_view(s, ctx, row) -> dict:
         "id": str(row.id),
         "category_id": str(row.category_id),
         "product_id": str(row.product_id),
+        "variant_id": str(row.variant_id) if row.variant_id else None,
         "owner_id": str(row.owner_id),
         "parent_definition_id": str(row.parent_definition_id) if row.parent_definition_id else None,
         "revision": row.revision,
         "status": row.status,
+        "sealed": row.sealed,
+        "publication_receipt_id": str(row.publication_receipt_id)
+        if row.publication_receipt_id
+        else None,
+        "derived_from_definition_id": str(row.derived_from_definition_id)
+        if row.derived_from_definition_id
+        else None,
+        "derived_from_definition_revision": row.derived_from_definition_revision,
+        "g0_decision_id": str(row.g0_decision_id) if row.g0_decision_id else None,
+        "source_proposal_id": str(row.source_proposal_id) if row.source_proposal_id else None,
+        "source_submission_id": str(row.source_submission_id) if row.source_submission_id else None,
+        "source_proposal_revision": row.source_proposal_revision,
         "visibility": row.visibility,
         "title": row.title,
         "purpose": row.purpose,

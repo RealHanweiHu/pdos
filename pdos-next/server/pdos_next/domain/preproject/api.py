@@ -21,6 +21,39 @@ def register_routes(app, engine, auth_dependency):
             read_snapshot=True,
         )
 
+    @app.get("/v1/categories/{category_id}/products/{product_id}/baseline")
+    def product_baseline(
+        product_id: UUID,
+        variant_id: UUID | None = None,
+        definition_revision: int | None = Query(default=None, gt=0),
+        ctx: Context = auth_dependency,
+    ):
+        from .baseline import read_baseline
+
+        with scope(ctx) as s:
+            return read_baseline(
+                s,
+                ctx,
+                product_id,
+                variant_id=variant_id,
+                definition_revision=definition_revision,
+            )
+
+    @app.get("/v1/categories/{category_id}/proposals/{proposal_id}/derivation-diff")
+    def derivation_diff(proposal_id: UUID, ctx: Context = auth_dependency):
+        from .access import fail, proposal
+        from .derivation import calculation, validate_baseline
+        from .views import document
+
+        with scope(ctx) as s:
+            require_access(s, ctx, None)
+            row = proposal(s, ctx, proposal_id)
+            doc = document(s, row)
+            baseline = validate_baseline(s, ctx, row, doc)
+            if baseline is None:
+                fail("VALIDATION_FAILED", "not_a_derivative", "此提案没有固定派生父版。", 422)
+            return calculation(baseline, doc, proposal_id=row.id, revision=row.revision)
+
     @app.get("/v1/categories/{category_id}/parameters")
     def parameters(
         parameter_ids: Annotated[list[UUID] | None, Query()] = None,

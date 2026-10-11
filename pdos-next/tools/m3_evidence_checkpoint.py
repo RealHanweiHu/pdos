@@ -10,6 +10,9 @@ if __name__ == "__main__":
     parser.add_argument("--evidence", required=True)
     parser.add_argument("--from-revision", default="s0_0732")
     parser.add_argument("--to-revision", default="s0_0733")
+    parser.add_argument(
+        "--section", choices=["evidence-sharing", "derivation"], default="evidence-sharing"
+    )
     args = parser.parse_args()
     if not args.evidence.endswith(".json") or "/" in args.evidence:
         parser.error("A plain JSON evidence filename is required")
@@ -17,5 +20,5 @@ if __name__ == "__main__":
         args.from_revision,
         args.to_revision,
         args.evidence,
-        report=fixture.REPORT.parent / "evidence-sharing",
+        report=fixture.REPORT.parent / args.section,
     )

@@ -255,6 +255,7 @@ class ProposalDecision(Row, Base):
     signer_grant_snapshot: Mapped[dict] = mapped_column(JSONB)
     review_digest: Mapped[str] = mapped_column(Text)
     created_product_id: Mapped[UUID | None]
+    created_variant_id: Mapped[UUID | None]
     created_definition_id: Mapped[UUID | None]
     created_project_id: Mapped[UUID | None]
     receipt_id: Mapped[UUID | None]

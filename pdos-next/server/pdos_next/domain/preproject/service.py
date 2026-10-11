@@ -2,7 +2,7 @@ from collections import Counter
 from dataclasses import dataclass
 from uuid import UUID, uuid4
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 
 from pdos_next.models import Artifact, Outbox, Principal
 from pdos_next.service import digest, source_for
@@ -25,6 +25,25 @@ from .views import document, items, maturity, required_dispositions
 class ValidatedWrite:
     provenance: dict
     reference_privacy: dict
+    baseline: dict | None = None
+    initial_items: tuple = ()
+
+
+def _lock_baseline(s, ctx, baseline):
+    if (
+        baseline
+        and not s.execute(
+            text("SELECT * FROM m3_lock_published_baseline(:t,:c,:p,:d,:v)"),
+            {
+                "t": ctx.tenant_id,
+                "c": ctx.category_id,
+                "p": baseline["product_id"],
+                "d": baseline["id"],
+                "v": baseline["revision"],
+            },
+        ).first()
+    ):
+        fail("SOURCE_UNAVAILABLE", "baseline_unreadable", "固定父版已不可读或发布事实不完整。")
 
 
 def requires_category_write(command):
@@ -96,7 +115,18 @@ def _references(s, ctx, refs, *, approved=False):
                 or source.revision != ref.version
             ):
                 fail("SOURCE_UNAVAILABLE", "baseline_unreadable", "固定父版定义不可读。")
-            privacy = "shared" if source.visibility == "category" else "private"
+            private = s.scalar(
+                text("SELECT m3_definition_root_private(:tenant,:category,:definition,:version)"),
+                {
+                    "tenant": ctx.tenant_id,
+                    "category": ctx.category_id,
+                    "definition": source.id,
+                    "version": source.revision,
+                },
+            )
+            if private is None:
+                fail("SOURCE_UNAVAILABLE", "baseline_unreadable", "固定父版来源不可读。")
+            privacy = "private" if private else "shared"
         elif ref.type == "knowledge":
             from .category_models import KnowledgeCurrent, KnowledgeEntry
 
@@ -209,6 +239,7 @@ def validate(s, ctx, command, scope, payload):
         human(s, ctx)
     path = writing_path(s, ctx, command, payload)
     reference_privacy = {}
+    baseline = None
 
     def check_references(refs, *, approved=False):
         reference_privacy.update(
@@ -235,14 +266,11 @@ def validate(s, ctx, command, scope, payload):
     if isinstance(payload, ProposalCreate):
         if command.expected_revision != scope.revision:
             fail("VERSION_CONFLICT", "category_revision_moved", "品类范围版本已变化。")
-        if payload.target_kind == "new_variant" or payload.entry_kind == "derivative":
-            fail(
-                "SOURCE_UNAVAILABLE",
-                "derivation_adapter_pending",
-                "派生入口待与 B3 唯一派生引擎接入；此提前候选支持自主新品与客户需求。",
-                503,
-            )
-        candidate_items = payload.groups.items
+        from .derivation import prepare_create
+        from .schemas import Reference
+
+        baseline, candidate_items = prepare_create(s, ctx, payload)
+        _lock_baseline(s, ctx, baseline)
         if path["origin"] == "ai_draft" and any(
             item.kind == "spec" and item.content["item_status"] == "confirmed"
             for item in candidate_items
@@ -255,8 +283,16 @@ def validate(s, ctx, command, scope, payload):
         for question in payload.groups.questions:
             if question.owner_id != ctx.requester_id:
                 fail("VALIDATION_FAILED", "assignee_not_audience", "私有草稿的问题先由负责人承接。")
-        check_references(_all_refs(payload))
-        return ValidatedWrite(path, reference_privacy)
+        refs = [*_all_refs(payload), *(ref for item in candidate_items for ref in item.source_refs)]
+        if baseline:
+            refs.append(
+                Reference(type="definition", id=baseline["id"], version=baseline["revision"])
+            )
+            refs.extend(
+                Reference.model_validate(ref) for ref in baseline.get("baseline_claim_refs", [])
+            )
+        check_references(refs)
+        return ValidatedWrite(path, reference_privacy, baseline, tuple(candidate_items))
     row = (
         proposal(s, ctx, payload.proposal_id, lock=True)
         if isinstance(payload, G0Decide)
@@ -357,6 +393,10 @@ def validate(s, ctx, command, scope, payload):
             fail("VALIDATION_FAILED", "reviewer_is_owner", "负责人不能评审自己的提案。")
         member(s, ctx, payload.reviewer_id, reviewer=True)
         doc = document(s, row)
+        from .derivation import validate_baseline
+
+        baseline = validate_baseline(s, ctx, row, doc)
+        _lock_baseline(s, ctx, baseline)
         _check_document_references(s, ctx, doc)
         checks = maturity(doc)["submission_checks"]
         if not checks["worth_it_present"]:
@@ -375,6 +415,10 @@ def validate(s, ctx, command, scope, payload):
             )
         member(s, ctx, ctx.requester_id, reviewer=True)
         if payload.outcome == "approved":
+            from .derivation import validate_baseline
+
+            baseline = validate_baseline(s, ctx, row, sub.frozen_document)
+            _lock_baseline(s, ctx, baseline)
             prices = {
                 digest(item["content"]["target_price"])
                 for item in sub.frozen_document["items"]
@@ -418,7 +462,7 @@ def validate(s, ctx, command, scope, payload):
                 else row.owner_id,
             )
             _check_document_references(s, ctx, sub.frozen_document, approved=True)
-    return ValidatedWrite(path, reference_privacy)
+    return ValidatedWrite(path, reference_privacy, baseline)
 
 
 def confirmation_subject(s, ctx, command, scope, payload):
@@ -468,14 +512,26 @@ def _audience_changes(s, row, payload):
 
 def preview_view(s, ctx, command, scope, payload):
     if isinstance(payload, ProposalCreate):
-        return {
+        from .derivation import prepare_create
+
+        baseline, initial_items = prepare_create(s, ctx, payload)
+        result = {
             "operation": command.operation,
             "title": payload.title,
             "visibility": "private",
             "owner_id": str(ctx.requester_id),
-            "groups": payload.groups.model_dump(mode="json"),
+            "groups": {
+                **payload.groups.model_dump(mode="json"),
+                "items": [item.model_dump(mode="json") for item in initial_items],
+            },
             "effect": "保存私有立项提案；未建型号与项目。",
         }
+        if baseline:
+            result["baseline"] = {
+                key: baseline[key]
+                for key in ("id", "product_id", "revision", "title", "publication")
+            }
+        return result
     row = proposal(s, ctx, payload.proposal_id)
     result = {
         "operation": command.operation,
@@ -601,6 +657,17 @@ def apply_validated(s, ctx, command, scope, payload, validated):
     receipt_id = uuid4()
     changed = []
     if isinstance(payload, ProposalCreate):
+        from .schemas import Reference
+
+        baseline = validated.baseline
+        source_refs = list(payload.source_refs)
+        if baseline:
+            source_refs.append(
+                Reference(type="definition", id=baseline["id"], version=baseline["revision"])
+            )
+            source_refs.extend(
+                Reference.model_validate(ref) for ref in baseline.get("baseline_claim_refs", [])
+            )
         row = Proposal(
             id=uuid4(),
             tenant_id=ctx.tenant_id,
@@ -610,12 +677,12 @@ def apply_validated(s, ctx, command, scope, payload, validated):
             brief=payload.brief,
             entry_kind=payload.entry_kind,
             target_kind=payload.target_kind,
-            baseline_product_id=None,
-            baseline_definition_id=None,
-            baseline_definition_revision=None,
+            baseline_product_id=payload.baseline_product_id,
+            baseline_definition_id=UUID(baseline["id"]) if baseline else None,
+            baseline_definition_revision=baseline["revision"] if baseline else None,
             customer_identities=payload.customer_identities,
             context_refs=[r.model_dump(mode="json") for r in payload.context_refs],
-            source_refs=[r.model_dump(mode="json") for r in payload.source_refs],
+            source_refs=[r.model_dump(mode="json") for r in source_refs],
             created_by_run_id=provenance["run_id"],
         )
         s.add(row)
@@ -623,7 +690,7 @@ def apply_validated(s, ctx, command, scope, payload, validated):
         from .schemas import ItemInput
 
         initial = [
-            *payload.groups.items,
+            *validated.initial_items,
             *(
                 ItemInput(kind="question", content=q.model_dump(mode="json"))
                 for q in payload.groups.questions
@@ -641,7 +708,12 @@ def apply_validated(s, ctx, command, scope, payload, validated):
                     provenance=provenance,
                 )
             )
-        _sources(s, ctx, row, _all_refs(payload), reference_privacy=validated.reference_privacy)
+        refs = [
+            *source_refs,
+            *payload.context_refs,
+            *(ref for item in initial for ref in item.source_refs),
+        ]
+        _sources(s, ctx, row, refs, reference_privacy=validated.reference_privacy)
     else:
         row = proposal(s, ctx, payload.proposal_id, lock=True)
         if isinstance(payload, ItemPatch):
@@ -755,6 +827,8 @@ def apply_validated(s, ctx, command, scope, payload, validated):
                 )
         elif isinstance(payload, G0Submit):
             doc = document(s, row)
+            if validated.baseline:
+                doc["baseline_claim_refs"] = validated.baseline.get("baseline_claim_refs", [])
             own_refs = [r.model_dump(mode="json") for r in _all_refs_from_document(doc)]
             doc["direct_source_refs"] = doc["source_refs"]
             doc["source_refs"] = own_refs
@@ -810,7 +884,14 @@ def apply_validated(s, ctx, command, scope, payload, validated):
                     "expires_at": grant.expires_at.isoformat() if grant.expires_at else None,
                 },
                 review_digest=sub.document_digest,
-                created_product_id=uuid4() if approved else None,
+                created_product_id=(
+                    row.baseline_product_id if row.target_kind == "new_variant" else uuid4()
+                )
+                if approved
+                else None,
+                created_variant_id=uuid4()
+                if approved and row.target_kind == "new_variant"
+                else None,
                 created_definition_id=uuid4() if approved else None,
                 created_project_id=uuid4() if approved else None,
                 creation={
@@ -818,6 +899,9 @@ def apply_validated(s, ctx, command, scope, payload, validated):
                     if payload.new_identity
                     else row.title,
                     "project_name": payload.project.name if payload.project else row.title,
+                    "variant_kind": payload.new_identity.variant_kind
+                    if payload.new_identity
+                    else "configuration",
                 },
                 receipt_id=receipt_id,
             )
@@ -826,7 +910,9 @@ def apply_validated(s, ctx, command, scope, payload, validated):
             if approved:
                 from .materialize import approve
 
-                approve(s, ctx, row, sub, decision, provenance=provenance)
+                approve(
+                    s, ctx, row, sub, decision, provenance=provenance, baseline=validated.baseline
+                )
                 from .root_sources import consume_claims
 
                 consume_claims(s, ctx, _all_refs_from_document(sub.frozen_document), decision)
@@ -834,6 +920,9 @@ def apply_validated(s, ctx, command, scope, payload, validated):
             row.action_result = {
                 "decision_id": str(decision.id),
                 "product_id": str(decision.created_product_id) if approved else None,
+                "variant_id": str(decision.created_variant_id)
+                if approved and decision.created_variant_id
+                else None,
                 "definition_id": str(decision.created_definition_id) if approved else None,
                 "project_id": str(decision.created_project_id) if approved else None,
                 "dispositions": dispositions,
@@ -869,6 +958,7 @@ def _all_refs_from_document(doc):
     refs = [
         *doc.get("source_refs", []),
         *doc.get("context_refs", []),
+        *doc.get("baseline_claim_refs", []),
         *(r for item in doc["items"] for r in item["source_refs"]),
         *(
             {

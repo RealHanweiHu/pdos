@@ -53,6 +53,11 @@ def document(s, row):
         "brief": row.brief,
         "entry_kind": row.entry_kind,
         "target_kind": row.target_kind,
+        "baseline_product_id": str(row.baseline_product_id) if row.baseline_product_id else None,
+        "baseline_definition_id": str(row.baseline_definition_id)
+        if row.baseline_definition_id
+        else None,
+        "baseline_definition_revision": row.baseline_definition_revision,
         "items": items(s, row),
         "source_refs": row.source_refs,
         "context_refs": row.context_refs,

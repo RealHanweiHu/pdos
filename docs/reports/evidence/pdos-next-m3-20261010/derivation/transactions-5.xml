@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="28" time="58.371" timestamp="2026-10-10T23:38:51.841508-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_create_inherits_fixed_full_specs_without_parent_confirmation[False]" time="1.876" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_create_inherits_fixed_full_specs_without_parent_confirmation[True]" time="1.041" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_explicit_child_spec_overrides_only_its_fixed_parent_key" time="0.802" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_unpublished_draft_or_sealed_definition_is_not_a_published_parent[draft]" time="0.462" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_unpublished_draft_or_sealed_definition_is_not_a_published_parent[sealed_draft]" time="0.320" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_real_sealed_g0_first_definition_does_not_become_published_baseline" time="1.937" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_explicit_parent_version_mismatch_and_cross_category_parent_are_rejected" time="0.326" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_g0_creates_one_atomic_identity_and_fixed_canonical_definition[new_product]" time="3.599" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_g0_creates_one_atomic_identity_and_fixed_canonical_definition[new_variant]" time="4.146" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_application_role_cannot_mint_publication_receipt" time="0.509" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_application_role_cannot_attach_a_synthetic_receipt_and_publish_draft" time="0.250" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_readonly_pm_has_no_general_product_creation_right" time="0.199" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_revoked_pm_capability_after_preview_blocks_derivative_approval" time="2.170" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_private_new_variant_preserves_parent_product_audience_and_commercial_values" time="3.343" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval[missing_variant_revision]" time="2.677"><failure message="Failed: DID NOT RAISE DBAPIError">work = &lt;isolated synthetic test scope&gt;, fault = 'missing_variant_revision'
+
+    @pytest.mark.parametrize("fault", ["missing_variant_revision", "wrong_project_variant"])
+    def test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval(work, fault):
+        parent = synthetic_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent, "new_variant"))
+        submit(work, proposal_id)
+        checked = post(work, decide_request(work, proposal_id), actor=work.peer, preview=True)
+        assert checked.status_code == 200, checked.text
+        command = checked.json()["command"]
+        confirmation_id = proof_id(work, command)
+        touched = []
+    
+        def omit_revision(session, _context, _instances):
+            for row in list(session.new):
+                if isinstance(row, VariantRevision) and row.tenant_id == work.tenant:
+                    touched.append(row.id)
+                    session.expunge(row)
+    
+        def wrong_variant(_mapper, _connection, row):
+            if row.tenant_id == work.tenant:
+                assert row.variant_id is not None
+                touched.append(row.id)
+                row.variant_id = None  # Valid nullable FK shape, wrong canonical scope.
+    
+        target, name, hook = (
+            (Session, "before_flush", omit_revision)
+            if fault == "missing_variant_revision"
+            else (ProjectProductLink, "before_insert", wrong_variant)
+        )
+        event.listen(target, name, hook)
+        try:
+&gt;           with pytest.raises(DBAPIError) as error:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE DBAPIError
+
+tests/preproject/test_derivation_transactions.py:781: Failed</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval[wrong_project_variant]" time="3.121"><failure message="Failed: DID NOT RAISE DBAPIError">work = &lt;isolated synthetic test scope&gt;, fault = 'wrong_project_variant'
+
+    @pytest.mark.parametrize("fault", ["missing_variant_revision", "wrong_project_variant"])
+    def test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval(work, fault):
+        parent = synthetic_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent, "new_variant"))
+        submit(work, proposal_id)
+        checked = post(work, decide_request(work, proposal_id), actor=work.peer, preview=True)
+        assert checked.status_code == 200, checked.text
+        command = checked.json()["command"]
+        confirmation_id = proof_id(work, command)
+        touched = []
+    
+        def omit_revision(session, _context, _instances):
+            for row in list(session.new):
+                if isinstance(row, VariantRevision) and row.tenant_id == work.tenant:
+                    touched.append(row.id)
+                    session.expunge(row)
+    
+        def wrong_variant(_mapper, _connection, row):
+            if row.tenant_id == work.tenant:
+                assert row.variant_id is not None
+                touched.append(row.id)
+                row.variant_id = None  # Valid nullable FK shape, wrong canonical scope.
+    
+        target, name, hook = (
+            (Session, "before_flush", omit_revision)
+            if fault == "missing_variant_revision"
+            else (ProjectProductLink, "before_insert", wrong_variant)
+        )
+        event.listen(target, name, hook)
+        try:
+&gt;           with pytest.raises(DBAPIError) as error:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE DBAPIError
+
+tests/preproject/test_derivation_transactions.py:781: Failed</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_published_parent_revalidates_native_artifact_before_derivative_create[version-SOURCE_STALE]" time="1.394" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_published_parent_revalidates_native_artifact_before_derivative_create[withdrawn-SOURCE_UNAVAILABLE]" time="1.666" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_published_parent_revalidates_spec_claim_after_real_withdrawal" time="1.806" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_parent_claim_withdrawn_after_g0_preview_blocks_old_approval_without_side_effects" time="3.646" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_g0_consumes_parent_claim_closure_once_and_blocks_prepared_withdrawal[new_product]" time="4.968" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_g0_consumes_parent_claim_closure_once_and_blocks_prepared_withdrawal[new_variant]" time="4.944" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_readonly_pm_get_baseline_checks_claim_sources_and_selects_exact_version" time="1.994" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_source_audience_revoke_hides_baseline_and_blocks_already_prepared_g0" time="3.130" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_private_publication_requires_readable_receipt_without_leaking_its_digest" time="0.600" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_public_definition_typed_private_root_cannot_launder_derivation_or_read_body[artifact]" time="2.086" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_public_definition_typed_private_root_cannot_launder_derivation_or_read_body[claim]" time="1.515" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_typed_private_source_revocation_hides_all_definition_reads_and_blocks_old_g0" time="3.396" /></testsuite></testsuites>

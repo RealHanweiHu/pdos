@@ -149,7 +149,48 @@ def resolve(
             fail("SOURCE_STALE", "claim_withdrawn", "Claim 已撤回，不能作为当前证据。")
         if not _historical_reader(s, ctx, row):
             fail("NOT_FOUND", "claim_not_found", "Claim 不存在或不在当前受众内。", 404)
-    if row.revision != version:
+    historical_version = False
+    if allow_withdrawn and not approved and row.status != "active" and row.revision == version + 1:
+        from .evidence_models import ClaimWithdrawal
+
+        if row.status == "withdrawn":
+            historical_version = (
+                s.scalar(
+                    select(ClaimWithdrawal.id).where(
+                        ClaimWithdrawal.tenant_id == ctx.tenant_id,
+                        ClaimWithdrawal.category_id == ctx.category_id,
+                        ClaimWithdrawal.claim_id == row.id,
+                        ClaimWithdrawal.expected_version == version,
+                    )
+                )
+                is not None
+            )
+        elif row.status == "reverted":
+            from pdos_next.models import Receipt
+
+            historical_version = (
+                s.scalar(
+                    select(Receipt.id).where(
+                        Receipt.tenant_id == ctx.tenant_id,
+                        Receipt.category_id == ctx.category_id,
+                        Receipt.operation == "ai.run.revert",
+                        (
+                            (
+                                (Receipt.subject_type == "claim")
+                                & (Receipt.subject_id == row.id)
+                                & (Receipt.subject_revision == row.revision)
+                            )
+                            | (
+                                (Receipt.subject_type == "agent_run")
+                                & (Receipt.subject_id == row.run_id)
+                                & Receipt.result["receipt_ids"].contains([str(row.receipt_id)])
+                            )
+                        ),
+                    )
+                )
+                is not None
+            )
+    if row.revision != version and not historical_version:
         fail("SOURCE_STALE", "claim_version_moved", "Claim 版本已变化。")
     if row.status != "active":
         return row

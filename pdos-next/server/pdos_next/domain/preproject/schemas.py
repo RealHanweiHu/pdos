@@ -32,6 +32,7 @@ class SpecItem(StrictModel):
     text_value: str | None = None
     unit: str | None = None
     condition_note: str | None = None
+    test_conditions: list[str] = Field(default_factory=list)
     verification_method: str | None = None
     acceptance_criterion: str | None = None
     modality: Literal["must", "should", "may", "prohibited", "unstated"] | None = None
@@ -181,6 +182,7 @@ class ProposalCreate(PreparedContent):
     entry_kind: Literal["customer_request", "new_product", "derivative"]
     target_kind: Literal["new_product", "new_variant"] = "new_product"
     baseline_product_id: UUID | None = None
+    baseline_definition_id: UUID | None = None
     baseline_definition_revision: int | None = Field(default=None, gt=0)
     brief: str = ""
     customer_identities: list[str] = Field(default_factory=list)
@@ -193,6 +195,14 @@ class ProposalCreate(PreparedContent):
         needed = self.entry_kind == "derivative" or self.target_kind == "new_variant"
         if needed and (not self.baseline_product_id or not self.baseline_definition_revision):
             raise ValueError("Derivatives need a fixed baseline")
+        if not needed and any(
+            (
+                self.baseline_product_id,
+                self.baseline_definition_id,
+                self.baseline_definition_revision,
+            )
+        ):
+            raise ValueError("Only derivatives may bind a parent baseline")
         return self
 
 
@@ -237,6 +247,7 @@ class ProjectInput(StrictModel):
 
 class IdentityInput(StrictModel):
     name: str = Field(min_length=1)
+    variant_kind: Literal["customer", "region", "configuration"] = "configuration"
 
 
 class G0Decide(StrictModel):

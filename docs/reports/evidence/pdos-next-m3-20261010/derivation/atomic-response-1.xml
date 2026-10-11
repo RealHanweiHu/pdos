@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="8.772" timestamp="2026-10-10T23:43:25.656933-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_derivation_transactions" name="test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval[missing_variant_revision]" time="3.884"><failure message="AssertionError: assert ('23514', 'G0 variant canonical definition mismatch') in [('23514', 'audience target unavailable')]">work = &lt;isolated synthetic test scope&gt;, fault = 'missing_variant_revision'
+
+    @pytest.mark.parametrize("fault", ["missing_variant_revision", "wrong_project_variant"])
+    def test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval(work, fault):
+        parent = synthetic_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent, "new_variant"))
+        submit(work, proposal_id)
+        checked = post(work, decide_request(work, proposal_id), actor=work.peer, preview=True)
+        assert checked.status_code == 200, checked.text
+        command = checked.json()["command"]
+        confirmation_id = proof_id(work, command)
+        touched = []
+    
+        def omit_revision(session, _context, _instances):
+            for row in list(session.new):
+                if isinstance(row, VariantRevision) and row.tenant_id == work.tenant:
+                    touched.append(row.id)
+                    session.expunge(row)
+    
+        def wrong_variant(_mapper, _connection, row):
+            if row.tenant_id == work.tenant:
+                assert row.variant_id is not None
+                touched.append(row.id)
+                row.variant_id = None  # Valid nullable FK shape, wrong canonical scope.
+    
+        target, name, hook = (
+            (Session, "before_flush", omit_revision)
+            if fault == "missing_variant_revision"
+            else (ProjectProductLink, "before_insert", wrong_variant)
+        )
+        database_errors = []
+    
+        def record_constraint(error_context):
+            original = error_context.original_exception
+            database_errors.append(
+                (
+                    getattr(original, "sqlstate", None),
+                    getattr(getattr(original, "diag", None), "message_primary", ""),
+                )
+            )
+    
+        event.listen(target, name, hook)
+        event.listen(Engine, "handle_error", record_constraint)
+        try:
+            failed = post(work, command, actor=work.peer)
+        finally:
+            event.remove(target, name, hook)
+            event.remove(Engine, "handle_error", record_constraint)
+        assert touched
+        assert failed.status_code == 422, failed.text
+        assert failed.json()["code"] == "VALIDATION_FAILED"
+        assert failed.json()["detail"]["reason"] == "CONSTRAINT_VALIDATION_FAILED"
+        if fault == "missing_variant_revision":
+&gt;           assert ("23514", "G0 variant canonical definition mismatch") in database_errors
+E           AssertionError: assert ('23514', 'G0 variant canonical definition mismatch') in [('23514', 'audience target unavailable')]
+
+tests/preproject/test_derivation_transactions.py:803: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval[wrong_project_variant]" time="4.295" /></testsuite></testsuites>

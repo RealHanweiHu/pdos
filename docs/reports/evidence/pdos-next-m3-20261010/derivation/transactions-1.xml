@@ -1,0 +1,1222 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="10" skipped="0" tests="24" time="34.085" timestamp="2026-10-10T23:18:58.860930-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_create_inherits_fixed_full_specs_without_parent_confirmation[False]" time="2.198" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_create_inherits_fixed_full_specs_without_parent_confirmation[True]" time="0.923" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_explicit_child_spec_overrides_only_its_fixed_parent_key" time="0.780" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_unpublished_draft_or_sealed_definition_is_not_a_published_parent[draft]" time="0.640" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_unpublished_draft_or_sealed_definition_is_not_a_published_parent[sealed_draft]" time="0.232"><failure message="sqlalchemy.exc.ProgrammingError: (psycopg.errors.RaiseException) definition snapshots are immutable&#10;CONTEXT:  PL/pgSQL function protect_fixed_definition() line 13 at RAISE&#10;[SQL: UPDATE definition_revisions SET sealed=%(sealed)s WHERE definition_revisions.id = %(definition_revisions_id)s::UUID]&#10;[SQL parameters hidden due to hide_parameters=True]&#10;(Background on this error at: https://sqlalche.me/e/21/f405)">self = &lt;sqlalchemy.engine.base.Connection object at 0x117304950&gt;
+dialect = &lt;sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x113a19010&gt;
+context = &lt;sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x117561460&gt;
+statement = &lt;sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x1172c2780&gt;
+parameters = [{'sealed': True, 'definition_revisions_id': UUID('1a8a92c9-65b9-428a-b434-a7b0a92f0090')}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+    
+            if self._echo:
+                self._log_info(str_statement)
+    
+                stats = context._get_cache_stats()
+    
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x1172f8050&gt;
+query = 'UPDATE definition_revisions SET sealed=%(sealed)s WHERE definition_revisions.id = %(definition_revisions_id)s::UUID'
+params = {'sealed': True, 'definition_revisions_id': UUID('1a8a92c9-65b9-428a-b434-a7b0a92f0090')}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.RaiseException: definition snapshots are immutable
+E           CONTEXT:  PL/pgSQL function protect_fixed_definition() line 13 at RAISE
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: RaiseException
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;, state = 'sealed_draft'
+
+    @pytest.mark.parametrize("state", ["draft", "sealed_draft"])
+    def test_unpublished_draft_or_sealed_definition_is_not_a_published_parent(work, state):
+&gt;       parent = synthetic_parent(work, status=state)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_derivation_transactions.py:392: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_derivation_transactions.py:108: in synthetic_parent
+    with synthetic_owner(work) as session:
+         ^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+tests/preproject/test_derivation_transactions.py:57: in synthetic_owner
+    with tenant_session(
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1330: in commit
+    self._prepare_impl()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction._prepare_impl&gt;:2: in _prepare_impl
+    return target(fn, self)
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1304: in _prepare_impl
+    self.session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4536: in flush
+    self._flush(objects)
+&lt;sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush&gt;:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4679: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4640: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:643: in execute
+    util.preloaded.orm_persistence._save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:84: in _save_obj
+    _emit_update_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:916: in _emit_update_statements
+    c = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x1172f8050&gt;
+query = 'UPDATE definition_revisions SET sealed=%(sealed)s WHERE definition_revisions.id = %(definition_revisions_id)s::UUID'
+params = {'sealed': True, 'definition_revisions_id': UUID('1a8a92c9-65b9-428a-b434-a7b0a92f0090')}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           sqlalchemy.exc.ProgrammingError: (psycopg.errors.RaiseException) definition snapshots are immutable
+E           CONTEXT:  PL/pgSQL function protect_fixed_definition() line 13 at RAISE
+E           [SQL: UPDATE definition_revisions SET sealed=%(sealed)s WHERE definition_revisions.id = %(definition_revisions_id)s::UUID]
+E           [SQL parameters hidden due to hide_parameters=True]
+E           (Background on this error at: https://sqlalche.me/e/21/f405)
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: ProgrammingError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_real_sealed_g0_first_definition_does_not_become_published_baseline" time="1.813" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_explicit_parent_version_mismatch_and_cross_category_parent_are_rejected" time="0.378" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_g0_creates_one_atomic_identity_and_fixed_canonical_definition[new_product]" time="2.577" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_g0_creates_one_atomic_identity_and_fixed_canonical_definition[new_variant]" time="1.767"><failure message="sqlalchemy.exc.ProgrammingError: (psycopg.errors.InsufficientPrivilege) permission denied for table product_variants&#10;CONTEXT:  SQL statement &quot;SELECT owner_id FROM public.product_variants&#10;  WHERE tenant_id=$1 AND category_id=$2 AND id=$3 FOR UPDATE&quot;&#10;PL/pgSQL function protect_object_audience_target() line 29 at EXECUTE&#10;[SQL: INSERT INTO object_audiences (category_id, object_type, subject_id, owner_id, principal_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(object_type)s::VARCHAR, %(subject_id)s::UUID, %(owner_id)s::UUID, %(principal_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE) ON CONFLICT DO NOTHING]&#10;[SQL parameters hidden due to hide_parameters=True]&#10;(Background on this error at: https://sqlalche.me/e/21/f405)">self = &lt;sqlalchemy.engine.base.Connection object at 0x120fe3650&gt;
+dialect = &lt;sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x1148409e0&gt;
+context = &lt;sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x120f995b0&gt;
+statement = &lt;sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x120872d50&gt;
+parameters = [{'category_id': UUID('53acff89-8e4d-4365-9bb7-ba41b893230c'), 'object_type': 'product_variants', 'subject_id': UUID('7cce53c6-1bcd-4382-aaa5-0b23cf40f632'), 'owner_id': UUID('b7d045d6-4d99-48d6-b3c2-8266f42b72a2'), ...}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+    
+            if self._echo:
+                self._log_info(str_statement)
+    
+                stats = context._get_cache_stats()
+    
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x120f85f10&gt;
+query = 'INSERT INTO object_audiences (category_id, object_type, subject_id, owner_id, principal_id, id, tenant_id, created_at...ncipal_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE) ON CONFLICT DO NOTHING'
+params = {'category_id': UUID('53acff89-8e4d-4365-9bb7-ba41b893230c'), 'object_type': 'product_variants', 'subject_id': UUID('7cce53c6-1bcd-4382-aaa5-0b23cf40f632'), 'owner_id': UUID('b7d045d6-4d99-48d6-b3c2-8266f42b72a2'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.InsufficientPrivilege: permission denied for table product_variants
+E           CONTEXT:  SQL statement "SELECT owner_id FROM public.product_variants
+E             WHERE tenant_id=$1 AND category_id=$2 AND id=$3 FOR UPDATE"
+E           PL/pgSQL function protect_object_audience_target() line 29 at EXECUTE
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: InsufficientPrivilege
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;, target_kind = 'new_variant'
+
+    @pytest.mark.parametrize("target_kind", ["new_product", "new_variant"])
+    def test_derivative_g0_creates_one_atomic_identity_and_fixed_canonical_definition(
+        work, target_kind
+    ):
+        parent = synthetic_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent, target_kind))
+        submit(work, proposal_id)
+        frozen = deepcopy(read(work, proposal_id, work.peer).json()["submission"]["frozen_document"])
+        assert_inherited(frozen, parent, work)
+        # A later published baseline cannot silently change an already-fixed proposal.
+        latest = synthetic_parent(work, revision=2)
+        assert baseline(work)["definition"]["id"] == str(latest.id)
+        assert read(work, proposal_id, work.peer).json()["submission"]["frozen_document"] == frozen
+&gt;       approved, command = save(work, decide_request(work, proposal_id), actor=work.peer)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_derivation_transactions.py:468: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_g0.py:94: in save
+    response = post(work, checked.json()["command"], actor=actor)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_g0.py:86: in post
+    return work.client.post(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1204: in post
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1310: in handle
+    await super().handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:282: in handle
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+pdos_next/api.py:577: in command
+    result = category_transaction(engine, ctx, apply_command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:81: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/api.py:575: in apply_command
+    return execute(s, ctx, data, synthetic_mode=synthetic_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:1015: in execute
+    subject, subject_type, visibility = module.apply_validated(
+pdos_next/domain/preproject/service.py:884: in apply_validated
+    approve(
+pdos_next/domain/preproject/materialize.py:81: in approve
+    audience(s, ctx, "product_variants", variant.id, row.owner_id, people)
+pdos_next/domain/preproject/materialize.py:23: in audience
+    s.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2473: in execute
+    return self._execute_internal(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2363: in _execute_internal
+    compile_state_cls.orm_execute_statement(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/bulk_persistence.py:1341: in orm_execute_statement
+    result = conn.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x120f85f10&gt;
+query = 'INSERT INTO object_audiences (category_id, object_type, subject_id, owner_id, principal_id, id, tenant_id, created_at...ncipal_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE) ON CONFLICT DO NOTHING'
+params = {'category_id': UUID('53acff89-8e4d-4365-9bb7-ba41b893230c'), 'object_type': 'product_variants', 'subject_id': UUID('7cce53c6-1bcd-4382-aaa5-0b23cf40f632'), 'owner_id': UUID('b7d045d6-4d99-48d6-b3c2-8266f42b72a2'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           sqlalchemy.exc.ProgrammingError: (psycopg.errors.InsufficientPrivilege) permission denied for table product_variants
+E           CONTEXT:  SQL statement "SELECT owner_id FROM public.product_variants
+E             WHERE tenant_id=$1 AND category_id=$2 AND id=$3 FOR UPDATE"
+E           PL/pgSQL function protect_object_audience_target() line 29 at EXECUTE
+E           [SQL: INSERT INTO object_audiences (category_id, object_type, subject_id, owner_id, principal_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(object_type)s::VARCHAR, %(subject_id)s::UUID, %(owner_id)s::UUID, %(principal_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE) ON CONFLICT DO NOTHING]
+E           [SQL parameters hidden due to hide_parameters=True]
+E           (Background on this error at: https://sqlalche.me/e/21/f405)
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: ProgrammingError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_application_role_cannot_mint_publication_receipt" time="0.292" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_application_role_cannot_attach_a_synthetic_receipt_and_publish_draft" time="0.283"><failure message="AssertionError: assert '42501' == '23514'&#10;  &#10;  - 23514&#10;  + 42501">work = &lt;isolated synthetic test scope&gt;
+
+    def test_application_role_cannot_attach_a_synthetic_receipt_and_publish_draft(work):
+        parent = synthetic_parent(work, status="draft")
+        receipt = publication_receipt(work, parent)
+        receipt_id = receipt.id
+        with synthetic_owner(work) as session:
+            session.add(receipt)
+        with pytest.raises(DBAPIError) as error:
+            with human_session(work) as session:
+                assert session.scalar(text("SELECT current_user")) == "pdos_next_app"
+                session.execute(
+                    text(
+                        "UPDATE definition_revisions SET status='published',sealed=true,"
+                        "publication_receipt_id=:receipt WHERE id=:definition"
+                    ),
+                    {"receipt": receipt_id, "definition": parent.id},
+                )
+&gt;       assert_check_violation(
+            error, "definition publication requires unavailable named publication authority"
+        )
+
+tests/preproject/test_derivation_transactions.py:593: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+error = &lt;ExceptionInfo ProgrammingError('(psycopg.errors.InsufficientPrivilege) permission denied for table definition_revisions') tblen=12&gt;
+message = 'definition publication requires unavailable named publication authority'
+
+    def assert_check_violation(error, message):
+&gt;       assert error.value.orig.sqlstate == "23514"
+E       AssertionError: assert '42501' == '23514'
+E         
+E         - 23514
+E         + 42501
+
+tests/preproject/test_material_proofs_pg.py:122: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_readonly_pm_has_no_general_product_creation_right" time="0.212" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_revoked_pm_capability_after_preview_blocks_derivative_approval" time="1.724"><failure message="AssertionError: {&quot;code&quot;:&quot;NOT_FOUND&quot;,&quot;message&quot;:&quot;提案不存在或不在当前受众内。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;proposal_not_found&quot;}}&#10;assert 404 == 403&#10; +  where 404 = &lt;Response [404 Not Found]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;
+
+    def test_revoked_pm_capability_after_preview_blocks_derivative_approval(work):
+        from pdos_next.category_scope import MemberGrant, grant_member
+    
+        parent = synthetic_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent))
+        submit(work, proposal_id)
+        checked = post(work, decide_request(work, proposal_id), actor=work.peer, preview=True)
+        assert checked.status_code == 200, checked.text
+        command = checked.json()["command"]
+        confirmation_id = proof_id(work, command)
+        with human_session(work) as session:
+            category = session.get(Category, work.category)
+            grant_member(
+                session,
+                Context(work.tenant, work.human, work.human, category_id=work.category),
+                MemberGrant(
+                    principal_id=work.peer,
+                    can_write=False,
+                    product_manager=False,
+                    expected_revision=category.revision,
+                    idempotency_key=str(uuid4()),
+                    decision="批准",
+                ),
+            )
+        denied = post(work, command, actor=work.peer)
+&gt;       assert denied.status_code == 403, denied.text
+E       AssertionError: {"code":"NOT_FOUND","message":"提案不存在或不在当前受众内。","detail":{"reason":"proposal_not_found"}}
+E       assert 404 == 403
+E        +  where 404 = &lt;Response [404 Not Found]&gt;.status_code
+
+tests/preproject/test_derivation_transactions.py:648: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_private_new_variant_preserves_parent_product_audience_and_commercial_values" time="1.374"><failure message="AssertionError: {&quot;code&quot;:&quot;SOURCE_UNAVAILABLE&quot;,&quot;message&quot;:&quot;所选基线没有可核对的具名发布事实。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;baseline_not_published&quot;}}&#10;assert 409 == 200&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;
+
+    def test_private_new_variant_preserves_parent_product_audience_and_commercial_values(work):
+        parent = synthetic_parent(work, private=True)
+        with synthetic_owner(work) as session:
+            product = session.get(Product, parent.product_id)
+            product.target_price = Decimal("123.450000000001")
+            product.target_price_currency, product.target_price_basis = "CNY", "retail"
+            product.target_price_includes_tax = True
+        before = parent_state(work, parent)
+        proposal_id, _ = create(work, derivative_payload(work, parent, "new_variant"))
+        submit(work, proposal_id)
+        command = decide_request(work, proposal_id)
+        command["payload"]["new_identity"] = {"name": "合成私有区域变体", "variant_kind": "region"}
+&gt;       approved, _ = save(work, command, actor=work.peer)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_derivation_transactions.py:700: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': '4c984112-4dfa-4865-9b3e-f2dd09f1d146', 'idempotency_key': 'f9180946-7f03-47e9-ae0e-3e793993c4a9', 'category_id': '0bdcb3d5-872c-42f8-a416-bbc94eaeb8d2', 'product_id': None, ...}
+actor = UUID('9085e073-8a88-48d0-8db5-3598647b2f1d')
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+&gt;       assert checked.status_code == 200, checked.text
+E       AssertionError: {"code":"SOURCE_UNAVAILABLE","message":"所选基线没有可核对的具名发布事实。","detail":{"reason":"baseline_not_published"}}
+E       assert 409 == 200
+E        +  where 409 = &lt;Response [409 Conflict]&gt;.status_code
+
+tests/preproject/test_g0.py:93: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval[missing_variant_revision]" time="1.878"><failure message="assert []">work = &lt;isolated synthetic test scope&gt;, fault = 'missing_variant_revision'
+
+    @pytest.mark.parametrize("fault", ["missing_variant_revision", "wrong_project_variant"])
+    def test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval(work, fault):
+        parent = synthetic_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent, "new_variant"))
+        submit(work, proposal_id)
+        checked = post(work, decide_request(work, proposal_id), actor=work.peer, preview=True)
+        assert checked.status_code == 200, checked.text
+        command = checked.json()["command"]
+        confirmation_id = proof_id(work, command)
+        touched = []
+    
+        def omit_revision(session, _context, _instances):
+            for row in list(session.new):
+                if isinstance(row, VariantRevision) and row.tenant_id == work.tenant:
+                    touched.append(row.id)
+                    session.expunge(row)
+    
+        def wrong_variant(_mapper, _connection, row):
+            if row.tenant_id == work.tenant:
+                assert row.variant_id is not None
+                touched.append(row.id)
+                row.variant_id = None  # Valid nullable FK shape, wrong canonical scope.
+    
+        target, name, hook = (
+            (Session, "before_flush", omit_revision)
+            if fault == "missing_variant_revision"
+            else (ProjectProductLink, "before_insert", wrong_variant)
+        )
+        event.listen(target, name, hook)
+        try:
+            with pytest.raises(DBAPIError) as error:
+                post(work, command, actor=work.peer)
+        finally:
+            event.remove(target, name, hook)
+&gt;       assert touched
+E       assert []
+
+tests/preproject/test_derivation_transactions.py:749: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval[wrong_project_variant]" time="1.699"><failure message="assert []">work = &lt;isolated synthetic test scope&gt;, fault = 'wrong_project_variant'
+
+    @pytest.mark.parametrize("fault", ["missing_variant_revision", "wrong_project_variant"])
+    def test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval(work, fault):
+        parent = synthetic_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent, "new_variant"))
+        submit(work, proposal_id)
+        checked = post(work, decide_request(work, proposal_id), actor=work.peer, preview=True)
+        assert checked.status_code == 200, checked.text
+        command = checked.json()["command"]
+        confirmation_id = proof_id(work, command)
+        touched = []
+    
+        def omit_revision(session, _context, _instances):
+            for row in list(session.new):
+                if isinstance(row, VariantRevision) and row.tenant_id == work.tenant:
+                    touched.append(row.id)
+                    session.expunge(row)
+    
+        def wrong_variant(_mapper, _connection, row):
+            if row.tenant_id == work.tenant:
+                assert row.variant_id is not None
+                touched.append(row.id)
+                row.variant_id = None  # Valid nullable FK shape, wrong canonical scope.
+    
+        target, name, hook = (
+            (Session, "before_flush", omit_revision)
+            if fault == "missing_variant_revision"
+            else (ProjectProductLink, "before_insert", wrong_variant)
+        )
+        event.listen(target, name, hook)
+        try:
+            with pytest.raises(DBAPIError) as error:
+                post(work, command, actor=work.peer)
+        finally:
+            event.remove(target, name, hook)
+&gt;       assert touched
+E       assert []
+
+tests/preproject/test_derivation_transactions.py:749: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_published_parent_revalidates_native_artifact_before_derivative_create[version-SOURCE_STALE]" time="0.696" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_published_parent_revalidates_native_artifact_before_derivative_create[withdrawn-SOURCE_UNAVAILABLE]" time="0.911" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_published_parent_revalidates_spec_claim_after_real_withdrawal" time="1.417" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_parent_claim_withdrawn_after_g0_preview_blocks_old_approval_without_side_effects" time="2.619"><failure message="AssertionError: assert {'brief': '合成...ivative', ...} == {'brief': '合成...ivative', ...}&#10;  &#10;  Omitting 10 identical items, use -vv to show&#10;  Differing items:&#10;  {'source_refs': [{'id': '39da3d4a-8793-49b2-9a8f-c71df5e2ee9c', 'line': None, 'type': 'definition', 'quote': None, ......ne, ...}, {'id': '39da3d4a-8793-49b2-9a8f-c71df5e2ee9c', 'line': None, 'type': 'definition', 'quote': None, ...}, ...]} != {'source_refs': [{'id': '39da3d4a-8793-49b2-9a8f-c71df5e2ee9c', 'line': None, 'type': 'definition', 'quote': None, ......ne, ...}, {'id': '39da3d4a-8793-49b2-9a8f-c71df5e2ee9c', 'line': None, 'type': 'definition', 'quote': None, ...}, ...]}&#10;  {'baseline_claim_refs': [{'id': ...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">work = &lt;isolated synthetic test scope&gt;
+
+    def test_parent_claim_withdrawn_after_g0_preview_blocks_old_approval_without_side_effects(work):
+        parent, claim_id = published_claim_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent, "new_variant"))
+        submit(work, proposal_id)
+        checked = post(work, decide_request(work, proposal_id), actor=work.peer, preview=True)
+        assert checked.status_code == 200, checked.text
+        command = checked.json()["command"]
+        confirmation_id = proof_id(work, command)
+        frozen = deepcopy(read(work, proposal_id, work.peer).json()["submission"]["frozen_document"])
+        # The parent is only a synthetic publication: there is no fabricated signed
+        # Consumption. The actual withdrawal command remains the authority here.
+        save(work, withdraw_request(work, claim_id))
+        denied = post(work, command, actor=work.peer)
+        assert denied.status_code == 409, denied.text
+        assert denied.json()["code"] == "SOURCE_STALE"
+        assert denied.json()["detail"]["reason"] == "claim_withdrawn"
+        assert proof_consumed(work, confirmation_id) is False
+        assert_no_g0_outputs(work, proposal_id)
+        with human_session(work) as session:
+            assert (
+                session.scalar(
+                    select(Receipt.id).where(Receipt.command_id == UUID(command["command_id"]))
+                )
+                is None
+            )
+            assert (
+                session.scalar(
+                    select(func.count())
+                    .select_from(Consumption)
+                    .where(Consumption.claim_id == claim_id)
+                )
+                == 0
+            )
+            row = session.get(DefinitionRevision, parent.id)
+            assert row.status == "published" and row.publication_receipt_id == parent.receipt_id
+&gt;       assert read(work, proposal_id, work.peer).json()["submission"]["frozen_document"] == frozen
+E       AssertionError: assert {'brief': '合成...ivative', ...} == {'brief': '合成...ivative', ...}
+E         
+E         Omitting 10 identical items, use -vv to show
+E         Differing items:
+E         {'source_refs': [{'id': '39da3d4a-8793-49b2-9a8f-c71df5e2ee9c', 'line': None, 'type': 'definition', 'quote': None, ......ne, ...}, {'id': '39da3d4a-8793-49b2-9a8f-c71df5e2ee9c', 'line': None, 'type': 'definition', 'quote': None, ...}, ...]} != {'source_refs': [{'id': '39da3d4a-8793-49b2-9a8f-c71df5e2ee9c', 'line': None, 'type': 'definition', 'quote': None, ......ne, ...}, {'id': '39da3d4a-8793-49b2-9a8f-c71df5e2ee9c', 'line': None, 'type': 'definition', 'quote': None, ...}, ...]}
+E         {'baseline_claim_refs': [{'id': ...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/preproject/test_derivation_transactions.py:927: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_g0_consumes_parent_claim_closure_once_and_blocks_prepared_withdrawal[new_product]" time="3.363" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_g0_consumes_parent_claim_closure_once_and_blocks_prepared_withdrawal[new_variant]" time="2.527"><failure message="sqlalchemy.exc.ProgrammingError: (psycopg.errors.InsufficientPrivilege) permission denied for table product_variants&#10;CONTEXT:  SQL statement &quot;SELECT owner_id FROM public.product_variants&#10;  WHERE tenant_id=$1 AND category_id=$2 AND id=$3 FOR UPDATE&quot;&#10;PL/pgSQL function protect_object_audience_target() line 29 at EXECUTE&#10;[SQL: INSERT INTO object_audiences (category_id, object_type, subject_id, owner_id, principal_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(object_type)s::VARCHAR, %(subject_id)s::UUID, %(owner_id)s::UUID, %(principal_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE) ON CONFLICT DO NOTHING]&#10;[SQL parameters hidden due to hide_parameters=True]&#10;(Background on this error at: https://sqlalche.me/e/21/f405)">self = &lt;sqlalchemy.engine.base.Connection object at 0x1163f7650&gt;
+dialect = &lt;sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x1148409e0&gt;
+context = &lt;sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x1163f41a0&gt;
+statement = &lt;sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x120872d50&gt;
+parameters = [{'category_id': UUID('8d73d746-a265-4ec2-acfe-0490ec352bbe'), 'object_type': 'product_variants', 'subject_id': UUID('34b55c7e-e59f-4568-b3bd-d05babbf4b47'), 'owner_id': UUID('6945ea04-1898-4f23-8ee7-2d30cfde2d64'), ...}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+    
+            if self._echo:
+                self._log_info(str_statement)
+    
+                stats = context._get_cache_stats()
+    
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x112987110&gt;
+query = 'INSERT INTO object_audiences (category_id, object_type, subject_id, owner_id, principal_id, id, tenant_id, created_at...ncipal_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE) ON CONFLICT DO NOTHING'
+params = {'category_id': UUID('8d73d746-a265-4ec2-acfe-0490ec352bbe'), 'object_type': 'product_variants', 'subject_id': UUID('34b55c7e-e59f-4568-b3bd-d05babbf4b47'), 'owner_id': UUID('6945ea04-1898-4f23-8ee7-2d30cfde2d64'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.InsufficientPrivilege: permission denied for table product_variants
+E           CONTEXT:  SQL statement "SELECT owner_id FROM public.product_variants
+E             WHERE tenant_id=$1 AND category_id=$2 AND id=$3 FOR UPDATE"
+E           PL/pgSQL function protect_object_audience_target() line 29 at EXECUTE
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: InsufficientPrivilege
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;, target_kind = 'new_variant'
+
+    @pytest.mark.parametrize("target_kind", ["new_product", "new_variant"])
+    def test_derivative_g0_consumes_parent_claim_closure_once_and_blocks_prepared_withdrawal(
+        work, target_kind
+    ):
+        parent, claim_id = published_claim_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent, target_kind))
+        submit(work, proposal_id)
+        frozen = read(work, proposal_id, work.peer).json()["submission"]["frozen_document"]
+        refs = frozen["baseline_claim_refs"]
+        assert [(ref["type"], ref["id"], ref["version"]) for ref in refs] == [
+            ("claim", str(claim_id), 1)
+        ]
+        # This is an actual usable T1 withdrawal confirmation while still unsigned.
+        # Approval must invalidate its action, without consuming that old token.
+        withdrawal = post(work, withdraw_request(work, claim_id), preview=True)
+        assert withdrawal.status_code == 200, withdrawal.text
+        withdrawal_command = withdrawal.json()["command"]
+        with human_session(work) as session:
+            withdrawal_proof = session.scalar(
+                select(Confirmation.id).where(
+                    Confirmation.token_hash
+                    == digest(withdrawal_command["payload"]["confirmation_token"])
+                )
+            )
+            assert withdrawal_proof is not None
+&gt;       approved, approval_command = save(work, decide_request(work, proposal_id), actor=work.peer)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_derivation_transactions.py:963: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_g0.py:94: in save
+    response = post(work, checked.json()["command"], actor=actor)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_g0.py:86: in post
+    return work.client.post(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1204: in post
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1310: in handle
+    await super().handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:282: in handle
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+pdos_next/api.py:577: in command
+    result = category_transaction(engine, ctx, apply_command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:81: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/api.py:575: in apply_command
+    return execute(s, ctx, data, synthetic_mode=synthetic_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:1015: in execute
+    subject, subject_type, visibility = module.apply_validated(
+pdos_next/domain/preproject/service.py:884: in apply_validated
+    approve(
+pdos_next/domain/preproject/materialize.py:81: in approve
+    audience(s, ctx, "product_variants", variant.id, row.owner_id, people)
+pdos_next/domain/preproject/materialize.py:23: in audience
+    s.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2473: in execute
+    return self._execute_internal(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2363: in _execute_internal
+    compile_state_cls.orm_execute_statement(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/bulk_persistence.py:1341: in orm_execute_statement
+    result = conn.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x112987110&gt;
+query = 'INSERT INTO object_audiences (category_id, object_type, subject_id, owner_id, principal_id, id, tenant_id, created_at...ncipal_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE) ON CONFLICT DO NOTHING'
+params = {'category_id': UUID('8d73d746-a265-4ec2-acfe-0490ec352bbe'), 'object_type': 'product_variants', 'subject_id': UUID('34b55c7e-e59f-4568-b3bd-d05babbf4b47'), 'owner_id': UUID('6945ea04-1898-4f23-8ee7-2d30cfde2d64'), ...}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           sqlalchemy.exc.ProgrammingError: (psycopg.errors.InsufficientPrivilege) permission denied for table product_variants
+E           CONTEXT:  SQL statement "SELECT owner_id FROM public.product_variants
+E             WHERE tenant_id=$1 AND category_id=$2 AND id=$3 FOR UPDATE"
+E           PL/pgSQL function protect_object_audience_target() line 29 at EXECUTE
+E           [SQL: INSERT INTO object_audiences (category_id, object_type, subject_id, owner_id, principal_id, id, tenant_id, created_at) VALUES (%(category_id)s::UUID, %(object_type)s::VARCHAR, %(subject_id)s::UUID, %(owner_id)s::UUID, %(principal_id)s::UUID, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE) ON CONFLICT DO NOTHING]
+E           [SQL parameters hidden due to hide_parameters=True]
+E           (Background on this error at: https://sqlalche.me/e/21/f405)
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: ProgrammingError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_readonly_pm_get_baseline_checks_claim_sources_and_selects_exact_version" time="1.398" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_source_audience_revoke_hides_baseline_and_blocks_already_prepared_g0" time="0.428"><failure message="assert False is True">work = &lt;isolated synthetic test scope&gt;
+
+    def test_source_audience_revoke_hides_baseline_and_blocks_already_prepared_g0(work):
+        private_quote = "仅原件具名受众可读的合成客户细节"
+        source_id = artifact(work, body=private_quote, visibility="private")
+        parent = synthetic_parent(work, private=True, artifact_source=source_id)
+        with human_session(work) as session:
+            audience = ObjectAudience(
+                id=uuid4(),
+                tenant_id=work.tenant,
+                category_id=work.category,
+                object_type="artifact_versions",
+                subject_id=source_id,
+                owner_id=work.human,
+                principal_id=work.peer,
+            )
+            audience_id = audience.id
+            session.add(audience)
+        visible = baseline_get(work, actor=work.peer, revision=1)
+        assert visible.status_code == 200, visible.text
+&gt;       assert visible.json()["derivation_eligible"] is True
+E       assert False is True
+
+tests/preproject/test_derivation_transactions.py:1057: AssertionError</failure></testcase></testsuite></testsuites>

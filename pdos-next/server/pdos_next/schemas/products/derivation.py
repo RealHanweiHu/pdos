@@ -1,12 +1,13 @@
 """Version 1 calculation DTOs; none represents an authorized business decision."""
 
+from decimal import Decimal
 from typing import Literal, Protocol, Self
 from uuid import UUID
 
-from pydantic import ConfigDict, Field, field_validator, model_validator
+from pydantic import AliasChoices, ConfigDict, Field, field_validator, model_validator
 
 from pdos_next.schema_base import StrictModel
-from pdos_next.schemas.products.definitions import DefinitionReference, DefinitionSpec
+from pdos_next.schemas.products.definitions import DefinitionReference
 
 CONTENT_FIELDS = (
     "purpose",
@@ -16,6 +17,7 @@ CONTENT_FIELDS = (
     "unknowns",
     "exclusions",
     "sources",
+    "source_refs",
 )
 Classification = Literal["unchanged", "parent_only", "child_only", "same_change", "conflict"]
 
@@ -28,12 +30,62 @@ class SourceReference(DefinitionReference):
     model_config = ConfigDict(extra="forbid", frozen=True, str_strip_whitespace=False)
 
 
-class SpecSnapshot(DefinitionSpec):
-    """Reuse only the current public Spec validation, never a domain handler."""
+class ObjectReference(DTO):
+    """An exact M3 object reference; descriptive evidence never grants read authority."""
 
-    model_config = ConfigDict(extra="forbid", frozen=True, str_strip_whitespace=False)
-    test_conditions: tuple[str, ...] = Field(default=())
-    sources: tuple[SourceReference, ...] = Field(min_length=1)
+    type: Literal[
+        "human", "artifact", "original", "snapshot", "knowledge", "parameter", "definition", "claim"
+    ]
+    id: UUID
+    version: int = Field(gt=0)
+    line: int | None = Field(default=None, gt=0)
+    quote: str | None = None
+    statement: str | None = None
+
+
+Reference = SourceReference | ObjectReference
+
+
+class SpecSnapshot(DTO):
+    """Lossless calculation input, including incomplete G0 specifications.
+
+    This is not a publication/write schema: missing units, evidence or conditions
+    are diagnostics, and cannot make an otherwise readable snapshot uncomputable.
+    """
+
+    key: str = Field(min_length=1)
+    parameter: str
+    value_type: Literal["number", "range", "text", "boolean", "enum"]
+    availability: Literal["known", "unknown", "conflicted", "not_applicable"] = "unknown"
+    value: Decimal | None = None
+    lower: Decimal | None = None
+    upper: Decimal | None = None
+    tolerance: Decimal | None = None
+    text: str | None = Field(default=None, validation_alias=AliasChoices("text", "text_value"))
+    unit: str | None = None
+    test_conditions: tuple[str, ...] = ()
+    method: str | None = Field(
+        default=None, validation_alias=AliasChoices("method", "verification_method")
+    )
+    acceptance_criterion: str | None = None
+    nature: Literal["observed", "extracted", "computed", "inferred", "decided"] = "extracted"
+    state: Literal["proposed", "needs_confirmation"] = "needs_confirmation"
+    owner_id: UUID | None = None
+    reason: str | None = None
+    sources: tuple[Reference, ...] = ()
+    parameter_id: UUID | None = None
+    parameter_version: int | None = Field(default=None, gt=0)
+    item_status: Literal["ai_draft", "confirmed", "expert_pending", "unknown"] = "unknown"
+    condition_note: str | None = None
+    modality: Literal["must", "should", "may", "prohibited", "unstated"] | None = None
+    exceptions: tuple[dict, ...] = ()
+    applicable_variants: tuple[dict, ...] = ()
+    source_refs: tuple[Reference, ...] = ()
+    origin: str | None = None
+    writer_id: UUID | None = None
+    run_id: UUID | None = None
+    confirmed_by: UUID | None = None
+    receipt_id: UUID | None = None
 
     @field_validator("value", "lower", "upper", "tolerance", mode="before")
     @classmethod
@@ -42,14 +94,37 @@ class SpecSnapshot(DefinitionSpec):
             raise ValueError("Use a Decimal, integer or exact decimal string, never a float")
         return value
 
-    @field_validator("test_conditions")
+    @field_validator("value", "lower", "upper", "tolerance")
     @classmethod
-    def valid_conditions(cls, conditions):
-        if any(not item.strip() or len(item) > 1000 for item in conditions):
-            raise ValueError("Test conditions must be nonempty and at most 1000 characters")
-        if len(set(conditions)) != len(conditions):
-            raise ValueError("Duplicate test conditions")
-        return tuple(conditions)
+    def finite_decimal(cls, value):
+        if value is not None and not value.is_finite():
+            raise ValueError("Specification decimals must be finite")
+        return value
+
+    @model_validator(mode="after")
+    def consistent_values(self) -> Self:
+        if (self.parameter_id is None) != (self.parameter_version is None):
+            raise ValueError("Parameter identity and version must be supplied together")
+        values = (self.value, self.lower, self.upper, self.text)
+        if self.availability != "known" and any(value is not None for value in values):
+            raise ValueError("Unknown values must remain absent")
+        if self.availability == "known":
+            valid = {
+                "number": self.value is not None and all(v is None for v in values[1:]),
+                "range": self.lower is not None
+                and self.upper is not None
+                and self.lower <= self.upper
+                and self.value is None
+                and self.text is None,
+                "text": self.text is not None and all(v is None for v in values[:3]),
+                "enum": self.text is not None and all(v is None for v in values[:3]),
+                "boolean": self.text in {"true", "false"} and all(v is None for v in values[:3]),
+            }[self.value_type]
+            if not valid:
+                raise ValueError("Specification value shape does not match value_type")
+        if self.tolerance is not None and self.tolerance < 0:
+            raise ValueError("Tolerance must be nonnegative")
+        return self
 
 
 class SnapshotRef(DTO):
@@ -69,7 +144,8 @@ class DefinitionContent(DTO):
     constraints: tuple[str, ...] | None = None
     unknowns: tuple[str, ...] | None = None
     exclusions: tuple[str, ...] | None = None
-    sources: tuple[SourceReference, ...] | None = None
+    sources: tuple[Reference, ...] | None = None
+    source_refs: tuple[Reference, ...] | None = None
     specs: tuple[SpecSnapshot, ...] = Field(default=())
     deleted_fields: tuple[str, ...] = ()
 
@@ -106,14 +182,14 @@ class ApplicabilityScope(DTO):
     category_id: UUID
     product_id: UUID
     variant_id: UUID | None = None
-    description: str = Field(min_length=1, max_length=2000)
+    description: str = Field(min_length=1)
 
 
 class Override(DTO):
     path: str
     operation: Literal["set", "delete"]
-    reason: str = Field(min_length=3, max_length=2000)
-    sources: tuple[SourceReference, ...] = Field(min_length=1)
+    reason: str = Field(min_length=1)
+    sources: tuple[Reference, ...] = ()
     scope: ApplicabilityScope
 
 
@@ -128,7 +204,7 @@ class DerivationRequest(DTO):
 
 class PathValue(DTO):
     state: Literal["missing", "deleted", "null", "unknown", "value"]
-    value: str | tuple[str, ...] | tuple[SourceReference, ...] | SpecSnapshot | None = None
+    value: str | tuple[str, ...] | tuple[Reference, ...] | SpecSnapshot | None = None
 
 
 class Diagnostic(DTO):
@@ -164,8 +240,8 @@ class AdoptionSelection(DTO):
     request_digest: str = Field(pattern=r"^[0-9a-f]{64}$")
     paths: tuple[str, ...] = Field(min_length=1)
     resolve_conflicts: tuple[str, ...] = ()
-    reason: str = Field(min_length=3, max_length=2000)
-    sources: tuple[SourceReference, ...] = Field(min_length=1)
+    reason: str = Field(min_length=1)
+    sources: tuple[Reference, ...] = Field(min_length=1)
     scope: ApplicabilityScope
 
 
@@ -174,7 +250,7 @@ class ReuseCheck(DTO):
     old_parent: SnapshotRef
     new_parent: SnapshotRef
     child: SnapshotRef
-    sources: tuple[SourceReference, ...]
+    sources: tuple[Reference, ...]
     scope: ApplicabilityScope
 
 
@@ -195,9 +271,10 @@ class AdoptionTrace(DTO):
     path: str
     source_parent: SnapshotRef
     reason: str
-    sources: tuple[SourceReference, ...]
+    sources: tuple[Reference, ...]
     scope: ApplicabilityScope
     origin_nature: str | None = None
+    source_spec: SpecSnapshot | None = None
     assessment: ReuseAssessment | None = None
 
 

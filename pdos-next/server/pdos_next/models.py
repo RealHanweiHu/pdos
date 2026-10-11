@@ -122,6 +122,7 @@ class Product(Row, Base):
     lifecycle_epoch: Mapped[int] = mapped_column(Integer, default=1)
     status: Mapped[str] = mapped_column(String(16), default="draft")
     owner_id: Mapped[UUID]
+    parent_product_id: Mapped[UUID | None]
     category_id: Mapped[UUID] = mapped_column(index=True)
     visibility: Mapped[str] = mapped_column(String(16), default="category")
     target_price: Mapped[Decimal | None] = mapped_column(Numeric(38, 12))
@@ -130,6 +131,12 @@ class Product(Row, Base):
     target_price_includes_tax: Mapped[bool | None] = mapped_column(Boolean)
     target_price_as_of: Mapped[date | None] = mapped_column(Date)
     __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "parent_product_id"],
+            ["products.tenant_id", "products.category_id", "products.id"],
+            name="m3_product_parent_fk",
+        ),
+        CheckConstraint("parent_product_id IS DISTINCT FROM id", name="m3_product_parent_not_self"),
         CheckConstraint(
             "target_price_basis IS NULL OR target_price_basis IN ('retail','promo','unknown')",
             name="m3_target_price_basis",

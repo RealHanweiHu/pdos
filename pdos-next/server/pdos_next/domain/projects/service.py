@@ -174,6 +174,7 @@ def create_project(
     definition_revision,
     project_id=None,
     decision=None,
+    variant_id=None,
 ):
     from pdos_next.domain.products.service import require_creation
 
@@ -185,6 +186,7 @@ def create_project(
         not definition
         or definition.product_id != product.id
         or definition.revision != definition_revision
+        or definition.variant_id != variant_id
     ):
         raise DomainError("SOURCE_UNAVAILABLE", "项目须固定实际型号定义版本。")
     if visibility == "category" and definition.visibility != "category":
@@ -205,6 +207,7 @@ def create_project(
         ProjectProductLink(
             tenant_id=ctx.tenant_id,
             product_id=product.id,
+            variant_id=variant_id,
             project_id=project.id,
             definition_id=definition_id,
             definition_revision=definition_revision,

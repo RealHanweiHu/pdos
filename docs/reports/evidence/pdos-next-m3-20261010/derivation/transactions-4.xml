@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="9" skipped="0" tests="28" time="48.801" timestamp="2026-10-10T23:33:25.129162-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_create_inherits_fixed_full_specs_without_parent_confirmation[False]" time="2.157" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_create_inherits_fixed_full_specs_without_parent_confirmation[True]" time="1.277" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_explicit_child_spec_overrides_only_its_fixed_parent_key" time="0.833" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_unpublished_draft_or_sealed_definition_is_not_a_published_parent[draft]" time="0.443" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_unpublished_draft_or_sealed_definition_is_not_a_published_parent[sealed_draft]" time="0.333" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_real_sealed_g0_first_definition_does_not_become_published_baseline" time="1.256"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 200&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;
+
+    def test_real_sealed_g0_first_definition_does_not_become_published_baseline(work):
+        proposal_id, _ = create(work)
+        submit(work, proposal_id)
+&gt;       approved, _ = save(work, decide_request(work, proposal_id), actor=work.peer)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_derivation_transactions.py:432: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': 'd4807545-b0ea-4f37-825e-70c30f571d89', 'idempotency_key': '68847142-e222-4444-bdf6-eecc18cd8f44', 'category_id': '68e56579-ae3e-4982-b2b7-0a9969cc36c5', 'product_id': None, ...}
+actor = UUID('8a5ae34c-2c42-4e44-9cf1-da38f0fe0778')
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+        assert checked.status_code == 200, checked.text
+        response = post(work, checked.json()["command"], actor=actor)
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/preproject/test_g0.py:95: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_explicit_parent_version_mismatch_and_cross_category_parent_are_rejected" time="0.394" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_g0_creates_one_atomic_identity_and_fixed_canonical_definition[new_product]" time="2.380"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 200&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;, target_kind = 'new_product'
+
+    @pytest.mark.parametrize("target_kind", ["new_product", "new_variant"])
+    def test_derivative_g0_creates_one_atomic_identity_and_fixed_canonical_definition(
+        work, target_kind
+    ):
+        parent = synthetic_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent, target_kind))
+        submit(work, proposal_id)
+        frozen = deepcopy(read(work, proposal_id, work.peer).json()["submission"]["frozen_document"])
+        assert_inherited(frozen, parent, work)
+        # A later published baseline cannot silently change an already-fixed proposal.
+        latest = synthetic_parent(work, revision=2)
+        assert baseline(work)["definition"]["id"] == str(latest.id)
+        assert read(work, proposal_id, work.peer).json()["submission"]["frozen_document"] == frozen
+&gt;       approved, command = save(work, decide_request(work, proposal_id), actor=work.peer)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_derivation_transactions.py:495: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': 'e4fc615b-9ccf-4824-9562-96bf3e6f7529', 'idempotency_key': '1d275ab9-e23c-4e35-a6e1-ff1af654c352', 'category_id': 'a5613efd-c35e-4b18-bc17-4bc4b472d530', 'product_id': None, ...}
+actor = UUID('e437b05d-6572-4cc7-bb8f-bddce4e3f273')
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+        assert checked.status_code == 200, checked.text
+        response = post(work, checked.json()["command"], actor=actor)
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/preproject/test_g0.py:95: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_g0_creates_one_atomic_identity_and_fixed_canonical_definition[new_variant]" time="2.958"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 200&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;, target_kind = 'new_variant'
+
+    @pytest.mark.parametrize("target_kind", ["new_product", "new_variant"])
+    def test_derivative_g0_creates_one_atomic_identity_and_fixed_canonical_definition(
+        work, target_kind
+    ):
+        parent = synthetic_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent, target_kind))
+        submit(work, proposal_id)
+        frozen = deepcopy(read(work, proposal_id, work.peer).json()["submission"]["frozen_document"])
+        assert_inherited(frozen, parent, work)
+        # A later published baseline cannot silently change an already-fixed proposal.
+        latest = synthetic_parent(work, revision=2)
+        assert baseline(work)["definition"]["id"] == str(latest.id)
+        assert read(work, proposal_id, work.peer).json()["submission"]["frozen_document"] == frozen
+&gt;       approved, command = save(work, decide_request(work, proposal_id), actor=work.peer)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_derivation_transactions.py:495: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': 'e099dca8-1486-4bef-a5af-019fbec3bcc3', 'idempotency_key': 'e27e0d7b-6725-4390-8e78-1a2b859ea1ac', 'category_id': 'ae009855-1cf7-4c6d-90af-28f81263b83e', 'product_id': None, ...}
+actor = UUID('6cbbc56f-7a8c-44ed-9d7f-c257b06c52dd')
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+        assert checked.status_code == 200, checked.text
+        response = post(work, checked.json()["command"], actor=actor)
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/preproject/test_g0.py:95: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_application_role_cannot_mint_publication_receipt" time="0.341" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_application_role_cannot_attach_a_synthetic_receipt_and_publish_draft" time="0.357" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_readonly_pm_has_no_general_product_creation_right" time="0.205" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_revoked_pm_capability_after_preview_blocks_derivative_approval" time="1.916" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_private_new_variant_preserves_parent_product_audience_and_commercial_values" time="2.551"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 200&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;
+
+    def test_private_new_variant_preserves_parent_product_audience_and_commercial_values(work):
+        parent = synthetic_parent(work, private=True)
+        with synthetic_owner(work) as session:
+            product = session.get(Product, parent.product_id)
+            product.target_price = Decimal("123.450000000001")
+            product.target_price_currency, product.target_price_basis = "CNY", "retail"
+            product.target_price_includes_tax = True
+        before = parent_state(work, parent)
+        proposal_id, _ = create(work, derivative_payload(work, parent, "new_variant"))
+        submit(work, proposal_id)
+        command = decide_request(work, proposal_id)
+        command["payload"]["new_identity"] = {"name": "合成私有区域变体", "variant_kind": "region"}
+&gt;       approved, _ = save(work, command, actor=work.peer)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_derivation_transactions.py:736: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': '4ba2dcd7-7a63-44b8-a9d6-e43631b28e6a', 'idempotency_key': 'eeafe3c0-efdb-4365-a586-00d1acf32d1d', 'category_id': '64979d6f-971e-4433-b3ea-835247a5f792', 'product_id': None, ...}
+actor = UUID('2267bb9f-a1f8-42a5-b8ba-dda61dd2df2e')
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+        assert checked.status_code == 200, checked.text
+        response = post(work, checked.json()["command"], actor=actor)
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/preproject/test_g0.py:95: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval[missing_variant_revision]" time="2.337"><failure message="Failed: DID NOT RAISE DBAPIError">work = &lt;isolated synthetic test scope&gt;, fault = 'missing_variant_revision'
+
+    @pytest.mark.parametrize("fault", ["missing_variant_revision", "wrong_project_variant"])
+    def test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval(work, fault):
+        parent = synthetic_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent, "new_variant"))
+        submit(work, proposal_id)
+        checked = post(work, decide_request(work, proposal_id), actor=work.peer, preview=True)
+        assert checked.status_code == 200, checked.text
+        command = checked.json()["command"]
+        confirmation_id = proof_id(work, command)
+        touched = []
+    
+        def omit_revision(session, _context, _instances):
+            for row in list(session.new):
+                if isinstance(row, VariantRevision) and row.tenant_id == work.tenant:
+                    touched.append(row.id)
+                    session.expunge(row)
+    
+        def wrong_variant(_mapper, _connection, row):
+            if row.tenant_id == work.tenant:
+                assert row.variant_id is not None
+                touched.append(row.id)
+                row.variant_id = None  # Valid nullable FK shape, wrong canonical scope.
+    
+        target, name, hook = (
+            (Session, "before_flush", omit_revision)
+            if fault == "missing_variant_revision"
+            else (ProjectProductLink, "before_insert", wrong_variant)
+        )
+        event.listen(target, name, hook)
+        try:
+&gt;           with pytest.raises(DBAPIError) as error:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE DBAPIError
+
+tests/preproject/test_derivation_transactions.py:781: Failed</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval[wrong_project_variant]" time="2.405"><failure message="Failed: DID NOT RAISE DBAPIError">work = &lt;isolated synthetic test scope&gt;, fault = 'wrong_project_variant'
+
+    @pytest.mark.parametrize("fault", ["missing_variant_revision", "wrong_project_variant"])
+    def test_variant_g0_output_failure_rolls_back_every_identity_and_preserves_approval(work, fault):
+        parent = synthetic_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent, "new_variant"))
+        submit(work, proposal_id)
+        checked = post(work, decide_request(work, proposal_id), actor=work.peer, preview=True)
+        assert checked.status_code == 200, checked.text
+        command = checked.json()["command"]
+        confirmation_id = proof_id(work, command)
+        touched = []
+    
+        def omit_revision(session, _context, _instances):
+            for row in list(session.new):
+                if isinstance(row, VariantRevision) and row.tenant_id == work.tenant:
+                    touched.append(row.id)
+                    session.expunge(row)
+    
+        def wrong_variant(_mapper, _connection, row):
+            if row.tenant_id == work.tenant:
+                assert row.variant_id is not None
+                touched.append(row.id)
+                row.variant_id = None  # Valid nullable FK shape, wrong canonical scope.
+    
+        target, name, hook = (
+            (Session, "before_flush", omit_revision)
+            if fault == "missing_variant_revision"
+            else (ProjectProductLink, "before_insert", wrong_variant)
+        )
+        event.listen(target, name, hook)
+        try:
+&gt;           with pytest.raises(DBAPIError) as error:
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE DBAPIError
+
+tests/preproject/test_derivation_transactions.py:781: Failed</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_published_parent_revalidates_native_artifact_before_derivative_create[version-SOURCE_STALE]" time="1.048" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_published_parent_revalidates_native_artifact_before_derivative_create[withdrawn-SOURCE_UNAVAILABLE]" time="1.171" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_published_parent_revalidates_spec_claim_after_real_withdrawal" time="1.721" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_parent_claim_withdrawn_after_g0_preview_blocks_old_approval_without_side_effects" time="3.426" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_g0_consumes_parent_claim_closure_once_and_blocks_prepared_withdrawal[new_product]" time="3.565"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 200&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;, target_kind = 'new_product'
+
+    @pytest.mark.parametrize("target_kind", ["new_product", "new_variant"])
+    def test_derivative_g0_consumes_parent_claim_closure_once_and_blocks_prepared_withdrawal(
+        work, target_kind
+    ):
+        parent, claim_id = published_claim_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent, target_kind))
+        submit(work, proposal_id)
+        frozen = read(work, proposal_id, work.peer).json()["submission"]["frozen_document"]
+        refs = frozen["baseline_claim_refs"]
+        assert [(ref["type"], ref["id"], ref["version"]) for ref in refs] == [
+            ("claim", str(claim_id), 1)
+        ]
+        # This is an actual usable T1 withdrawal confirmation while still unsigned.
+        # Approval must invalidate its action, without consuming that old token.
+        withdrawal = post(work, withdraw_request(work, claim_id), preview=True)
+        assert withdrawal.status_code == 200, withdrawal.text
+        withdrawal_command = withdrawal.json()["command"]
+        with human_session(work) as session:
+            withdrawal_proof = session.scalar(
+                select(Confirmation.id).where(
+                    Confirmation.token_hash
+                    == digest(withdrawal_command["payload"]["confirmation_token"])
+                )
+            )
+            assert withdrawal_proof is not None
+&gt;       approved, approval_command = save(work, decide_request(work, proposal_id), actor=work.peer)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_derivation_transactions.py:1019: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': 'ddb5dda0-094d-4d24-b6e2-d540c14c1a3c', 'idempotency_key': '4a2263da-858a-4b66-bcf1-d42a237c6f8e', 'category_id': 'b28ba7cf-dfad-4ad2-8935-6f51e1b7b051', 'product_id': None, ...}
+actor = UUID('fcc9600a-bcd2-47f7-8e4a-ed15cd677700')
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+        assert checked.status_code == 200, checked.text
+        response = post(work, checked.json()["command"], actor=actor)
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/preproject/test_g0.py:95: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_derivative_g0_consumes_parent_claim_closure_once_and_blocks_prepared_withdrawal[new_variant]" time="3.573"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 200&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;, target_kind = 'new_variant'
+
+    @pytest.mark.parametrize("target_kind", ["new_product", "new_variant"])
+    def test_derivative_g0_consumes_parent_claim_closure_once_and_blocks_prepared_withdrawal(
+        work, target_kind
+    ):
+        parent, claim_id = published_claim_parent(work)
+        proposal_id, _ = create(work, derivative_payload(work, parent, target_kind))
+        submit(work, proposal_id)
+        frozen = read(work, proposal_id, work.peer).json()["submission"]["frozen_document"]
+        refs = frozen["baseline_claim_refs"]
+        assert [(ref["type"], ref["id"], ref["version"]) for ref in refs] == [
+            ("claim", str(claim_id), 1)
+        ]
+        # This is an actual usable T1 withdrawal confirmation while still unsigned.
+        # Approval must invalidate its action, without consuming that old token.
+        withdrawal = post(work, withdraw_request(work, claim_id), preview=True)
+        assert withdrawal.status_code == 200, withdrawal.text
+        withdrawal_command = withdrawal.json()["command"]
+        with human_session(work) as session:
+            withdrawal_proof = session.scalar(
+                select(Confirmation.id).where(
+                    Confirmation.token_hash
+                    == digest(withdrawal_command["payload"]["confirmation_token"])
+                )
+            )
+            assert withdrawal_proof is not None
+&gt;       approved, approval_command = save(work, decide_request(work, proposal_id), actor=work.peer)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_derivation_transactions.py:1019: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': '43ee7991-6675-4992-9995-55113195b432', 'idempotency_key': '8085b878-0d88-47e4-9ead-043adff24e0c', 'category_id': '7ded9733-9fea-4461-be01-eb4c0f621861', 'product_id': None, ...}
+actor = UUID('86c28a0a-207a-4966-9f6d-8de93c2c06c7')
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+        assert checked.status_code == 200, checked.text
+        response = post(work, checked.json()["command"], actor=actor)
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/preproject/test_g0.py:95: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_readonly_pm_get_baseline_checks_claim_sources_and_selects_exact_version" time="1.714" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_source_audience_revoke_hides_baseline_and_blocks_already_prepared_g0" time="2.632" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_private_publication_requires_readable_receipt_without_leaking_its_digest" time="0.736" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_public_definition_typed_private_root_cannot_launder_derivation_or_read_body[artifact]" time="1.920" /><testcase classname="tests.preproject.test_derivation_transactions" name="test_public_definition_typed_private_root_cannot_launder_derivation_or_read_body[claim]" time="1.392"><failure message="AssertionError: {&quot;code&quot;:&quot;FORBIDDEN_SCOPE&quot;,&quot;message&quot;:&quot;私有事实只能用于所在提案。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;claim_proposal_mismatch&quot;}}&#10;assert 403 == 200&#10; +  where 403 = &lt;Response [403 Forbidden]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;, source_kind = 'claim'
+
+    @pytest.mark.parametrize("source_kind", ["artifact", "claim"])
+    def test_public_definition_typed_private_root_cannot_launder_derivation_or_read_body(
+        work, source_kind
+    ):
+        parent, source_id, quote, copied_value = typed_private_parent(work, source_kind=source_kind)
+        assert baseline_get(work).json()["derivation_eligible"] is True
+        with reviewer_session(work) as session:
+            assert session.get(Product, parent.product_id) is not None
+            assert session.get(Artifact, source_id) is None
+        assert_private_parent_hidden(work, parent, quote, copied_value)
+&gt;       proposal_id, _ = create(work, derivative_payload(work, parent))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_derivation_transactions.py:1251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_g0.py:132: in create
+    result, req = save(work, request(work, "proposal.create", data or payload(work)))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': 'da5b77f0-a421-43c3-8840-63ea76a3bd38', 'idempotency_key': '4957b7ef-f685-4676-af14-3522837b0563', 'category_id': '7e2186fb-396c-49f3-bbdf-6d763426d63e', 'product_id': None, ...}
+actor = None
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+&gt;       assert checked.status_code == 200, checked.text
+E       AssertionError: {"code":"FORBIDDEN_SCOPE","message":"私有事实只能用于所在提案。","detail":{"reason":"claim_proposal_mismatch"}}
+E       assert 403 == 200
+E        +  where 403 = &lt;Response [403 Forbidden]&gt;.status_code
+
+tests/preproject/test_g0.py:93: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_transactions" name="test_typed_private_source_revocation_hides_all_definition_reads_and_blocks_old_g0" time="3.086" /></testsuite></testsuites>

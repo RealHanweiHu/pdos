@@ -5,6 +5,7 @@ from sqlalchemy import (
     Boolean,
     CheckConstraint,
     ForeignKeyConstraint,
+    Index,
     Integer,
     Numeric,
     String,
@@ -20,6 +21,7 @@ from pdos_next.models import Base, Row
 class DefinitionRevision(Row, Base):
     __tablename__ = "definition_revisions"
     product_id: Mapped[UUID]
+    variant_id: Mapped[UUID | None] = mapped_column()
     owner_id: Mapped[UUID]
     parent_definition_id: Mapped[UUID | None]
     title: Mapped[str] = mapped_column(Text)
@@ -38,7 +40,42 @@ class DefinitionRevision(Row, Base):
     source_submission_id: Mapped[UUID | None]
     source_proposal_revision: Mapped[int | None]
     g0_decision_id: Mapped[UUID | None]
+    publication_receipt_id: Mapped[UUID | None]
+    derived_from_definition_id: Mapped[UUID | None]
+    derived_from_definition_revision: Mapped[int | None]
     __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "product_id", "variant_id"],
+            ["product_variants.tenant_id", "product_variants.product_id", "product_variants.id"],
+            name="m3_definition_variant_fk",
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "publication_receipt_id"],
+            ["action_receipts.tenant_id", "action_receipts.id"],
+            name="m3_definition_publication_receipt_fk",
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "derived_from_definition_id"],
+            [
+                "definition_revisions.tenant_id",
+                "definition_revisions.category_id",
+                "definition_revisions.id",
+            ],
+            name="m3_definition_derived_from_fk",
+        ),
+        CheckConstraint(
+            "(derived_from_definition_id IS NULL AND derived_from_definition_revision IS NULL) OR "
+            "(derived_from_definition_id IS NOT NULL "
+            "AND derived_from_definition_revision IS NOT NULL "
+            "AND derived_from_definition_revision>0 "
+            "AND derived_from_definition_id<>id)",
+            name="m3_definition_derivation_pair",
+        ),
+        CheckConstraint(
+            "(status='draft' AND publication_receipt_id IS NULL) OR "
+            "(status='published' AND publication_receipt_id IS NOT NULL AND sealed)",
+            name="m3_definition_publication_pair",
+        ),
         ForeignKeyConstraint(
             ["tenant_id", "category_id", "g0_decision_id"],
             [
@@ -50,7 +87,23 @@ class DefinitionRevision(Row, Base):
             use_alter=True,
         ),
         UniqueConstraint("tenant_id", "product_id", "id"),
-        UniqueConstraint("tenant_id", "product_id", "revision"),
+        Index(
+            "m3_definition_model_revision",
+            "tenant_id",
+            "product_id",
+            "revision",
+            unique=True,
+            postgresql_where=variant_id.is_(None),
+        ),
+        Index(
+            "m3_definition_variant_revision",
+            "tenant_id",
+            "product_id",
+            "variant_id",
+            "revision",
+            unique=True,
+            postgresql_where=variant_id.is_not(None),
+        ),
         ForeignKeyConstraint(["tenant_id", "product_id"], ["products.tenant_id", "products.id"]),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         ForeignKeyConstraint(
@@ -61,7 +114,6 @@ class DefinitionRevision(Row, Base):
                 "definition_revisions.id",
             ],
         ),
-        CheckConstraint("status = 'draft'"),
         CheckConstraint("visibility IN ('private','category','audience')"),
         CheckConstraint("revision > 0 AND parent_definition_id IS DISTINCT FROM id"),
     )

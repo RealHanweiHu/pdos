@@ -40,7 +40,16 @@ def require_creation(s, ctx, *, product_id=None, decision=None):
 
 
 def create_product(
-    s, ctx, *, name, purpose, owner_id=None, visibility="category", product_id=None, decision=None
+    s,
+    ctx,
+    *,
+    name,
+    purpose,
+    owner_id=None,
+    visibility="category",
+    product_id=None,
+    decision=None,
+    parent_product_id=None,
 ):
     require_creation(s, ctx, decision=decision)
     if decision and product_id != decision.created_product_id:
@@ -52,6 +61,7 @@ def create_product(
         name=name,
         purpose=purpose,
         owner_id=owner_id or ctx.requester_id,
+        parent_product_id=parent_product_id,
         visibility=visibility,
     )
     s.add(product)
