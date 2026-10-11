@@ -10,7 +10,7 @@ from pdos_next.schema_base import StrictModel
 
 class Reference(StrictModel):
     type: Literal[
-        "human", "artifact", "original", "snapshot", "knowledge", "parameter", "definition"
+        "human", "artifact", "original", "snapshot", "knowledge", "parameter", "definition", "claim"
     ]
     id: UUID
     version: int = Field(gt=0)

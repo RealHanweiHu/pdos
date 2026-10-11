@@ -108,6 +108,17 @@ def check_shared_sources(s, ctx, refs):
     from pdos_next.agent_kernel.models import PublicWebSnapshot
 
     for ref in refs:
+        if ref.type == "claim":
+            from .claim_access import resolve, source_privacy
+
+            row = resolve(s, ctx, ref.id, ref.version, approved=True, lock=True)
+            if row.privacy == "private" or source_privacy(s, ctx, row) != "shared":
+                fail("VALIDATION_FAILED", "private_source_in_shared", "私有事实不能进入共享知识。")
+            if (ref.quote is not None and ref.quote not in row.quote) or (
+                ref.line is not None and ref.line != row.line
+            ):
+                fail("VALIDATION_FAILED", "quote_not_in_source", "引用不在事实的固定来源定位处。")
+            continue
         if ref.type == "human":
             person = s.get(Principal, ref.id)
             if (
@@ -169,33 +180,139 @@ def check_shared_sources(s, ctx, refs):
 
 
 def _private_checks(s, ctx, row, content):
-    refs = s.scalars(
+    from uuid import UUID
+
+    from pdos_next.agent_kernel.models import AgentRun
+    from pdos_next.models import Claim
+
+    from .evidence_models import EvidenceLink
+    from .models import ProposalRevision, ProposalSubmission
+
+    # Source counters describe the current draft, not everything it has read.
+    # Retained references remain identity evidence after an item is edited away.
+    artifact_ids, claim_ids, private_refs = set(), set(), {str(row.id)}
+
+    def collect(value):
+        if isinstance(value, dict):
+            kind = value.get("type")
+            if kind in {"artifact", "original", "claim", "snapshot", "knowledge", "definition"}:
+                try:
+                    identity = UUID(str(value["id"]))
+                except (KeyError, ValueError, TypeError):
+                    pass
+                else:
+                    private_refs.add(str(identity))
+                    if kind in {"artifact", "original"}:
+                        artifact_ids.add(identity)
+                    elif kind == "claim":
+                        claim_ids.add(identity)
+            for child in value.values():
+                collect(child)
+        elif isinstance(value, (list, tuple)):
+            for child in value:
+                collect(child)
+
+    collect([row.source_refs, row.context_refs])
+    for ref in s.scalars(
         select(ProposalSource).where(
             ProposalSource.tenant_id == ctx.tenant_id,
             ProposalSource.category_id == ctx.category_id,
             ProposalSource.proposal_id == row.id,
         )
-    ).all()
-    filenames, originals = [], []
-    private_refs = [str(row.id)]
-    for ref in refs:
-        private_refs.append(str(ref.source_id))
-        if ref.source_type == "original":
-            artifact = s.get(Artifact, ref.source_id)
-            if artifact and artifact.tenant_id == ctx.tenant_id:
-                originals.append(artifact.content)
-                if artifact.original_id:
-                    original = s.get(UploadedOriginal, artifact.original_id)
-                    if original:
-                        filenames.append(original.filename)
-    # A removed reference may still be present in the frozen proposal document.
-    private_refs.extend(str(ref["id"]) for ref in row.source_refs if "id" in ref)
+    ):
+        collect({"type": ref.source_type, "id": str(ref.source_id)})
+    for model, fields in (
+        (ProposalItemVersion, ("source_refs",)),
+        (ProposalRevision, ("changed_items",)),
+        (ProposalSubmission, ("frozen_document", "context_refs")),
+    ):
+        for history in s.scalars(
+            select(model).where(
+                model.tenant_id == ctx.tenant_id,
+                model.category_id == ctx.category_id,
+                model.proposal_id == row.id,
+            )
+        ):
+            collect([getattr(history, field) for field in fields])
+    item_ids = select(ProposalItem.id).where(
+        ProposalItem.tenant_id == ctx.tenant_id,
+        ProposalItem.category_id == ctx.category_id,
+        ProposalItem.proposal_id == row.id,
+    )
+    for link in s.scalars(
+        select(EvidenceLink).where(
+            EvidenceLink.tenant_id == ctx.tenant_id,
+            EvidenceLink.category_id == ctx.category_id,
+            EvidenceLink.target_type == "proposal_item",
+            EvidenceLink.target_id.in_(item_ids),
+        )
+    ):
+        collect({"type": link.evidence_type, "id": str(link.evidence_id)})
+
+    private_runs = set()
+    for claim in s.scalars(
+        select(Claim).where(
+            Claim.tenant_id == ctx.tenant_id,
+            Claim.category_id == ctx.category_id,
+            or_(Claim.proposal_id == row.id, Claim.id.in_(claim_ids)),
+        )
+    ):
+        if claim.artifact_id:
+            artifact_ids.add(claim.artifact_id)
+        if claim.proposal_id == row.id and claim.privacy == "private" and claim.run_id:
+            private_runs.add(claim.run_id)
+    if private_runs:
+        for run in s.scalars(
+            select(AgentRun).where(
+                AgentRun.tenant_id == ctx.tenant_id,
+                AgentRun.category_id == ctx.category_id,
+                AgentRun.proposal_id == row.id,
+                AgentRun.private_context.is_(True),
+                AgentRun.id.in_(private_runs),
+            )
+        ):
+            for reference in run.read_sources:
+                if isinstance(reference, dict) and reference.get("artifact_id"):
+                    collect({"type": "artifact", "id": reference["artifact_id"]})
+
+    # Ordinary RLS reads are intentional: historical IDs do not confer new access.
+    artifacts = (
+        list(
+            s.scalars(
+                select(Artifact)
+                .where(
+                    Artifact.tenant_id == ctx.tenant_id,
+                    Artifact.category_id == ctx.category_id,
+                    Artifact.id.in_(artifact_ids),
+                )
+                .order_by(Artifact.id)
+            )
+        )
+        if artifact_ids
+        else []
+    )
+    original_ids = {artifact.original_id for artifact in artifacts if artifact.original_id}
+    filenames = (
+        list(
+            s.scalars(
+                select(UploadedOriginal.filename)
+                .where(
+                    UploadedOriginal.tenant_id == ctx.tenant_id,
+                    UploadedOriginal.category_id == ctx.category_id,
+                    UploadedOriginal.id.in_(original_ids),
+                )
+                .order_by(UploadedOriginal.id)
+            )
+        )
+        if original_ids
+        else []
+    )
     return check_content(
         content,
         identities=list(strings(row.customer_identities, include_keys=False)),
         filenames=filenames,
-        private_refs=private_refs,
-        originals=originals,
+        private_refs=sorted(private_refs),
+        originals=[artifact.content for artifact in artifacts if artifact.original_id],
     )
 
 

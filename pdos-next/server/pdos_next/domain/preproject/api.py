@@ -41,6 +41,28 @@ def register_routes(app, engine, auth_dependency):
                 page_size=page_size,
             )
 
+    @app.get("/v1/categories/{category_id}/claims")
+    def claims(
+        proposal_id: UUID | None = None,
+        status: str | None = "active",
+        cursor: UUID | None = None,
+        page_size: int = Query(default=50, ge=1, le=200),
+        ctx: Context = auth_dependency,
+    ):
+        from .evidence_reads import claims as read_claims
+
+        with scope(ctx) as s:
+            return read_claims(
+                s, ctx, proposal_id=proposal_id, status=status, cursor=cursor, page_size=page_size
+            )
+
+    @app.get("/v1/categories/{category_id}/claims/{claim_id}")
+    def claim_read(claim_id: UUID, ctx: Context = auth_dependency):
+        from .evidence_reads import claim
+
+        with scope(ctx) as s:
+            return claim(s, ctx, claim_id)
+
     @app.get("/v1/categories/{category_id}/knowledge")
     def knowledge(
         kind: str | None = None,

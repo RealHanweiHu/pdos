@@ -102,6 +102,13 @@ from pdos_next.domain.preproject.category_schemas import (  # noqa: E402
 
 PAYLOADS.update(CATEGORY_MATERIAL_PAYLOADS)
 
+from pdos_next.domain.preproject.evidence_schemas import (  # noqa: E402
+    PAYLOADS as PREPROJECT_EVIDENCE_PAYLOADS,
+)
+
+PAYLOADS.update(PREPROJECT_EVIDENCE_PAYLOADS)
+ClaimPayload = PAYLOADS["evidence.claim.record"]
+
 from pdos_next.model_configuration.commands import SavePayload  # noqa: E402
 
 PAYLOADS["model.configuration.save"] = SavePayload

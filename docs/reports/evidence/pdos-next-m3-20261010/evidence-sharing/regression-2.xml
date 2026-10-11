@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="117" time="100.511" timestamp="2026-10-10T22:43:51.400193-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_g0" name="test_private_proposal_and_read_only_reviewer_atomic_g0" time="2.628" /><testcase classname="tests.preproject.test_g0" name="test_submit_guards[self]" time="0.508" /><testcase classname="tests.preproject.test_g0" name="test_submit_guards[no_capability]" time="0.730" /><testcase classname="tests.preproject.test_g0" name="test_submit_guards[no_options]" time="0.608" /><testcase classname="tests.preproject.test_g0" name="test_submit_guards[no_narrative]" time="0.490" /><testcase classname="tests.preproject.test_g0" name="test_unknown_disposition_required_and_owner_cannot_decide" time="0.900" /><testcase classname="tests.preproject.test_g0" name="test_item_level_versions_and_locked_document" time="1.279" /><testcase classname="tests.preproject.test_g0" name="test_return_edit_and_new_submission" time="1.570" /><testcase classname="tests.preproject.test_g0" name="test_private_direct_rls_and_no_agent_dml" time="0.689" /><testcase classname="tests.preproject.test_g0" name="test_fault_rolls_back_decision_results_receipt_and_confirmation" time="1.531" /><testcase classname="tests.preproject.test_g0" name="test_sealed_definition_and_database_independence_constraints" time="1.292" /><testcase classname="tests.preproject.test_g0" name="test_policy_fields_rejected[visibility]" time="0.001" /><testcase classname="tests.preproject.test_g0" name="test_policy_fields_rejected[owner_id]" time="0.001" /><testcase classname="tests.preproject.test_g0" name="test_policy_fields_rejected[origin]" time="0.001" /><testcase classname="tests.preproject.test_g0" name="test_policy_fields_rejected[created_by_run_id]" time="0.000" /><testcase classname="tests.preproject.test_g0" name="test_unknown_spec_never_fills_zero_or_unit" time="0.000" /><testcase classname="tests.preproject.test_g0" name="test_private_source_is_visible_to_reviewer_and_withdrawal_blocks_approval" time="1.345" /><testcase classname="tests.preproject.test_g0" name="test_g0_keeps_native_definition_citations_immutable" time="1.468" /><testcase classname="tests.preproject.test_g0" name="test_database_submission_check_and_receipt_atom" time="0.433" /><testcase classname="tests.preproject.test_g0" name="test_participant_selector_excludes_owner_from_reviewers" time="0.508" /><testcase classname="tests.preproject.test_g0" name="test_question_creation_and_reassignment_require_confirmation" time="1.187" /><testcase classname="tests.preproject.test_g0" name="test_returned_proposal_writer_can_edit_but_only_owner_can_submit" time="1.427" /><testcase classname="tests.preproject.test_review_fixes" name="test_actual_owner_and_definers_are_non_superuser" time="0.361" /><testcase classname="tests.preproject.test_review_fixes" name="test_g0_target_price_and_pinned_target_segment" time="1.658" /><testcase classname="tests.preproject.test_review_fixes" name="test_open_item_title_note_and_later_state" time="1.336" /><testcase classname="tests.preproject.test_review_fixes" name="test_sealed_definition_rejects_insert[definition_specs]" time="1.523" /><testcase classname="tests.preproject.test_review_fixes" name="test_sealed_definition_rejects_insert[definition_sources]" time="1.709" /><testcase classname="tests.preproject.test_review_fixes" name="test_sources_incremental_no_unchanged_quote_revalidation" time="1.199" /><testcase classname="tests.preproject.test_review_fixes" name="test_t1_prepared_create_preserves_ai_origin_and_confirming_person" time="0.712" /><testcase classname="tests.preproject.test_review_fixes" name="test_at52_ai_spec_availability_requires_disposition_only_for_approval[unknown-ai_draft-True]" time="2.448" /><testcase classname="tests.preproject.test_review_fixes" name="test_at52_ai_spec_availability_requires_disposition_only_for_approval[conflicted-ai_draft-True]" time="2.003" /><testcase classname="tests.preproject.test_review_fixes" name="test_at52_ai_spec_availability_requires_disposition_only_for_approval[not_applicable-ai_draft-False]" time="1.627" /><testcase classname="tests.preproject.test_review_fixes" name="test_at52_ai_spec_availability_requires_disposition_only_for_approval[not_applicable-unknown-False]" time="1.541" /><testcase classname="tests.preproject.test_review_fixes" name="test_at52_ai_spec_availability_requires_disposition_only_for_approval[not_applicable-expert_pending-True]" time="2.154" /><testcase classname="tests.preproject.test_review_fixes" name="test_batch_validation_keeps_each_candidate_identity_and_source_privacy" time="1.612" /><testcase classname="tests.preproject.test_review_fixes" name="test_audience_lookup_returns_only_scoped_membership" time="0.723" /><testcase classname="tests.preproject.test_review_fixes" name="test_t0_qualified_patch_real_receipt_and_protection" time="1.309" /><testcase classname="tests.preproject.test_review_fixes" name="test_agent_context_without_controlled_call_cannot_write" time="0.419" /><testcase classname="tests.preproject.test_review_fixes" name="test_t1_candidate_tampering_rejected" time="0.408" /><testcase classname="tests.preproject.test_review_fixes" name="test_t1_patch_requires_confirmation_without_t0_qualification" time="1.294" /><testcase classname="tests.preproject.test_review_fixes" name="test_t1_run_cancelled_after_preview_cannot_be_consumed" time="0.494" /><testcase classname="tests.preproject.test_review_fixes" name="test_g0_uses_effective_proposal_audience[category]" time="0.385"><failure message="sqlalchemy.exc.ProgrammingError: (psycopg.errors.NoDataFound) query returned no rows&#10;CONTEXT:  PL/pgSQL function m3_evidence_share_atom() line 23 at SQL statement&#10;(Background on this error at: https://sqlalche.me/e/21/f405)">self = &lt;sqlalchemy.engine.base.Connection object at 0x15a45f110&gt;
+
+    def _commit_impl(self) -&gt; None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+&gt;           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x119bc3d70&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.NoDataFound: query returned no rows
+E               CONTEXT:  PL/pgSQL function m3_evidence_share_atom() line 23 at SQL statement
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: NoDataFound
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;, visibility = 'category'
+
+    @pytest.mark.parametrize("visibility", ["category", "audience"])
+    def test_g0_uses_effective_proposal_audience(work, visibility):
+        from pdos_next.domain.preproject.models import Proposal
+        from pdos_next.models import ObjectAudience
+    
+        proposal_id, _ = create(work)
+        # Seed the future share slice's persisted state; the share command itself
+        # remains outside this early G0 candidate.
+&gt;       with tenant_session(
+            work.admin,
+            work.tenant,
+            actor_id=work.human,
+            requester_id=work.human,
+            category_id=work.category,
+        ) as s:
+
+tests/preproject/test_review_fixes.py:795: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x119bc3d70&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.ProgrammingError: (psycopg.errors.NoDataFound) query returned no rows
+E               CONTEXT:  PL/pgSQL function m3_evidence_share_atom() line 23 at SQL statement
+E               (Background on this error at: https://sqlalche.me/e/21/f405)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: ProgrammingError</failure></testcase><testcase classname="tests.preproject.test_review_fixes" name="test_g0_uses_effective_proposal_audience[audience]" time="0.439"><failure message="sqlalchemy.exc.ProgrammingError: (psycopg.errors.NoDataFound) query returned no rows&#10;CONTEXT:  PL/pgSQL function m3_evidence_share_atom() line 23 at SQL statement&#10;(Background on this error at: https://sqlalche.me/e/21/f405)">self = &lt;sqlalchemy.engine.base.Connection object at 0x15ba98170&gt;
+
+    def _commit_impl(self) -&gt; None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+&gt;           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x119bc3d70&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.NoDataFound: query returned no rows
+E               CONTEXT:  PL/pgSQL function m3_evidence_share_atom() line 23 at SQL statement
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: NoDataFound
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;, visibility = 'audience'
+
+    @pytest.mark.parametrize("visibility", ["category", "audience"])
+    def test_g0_uses_effective_proposal_audience(work, visibility):
+        from pdos_next.domain.preproject.models import Proposal
+        from pdos_next.models import ObjectAudience
+    
+        proposal_id, _ = create(work)
+        # Seed the future share slice's persisted state; the share command itself
+        # remains outside this early G0 candidate.
+&gt;       with tenant_session(
+            work.admin,
+            work.tenant,
+            actor_id=work.human,
+            requester_id=work.human,
+            category_id=work.category,
+        ) as s:
+
+tests/preproject/test_review_fixes.py:795: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x119bc3d70&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.ProgrammingError: (psycopg.errors.NoDataFound) query returned no rows
+E               CONTEXT:  PL/pgSQL function m3_evidence_share_atom() line 23 at SQL statement
+E               (Background on this error at: https://sqlalche.me/e/21/f405)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: ProgrammingError</failure></testcase><testcase classname="tests.preproject.test_review_fixes" name="test_old_round_reviewer_remains_in_effective_audience" time="1.659" /><testcase classname="tests.preproject.test_review_fixes" name="test_commercial_nested_source_is_validated_and_canonical" time="0.254" /><testcase classname="tests.preproject.test_review_fixes" name="test_ai_question_origin_survives_g0_carry" time="1.700" /><testcase classname="tests.preproject.test_review_fixes" name="test_source_type_database_constraint_rejects_noncanonical_value" time="0.514" /><testcase classname="tests.preproject.test_review_fixes" name="test_registered_host_preparation_preserves_model_source[proposal.create]" time="0.852" /><testcase classname="tests.preproject.test_review_fixes" name="test_registered_host_preparation_preserves_model_source[proposal.item.patch]" time="1.076" /><testcase classname="tests.preproject.test_review_fixes" name="test_registered_host_preparation_preserves_model_source[proposal.question.create]" time="1.110" /><testcase classname="tests.preproject.test_review_fixes" name="test_registered_graph_protected_t0_becomes_t1_candidate" time="0.139" /><testcase classname="tests.preproject.test_category_context_pg" name="test_other_members_private_draft_resolves_updates_and_manual_references_clear_hint" time="2.410" /><testcase classname="tests.preproject.test_category_context_pg" name="test_g0_freezes_all_background_and_item_references_before_material_updates" time="4.277" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_promotion_rejects_invalid_parameter_reference[metrics-other_category]" time="0.676" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_promotion_rejects_invalid_parameter_reference[metrics-missing_version]" time="0.636" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_promotion_rejects_invalid_parameter_reference[metrics-wrong_unit]" time="0.787" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_promotion_rejects_invalid_parameter_reference[features-other_category]" time="0.682" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_promotion_rejects_invalid_parameter_reference[features-missing_version]" time="0.700" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_promotion_rejects_invalid_parameter_reference[features-wrong_unit]" time="0.678" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_filters_apply_to_same_observation_before_pagination" time="1.740" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_prices_preserve_decimal_and_comparison_contexts" time="0.715" /><testcase classname="tests.preproject.test_material_commands_pg" name="test_parameter_versions_are_atomic_immutable_and_replayable" time="1.025" /><testcase classname="tests.preproject.test_material_commands_pg" name="test_old_parameter_reference_hints_draft_and_preserves_submitted_g0" time="2.232" /><testcase classname="tests.preproject.test_material_commands_pg" name="test_parameter_type_and_unit_must_match_actual_dictionary" time="0.436" /><testcase classname="tests.preproject.test_material_commands_pg" name="test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0" time="1.567" /><testcase classname="tests.preproject.test_material_commands_pg" name="test_promotion_identity_preview_and_private_proof" time="1.071" /><testcase classname="tests.preproject.test_material_commands_pg" name="test_receipt_failure_rolls_back_version_and_current" time="0.590" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_material_actual_content_must_equal_its_ai_confirmation[category.knowledge.add]" time="0.739" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_material_actual_content_must_equal_its_ai_confirmation[category.parameter.publish]" time="0.764" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_same_content_confirmation_from_another_ai_run_cannot_supply_provenance[category.knowledge.add]" time="1.002" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_same_content_confirmation_from_another_ai_run_cannot_supply_provenance[category.parameter.publish]" time="1.287" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_same_content_ai_confirmation_cannot_be_laundered_as_human[category.knowledge.add]" time="0.670" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_same_content_ai_confirmation_cannot_be_laundered_as_human[category.parameter.publish]" time="0.789" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_old_category_creation_receipt_cannot_append_unselected_material[knowledge]" time="0.340" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_old_category_creation_receipt_cannot_append_unselected_material[parameter]" time="0.256" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_consumed_material_confirmation_cannot_be_touched_or_reopened[noop-category.knowledge.add]" time="0.632" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_consumed_material_confirmation_cannot_be_touched_or_reopened[noop-category.parameter.publish]" time="0.872" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_consumed_material_confirmation_cannot_be_touched_or_reopened[reopen-category.knowledge.add]" time="0.698" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_consumed_material_confirmation_cannot_be_touched_or_reopened[reopen-category.parameter.publish]" time="0.702" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_consumed_material_confirmation_cannot_be_touched_or_reopened[snapshot-category.knowledge.add]" time="0.986" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_consumed_material_confirmation_cannot_be_touched_or_reopened[snapshot-category.parameter.publish]" time="0.709" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_material_confirmation_cannot_be_inserted_already_consumed[category.knowledge.add]" time="0.639" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_material_confirmation_cannot_be_inserted_already_consumed[category.parameter.publish]" time="0.695" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_t0_material_actual_controlled_call_adds_replays_and_supersedes_ai_draft" time="0.855" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_t0_material_private_run_cannot_add_shared_knowledge" time="0.706" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_t0_material_cannot_supersede_protected_material[human]" time="0.655" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_t0_material_cannot_supersede_protected_material[confirmed_ai]" time="0.901" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_t0_material_cannot_supersede_protected_material[imported]" time="1.205" /><testcase classname="tests.preproject.test_formal_migration" name="test_formal_downgrade_preserves_existing_proposal" time="0.574" /><testcase classname="tests.preproject.test_formal_migration" name="test_material_proof_downgrade_preserves_saved_confirmation_links" time="0.463" /><testcase classname="tests.agent_kernel.test_claim_candidate_transactions" name="test_claim_candidate_cannot_be_changed_or_confirmed_after_cancel" time="0.942" /><testcase classname="tests.agent_kernel.test_claim_candidate_transactions" name="test_claim_candidate_t1_preserves_writer_and_all_or_none_run_revert" time="1.505" /><testcase classname="tests.agent_kernel.test_claim_candidate_transactions" name="test_claim_adoption_terminal_failure_keeps_proof_and_no_partial_result" time="1.049" /><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_actual_common_claim_and_completed_recovery_need_only_current_read_access" time="0.804" /><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_actual_common_domain_failure_rolls_back_call_fact_and_receipt_group" time="0.960" /><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_actual_model_arguments_and_current_route_cannot_be_substituted" time="0.829" /><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_cross_run_existing_result_keeps_original_ownership_and_has_no_new_call" time="1.016" /><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_actual_read_tools_keep_root_metadata_and_exact_isolated_source_scope" time="0.643" /><testcase classname="tests.test_source_current" name="test_no_direct_refs_do_not_read_or_expand_the_read_set" time="0.000" /><testcase classname="tests.test_source_current" name="test_direct_refs_keep_all_positions_and_exact_existing_basis_without_upstream_reads" time="0.000" /><testcase classname="tests.test_source_current" name="test_direct_revision_contract_fails_before_source_checks[reads0-MISSING_REQUIRED_EVIDENCE]" time="0.000" /><testcase classname="tests.test_source_current" name="test_direct_revision_contract_fails_before_source_checks[reads1-SOURCE_STALE]" time="0.000" /><testcase classname="tests.test_source_current" name="test_direct_revision_contract_fails_before_source_checks[reads2-SOURCE_STALE]" time="0.000" /><testcase classname="tests.test_source_current" name="test_existing_scope_content_position_and_safety_failures_are_not_masked[SOURCE_UNAVAILABLE]" time="0.000" /><testcase classname="tests.test_source_current" name="test_existing_scope_content_position_and_safety_failures_are_not_masked[SOURCE_STALE]" time="0.000" /><testcase classname="tests.test_source_current" name="test_existing_scope_content_position_and_safety_failures_are_not_masked[INTEGRITY_MISMATCH]" time="0.000" /><testcase classname="tests.test_source_current" name="test_existing_scope_content_position_and_safety_failures_are_not_masked[MISSING_REQUIRED_EVIDENCE]" time="0.001" /><testcase classname="tests.test_source_current" name="test_unbound_domain_reference_keeps_the_existing_integration_guard" time="0.000" /><testcase classname="tests.test_category_scope" name="test_direct_sql_category_tenant_and_audience_filters" time="0.254" /><testcase classname="tests.test_category_scope" name="test_missing_actor_and_pool_scope_reset_deny_rows" time="0.277" /><testcase classname="tests.test_category_scope" name="test_forged_category_model_binding_rejected_by_database" time="0.191" /><testcase classname="tests.test_category_scope" name="test_membership_revocation_removes_owner_access" time="0.205" /><testcase classname="tests.test_category_scope" name="test_agent_database_role_has_no_business_dml" time="0.188" /><testcase classname="tests.test_category_scope" name="test_category_create_is_confirmed_atomic_and_replayable" time="0.695" /><testcase classname="tests.test_category_scope" name="test_category_path_body_and_product_must_agree" time="0.221" /><testcase classname="tests.test_category_scope" name="test_membership_requires_named_owner_and_records_t2_receipt" time="0.363" /><testcase classname="tests.test_category_scope" name="test_unbounded_member_and_product_manager_capability_are_explicit_t2" time="0.581" /></testsuite></testsuites>

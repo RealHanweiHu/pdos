@@ -1,5 +1,7 @@
 """Actual AI Claim candidate, one Human T1 confirmation, retained AI writer and Run."""
 
+from dataclasses import dataclass
+from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 from pydantic import ValidationError
@@ -8,7 +10,6 @@ from sqlalchemy import func, select
 from pdos_next.errors import DomainError
 from pdos_next.models import Claim, Principal
 from pdos_next.request_proof import command_inputs_once
-from pdos_next.service import digest, source_for
 
 from .bindings import ModelBinding, WriteSource, execution_key
 from .execution import verify_source
@@ -115,24 +116,67 @@ def prepare(session, scope, spec, arguments, intent_key, bootstrap):
     }
 
 
-@command_inputs_once
-def prepared(session, ctx, command, scope, payload):
-    from pdos_next.contracts import ClaimPayload
+@dataclass(frozen=True)
+class PreparedClaim:
+    source: object
+    run: object | None
+    reference: object
+    proposal_id: UUID | None
+    privacy: str
+    visibility: str
 
-    if command.expected_revision != scope.revision:
-        raise DomainError("VERSION_CONFLICT", "当前型号版本已变化。")
-    source = source_for(session, ctx, scope.id, payload.artifact_id)
+    def __iter__(self):
+        # Existing callers may still unpack the original (source, run) pair.
+        yield self.source
+        yield self.run
+
+
+def _reference(command, payload):
+    from pdos_next.domain.preproject.access import fail
+    from pdos_next.domain.preproject.schemas import Reference
+
+    if payload.source is not None:
+        source = payload.source
+        if source.line is None or source.locator != f"line:{source.line}":
+            fail("VALIDATION_FAILED", "unsupported_locator", "此来源入口目前只核对 line:N 定位。")
+        return Reference(
+            type=source.kind,
+            id=source.id,
+            version=source.version,
+            line=source.line,
+            quote=source.quote,
+        ).model_copy(update={"quote": source.quote})
     reads = {read.artifact_id: read.expected_revision for read in command.source_read_set}
-    if reads.get(source.id) != source.revision:
-        raise DomainError("MISSING_REQUIRED_EVIDENCE", "须引用当前原文的明确版本。")
-    lines = source.content.splitlines()
-    if payload.line > len(lines) or payload.quote not in lines[payload.line - 1]:
-        raise DomainError("MISSING_REQUIRED_EVIDENCE", "引用须定位到原文行。")
-    if source.visibility != "category" and payload.visibility == "category":
-        raise DomainError("FORBIDDEN_SCOPE", "不能扩大来源受众。", 403)
+    revision = reads.get(payload.artifact_id)
+    if revision is None:
+        fail("MISSING_REQUIRED_EVIDENCE", "source_version_required", "须引用原文的明确版本。")
+    return Reference(
+        type="artifact",
+        id=payload.artifact_id,
+        version=revision,
+        line=payload.line,
+        quote=payload.quote,
+    )
+
+
+def _candidate_run(session, ctx, command, scope, payload):
+    from pdos_next.domain.preproject.access import fail, human
+    from pdos_next.domain.preproject.evidence_schemas import ClaimRecord
+    from pdos_next.service import digest
+
+    if ctx.agent_run_id:
+        from .execution import command_call, command_run
+
+        if payload.prepared_event_id:
+            fail(
+                "FORBIDDEN_SCOPE", "server_candidate_binding", "AI 自动执行不能借用人工候选。", 403
+            )
+        run = command_run(session, ctx, scope.id)
+        command_call(session, ctx, command.operation)
+        return run
+    human(session, ctx)
     if payload.prepared_event_id is None:
-        return source, None
-    actor = session.get(Principal, ctx.actor_id)
+        return None
     event = session.get(AgentEvent, payload.prepared_event_id)
     run = session.scalar(
         select(AgentRun)
@@ -141,11 +185,8 @@ def prepared(session, ctx, command, scope, payload):
         .execution_options(populate_existing=True)
     )
     if (
-        actor.kind != "human"
-        or ctx.actor_id != ctx.requester_id
-        or ctx.run_id
-        or ctx.agent_run_id
-        or not event
+        not event
+        or event.tenant_id != ctx.tenant_id
         or not run
         or event.body.get("type") != "claim_candidate"
         or run.tenant_id != ctx.tenant_id
@@ -156,20 +197,107 @@ def prepared(session, ctx, command, scope, payload):
         or run.reverted_at
         or run.state == "cancelled"
     ):
-        raise DomainError("FORBIDDEN_SCOPE", "候选不属于本人、当前范围或有效运行。", 403)
+        fail(
+            "FORBIDDEN_SCOPE",
+            "candidate_binding_invalid",
+            "候选不属于本人、当前范围或有效运行。",
+            403,
+        )
     actual = event.body["command"]
-    original = ClaimPayload.model_validate(actual["payload"])
+    original = ClaimRecord.model_validate(actual["payload"])
     if (
         actual["operation"] != command.operation
+        or actual.get("category_id") != str(command.category_id)
+        or actual.get("product_id") != (str(scope.id) if scope.id else None)
         or content(original) != content(payload)
         or digest(actual["source_read_set"])
         != digest([read.model_dump(mode="json") for read in command.source_read_set])
     ):
-        raise DomainError("DUPLICATE_INTENT_CONFLICT", "原候选已绑定不同的内容或来源。")
+        fail(
+            "DUPLICATE_INTENT_CONFLICT", "candidate_content_changed", "原候选已绑定不同内容或来源。"
+        )
     writer = session.get(Principal, run.writer_id)
-    if not writer or not writer.active or writer.kind != "agent" or payload.nature == "observed":
-        raise DomainError("FORBIDDEN_SCOPE", "原 AI 署名不可用，或试图冒充亲历事实。", 403)
-    return source, run
+    if not writer or not writer.active or writer.kind != "agent":
+        fail("FORBIDDEN_SCOPE", "candidate_writer_invalid", "原 AI 署名不可用。", 403)
+    return run
+
+
+def _nature(payload, run):
+    from pdos_next.domain.preproject.access import fail
+
+    if run and payload.nature in {"observed", "decided"}:
+        fail("FORBIDDEN_SCOPE", "human_fact_required", "AI 不能冒充亲历观察或具名人工决定。", 403)
+    if payload.nature == "computed":
+        fail(
+            "SOURCE_UNAVAILABLE",
+            "deterministic_proof_required",
+            "计算事实须绑定可信确定性计算回执；当前登记入口尚未接入该证明。",
+        )
+    if payload.availability == "not_applicable":
+        reason = payload.content.get("text") or payload.statement
+        if not isinstance(reason, str) or not reason.strip():
+            fail("VALIDATION_FAILED", "not_applicable_reason_required", "不适用须给出依据。")
+
+
+def _placement(session, ctx, scope, payload, reference, run):
+    from pdos_next.domain.preproject.access import fail, proposal
+    from pdos_next.domain.preproject.claim_access import source_privacy
+
+    identity = run.proposal_id if run else payload.proposal_id
+    if run and payload.proposal_id is not None and payload.proposal_id != identity:
+        fail("FORBIDDEN_SCOPE", "proposal_run_mismatch", "提案必须与实际运行绑定一致。", 403)
+    if identity:
+        proposal(session, ctx, identity, lock=True)
+    root = SimpleNamespace(
+        source_kind=reference.type,
+        artifact_id=reference.id if reference.type == "artifact" else None,
+        snapshot_id=reference.id if reference.type == "snapshot" else None,
+    )
+    private_source = source_privacy(session, ctx, root) == "private"
+    if scope.id is not None:
+        from pdos_next.models import Product
+
+        parent = session.get(Product, scope.id)
+        if not parent or parent.tenant_id != ctx.tenant_id or parent.category_id != ctx.category_id:
+            fail("SOURCE_UNAVAILABLE", "source_unreadable", "Claim 所属型号不可读。", 403)
+        private_source |= parent.visibility != "category"
+    private_run = bool(run and run.private_context)
+    if private_run and identity is None:
+        fail("FORBIDDEN_SCOPE", "private_context_run", "私有上下文运行必须绑定实际提案。", 403)
+    if private_source and identity is None and (run or payload.source is not None):
+        fail("FORBIDDEN_SCOPE", "private_context_run", "私有来源 Claim 必须绑定可读提案。", 403)
+    private = private_source or private_run
+    if private and payload.visibility == "category":
+        fail("FORBIDDEN_SCOPE", "private_source_in_shared", "不能扩大来源或私有运行的受众。", 403)
+    visibility = payload.visibility or ("audience" if private else "category")
+    # S0 callers can keep a public-source fact private; this is a restriction,
+    # never permission to enlarge a private source or actual private run.
+    privacy = "private" if private or visibility != "category" else "shared"
+    return identity, privacy, visibility
+
+
+@command_inputs_once
+def prepared(session, ctx, command, scope, payload):
+    from pdos_next.domain.preproject.claim_access import load_source
+
+    if command.expected_revision != scope.revision:
+        raise DomainError("VERSION_CONFLICT", "当前范围版本已变化。")
+    run = _candidate_run(session, ctx, command, scope, payload)
+    _nature(payload, run)
+    reference = _reference(command, payload)
+    source = load_source(session, ctx, reference, product_id=scope.id, lock=True)
+    identity, privacy, visibility = _placement(session, ctx, scope, payload, reference, run)
+    if payload.content.get("parameter_id"):
+        from pdos_next.domain.preproject.category_service import check_parameter
+
+        check_parameter(
+            session,
+            ctx,
+            UUID(payload.content["parameter_id"]),
+            payload.content["parameter_version"],
+            payload.content.get("unit"),
+        )
+    return PreparedClaim(source, run, reference, identity, privacy, visibility)
 
 
 def validate(session, ctx, command, scope, payload):
@@ -177,35 +305,68 @@ def validate(session, ctx, command, scope, payload):
 
 
 def preview_view(session, ctx, command, scope, payload):
-    _, run = prepared(session, ctx, command, scope, payload)
+    admitted = prepared(session, ctx, command, scope, payload)
+    run = admitted.run
     return {
         "claim": content(payload),
+        "payload": semantic(payload),
         "origin": "ai_draft" if run else "human",
         "prepared_by_run_id": str(run.id) if run else None,
+        "privacy": admitted.privacy,
+        "proposal_id": str(admitted.proposal_id) if admitted.proposal_id else None,
         "effect": "确认登记此来源事实，保留原 AI 署名、运行与依据。",
     }
 
 
 def apply(session, ctx, command, scope, payload):
-    source, run = prepared(session, ctx, command, scope, payload)
+    admitted = prepared(session, ctx, command, scope, payload)
+    run, reference = admitted.run, admitted.reference
+    receipt_id = uuid4()
+    statement = payload.statement or payload.content.get("text") or reference.quote
     row = Claim(
         id=uuid4(),
         tenant_id=ctx.tenant_id,
+        category_id=ctx.category_id,
         product_id=scope.id,
-        **content(payload),
-        source_revision=source.revision,
+        proposal_id=admitted.proposal_id,
+        artifact_id=reference.id if reference.type == "artifact" else None,
+        snapshot_id=reference.id if reference.type == "snapshot" else None,
+        source_kind=reference.type,
+        source_revision=reference.version,
+        source_locator=f"line:{reference.line}",
+        line=reference.line,
+        quote=reference.quote,
+        statement=statement,
+        nature=payload.nature,
+        availability=payload.availability,
+        content=payload.content or {"text": statement},
+        vendor_claimed=payload.vendor_claimed,
+        extraction_ref=payload.extraction_ref,
+        privacy=admitted.privacy,
+        visibility=admitted.visibility,
         human_owner_id=ctx.requester_id,
         writer_id=run.writer_id if run else ctx.actor_id,
+        origin="ai_draft" if run else "human",
+        run_id=run.id if run else None,
+        confirmed_by=ctx.actor_id if run and payload.prepared_event_id else None,
+        prepared_event_id=payload.prepared_event_id,
+        receipt_id=receipt_id,
+        revision=1,
+        status="active",
     )
+    row.prepared_receipt_id = receipt_id
     if run:
         row.prepared_by_run_id = run.id
-        row.action_result = {
-            "origin": "ai_draft",
-            "writer_id": str(run.writer_id),
-            "confirmed_by": str(ctx.actor_id),
-            "prepared_event_id": str(payload.prepared_event_id),
-        }
-    return row, "claim", payload.visibility
+    row.action_result = {
+        "origin": row.origin,
+        "writer_id": str(row.writer_id),
+        "run_id": str(row.run_id) if row.run_id else None,
+        "confirmed_by": str(row.confirmed_by) if row.confirmed_by else None,
+        "prepared_event_id": str(payload.prepared_event_id) if payload.prepared_event_id else None,
+        "privacy": admitted.privacy,
+        "proposal_id": str(admitted.proposal_id) if admitted.proposal_id else None,
+    }
+    return row, "claim", admitted.visibility
 
 
 def finalize_receipt(session, ctx, command, scope, payload, subject, receipt):

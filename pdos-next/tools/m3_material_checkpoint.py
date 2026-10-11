@@ -12,10 +12,10 @@ from pdos_next.models import Base
 from sqlalchemy import text
 
 
-def run(predecessor, successor, evidence):
+def run(predecessor, successor, evidence, *, report=None):
     state = fixture.state()
     engine = engine_for(state["admin_url"])
-    report = fixture.REPORT.parent / "category-materials"
+    report = report or fixture.REPORT.parent / "category-materials"
     report.mkdir(exist_ok=True)
     target = report / evidence
     log_suffix = target.stem

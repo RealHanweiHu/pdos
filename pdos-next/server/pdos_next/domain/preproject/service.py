@@ -49,9 +49,21 @@ def semantic(payload):
 def _references(s, ctx, refs, *, approved=False):
     from pdos_next.domain.products.models import DefinitionRevision
 
+    from .root_sources import lock_claim_refs
+
+    claims = lock_claim_refs(s, ctx, refs, approved=True)
     result = []
     for ref in refs:
-        if ref.type == "human":
+        if ref.type == "claim":
+            from .claim_access import source_privacy
+
+            claim = claims[ref.id]
+            if (ref.quote is not None and ref.quote not in claim.quote) or (
+                ref.line is not None and ref.line != claim.line
+            ):
+                fail("VALIDATION_FAILED", "quote_not_in_source", "引用不在事实的固定来源定位处。")
+            privacy = source_privacy(s, ctx, claim)
+        elif ref.type == "human":
             person = s.get(Principal, ref.id)
             if not person or not person.active or person.kind != "human" or not ref.statement:
                 fail(
@@ -203,6 +215,20 @@ def validate(s, ctx, command, scope, payload):
             (digest(ref.model_dump(mode="json")), privacy)
             for ref, privacy in _references(s, ctx, refs, approved=approved)
         )
+        from pdos_next.models import Claim
+
+        for ref in refs:
+            if ref.type == "claim":
+                claim = s.get(Claim, ref.id)
+                if claim.privacy == "private" and claim.proposal_id != getattr(
+                    payload, "proposal_id", None
+                ):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "claim_proposal_mismatch",
+                        "私有事实只能用于所在提案。",
+                        403,
+                    )
 
     if command.product_id is not None:
         fail("FORBIDDEN_SCOPE", "proposal_category_scope", "立项前命令须使用品类范围。", 403)
@@ -244,7 +270,7 @@ def validate(s, ctx, command, scope, payload):
         ids = [op.item_id for op in payload.ops if op.item_id]
         if len(ids) != len(set(ids)):
             fail("VALIDATION_FAILED", "duplicate_item_id", "一个命令内不能重复修改同一条目。")
-        current = {UUID(item["item_id"]): item for item in items(s, row)}
+        current = {UUID(item["item_id"]): item for item in items(s, row, include_links=False)}
         for op in payload.ops:
             item = current.get(op.item_id)
             if ctx.agent_run_id and item and item["human_value"]:
@@ -330,7 +356,9 @@ def validate(s, ctx, command, scope, payload):
         if payload.reviewer_id == row.owner_id:
             fail("VALIDATION_FAILED", "reviewer_is_owner", "负责人不能评审自己的提案。")
         member(s, ctx, payload.reviewer_id, reviewer=True)
-        checks = maturity(document(s, row))["submission_checks"]
+        doc = document(s, row)
+        _check_document_references(s, ctx, doc)
+        checks = maturity(doc)["submission_checks"]
         if not checks["worth_it_present"]:
             fail("VALIDATION_FAILED", "narrative_missing", "请先写明为什么值得做。")
         if checks["alternative_or_reason_required"] and not payload.no_alternative_reason:
@@ -389,10 +417,7 @@ def validate(s, ctx, command, scope, payload):
                 if payload.project and payload.project.owner_id
                 else row.owner_id,
             )
-            from .schemas import Reference
-
-            own_refs = [Reference.model_validate(ref) for ref in sub.frozen_document["source_refs"]]
-            check_references(own_refs, approved=True)
+            _check_document_references(s, ctx, sub.frozen_document, approved=True)
     return ValidatedWrite(path, reference_privacy)
 
 
@@ -524,6 +549,10 @@ def _source_counts(refs):
 
 
 def _sources(s, ctx, row, added, removed=(), *, reference_privacy):
+    from .root_sources import roots
+
+    added, reference_privacy = roots(s, ctx, added, reference_privacy)
+    removed, _ = roots(s, ctx, removed, {})
     delta = _source_counts(added)
     delta.subtract(_source_counts(removed))
     for key, amount in delta.items():
@@ -624,13 +653,21 @@ def apply_validated(s, ctx, command, scope, payload, validated):
                 )
                 or 0
             )
-            before = {UUID(i["item_id"]): i for i in items(s, row)}
+            before = {UUID(i["item_id"]): i for i in items(s, row, include_links=False)}
             added, removed = [], []
             from .schemas import Reference
 
             for index, op in enumerate(payload.ops):
                 if old := before.get(op.item_id):
                     removed += [Reference.model_validate(ref) for ref in old["source_refs"]]
+                    from .evidence_service import active_link_refs
+
+                    removed += [
+                        Reference.model_validate(ref)
+                        for ref in active_link_refs(
+                            s, ctx, "proposal_item", op.item_id, old["version"]
+                        )
+                    ]
                 op.source_refs = [*op.source_refs, *payload.source_refs]
                 if op.op != "remove":
                     added += op.source_refs
@@ -677,11 +714,30 @@ def apply_validated(s, ctx, command, scope, payload, validated):
 
                 old = next(
                     item
-                    for item in current_items(s, row)
+                    for item in current_items(s, row, include_links=False)
                     if item["item_id"] == str(payload.supersedes_item_id)
                 )
                 if old["kind"] != "question":
                     fail("VALIDATION_FAILED", "not_a_question", "只能改派已有问题。")
+                from .evidence_service import active_link_refs
+                from .schemas import Reference
+
+                _sources(
+                    s,
+                    ctx,
+                    row,
+                    [],
+                    [
+                        Reference.model_validate(ref)
+                        for ref in [
+                            *old["source_refs"],
+                            *active_link_refs(
+                                s, ctx, "proposal_item", UUID(old["item_id"]), old["version"]
+                            ),
+                        ]
+                    ],
+                    reference_privacy={},
+                )
                 changed.append(
                     _version(
                         s,
@@ -700,6 +756,7 @@ def apply_validated(s, ctx, command, scope, payload, validated):
         elif isinstance(payload, G0Submit):
             doc = document(s, row)
             own_refs = [r.model_dump(mode="json") for r in _all_refs_from_document(doc)]
+            doc["direct_source_refs"] = doc["source_refs"]
             doc["source_refs"] = own_refs
             doc["context_refs"] = [
                 ref for ref in own_refs if ref["type"] in {"knowledge", "parameter"}
@@ -770,6 +827,9 @@ def apply_validated(s, ctx, command, scope, payload, validated):
                 from .materialize import approve
 
                 approve(s, ctx, row, sub, decision, provenance=provenance)
+                from .root_sources import consume_claims
+
+                consume_claims(s, ctx, _all_refs_from_document(sub.frozen_document), decision)
             row.status = payload.outcome
             row.action_result = {
                 "decision_id": str(decision.id),
@@ -822,6 +882,15 @@ def _all_refs_from_document(doc):
     ]
     typed = [Reference.model_validate(r) for r in refs]
     return list({digest(ref.model_dump(mode="json")): ref for ref in typed}.values())
+
+
+def _check_document_references(s, ctx, doc, *, approved=False):
+    from .root_sources import lock_claim_refs, ordinary_refs, validate_document_links
+
+    # The complete union is locked in UUID order once before per-reference work.
+    lock_claim_refs(s, ctx, _all_refs_from_document(doc), approved=True)
+    _references(s, ctx, ordinary_refs(doc), approved=approved)
+    validate_document_links(s, ctx, doc, approved=approved)
 
 
 def finalize_receipt(s, ctx, command, scope, payload, subject, receipt):

@@ -8,6 +8,7 @@ from sqlalchemy import select
 
 from pdos_next.contracts import PAYLOADS, Command, SourceRead
 from pdos_next.database import category_transaction, tenant_session
+from pdos_next.domain.preproject.access import fail
 from pdos_next.errors import DomainError
 from pdos_next.models import Receipt
 from pdos_next.service import (
@@ -20,8 +21,13 @@ from pdos_next.service import (
 )
 
 from .bindings import DomainBinding, WriteSource, execution_key
-from .execution import finish_domain_call, prepare_domain_call, recover_domain_call
-from .models import AgentRun, AgentToolCall
+from .execution import (
+    check_run_binding,
+    finish_domain_call,
+    prepare_domain_call,
+    recover_domain_call,
+)
+from .models import AgentRun, AgentToolCall, PublicWebSnapshot
 
 
 class ExistingResult(Exception):
@@ -102,27 +108,42 @@ class DomainCommands:
     def command(self, session, scope, operation, arguments, intent_key):
         if operation not in PAYLOADS or not isinstance(arguments, dict):
             raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
         payload = dict(arguments)
-        # Scope fields omitted from model definitions are supplied only by the actual Run.
         for key in ("product_id", "proposal_id"):
             if key in PAYLOADS[operation].model_fields:
-                actual = getattr(scope, key)
+                actual = getattr(run, key)
                 if key in payload and str(payload[key]) != str(actual):
-                    raise DomainError("FORBIDDEN_SCOPE", "命令对象与实际运行不一致。", 403)
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
                 payload[key] = actual
         normalized = PAYLOADS[operation].model_validate(payload)
-        current = require_access(session, self.context(scope), scope.product_id)
-        run = session.get(AgentRun, scope.run_id)
-        if not run:
-            raise DomainError("FORBIDDEN_SCOPE", "运行不在当前范围。", 403)
-        reads = [
-            SourceRead(artifact_id=r["artifact_id"], expected_revision=r["expected_revision"])
-            for r in run.read_sources
-        ]
-        if hasattr(normalized, "artifact_id"):
-            source_id = normalized.artifact_id
-            if source_id not in {r.artifact_id for r in reads}:
-                raise DomainError("MISSING_REQUIRED_EVIDENCE", "运行未绑定此来源的明确版本。")
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        source = getattr(normalized, "source", None)
+        if operation == "evidence.claim.record" and source is not None:
+            if source.kind == "artifact":
+                self._require_artifact_read(pinned, source.id, source.version)
+            else:
+                self._require_snapshot_read(session, run, source.id, source.version)
+        else:
+            source_id = getattr(normalized, "artifact_id", None)
+            if source_id is not None:
+                self._require_artifact_read(pinned, source_id)
+        if operation == "evidence.link.create":
+            evidence = normalized.evidence
+            if evidence.type == "artifact":
+                self._require_artifact_read(pinned, evidence.id, evidence.version)
+            elif evidence.type == "snapshot":
+                self._require_snapshot_read(session, run, evidence.id, evidence.version)
         return Command(
             command_id=uuid5(NAMESPACE_URL, intent_key),
             idempotency_key=intent_key,
@@ -133,6 +154,80 @@ class DomainCommands:
             source_read_set=reads,
             payload=normalized.model_dump(mode="json"),
         )
+
+    @staticmethod
+    def _artifact_reads(run):
+        reads, versions = [], {}
+        for raw in run.read_sources:
+            try:
+                parsed = SourceRead.model_validate(
+                    {
+                        "artifact_id": raw["artifact_id"],
+                        "expected_revision": raw["expected_revision"],
+                    }
+                )
+                product_id = raw.get("product_id")
+                if product_id is not None and UUID(str(product_id)) != run.product_id:
+                    raise ValueError("Artifact belongs to another product")
+                if (
+                    parsed.artifact_id in versions
+                    and versions[parsed.artifact_id] != parsed.expected_revision
+                ):
+                    raise ValueError("Conflicting source versions")
+            except (KeyError, TypeError, ValueError, ValidationError):
+                fail(
+                    "SOURCE_UNAVAILABLE",
+                    "run_source_binding_invalid",
+                    "运行读取账本缺少可信来源版本或范围。",
+                )
+            if parsed.artifact_id not in versions:
+                reads.append(parsed)
+            versions[parsed.artifact_id] = parsed.expected_revision
+        return reads
+
+    @staticmethod
+    def _require_artifact_read(pinned, identity, version=None):
+        if identity not in pinned or (version is not None and pinned[identity] != version):
+            fail(
+                "MISSING_REQUIRED_EVIDENCE",
+                "source_read_not_bound",
+                "运行未绑定此来源的明确版本。",
+            )
+
+    @staticmethod
+    def _require_snapshot_read(session, run, identity, version):
+        snapshot = session.get(PublicWebSnapshot, identity)
+        if (
+            not snapshot
+            or snapshot.tenant_id != run.tenant_id
+            or snapshot.category_id != run.category_id
+            or version != 1
+            or snapshot.status not in {"ok", "partial"}
+        ):
+            fail("SOURCE_UNAVAILABLE", "snapshot_unavailable", "快照不在运行实际可用的品类范围。")
+        if snapshot.registered_by_run_id != run.id:
+            fail(
+                "SOURCE_UNAVAILABLE",
+                "snapshot_read_not_bound",
+                "复用其他运行快照须先登记可信读取账本。",
+            )
+        receipt = session.get(Receipt, snapshot.receipt_id)
+        if (
+            not receipt
+            or receipt.tenant_id != run.tenant_id
+            or receipt.category_id != run.category_id
+            or receipt.requester_id != run.requester_id
+            or receipt.operation != "research.snapshot.register"
+            or receipt.subject_type != "public_web_snapshot"
+            or receipt.subject_id != snapshot.id
+            or receipt.subject_revision != version
+            or receipt.agent_run_id not in {None, run.id}
+        ):
+            fail(
+                "SOURCE_UNAVAILABLE",
+                "snapshot_registration_invalid",
+                "快照没有属于实际运行的登记回执。",
+            )
 
     def execute(self, scope, operation, arguments, intent_key, *, source: WriteSource):
         spec = self.registry.get(operation)

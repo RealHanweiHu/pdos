@@ -88,7 +88,8 @@ class Category(Row, Base):
         ForeignKeyConstraint(
             ["tenant_id", "created_by_run_id"],
             ["agent_runs.tenant_id", "agent_runs.id"],
-            use_alter=True, name="category_created_by_run_fk",
+            use_alter=True,
+            name="category_created_by_run_fk",
         ),
         CheckConstraint("revision > 0 AND status IN ('active','archived')"),
     )
@@ -194,12 +195,27 @@ class Artifact(Row, Base):
 
 class Claim(Row, Base):
     __tablename__ = "claims"
-    product_id: Mapped[UUID]
-    artifact_id: Mapped[UUID]
+    product_id: Mapped[UUID | None]
+    artifact_id: Mapped[UUID | None]
+    proposal_id: Mapped[UUID | None]
+    snapshot_id: Mapped[UUID | None]
+    source_kind: Mapped[str] = mapped_column(Text, default="artifact", server_default="artifact")
+    source_locator: Mapped[str | None] = mapped_column(Text)
     source_revision: Mapped[int] = mapped_column(Integer)
     line: Mapped[int] = mapped_column(Integer)
     quote: Mapped[str] = mapped_column(Text)
     statement: Mapped[str] = mapped_column(Text)
+    content: Mapped[dict] = mapped_column(JSONB, default=dict, server_default=text("'{}'::jsonb"))
+    vendor_claimed: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default=text("false")
+    )
+    privacy: Mapped[str] = mapped_column(Text, default="private", server_default="private")
+    origin: Mapped[str] = mapped_column(Text, default="human", server_default="human")
+    run_id: Mapped[UUID | None]
+    confirmed_by: Mapped[UUID | None]
+    receipt_id: Mapped[UUID | None]
+    prepared_event_id: Mapped[UUID | None]
+    extraction_ref: Mapped[dict | str | None] = mapped_column(JSONB)
     nature: Mapped[str] = mapped_column(String(16))
     availability: Mapped[str] = mapped_column(String(16))
     visibility: Mapped[str] = mapped_column(String(16))
@@ -209,6 +225,37 @@ class Claim(Row, Base):
     status: Mapped[str] = mapped_column(String(16), default="active")
     __table_args__ = (
         UniqueConstraint("tenant_id", "product_id", "id"),
+        UniqueConstraint("tenant_id", "category_id", "id", name="claim_category_identity"),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "proposal_id"],
+            ["proposals.tenant_id", "proposals.category_id", "proposals.id"],
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "snapshot_id"],
+            [
+                "public_web_snapshots.tenant_id",
+                "public_web_snapshots.category_id",
+                "public_web_snapshots.id",
+            ],
+            use_alter=True,
+            name="m3_claims_tenant_id_category_id_snapshot_id_fk",
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "run_id"],
+            ["agent_runs.tenant_id", "agent_runs.category_id", "agent_runs.id"],
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "confirmed_by"],
+            ["principals.tenant_id", "principals.id"],
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"],
+            ["action_receipts.tenant_id", "action_receipts.id"],
+            deferrable=True,
+            initially="DEFERRED",
+            use_alter=True,
+            name="claim_receipt_fk",
+        ),
         ForeignKeyConstraint(
             ["tenant_id", "category_id", "artifact_id"],
             [
@@ -223,24 +270,63 @@ class Claim(Row, Base):
             ["tenant_id", "human_owner_id"],
             ["principals.tenant_id", "principals.id"],
         ),
-        CheckConstraint("nature IN ('observed','extracted','inferred')"),
-        CheckConstraint("availability IN ('known','unknown','conflicted')"),
+        CheckConstraint("nature IN ('observed','extracted','computed','inferred','decided')"),
+        CheckConstraint("availability IN ('known','unknown','conflicted','not_applicable')"),
         CheckConstraint("visibility IN ('private','category','audience')"),
-        CheckConstraint("status IN ('active','reverted')"),
+        CheckConstraint("status IN ('active','reverted','withdrawn')"),
         CheckConstraint("line > 0 AND revision > 0 AND source_revision > 0"),
+        CheckConstraint(
+            "(source_kind='artifact' AND artifact_id IS NOT NULL AND snapshot_id IS NULL) OR "
+            "(source_kind='snapshot' AND artifact_id IS NULL AND snapshot_id IS NOT NULL)",
+            name="claim_one_source",
+        ),
+        CheckConstraint("privacy IN ('private','shared')", name="claim_privacy"),
+        CheckConstraint("origin IN ('human','ai_draft')", name="claim_origin"),
+        CheckConstraint("NOT vendor_claimed OR nature='extracted'", name="claim_vendor_nature"),
     )
 
 
 class Consumption(Row, Base):
     __tablename__ = "claim_consumptions"
-    product_id: Mapped[UUID]
+    product_id: Mapped[UUID | None]
     claim_id: Mapped[UUID]
+    claim_version: Mapped[int | None]
+    decision_id: Mapped[UUID | None]
+    definition_id: Mapped[UUID | None]
+    receipt_id: Mapped[UUID | None]
     consumer_type: Mapped[str] = mapped_column(String(80))
     consumer_id: Mapped[UUID]
     __table_args__ = (
         ForeignKeyConstraint(
-            ["tenant_id", "product_id", "claim_id"],
-            ["claims.tenant_id", "claims.product_id", "claims.id"],
+            ["tenant_id", "category_id", "claim_id"],
+            ["claims.tenant_id", "claims.category_id", "claims.id"],
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "decision_id"],
+            [
+                "proposal_decisions.tenant_id",
+                "proposal_decisions.category_id",
+                "proposal_decisions.id",
+            ],
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "definition_id"],
+            [
+                "definition_revisions.tenant_id",
+                "definition_revisions.category_id",
+                "definition_revisions.id",
+            ],
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"],
+            ["action_receipts.tenant_id", "action_receipts.id"],
+            deferrable=True,
+            initially="DEFERRED",
+            use_alter=True,
+            name="claim_consumption_receipt_fk",
+        ),
+        CheckConstraint(
+            "claim_version IS NULL OR claim_version>0", name="claim_consumption_version"
         ),
     )
 
@@ -354,8 +440,10 @@ class Receipt(Row, Base):
         UniqueConstraint("tenant_id", "id"),
         UniqueConstraint("tenant_id", "confirmation_id", name="material_receipt_confirmation_once"),
         ForeignKeyConstraint(
-            ["tenant_id", "confirmation_id"], ["confirmations.tenant_id", "confirmations.id"],
-            name="material_receipt_confirmation_fk", use_alter=True,
+            ["tenant_id", "confirmation_id"],
+            ["confirmations.tenant_id", "confirmations.id"],
+            name="material_receipt_confirmation_fk",
+            use_alter=True,
         ),
         UniqueConstraint(
             "tenant_id",
@@ -1030,5 +1118,9 @@ import pdos_next.agent_kernel.models  # noqa: E402,F401
 import pdos_next.model_configuration.persistence  # noqa: E402,F401
 
 # M3 is part of the active schema after its frozen candidate migration.
+Base.metadata.tables["definition_revisions"].append_constraint(
+    UniqueConstraint("tenant_id", "category_id", "id", name="definition_category_identity")
+)
 import pdos_next.domain.preproject.category_models  # noqa: E402,F401
 import pdos_next.domain.preproject.category_creation_models  # noqa: E402,F401
+import pdos_next.domain.preproject.evidence_models  # noqa: E402,F401

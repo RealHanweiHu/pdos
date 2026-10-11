@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from types import SimpleNamespace
+from uuid import uuid4
 
 from sqlalchemy import select, text
 
@@ -34,6 +35,7 @@ def prepared(s, ctx, command, scope, payload):
             raise DomainError("VERSION_CONFLICT", "待撤回记录已变化。")
         return RevertPlan(claim, (receipt,), (claim,), None)
     from pdos_next.agent_kernel.persistence import prepare_run_revert
+    from pdos_next.domain.preproject.evidence_models import EvidenceLink
 
     run, receipts = prepare_run_revert(s, ctx, payload.run_id, lock=True)
     if (
@@ -61,12 +63,49 @@ def prepared(s, ctx, command, scope, payload):
                 raise DomainError(
                     "UNDO_BLOCKED_BY_DEPENDENCY", "资料已改变或不是本次运行的独立草稿。"
                 )
+        elif receipt.operation == "evidence.link.create":
+            subject = s.scalar(
+                select(EvidenceLink).where(EvidenceLink.id == receipt.subject_id).with_for_update()
+            )
+            if (
+                not subject
+                or subject.reverted_by_receipt_id
+                or subject.run_id != run.id
+                or subject.origin != "ai_draft"
+                or subject.writer_id != run.writer_id
+            ):
+                raise DomainError("UNDO_BLOCKED_BY_DEPENDENCY", "关联已变化或不属于本次运行。")
+            if subject.target_type == "proposal_item":
+                from pdos_next.domain.preproject.access import proposal
+                from pdos_next.domain.preproject.models import ProposalItem
+
+                item = s.get(ProposalItem, subject.target_id)
+                owner = proposal(s, ctx, item.proposal_id, lock=True) if item else None
+                if (
+                    not owner
+                    or owner.owner_id != ctx.requester_id
+                    or owner.status not in {"draft", "returned"}
+                    or item.removed
+                    or item.current_version != subject.target_version
+                ):
+                    raise DomainError(
+                        "UNDO_BLOCKED_BY_DEPENDENCY", "关联条目已有人工修改或已提交。"
+                    )
+            elif subject.target_type == "definition_spec":
+                from pdos_next.domain.products.models import DefinitionRevision, DefinitionSpecRow
+
+                spec = s.get(DefinitionSpecRow, subject.target_id)
+                definition = s.get(DefinitionRevision, spec.definition_id) if spec else None
+                if not definition or definition.sealed or definition.status != "draft":
+                    raise DomainError("UNDO_BLOCKED_BY_DEPENDENCY", "关联定义已固定或不可读。")
         else:
             raise DomainError(
                 "UNDO_BLOCKED_BY_DEPENDENCY",
                 "运行含已发布、具名决定或尚不支持撤回的结果，不能部分撤回。",
             )
-        if subject.category_id != ctx.category_id or subject.product_id != receipt.product_id:
+        if subject.category_id != ctx.category_id or (
+            getattr(subject, "product_id", receipt.product_id) != receipt.product_id
+        ):
             raise DomainError("FORBIDDEN_SCOPE", "待撤回对象与回执范围不一致。", 403)
         subjects.append(subject)
     import json
@@ -81,7 +120,12 @@ def prepared(s, ctx, command, scope, payload):
             "category": ctx.category_id,
             "targets": json.dumps(
                 [
-                    {"type": "claim" if isinstance(row, Claim) else "artifact", "id": str(row.id)}
+                    {
+                        "type": "claim"
+                        if isinstance(row, Claim)
+                        else ("evidence_link" if isinstance(row, EvidenceLink) else "artifact"),
+                        "id": str(row.id),
+                    }
                     for row in subjects
                 ]
             ),
@@ -104,6 +148,7 @@ def confirmation_subject(s, ctx, command, scope, payload):
 def preview_view(s, ctx, command, scope, payload):
     plan = prepared(s, ctx, command, scope, payload)
     return {
+        "payload": semantic(payload),
         "run_id": str(payload.run_id) if payload.run_id else None,
         "receipts": [
             {
@@ -120,7 +165,13 @@ def preview_view(s, ctx, command, scope, payload):
 
 def apply(s, ctx, command, scope, payload):
     plan = prepared(s, ctx, command, scope, payload)
+    from pdos_next.domain.preproject.evidence_models import EvidenceLink
+
+    receipt_id = uuid4()
     for subject in plan.subjects:
+        if isinstance(subject, EvidenceLink):
+            subject.reverted_by_receipt_id = receipt_id
+            continue
         subject.status = "reverted" if isinstance(subject, Claim) else "withdrawn"
         subject.revision += 1
     if payload.run_id:
@@ -129,6 +180,7 @@ def apply(s, ctx, command, scope, payload):
             id=plan.target.id,
             revision=plan.epoch + 1,
             status="reverted",
+            prepared_receipt_id=receipt_id,
             action_result={
                 "receipt_ids": [str(r.id) for r in plan.receipts],
                 "execution_state": plan.target.state,

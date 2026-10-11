@@ -5,7 +5,7 @@ from sqlalchemy import select
 from .access import proposal
 
 
-def items(s, row, *, include_history=False):
+def items(s, row, *, include_history=False, include_links=True):
     from .models import ProposalItem, ProposalItemVersion
 
     query = (
@@ -22,7 +22,7 @@ def items(s, row, *, include_history=False):
             ProposalItemVersion.version == ProposalItem.current_version,
             ProposalItem.removed.is_(False),
         )
-    return [
+    result = [
         {
             "item_id": str(item.id),
             "version": version.version,
@@ -40,6 +40,11 @@ def items(s, row, *, include_history=False):
             query.order_by(ProposalItem.sort_key, ProposalItemVersion.version)
         )
     ]
+    if include_links:
+        from .root_sources import project_items
+
+        return project_items(s, row, result)
+    return result
 
 
 def document(s, row):
@@ -122,6 +127,7 @@ def context_changes(s, ctx, row, doc):
     refs = [*row.context_refs, *row.source_refs]
     for item in doc["items"]:
         refs.extend(item["source_refs"])
+        refs.extend(link["evidence"] for link in item.get("evidence_links", []))
         content = item["content"]
         if item["kind"] == "spec" and content.get("parameter_id"):
             refs.append(
@@ -187,7 +193,9 @@ def context_changes(s, ctx, row, doc):
                         "status": pointer.status if pointer else "unavailable",
                     }
                 )
-    return changes
+    from .root_sources import claim_states, source_changes
+
+    return [*changes, *source_changes(refs, claim_states(s, ctx, refs))]
 
 
 def read(s, ctx, proposal_id):
@@ -205,7 +213,7 @@ def read(s, ctx, proposal_id):
         .order_by(ProposalDecision.created_at.desc())
         .limit(1)
     )
-    return {
+    result = {
         "id": str(row.id),
         "category_id": str(row.category_id),
         "owner_id": str(row.owner_id),
@@ -242,3 +250,6 @@ def read(s, ctx, proposal_id):
         if decision
         else None,
     }
+    from .root_sources import claim_states, nested_claim_refs, redact_references
+
+    return redact_references(result, claim_states(s, ctx, list(nested_claim_refs(result))))

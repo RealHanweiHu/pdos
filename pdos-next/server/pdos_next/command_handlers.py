@@ -1,16 +1,31 @@
 """A closed server registry; neither model nor client can choose their write tier."""
 
-CATEGORY_OPERATIONS = frozenset({
-    "model.configuration.save",
-    "evidence.artifact.register", "evidence.original.withdraw",
-    "evidence.lifecycle.upload.abandon", "evidence.lifecycle.quarantine",
-    "evidence.lifecycle.restore", "evidence.lifecycle.cancel",
-    "evidence.lifecycle.protection.record", "ai.run.revert",
-    "proposal.create", "proposal.item.patch", "proposal.question.create",
-    "proposal.g0.submit", "proposal.g0.decide",
-    "category.knowledge.add", "category.knowledge.withdraw", "category.knowledge.promote",
-    "category.parameter.publish",
-})
+CATEGORY_OPERATIONS = frozenset(
+    {
+        "model.configuration.save",
+        "evidence.artifact.register",
+        "evidence.original.withdraw",
+        "evidence.lifecycle.upload.abandon",
+        "evidence.lifecycle.quarantine",
+        "evidence.lifecycle.restore",
+        "evidence.lifecycle.cancel",
+        "evidence.lifecycle.protection.record",
+        "ai.run.revert",
+        "proposal.create",
+        "proposal.item.patch",
+        "proposal.question.create",
+        "proposal.g0.submit",
+        "proposal.g0.decide",
+        "category.knowledge.add",
+        "category.knowledge.withdraw",
+        "category.knowledge.promote",
+        "category.parameter.publish",
+        "evidence.claim.record",
+        "evidence.link.create",
+        "evidence.claim.withdraw",
+        "proposal.share",
+    }
+)
 
 T2_OPERATIONS = frozenset(
     {
@@ -30,8 +45,14 @@ T1_OPERATIONS = frozenset(
     {
         "model.configuration.save",
         "ai.run.revert",
-        "proposal.create", "proposal.question.create", "proposal.g0.submit",
-        "category.knowledge.withdraw", "category.knowledge.promote", "category.parameter.publish",
+        "proposal.create",
+        "proposal.question.create",
+        "proposal.g0.submit",
+        "proposal.share",
+        "evidence.claim.withdraw",
+        "category.knowledge.withdraw",
+        "category.knowledge.promote",
+        "category.parameter.publish",
         "change.order.prepare",
         "change.implementation.record",
         "evidence.original.withdraw",
@@ -100,8 +121,14 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation in {"evidence.link.create", "evidence.claim.withdraw", "proposal.share"}:
+        from pdos_next.domain.preproject import evidence_service
+
+        return evidence_service
     if operation in {
-        "category.knowledge.add", "category.knowledge.withdraw", "category.knowledge.promote",
+        "category.knowledge.add",
+        "category.knowledge.withdraw",
+        "category.knowledge.promote",
         "category.parameter.publish",
     }:
         from pdos_next.domain.preproject import category_service

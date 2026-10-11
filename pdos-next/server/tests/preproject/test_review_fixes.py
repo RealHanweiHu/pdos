@@ -64,7 +64,13 @@ def agent_fixture(work, operation, arguments, proposal_id=None):
     f.qualification.reviewed_by = work.human
     f.model.call_key, f.model.input_digest = str(uuid4()), digest("synthetic response")
     f.model.result = {"calls": [{"id": "untrusted", "name": operation, "arguments": arguments}]}
-    with Session(work.admin) as s, s.begin():
+    with tenant_session(
+        work.admin,
+        work.tenant,
+        actor_id=work.human,
+        requester_id=work.human,
+        category_id=work.category,
+    ) as s:
         s.add(
             AgentSession(
                 id=f.scope.session_id,
@@ -780,33 +786,18 @@ def test_t1_run_cancelled_after_preview_cannot_be_consumed(work):
 
 @pytest.mark.parametrize("visibility", ["category", "audience"])
 def test_g0_uses_effective_proposal_audience(work, visibility):
-    from pdos_next.domain.preproject.models import Proposal
-    from pdos_next.models import ObjectAudience
+    from tests.preproject.test_evidence_commands_pg import share_request
 
     proposal_id, _ = create(work)
-    # Seed the future share slice's persisted state; the share command itself
-    # remains outside this early G0 candidate.
-    with tenant_session(
-        work.admin,
-        work.tenant,
-        actor_id=work.human,
-        requester_id=work.human,
-        category_id=work.category,
-    ) as s:
-        row = s.get(Proposal, UUID(proposal_id))
-        row.visibility = row.effective_visibility = visibility
-        row.revision += 1
-        if visibility == "audience":
-            s.add(
-                ObjectAudience(
-                    tenant_id=work.tenant,
-                    category_id=work.category,
-                    object_type="proposals",
-                    subject_id=row.id,
-                    owner_id=work.human,
-                    principal_id=work.expert,
-                )
-            )
+    save(
+        work,
+        share_request(
+            work,
+            proposal_id,
+            visibility=visibility,
+            audience_ids=[work.expert] if visibility == "audience" else [],
+        ),
+    )
     submit(work, proposal_id)
     result, _ = save(work, decide_request(work, proposal_id), actor=work.peer)
     assert all(not d["audience_added"] for d in result["result"]["dispositions"])

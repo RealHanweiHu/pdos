@@ -135,15 +135,21 @@ def knowledge(
         query.order_by(KnowledgeEntry.lineage_id, KnowledgeEntry.version).limit(page_size + 1)
     ).all()
     page = rows[:page_size]
+    from .root_sources import project_knowledge
+
     return {
-        "items": [
-            {
-                **_row(row),
-                "status": "withdrawn" if row.action == "withdraw" else "active",
-                "lineage_status": current_status,
-            }
-            for row, current_status in page
-        ],
+        "items": project_knowledge(
+            s,
+            ctx,
+            [
+                {
+                    **_row(row),
+                    "status": "withdrawn" if row.action == "withdraw" else "active",
+                    "lineage_status": current_status,
+                }
+                for row, current_status in page
+            ],
+        ),
         "next_cursor": f"{page[-1][0].lineage_id}:{page[-1][0].version}"
         if len(rows) > page_size
         else None,

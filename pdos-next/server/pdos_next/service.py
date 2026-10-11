@@ -102,6 +102,9 @@ EVENTS = {
     "product.create": "product.created",
     "evidence.artifact.register": "artifact.registered",
     "evidence.claim.record": "claim.recorded",
+    "evidence.link.create": "evidence.linked",
+    "evidence.claim.withdraw": "claim.withdrawn",
+    "proposal.share": "proposal.shared",
     "ai.run.revert": "ai.run_reverted",
     "evidence.original.upload": "original.uploaded",
     "evidence.original.parse": "original.parsed",
@@ -937,21 +940,6 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
     if module and not deferred_candidate_validation:
         validated_write = module.validate(s, ctx, command, product, payload)
 
-    source = None
-    if isinstance(payload, ClaimPayload):
-        reads = {r.artifact_id: r.expected_revision for r in command.source_read_set}
-        if payload.artifact_id not in reads:
-            raise DomainError("MISSING_REQUIRED_EVIDENCE", "需要原文的明确版本。")
-        source = source_for(s, ctx, product.id, payload.artifact_id, reads[payload.artifact_id])
-        if isinstance(payload, ClaimPayload):
-            lines = source.content.splitlines()
-            if payload.line > len(lines) or payload.quote not in lines[payload.line - 1]:
-                raise DomainError("MISSING_REQUIRED_EVIDENCE", "引用必须能在指定原文行定位。")
-            if source.visibility != "category" and payload.visibility == "category":
-                raise DomainError("FORBIDDEN_SCOPE", "私人来源不能扩大到品类共享受众。", 403)
-            if run and payload.nature == "observed":
-                raise DomainError("FORBIDDEN_SCOPE", "AI 抽取不能冒充亲历观察。", 403)
-
     if (
         module
         and hasattr(module, "replay_subject")
@@ -975,7 +963,7 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
             if previous:
                 remember_key(s, ctx, command.idempotency_key, request_digest, previous)
                 return receipt_view(previous)
-    if isinstance(payload, (ArtifactPayload, ClaimPayload)):
+    if isinstance(payload, ArtifactPayload):
         if command.expected_revision != product.revision:
             raise DomainError("VERSION_CONFLICT", "型号范围版本已变化。")
     visibility = getattr(payload, "visibility", "private")
@@ -1008,6 +996,8 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
                 material_confirmation = consume_material_confirmation(
                     s, ctx, command, product, payload, module
                 )
+                if hasattr(validated_write, "confirmation_id"):
+                    validated_write.confirmation_id = material_confirmation.id
         if direct_confirmation:
             subject, subject_type, visibility = module.apply_confirmed(
                 s, ctx, command, product, payload, write_phase
@@ -1032,6 +1022,10 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
             "category.knowledge.withdraw",
             "category.knowledge.promote",
             "category.parameter.publish",
+            "evidence.claim.record",
+            "evidence.claim.withdraw",
+            "proposal.share",
+            "ai.run.revert",
         }:
             subject.confirmation_id = material_confirmation.id
         if hasattr(subject, "budget_exceeded"):
@@ -1051,17 +1045,6 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
             content_hash=digest(payload.content),
         )
         subject_type = "artifact"
-    elif isinstance(payload, ClaimPayload):
-        subject = Claim(
-            id=uuid4(),
-            tenant_id=ctx.tenant_id,
-            product_id=product.id,
-            **payload.model_dump(),
-            source_revision=source.revision,
-            human_owner_id=ctx.requester_id,
-            writer_id=ctx.actor_id,
-        )
-        subject_type = "claim"
     elif isinstance(payload, RevertPayload):
         _, subject = reversible_claim(s, ctx, payload.receipt_id, product.id)
         c = confirmation_for(
