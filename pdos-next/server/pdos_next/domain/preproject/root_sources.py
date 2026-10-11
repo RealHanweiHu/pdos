@@ -7,6 +7,7 @@ from uuid import UUID
 
 from sqlalchemy import select, text
 
+from pdos_next.errors import DomainError
 from pdos_next.models import Claim, Consumption
 from pdos_next.service import digest
 
@@ -24,9 +25,7 @@ def lock_claim_refs(s, ctx, refs, *, approved=False):
     )
     lock_references(s, ctx, [identity for identity, _ in keys])
     return {
-        identity: resolve(
-            s, ctx, identity, version, approved=approved, source_lock=True
-        )
+        identity: resolve(s, ctx, identity, version, approved=approved, source_lock=True)
         for identity, version in keys
     }
 
@@ -138,6 +137,76 @@ def nested_claim_refs(value):
             yield from nested_claim_refs(child)
 
 
+def _canonical_citation(body, locator):
+    """Choose one actual nonblank line fragment inside the entire validated locator."""
+    validate_locator(locator, body)
+    start, end, first, last = 0, len(body), 1, len(body.splitlines())
+    if locator is not None:
+        parts = locator.split(":")
+        if parts[0] == "chars":
+            start, end = int(parts[1]), int(parts[2])
+        else:
+            first = int(parts[1])
+            last = int(parts[-1])
+    offset = 0
+    for number, (raw, line) in enumerate(
+        zip(body.splitlines(keepends=True), body.splitlines(), strict=True), start=1
+    ):
+        left, right = max(start, offset), min(end, offset + len(line))
+        if first <= number <= last and left < right:
+            quote = line[left - offset : right - offset].strip()[:4000].rstrip()
+            if quote:
+                return {"line": number, "quote": quote}
+        offset += len(raw)
+    fail("SOURCE_UNAVAILABLE", "source_locator_empty", "证据定位内没有可核对的非空原文。")
+
+
+def _link_citation(s, row, link):
+    """Read only through this transaction's actual actor, RLS and source lifecycle."""
+    from sqlalchemy.orm import load_only
+
+    from pdos_next.agent_kernel.models import PublicWebSnapshot
+    from pdos_next.models import Artifact
+    from pdos_next.service import Context, source_for
+
+    scope = getattr(s, "info", {}).get("scope")
+    if (
+        not scope
+        or len(scope) != 4
+        or scope[0] != row.tenant_id
+        or scope[3] != row.category_id
+        or not scope[1]
+        or not scope[2]
+    ):
+        fail("SOURCE_UNAVAILABLE", "source_unreadable", "证据正文缺少当前事务读取身份。")
+    ctx = Context(scope[0], scope[1], scope[2], category_id=scope[3])
+    model = Artifact if link.evidence_type == "artifact" else PublicWebSnapshot
+    columns = [model.id, model.tenant_id, model.category_id]
+    columns.append(model.product_id if model is Artifact else model.status)
+    source = s.scalar(
+        select(model)
+        .where(
+            model.id == link.evidence_id,
+            model.tenant_id == ctx.tenant_id,
+            model.category_id == ctx.category_id,
+        )
+        .options(load_only(*columns))
+        .execution_options(populate_existing=True)
+    )
+    if not source or source.tenant_id != ctx.tenant_id or source.category_id != ctx.category_id:
+        fail("SOURCE_UNAVAILABLE", "source_unreadable", "证据正文不在当前读取范围。")
+    if link.evidence_type == "artifact":
+        # The RLS-loaded source supplies its product; neither the linked item nor
+        # the caller can substitute a product scope. source_for checks Originals.
+        source = source_for(s, ctx, source.product_id, source.id, link.evidence_version)
+        body = source.content
+    else:
+        if link.evidence_version != 1 or source.status not in {"ok", "partial"}:
+            fail("SOURCE_STALE", "snapshot_unavailable", "网页快照不可用。")
+        body = source.markdown
+    return _canonical_citation(body, link.evidence_locator)
+
+
 def project_items(s, row, items, *, target_type="proposal_item"):
     """Merge independent associations without changing stored item versions."""
     from .evidence_models import EvidenceLink
@@ -195,6 +264,14 @@ def project_items(s, row, items, *, target_type="proposal_item"):
                     else "active"
                 )
             )
+            citation = {}
+            if status == "active" and link.evidence_type in {"artifact", "snapshot"}:
+                try:
+                    citation = _link_citation(s, row, link)
+                except DomainError:
+                    # History remains readable; an unavailable body never gains
+                    # a synthetic quote or an active reference in the document.
+                    status = "stale"
             views.append(
                 {
                     "id": str(link.id),
@@ -209,7 +286,7 @@ def project_items(s, row, items, *, target_type="proposal_item"):
                 }
             )
             if status == "active":
-                refs.append(reference)
+                refs.append({**reference, **citation})
         if views:
             item.update(direct_source_refs=direct, source_refs=refs, evidence_links=views)
         changed = source_changes([*direct, *(view["evidence"] for view in views)], states)

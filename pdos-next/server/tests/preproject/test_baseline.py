@@ -483,8 +483,20 @@ def test_source_tree_uses_one_union_lock_and_actual_products(monkeypatch):
     )
     ctx = NS(tenant_id=TENANT, category_id=CATEGORY)
     row = NS(tenant_id=TENANT, category_id=CATEGORY, revision=4)
-    knowledge = NS(tenant_id=TENANT, category_id=CATEGORY, version=2, action="add", source_refs=[])
-    baseline.validate_sources(Session([row, knowledge]), ctx, root)
+    knowledge = NS(
+        tenant_id=TENANT,
+        category_id=CATEGORY,
+        version=2,
+        action="add",
+        source_refs=[],
+        kind="boundary",
+        content={"definition": "Fixed boundary"},
+    )
+    source = NS(id=UUID(int=20), product_id=PRODUCT)
+    child_source = NS(id=UUID(int=30), product_id=child_product)
+    s = Session([row, knowledge, source, child_source, source])
+    baseline.validate_sources(s, ctx, root)
+    assert not s.rows
     assert calls[0] == ("claims", {UUID(int=10), UUID(int=22)})
     assert sum(call[0] == "claims" for call in calls) == 1
     assert ("artifact", UUID(int=20), PRODUCT) in calls
@@ -570,8 +582,20 @@ def test_real_traversal_propagates_resolver_rejection(monkeypatch, source_kind):
     monkeypatch.setattr(proposals, "_references", reject)
     with pytest.raises(DomainError) as error:
         rows = (
-            [NS(tenant_id=TENANT, category_id=CATEGORY, version=2, action="add", source_refs=[])]
+            [
+                NS(
+                    tenant_id=TENANT,
+                    category_id=CATEGORY,
+                    version=2,
+                    action="add",
+                    source_refs=[],
+                    kind="boundary",
+                    content={"definition": "Fixed boundary"},
+                )
+            ]
             if source_kind == "knowledge"
+            else [NS(id=UUID(int=80), product_id=PRODUCT)]
+            if source_kind == "artifact"
             else []
         )
         baseline.validate_sources(Session(rows), NS(tenant_id=TENANT, category_id=CATEGORY), doc)
@@ -583,7 +607,7 @@ def test_real_traversal_propagates_resolver_rejection(monkeypatch, source_kind):
 
 
 @pytest.mark.parametrize("read_snapshot", [False, True])
-def test_tree_and_extra_claims_share_order_but_only_tree_claims_are_returned(
+def test_tree_and_extra_claims_share_order_and_complete_frozen_consumption(
     monkeypatch, read_snapshot
 ):
     from pdos_next.domain.preproject import claim_access
@@ -638,7 +662,7 @@ def test_tree_and_extra_claims_share_order_but_only_tree_claims_are_returned(
     monkeypatch.setattr(claim_access, "resolve", resolve)
     monkeypatch.setattr(claim_access, "load_source", source)
     row = NS(tenant_id=TENANT, category_id=CATEGORY, revision=4)
-    s = Session([row])
+    s = Session([row, NS(id=UUID(int=20), product_id=PRODUCT)])
     s.info = {"read_snapshot": read_snapshot}
     returned = baseline.validate_sources(
         s, NS(tenant_id=TENANT, category_id=CATEGORY), root, extra_refs=extra
@@ -650,7 +674,10 @@ def test_tree_and_extra_claims_share_order_but_only_tree_claims_are_returned(
         *(("resolve", identity, index) for index, identity in enumerate(identities, 1)),
         ("source", UUID(int=20)),
     ]
-    assert [(ref.id, ref.version) for ref in returned] == [(UUID(int=10), 1), (UUID(int=30), 3)]
+    assert [(ref.id, ref.version) for ref in returned] == list(
+        zip(identities, (1, 2, 3), strict=True)
+    )
+    assert not s.rows
 
 
 @pytest.mark.parametrize("ancestor_field", ["derived_from_definition_id", "parent_definition_id"])
@@ -676,6 +703,8 @@ def test_ancestor_knowledge_claim_closure_uses_actual_fixed_versions(monkeypatch
         category_id=CATEGORY,
         version=3,
         action="supersede",
+        kind="boundary",
+        content={"definition": "Fixed boundary"},
         source_refs=[claim_ref.model_dump(mode="json")],
     )
     parent = NS(tenant_id=TENANT, category_id=CATEGORY, revision=7)
@@ -709,7 +738,15 @@ def test_ancestry_and_knowledge_cycles_fail_before_locks(monkeypatch, cycle_kind
         ref = {"type": "knowledge", "id": str(UUID(int=91)), "version": 3}
         root["source_refs"] = [ref]
         rows = [
-            NS(tenant_id=TENANT, category_id=CATEGORY, version=3, action="add", source_refs=[ref])
+            NS(
+                tenant_id=TENANT,
+                category_id=CATEGORY,
+                version=3,
+                action="add",
+                source_refs=[ref],
+                kind="boundary",
+                content={"definition": "Fixed boundary"},
+            )
         ]
     else:
         root[cycle_kind] = str(DEFINITION)

@@ -26,6 +26,10 @@ from pdos_next.service import digest, require_access, source_for
 from .access import fail, human, member, proposal
 from .evidence_schemas import ClaimWithdraw, EvidenceLinkCreate, ProposalShare
 
+# These rows can connect product originals to category consumers. The common
+# entry must acquire Category before Product even with an empty read set.
+category_lifecycle_fence = True
+
 
 @dataclass
 class ValidatedEvidence:
@@ -133,7 +137,10 @@ def _target(s, ctx, command, scope, target):
         return item, owner, owner.effective_visibility != "private"
     if target.type == "knowledge_entry":
         category_scope(s, ctx, write=True, lock=True)
-        row = _row(s, ctx, KnowledgeEntry, target.id)
+        # Entries are immutable and have no UPDATE privilege. The Category lock
+        # above serializes current-pointer changes; a row write lock is neither
+        # required nor available for the fixed entry.
+        row = _row(s, ctx, KnowledgeEntry, target.id, lock=False)
         current = s.get(KnowledgeCurrent, (ctx.tenant_id, row.lineage_id))
         if command.product_id is not None or not current or current.category_id != ctx.category_id:
             fail("FORBIDDEN_SCOPE", "evidence_target_scope", "知识不在当前品类范围。", 403)
@@ -141,7 +148,7 @@ def _target(s, ctx, command, scope, target):
         if current.current_entry_id != row.id or current.status != "active":
             fail("SOURCE_STALE", "knowledge_unreadable", "只能关联当前有效知识版本。")
         return row, None, True
-    row = _row(s, ctx, DefinitionSpecRow, target.id)
+    row = _row(s, ctx, DefinitionSpecRow, target.id, lock=False)
     if command.product_id != row.product_id or scope.id != row.product_id:
         fail("FORBIDDEN_SCOPE", "evidence_target_scope", "规格不在当前型号范围。", 403)
     product = require_access(s, ctx, row.product_id, write=True, lock=True)

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="3" time="14.578" timestamp="2026-10-11T02:43:29.149315-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_m3_lifecycle_concurrency" name="test_pg_product_evidence_and_category_patch_share_category_first_fence" time="4.835" /><testcase classname="tests.preproject.test_g0_downstream_sources_pg" name="test_withdrawn_g0_source_blocks_new_consumers_but_keeps_actual_history_readable[claim-only]" time="4.344"><failure message="AssertionError: {&quot;code&quot;:&quot;UNDO_BLOCKED_BY_DEPENDENCY&quot;,&quot;message&quot;:&quot;已签署决定消费的事实不能撤回。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;consumed_by_decision&quot;}}&#10;assert 409 == 200&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;, nested = False
+
+    @pytest.mark.parametrize("nested", [False, True], ids=["claim-only", "nested-knowledge-claim"])
+    def test_withdrawn_g0_source_blocks_new_consumers_but_keeps_actual_history_readable(work, nested):
+        g0 = claim_only_project(work, nested=nested)
+        consumers = prepare_consumers(work, g0)
+        historical_reads(work, g0)
+&gt;       save(work, withdraw_request(work, g0.claim_id))
+
+tests/preproject/test_g0_downstream_sources_pg.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': 'd2b771e6-9780-4e5c-859a-4885381aa10f', 'idempotency_key': '465c1df3-73db-4f0a-b529-17f557978699', 'category_id': 'f21ee8b3-50ad-4654-b805-7606c1c92e14', 'product_id': None, ...}
+actor = None
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+&gt;       assert checked.status_code == 200, checked.text
+E       AssertionError: {"code":"UNDO_BLOCKED_BY_DEPENDENCY","message":"已签署决定消费的事实不能撤回。","detail":{"reason":"consumed_by_decision"}}
+E       assert 409 == 200
+E        +  where 409 = &lt;Response [409 Conflict]&gt;.status_code
+
+tests/preproject/test_g0.py:93: AssertionError</failure></testcase><testcase classname="tests.preproject.test_g0_downstream_sources_pg" name="test_withdrawn_g0_source_blocks_new_consumers_but_keeps_actual_history_readable[nested-knowledge-claim]" time="4.917" /></testsuite></testsuites>

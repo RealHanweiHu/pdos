@@ -49,6 +49,8 @@ from .schemas import (
     BuildStartPayload,
 )
 
+category_lifecycle_fence = True
+
 ASSESS = "build.readiness.compute"
 ROLES = {
     "build.engineering.authorize": "engineering",
@@ -403,6 +405,8 @@ def _reads(*groups):
 
 
 def _exact_reads(s, ctx, product_id, command, required, references=(), *, build=None):
+    if build is not None and command.payload.get("action") != "revoke":
+        _linked(s, ctx, product_id, build, new_consumption=True)
     actual = {str(ref.artifact_id): ref.expected_revision for ref in command.source_read_set}
     if any(actual.get(ref["artifact_id"]) != ref["expected_revision"] for ref in required):
         raise DomainError(

@@ -42,6 +42,7 @@ from pdos_next.errors import DomainError
 from pdos_next.models import Artifact, Audit, Confirmation, Outbox, Receipt, RequestKey, now
 from pdos_next.professional_import import import_professional_fact
 from pdos_next.service import Context, execute
+from tests.g0_fixture import create_g0_project
 
 
 def scope_payload(work):
@@ -745,6 +746,10 @@ def test_poststart_deviation_remains_recordable_but_requires_stop_recheck(
 
 
 def shared_configuration(setup):
+    scope = create_g0_project(
+        setup, visibility="category", name="Shared synthetic project", purpose="Verify preparation"
+    )
+    project = {"subject_id": str(scope.project_id)}
     source = post(
         setup,
         cmd(
@@ -766,39 +771,6 @@ def shared_configuration(setup):
         "line": 1,
         "quote": "Synthetic requirement is unverified",
     }
-    defined = post(
-        setup,
-        cmd(
-            setup,
-            "product.definition.draft",
-            {
-                "title": "Shared synthetic product",
-                "purpose": "Verify preparation",
-                "use_cases": ["Internal prototype"],
-                "change_reason": "Shared synthetic fixed scope",
-                "visibility": "category",
-                "sources": [ref],
-            },
-            sid,
-        ),
-    )
-    assert defined.status_code == 200, defined.text
-    project, _ = accepted(
-        setup,
-        cmd(
-            setup,
-            "project.create",
-            {
-                "name": "Shared synthetic project",
-                "purpose": "Verify preparation",
-                "scope": "Internal synthetic prototype",
-                "visibility": "category",
-                "definition_id": defined.json()["subject_id"],
-                "expected_definition_revision": 1,
-            },
-            sid,
-        ),
-    )
     common = {
         "visibility": "category",
         "reason": "Shared synthetic fixed configuration",
@@ -837,7 +809,7 @@ def shared_configuration(setup):
             {
                 **common,
                 "name": "Shared engineering fixed draft",
-                "definition_id": defined.json()["subject_id"],
+                "definition_id": str(scope.definition_id),
                 "expected_definition_revision": 1,
                 "bom_id": bom["subject_id"],
                 "expected_bom_revision": 1,
@@ -927,6 +899,7 @@ def test_shared_build_three_named_people_and_distinct_grant_expiries(setup):
         }
     )
     config = compute(setup, shared_configuration(setup))
+    engineer_setup.product = manufacturer_setup.product = setup.product
     work = SimpleNamespace(
         setup=setup,
         config=config,

@@ -3,14 +3,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowClockwise, CalendarBlank, CheckCircle, Plus, Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
-import type { DefinitionList, DefinitionRevision } from "@/lib/product-view";
-import { blankProjectDraft, buildSchedule, definitionReadSet, disciplineNames, durationText, forecastReasonNames, forecastWarningNames, restoreProjectDraft, utcText, weekdayNames, type ApplyPlanPayload, type CreateProjectPayload, type PlanForecast, type PlanProposal, type PreparedProject, type Project, type ProjectApi, type ProjectCommand, type ProjectDraft, type ProjectList, type ProposePlanPayload, type ScheduleInput, type SourceRead, type TaskDraft, type WaitingProject } from "@/lib/project-plan-view";
+import { blankProjectDraft, buildSchedule, disciplineNames, durationText, forecastReasonNames, forecastWarningNames, utcText, weekdayNames, type ApplyPlanPayload, type PlanForecast, type PlanProposal, type PreparedProject, type Project, type ProjectApi, type ProjectCommand, type ProjectDraft, type ProjectList, type ProposePlanPayload, type ScheduleInput, type SourceRead, type TaskDraft, type WaitingProject } from "@/lib/project-plan-view";
+import { projectCreationMoved, restorePlanningDraft } from "./project-planning-state";
 
 type Props = { product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: ProjectApi; onSaved: () => void | Promise<void> };
 type Receipt = { id: string; subject_type: string; subject_id: string };
-const receiptTypes: Record<ProjectCommand["operation"], string> = { "project.create": "project", "work.plan.propose": "plan_proposal", "work.plan.apply": "plan_revision" };
-const successMessages: Record<ProjectCommand["operation"], string> = {
-  "project.create": "真实研发项目已建立，型号定义和范围已固定；定义草稿尚未正式发布。",
+type PlanOperation = Exclude<ProjectCommand["operation"], "project.create">;
+const receiptTypes: Record<PlanOperation, string> = { "work.plan.propose": "plan_proposal", "work.plan.apply": "plan_revision" };
+const successMessages: Record<PlanOperation, string> = {
   "work.plan.propose": "首版计划候选已保存，可以核对预测并确认应用。尚未建立正式任务。",
   "work.plan.apply": "首版计划已应用，工程与 NPI 工作包、任务和依赖已建立。批准基线、个人承诺与实绩仍未记录。",
 };
@@ -45,7 +45,6 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
   const storageKey = `pdos-next:project-plan:${principalId}:${product.id}`;
   const [draft, setDraft] = useState(() => blankProjectDraft(product.purpose));
   const [projects, setProjects] = useState<Project[]>([]);
-  const [definitions, setDefinitions] = useState<DefinitionRevision[]>([]);
   const [pending, setPending] = useState<WaitingProject | null>(null);
   const [preview, setPreview] = useState<PreparedProject | null>(null);
   const [busy, setBusy] = useState(false);
@@ -61,23 +60,17 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
   const lock = useRef(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLElement | null>(null);
-  const definition = definitions.find(item => item.id === draft.definitionId);
   const project = projects.find(item => item.id === draft.projectId);
   const editable = ready && !busy && !pending && !preview;
   const owner = project?.owner_id === principalId;
 
   const refresh = useCallback(async () => {
-    const results = await Promise.allSettled([api<DefinitionList>(`v1/products/${product.id}/definitions`), api<ProjectList>(`v1/products/${product.id}/projects`)]);
-    if (!alive.current) return;
-    const failures: string[] = [];
-    const defined = results[0];
-    if (defined.status === "fulfilled") setDefinitions(defined.value.items);
-    else { setDefinitions([]); failures.push(defined.reason?.message ?? "型号定义暂时无法读取。"); }
-    const planned = results[1];
-    if (planned.status === "fulfilled") { setProjects(planned.value.items); setHidden(planned.value.unavailable_count); setHasMore(planned.value.has_more); }
-    else { setProjects([]); failures.push(planned.reason?.message ?? "项目暂时无法读取。"); }
-    setLoading(false);
-    if (failures.length) throw new Error(failures.join(" "));
+    try {
+      const planned = await api<ProjectList>(`v1/products/${product.id}/projects`);
+      if (!alive.current) return;
+      setProjects(planned.items); setHidden(planned.unavailable_count); setHasMore(planned.has_more);
+    } catch (failure) { if (alive.current) setProjects([]); throw failure; }
+    finally { if (alive.current) setLoading(false); }
   }, [api, product.id]);
 
   useEffect(() => {
@@ -86,8 +79,14 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
     void Promise.resolve().then(() => {
       if (!alive.current) return;
       try {
-        const local = restoreProjectDraft(JSON.parse(localStorage.getItem(storageKey) ?? "null"), product.id);
-        if (local) { setDraft(local.draft); setPending(local.pending); }
+        const local = restorePlanningDraft(JSON.parse(localStorage.getItem(storageKey) ?? "null"), product.id);
+        if (local) {
+          setDraft(local.draft); setPending(local.pending);
+          if (local.retiredCreation) {
+            setNotice(projectCreationMoved);
+            localStorage.setItem(storageKey, JSON.stringify({ draft: local.draft, pending: null }));
+          }
+        }
       } catch { /* Optional local storage does not alter server authority. */ }
       setReady(true);
     });
@@ -101,20 +100,21 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
   function edit(next: ProjectDraft) { setDraft(next); remember(next, pending); }
   function waitFor(value: WaitingProject | null) { setPending(value); remember(draft, value); }
   function closePreview() { dialog.current?.close(); setPreview(null); trigger.current?.focus(); }
-  function command(operation: ProjectCommand["operation"], payload: ProjectCommand["payload"], sources: SourceRead[]): ProjectCommand {
+  function command(operation: PlanOperation, payload: ProposePlanPayload | ApplyPlanPayload, sources: SourceRead[]): ProjectCommand {
     return { command_id: crypto.randomUUID(), idempotency_key: crypto.randomUUID(), operation, product_id: product.id, expected_revision: product.revision, source_read_set: sources.map(read => ({ ...read })), payload };
   }
   async function run(waiting: WaitingProject, element?: HTMLElement) {
     if (lock.current) return;
+    const request = waiting.command;
+    if (request.operation === "project.create") { waitFor(null); closePreview(); setNotice(projectCreationMoved); return; }
     lock.current = true; setBusy(true); setError(""); setNotice(""); setRejected(false);
     if (element) trigger.current = element;
     waitFor(waiting);
     let committed = false;
     try {
-      const request = waiting.command;
       if (waiting.stage === "preview") {
         const value = await api<PreparedProject>("v1/commands/preview", request);
-        if (!value.command || value.command.product_id !== product.id || value.command.operation !== request.operation || value.command.command_id !== request.command_id || value.command.idempotency_key !== request.idempotency_key || !value.confirmation_token || value.review?.operation !== request.operation || !value.review.effect || !value.review.name || (request.operation === "project.create" ? !value.review.definition : !value.review.forecast || !value.review.input_snapshot)) throw new Error("核对结果不完整；请保留输入，按原请求重新核对。");
+        if (!value.command || value.command.product_id !== product.id || value.command.operation !== request.operation || value.command.command_id !== request.command_id || value.command.idempotency_key !== request.idempotency_key || !value.confirmation_token || value.review?.operation !== request.operation || !value.review.effect || !value.review.name || !value.review.forecast || !value.review.input_snapshot) throw new Error("核对结果不完整；请保留输入，按原请求重新核对。");
         if (!alive.current) return;
         waitFor(null); setPreview(value);
       } else {
@@ -123,11 +123,6 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
         committed = true;
         if (!alive.current) return;
         waitFor(null); closePreview();
-        // Keep every user-entered field. Selecting the saved result does not load or replace its input.
-        if (request.operation === "project.create") {
-          const next = { ...draft, projectId: receipt.subject_id };
-          setDraft(next); remember(next, null);
-        }
         setNotice(successMessages[request.operation]);
         await refresh(); await onSaved();
       }
@@ -136,17 +131,9 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
       const failed = failure as Error & { status?: number };
       if (!committed) setRejected([400, 401, 403, 404, 409, 422].includes(failed.status ?? 0));
       if (!committed && waiting.stage === "execute") closePreview();
-      if (failed.status === 401 || failed.status === 403) { setProjects([]); setDefinitions([]); }
+      if (failed.status === 401 || failed.status === 403) setProjects([]);
       setError(committed ? `保存已完成；最新结果读取失败，可刷新。${failed.message}` : failed.message);
     } finally { lock.current = false; if (alive.current) setBusy(false); }
-  }
-  function createProject(element: HTMLElement) {
-    if (!definition) { setError("请先选择一个真实可见的型号定义草稿。"); return; }
-    if (draft.name.trim().length < 2 || draft.purpose.trim().length < 3 || draft.scope.trim().length < 3) { setError("请填写项目名称、用途与至少 3 字的项目范围。"); return; }
-    if (definition.source_status !== "current") { setError("所选定义的来源需要重核，请先处理型号定义。"); return; }
-    if (draft.visibility === "category" && definition.visibility !== "category") { setError("私人型号定义只能建立私人项目。"); return; }
-    const payload: CreateProjectPayload = { name: draft.name.trim(), purpose: draft.purpose.trim(), scope: draft.scope.trim(), definition_id: definition.id, expected_definition_revision: definition.revision, visibility: draft.visibility };
-    void run({ stage: "preview", command: command("project.create", payload, definitionReadSet(definition)) }, element);
   }
   function proposePlan() {
     if (!project || !owner || project.plan) { setError("请先选择本人负责且尚未应用首版计划的项目。"); return; }
@@ -170,25 +157,16 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
 
   const showEditor = !!pending || (editorOpen ?? (!loading && projects.length === 0));
   return <section className="min-w-0 space-y-5" aria-label="项目与首版计划">
-    <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="subtle">固定型号定义，组织真实研发工作</p><h2 className="mt-1 text-lg font-semibold">项目与首版计划</h2></div><div className="flex flex-wrap gap-2"><Button variant="outline" disabled={busy || !!pending || !!preview} aria-expanded={showEditor} aria-controls={`project-editor-pane-${product.id}`} onClick={() => setEditorOpen(!showEditor)}><CalendarBlank/>{showEditor ? "收起编排" : "建立项目或编排计划"}</Button><Button variant="outline" disabled={busy || !!preview} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新项目</Button></div></header>
+    <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="subtle">固定型号定义，组织真实研发工作</p><h2 className="mt-1 text-lg font-semibold">项目与首版计划</h2></div><div className="flex flex-wrap gap-2"><Button variant="outline" disabled={busy || !!pending || !!preview} aria-expanded={showEditor} aria-controls={`project-editor-pane-${product.id}`} onClick={() => setEditorOpen(!showEditor)}><CalendarBlank/>{showEditor ? "收起编排" : "编排首版计划"}</Button><Button variant="outline" disabled={busy || !!preview} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新项目</Button></div></header>
+    <p className="subtle">项目由立项提案的 G0 决定生成；在此查看项目并编排首版计划。</p>
     {error && <p role="alert" className="break-words rounded-lg border border-destructive p-3 text-destructive">{error}</p>}
     {notice && <p role="status" className="break-words rounded-lg border border-border p-3">{notice}</p>}
-    {pending && <div className="min-w-0 rounded-lg border border-primary p-4"><p className="font-medium">{pending.stage === "preview" ? "本次范围核对需要重试" : "本次保存结果仍待确认"}</p><p className="subtle my-2">输入及原请求已保留。重试核对同一次请求，不重复建立项目或计划。</p><div className="flex flex-wrap gap-2"><Button disabled={busy} onClick={() => void run(pending)}>按原请求重试</Button>{(pending.stage === "preview" || rejected) && <Button disabled={busy} variant="outline" onClick={() => { waitFor(null); setRejected(false); closePreview(); setNotice("输入已保留，可修改后重新核对范围。"); }}>保留输入，返回编辑</Button>}</div></div>}
-    {loading && <p role="status" className="subtle">正在读取当前授权范围内的项目与定义…</p>}
+    {pending && <div className="min-w-0 rounded-lg border border-primary p-4"><p className="font-medium">{pending.stage === "preview" ? "本次范围核对需要重试" : "本次保存结果仍待确认"}</p><p className="subtle my-2">输入及原请求已保留。重试核对同一次请求，核对原计划保存结果。</p><div className="flex flex-wrap gap-2"><Button disabled={busy} onClick={() => void run(pending)}>按原请求重试</Button>{(pending.stage === "preview" || rejected) && <Button disabled={busy} variant="outline" onClick={() => { waitFor(null); setRejected(false); closePreview(); setNotice("输入已保留，可修改后重新核对范围。"); }}>保留输入，返回编辑</Button>}</div></div>}
+    {loading && <p role="status" className="subtle">正在读取当前授权范围内的项目…</p>}
     {hidden > 0 && <p className="subtle">{hidden} 个项目的来源权限需要重核，项目派生内容暂时隐藏。</p>}
     {hasMore && <p className="subtle">当前显示最近 100 个可见项目。</p>}
     <div className={showEditor ? "grid min-w-0 items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]" : "min-w-0 max-w-5xl"}>
       <div id={`project-editor-pane-${product.id}`} hidden={!showEditor} className="min-w-0 space-y-5">
-        <details className="panel" open={projects.length === 0}><summary className="cursor-pointer font-semibold">建立真实研发项目</summary><form className="mt-4 min-w-0" noValidate onSubmit={event => { event.preventDefault(); createProject(event.currentTarget.querySelector<HTMLButtonElement>('button[type="submit"]') ?? event.currentTarget); }}><fieldset disabled={!editable || loading} className="min-w-0">
-          <label>固定型号定义<select value={draft.definitionId} onChange={event => edit({ ...draft, definitionId: event.target.value })}><option value="">选择已保存定义草稿</option>{definitions.map(item => <option key={item.id} value={item.id} disabled={item.source_status !== "current"}>{item.title} · v{item.revision} · 尚未正式发布{item.source_status !== "current" ? " · 来源待重核" : ""}</option>)}</select></label>
-          {!loading && !definitions.length && <p className="subtle mb-3">请先保存型号定义，再建立项目。</p>}
-          {definition && <p className="mb-4 break-words rounded-lg border border-border p-3 text-sm">本项目固定所选定义 v{definition.revision}，后续定义更新不会自动改写项目。此定义仍是草稿，尚未正式发布。</p>}
-          <label>项目名称<input maxLength={160} value={draft.name} onChange={event => edit({ ...draft, name: event.target.value })}/></label>
-          <label>项目用途<textarea maxLength={2000} value={draft.purpose} onChange={event => edit({ ...draft, purpose: event.target.value })}/></label>
-          <label>本项目研发范围<textarea maxLength={2000} value={draft.scope} onChange={event => edit({ ...draft, scope: event.target.value })} placeholder="明确本轮要完成的工作和范围边界"/></label>
-          <label>可见范围<select value={draft.visibility} onChange={event => edit({ ...draft, visibility: event.target.value as ProjectDraft["visibility"] })}><option value="private">仅本人</option><option value="category" disabled={definition?.visibility !== "category"}>品类授权成员</option></select></label>
-          <p className="subtle mb-3">建立者成为项目负责人。首版计划仅由负责人编辑和应用。</p><Button type="submit" disabled={!definition}>核对范围并建立项目</Button>
-        </fieldset></form></details>
         <section className="panel" aria-label="首版计划输入"><h3 className="font-semibold">准备首版计划候选</h3><p className="subtle mt-2 mb-4">本机输入按当前用户、当前型号保留。读取或刷新项目不会自动载入、覆盖或删除输入。</p><form noValidate onSubmit={event => { event.preventDefault(); proposePlan(); }}><fieldset disabled={!editable || loading} className="min-w-0">
           <label>研发项目<select value={draft.projectId} onChange={event => edit({ ...draft, projectId: event.target.value })}><option value="">选择真实项目</option>{projects.map(item => <option key={item.id} value={item.id}>{item.name}{item.owner_id !== principalId ? " · 仅查看" : ""}{item.plan ? " · 已有首版计划" : ""}</option>)}</select></label>
           {draft.projectId && !project && !loading && <p className="mb-3 text-sm">原选项目目前不可见；已保留输入，请重核权限后刷新。</p>}
@@ -204,12 +182,12 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
           </fieldset>
         </fieldset></form></section>
       </div>
-      <section className="min-w-0 space-y-4" aria-label="已保存项目与计划"><h3 className="font-semibold">已保存项目</h3>{!loading && projects.length === 0 && <div className="panel"><p className="subtle">当前范围尚无可见项目。保存型号定义后，可以建立真实研发项目。</p></div>}{projects.map(item => <article key={item.id} className="panel space-y-4"><div><div className="flex flex-wrap items-start justify-between gap-2"><h4 className="break-words font-semibold">{item.name}</h4><span className="subtle">{item.owner_id === principalId ? "本人负责" : "仅查看"} · {item.visibility === "private" ? "仅本人" : item.visibility === "audience" ? "指定评审人" : "品类授权成员"}</span></div><p className="mt-2 whitespace-pre-wrap break-words text-sm">{item.purpose}</p><p className="subtle mt-2 break-words">固定定义 v{item.definition.revision} · {item.definition.title} · 尚未正式发布</p><details className="mt-2 text-sm"><summary className="cursor-pointer">查看固定研发范围</summary><p className="mt-2 whitespace-pre-wrap break-words">{item.scope}</p></details>{item.source_status !== "current" && <p className="mt-2 text-sm">固定定义的来源需要重核，当前不可继续应用计划。</p>}</div><TimelineFacts/>
+      <section className="min-w-0 space-y-4" aria-label="已保存项目与计划"><h3 className="font-semibold">已保存项目</h3>{!loading && projects.length === 0 && <div className="panel"><p className="subtle">当前范围尚无可见项目。请在品类的立项提案中完成 G0，通过后查看生成的项目。</p></div>}{projects.map(item => <article key={item.id} className="panel space-y-4"><div><div className="flex flex-wrap items-start justify-between gap-2"><h4 className="break-words font-semibold">{item.name}</h4><span className="subtle">{item.owner_id === principalId ? "本人负责" : "仅查看"} · {item.visibility === "private" ? "仅本人" : item.visibility === "audience" ? "指定评审人" : "品类授权成员"}</span></div><p className="mt-2 whitespace-pre-wrap break-words text-sm">{item.purpose}</p><p className="subtle mt-2 break-words">固定定义 v{item.definition.revision} · {item.definition.title} · 尚未正式发布</p><details className="mt-2 text-sm"><summary className="cursor-pointer">查看固定研发范围</summary><p className="mt-2 whitespace-pre-wrap break-words">{item.scope}</p></details>{item.source_status !== "current" && <p className="mt-2 text-sm">固定定义的来源需要重核，当前不可继续应用计划。</p>}</div><TimelineFacts/>
         {item.plan ? <section className="min-w-0 space-y-3"><p className="flex items-center gap-2 font-medium"><CheckCircle className="text-primary"/>首版计划 v{item.plan.revision} 已应用</p><p className="subtle">已建立工程与 NPI 工作包及 {item.tasks.length} 个任务。后续修订入口暂未开放。</p><Forecast value={item.plan.forecast}/></section> : <><p className="subtle">首版计划尚未应用，任务尚未正式建立。</p>{item.owner_id === principalId && <Button disabled={!editable} variant="outline" onClick={() => { setEditorOpen(true); edit({ ...draft, projectId: item.id }); setNotice("已选此项目；原有任务与日历输入保留，请核对后保存候选。"); }}>为此项目准备首版计划</Button>}<div className="min-w-0 space-y-3">{item.proposals.map(proposal => <details key={proposal.id} className="min-w-0 rounded-lg border border-border p-3"><summary className="cursor-pointer break-words font-medium">计划候选 v{proposal.revision}{proposal.project_revision !== item.revision ? " · 项目版本已变化" : ""}</summary><div className="mt-3 min-w-0 space-y-3"><p className="whitespace-pre-wrap break-words text-sm">{proposal.reason}</p><CalendarSnapshot value={proposal.input_snapshot}/><Forecast value={proposal.forecast}/>{item.owner_id === principalId && <Button disabled={!editable || proposal.project_revision !== item.revision || item.source_status !== "current"} onClick={event => applyPlan(item, proposal, event.currentTarget)}>核对并应用此首版计划</Button>}</div></details>)}</div></>}
       </article>)}</section>
     </div>
     <dialog ref={dialog} className="!w-[min(720px,calc(100vw-32px))] max-h-[90vh] overflow-auto" aria-labelledby={`project-review-${product.id}`} onCancel={event => { event.preventDefault(); if (!busy && !pending) closePreview(); }}>
-      {preview && <div className="min-w-0 space-y-4"><h2 id={`project-review-${product.id}`} className="text-lg font-semibold">{preview.command.operation === "project.create" ? "确认建立项目的范围" : "确认应用首版计划"}</h2><p className="break-words">{preview.review.effect}</p><p className="break-words font-medium">{preview.review.name}</p>{preview.review.definition && <p className="break-words text-sm">固定定义：{preview.review.definition.title} · v{preview.review.definition.revision} · 尚未正式发布</p>}{preview.review.purpose && <div><p className="subtle">用途</p><p className="whitespace-pre-wrap break-words">{preview.review.purpose}</p></div>}{preview.review.scope && <div><p className="subtle">固定研发范围</p><p className="whitespace-pre-wrap break-words">{preview.review.scope}</p></div>}{preview.review.visibility && <p>可见范围：{preview.review.visibility === "private" ? "仅本人" : preview.review.visibility === "audience" ? "指定评审人" : "品类授权成员"}。负责人为当前本人。</p>}{preview.review.reason && <div><p className="subtle">候选说明</p><p className="whitespace-pre-wrap break-words">{preview.review.reason}</p></div>}{preview.review.input_snapshot && <CalendarSnapshot value={preview.review.input_snapshot}/>}{preview.review.forecast && <><Forecast value={preview.review.forecast}/><TimelineFacts/></>}<p className="subtle">请核对此次范围与预测。确认只建立项目或应用首版计划，不代替定义发布、批准基线、个人承诺或实绩登记。</p><div className="flex flex-wrap justify-end gap-2"><Button disabled={busy || !!pending} variant="outline" onClick={closePreview}>返回编辑</Button><Button disabled={busy || !!pending} onClick={() => void run({ stage: "execute", command: preview.command })}>{preview.command.operation === "project.create" ? "确认建立此项目" : "确认应用此首版计划"}</Button></div></div>}
+      {preview && <div className="min-w-0 space-y-4"><h2 id={`project-review-${product.id}`} className="text-lg font-semibold">确认应用首版计划</h2><p className="break-words">{preview.review.effect}</p><p className="break-words font-medium">{preview.review.name}</p>{preview.review.definition && <p className="break-words text-sm">固定定义：{preview.review.definition.title} · v{preview.review.definition.revision} · 尚未正式发布</p>}{preview.review.purpose && <div><p className="subtle">用途</p><p className="whitespace-pre-wrap break-words">{preview.review.purpose}</p></div>}{preview.review.scope && <div><p className="subtle">固定研发范围</p><p className="whitespace-pre-wrap break-words">{preview.review.scope}</p></div>}{preview.review.visibility && <p>可见范围：{preview.review.visibility === "private" ? "仅本人" : preview.review.visibility === "audience" ? "指定评审人" : "品类授权成员"}。负责人为当前本人。</p>}{preview.review.reason && <div><p className="subtle">候选说明</p><p className="whitespace-pre-wrap break-words">{preview.review.reason}</p></div>}{preview.review.input_snapshot && <CalendarSnapshot value={preview.review.input_snapshot}/>}{preview.review.forecast && <><Forecast value={preview.review.forecast}/><TimelineFacts/></>}<p className="subtle">请核对此次范围与预测。确认只应用首版计划，不代替定义发布、批准基线、个人承诺或实绩登记。</p><div className="flex flex-wrap justify-end gap-2"><Button disabled={busy || !!pending} variant="outline" onClick={closePreview}>返回编辑</Button><Button disabled={busy || !!pending} onClick={() => void run({ stage: "execute", command: preview.command })}>确认应用此首版计划</Button></div></div>}
     </dialog>
   </section>;
 }

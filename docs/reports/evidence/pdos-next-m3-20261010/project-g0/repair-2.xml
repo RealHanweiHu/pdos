@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="59" time="115.924" timestamp="2026-10-11T02:09:27.098133-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_project_g0_guard" name="test_new_project_cannot_bypass_or_borrow_completed_g0[False]" time="3.229" /><testcase classname="tests.preproject.test_project_g0_guard" name="test_new_project_cannot_bypass_or_borrow_completed_g0[True]" time="1.609" /><testcase classname="tests.preproject.test_project_g0_guard" name="test_project_source_identity_is_immutable_after_g0[g0_decision_id-None]" time="1.442" /><testcase classname="tests.preproject.test_project_g0_guard" name="test_project_source_identity_is_immutable_after_g0[trigger_type-customer_request]" time="1.447" /><testcase classname="tests.preproject.test_project_g0_guard" name="test_project_source_identity_is_immutable_after_g0[trigger_id-value2]" time="1.648" /><testcase classname="tests.preproject.test_project_g0_guard" name="test_project_source_identity_is_immutable_after_g0[product_id-value3]" time="1.354" /><testcase classname="tests.preproject.test_project_g0_guard" name="test_project_source_identity_is_immutable_after_g0[category_id-value4]" time="1.290" /><testcase classname="tests.preproject.test_project_g0_guard" name="test_ordinary_project_updates_do_not_reapprove_a_completed_g0" time="1.455" /><testcase classname="tests.build_start.test_transactions" name="test_shared_build_three_named_people_and_distinct_grant_expiries" time="10.133" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_known_fixed_demand_host_import_and_category_clock_stability" time="5.234" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_import_same_and_alias_key_replays_one_receipt_without_rewriting_assets" time="5.179" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_history_replay_never_rewinds_current_bundle_or_global_asset" time="5.543" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_import_replay_retains_receipt_after_source_withdrawal_and_new_intent_blocks" time="4.814" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_current_acl_is_independent_of_physical_facts_and_named_decision_guard" time="6.055" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_opaque_scope_and_current_person_guard_without_productgrant_upgrade[issuer]" time="5.226" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_opaque_scope_and_current_person_guard_without_productgrant_upgrade[private_peer]" time="4.571" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_opaque_scope_and_current_person_guard_without_productgrant_upgrade[agent]" time="4.651" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_opaque_scope_and_current_person_guard_without_productgrant_upgrade[other_tenant]" time="4.448" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_same_physical_version_different_content_and_bom_quantity_shrinking_are_rejected" time="4.795" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_fact_withdrawal_changes_global_epoch_and_blocks_old_bundle" time="6.238" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_concurrent_successor_cas_keeps_one_complete_atomic_global_version" time="5.199" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_terminal_outbox_failure_rolls_back_facts_assets_pointer_and_requestkey" time="6.842" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_reserve_cannot_commit_without_exact_same_uow_buildstart_owner" time="5.865" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_other_private_build_is_fully_counted_but_hidden_from_public_computation" time="7.134" /><testcase classname="tests.build_operational_facts.test_transactions" name="test_exact_source_quote_and_final_tables_have_rls_agent_zero_and_immutable_facts" time="5.227" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_real_definition_view_sources_field_is_complete_and_not_mutated" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_union_keeps_definition_source_not_in_process_or_engineering" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_missing_sources_cannot_be_empty_closure[None]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_missing_sources_cannot_be_empty_closure[shape1]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_missing_sources_cannot_be_empty_closure[shape2]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_missing_sources_cannot_be_empty_closure[shape3]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_actual_g0_definition_without_artifact_edges_has_explicit_empty_closure[g0_empty]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_empty_artifact_closure_still_requires_current_source_projection[None]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_empty_artifact_closure_still_requires_current_source_projection[needs_recheck]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_empty_artifact_closure_still_requires_current_source_projection[withdrawn]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_empty_artifact_closure_still_requires_current_source_projection[unavailable]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_definition_artifact_closure_stays_bounded" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_invalid_exact_source_is_typed_rejection[artifact_id-not-uuid]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_invalid_exact_source_is_typed_rejection[expected_revision-True]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_invalid_exact_source_is_typed_rejection[expected_revision-0]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_invalid_exact_source_is_typed_rejection[expected_revision-2]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_invalid_exact_source_is_typed_rejection[line-True]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_invalid_exact_source_is_typed_rejection[line-0]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_invalid_exact_source_is_typed_rejection[quote-None]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_invalid_exact_source_is_typed_rejection[quote-]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_missing_source_key_is_typed_rejection" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_each_source_must_remain_active[stale]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_each_source_must_remain_active[withdrawn]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_each_source_must_remain_active[unavailable]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_each_source_must_remain_active[None]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_definition_overall_currentness_is_required" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_conflicting_revisions_still_use_original_strict_merge" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_actual_load_fixed_reaches_unchanged_negative_authority_not_keyerror[npi.work_instruction.record-with_artifacts]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_actual_load_fixed_reaches_unchanged_negative_authority_not_keyerror[npi.work_instruction.record-g0_empty]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_actual_load_fixed_reaches_unchanged_negative_authority_not_keyerror[npi.control_plan.record-with_artifacts]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_actual_load_fixed_reaches_unchanged_negative_authority_not_keyerror[npi.control_plan.record-g0_empty]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_actual_load_fixed_reaches_unchanged_negative_authority_not_keyerror[npi.manufacturing_baseline.record-with_artifacts]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_definition_closure" name="test_actual_load_fixed_reaches_unchanged_negative_authority_not_keyerror[npi.manufacturing_baseline.record-g0_empty]" time="0.001" /><testcase classname="tests.manufacturing_preparation_transactions.test_transactions" name="test_current_manufacturing_first_save_history_unknown_and_common_rollback" time="5.015"><failure message="AssertionError">manufacturing_case = namespace(setup=&lt;isolated synthetic test scope&gt;, config={'source': '0895e6ba-7364-4b16-9e1d-b494f269429d', 'definition...tus': 'active', 'nature': 'synthetic', 'kind': 'qualification', 'series_id': 'd21f9e68-7bb8-40c6-80f8-ff42ec93ecb0'}}})
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x12d8136e0&gt;
+
+    def test_current_manufacturing_first_save_history_unknown_and_common_rollback(
+        manufacturing_case, monkeypatch
+    ):
+        work, setup = manufacturing_case, manufacturing_case.setup
+        original_parents = parents(work)
+        original_effects = effect_counts(work)
+        wi_body, cp_body = payload(work, "work_instruction"), payload(work, "control_plan")
+        input_url = (
+            f"/v1/categories/{setup.category}/products/{setup.product}"
+            "/manufacturing-preparations/inputs"
+        )
+    
+        # Configuring an issuer does not give this person a duty or qualification.
+        for kind, body in (("work_instruction", wi_body), ("control_plan", cp_body)):
+            response = setup.client.post(
+                input_url, headers=setup.headers, json=cmd(setup, f"npi.{kind}.record", body)
+            )
+            assert response.status_code == 403, response.text
+            assert response.json()["code"] == "QUALIFICATION_REQUIRED"
+        assert effect_counts(work) == original_effects
+    
+        bootstrap_authority(work)
+        initial = history(work)
+        assert initial["versions"] == [] and initial["unavailable_count"] == 0
+        assert initial["qualification"] == "unknown" and initial["manufacturing_release"] is None
+        assert initial["negative_enumeration_complete"] is False
+        authority_effects = effect_counts(work)
+    
+        # Neither independent preflight relies on having saved the other document.
+        wi_inputs, cp_inputs = (
+&gt;           inputs(work, "work_instruction", wi_body),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            inputs(work, "control_plan", cp_body),
+        )
+
+tests/manufacturing_preparation_transactions/test_transactions.py:98: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = namespace(setup=&lt;isolated synthetic test scope&gt;, config={'source': '0895e6ba-7364-4b16-9e1d-b494f269429d', 'definition...tus': 'active', 'nature': 'synthetic', 'kind': 'qualification', 'series_id': 'd21f9e68-7bb8-40c6-80f8-ff42ec93ecb0'}}})
+kind = 'work_instruction'
+body = {'project_id': 'fad28bf5-2c71-4d76-8e0a-467224f1e6bb', 'process': {'id': '8b4f0d8a-8fba-4fcf-b70a-351c78c2003d', 'revision': 1}, 'title': 'Synthetic work_instruction documentation', 'previous_id': None, ...}
+
+    def inputs(work, kind, body):
+        setup = work.setup
+        command = cmd(setup, f"npi.{kind}.record", deepcopy(body))
+        before = deepcopy(command)
+        response = setup.client.post(
+            f"/v1/categories/{setup.category}/products/{setup.product}/manufacturing-preparations/inputs",
+            headers=setup.headers,
+            json=command,
+        )
+        assert response.status_code == 200, response.text
+        result = response.json()
+        returned = result["command"]
+        assert {k: v for k, v in returned.items() if k != "source_read_set"} == {
+            k: v for k, v in before.items() if k != "source_read_set"
+        }
+        reads = returned["source_read_set"]
+        required = {
+            (str(ref["artifact_id"]), ref["expected_revision"]) for ref in work.definition_sources
+        }
+        required |= {(work.document_source, 1), (work.credential_source, 1)}
+        actual = {(ref["artifact_id"], ref["expected_revision"]) for ref in reads}
+&gt;       assert actual == required and len(reads) == len(actual) &lt;= 20
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError
+
+tests/manufacturing_preparation_transactions/fixtures.py:349: AssertionError</failure></testcase></testsuite></testsuites>

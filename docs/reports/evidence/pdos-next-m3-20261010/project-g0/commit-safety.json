@@ -1,0 +1,14 @@
+{
+  "candidate_files_before_audit": 99,
+  "private_local_state": false,
+  "virtual_environments": false,
+  "three_credential_preview_files": false,
+  "node_modules": false,
+  "files_over_5MB": false,
+  "private_runtime_secret_matches": 0,
+  "phase8_drafts": false,
+  "source_diff_check": "passed; immutable raw XML failure excerpts excluded from whitespace checks",
+  "source_digest": "c46072eb088ee98ac8439c3a03401ac965ea11a58282b26983d65b0fc7f506f4",
+  "push": false,
+  "real_llm_calls": 0
+}

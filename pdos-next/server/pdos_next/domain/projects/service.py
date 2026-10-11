@@ -19,7 +19,9 @@ from .models import (
     ProjectWorkPackage,
     TaskDependency,
 )
-from .schemas import PlanApplyPayload, PlanProposePayload, ProjectCreatePayload
+from .schemas import PlanApplyPayload, PlanProposePayload
+
+category_lifecycle_fence = True
 
 
 def _definition(s, ctx, product_id, definition_id, revision=None):
@@ -68,38 +70,27 @@ def _proposal(s, ctx, product_id, payload):
 
 
 def validate(s, ctx, command, product, payload):
+    from pdos_next.domain.preproject.baseline import validate_sources
     from pdos_next.service import source_for
 
     actor = s.get(Principal, ctx.actor_id)
     if ctx.run_id or ctx.actor_id != ctx.requester_id or actor.kind != "human":
-        raise DomainError("NAMED_DECISION_REQUIRED", "当前项目与首版计划由本人手工建立。", 403)
+        raise DomainError("NAMED_DECISION_REQUIRED", "首版计划由本人手工建立。", 403)
     if command.expected_revision != product.revision:
         raise DomainError("VERSION_CONFLICT", "型号范围版本已变化。")
-    if isinstance(payload, ProjectCreatePayload):
-        _, definition = _definition(
-            s, ctx, product.id, payload.definition_id, payload.expected_definition_revision
-        )
-        if payload.visibility == "category" and definition["visibility"] != "category":
-            raise DomainError("FORBIDDEN_SCOPE", "私人定义不能扩大到共享项目。", 403)
+    _, _, definition = _project(s, ctx, product.id, payload.project_id, write=True)
+    validate_sources(s, ctx, definition)
+    if isinstance(payload, PlanApplyPayload):
+        _proposal(s, ctx, product.id, payload)
     else:
-        _, _, definition = _project(s, ctx, product.id, payload.project_id, write=True)
-        if isinstance(payload, PlanApplyPayload):
-            _proposal(s, ctx, product.id, payload)
-        else:
-            calculate(payload)
+        calculate(payload)
     reads = {str(read.artifact_id): read.expected_revision for read in command.source_read_set}
     for reference in definition["sources"]:
         if reads.get(reference["artifact_id"]) != reference["expected_revision"]:
             raise DomainError("MISSING_REQUIRED_EVIDENCE", "项目和计划需要固定定义的全部来源版本。")
-        source = source_for(
+        source_for(
             s, ctx, product.id, UUID(reference["artifact_id"]), reference["expected_revision"]
         )
-        if (
-            isinstance(payload, ProjectCreatePayload)
-            and payload.visibility == "category"
-            and source.visibility != "category"
-        ):
-            raise DomainError("FORBIDDEN_SCOPE", "私人来源不能扩大到共享项目。", 403)
 
 
 def confirmation_subject(s, ctx, command, product, payload):
@@ -129,19 +120,6 @@ def semantic(payload):
 
 def preview_view(s, ctx, command, product, payload):
     validate(s, ctx, command, product, payload)
-    if isinstance(payload, ProjectCreatePayload):
-        _, definition = _definition(s, ctx, product.id, payload.definition_id)
-        return {
-            "operation": command.operation,
-            "name": payload.name,
-            "purpose": payload.purpose,
-            "scope": payload.scope,
-            "visibility": payload.visibility,
-            "definition": {key: definition[key] for key in ("id", "revision", "title", "status")},
-            "owner_id": str(ctx.requester_id),
-            "transition_entry": "S0–M3 人工 T1；G0 落地后收紧为 T2",
-            "effect": "建立真实研发项目并固定型号定义及范围；草稿定义尚未正式发布。",
-        }
     project, link, _ = _project(s, ctx, product.id, payload.project_id, write=True)
     proposal = _proposal(s, ctx, product.id, payload)
     return {
@@ -172,27 +150,70 @@ def create_project(
     visibility,
     definition_id,
     definition_revision,
-    project_id=None,
-    decision=None,
+    project_id,
+    decision,
     variant_id=None,
 ):
+    from pdos_next.domain.preproject.models import Proposal, ProposalDecision, ProposalSubmission
     from pdos_next.domain.products.service import require_creation
+    from pdos_next.domain.products.variant_models import Variant
 
+    if decision is None or not project_id or not getattr(decision, "id", None):
+        raise DomainError("NAMED_DECISION_REQUIRED", "项目只随实际 G0 批准建立。", 403)
+    decision = s.get(ProposalDecision, decision.id, populate_existing=True)
+    if decision is None:
+        raise DomainError("NAMED_DECISION_REQUIRED", "实际 G0 决定不可用。", 403)
     require_creation(s, ctx, product_id=product.id, decision=decision)
-    if decision and project_id != decision.created_project_id:
-        raise DomainError("FORBIDDEN_SCOPE", "项目不属于本次 G0 结果。", 403)
-    definition = s.get(DefinitionRevision, definition_id)
+    product = s.get(Product, product.id, populate_existing=True)
+    proposal = s.get(Proposal, decision.proposal_id, populate_existing=True)
+    submission = s.get(ProposalSubmission, decision.submission_id, populate_existing=True)
     if (
-        not definition
-        or definition.product_id != product.id
-        or definition.revision != definition_revision
-        or definition.variant_id != variant_id
+        not product or product.tenant_id != ctx.tenant_id or product.category_id != ctx.category_id
+        or not proposal or proposal.tenant_id != ctx.tenant_id
+        or proposal.category_id != ctx.category_id or proposal.owner_id != decision.owner_id
+        or not submission or submission.tenant_id != ctx.tenant_id
+        or submission.category_id != ctx.category_id or submission.proposal_id != proposal.id
+        or proposal.current_submission_id != submission.id
+        or submission.owner_id != decision.owner_id or submission.reviewer_id != decision.decided_by
+        or decision.review_digest != submission.document_digest
+        or project_id != decision.created_project_id
+        or definition_id != decision.created_definition_id
+        or owner_id != decision.project_owner_id or variant_id != decision.created_variant_id
+        or name != decision.creation["project_name"]
+        or purpose != proposal.brief or scope != proposal.brief
+        or visibility != proposal.effective_visibility
     ):
-        raise DomainError("SOURCE_UNAVAILABLE", "项目须固定实际型号定义版本。")
-    if visibility == "category" and definition.visibility != "category":
-        raise DomainError("FORBIDDEN_SCOPE", "私人定义不能扩大为共享项目。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "项目须准确对应本次 G0 决定及固定提案。", 403)
+    # G0 seals with SQL after assembling children; refresh the identity-map row
+    # so checks use the actual stored seal and provenance, not its prior draft.
+    definition = s.get(DefinitionRevision, definition_id, populate_existing=True)
+    if (
+        not definition or definition.tenant_id != ctx.tenant_id
+        or definition.category_id != ctx.category_id or definition.product_id != product.id
+        or definition_revision != 1 or definition.revision != 1
+        or not definition.sealed or definition.status != "draft"
+        or definition.variant_id != variant_id or definition.g0_decision_id != decision.id
+        or definition.source_proposal_id != proposal.id
+        or definition.source_submission_id != submission.id
+        or definition.source_proposal_revision != submission.revision
+        or definition.owner_id != proposal.owner_id or definition.visibility != visibility
+    ):
+        raise DomainError("SOURCE_UNAVAILABLE", "项目须固定本次 G0 封存的型号定义 v1。")
+    if variant_id is not None:
+        variant = s.get(Variant, variant_id, populate_existing=True)
+        if (
+            not variant or variant.tenant_id != ctx.tenant_id
+            or variant.category_id != ctx.category_id or variant.product_id != product.id
+            or variant.g0_decision_id != decision.id
+        ):
+            raise DomainError("SOURCE_UNAVAILABLE", "项目变体须属于本次 G0 结果。")
+    trigger_type = (
+        "parent_product" if proposal.baseline_product_id is not None
+        else "customer_request" if proposal.entry_kind == "customer_request" else "proposal"
+    )
+    trigger_id = proposal.baseline_product_id or proposal.id
     project = Project(
-        id=project_id or uuid4(),
+        id=project_id,
         tenant_id=ctx.tenant_id,
         product_id=product.id,
         owner_id=owner_id,
@@ -200,6 +221,9 @@ def create_project(
         purpose=purpose,
         scope=scope,
         visibility=visibility,
+        g0_decision_id=decision.id,
+        trigger_type=trigger_type,
+        trigger_id=trigger_id,
     )
     s.add(project)
     s.flush([project])
@@ -219,25 +243,6 @@ def create_project(
 
 
 def apply(s, ctx, command, product, payload):
-    if isinstance(payload, ProjectCreatePayload):
-        project = create_project(
-            s,
-            ctx,
-            product,
-            owner_id=ctx.requester_id,
-            name=payload.name,
-            purpose=payload.purpose,
-            scope=payload.scope,
-            visibility=payload.visibility,
-            definition_id=payload.definition_id,
-            definition_revision=payload.expected_definition_revision,
-        )
-        project.action_result = {
-            "transition_entry": "S0–M3 人工 T1；G0 落地后收紧为 T2",
-            "tier": "T1",
-            "created_by": str(ctx.requester_id),
-        }
-        return project, "project", project.visibility
     project, _, _ = _project(s, ctx, product.id, payload.project_id, write=True)
     if project.revision != payload.expected_project_revision:
         raise DomainError("VERSION_CONFLICT", "项目已变化，请重新查看实际范围。")

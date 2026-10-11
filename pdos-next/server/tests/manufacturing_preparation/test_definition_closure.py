@@ -25,7 +25,7 @@ def no_io(monkeypatch):
 
 
 @pytest.fixture
-def actual_definition_dto(monkeypatch):
+def actual_definition_dto(monkeypatch, request):
     from pdos_next import original_security, service
     from pdos_next.domain.products import definitions
     from pdos_next.domain.products.definitions import definition_view
@@ -48,6 +48,9 @@ def actual_definition_dto(monkeypatch):
         )
         for revision, line in ((2, 1), (3, 7))
     ]
+    empty_g0 = getattr(request, "param", None) == "g0_empty"
+    if empty_g0:
+        refs = []
     artifacts = {
         ref.artifact_id: SimpleNamespace(
             tenant_id=tenant,
@@ -72,12 +75,22 @@ def actual_definition_dto(monkeypatch):
 
     row = SimpleNamespace(
         id=identity,
+        tenant_id=tenant,
         product_id=product,
+        variant_id=None,
         category_id=CategoryUUID(int=1000000),
         owner_id=owner,
         parent_definition_id=None,
         revision=1,
         status="draft",
+        sealed=empty_g0,
+        publication_receipt_id=None,
+        derived_from_definition_id=None,
+        derived_from_definition_revision=None,
+        g0_decision_id=uuid4() if empty_g0 else None,
+        source_proposal_id=uuid4() if empty_g0 else None,
+        source_submission_id=uuid4() if empty_g0 else None,
+        source_proposal_revision=3 if empty_g0 else None,
         visibility="category",
         title="固定定义",
         purpose="内部合成准备",
@@ -116,14 +129,38 @@ def test_union_keeps_definition_source_not_in_process_or_engineering(actual_defi
     assert refs[1]["artifact_id"] in {v["artifact_id"] for v in merged}
 
 
-@pytest.mark.parametrize(
-    "shape", [None, {}, {"sources": None}, {"sources": []}, {"sources": "bad"}]
-)
+@pytest.mark.parametrize("shape", [None, {}, {"sources": None}, {"sources": "bad"}])
 def test_missing_sources_cannot_be_empty_closure(shape):
     with pytest.raises(m.DomainError) as error:
         m._definition_reads(shape)
     assert error.value.reason == "INVALID_FIXED_DEFINITION"
     assert error.value.status == 503
+
+
+@pytest.mark.parametrize("actual_definition_dto", ["g0_empty"], indirect=True)
+def test_actual_g0_definition_without_artifact_edges_has_explicit_empty_closure(
+    actual_definition_dto,
+):
+    before = copy.deepcopy(actual_definition_dto)
+    assert actual_definition_dto["sealed"] and actual_definition_dto["g0_decision_id"]
+    assert actual_definition_dto["sources"] == []
+    assert actual_definition_dto["source_status"] == "current"
+    assert m._definition_reads(actual_definition_dto) == []
+    assert actual_definition_dto == before
+
+
+@pytest.mark.parametrize("status", [None, "needs_recheck", "withdrawn", "unavailable"])
+def test_empty_artifact_closure_still_requires_current_source_projection(status):
+    with pytest.raises(m.DomainError) as error:
+        m._definition_reads({"sources": [], "source_status": status})
+    assert error.value.reason == "RECHECK_REQUIRED"
+
+
+def test_definition_artifact_closure_stays_bounded(actual_definition_dto):
+    actual_definition_dto["sources"] *= 11
+    with pytest.raises(m.DomainError) as error:
+        m._definition_reads(actual_definition_dto)
+    assert error.value.reason == "INVALID_FIXED_DEFINITION"
 
 
 @pytest.mark.parametrize(
@@ -179,20 +216,34 @@ def test_conflicting_revisions_still_use_original_strict_merge(actual_definition
     assert error.value.status == 422
 
 
+@pytest.mark.parametrize("actual_definition_dto", ["with_artifacts", "g0_empty"], indirect=True)
 @pytest.mark.parametrize("operation", list(m.PAYLOADS))
 def test_actual_load_fixed_reaches_unchanged_negative_authority_not_keyerror(
     actual_definition_dto,
     monkeypatch,
     operation,
 ):
+    from pdos_next.models import Artifact
     from pdos_next.service import Context
 
     tenant, actor, product, project_id, process_id, engineering_id = (uuid4() for _ in range(6))
+    product = CategoryUUID(actual_definition_dto["product_id"])
     ctx = Context(tenant, actor, actor, category_id=CategoryUUID(int=1000000))
-    ref = {
-        key: actual_definition_dto["sources"][0][key]
-        for key in ("artifact_id", "expected_revision", "line", "quote")
-    }
+    # The manufacturing document has its own source even when G0 had no
+    # Artifact references. It is never inserted into the sealed definition.
+    ref = (
+        {
+            key: actual_definition_dto["sources"][0][key]
+            for key in ("artifact_id", "expected_revision", "line", "quote")
+        }
+        if actual_definition_dto["sources"]
+        else {
+            "artifact_id": str(uuid4()),
+            "expected_revision": 1,
+            "line": 1,
+            "quote": "制造文件独立来源",
+        }
+    )
     values = dict(
         project_id=project_id,
         process={"id": process_id, "revision": 1},
@@ -223,7 +274,9 @@ def test_actual_load_fixed_reaches_unchanged_negative_authority_not_keyerror(
         category_id=CategoryUUID(int=1000000),
     )
     project = SimpleNamespace(id=project_id, purpose="内部合成准备", visibility="category")
-    link = SimpleNamespace(definition_id=uuid4(), definition_revision=1)
+    link = SimpleNamespace(
+        definition_id=CategoryUUID(actual_definition_dto["id"]), definition_revision=1
+    )
     engineering = SimpleNamespace(
         definition_id=link.definition_id,
         definition_revision=1,
@@ -265,7 +318,36 @@ def test_actual_load_fixed_reaches_unchanged_negative_authority_not_keyerror(
             "purpose": project.purpose,
         },
     )
+    artifacts = {
+        CategoryUUID(ref["artifact_id"]): SimpleNamespace(
+            id=CategoryUUID(ref["artifact_id"]),
+            tenant_id=tenant,
+            category_id=ctx.category_id,
+            product_id=product,
+            revision=ref["expected_revision"],
+            status="active",
+            original_id=None,
+            content="\n" * (ref["line"] - 1) + ref["quote"],
+        )
+        for ref in actual_definition_dto["sources"]
+    }
+
+    class SourceReadSession:
+        def __init__(self):
+            self.info, self.reads, self.transaction = {}, [], object()
+
+        def get_transaction(self):
+            return self.transaction
+
+        def scalar(self, query):
+            assert query.column_descriptions[0]["entity"] is Artifact
+            identity = query.compile().params["id_1"]
+            self.reads.append(identity)
+            return artifacts[identity]
+
+    session = SourceReadSession()
     with pytest.raises(m.DomainError) as error:
-        m._load_fixed(object(), ctx, command, object(), payload, require_reads=False)
+        m._load_fixed(session, ctx, command, object(), payload, require_reads=False)
     assert error.value.reason == "QUALIFICATION_REQUIRED"
     assert error.value.status == 403
+    assert set(session.reads) == set(artifacts)

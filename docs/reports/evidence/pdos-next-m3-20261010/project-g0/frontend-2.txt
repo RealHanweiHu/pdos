@@ -1,0 +1,44 @@
+✔ rendering makes no model or write requests and preserves sealed source reading (11.345625ms)
+✔ manual create previews key/name/purpose then separately confirms with server token (19.588292ms)
+✔ whole-group adoption preserves sealed content, original run and digest across failed create retry (2.680375ms)
+✔ snapshot-dependent knowledge cannot survive omission of research group (0.453542ms)
+✔ revoked run cannot preview and malformed events cannot become candidates (1.580917ms)
+✔ definite expired confirmation allows explicit new preview; uncertain outcomes retain original request (4.504084ms)
+✔ refresh and reopen read actual adoption receipt, suppress adoption form and navigate to original category (5.120583ms)
+✔ an adoption from another run cannot suppress the current run candidate (1.422542ms)
+✔ committed creation awaiting signal delivery renders success and cannot submit again (2.263ms)
+✔ switching away while creation is pending cannot navigate using the old run response (2.548333ms)
+✔ personal start retries the identical request and never fans out another model call (1.490459ms)
+✔ successful personal start followed by read failure cannot resend start (1.008083ms)
+✔ clarification exposes actual recommendation reasons and dependencies without selecting an answer (1.022667ms)
+✔ panel visibility excludes background, detached, hidden and offscreen panels (0.137416ms)
+✔ only a new live visible interrupt opens; closing, repeat polls and hidden delivery preserve inline answers (6.127625ms)
+✔ history and manual refresh restore unanswered questions inline without opening old dialogs (2.662666ms)
+✔ closed dialog answers use the actual original run and preserve a failed answer request for retry (3.652625ms)
+✔ late poll for a previous run cannot open or replace the current run questions (3.549458ms)
+✔ failed run refresh hides material but restores the original confirmation token and creation key (6.293709ms)
+✔ dialog dismissal returns keyboard focus to inline answering without submitting (0.436958ms)
+✔ personal routes preserve the real unscoped URL, body, credentials and pagination (33.485375ms)
+✔ personal UUID, path and method violations cannot reach the backend (2.365375ms)
+✔ personal pagination rejects extra scope, duplicate keys and noncanonical values (2.579584ms)
+✔ preview and the two exact seed endpoints enforce methods and reject query scope (2.236791ms)
+✔ committed category receipt passes through even when continuation awaits delivery (2.935125ms)
+✔ retire preview project.create only, preserving every plan draft field (2.165ms)
+✔ retire execute project.create only, preserving every plan draft field (0.149917ms)
+✔ malformed retired command cannot discard a valid plan draft (0.101334ms)
+✔ retain exact work.plan.propose execute retry and source set (0.1005ms)
+✔ retain exact work.plan.apply preview retry and source set (0.070458ms)
+✔ retain exact work.plan.apply execute retry and source set (0.058833ms)
+✔ retired cache hydration persists request removal, renders G0 guidance and performs read-only project refresh (6.508042ms)
+✔ retained first-plan request retries unchanged without rebuilding or replacing its draft (3.847083ms)
+✔ existing G0 project can still save a first-plan proposal using pinned source reads (17.545584ms)
+✔ first-plan apply still previews then executes the exact confirmed request (2.935875ms)
+✔ initial rendering exposes G0 route guidance without a project creation control or network write (11.349708ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 631.651541

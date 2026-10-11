@@ -115,7 +115,6 @@ EVENTS = {
     "product.definition.draft": "definition.draft_created",
     "product.variant.derive": "variant.derived",
     "product.variant.rebase": "variant.rebased",
-    "project.create": "project.created",
     "work.plan.propose": "plan.proposed",
     "work.plan.apply": "plan.applied",
     "ai.model_call.reconcile": "ai.model_call_reconciled",
@@ -277,9 +276,9 @@ def command_scope(s, ctx, command, *, lock=False):
         from pdos_next.models import Category
         from pdos_next.request_proof import request_proof, scoped_rows
 
-        # Category originals can be consumed by a model. Acquire their root
-        # fence before this model's gate, in the same order as lifecycle work.
-        if (
+        # Evidence rows can connect product originals to category consumers.
+        # Acquire Category before Product, including an empty evidence read set.
+        if getattr(module, "category_lifecycle_fence", False) or (
             command.source_read_set
             and s.scalar(
                 select(Artifact.id)
@@ -350,6 +349,41 @@ def confirmation_subject(s, ctx, command, scope, payload, module):
     return "product", scope.id, scope.revision
 
 
+def _signed_product_source(s, ctx, product_id, artifact_id, revision=None):
+    """A stored sealed G0 citation can carry its actual source into that Product.
+
+    Both rows use ordinary caller RLS. The source policy proves the immutable
+    signed citation and current source audience; a caller-provided ID or scope
+    alone cannot establish this exception to the native product source fence.
+    """
+    if product_id is None:
+        return False
+    from pdos_next.domain.products.models import DefinitionRevision, DefinitionSource
+
+    query = (
+        select(DefinitionSource.id)
+        .join(
+            DefinitionRevision,
+            (DefinitionRevision.id == DefinitionSource.definition_id)
+            & (DefinitionRevision.tenant_id == DefinitionSource.tenant_id),
+        )
+        .where(
+            DefinitionSource.tenant_id == ctx.tenant_id,
+            DefinitionSource.category_id == ctx.category_id,
+            DefinitionSource.product_id == product_id,
+            DefinitionSource.artifact_id == artifact_id,
+            DefinitionRevision.product_id == product_id,
+            DefinitionRevision.category_id == ctx.category_id,
+            DefinitionRevision.sealed.is_(True),
+            DefinitionRevision.g0_decision_id.is_not(None),
+        )
+        .limit(1)
+    )
+    if revision is not None:
+        query = query.where(DefinitionSource.source_revision == revision)
+    return s.scalar(query) is not None
+
+
 def source_for(s, ctx, product_id, artifact_id, revision=None):
     from pdos_next.request_proof import request_proof
 
@@ -386,13 +420,27 @@ def source_for(s, ctx, product_id, artifact_id, revision=None):
                 populate_existing=True
             )
         )
+        if source is None and _signed_product_source(s, ctx, product_id, artifact_id, revision):
+            query = select(Artifact).where(
+                Artifact.id == artifact_id,
+                Artifact.tenant_id == ctx.tenant_id,
+                Artifact.category_id == category_id,
+            )
+            source = s.scalar(
+                (query.with_for_update(read=True) if writing else query).execution_options(
+                    populate_existing=True
+                )
+            )
         proof.read_rows[locked_key] = writing
     # Database RLS applies the model audience and named reviewers as well as category membership.
     if (
         not source
         or source.tenant_id != ctx.tenant_id
         or source.category_id != category_id
-        or source.product_id not in (None, product_id)
+        or (
+            source.product_id not in (None, product_id)
+            and not _signed_product_source(s, ctx, product_id, artifact_id, revision)
+        )
     ):
         raise DomainError("SOURCE_UNAVAILABLE", "来源不在当前授权范围。", 403)
     if source.status != "active":
@@ -403,7 +451,11 @@ def source_for(s, ctx, product_id, artifact_id, revision=None):
         from pdos_next.original_security import require_safe
         from pdos_next.originals import require_original
 
-        original = require_original(s, ctx, product_id, source.original_id, lock=writing)
+        original = require_original(
+            s, ctx,
+            source.product_id if source.product_id not in (None, product_id) else product_id,
+            source.original_id, lock=writing,
+        )
         require_safe(s, ctx, original, lock=writing)
     proof.sources[key] = source
     return source

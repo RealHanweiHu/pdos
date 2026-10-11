@@ -75,6 +75,8 @@ PHYSICAL_CAPABILITIES = {
         "disposition_decide",
     )
 }
+category_lifecycle_fence = True
+
 EFFECT = "保存具名专业验证前段事实；不交样、不接收、不承诺、不预约占用或开测。"
 
 
@@ -349,7 +351,9 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
         ):
             raise DomainError("INTEGRITY_MISMATCH", "固定原准备绑定无法核对。")
     build = _build(s, ctx, product.id, base.build.id)
-    _, engineering, manufacturing, planned_reads = _linked(s, ctx, product.id, build)
+    _, engineering, manufacturing, planned_reads = _linked(
+        s, ctx, product.id, build, new_consumption=True
+    )
     if (
         base.build.product_id != product.id
         or base.build.project_id != build.project_id

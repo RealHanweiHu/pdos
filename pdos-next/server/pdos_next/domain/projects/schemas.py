@@ -1,20 +1,10 @@
-from typing import Literal, Self
+from typing import Self
 from uuid import UUID
 
 from pydantic import Field, model_validator
 
 from pdos_next.schema_base import StrictModel
 from pdos_next.schemas.planning import ScheduleInput
-
-
-class ProjectCreatePayload(StrictModel):
-    name: str = Field(min_length=2, max_length=160)
-    purpose: str = Field(min_length=3, max_length=2000)
-    scope: str = Field(min_length=3, max_length=2000)
-    definition_id: UUID
-    expected_definition_revision: int = Field(ge=1)
-    visibility: Literal["private", "category", "audience"] = "private"
-    confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 
 
 class PlanProposePayload(StrictModel):

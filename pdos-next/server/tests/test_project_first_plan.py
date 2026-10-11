@@ -4,6 +4,7 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
+from g0_fixture import create_g0_project
 from sqlalchemy import func, select, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
@@ -45,7 +46,8 @@ def post(setup, command, preview=False):
 
 @pytest.fixture
 def definition(setup):
-    source = post(
+    setup.g0 = create_g0_project(setup)
+    registered = post(
         setup,
         cmd(
             setup,
@@ -57,31 +59,9 @@ def definition(setup):
                 "visibility": "private",
             },
         ),
-    ).json()["subject_id"]
-    result = post(
-        setup,
-        cmd(
-            setup,
-            "product.definition.draft",
-            {
-                "title": "Synthetic fixed draft",
-                "purpose": "Verify real development project binding",
-                "use_cases": ["Synthetic development"],
-                "change_reason": "First draft",
-                "sources": [
-                    {
-                        "artifact_id": source,
-                        "expected_revision": 1,
-                        "line": 1,
-                        "quote": "Synthetic requirement is unverified",
-                    }
-                ],
-            },
-            source,
-        ),
     )
-    assert result.status_code == 200, result.text
-    return source, result.json()["subject_id"]
+    assert registered.status_code == 200, registered.text
+    return registered.json()["subject_id"], setup.g0.definition_id
 
 
 def project_command(setup, definition):
@@ -111,8 +91,7 @@ def accepted(setup, command):
 
 @pytest.fixture
 def project(setup, definition):
-    receipt, _ = accepted(setup, project_command(setup, definition))
-    return receipt["subject_id"]
+    return setup.g0.project_id
 
 
 def proposal_command(setup, definition, project):
@@ -172,42 +151,47 @@ def application(setup, definition, project, proposal):
     )
 
 
-def test_project_needs_material_once_confirmation_and_fixed_link(setup, definition):
+@pytest.mark.parametrize("visibility", ["private", "category"])
+def test_independent_project_creation_is_closed_without_writes(setup, definition, visibility):
     command = project_command(setup, definition)
-    refused = post(setup, command)
-    assert refused.status_code == 409 and refused.json()["code"] == "CONFIRMATION_REQUIRED"
-    receipt, prepared = accepted(setup, command)
-    assert receipt["result"]["transition_entry"] == "S0–M3 人工 T1；G0 落地后收紧为 T2"
-    assert receipt["result"]["tier"] == "T1"
-    assert receipt["result"]["created_by"] == str(setup.human)
-    replay = post(setup, prepared)
-    assert replay.status_code == 200 and replay.json()["id"] == receipt["id"]
-    new_key = {**prepared, "idempotency_key": str(uuid4()), "command_id": str(uuid4())}
-    assert post(setup, new_key).json()["id"] == receipt["id"]
+    command["payload"]["visibility"] = visibility
+    models = (Project, ProjectProductLink, Confirmation, Receipt, Audit, Outbox)
+    with Session(setup.admin) as session:
+        before = [session.scalar(select(func.count()).select_from(model)) for model in models]
+    for preview in (True, False):
+        refused = post(setup, command, preview)
+        assert refused.status_code == 403, refused.text
+        assert refused.json()["code"] == "FORBIDDEN_SCOPE"
+    with Session(setup.admin) as session:
+        after = [session.scalar(select(func.count()).select_from(model)) for model in models]
+        assert after == before
+
+
+def test_g0_has_one_fixed_project_link_and_named_owner(setup, definition, project):
     with tenant_session(
         setup.engine,
         setup.tenant,
         actor_id=setup.human,
         requester_id=setup.human,
         category_id=setup.category,
-    ) as s:
-        assert s.scalar(select(func.count()).select_from(Project)) == 1
-        link = s.scalar(select(ProjectProductLink))
-        assert str(link.definition_id) == definition[1] and link.definition_revision == 1
-        assert s.scalar(select(Audit.id).where(Audit.receipt_id == UUID(receipt["id"])))
-        assert (
-            s.scalar(select(Outbox.type).where(Outbox.receipt_id == UUID(receipt["id"])))
-            == "project.created"
+    ) as session:
+        row = session.get(Project, UUID(project))
+        assert row.owner_id == setup.human and row.product_id == setup.product
+        assert row.g0_decision_id is not None
+        link = session.scalar(
+            select(ProjectProductLink).where(ProjectProductLink.project_id == row.id)
         )
+        assert str(link.definition_id) == definition[1] and link.definition_revision == 1
 
 
 @pytest.mark.parametrize("change", ["payload", "read_set", "expected_revision", "actor"])
-def test_confirmation_cannot_authorize_changed_scope(setup, definition, change):
-    preview = post(setup, project_command(setup, definition), True)
+def test_confirmation_cannot_authorize_changed_scope(setup, definition, project, proposal, change):
+    preview = post(setup, application(setup, definition, project, proposal), True)
+    assert preview.status_code == 200, preview.text
     prepared = preview.json()["command"]
     headers = setup.headers
     if change == "payload":
-        prepared["payload"]["scope"] = "Changed development scope after preview"
+        prepared["payload"]["expected_project_revision"] = 2
     elif change == "read_set":
         prepared["source_read_set"] = []
     elif change == "expected_revision":
@@ -225,18 +209,31 @@ def test_confirmation_cannot_authorize_changed_scope(setup, definition, change):
         requester_id=setup.human,
         category_id=setup.category,
     ) as s:
-        assert s.scalar(select(func.count()).select_from(Project)) == 0
-        assert s.scalar(select(Confirmation)).consumed is False
+        assert s.scalar(select(func.count()).select_from(PlanRevision)) == 0
+        assert s.get(Project, UUID(project)).current_plan_id is None
+        assert (
+            s.scalar(
+                select(Confirmation).where(Confirmation.operation == "work.plan.apply")
+            ).consumed
+            is False
+        )
 
 
 @pytest.mark.parametrize("condition", ["expired", "grant", "source"])
-def test_current_expiry_permission_and_source_rechecked_after_preview(setup, definition, condition):
-    prepared = post(setup, project_command(setup, definition), True).json()["command"]
+def test_current_expiry_permission_and_source_rechecked_after_preview(
+    setup, definition, project, proposal, condition
+):
+    preview = post(setup, application(setup, definition, project, proposal), True)
+    assert preview.status_code == 200, preview.text
+    prepared = preview.json()["command"]
     with Session(setup.admin) as s, s.begin():
         if condition == "expired":
             s.execute(
                 update(Confirmation)
-                .where(Confirmation.product_id == setup.product)
+                .where(
+                    Confirmation.product_id == setup.product,
+                    Confirmation.operation == "work.plan.apply",
+                )
                 .values(expires_at=now() - timedelta(seconds=1))
             )
         elif condition == "grant":
@@ -254,19 +251,14 @@ def test_current_expiry_permission_and_source_rechecked_after_preview(setup, def
     response = post(setup, prepared)
     assert response.status_code in {403, 409}
     with Session(setup.admin) as s:
-        assert (
-            s.scalar(
-                select(func.count()).select_from(Project).where(Project.product_id == setup.product)
+        assert s.scalar(
+            select(func.count()).select_from(PlanRevision).where(
+                PlanRevision.tenant_id == setup.tenant,
+                PlanRevision.project_id == UUID(project),
             )
-            == 0
-        )
-
-
-def test_private_definition_cannot_expand_into_shared_project(setup, definition):
-    command = project_command(setup, definition)
-    command["payload"]["visibility"] = "category"
-    refused = post(setup, command, True)
-    assert refused.status_code == 403
+        ) == 0
+        row = s.get(Project, UUID(project))
+        assert row.revision == 1 and row.current_plan_id is None
 
 
 def test_first_plan_preserves_four_independent_time_facts(setup, definition, project, proposal):
@@ -378,18 +370,30 @@ def test_invalid_schedule_never_persists_a_proposal(setup, definition, project, 
         assert s.scalar(select(func.count()).select_from(PlanProposal)) == 0
 
 
-def test_plan_scope_and_snapshots_are_private_and_immutable(setup, definition, project, proposal):
+def test_g0_reviewer_can_read_but_not_write_plan_and_snapshots_are_immutable(
+    setup, definition, project, proposal
+):
     accepted(setup, application(setup, definition, project, proposal))
-    for principal in (setup.peer, setup.other_human):
-        response = setup.client.get(
-            f"/v1/categories/{setup.category}/products/{setup.product}/projects",
-            headers={"Authorization": f"Bearer {setup.tokens[principal]}"},
-        )
-        assert (
-            response.status_code == 403
-            if principal == setup.other_human
-            else response.json()["items"] == []
-        )
+    peer_headers = {"Authorization": f"Bearer {setup.tokens[setup.peer]}"}
+    visible = setup.client.get(
+        f"/v1/categories/{setup.category}/products/{setup.product}/projects",
+        headers=peer_headers,
+    )
+    assert visible.status_code == 200, visible.text
+    assert [item["id"] for item in visible.json()["items"]] == [project]
+    peer_command = proposal_command(setup, definition, project)
+    peer_command["source_read_set"] = []
+    peer_write = setup.client.post(
+        f"/v1/categories/{setup.category}/commands",
+        headers=peer_headers,
+        json=peer_command,
+    )
+    assert peer_write.status_code == 403, peer_write.text
+    foreign = setup.client.get(
+        f"/v1/categories/{setup.category}/products/{setup.product}/projects",
+        headers={"Authorization": f"Bearer {setup.tokens[setup.other_human]}"},
+    )
+    assert foreign.status_code == 403
     with pytest.raises(DBAPIError), Session(setup.admin) as s, s.begin():
         s.execute(
             update(PlanProposal).where(PlanProposal.id == UUID(proposal)).values(reason="Overwrite")
@@ -452,62 +456,25 @@ def test_calendar_version_cannot_silently_change_across_candidates(
 
 
 def test_shared_project_semantics_include_the_accountable_owner(setup):
-    source = post(
-        setup,
-        cmd(
-            setup,
-            "evidence.artifact.register",
-            {
-                "title": "Synthetic shared development source",
-                "content": "Synthetic shared requirement",
-                "source_label": "Synthetic fixture",
-                "visibility": "category",
-            },
-        ),
-    ).json()["subject_id"]
-    defined = post(
-        setup,
-        cmd(
-            setup,
-            "product.definition.draft",
-            {
-                "title": "Shared fixed draft",
-                "purpose": "Verify trusted project owner binding",
-                "visibility": "category",
-                "use_cases": ["Synthetic development"],
-                "change_reason": "Draft",
-                "sources": [
-                    {
-                        "artifact_id": source,
-                        "expected_revision": 1,
-                        "line": 1,
-                        "quote": "Synthetic shared requirement",
-                    }
-                ],
-            },
-            source,
-        ),
-    ).json()["subject_id"]
-    command = project_command(setup, (source, defined))
-    command["payload"]["visibility"] = "category"
-    first, _ = accepted(setup, command)
-    second_request = {**command, "command_id": str(uuid4()), "idempotency_key": str(uuid4())}
-    headers = {"Authorization": f"Bearer {setup.tokens[setup.peer]}"}
-    preview = setup.client.post(
-        f"/v1/categories/{setup.category}/commands/preview", headers=headers, json=second_request
-    )
-    assert preview.status_code == 200, preview.text
-    second = setup.client.post(
-        f"/v1/categories/{setup.category}/commands", headers=headers, json=preview.json()["command"]
-    )
-    assert second.status_code == 200, second.text
-    assert first["subject_id"] != second.json()["subject_id"]
+    derived = create_g0_project(setup, visibility="category")
     with tenant_session(
         setup.engine,
         setup.tenant,
         actor_id=setup.human,
         requester_id=setup.human,
         category_id=setup.category,
-    ) as s:
-        assert s.get(Project, UUID(first["subject_id"])).owner_id == setup.human
-        assert s.get(Project, UUID(second.json()["subject_id"])).owner_id == setup.peer
+    ) as session:
+        project = session.get(Project, UUID(derived.project_id))
+        assert project.owner_id == setup.human and project.visibility == "category"
+        assert project.g0_decision_id is not None
+    headers = {"Authorization": f"Bearer {setup.tokens[setup.peer]}"}
+    replay = setup.client.post(
+        f"/v1/categories/{setup.category}/commands", headers=headers, json=derived.command
+    )
+    assert replay.status_code == 200, replay.text
+    assert replay.json()["id"] == derived.receipt["id"]
+    visible = setup.client.get(
+        f"/v1/categories/{setup.category}/products/{setup.product}/projects", headers=headers
+    )
+    assert visible.status_code == 200, visible.text
+    assert [row["id"] for row in visible.json()["items"]] == [derived.project_id]

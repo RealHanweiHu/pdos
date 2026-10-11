@@ -3098,6 +3098,1172 @@
         }
       }
     },
+    "/v1/categories/{category_id}/products/{product_id}/baseline": {
+      "get": {
+        "summary": "Product Baseline",
+        "operationId": "product_baseline_v1_categories__category_id__products__product_id__baseline_get",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Product Id"
+            }
+          },
+          {
+            "name": "variant_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Variant Id"
+            }
+          },
+          {
+            "name": "definition_revision",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Definition Revision"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/categories/{category_id}/proposals/{proposal_id}/derivation-diff": {
+      "get": {
+        "summary": "Derivation Diff",
+        "operationId": "derivation_diff_v1_categories__category_id__proposals__proposal_id__derivation_diff_get",
+        "parameters": [
+          {
+            "name": "proposal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Proposal Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/categories/{category_id}/parameters": {
+      "get": {
+        "summary": "Parameters",
+        "operationId": "parameters_v1_categories__category_id__parameters_get",
+        "parameters": [
+          {
+            "name": "parameter_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Parameter Ids"
+            }
+          },
+          {
+            "name": "include_history",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Include History"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Page Size"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/categories/{category_id}/claims": {
+      "get": {
+        "summary": "Claims",
+        "operationId": "claims_v1_categories__category_id__claims_get",
+        "parameters": [
+          {
+            "name": "proposal_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Proposal Id"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "active",
+              "title": "Status"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Page Size"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/categories/{category_id}/claims/{claim_id}": {
+      "get": {
+        "summary": "Claim Read",
+        "operationId": "claim_read_v1_categories__category_id__claims__claim_id__get",
+        "parameters": [
+          {
+            "name": "claim_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Claim Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/categories/{category_id}/knowledge": {
+      "get": {
+        "summary": "Knowledge",
+        "operationId": "knowledge_v1_categories__category_id__knowledge_get",
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Kind"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "active",
+              "title": "Status"
+            }
+          },
+          {
+            "name": "origin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Origin"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Region"
+            }
+          },
+          {
+            "name": "include_history",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Include History"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Page Size"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/categories/{category_id}/promotion-proofs/{proof_id}": {
+      "get": {
+        "summary": "Promotion Proof",
+        "operationId": "promotion_proof_v1_categories__category_id__promotion_proofs__proof_id__get",
+        "parameters": [
+          {
+            "name": "proof_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Proof Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/categories/{category_id}/proposals": {
       "get": {
         "summary": "Proposals",
@@ -5396,6 +6562,273 @@
         },
         "responses": {
           "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/categories/preview": {
+      "post": {
+        "summary": "Category Create Preview",
+        "operationId": "category_create_preview_v1_categories_preview_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/category-seeds/{seed_key}": {
+      "get": {
+        "summary": "Category Seed Preview",
+        "operationId": "category_seed_preview_v1_category_seeds__seed_key__get",
+        "parameters": [
+          {
+            "name": "seed_key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Seed Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
@@ -12702,17 +14135,66 @@
       },
       "CategoryCreate": {
         "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+            "title": "Key"
+          },
           "name": {
             "type": "string",
             "maxLength": 160,
-            "minLength": 2,
+            "minLength": 1,
             "title": "Name"
           },
           "purpose": {
             "type": "string",
-            "maxLength": 1000,
-            "minLength": 3,
+            "minLength": 1,
             "title": "Purpose"
+          },
+          "groups": {
+            "$ref": "#/components/schemas/InitialGroups"
+          },
+          "seed_key": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "auto-tire-inflator",
+                  "bicycle-pump"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seed Key"
+          },
+          "deidentified_confirmed": {
+            "type": "boolean",
+            "title": "Deidentified Confirmed"
+          },
+          "prepared_by_run_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prepared By Run Id"
+          },
+          "candidate_digest": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Candidate Digest"
           },
           "idempotency_key": {
             "type": "string",
@@ -12720,18 +14202,26 @@
             "minLength": 8,
             "title": "Idempotency Key"
           },
-          "confirmed": {
-            "type": "boolean",
-            "title": "Confirmed"
+          "confirmation_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confirmation Token"
           }
         },
         "additionalProperties": false,
         "type": "object",
         "required": [
+          "key",
           "name",
           "purpose",
-          "idempotency_key",
-          "confirmed"
+          "deidentified_confirmed",
+          "idempotency_key"
         ],
         "title": "CategoryCreate"
       },
@@ -13589,6 +15079,184 @@
           "sources"
         ],
         "title": "Hypothesis"
+      },
+      "InitialGroups": {
+        "properties": {
+          "knowledge": {
+            "items": {
+              "$ref": "#/components/schemas/InitialKnowledge"
+            },
+            "type": "array",
+            "title": "Knowledge"
+          },
+          "parameters": {
+            "items": {
+              "$ref": "#/components/schemas/InitialParameter"
+            },
+            "type": "array",
+            "title": "Parameters"
+          },
+          "snapshot_refs": {
+            "items": {
+              "$ref": "#/components/schemas/ResearchSnapshotRef"
+            },
+            "type": "array",
+            "title": "Snapshot Refs"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "InitialGroups"
+      },
+      "InitialKnowledge": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "boundary",
+              "segment",
+              "competitor",
+              "voice",
+              "regulation",
+              "research_question"
+            ],
+            "title": "Kind"
+          },
+          "content": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Content"
+          },
+          "regions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Regions"
+          },
+          "source_refs": {
+            "items": {
+              "$ref": "#/components/schemas/Reference"
+            },
+            "type": "array",
+            "title": "Source Refs"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "content"
+        ],
+        "title": "InitialKnowledge"
+      },
+      "InitialParameter": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Key"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Name"
+          },
+          "value_type": {
+            "type": "string",
+            "enum": [
+              "number",
+              "range",
+              "text",
+              "boolean",
+              "enum"
+            ],
+            "title": "Value Type"
+          },
+          "enum_values": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enum Values"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "higher",
+              "lower",
+              "target",
+              "neutral"
+            ],
+            "title": "Direction"
+          },
+          "standard_condition": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Standard Condition"
+          },
+          "method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Method"
+          },
+          "acceptance_criterion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acceptance Criterion"
+          },
+          "change_note": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Change Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "name",
+          "value_type",
+          "direction",
+          "change_note"
+        ],
+        "title": "InitialParameter"
       },
       "Issue": {
         "properties": {
@@ -14759,6 +16427,97 @@
           "revision"
         ],
         "title": "Ref"
+      },
+      "Reference": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "human",
+              "artifact",
+              "original",
+              "snapshot",
+              "knowledge",
+              "parameter",
+              "definition",
+              "claim"
+            ],
+            "title": "Type"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "version": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Version"
+          },
+          "line": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Line"
+          },
+          "quote": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quote"
+          },
+          "statement": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Statement"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "type",
+          "id",
+          "version"
+        ],
+        "title": "Reference"
+      },
+      "ResearchSnapshotRef": {
+        "properties": {
+          "call_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Call Id"
+          },
+          "content_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Content Hash"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "call_id",
+          "content_hash"
+        ],
+        "title": "ResearchSnapshotRef"
       },
       "ResourceInspectInput": {
         "properties": {

@@ -214,36 +214,161 @@
       "type": "object"
     },
     "evidence.claim.record": {
+      "$defs": {
+        "ClaimSource": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "artifact",
+                "snapshot"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "version": {
+              "exclusiveMinimum": 0,
+              "title": "Version",
+              "type": "integer"
+            },
+            "locator": {
+              "anyOf": [
+                {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Locator"
+            },
+            "line": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Line"
+            },
+            "quote": {
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "version",
+            "quote"
+          ],
+          "title": "ClaimSource",
+          "type": "object"
+        }
+      },
       "additionalProperties": false,
+      "description": "One record, accepting either canonical source or the existing S0 input.\n\nLegacy source revision is deliberately not inferred here: the command's\nauthoritative read set supplies it. Legacy visibility is only a requested\nrestriction; the handler must reject enlargement of source/Run privacy.",
       "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ClaimSource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "artifact_id": {
-          "format": "uuid",
-          "title": "Artifact Id",
-          "type": "string"
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifact Id"
         },
         "line": {
-          "minimum": 1,
-          "title": "Line",
-          "type": "integer"
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Line"
         },
         "quote": {
-          "maxLength": 4000,
-          "minLength": 1,
-          "title": "Quote",
-          "type": "string"
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quote"
         },
         "statement": {
-          "maxLength": 4000,
-          "minLength": 1,
-          "title": "Statement",
-          "type": "string"
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Statement"
+        },
+        "visibility": {
+          "anyOf": [
+            {
+              "enum": [
+                "private",
+                "category",
+                "audience"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Visibility"
         },
         "nature": {
           "default": "extracted",
           "enum": [
             "observed",
             "extracted",
-            "inferred"
+            "computed",
+            "inferred",
+            "decided"
           ],
           "title": "Nature",
           "type": "string"
@@ -253,20 +378,50 @@
           "enum": [
             "known",
             "unknown",
-            "conflicted"
+            "conflicted",
+            "not_applicable"
           ],
           "title": "Availability",
           "type": "string"
         },
-        "visibility": {
-          "default": "private",
-          "enum": [
-            "private",
-            "category",
-            "audience"
+        "vendor_claimed": {
+          "default": false,
+          "title": "Vendor Claimed",
+          "type": "boolean"
+        },
+        "content": {
+          "additionalProperties": true,
+          "title": "Content",
+          "type": "object"
+        },
+        "extraction_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
           ],
-          "title": "Visibility",
-          "type": "string"
+          "default": null,
+          "title": "Extraction Ref"
+        },
+        "proposal_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Proposal Id"
         },
         "prepared_event_id": {
           "anyOf": [
@@ -296,13 +451,7 @@
           "title": "Confirmation Token"
         }
       },
-      "required": [
-        "artifact_id",
-        "line",
-        "quote",
-        "statement"
-      ],
-      "title": "ClaimPayload",
+      "title": "ClaimRecord",
       "type": "object"
     },
     "ai.run.revert": {
@@ -507,7 +656,8 @@
                 "snapshot",
                 "knowledge",
                 "parameter",
-                "definition"
+                "definition",
+                "claim"
               ],
               "title": "Type",
               "type": "string"
@@ -645,6 +795,19 @@
           "default": null,
           "title": "Baseline Product Id"
         },
+        "baseline_definition_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Baseline Definition Id"
+        },
         "baseline_definition_revision": {
           "anyOf": [
             {
@@ -781,7 +944,8 @@
                 "snapshot",
                 "knowledge",
                 "parameter",
-                "definition"
+                "definition",
+                "claim"
               ],
               "title": "Type",
               "type": "string"
@@ -1142,6 +1306,16 @@
               "minLength": 1,
               "title": "Name",
               "type": "string"
+            },
+            "variant_kind": {
+              "default": "configuration",
+              "enum": [
+                "customer",
+                "region",
+                "configuration"
+              ],
+              "title": "Variant Kind",
+              "type": "string"
             }
           },
           "required": [
@@ -1273,6 +1447,778 @@
         "rationale"
       ],
       "title": "G0Decide",
+      "type": "object"
+    },
+    "category.knowledge.add": {
+      "$defs": {
+        "Reference": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "enum": [
+                "human",
+                "artifact",
+                "original",
+                "snapshot",
+                "knowledge",
+                "parameter",
+                "definition",
+                "claim"
+              ],
+              "title": "Type",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "version": {
+              "exclusiveMinimum": 0,
+              "title": "Version",
+              "type": "integer"
+            },
+            "line": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Line"
+            },
+            "quote": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quote"
+            },
+            "statement": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Statement"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "title": "Reference",
+          "type": "object"
+        },
+        "Supersedes": {
+          "additionalProperties": false,
+          "properties": {
+            "lineage_id": {
+              "format": "uuid",
+              "title": "Lineage Id",
+              "type": "string"
+            },
+            "expected_version": {
+              "exclusiveMinimum": 0,
+              "title": "Expected Version",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "lineage_id",
+            "expected_version"
+          ],
+          "title": "Supersedes",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "prepared_by_run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prepared By Run Id"
+        },
+        "candidate_digest": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Digest"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "kind": {
+          "enum": [
+            "boundary",
+            "segment",
+            "competitor",
+            "voice",
+            "regulation",
+            "research_question"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "content": {
+          "additionalProperties": true,
+          "title": "Content",
+          "type": "object"
+        },
+        "regions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Regions",
+          "type": "array"
+        },
+        "source_refs": {
+          "items": {
+            "$ref": "#/$defs/Reference"
+          },
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Supersedes"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "kind",
+        "content"
+      ],
+      "title": "KnowledgeAdd",
+      "type": "object"
+    },
+    "category.knowledge.withdraw": {
+      "additionalProperties": false,
+      "properties": {
+        "prepared_by_run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prepared By Run Id"
+        },
+        "candidate_digest": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Digest"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "lineage_id": {
+          "format": "uuid",
+          "title": "Lineage Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "lineage_id",
+        "expected_version",
+        "reason"
+      ],
+      "title": "KnowledgeWithdraw",
+      "type": "object"
+    },
+    "category.knowledge.promote": {
+      "$defs": {
+        "SourceItemRef": {
+          "additionalProperties": false,
+          "properties": {
+            "item_id": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            },
+            "version": {
+              "exclusiveMinimum": 0,
+              "title": "Version",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "item_id",
+            "version"
+          ],
+          "title": "SourceItemRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "prepared_by_run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prepared By Run Id"
+        },
+        "candidate_digest": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Digest"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "source_proposal_id": {
+          "format": "uuid",
+          "title": "Source Proposal Id",
+          "type": "string"
+        },
+        "source_proposal_revision": {
+          "exclusiveMinimum": 0,
+          "title": "Source Proposal Revision",
+          "type": "integer"
+        },
+        "source_item_refs": {
+          "items": {
+            "$ref": "#/$defs/SourceItemRef"
+          },
+          "title": "Source Item Refs",
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "boundary",
+            "segment",
+            "competitor",
+            "voice",
+            "regulation",
+            "research_question"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "content": {
+          "additionalProperties": true,
+          "title": "Content",
+          "type": "object"
+        },
+        "deidentified_confirmed": {
+          "title": "Deidentified Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "source_proposal_id",
+        "source_proposal_revision",
+        "kind",
+        "content",
+        "deidentified_confirmed"
+      ],
+      "title": "KnowledgePromote",
+      "type": "object"
+    },
+    "category.parameter.publish": {
+      "additionalProperties": false,
+      "properties": {
+        "prepared_by_run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prepared By Run Id"
+        },
+        "candidate_digest": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Digest"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "parameter_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parameter Id"
+        },
+        "expected_current_version": {
+          "minimum": 0,
+          "title": "Expected Current Version",
+          "type": "integer"
+        },
+        "key": {
+          "minLength": 1,
+          "title": "Key",
+          "type": "string"
+        },
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "value_type": {
+          "enum": [
+            "number",
+            "range",
+            "text",
+            "boolean",
+            "enum"
+          ],
+          "title": "Value Type",
+          "type": "string"
+        },
+        "enum_values": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Enum Values"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "direction": {
+          "enum": [
+            "higher",
+            "lower",
+            "target",
+            "neutral"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "standard_condition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Standard Condition"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Method"
+        },
+        "acceptance_criterion": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Acceptance Criterion"
+        },
+        "change_note": {
+          "minLength": 1,
+          "title": "Change Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "expected_current_version",
+        "key",
+        "name",
+        "value_type",
+        "direction",
+        "change_note"
+      ],
+      "title": "ParameterPublish",
+      "type": "object"
+    },
+    "evidence.link.create": {
+      "$defs": {
+        "EvidenceReference": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "enum": [
+                "claim",
+                "snapshot",
+                "artifact"
+              ],
+              "title": "Type",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "version": {
+              "exclusiveMinimum": 0,
+              "title": "Version",
+              "type": "integer"
+            },
+            "locator": {
+              "anyOf": [
+                {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Locator"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "title": "EvidenceReference",
+          "type": "object"
+        },
+        "EvidenceTarget": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "enum": [
+                "proposal_item",
+                "knowledge_entry",
+                "definition_spec"
+              ],
+              "title": "Type",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "version": {
+              "exclusiveMinimum": 0,
+              "title": "Version",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "title": "EvidenceTarget",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/EvidenceReference"
+        },
+        "target": {
+          "$ref": "#/$defs/EvidenceTarget"
+        },
+        "relation": {
+          "minLength": 1,
+          "title": "Relation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence",
+        "target",
+        "relation"
+      ],
+      "title": "EvidenceLinkCreate",
+      "type": "object"
+    },
+    "evidence.claim.withdraw": {
+      "additionalProperties": false,
+      "properties": {
+        "claim_id": {
+          "format": "uuid",
+          "title": "Claim Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "claim_id",
+        "expected_version",
+        "reason"
+      ],
+      "title": "ClaimWithdraw",
+      "type": "object"
+    },
+    "proposal.share": {
+      "additionalProperties": false,
+      "properties": {
+        "proposal_id": {
+          "format": "uuid",
+          "title": "Proposal Id",
+          "type": "string"
+        },
+        "expected_revision": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "visibility": {
+          "enum": [
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "audience_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Audience Ids",
+          "type": "array"
+        },
+        "deidentified_confirmed": {
+          "title": "Deidentified Confirmed",
+          "type": "boolean"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "proposal_id",
+        "expected_revision",
+        "visibility",
+        "audience_ids",
+        "deidentified_confirmed"
+      ],
+      "title": "ProposalShare",
+      "type": "object"
+    },
+    "research.snapshot.register": {
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_id": {
+          "format": "uuid",
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "prepared_event_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prepared Event Id"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "snapshot_id"
+      ],
+      "title": "SnapshotRegister",
       "type": "object"
     },
     "model.configuration.save": {
@@ -2370,72 +3316,6 @@
         "reason"
       ],
       "title": "VariantRebasePayload",
-      "type": "object"
-    },
-    "project.create": {
-      "additionalProperties": false,
-      "properties": {
-        "name": {
-          "maxLength": 160,
-          "minLength": 2,
-          "title": "Name",
-          "type": "string"
-        },
-        "purpose": {
-          "maxLength": 2000,
-          "minLength": 3,
-          "title": "Purpose",
-          "type": "string"
-        },
-        "scope": {
-          "maxLength": 2000,
-          "minLength": 3,
-          "title": "Scope",
-          "type": "string"
-        },
-        "definition_id": {
-          "format": "uuid",
-          "title": "Definition Id",
-          "type": "string"
-        },
-        "expected_definition_revision": {
-          "minimum": 1,
-          "title": "Expected Definition Revision",
-          "type": "integer"
-        },
-        "visibility": {
-          "default": "private",
-          "enum": [
-            "private",
-            "category",
-            "audience"
-          ],
-          "title": "Visibility",
-          "type": "string"
-        },
-        "confirmation_token": {
-          "anyOf": [
-            {
-              "maxLength": 128,
-              "minLength": 20,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Confirmation Token"
-        }
-      },
-      "required": [
-        "name",
-        "purpose",
-        "scope",
-        "definition_id",
-        "expected_definition_revision"
-      ],
-      "title": "ProjectCreatePayload",
       "type": "object"
     },
     "work.plan.propose": {

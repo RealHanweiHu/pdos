@@ -267,7 +267,7 @@ def test_unsealed_dependency_does_not_block_withdrawal(ctx):
 
 def test_definition_target_requires_its_actual_product_scope(ctx, monkeypatch):
     row = NS(product_id=uuid4())
-    monkeypatch.setattr(service, "_row", lambda *a: row)
+    monkeypatch.setattr(service, "_row", lambda *a, **kw: row)
     with pytest.raises(DomainError) as error:
         service._target(
             MemorySession(),

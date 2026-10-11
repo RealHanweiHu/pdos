@@ -13,7 +13,7 @@ type Proposal = {
   id: string; title: string; brief: string; owner_id: string; revision: number; status: string;
   visibility: string; private_source_count: number; items: Item[];
   maturity: { spec_count: number; option_count: number; required_dispositions: Disposition[]; freeze_blockers: Item[] };
-  submission: { id: string; reviewer_id: string; frozen_document: { items: Item[] } } | null;
+  submission: { id: string; reviewer_id: string; frozen_document: { items: Item[] } | null } | null;
   decision: { outcome: string; rationale: string; product_id: string | null; project_id: string | null } | null;
 };
 type Command = { command_id: string; idempotency_key: string; category_id: string; product_id: null; operation: string; expected_revision: number; source_read_set: unknown[]; payload: Record<string, unknown> };
@@ -99,7 +99,8 @@ export function ProposalDocument({ categoryId, proposalId }: { categoryId: strin
   const owner = proposal?.owner_id === me;
   const editable = people.some(person => person.id === me && person.can_write) && ["draft", "returned"].includes(proposal?.status ?? "");
   const deciding = proposal?.status === "in_review" && proposal.submission?.reviewer_id === me;
-  const docItems = deciding ? proposal!.submission!.frozen_document.items : proposal?.items ?? [];
+  const frozenAvailable = !!proposal?.submission?.frozen_document;
+  const docItems = deciding ? proposal?.submission?.frozen_document?.items ?? [] : proposal?.items ?? [];
   const options = docItems.filter(item => item.kind === "option");
   return <main className="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:px-8">
     <Link href={`/?category=${categoryId}`} className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft />品类工作区</Link>
@@ -111,7 +112,7 @@ export function ProposalDocument({ categoryId, proposalId }: { categoryId: strin
         {proposal.private_source_count > 0 && <p className="text-sm">引用了私有来源，内容只对提案受众可见。</p>}
       </header>
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]"><div className="space-y-4">
-        {deciding && <p className="panel text-sm">当前评审的是提交时的固定副本。未知规格可带入立项，须逐条明确后续处置。</p>}
+        {deciding && <p className="panel text-sm">{frozenAvailable ? "当前评审的是提交时的固定副本。未知规格可带入立项，须逐条明确后续处置。" : "提交副本的来源不在当前可读范围，请核对权限后刷新。"}</p>}
         {docItems.map(item => <section key={`${item.item_id}:${item.version}`} className="panel space-y-3">
           <div className="flex items-center justify-between gap-3"><h2 className="font-semibold">{item.kind === "spec" ? String(item.content.parameter) : item.kind === "question" ? "待决问题" : item.kind === "option" ? "方案对比" : item.content.key === "worth_it" ? "为什么值得做" : "提案内容"}</h2><span className="text-xs text-muted-foreground">{item.origin === "ai_draft" ? "AI 草稿" : "人工记录"}</span></div>
           {item.kind === "spec" ? <><p>{item.content.availability === "unknown" ? "值未知" : String(item.content.value ?? item.content.text_value ?? `${item.content.lower ?? ""}–${item.content.upper ?? ""}`)} {String(item.content.unit ?? (["number", "range"].includes(String(item.content.value_type)) ? "（单位未定）" : ""))}</p><p className="text-sm text-muted-foreground">{itemStatuses[String(item.content.item_status)]} · {String(item.content.condition_note ?? "工况未定")}</p></> : item.kind === "question" ? <><p>{String(item.content.question)}</p><p className="text-sm text-muted-foreground">负责人：{people.find(person => person.id === item.content.owner_id)?.name ?? "提案受众"} · {String(item.content.due_date)} · {item.content.status === "carried" ? "已转入项目" : item.content.status === "answered" ? "已答复" : "待答复"}</p></> : editable && ["section", "option"].includes(item.kind) ? <ItemEditor item={item} busy={busy || !!prepared} save={content => patch(item, content)} /> : <p className="whitespace-pre-wrap">{String(item.content.text ?? item.content.name ?? item.content.statement ?? item.content.summary ?? "")}</p>}
@@ -124,7 +125,7 @@ export function ProposalDocument({ categoryId, proposalId }: { categoryId: strin
           {options.length < 2 && <label className="block text-sm">没有替代方案的理由<textarea required value={alternativeReason} onChange={event => setAlternativeReason(event.target.value)} /></label>}
           <Button ref={reviewTrigger} disabled={busy || !!prepared || !reviewer}>核对提交内容</Button><p className="text-xs text-muted-foreground">负责人不能评审自己的提案。</p>
         </form>}
-        {deciding && <form className="panel space-y-3" onSubmit={event => {
+        {deciding && frozenAvailable && <form className="panel space-y-3" onSubmit={event => {
           event.preventDefault();
           preview("proposal.g0.decide", { proposal_id: proposalId, submission_id: proposal.submission!.id,
             expected_revision: proposal.revision, outcome, rationale, selected_option_item_id: selectedOption || null,

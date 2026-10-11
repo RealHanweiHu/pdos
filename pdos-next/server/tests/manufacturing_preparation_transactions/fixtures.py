@@ -130,6 +130,13 @@ def manufacturing_case(setup, configuration, tmp_path):
         process_ref = {"id": str(process.id), "revision": process.revision}
         operation_keys = tuple(item["key"] for item in process_view["operations"])
         definition_sources = deepcopy(definition["sources"])
+        engineering = session.get(EngineeringConfiguration, process.engineering_configuration_id)
+        configuration_reads = deepcopy(
+            [
+                *process.required_source_read_set,
+                *engineering.required_source_read_set,
+            ]
+        )
     assert operation_keys and len(operation_keys) == len(set(operation_keys))
     document_source = registered_text(
         setup, "Synthetic manufacturing documentation", "\n".join(DOCUMENT_LINES)
@@ -168,6 +175,7 @@ def manufacturing_case(setup, configuration, tmp_path):
         process_ref=process_ref,
         operation_keys=operation_keys,
         definition_sources=definition_sources,
+        configuration_reads=configuration_reads,
         document_source=document_source,
         credential_source=credential_source,
         credential_text=credential_text,
@@ -343,6 +351,9 @@ def inputs(work, kind, body):
     reads = returned["source_read_set"]
     required = {
         (str(ref["artifact_id"]), ref["expected_revision"]) for ref in work.definition_sources
+    }
+    required |= {
+        (str(ref["artifact_id"]), ref["expected_revision"]) for ref in work.configuration_reads
     }
     required |= {(work.document_source, 1), (work.credential_source, 1)}
     actual = {(ref["artifact_id"], ref["expected_revision"]) for ref in reads}

@@ -364,7 +364,11 @@ def test_current_manufacturing_first_save_history_unknown_and_common_rollback(
         f"?project_id={work.project_id}&process_id={work.process_ref['id']}",
         headers={"Authorization": f"Bearer {setup.tokens[setup.peer]}"},
     )
-    assert peer.status_code == 403
+    # The actual G0 reviewer can read the resulting Product/Project. Private
+    # manufacturing documents and their source bodies retain their own ACL.
+    assert peer.status_code == 200, peer.text
+    assert peer.json()["versions"] == []
+    assert work.document_source not in peer.text
     assert all(
         command["payload"].get("confirmation_token")
         for command in (cp_command, wi_command, wi2_command, baseline_command, failed_command)

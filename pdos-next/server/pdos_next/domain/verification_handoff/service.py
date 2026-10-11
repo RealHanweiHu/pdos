@@ -55,7 +55,7 @@ from .models import (
     ActualMethodCurrent,
     VerificationHandoffFact,
 )
-from .schemas import AcceptPayload, ActualMethodPreparePayload, OfferPayload
+from .schemas import AcceptPayload, ActualMethodPreparePayload, OfferPayload, ReturnPayload
 
 OPERATIONS = {
     "actual_method_prepare": "verification.actual_method.prepare",
@@ -63,6 +63,8 @@ OPERATIONS = {
     "handoff_accept": "verification.handoff.accept",
     "handoff_return": "verification.handoff.return",
 }
+category_lifecycle_fence = True
+
 EFFECT = "记录固定实物与逐项交接范围；不承诺开测、不预约资源、不消耗样件。"
 FUTURE_TIMES = ("promised_start", "actual_start", "preliminary_result", "final_result", "disposed")
 
@@ -442,7 +444,9 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
     )
     request = front._snapshot(previous)
     build = front._build(s, ctx, product.id, request.build.id)
-    _, engineering, manufacturing, planned_reads = front._linked(s, ctx, product.id, build)
+    _, engineering, manufacturing, planned_reads = front._linked(
+        s, ctx, product.id, build, new_consumption=not isinstance(payload, ReturnPayload)
+    )
     if (
         request.build.revision != build.revision
         or str(request.build.engineering_configuration.id) != engineering["id"]

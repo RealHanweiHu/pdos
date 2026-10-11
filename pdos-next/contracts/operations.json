@@ -8,9 +8,7 @@
     "previous_source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
     "stage_note": "Build stages renamed G0-G5 -> S0-S5 (same order); G0/G1 are now business gates (G0 立项评审, G1 计划基线)."
   },
-  "pending_code_alignment": [
-    "project.create: target T2 via proposal.g0.decide; S0–M3 keep a human T1 transitional entry marked in receipts, tighten after G0 (confirmation P2)"
-  ],
+  "pending_code_alignment": [],
   "items": [
     {
       "operation": "evidence.artifact.register",
@@ -36,9 +34,10 @@
       "ai_execution": "一次确认后",
       "event": "claim.withdrawn",
       "stage": "S1",
-      "implementation": "not_implemented",
+      "implementation": "implemented_local_slice",
       "v1_1": "added",
-      "note": "确认稿 P9；M3 单条 Claim 撤回，不由 S0 整次运行撤回替代。"
+      "note": "确认稿 P9；M3 单条 Claim 撤回，不由 S0 整次运行撤回替代。",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "evidence.link.create",
@@ -46,7 +45,8 @@
       "ai_execution": "需资格与授权",
       "event": "evidence.linked",
       "stage": "S0",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "evidence.source.withdraw",
@@ -97,8 +97,8 @@
       "ai_execution": "随 proposal.g0.decide，仅准备/不可代决定",
       "event": "project.created",
       "stage": "S1",
-      "implementation": "implemented_local_slice",
-      "payload_schema": "payloads.schema.json"
+      "implementation": "g0_atomic_materialization_only",
+      "note": "Only proposal.g0.decide creates a project atomically with the named Human G0 decision. No independent executable command; Xiaopai may prepare materials."
     },
     {
       "operation": "work.task.create",
@@ -594,8 +594,9 @@
       "ai_execution": "需资格与授权",
       "event": "research.snapshot_registered",
       "stage": "S1",
-      "implementation": "not_implemented",
-      "v1_1": "added"
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "category.create",
@@ -631,8 +632,9 @@
       "ai_execution": "需资格与授权；AI 来源标 ai_draft",
       "event": "category.knowledge_added",
       "stage": "S1",
-      "implementation": "not_implemented",
-      "v1_1": "added"
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "category.knowledge.promote",
@@ -640,8 +642,9 @@
       "ai_execution": "一次确认后，须人工确认已去标识",
       "event": "category.knowledge_promoted",
       "stage": "S1",
-      "implementation": "not_implemented",
-      "v1_1": "added"
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "category.knowledge.withdraw",
@@ -649,8 +652,9 @@
       "ai_execution": "一次确认后",
       "event": "category.knowledge_withdrawn",
       "stage": "S1",
-      "implementation": "not_implemented",
-      "v1_1": "added"
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "category.parameter.publish",
@@ -658,8 +662,9 @@
       "ai_execution": "一次确认后",
       "event": "category.parameter_published",
       "stage": "S1",
-      "implementation": "not_implemented",
-      "v1_1": "added"
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "proposal.create",
@@ -697,8 +702,9 @@
       "ai_execution": "仅人工",
       "event": "proposal.shared",
       "stage": "S1",
-      "implementation": "not_implemented",
-      "v1_1": "added"
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "proposal.g0.submit",

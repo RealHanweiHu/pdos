@@ -224,9 +224,8 @@ def test_opaque_scope_and_current_person_guard_without_productgrant_upgrade(oper
             work.scope,
             now(),
         )
-    assert caught.value.reason == (
-        "NAMED_PERSON_REQUIRED" if case == "agent" else "FORBIDDEN_SCOPE"
-    )
+    # A private G0 product gives no audience to the Agent; opacity precedes person checks.
+    assert caught.value.reason == "FORBIDDEN_SCOPE"
 
 
 def test_same_physical_version_different_content_and_bom_quantity_shrinking_are_rejected(

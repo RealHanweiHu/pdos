@@ -8,7 +8,7 @@ from sqlalchemy import select, text
 from pdos_next.domain.original_lifecycle_execution.codec import decode_intent
 from pdos_next.domain.original_lifecycle_execution.runtime import BoundFacts
 from pdos_next.errors import DomainError
-from pdos_next.lifecycle_catalog import COVERED_COLUMNS, GUARDED
+from pdos_next.lifecycle_catalog import COVERED_COLUMNS, GUARDED, M3_GUARDED
 from pdos_next.models import (
     Category,
     Grant,
@@ -74,6 +74,10 @@ NON_CONSUMING = frozenset(
         "tenant_skill_enablements",
         "model_configuration_heads",
         "model_configuration_versions",
+        # Unadopted transport/confirmation data are not business source edges.
+        # Actual Run read_sources and adopted immutable facts retain the sources.
+        "proposal_prepared_candidates",
+        "category_creation_confirmations",
     }
 )
 IDENTITY_KEYS = frozenset(
@@ -249,7 +253,11 @@ def schema_covered(s):
         (
             name,
             "lifecycle_reference",
-            "kernel_source_reference_gate" if name == "agent_runs" else "lifecycle_reference_gate",
+            "kernel_source_reference_gate"
+            if name == "agent_runs"
+            else "m3_lifecycle_reference_gate"
+            if name in M3_GUARDED
+            else "lifecycle_reference_gate",
         )
         for name in (*GUARDED, "upload_attempts")
         if name != "inbox_deliveries"
@@ -258,7 +266,11 @@ def schema_covered(s):
         (
             name,
             "category_lifecycle_clock",
-            "kernel_source_reference_clock" if name == "agent_runs" else "category_lifecycle_clock",
+            "kernel_source_reference_clock"
+            if name == "agent_runs"
+            else "m3_lifecycle_reference_clock"
+            if name in M3_GUARDED
+            else "category_lifecycle_clock",
         )
         for name in (*GUARDED, "upload_attempts")
         if name != "inbox_deliveries"

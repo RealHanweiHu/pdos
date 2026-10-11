@@ -17,6 +17,8 @@ from .schemas import (
     NpiProcessRevisePayload,
 )
 
+category_lifecycle_fence = True
+
 PAYLOAD_MODELS = {
     EngineeringBomRevisePayload: (BomRevision, "bom_revision"),
     EngineeringConfigurationCreatePayload: (EngineeringConfiguration, "engineering_configuration"),
@@ -362,12 +364,20 @@ def _inputs(s, ctx, product_id, payload):
 
 
 def _checked_inputs(s, ctx, command, product, payload):
+    from pdos_next.domain.preproject.baseline import validate_sources
     from pdos_next.service import source_for
 
     _human(s, ctx, product.id, write=True)
     if command.product_id != product.id or product.tenant_id != ctx.tenant_id:
         raise DomainError("FORBIDDEN_SCOPE", "配置不在当前型号范围。", 403)
     inputs = _inputs(s, ctx, product.id, payload)
+    definition = inputs["definition"]
+    if definition is None and inputs["engineering"] is not None:
+        engineering = inputs["engineering"]
+        row, definition = _definition(s, ctx, product.id, UUID(engineering["definition_id"]))
+        _version(row, engineering["definition_revision"])
+    if definition is not None:
+        validate_sources(s, ctx, definition)
     supplied = {str(read.artifact_id): read.expected_revision for read in command.source_read_set}
     sources = {}
     for required in inputs["reads"]:

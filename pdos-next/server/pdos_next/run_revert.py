@@ -11,6 +11,10 @@ from pdos_next.models import Artifact, Claim, Principal
 from pdos_next.request_proof import command_inputs_once
 from pdos_next.service import reversible_claim
 
+# A retained run may contain product-scoped EvidenceLinks. Match their
+# Category → Product fence before inspecting or reverting those rows.
+category_lifecycle_fence = True
+
 
 def semantic(payload):
     return payload.model_dump(mode="json", exclude={"confirmation_token"})

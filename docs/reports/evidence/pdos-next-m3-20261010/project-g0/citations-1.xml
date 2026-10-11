@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="54" time="47.184" timestamp="2026-10-11T02:59:22.973152-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_m3_link_citations" name="test_citation_is_actual_nonblank_single_line_inside_complete_locator[whole]" time="0.001" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_citation_is_actual_nonblank_single_line_inside_complete_locator[line]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_citation_is_actual_nonblank_single_line_inside_complete_locator[lines]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_citation_is_actual_nonblank_single_line_inside_complete_locator[chars]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_citation_is_actual_nonblank_single_line_inside_complete_locator[unicode-crlf]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_citation_is_actual_nonblank_single_line_inside_complete_locator[after-crlf]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_citation_is_actual_nonblank_single_line_inside_complete_locator[repeated]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_citation_is_actual_nonblank_single_line_inside_complete_locator[unicode-separator]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_citation_is_actual_nonblank_single_line_inside_complete_locator[bounded]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_citation_is_actual_nonblank_single_line_inside_complete_locator[bounded-space]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_invalid_empty_or_newline_only_locator_never_becomes_citation[-None]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_invalid_empty_or_newline_only_locator_never_becomes_citation[ \r\n\t-None]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_invalid_empty_or_newline_only_locator_never_becomes_citation[a\n \nz-line:2]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_invalid_empty_or_newline_only_locator_never_becomes_citation[a\r\nb-chars:1:3]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_invalid_empty_or_newline_only_locator_never_becomes_citation[abc-chars:0:4]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_invalid_empty_or_newline_only_locator_never_becomes_citation[abc-chars:-1:2]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_invalid_empty_or_newline_only_locator_never_becomes_citation[abc-chars:2:2]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_invalid_empty_or_newline_only_locator_never_becomes_citation[abc-line:0]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_invalid_empty_or_newline_only_locator_never_becomes_citation[abc-lines:1:2]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_invalid_empty_or_newline_only_locator_never_becomes_citation[abc-lines:2:1]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_invalid_empty_or_newline_only_locator_never_becomes_citation[abc-line:True]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_invalid_empty_or_newline_only_locator_never_becomes_citation[abc-line:1:extra]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_artifact_projection_keeps_actual_product_direct_input_and_link" time="0.069" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_snapshot_citation_uses_ordinary_read_and_has_no_row_write_lock[ok]" time="0.001" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_snapshot_citation_uses_ordinary_read_and_has_no_row_write_lock[partial]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_stale_projection_keeps_link_identity_without_quote_or_derived_ref[withdrawn]" time="0.001" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_stale_projection_keeps_link_identity_without_quote_or_derived_ref[revision]" time="0.001" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_stale_projection_keeps_link_identity_without_quote_or_derived_ref[unreadable]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_stale_projection_keeps_link_identity_without_quote_or_derived_ref[tenant]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_stale_projection_keeps_link_identity_without_quote_or_derived_ref[scope]" time="0.001" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_stale_projection_keeps_link_identity_without_quote_or_derived_ref[no_scope]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_stale_projection_keeps_link_identity_without_quote_or_derived_ref[locator]" time="0.001" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_stale_projection_keeps_link_identity_without_quote_or_derived_ref[snapshot_status]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_stale_projection_keeps_link_identity_without_quote_or_derived_ref[snapshot_version]" time="0.000" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_original_security_failure_does_not_expose_canonical_quote" time="0.001" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_claim_and_reverted_link_never_acquire_new_citations" time="0.001" /><testcase classname="tests.preproject.test_m3_link_citations" name="test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[category]" time="4.268"><failure message="AssertionError: assert UUID('0a6e15eb-c918-4b3e-955e-77b55be72db1') is None&#10; +  where UUID('0a6e15eb-c918-4b3e-955e-77b55be72db1') = scalar(&lt;sqlalchemy.sql.selectable.Select object at 0x11720f950&gt;)&#10; +    where scalar = &lt;sqlalchemy.orm.session.Session object at 0x11717aa50&gt;.scalar&#10; +    and   &lt;sqlalchemy.sql.selectable.Select object at 0x11720f950&gt; = where(&lt;sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x106b0eb60&gt; == UUID('eb31b1ff-028e-4f12-9d41-a6635c5af145'))&#10; +      where where = &lt;sqlalchemy.sql.selectable.Select object at 0x1171b3bc0&gt;.where&#10; +        where &lt;sqlalchemy.sql.selectable.Select object at 0x1171b3bc0&gt; = select(&lt;sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x106b0ede0&gt;)&#10; +          where &lt;sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x106b0ede0&gt; = DefinitionSource.id&#10; +      and   &lt;sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x106b0eb60&gt; = DefinitionSource.definition_id&#10; +      and   UUID('eb31b1ff-028e-4f12-9d41-a6635c5af145') = &lt;pdos_next.domain.products.models.DefinitionRevision object at 0x1172d1a00&gt;.id">work = &lt;isolated synthetic test scope&gt;, source_scope = 'category'
+
+    @pytest.mark.parametrize("source_scope", ["category", "product"])
+    def test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable(
+        work, source_scope,
+    ):
+        from pdos_next.domain.preproject.baseline import validate_sources
+        from pdos_next.domain.products.definitions import definition_view
+        from pdos_next.domain.products.models import DefinitionRevision
+    
+        body = "Header\nSynthetic linked specification"
+        source_product = work.product if source_scope == "product" else None
+        if source_product is None:
+            source = artifact(work, body=body)
+        else:
+            # The existing fixture Product is actually shared and the reviewer has
+            # its ordinary category read grant. No new audience or write right is added.
+            with human_session(work) as session:
+                assert session.get(Product, source_product).visibility == "category"
+            registered = post(work, command(work, "evidence.artifact.register", {
+                "title": "Actual Product citation source",
+                "source_label": "Synthetic human fixture", "content": body, "visibility": "category",
+            }, []))
+            assert registered.status_code == 200, registered.text
+            source = UUID(registered.json()["subject_id"])
+        proposal_id, _ = create(work)
+        item = next(row for row in read(work, proposal_id).json()["items"] if (
+            row["kind"] == "spec" and row["content"]["key"] == "display"
+        ))
+        direct = deepcopy(item["source_refs"])
+        linked = post(work, evidence_request(work, "evidence.link.create", {
+            "evidence": {"type": "artifact", "id": str(source), "version": 1, "locator": "line:2"},
+            "target": {"type": "proposal_item", "id": item["item_id"], "version": item["version"]},
+            "relation": "supports",
+        }))
+        assert linked.status_code == 200, linked.text
+        expected = {
+            "type": "artifact", "id": str(source), "version": 1,
+            "line": 2, "quote": "Synthetic linked specification",
+        }
+        submit(work, proposal_id)
+        frozen = read(work, proposal_id, work.peer).json()["submission"]["frozen_document"]
+        fixed = next(row for row in frozen["items"] if row["item_id"] == item["item_id"])
+        assert fixed["source_refs"] == [*direct, expected]
+        assert fixed["direct_source_refs"] == direct
+        assert "quote" not in str(fixed["evidence_links"])
+        assert fixed["evidence_links"][0]["id"] == linked.json()["result"]["link_id"]
+        decision = decide_request(work, proposal_id)
+        decision["payload"]["project"]["owner_id"] = str(work.human)
+        approved, _ = save(work, decision, actor=work.peer)
+        with human_session(work) as session:
+            definition = session.get(DefinitionRevision, UUID(approved["result"]["definition_id"]))
+            actual_source = session.get(Artifact, source)
+            assert actual_source.product_id == source_product
+            assert actual_source.visibility == "category"
+            assert definition.product_id != source_product
+&gt;           assert session.scalar(select(DefinitionSource.id).where(
+                DefinitionSource.definition_id == definition.id,
+            )) is None
+E           AssertionError: assert UUID('0a6e15eb-c918-4b3e-955e-77b55be72db1') is None
+E            +  where UUID('0a6e15eb-c918-4b3e-955e-77b55be72db1') = scalar(&lt;sqlalchemy.sql.selectable.Select object at 0x11720f950&gt;)
+E            +    where scalar = &lt;sqlalchemy.orm.session.Session object at 0x11717aa50&gt;.scalar
+E            +    and   &lt;sqlalchemy.sql.selectable.Select object at 0x11720f950&gt; = where(&lt;sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x106b0eb60&gt; == UUID('eb31b1ff-028e-4f12-9d41-a6635c5af145'))
+E            +      where where = &lt;sqlalchemy.sql.selectable.Select object at 0x1171b3bc0&gt;.where
+E            +        where &lt;sqlalchemy.sql.selectable.Select object at 0x1171b3bc0&gt; = select(&lt;sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x106b0ede0&gt;)
+E            +          where &lt;sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x106b0ede0&gt; = DefinitionSource.id
+E            +      and   &lt;sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x106b0eb60&gt; = DefinitionSource.definition_id
+E            +      and   UUID('eb31b1ff-028e-4f12-9d41-a6635c5af145') = &lt;pdos_next.domain.products.models.DefinitionRevision object at 0x1172d1a00&gt;.id
+
+tests/preproject/test_m3_link_citations.py:265: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_link_citations" name="test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[product]" time="2.222"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 200&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;, source_scope = 'product'
+
+    @pytest.mark.parametrize("source_scope", ["category", "product"])
+    def test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable(
+        work, source_scope,
+    ):
+        from pdos_next.domain.preproject.baseline import validate_sources
+        from pdos_next.domain.products.definitions import definition_view
+        from pdos_next.domain.products.models import DefinitionRevision
+    
+        body = "Header\nSynthetic linked specification"
+        source_product = work.product if source_scope == "product" else None
+        if source_product is None:
+            source = artifact(work, body=body)
+        else:
+            # The existing fixture Product is actually shared and the reviewer has
+            # its ordinary category read grant. No new audience or write right is added.
+            with human_session(work) as session:
+                assert session.get(Product, source_product).visibility == "category"
+            registered = post(work, command(work, "evidence.artifact.register", {
+                "title": "Actual Product citation source",
+                "source_label": "Synthetic human fixture", "content": body, "visibility": "category",
+            }, []))
+            assert registered.status_code == 200, registered.text
+            source = UUID(registered.json()["subject_id"])
+        proposal_id, _ = create(work)
+        item = next(row for row in read(work, proposal_id).json()["items"] if (
+            row["kind"] == "spec" and row["content"]["key"] == "display"
+        ))
+        direct = deepcopy(item["source_refs"])
+        linked = post(work, evidence_request(work, "evidence.link.create", {
+            "evidence": {"type": "artifact", "id": str(source), "version": 1, "locator": "line:2"},
+            "target": {"type": "proposal_item", "id": item["item_id"], "version": item["version"]},
+            "relation": "supports",
+        }))
+        assert linked.status_code == 200, linked.text
+        expected = {
+            "type": "artifact", "id": str(source), "version": 1,
+            "line": 2, "quote": "Synthetic linked specification",
+        }
+        submit(work, proposal_id)
+        frozen = read(work, proposal_id, work.peer).json()["submission"]["frozen_document"]
+        fixed = next(row for row in frozen["items"] if row["item_id"] == item["item_id"])
+        assert fixed["source_refs"] == [*direct, expected]
+        assert fixed["direct_source_refs"] == direct
+        assert "quote" not in str(fixed["evidence_links"])
+        assert fixed["evidence_links"][0]["id"] == linked.json()["result"]["link_id"]
+        decision = decide_request(work, proposal_id)
+        decision["payload"]["project"]["owner_id"] = str(work.human)
+&gt;       approved, _ = save(work, decision, actor=work.peer)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_m3_link_citations.py:258: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': '5f4bfaf8-0913-4425-bcc2-0c176dc5d386', 'idempotency_key': '4d723318-a6bf-4aa9-a83b-f982a67e73f5', 'category_id': 'e32af141-ee60-448a-9f67-24651f396844', 'product_id': None, ...}
+actor = UUID('2695fd30-39ea-4424-a2bc-71c29c0c321d')
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+        assert checked.status_code == 200, checked.text
+        response = post(work, checked.json()["command"], actor=actor)
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/preproject/test_g0.py:95: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_consumption_authority_and_same_transaction_checks_are_literal_predecessor" time="0.000" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_private_graph_contract_has_no_generic_content_or_uuid_traversal" time="0.000" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_down_restores_frozen_actual_predecessor_and_drops_only_new_helper" time="0.000" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[spec-voice]" time="2.737" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[spec-metrics]" time="2.890" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[spec-features]" time="2.902" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[spec-prices]" time="2.484" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[option-voice]" time="2.660" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[option-metrics]" time="2.541" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[option-features]" time="2.718" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[option-prices]" time="2.837" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_graph_retains_exact_fixed_version_scope_and_private_acl" time="0.766" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_opaque_knowledge_material_does_not_make_unrelated_claim_reachable" time="0.666" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_unrelated_claim_cannot_be_injected_into_same_g0_transaction" time="1.932" /><testcase classname="tests.preproject.test_g0_downstream_sources_pg" name="test_withdrawn_g0_source_blocks_new_consumers_but_keeps_actual_history_readable[claim-only]" time="7.501" /><testcase classname="tests.preproject.test_g0_downstream_sources_pg" name="test_withdrawn_g0_source_blocks_new_consumers_but_keeps_actual_history_readable[nested-knowledge-claim]" time="7.309" /></testsuite></testsuites>

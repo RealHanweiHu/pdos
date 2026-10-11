@@ -913,9 +913,15 @@ def apply_validated(s, ctx, command, scope, payload, validated):
                 approve(
                     s, ctx, row, sub, decision, provenance=provenance, baseline=validated.baseline
                 )
+                from .baseline import validate_references
                 from .root_sources import consume_claims
 
-                consume_claims(s, ctx, _all_refs_from_document(sub.frozen_document), decision)
+                consume_claims(
+                    s,
+                    ctx,
+                    validate_references(s, ctx, _all_refs_from_document(sub.frozen_document)),
+                    decision,
+                )
             row.status = payload.outcome
             row.action_result = {
                 "decision_id": str(decision.id),
@@ -975,10 +981,38 @@ def _all_refs_from_document(doc):
 
 
 def _check_document_references(s, ctx, doc, *, approved=False):
-    from .root_sources import lock_claim_refs, ordinary_refs, validate_document_links
+    from .baseline import validate_references
+    from .root_sources import ordinary_refs, validate_document_links
 
+    if any(
+        link["status"] != "active"
+        for item in doc["items"]
+        for link in item.get("evidence_links", ())
+    ):
+        fail("SOURCE_STALE", "evidence_link_changed", "关联证据已失效，请重核当前条目来源。")
+    refs = _all_refs_from_document(doc)
+    if approved:
+        # Preserve the G0 withdrawal reason using only caller-visible status.
+        # Claim locks and body reads still follow the complete source union.
+        identities = sorted(
+            {ref.id for ref in refs if ref.type in {"artifact", "original"}}, key=str
+        )
+        for identity in identities:
+            status = s.scalar(
+                select(Artifact.status).where(
+                    Artifact.id == identity,
+                    Artifact.tenant_id == ctx.tenant_id,
+                    Artifact.category_id == ctx.category_id,
+                )
+            )
+            if status != "active":
+                fail(
+                    "SOURCE_STALE",
+                    "original_withdrawn",
+                    "提交引用的原件已撤回，请退回处理后重新提交。",
+                )
     # The complete union is locked in UUID order once before per-reference work.
-    lock_claim_refs(s, ctx, _all_refs_from_document(doc), approved=True)
+    validate_references(s, ctx, refs)
     _references(s, ctx, ordinary_refs(doc), approved=approved)
     validate_document_links(s, ctx, doc, approved=approved)
 

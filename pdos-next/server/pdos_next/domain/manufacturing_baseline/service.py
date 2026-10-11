@@ -21,6 +21,7 @@ from pdos_next.domain.capa_effectiveness.facts import canonical_reads, json_valu
 from pdos_next.domain.change_execution import service as evidence
 from pdos_next.domain.configurations import service as configurations
 from pdos_next.domain.configurations.models import EngineeringConfiguration, ProcessRevision
+from pdos_next.domain.preproject.baseline import validate_sources
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.projects import service as projects
 from pdos_next.domain.verification_front.service import _recheck
@@ -35,6 +36,7 @@ from .rules import check_material, exact_sources, require, semantic, source_read
 from .schemas import KINDS, PAYLOADS, BaselinePayload, ObjectRef
 
 SCHEMA_VERSION = "pdos-manufacturing-preparation-v1"
+category_lifecycle_fence = True
 EVENTS = MappingProxyType(
     {
         "npi.work_instruction.record": "work_instruction.recorded",
@@ -543,11 +545,15 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
 
 
 def _definition_reads(definition):
-    """Use the actual definition_view sources DTO; never omit a missing closure."""
+    """Consume the explicit Artifact closure returned by definition_view.
+
+    G0 definitions may have no Artifact edges. An explicit empty list is then
+    complete; an absent DTO or a non-current source projection still fails.
+    """
     require(
         type(definition) is dict
         and type(definition.get("sources")) is list
-        and 1 <= len(definition["sources"]) <= 20,
+        and len(definition["sources"]) <= 20,
         "INVALID_FIXED_DEFINITION",
         "固定定义未提供完整有界来源引用。",
         503,
@@ -599,6 +605,7 @@ def _load_fixed(s, ctx, command, product, payload, *, require_reads=True):
     stamp = _runtime(s)
     configurations._human(s, ctx, command.product_id)
     project, link, definition = projects._project(s, ctx, command.product_id, payload.project_id)
+    validate_sources(s, ctx, definition)
     process, process_view = configurations.get_process(
         s, ctx, command.product_id, payload.process.id
     )

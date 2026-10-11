@@ -71,6 +71,8 @@ PAYLOADS = {
     "verification.schedule.promise": PromisePayload,
     "test.run.start": StartPayload,
 }
+category_lifecycle_fence = True
+
 EFFECT = "固定已接收范围与完整测试窗口；仅实际开测同事务占用资源/样件，不生成结果或专业处置。"
 deduplicate_subject = {"verification_request", "test_run"}
 
@@ -535,7 +537,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True, verify_event
         scope_id=product.id,
     )
     build = front._build(s, ctx, product.id, request.build.id)
-    _, _, _, reads = front._linked(s, ctx, product.id, build)
+    _, _, _, reads = front._linked(s, ctx, product.id, build, new_consumption=True)
     authority = front._assess(
         s, ctx, product.id, build.project_id, command.operation, request.purpose, write=write
     )

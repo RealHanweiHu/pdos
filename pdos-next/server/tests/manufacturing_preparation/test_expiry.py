@@ -12,7 +12,7 @@ from sqlalchemy.orm.attributes import set_committed_value
 
 from pdos_next.domain.manufacturing_baseline import service
 from pdos_next.errors import DomainError
-from pdos_next.models import Product
+from pdos_next.models import Artifact, Product
 
 from .test_preparation import frame
 
@@ -154,6 +154,9 @@ def test_source_io_cannot_pass_previously_active_authority_after_future_boundary
     )
     link = SimpleNamespace(definition_id=uuid4(), definition_revision=1)
     definition = {
+        "id": str(link.definition_id),
+        "revision": link.definition_revision,
+        "product_id": str(f.pid),
         "visibility": "private",
         "source_status": "current",
         "sources": [{**f.payload.sources[0].model_dump(mode="json"), "status": "active"}],
@@ -181,6 +184,26 @@ def test_source_io_cannot_pass_previously_active_authority_after_future_boundary
     monkeypatch.setattr(service, "check_material", lambda *a: [])
     monkeypatch.setattr(service, "_authority", lambda *a, **k: (authority, deadline))
     monkeypatch.setattr(service, "require_access", lambda *a, **k: None)
+    fixed_source = f.payload.sources[0]
+    artifact = SimpleNamespace(
+        id=fixed_source.artifact_id,
+        tenant_id=f.tenant,
+        category_id=f.ctx.category_id,
+        product_id=f.pid,
+        status="active",
+        revision=fixed_source.expected_revision,
+        original_id=None,
+        content="\n" * (fixed_source.line - 1) + fixed_source.quote,
+    )
+    source_reads = []
+
+    def scalar(query):
+        assert query.column_descriptions[0]["entity"] is Artifact
+        assert query.compile().params["id_1"] == artifact.id
+        source_reads.append(artifact.id)
+        return artifact
+
+    monkeypatch.setattr(f.s, "scalar", scalar)
 
     def source_io(*args):
         clock[0] = deadline
@@ -190,6 +213,7 @@ def test_source_io_cannot_pass_previously_active_authority_after_future_boundary
     with pytest.raises(DomainError) as error:
         service._load_fixed(f.s, f.ctx, f.command, product, f.payload)
     assert error.value.reason == "SOURCE_STALE"
+    assert source_reads == [artifact.id, artifact.id]
     assert not any(isinstance(v, service.PreparationVersion) for v in f.s.new)
 
 

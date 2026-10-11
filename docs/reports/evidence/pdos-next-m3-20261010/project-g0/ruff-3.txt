@@ -1,0 +1,12 @@
+E501 Line too long (104 > 100)
+   --> pdos-next/server/tests/preproject/test_evidence_g0_unit.py:110:101
+    |
+108 |     monkeypatch.setattr(baseline, "validate_references", lambda *a: calls.append("union"))
+109 |     monkeypatch.setattr(service, "_references", lambda *a, **kw: calls.append("direct"))
+110 |     monkeypatch.setattr(root_sources, "validate_document_links", lambda *a, **kw: calls.append("links"))
+    |                                                                                                     ^^^^
+111 |     if status == "active":
+112 |         service._check_document_references(NS(scalar=scalar), ctx, document, approved=True)
+    |
+
+Found 1 error.

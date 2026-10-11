@@ -145,7 +145,6 @@ PAYLOADS["product.definition.draft"] = DefinitionDraftPayload
 from pdos_next.domain.projects.schemas import (  # noqa: E402
     PlanApplyPayload,
     PlanProposePayload,
-    ProjectCreatePayload,
 )
 from pdos_next.model_gateway.reconciliation_schema import ReconciliationPayload  # noqa: E402
 from pdos_next.schemas.products.variants import (  # noqa: E402
@@ -157,7 +156,6 @@ PAYLOADS.update(
     {
         "product.variant.derive": VariantDerivePayload,
         "product.variant.rebase": VariantRebasePayload,
-        "project.create": ProjectCreatePayload,
         "work.plan.propose": PlanProposePayload,
         "work.plan.apply": PlanApplyPayload,
         "ai.model_call.reconcile": ReconciliationPayload,

@@ -11,6 +11,8 @@ from pdos_next.request_proof import snapshot_get
 from .models import Build, BuildReadiness
 from .schemas import BuildCreatePayload
 
+category_lifecycle_fence = True
+
 
 def _execution(payload):
     if getattr(payload, "execution_scope", None) is None:
@@ -32,10 +34,13 @@ def _build(s, ctx, product_id, build_id, *, write=False):
     return row
 
 
-def _linked(s, ctx, product_id, value, *, write=False):
+def _linked(s, ctx, product_id, value, *, write=False, new_consumption=False):
+    from pdos_next.domain.preproject.baseline import validate_sources
     from pdos_next.request_proof import request_proof
 
     project, link, definition = _project(s, ctx, product_id, value.project_id, write=write)
+    if new_consumption:
+        validate_sources(s, ctx, definition)
     proof = request_proof(s)
     key = (
         "build-configurations",
@@ -91,7 +96,7 @@ def validate(s, ctx, command, product, payload):
         if isinstance(payload, BuildCreatePayload)
         else _build(s, ctx, product.id, payload.build_id, write=True)
     )
-    _, _, _, required = _linked(s, ctx, product.id, value, write=True)
+    _, _, _, required = _linked(s, ctx, product.id, value, write=True, new_consumption=True)
     actual = {str(ref.artifact_id): ref.expected_revision for ref in command.source_read_set}
     for ref in required:
         if actual.get(ref["artifact_id"]) != ref["expected_revision"]:
@@ -128,7 +133,9 @@ def preview_view(s, ctx, command, product, payload):
     if command.expected_revision != product.revision:
         raise DomainError("VERSION_CONFLICT", "型号范围版本已经变化。")
     validate(s, ctx, command, product, payload)
-    project, engineering, manufacturing, _ = _linked(s, ctx, product.id, payload, write=True)
+    project, engineering, manufacturing, _ = _linked(
+        s, ctx, product.id, payload, write=True, new_consumption=True
+    )
     return {
         "operation": command.operation,
         **semantic(payload),
@@ -151,7 +158,9 @@ def apply(s, ctx, command, product, payload):
     if command.expected_revision != product.revision:
         raise DomainError("VERSION_CONFLICT", "型号范围版本已经变化。")
     if isinstance(payload, BuildCreatePayload):
-        project, engineering, manufacturing, _ = _linked(s, ctx, product.id, payload, write=True)
+        project, engineering, manufacturing, _ = _linked(
+            s, ctx, product.id, payload, write=True, new_consumption=True
+        )
         if project.revision != payload.expected_project_revision:
             raise DomainError("VERSION_CONFLICT", "项目范围已变化，请重新核对试制计划。")
         values = semantic(payload)
@@ -182,7 +191,9 @@ def apply(s, ctx, command, product, payload):
     build = _build(s, ctx, product.id, payload.build_id, write=True)
     if build.revision != payload.expected_build_revision:
         raise DomainError("VERSION_CONFLICT", "试制轮次版本已变化，请重新核对。")
-    _, engineering, manufacturing, _ = _linked(s, ctx, product.id, build, write=True)
+    _, engineering, manufacturing, _ = _linked(
+        s, ctx, product.id, build, write=True, new_consumption=True
+    )
     snapshot = readiness_snapshot(build, engineering, manufacturing)
     row = BuildReadiness(
         tenant_id=ctx.tenant_id,

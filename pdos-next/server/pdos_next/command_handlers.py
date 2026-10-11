@@ -64,7 +64,6 @@ T1_OPERATIONS = frozenset(
         "evidence.lifecycle.protection.record",
         "product.variant.derive",
         "product.variant.rebase",
-        "project.create",
         "work.plan.apply",
         "ai.model_call.reconcile",
         "engineering.bom.revise",
@@ -291,7 +290,7 @@ def handler(operation):
         from pdos_next.domain.products import variants
 
         return variants
-    if operation in {"project.create", "work.plan.propose", "work.plan.apply"}:
+    if operation in {"work.plan.propose", "work.plan.apply"}:
         from pdos_next.domain.projects import service
 
         return service

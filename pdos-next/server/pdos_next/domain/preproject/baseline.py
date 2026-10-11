@@ -267,12 +267,17 @@ def _source_references(view):
 
 def _historical_source_access(s, ctx, product_id, ref):
     """Prove body access independently of active status; never use metadata helpers."""
+    from sqlalchemy.orm import load_only
+
     from pdos_next.agent_kernel.models import PublicWebSnapshot
     from pdos_next.models import Artifact
     from pdos_next.originals import require_original
     from pdos_next.service import require_access
 
     model = PublicWebSnapshot if ref.type == "snapshot" else Artifact
+    columns = [model.id, model.tenant_id, model.category_id]
+    if model is Artifact:
+        columns.extend([Artifact.product_id, Artifact.original_id])
     row = s.scalar(
         select(model)
         .where(
@@ -280,16 +285,18 @@ def _historical_source_access(s, ctx, product_id, ref):
             model.tenant_id == ctx.tenant_id,
             model.category_id == ctx.category_id,
         )
+        .options(load_only(*columns))
         .execution_options(populate_existing=True)
     )
     if not row or row.tenant_id != ctx.tenant_id or row.category_id != ctx.category_id:
         fail("SOURCE_UNAVAILABLE", "source_unreadable", "来源正文不在当前可读范围。", 403)
     if model is Artifact:
-        if row.product_id not in (None, product_id):
-            fail("FORBIDDEN_SCOPE", "source_unreadable", "来源型号不在当前可读范围。", 403)
-        require_access(s, ctx, product_id)
+        if row.product_id is not None:
+            require_access(s, ctx, row.product_id)
+        if product_id is not None:
+            require_access(s, ctx, product_id)
         if row.original_id:
-            require_original(s, ctx, product_id, row.original_id)
+            require_original(s, ctx, row.product_id, row.original_id)
 
 
 def _redact_source_metadata(document):
@@ -320,6 +327,7 @@ def validate_sources(s, ctx, view, *, extra_refs=(), history_permissions=False):
     shared UUID order before resolving source bodies under ordinary caller RLS.
     """
     from .category_models import KnowledgeEntry
+    from .category_service import _references as knowledge_references
     from .claim_access import load_source
     from .root_sources import lock_claim_refs
     from .schemas import Reference
@@ -385,8 +393,16 @@ def validate_sources(s, ctx, view, *, extra_refs=(), history_permissions=False):
             ):
                 fail("SOURCE_UNAVAILABLE", "knowledge_unreadable", "所选知识固定版本不可读。")
             # Knowledge is category material; it does not borrow a product scope.
-            for raw in row.source_refs:
-                edge(None, Reference.model_validate(raw))
+            from types import SimpleNamespace
+
+            for reference in knowledge_references(
+                SimpleNamespace(
+                    kind=row.kind,
+                    content=row.content,
+                    source_refs=[Reference.model_validate(raw) for raw in row.source_refs],
+                )
+            ):
+                edge(None, reference)
             finish(key)
 
     def visit(document):
@@ -421,8 +437,11 @@ def validate_sources(s, ctx, view, *, extra_refs=(), history_permissions=False):
             visit(definition_view(s, ctx, parent))
         finish(key)
 
-    visit(view)
-    all_refs = [*extra_refs, *(ref for _, ref in pending)]
+    if view is not None:
+        visit(view)
+    for reference in extra_refs:
+        edge(UUID(str(view["product_id"])) if view is not None else None, reference)
+    all_refs = [ref for _, ref in pending]
     read_snapshot = bool(getattr(s, "info", {}).get("read_snapshot", False))
     if read_snapshot or history_permissions:
         from .claim_access import resolve
@@ -459,11 +478,29 @@ def validate_sources(s, ctx, view, *, extra_refs=(), history_permissions=False):
         elif history_permissions and ref.type in {"artifact", "original", "snapshot"}:
             _historical_source_access(s, ctx, product_id, ref)
         elif ref.type in {"artifact", "original"}:
+            from sqlalchemy.orm import load_only
+
+            from pdos_next.models import Artifact
+
+            # Typed fixed references may originate in a different readable
+            # Product, through Knowledge or an actual signed EvidenceLink.
+            # Scope comes from the RLS-visible source header, never the payload.
+            source = s.scalar(
+                select(Artifact)
+                .where(
+                    Artifact.id == ref.id,
+                    Artifact.tenant_id == ctx.tenant_id,
+                    Artifact.category_id == ctx.category_id,
+                )
+                .options(load_only(Artifact.id, Artifact.product_id))
+            )
+            if source is None:
+                fail("SOURCE_UNAVAILABLE", "source_unreadable", "固定来源不可读取。", 403)
             load_source(
                 s,
                 ctx,
                 ref.model_copy(update={"type": "artifact"}),
-                product_id=product_id,
+                product_id=source.product_id,
                 lock=not read_snapshot,
             )
         else:
@@ -473,6 +510,11 @@ def validate_sources(s, ctx, view, *, extra_refs=(), history_permissions=False):
         Reference(type="claim", id=identity, version=claims[identity].revision)
         for identity in sorted({ref.id for _, ref in pending if ref.type == "claim"}, key=str)
     )
+
+
+def validate_references(s, ctx, refs):
+    """Resolve an actual proposal's complete reference tree without inventing a definition."""
+    return validate_sources(s, ctx, None, extra_refs=refs)
 
 
 def published_baseline(

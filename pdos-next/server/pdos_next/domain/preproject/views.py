@@ -212,6 +212,41 @@ def read(s, ctx, proposal_id):
     submission = (
         s.get(ProposalSubmission, row.current_submission_id) if row.current_submission_id else None
     )
+    frozen_document = None
+    if submission:
+        from pdos_next.errors import DomainError
+
+        from .baseline import validate_sources
+        from .schemas import Reference
+
+        document_refs = [
+            *submission.frozen_document.get("source_refs", []),
+            *submission.frozen_document.get("context_refs", []),
+            *(
+                ref
+                for item in submission.frozen_document.get("items", [])
+                for ref in item.get("source_refs", [])
+            ),
+        ]
+        if submission.frozen_document.get("baseline_definition_id"):
+            document_refs.append({
+                "type": "definition",
+                "id": submission.frozen_document["baseline_definition_id"],
+                "version": submission.frozen_document["baseline_definition_revision"],
+            })
+        try:
+            # A later share authorizes the current proposal, not old private
+            # bodies in a retained submission. Read the full fixed tree through
+            # the actual caller's ordinary audience before returning that copy.
+            validate_sources(
+                s, ctx, None,
+                extra_refs=[Reference.model_validate(ref) for ref in document_refs],
+                history_permissions=True,
+            )
+        except DomainError:
+            pass
+        else:
+            frozen_document = submission.frozen_document
     decision = s.scalar(
         select(ProposalDecision)
         .where(ProposalDecision.proposal_id == row.id)
@@ -235,8 +270,14 @@ def read(s, ctx, proposal_id):
             "revision": submission.revision,
             "reviewer_id": str(submission.reviewer_id),
             "document_digest": submission.document_digest,
-            "context_refs": submission.context_refs,
-            "frozen_document": submission.frozen_document,
+            "context_refs": submission.context_refs
+            if frozen_document is not None
+            else [
+                {key: ref[key] for key in ("type", "id", "version") if key in ref}
+                for ref in submission.context_refs
+            ],
+            "frozen_document": frozen_document,
+            "frozen_document_available": frozen_document is not None,
         }
         if submission
         else None,

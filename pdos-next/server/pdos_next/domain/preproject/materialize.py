@@ -191,7 +191,14 @@ def approve(s, ctx, row, sub, decision, *, provenance, baseline=None):
                 "source_revision": ref["version"],
                 "line": ref["line"],
                 "quote": ref["quote"],
-                "spec_keys": [i["content"]["key"] for i in supplements if ref in i["source_refs"]],
+                "spec_keys": [
+                    i["content"]["key"]
+                    for i in supplements
+                    if any(
+                        Reference.model_validate(source) == Reference.model_validate(ref)
+                        for source in i["source_refs"]
+                    )
+                ],
             }
             for ref in references.values()
         ],
@@ -237,23 +244,6 @@ def approve(s, ctx, row, sub, decision, *, provenance, baseline=None):
         variant_id=variant.id if variant else None,
     )
     audience(s, ctx, "projects", project.id, project.owner_id, people)
-    s.execute(
-        text(
-            "UPDATE projects SET trigger_type=:type,trigger_id=:proposal,g0_decision_id=:decision "
-            "WHERE id=:id AND tenant_id=:tenant"
-        ),
-        {
-            "type": "parent_product"
-            if baseline
-            else "customer_request"
-            if row.entry_kind == "customer_request"
-            else "proposal",
-            "proposal": row.baseline_product_id if baseline else row.id,
-            "decision": decision.id,
-            "id": project.id,
-            "tenant": ctx.tenant_id,
-        },
-    )
     by_id = {i["item_id"]: i for i in doc["items"]}
     for disp in decision.dispositions:
         item = by_id[disp["subject_id"]]

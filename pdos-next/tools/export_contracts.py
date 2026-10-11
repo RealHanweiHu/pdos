@@ -31,6 +31,14 @@ for entry in data["items"]:
     if entry["operation"] in PAYLOADS:
         entry["implementation"] = "implemented_local_slice"
         entry["payload_schema"] = "payloads.schema.json"
+    elif entry["operation"] == "project.create":
+        entry["implementation"] = "g0_atomic_materialization_only"
+        entry.pop("payload_schema", None)
+        entry.pop("api_binding", None)
+        entry["note"] = (
+            "Only proposal.g0.decide creates a project atomically with the named Human "
+            "G0 decision. No independent executable command; Xiaopai may prepare materials."
+        )
     elif entry["operation"] in ENDPOINTS:
         entry["implementation"] = "implemented_local_endpoint"
         entry["payload_schema"] = "openapi.json"
@@ -42,7 +50,7 @@ for entry in data["items"]:
                 "AI domain writes still require current qualification and authorization."
             )
 data["pending_code_alignment"] = [
-    value for value in data["pending_code_alignment"] if value.startswith("project.create:")
+    value for value in data["pending_code_alignment"] if not value.startswith("project.create:")
 ]
 path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n")
 path = ROOT / "contracts/acceptance.json"

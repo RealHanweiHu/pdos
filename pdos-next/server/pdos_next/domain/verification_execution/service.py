@@ -39,6 +39,8 @@ from pdos_next.service import require_access
 from .models import VerificationCurrent, VerificationPreparation
 from .schemas import PreparationRecordPayload
 
+category_lifecycle_fence = True
+
 EFFECT = (
     "保存人工验证准备的固定版本与资料、数量、模穴缺项；"
     "尚未交样、正式接收、预约或开测，不授方法适用、专业资格或批准。"
@@ -225,7 +227,9 @@ def _inputs(s, ctx, command, product, payload):
     if product.tenant_id != ctx.tenant_id or command.product_id != product.id:
         raise DomainError("FORBIDDEN_SCOPE", "验证准备不在当前型号范围。", 403)
     build = _build(s, ctx, product.id, payload.build_id)
-    _, engineering, manufacturing, planned_reads = _linked(s, ctx, product.id, build)
+    _, engineering, manufacturing, planned_reads = _linked(
+        s, ctx, product.id, build, new_consumption=True
+    )
     # Select the intended historical predecessor, never a newer pointer before receipt replay.
     previous = (
         _version(s, ctx, product.id, payload.request_id, payload.expected_request_revision)

@@ -14,7 +14,7 @@ from pydantic import ValidationError
 from sqlalchemy import func, select, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-from test_project_first_plan import accepted, cmd, post
+from test_project_first_plan import cmd, post
 
 from pdos_next.contracts import PAYLOADS
 from pdos_next.database import tenant_session
@@ -24,6 +24,7 @@ from pdos_next.errors import DomainError
 from pdos_next.models import Artifact, Audit, Grant, Outbox, Receipt, RequestKey, now
 from pdos_next.professional_import import import_professional_fact
 from pdos_next.service import Context
+from tests.g0_fixture import create_g0_project
 
 OP = "verification.request.create"
 PURPOSE = "Synthetic authority verification only"
@@ -32,6 +33,10 @@ SOURCE_TEXT = "Synthetic named duty and personnel qualification; no production a
 
 @pytest.fixture
 def authority_work(setup):
+    scope = create_g0_project(
+        setup, visibility="category", name="Synthetic authority scope", purpose=PURPOSE
+    )
+    project = {"subject_id": str(scope.project_id)}
     source = post(
         setup,
         cmd(
@@ -48,39 +53,6 @@ def authority_work(setup):
     assert source.status_code == 200, source.text
     source_id = source.json()["subject_id"]
     reference = {"artifact_id": source_id, "expected_revision": 1, "line": 1, "quote": SOURCE_TEXT}
-    definition = post(
-        setup,
-        cmd(
-            setup,
-            "product.definition.draft",
-            {
-                "title": "Synthetic authority project",
-                "purpose": PURPOSE,
-                "use_cases": ["Synthetic authority assessment"],
-                "change_reason": "First draft",
-                "visibility": "category",
-                "sources": [reference],
-            },
-            source_id,
-        ),
-    )
-    assert definition.status_code == 200, definition.text
-    project, _ = accepted(
-        setup,
-        cmd(
-            setup,
-            "project.create",
-            {
-                "name": "Synthetic authority scope",
-                "purpose": PURPOSE,
-                "scope": "Only synthetic verification authority",
-                "visibility": "category",
-                "definition_id": definition.json()["subject_id"],
-                "expected_definition_revision": 1,
-            },
-            source_id,
-        ),
-    )
     issuer = authority.configure_local_synthetic(
         setup.engine,
         tenant_id=setup.tenant,

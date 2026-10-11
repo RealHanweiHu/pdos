@@ -91,6 +91,39 @@ def test_claim_reference_is_pinned_but_does_not_accept_caller_privacy():
         Reference.model_validate({**body, "privacy": "shared"})
 
 
+@pytest.mark.parametrize("status", [None, "withdrawn", "active"])
+def test_approval_rechecks_only_artifact_status_before_complete_source_union(
+    ctx, monkeypatch, status
+):
+    from pdos_next.domain.preproject import baseline
+
+    identity = uuid4()
+    document = {"source_refs": [ref("artifact", identity, line=1, quote="Fixed")], "items": []}
+    calls, queries = [], []
+
+    def scalar(query):
+        queries.append(str(query))
+        return status
+
+    monkeypatch.setattr(baseline, "validate_references", lambda *a: calls.append("union"))
+    monkeypatch.setattr(service, "_references", lambda *a, **kw: calls.append("direct"))
+    monkeypatch.setattr(
+        root_sources, "validate_document_links", lambda *a, **kw: calls.append("links")
+    )
+    if status == "active":
+        service._check_document_references(NS(scalar=scalar), ctx, document, approved=True)
+        assert calls == ["union", "direct", "links"]
+    else:
+        with pytest.raises(DomainError) as error:
+            service._check_document_references(NS(scalar=scalar), ctx, document, approved=True)
+        assert error.value.code == "SOURCE_STALE"
+        assert error.value.detail["reason"] == "original_withdrawn"
+        assert calls == []
+    assert len(queries) == 1
+    assert queries[0].startswith("SELECT artifact_versions.status")
+    assert "artifact_versions.content" not in queries[0]
+
+
 def test_claim_lock_order_is_uuid_order_and_keeps_approval_revalidation(ctx, monkeypatch):
     low, high = UUID(int=2), UUID(int=10)
     calls, locks = [], []
@@ -308,15 +341,31 @@ def test_changed_or_reverted_link_cannot_approve_frozen_document(ctx, field, val
 
 
 def test_document_recheck_separates_plain_references_from_link_metadata(ctx, monkeypatch):
+    from pdos_next.domain.preproject import baseline
+
     row = link(uuid4(), evidence_type="artifact")
     doc = frozen_link_doc(row)
     calls = []
+
+    def tree(session, actual_ctx, refs):
+        assert actual_ctx is ctx
+        assert [(ref.type, ref.id, ref.version) for ref in refs] == [
+            ("artifact", row.evidence_id, row.evidence_version)
+        ]
+        calls.append("tree")
+
+    monkeypatch.setattr(baseline, "validate_references", tree)
     monkeypatch.setattr(service, "_references", lambda s, c, refs, **kw: calls.append(refs))
     monkeypatch.setattr(
         root_sources, "validate_document_links", lambda *a, **kw: calls.append("link")
     )
-    service._check_document_references(MemorySession(), ctx, doc, approved=True)
-    assert calls == [[], "link"]
+    def artifact_status(query):
+        assert str(query).startswith("SELECT artifact_versions.status")
+        assert row.evidence_id in query.compile().params.values()
+        return "active"
+
+    service._check_document_references(NS(scalar=artifact_status), ctx, doc, approved=True)
+    assert calls == ["tree", [], "link"]
 
 
 def test_approved_decision_consumes_deduplicated_pinned_claims_with_real_foreign_keys(
