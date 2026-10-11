@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="5" time="11.047" timestamp="2026-10-11T07:45:34.361671-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_m3_original_binding_pg" name="test_actual_original_reference_binds_only_mounted_version_and_provider_taint" time="4.271" /><testcase classname="tests.agent_kernel.test_m3_original_binding_pg" name="test_original_root_id_and_wrong_artifact_version_are_not_read_authority" time="1.099" /><testcase classname="tests.agent_kernel.test_m3_original_binding_pg" name="test_unmounted_original_in_run_does_not_activate_rfq" time="1.889" /><testcase classname="tests.agent_kernel.test_m3_original_binding_pg" name="test_current_new_scan_blocks_preload_and_new_proposal_run" time="2.265"><failure message="AssertionError: assert 'SOURCE_UNAVAILABLE' == 'ORIGINAL_SECURITY_BLOCKED'&#10;  &#10;  - ORIGINAL_SECURITY_BLOCKED&#10;  + SOURCE_UNAVAILABLE">work = &lt;isolated synthetic test scope&gt;
+security_work = namespace(setup=&lt;isolated synthetic test scope&gt;, store=&lt;pdos_next.object_journal.store.JournaledLocalObjectStore objec...d70&gt;, parser=&lt;function parse_original at 0x1196ee0c0&gt;), client=&lt;starlette.testclient.TestClient object at 0x13c714e60&gt;)
+
+    def test_current_new_scan_blocks_preload_and_new_proposal_run(work, security_work):
+        root_id, version_id = uploaded(work, security_work)
+        proposal_id = proposal(work, version_id)
+        owner = Bootstrap(work.engine)
+        scope, _ = actual_run(work, owner, proposal_id)
+        assert "rfq_extraction" in owner.default_preload(scope)
+        with tenant_session(work.engine, work.tenant, actor_id=work.human,
+                            requester_id=work.human, category_id=work.category) as session:
+            root = require_original(session, work.ctx, None, root_id)
+            epoch = security_row(session, root, lock=False).epoch
+        scan = security_work.client.post(
+            f"/v1/categories/{work.category}/originals/{root_id}/scan", headers=work.headers,
+            json={"expected_epoch": epoch, "idempotency_key": str(uuid4())},
+        )
+        assert scan.status_code == 200, scan.text
+        assert owner.default_preload(scope) == ("proposal_drafting", "gap_check")
+        with pytest.raises(DomainError) as caught:
+            binding(work, owner, proposal_id)
+&gt;       assert caught.value.code == "ORIGINAL_SECURITY_BLOCKED"
+E       AssertionError: assert 'SOURCE_UNAVAILABLE' == 'ORIGINAL_SECURITY_BLOCKED'
+E         
+E         - ORIGINAL_SECURITY_BLOCKED
+E         + SOURCE_UNAVAILABLE
+
+tests/agent_kernel/test_m3_original_binding_pg.py:161: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_m3_original_binding_pg" name="test_registered_text_called_original_does_not_substitute_uploaded_bytes" time="1.007" /></testsuite></testsuites>

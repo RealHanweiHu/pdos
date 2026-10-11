@@ -14,7 +14,7 @@ from pdos_next.errors import DomainError
 from pdos_next.model_configuration.persistence import SessionConfigurationStore
 from pdos_next.model_configuration.ports import SecretMaterial
 from pdos_next.model_configuration.service import current_secret, secret_digest
-from pdos_next.models import Artifact, Category, Grant, Principal, Product
+from pdos_next.models import Category, Grant, Principal, Product, UploadedOriginal
 from pdos_next.service import require_access, source_for
 
 from .api import ApiPorts
@@ -158,15 +158,8 @@ class Bootstrap:
             # Registered proposal source facts belong to its owner, never to client policy input.
             for ref in actual.source_refs:
                 if ref.get("type") == "original":
-                    original_id = UUID(ref["id"])
-                    refs.extend(
-                        session.scalars(
-                            select(Artifact).where(
-                                Artifact.original_id == original_id,
-                                Artifact.category_id == ctx.category_id,
-                                Artifact.status == "active",
-                            )
-                        )
+                    refs.append(
+                        source_for(session, ctx, None, UUID(ref["id"]), ref["version"])
                     )
         for ref in data.sources:
             refs.append(
@@ -194,9 +187,13 @@ class Bootstrap:
                 .limit(1)
             )
         )
+        categories = {"customer" if identities else "internal"}
+        if any(artifact.original_id is not None for artifact in refs):
+            # Registered bytes have original provenance regardless of a free-text label.
+            categories.add("customer_original")
         return SimpleNamespace(
             private_context=private,
-            data_categories=("customer" if identities else "internal",),
+            data_categories=tuple(sorted(categories)),
             customer_identities=identities,
             read_sources=reads,
             validation_budget_id=budgets[0].id if budgets else None,
@@ -349,19 +346,34 @@ class Bootstrap:
                     and submission.reviewer_id == scope.requester_id):
                 return ("gap_check", "option_comparison")
             skills = ["proposal_drafting", "gap_check"]
-            original_ids = {
-                UUID(ref["id"]) for ref in proposal.source_refs
+            original_versions = {
+                (UUID(ref["id"]), ref["version"]) for ref in proposal.source_refs
                 if ref.get("type") == "original"
             }
             customer_original = False
             for ref in run.read_sources:
-                artifact = session.get(Artifact, UUID(ref["artifact_id"]))
+                identity, version = UUID(ref["artifact_id"]), ref["expected_revision"]
+                if (identity, version) not in original_versions:
+                    continue
+                try:
+                    artifact = source_for(
+                        session, self.commands.context(scope), scope.product_id, identity, version
+                    )
+                except DomainError:
+                    continue
+                original = (
+                    session.get(UploadedOriginal, artifact.original_id)
+                    if artifact.original_id else None
+                )
                 if (
                     artifact and artifact.tenant_id == scope.tenant_id
                     and artifact.category_id == scope.category_id
                     and artifact.status == "active"
-                    and artifact.revision == ref["expected_revision"]
-                    and artifact.original_id in original_ids
+                    and artifact.revision == version
+                    and original and original.tenant_id == scope.tenant_id
+                    and original.category_id == scope.category_id
+                    and original.product_id == artifact.product_id
+                    and original.status == "parsed" and original.scan_status == "clean"
                 ):
                     customer_original = True
                     break
