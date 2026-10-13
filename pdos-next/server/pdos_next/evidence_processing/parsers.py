@@ -246,6 +246,9 @@ def _pdf(content: bytes, limits: ParseLimits):
             tuple(values.values),
             tuple(warnings),
             "parsed" if values.values else "needs_ocr",
+            tuple(
+                SourceLocation("page", page=number) for number in range(1, len(reader.pages) + 1)
+            ),
         )
     except ParseFailure:
         raise
@@ -261,6 +264,7 @@ def parse_in_worker(content: bytes, media_type: str, limits: ParseLimits) -> Par
     if len(content) > limits.max_input_bytes:
         _fail("FILE_TOO_LARGE", "Original exceeds the configured byte limit")
     warnings, status = (), "parsed"
+    expected = None
     if media_type in {"text/plain", "text/markdown"}:
         if content.startswith((b"%PDF-", b"PK\x03\x04")):
             _fail("MEDIA_TYPE_MISMATCH", "Declared text type does not match the original bytes")
@@ -268,7 +272,9 @@ def parse_in_worker(content: bytes, media_type: str, limits: ParseLimits) -> Par
     elif media_type == XLSX:
         text, segments, warnings = _xlsx(content, limits)
     else:
-        text, segments, warnings, status = _pdf(content, limits)
+        text, segments, warnings, status, expected = _pdf(content, limits)
+    if expected is None:
+        expected = tuple(dict.fromkeys(segment.location for segment in segments))
     return ParseResult(
         hashlib.sha256(content).hexdigest(),
         media_type,
@@ -276,4 +282,5 @@ def parse_in_worker(content: bytes, media_type: str, limits: ParseLimits) -> Par
         segments,
         status=status,
         warnings=warnings,
+        expected_locations=expected,
     )

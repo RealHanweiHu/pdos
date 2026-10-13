@@ -7,7 +7,10 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-REPORT = ROOT / "docs/reports/evidence/pdos-next-m3-20261010/extract-dispatch"
+REPORT = ROOT / os.environ.get(
+    "M3_SEGMENT_REPORT",
+    "docs/reports/evidence/pdos-next-m3-20261010/extract-dispatch",
+)
 
 INCLUDE_TOP = ("docs/design", "pdos-next", "packages", "tasks")
 PRUNE_DIRS = {

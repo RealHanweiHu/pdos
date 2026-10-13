@@ -56,16 +56,33 @@ def proposal_two(work, first, second):
     return UUID(identity)
 
 
+def proposal_quote(work, version_id, quote):
+    identity, _ = create(
+        work,
+        {
+            "title": "Synthetic original-bound proposal",
+            "entry_kind": "customer_request",
+            "source_refs": [
+                {"type": "original", "id": str(version_id), "version": 1, "line": 1,
+                 "quote": quote},
+            ],
+        },
+    )
+    return UUID(identity)
+
+
 def fixture(
     work, security_work, *, rows_factory, extra_upload=False, skill_event=True,
-    extract_arguments=None,
+    extract_arguments=None, uploader=None, mount_quote=None,
 ):
     owner = Bootstrap(work.engine)
-    root_id, version_id = uploaded(work, security_work)
+    root_id, version_id = (uploader or uploaded)(work, security_work)
     second_version = None
     if extra_upload:
         _, second_version = uploaded(work, security_work, label="second synthetic original")
         proposal_id = proposal_two(work, version_id, second_version)
+    elif mount_quote is not None:
+        proposal_id = proposal_quote(work, version_id, mount_quote)
     else:
         proposal_id = proposal(work, version_id)
     scope, bound_sources = actual_run(work, owner, proposal_id)

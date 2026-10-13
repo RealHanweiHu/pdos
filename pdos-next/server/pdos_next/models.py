@@ -575,6 +575,7 @@ class UploadedOriginal(Row, Base):
     status: Mapped[str] = mapped_column(String(32), default="uploaded")
     parse_code: Mapped[str | None] = mapped_column(String(80))
     locator_map: Mapped[list] = mapped_column(JSONB, default=list)
+    parse_manifest: Mapped[dict | None] = mapped_column(JSONB)
     scan_status: Mapped[str] = mapped_column(String(32), default="not_scanned")
     __table_args__ = (
         UniqueConstraint("tenant_id", "product_id", "id"),

@@ -9,7 +9,26 @@ from pdos_next.errors import DomainError
 from pdos_next.models import UploadedOriginal
 from pdos_next.service import source_for
 
-from .extract_read_ledger import ArtifactSeal
+from .extract_read_ledger import ArtifactSeal, ParseManifest, SourceLocation
+
+
+def _manifest(original):
+    raw = original.parse_manifest if original else None
+    if raw is None:
+        return None
+    if not isinstance(raw, dict):
+        raise DomainError("INTEGRITY_MISMATCH", "解析库存形态尚未核对。")
+    try:
+        return ParseManifest(
+            parser_version=raw["parser_version"],
+            basis=raw["basis"],
+            expected_locations=tuple(
+                SourceLocation.from_mapping(location)
+                for location in raw["expected_locations"]
+            ),
+        )
+    except (KeyError, TypeError, ValueError) as error:
+        raise DomainError("INTEGRITY_MISMATCH", "解析库存形态尚未核对。") from error
 
 
 def seal_for(session, ctx, product_id, artifact_id, expected_revision):
@@ -31,5 +50,6 @@ def seal_for(session, ctx, product_id, artifact_id, expected_revision):
         locator_map=original.locator_map if original else [],
         parse_status=original.status if original else "parsed",
         parse_code=original.parse_code if original else None,
+        parse_manifest=_manifest(original),
     )
     return seal, source

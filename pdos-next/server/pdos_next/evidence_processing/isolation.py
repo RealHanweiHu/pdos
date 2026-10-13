@@ -140,6 +140,9 @@ def parse_original(
                 )
                 for segment in result["segments"]
             ),
+            expected_locations=tuple(
+                SourceLocation(**location) for location in result["expected_locations"]
+            ),
         )
     except ParseFailure:
         raise

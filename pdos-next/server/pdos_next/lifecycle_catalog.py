@@ -2322,6 +2322,7 @@ COVERED_COLUMNS = {
         "status",
         "parse_code",
         "locator_map",
+        "parse_manifest",
         "scan_status",
         "id",
         "tenant_id",

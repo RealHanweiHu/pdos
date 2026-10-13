@@ -5,6 +5,7 @@ import binascii
 import hashlib
 import re
 from bisect import bisect_left, bisect_right
+from dataclasses import asdict
 from pathlib import PurePath
 from uuid import UUID, uuid4
 
@@ -241,6 +242,21 @@ def original_view(s, row, ctx=None, store=None):
     }
 
 
+def _parse_manifest(result):
+    """The parser-declared location inventory; never a completeness declaration."""
+    expected = result.expected_locations
+    if not expected:
+        return None
+    kinds = {location.kind for location in expected}
+    if len(kinds) != 1:
+        raise DomainError("INTEGRITY_MISMATCH", "解析位置库存混用不同基线。")
+    return {
+        "parser_version": result.parser_version,
+        "basis": kinds.pop(),
+        "expected_locations": [asdict(location) for location in expected],
+    }
+
+
 def parse_uploaded(engine, reference: dict, store):
     from pdos_next.original_security import require_safe, runtime_for
 
@@ -299,10 +315,12 @@ def parse_uploaded(engine, reference: dict, store):
             return {"status": row.status, "original_id": str(row.id)}
         row.revision += 1
         row.parse_code = None
+        row.parse_manifest = None
         if error_code:
             row.status, row.parse_code = "failed", error_code
         elif result.status == "needs_ocr":
             row.status, row.parse_code = "needs_ocr", "OCR_REQUIRED"
+            row.parse_manifest = _parse_manifest(result)
         else:
             payload = ArtifactPayload(
                 title=row.title,
@@ -354,6 +372,7 @@ def parse_uploaded(engine, reference: dict, store):
             if row.media_type == "application/pdf" and result.warnings:
                 row.parse_code = "PARTIAL_TEXT"
             row.locator_map = locations
+            row.parse_manifest = _parse_manifest(result)
         s.flush()
         command = Command(
             category_id=ctx.category_id,

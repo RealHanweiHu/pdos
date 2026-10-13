@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import math
 import re
 from collections.abc import Iterable, Mapping
@@ -92,6 +93,37 @@ class LocatorEntry:
     derived_line_end: int
     location: SourceLocation
     value_kind: str
+
+
+def locator_from_text(value):
+    """Parse the wire locator form (line:N, page:N, cell:["sheet","B2"])."""
+    if not isinstance(value, str):
+        return SourceLocation.from_mapping(value)
+    if match := re.fullmatch(r"line:([1-9][0-9]*)", value):
+        return SourceLocation("line", line=int(match[1]))
+    if match := re.fullmatch(r"page:([1-9][0-9]*)", value):
+        return SourceLocation("page", page=int(match[1]))
+    if value.startswith("cell:"):
+        try:
+            parsed = json.loads(value[5:])
+        except ValueError:
+            raise ValueError("Invalid cell locator") from None
+        if (
+            isinstance(parsed, list)
+            and len(parsed) == 2
+            and all(isinstance(item, str) for item in parsed)
+        ):
+            sheet, coordinate = parsed
+            match = re.fullmatch(r"([A-Z]+)([1-9][0-9]*)", coordinate)
+            if match is not None:
+                letters, digits = match.groups()
+                column = 0
+                for char in letters:
+                    column = column * 26 + (ord(char) - 64)
+                return SourceLocation(
+                    "cell", sheet=sheet, row=int(digits), column=column, cell=coordinate
+                )
+    raise ValueError("Unsupported locator text")
 
 
 @dataclass(frozen=True)
@@ -353,10 +385,16 @@ class ExtractReadLedger:
         bounds = _line_bounds(source.text)
         if isinstance(locator, str):
             match = re.fullmatch(r"line:([1-9][0-9]*)", locator)
-            if match is None or int(match[1]) > source.total_lines:
-                return None, "locator_not_in_source"
-            start = end = int(match[1])
-        else:
+            if match is not None:
+                if int(match[1]) > source.total_lines:
+                    return None, "locator_not_in_source"
+                start = end = int(match[1])
+            else:
+                try:
+                    locator = locator_from_text(locator)
+                except ValueError:
+                    return None, "locator_not_in_source"
+        if not isinstance(locator, str):
             entries = [entry for entry in source.locator_map if entry.location == locator]
             if not entries:
                 return None, "locator_not_in_source"

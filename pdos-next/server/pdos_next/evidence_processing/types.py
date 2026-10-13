@@ -77,6 +77,9 @@ class ParseResult:
     parser_version: str = "pdos-evidence-v1"
     scan_status: Literal["not_scanned"] = "not_scanned"
     warnings: tuple[str, ...] = ()
+    # Parser-declared inventory of every location it examined, including ones
+    # that produced no text; never a model completeness declaration.
+    expected_locations: tuple[SourceLocation, ...] = ()
 
     def as_dict(self) -> dict:
         return asdict(self)
