@@ -9,6 +9,7 @@ const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|canc
 const personalAgentPaths = /^v1\/personal\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|cancel|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
 const preprojectPaths = /^v1\/(?:proposals(?:\/[a-f0-9-]{36}(?:\/(?:items|participants))?)?|g0-definitions\/[a-f0-9-]{36}|projects\/[a-f0-9-]{36}\/open-items)$/i;
 const proposalViewPaths = /^v1\/views\/(?:positioning|spec-benchmark|feature-config|definition-maturity)$/;
+const categoryKnowledgePaths = /^v1\/(?:knowledge|parameters)$/;
 const proposalClaimPaths = /^v1\/claims(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
 const resourceInspectPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/builds\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/resources\/inspect$/;
 const manufacturingPreparationPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/manufacturing-preparations(?:\/inputs|\/(?:work_instruction|control_plan|manufacturing_baseline)\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})?$/;
@@ -63,6 +64,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const resourceInspect = resourceInspectPaths.test(pathname);
   const preproject = preprojectPaths.test(pathname);
   const proposalView = proposalViewPaths.test(pathname);
+  const categoryKnowledge = categoryKnowledgePaths.test(pathname);
   const proposalClaim = proposalClaimPaths.test(pathname);
   const agent = agentPaths.test(pathname) || personalAgent;
   const modelConfiguration = pathname === "v1/model-configuration";
@@ -70,7 +72,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const manufacturingPreparation = manufacturingPreparationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !categoryKnowledge) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (categoryPreview || categorySeed || categoryRoot) {
     const allowed = categoryRoot ? ["GET", "POST"] : categorySeed ? ["GET"] : ["POST"];
@@ -110,6 +112,22 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     for (const [key, value] of request.nextUrl.searchParams) {
       if (!["proposal_id", "parameter_ids"].includes(key) || !uuid.test(value)) return Response.json({ code: "VALIDATION_FAILED", message: "请仅提供提案与有效参数编号。" }, { status: 422 });
       // Preserve every parameter occurrence and its order; comparison belongs to the API.
+      query.append(key, value);
+    }
+  } else if (categoryKnowledge) {
+    if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
+    const kinds = new Set(["boundary", "segment", "competitor", "voice", "regulation", "research_question"]);
+    for (const [key, value] of request.nextUrl.searchParams) {
+      const valid = key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 200
+        : key === "include_history" ? ["true", "false"].includes(value)
+        : key === "kind" && pathname === "v1/knowledge" ? kinds.has(value)
+        : key === "status" && pathname === "v1/knowledge" ? ["active", "withdrawn"].includes(value)
+        : key === "origin" && pathname === "v1/knowledge" ? ["human", "ai_draft", "imported"].includes(value)
+        : key === "region" && pathname === "v1/knowledge" ? value.length > 0 && value.length <= 120
+        : key === "parameter_ids" && pathname === "v1/parameters" ? uuid.test(value)
+        : key === "cursor" ? value.length > 0 && value.length <= 200
+        : false;
+      if (!valid || (key !== "parameter_ids" && query.has(key))) return Response.json({ code: "VALIDATION_FAILED", message: "请使用明确的品类知识与字典范围。" }, { status: 422 });
       query.append(key, value);
     }
   } else if (preproject) {

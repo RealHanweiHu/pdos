@@ -1,21 +1,21 @@
-export type WorkspaceArea = "work" | "products" | "projects" | "resources" | "knowledge" | "settings";
+export type WorkspaceArea = "products" | "projects" | "knowledge" | "settings";
 export type WorkspaceLocation = { area: WorkspaceArea; section: string; task: string; productId: string };
 export type WorkspaceEntry = { id: string; label: string; panel?: string; planned?: boolean };
 
+/** 品类工作台内部区段（全局导航见 lib/global-navigation.ts）。研究/机会/实验/策略不再设独立页面（C3）。 */
 export const workspaceAreas: { id: WorkspaceArea; label: string }[] = [
-  { id: "work", label: "我的工作" }, { id: "products", label: "型号" },
-  { id: "projects", label: "项目" }, { id: "resources", label: "组合与资源" },
-  { id: "knowledge", label: "知识" }, { id: "settings", label: "设置" },
+  { id: "products", label: "型号" },
+  { id: "projects", label: "项目" },
+  { id: "knowledge", label: "知识" },
+  { id: "settings", label: "设置" },
 ];
 
 export const workspaceSections: Record<WorkspaceArea, WorkspaceEntry[]> = {
-  work: [{ id: "overview", label: "待处理", panel: "work" }, { id: "activity", label: "活动", panel: "activity" }],
   products: [
     { id: "overview", label: "总览" }, { id: "research", label: "研究" },
-    { id: "opportunities", label: "机会与实验", planned: true },
     { id: "definition", label: "定义与规格", panel: "definition" },
     { id: "variants", label: "派生与配置", panel: "variants" },
-    { id: "roadmap", label: "矩阵与路线图", planned: true }, { id: "feedback", label: "反馈", planned: true },
+    { id: "activity", label: "活动", panel: "activity" },
   ],
   projects: [
     { id: "overview", label: "现在" }, { id: "plan", label: "工作与计划", panel: "plan" },
@@ -23,7 +23,6 @@ export const workspaceSections: Record<WorkspaceArea, WorkspaceEntry[]> = {
     { id: "issues", label: "问题与变更", panel: "quality" },
     { id: "reviews", label: "评审与交付", planned: true }, { id: "files", label: "资料", panel: "originals" },
   ],
-  resources: [{ id: "overview", label: "组合与资源", planned: true }],
   knowledge: [{ id: "sources", label: "来源与事实", panel: "sources" }, { id: "files", label: "原件", panel: "originals" }],
   settings: [{ id: "preferences", label: "外观" }, { id: "models", label: "AI 运行与费用", panel: "accounting" }, { id: "originals", label: "原件保留与隔离", panel: "lifecycle" }],
 };
@@ -45,12 +44,12 @@ export const workspaceTasks: Record<string, WorkspaceEntry[]> = {
   ],
 };
 
-export const defaultWorkspaceLocation: WorkspaceLocation = { area: "work", section: "overview", task: "", productId: "" };
+export const defaultWorkspaceLocation: WorkspaceLocation = { area: "products", section: "overview", task: "", productId: "" };
 
 /** Only known destinations become navigation. Object access remains a server decision. */
 export function resolveWorkspaceLocation(search: string): WorkspaceLocation {
   const params = new URLSearchParams(search);
-  const area = workspaceAreas.find(entry => entry.id === params.get("area"))?.id ?? "work";
+  const area = workspaceAreas.find(entry => entry.id === params.get("bench"))?.id ?? "products";
   const section = workspaceSections[area].find(entry => entry.id === params.get("view"))?.id ?? workspaceSections[area][0].id;
   const tasks = workspaceTasks[`${area}/${section}`];
   const task = tasks?.find(entry => entry.id === params.get("task"))?.id ?? tasks?.[0].id ?? "";
@@ -59,7 +58,7 @@ export function resolveWorkspaceLocation(search: string): WorkspaceLocation {
 
 export function workspaceHref(location: WorkspaceLocation, search = ""): string {
   const params = new URLSearchParams(search);
-  params.set("area", location.area); params.set("view", location.section);
+  params.set("bench", location.area); params.set("view", location.section);
   if (location.task) params.set("task", location.task); else params.delete("task");
   if (location.productId) params.set("product", location.productId); else params.delete("product");
   return `?${params.toString()}`;

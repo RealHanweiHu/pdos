@@ -1,2 +1,2 @@
-import { CategoryWorkspace } from "@/components/category-workspace";
-export default function Page() { return <CategoryWorkspace />; }
+import { AppShell } from "@/components/app-shell";
+export default function Page() { return <AppShell />; }

@@ -17,7 +17,7 @@ const root = "v1/personal/agent-runs";
 const labels: Record<string, string> = { queued: "已保存，等待执行", running: "正在执行", waiting_input: "等待你的答复", completed: "已完成", partial: "已有部分结果", cancelled: "已取消", failed: "执行未完成" };
 
 /** Opening or refreshing this panel only reads durable runs and events. */
-export function PersonalXiaopai({ api = personalApi, onCreated }: { api?: Api; onCreated: (category: CreatedCategory) => void }) {
+export function PersonalXiaopai({ api = personalApi, onCreated, initialRunId }: { api?: Api; onCreated: (category: CreatedCategory) => void; initialRunId?: string }) {
   const [goal, setGoal] = useState("");
   const [history, setHistory] = useState<History>({ items: [], next_cursor: null });
   const [run, setRun] = useState<Run | null>(null);
@@ -98,6 +98,15 @@ export function PersonalXiaopai({ api = personalApi, onCreated }: { api?: Api; o
       .catch(failure => { if (active) setError(failure.message); });
     return () => { active = false; counter.current++; };
   }, [api]);
+  useEffect(() => {
+    if (!initialRunId) return;
+    let active = true;
+    void Promise.resolve().then(() => {
+      if (!active) return;
+      return readRun(initialRunId).catch(failure => { if (active) setError(failure.message); });
+    });
+    return () => { active = false; };
+  }, [initialRunId, readRun]);
   useEffect(() => {
     if (!run || run.reverted || !["queued", "running"].includes(run.status)) return;
     let reading = false;

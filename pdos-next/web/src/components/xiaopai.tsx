@@ -16,8 +16,9 @@ type Pending = { path: string; body: unknown };
 const labels: Record<string, string> = { queued: "已保存，等待执行", running: "正在执行", waiting_input: "等待你的答复", completed: "已完成", partial: "已形成部分结果", cancelled: "已取消后续执行", failed: "执行未完成" };
 
 /** Runs and events are server facts. Reading or reopening this panel never starts inference. */
-export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange }: {
+export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange, initialRunId }: {
   api: WorkspaceTransport; productId: string; sources: Source[]; composeOpen: boolean; onComposeChange: (open: boolean) => void;
+  initialRunId?: string;
 }) {
   const [goal, setGoal] = useState("");
   const [useProduct, setUseProduct] = useState(false);
@@ -70,6 +71,12 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange 
     void api<History>("v1/agent-runs?page_size=50").then(value => { if (active) setHistory(value); }).catch(failure => { if (active) setError(failure.message); });
     return () => { active = false; };
   }, [api]);
+  useEffect(() => {
+    if (!initialRunId) return;
+    let active = true;
+    void readRun(initialRunId).catch(failure => { if (active) setError(failure.message); });
+    return () => { active = false; };
+  }, [initialRunId, readRun]);
   useEffect(() => {
     if (!run || run.reverted || !["queued", "running"].includes(run.status)) return;
     const timer = setInterval(() => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowCounterClockwise, CheckCircle, FileText } from "@phosphor-icons/react";
 import { originalLocation, type LocatedSource } from "@/lib/original-location";
 import { sourceLines } from "@/lib/product-view";
@@ -27,9 +27,9 @@ import { ProjectPlanning } from "@/components/projects/project-planning";
 import { Button } from "@/components/ui/button";
 import { categoryTransport } from "@/lib/category-transport";
 import { createWorkspaceApi } from "@/lib/workspace-api";
-import { Xiaopai } from "@/components/xiaopai";
 import { ConnectedModelSettings } from "@/components/model_configuration/connected-settings";
 import { WorkspaceExperience, WorkspacePanel } from "@/components/workspace-experience";
+import type { PaiContext } from "@/components/pai-rail";
 
 type Product = { id: string; name: string; purpose: string; revision: number };
 type Source = LocatedSource & { id: string; title: string; source_label: string; content: string; revision: number; visibility: string; status: string };
@@ -54,7 +54,7 @@ async function rawApi<T>(path: string, body?: unknown): Promise<T> {
   return value;
 }
 
-export function Workspace({ categoryId, categoryBanner }: { categoryId: string; categoryBanner?: ReactNode }) {
+export function Workspace({ categoryId, onPaiContext }: { categoryId: string; onPaiContext?: (context: PaiContext | null) => void }) {
   const transport = useMemo(() => categoryTransport(categoryId, rawApi), [categoryId]);
   const [products, setProducts] = useState<Product[]>([]);
   const [productId, setProductId] = useState("");
@@ -74,7 +74,6 @@ export function Workspace({ categoryId, categoryBanner }: { categoryId: string; 
   const [availability, setAvailability] = useState("known");
   const [visibility, setVisibility] = useState("private");
   const [newProduct, setNewProduct] = useState(false);
-  const [paiOpen, setPaiOpen] = useState(false);
   const [name, setName] = useState("");
   const [purpose, setPurpose] = useState("");
   const [pending, setPending] = useState<Pending | null>(null);
@@ -181,8 +180,14 @@ export function Workspace({ categoryId, categoryBanner }: { categoryId: string; 
 
 
 
+  useEffect(() => {
+    if (!onPaiContext) return;
+    onPaiContext({ categoryId, productId, sources: data?.product.id === productId ? data.sources : [] });
+    return () => onPaiContext(null);
+  }, [onPaiContext, categoryId, productId, data]);
+
   return <>
-    <WorkspaceExperience categoryId={categoryId} categoryBanner={categoryBanner} auth={auth} session={session} products={products} productId={productId} data={data} locked={busy || !!pending} onProductChange={setProductId} onCreateProduct={() => setNewProduct(!newProduct)} onOpenPai={() => setPaiOpen(true)} api={api}>
+    <WorkspaceExperience categoryId={categoryId} auth={auth} session={session} products={products} productId={productId} data={data} locked={busy || !!pending} onProductChange={setProductId} onCreateProduct={() => setNewProduct(!newProduct)} api={api}>
       <div className="workspace-alerts">
       {pending && !error && <div role="status" className="panel mt-5"><p>有一项原操作等待核对回执，重试会沿用同一请求。</p><Button variant="outline" className="mt-3" disabled={busy} onClick={() => void mutate(pending.path, pending.body, "原操作已取得回执。")}>重试原操作</Button></div>}
       {error && <div role="alert" className="panel mt-5 border-destructive"><p>{error}</p>{pending && <Button className="mt-3" variant="outline" disabled={busy} onClick={() => void mutate(pending.path, pending.body, "原操作已取得回执。")}>重试原操作</Button>}</div>}
@@ -196,7 +201,6 @@ export function Workspace({ categoryId, categoryBanner }: { categoryId: string; 
         <Button disabled={busy} onClick={async () => { setBusy(true); setError(""); try { await api("local-session", {}); await load(); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } }}>进入本地合成环境</Button>
       </div> : <>
         {newProduct && <form className="panel mb-5" onSubmit={(e) => { e.preventDefault(); void mutate("v1/products", { name, purpose, idempotency_key: crypto.randomUUID() }, "型号范围已建立。"); }}><h2 className="mb-4 font-semibold">建立型号范围</h2><label>型号名称<input required minLength={2} maxLength={160} value={name} onChange={(e) => setName(e.target.value)} /></label><label>真实用途<textarea required minLength={3} maxLength={1000} value={purpose} onChange={(e) => setPurpose(e.target.value)} /></label><div className="flex gap-2"><Button disabled={busy || !!pending}>建立型号</Button><Button type="button" variant="outline" disabled={busy || !!pending} onClick={() => setNewProduct(false)}>取消</Button></div></form>}
-        {session && <WorkspacePanel key={`pai:${session.principal_id}:${categoryId}`} name="work"><Xiaopai api={transport} productId={productId} sources={data?.product.id === productId ? data.sources : []} composeOpen={paiOpen} onComposeChange={setPaiOpen} /></WorkspacePanel>}
         {session && <WorkspacePanel key={`models:${session.principal_id}:${categoryId}`} name="accounting"><ConnectedModelSettings api={transport} /></WorkspacePanel>}
         {data && data.product.id === productId && <>
           <WorkspacePanel key={`definition:${session?.principal_id}:${productId}`} name="definition">{session && <ProductDefinition key={`${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} sources={data.sources} api={api} onSaved={refresh} onAccessDenied={() => {
