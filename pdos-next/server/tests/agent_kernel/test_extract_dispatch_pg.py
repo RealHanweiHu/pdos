@@ -159,6 +159,9 @@ def fixture(
                     qualification_revoked=False,
                     qualified_skill_version=skill.version,
                     qualified_model_version=route.version,
+                    reviewed_by=work.human,
+                    reviewed_at=now(),
+                    review_case_refs=[f"synthetic-reviewed-case-{index}" for index in range(10)],
                 )
             )
         if skill_event:

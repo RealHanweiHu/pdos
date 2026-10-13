@@ -236,6 +236,15 @@ def _nature(payload, run, *, session=None, ctx=None):
         from .computed_claim import verify_computed_claim
 
         verify_computed_claim(session, ctx, run, payload)
+    if run and payload.nature == "extracted":
+        if session is None or ctx is None:
+            fail(
+                "SOURCE_UNAVAILABLE", "extraction_proof_required",
+                "抽取事实须绑定实际抽取证明。",
+            )
+        from .extracted_claim import verify_extracted_claim
+
+        verify_extracted_claim(session, ctx, run, payload)
     if payload.availability == "not_applicable":
         reason = payload.content.get("text") or payload.statement
         if not isinstance(reason, str) or not reason.strip():
