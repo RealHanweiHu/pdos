@@ -318,6 +318,7 @@ def test_start_effects_rollback_with_enclosing_uow(launch_work, monkeypatch):
 def test_own_run_proof_rechecked_without_new_effects(launch_work, monkeypatch):
     work = launch_work
     receipt, _ = started(work, monkeypatch)
+    from pdos_next.domain.test_resources import retained
     from pdos_next.domain.verification_launch.models import VerificationRunVersion
 
     with tenant_session(
@@ -330,25 +331,17 @@ def test_own_run_proof_rechecked_without_new_effects(launch_work, monkeypatch):
         assert saved.operation == "test.run.start" and saved.run_id == work.binding.run_id
         assert saved.revision == receipt["subject_revision"]
         intent = saved.intent_digest
-        first = service.recheck_running(
-            session,
-            work.quality.ctx,
-            work.setup.product,
-            work.binding,
-            work.test_fact_id,
-            1,
-            intent_digest=intent,
+        assert saved.input_snapshot["execution_proof_contract"] == "s0-direct-v1"
+        first = retained.inspect_retained_execution(
+            session, work.quality.ctx, work.setup.product, saved
         )
-        second = service.recheck_running(
-            session,
-            work.quality.ctx,
-            work.setup.product,
-            work.binding,
-            work.test_fact_id,
-            1,
-            intent_digest=intent,
+        second = retained.inspect_retained_execution(
+            session, work.quality.ctx, work.setup.product, saved
         )
-        assert first.facts_revision == second.facts_revision
+        assert first["current"] and second["current"]
+        assert first["reason_codes"] == second["reason_codes"] == []
+        assert first["facts_revision"] == second["facts_revision"]
+        assert first["original_start_intent"] == second["original_start_intent"] == intent
         assert session.scalar(
             select(func.count())
             .select_from(SampleRunUsage)
@@ -368,7 +361,6 @@ def test_own_run_proof_rechecked_without_new_effects(launch_work, monkeypatch):
         from sqlalchemy import event
 
         from pdos_next.contracts import Command
-        from pdos_next.domain.test_resources import retained
         from pdos_next.domain.test_resources.models import TestResourceCurrent as ResourceCurrent
         from pdos_next.request_proof import request_proof
         from pdos_next.service import command_scope
@@ -421,12 +413,10 @@ def test_own_run_proof_rechecked_without_new_effects(launch_work, monkeypatch):
             assert retained_second["current"] is True, retained_second
             assert retained_first["facts_revision"] == retained_second["facts_revision"]
             assert (ResourceFact, work.test_fact_id) not in request_proof(session).read_rows
-            # Each distinct inspection reads one complete Current collection,
-            # and independently re-reads both terminal Current and Fact. Its
-            # initial fixed check and exact owner ID reader share only raw rows.
-            assert len(selected[ResourceCurrent]) == 4, selected
-            assert sum("LIMIT" not in sql for sql in selected[ResourceCurrent]) == 2, selected
-            assert sum("LIMIT" in sql for sql in selected[ResourceCurrent]) == 2, selected
+            # The fixed direct contract never reopens the upstream Current
+            # collection. Non-RR still rereads its exact immutable Fact at the
+            # terminal boundary after source IO; only the initial raw row shares.
+            assert selected[ResourceCurrent] == [], selected
             assert len(selected[ResourceFact]) == 3, selected
             assert all("LIMIT" in sql for sql in selected[ResourceFact]), selected
         finally:
@@ -500,7 +490,10 @@ def test_rr_canonical_owned_sets_share_rows_and_reject_wrong_saved_scope_without
             assert second["facts_revision"] == first["facts_revision"]
             assert second["occupancy"] == first["occupancy"] == effects["occupancy"]
             assert second["sample_usage"] == first["sample_usage"] == effects["sample_usage"]
-            assert all(len(queries) == 1 for queries in selected.values()), selected
+            assert selected[ResourceCurrent] == [], selected
+            assert all(
+                len(selected[model]) == 1 for model in (ResourceOccupancy, SampleRunUsage)
+            ), selected
             occupancy_sql = selected[ResourceOccupancy][0][0].split("WHERE", 1)[1]
             usage_sql = selected[SampleRunUsage][0][0].split("WHERE", 1)[1]
             # Query the complete owner collection; project/build mismatches

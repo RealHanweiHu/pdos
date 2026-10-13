@@ -1,10 +1,45 @@
 {
-  "head": "s0_0721",
+  "head": "s0_0728",
   "database": "pdos_test",
   "port": 62303,
   "marker": "6712d849-f2c1-4b32-ae79-d50d9a31639d",
   "ordinary_owner_read_passed": true,
   "agent_direct_dml": false,
+  "runtime_owner_membership": false,
+  "authentication_root": {
+    "table": "login_sessions",
+    "reason": "Hashed session lookup before tenant binding; auth SELECT only",
+    "role_privileges": [
+      [
+        "pdos_agent",
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        "pdos_next_app",
+        false,
+        false,
+        false,
+        false
+      ],
+      [
+        "pdos_next_auth",
+        true,
+        false,
+        false,
+        false
+      ],
+      [
+        "pdos_next_dispatch",
+        false,
+        false,
+        false,
+        false
+      ]
+    ]
+  },
   "functions": [
     [
       "advance_change_dependency_clock()",

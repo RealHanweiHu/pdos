@@ -1,0 +1,7 @@
+{
+  "reason": "Stop known failed frozen candidate before a reviewed minimum-read correction; do not claim complete pass",
+  "parent_pid": 637,
+  "child_pid": 653,
+  "signal": "SIGINT",
+  "actual_exit_pending": true
+}

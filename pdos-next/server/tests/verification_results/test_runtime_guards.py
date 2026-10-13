@@ -25,9 +25,15 @@ from verification_results.test_transactions import counts
 
 
 @pytest.mark.parametrize("issuer", ["professional", "resources"])
-def test_store_read_runtime_revocation_blocks_import_and_rolls_back_confirmation(
+def test_store_io_rechecks_import_issuer_and_preserves_fixed_start_issuer(
     results_work, monkeypatch, issuer
 ):
+    from pdos_next.domain.build_operational_facts.models import ResourceOccupancy
+    from pdos_next.domain.test_resources.models import SampleRunUsage, TestResourceReservation
+    from pdos_next.domain.verification_launch.models import VerificationRunVersion
+    from pdos_next.domain.verification_results.models import MeasurementRecord, TestResultActionFact
+    from pdos_next.models import Receipt
+
     work = results_work
     captured, _ = capture(work, (0,))
     value = command(work, "test.results.import", captured=captured)
@@ -52,11 +58,28 @@ def test_store_read_runtime_revocation_blocks_import_and_rolls_back_confirmation
 
     monkeypatch.setattr(work.report_store, "read_original", revoked_after_bytes)
     response = post(work.quality, prepared)
-    assert fired and response.status_code == 409, response.text
-    assert response.json()["detail"]["reason"] == "SOURCE_STALE"
-    assert counts(work) == before
+    assert fired
     after = current_rows(work)
-    assert after.row.id == fixed.row.id and after.request.id == fixed.request.id
+    if issuer == "professional":
+        # This importer consumes the currently signed result authority.
+        assert response.status_code == 409, response.text
+        assert response.json()["detail"]["reason"] == "SOURCE_STALE"
+        assert counts(work) == before
+        assert after.row.id == fixed.row.id and after.request.id == fixed.request.id
+    else:
+        # The original Start's resource issuer is already fixed. Registry
+        # changes during report IO cannot reopen its historical qualification.
+        assert response.status_code == 200, response.text
+        current_counts = counts(work)
+        for model in (MeasurementRecord, TestResultActionFact, VerificationRunVersion, Receipt):
+            table = model.__tablename__
+            assert current_counts[table] == before[table] + 1, table
+        for model in (TestResourceReservation, ResourceOccupancy, SampleRunUsage):
+            table = model.__tablename__
+            assert current_counts[table] == before[table], table
+        assert after.row.id != fixed.row.id and after.request.id != fixed.request.id
+        assert after.run.actual_start == fixed.run.actual_start
+        assert after.run.samples == fixed.run.samples
     with tenant_session(
         work.setup.engine,
         work.setup.tenant,
@@ -67,7 +90,7 @@ def test_store_read_runtime_revocation_blocks_import_and_rolls_back_confirmation
             session.scalar(
                 select(Confirmation.consumed).where(Confirmation.token_hash == digest(token))
             )
-            is False
+            is (issuer == "resources")
         )
 
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="92.253" timestamp="2026-10-10T21:02:44.788744-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname=".local.s0-p12-recovery-test" name="test_final_restore_keeps_configuration_to_handoff_and_started_run[launch_work0]" time="91.366"><failure message="AssertionError: Restored business fingerprints differ">../tools/checkpoints/b8_recovery.py:58: in test_final_restore_keeps_configuration_to_handoff_and_started_run
+    recovery.run()
+../tools/s0_b8_restore.py:197: in run
+    assert restored == before, "Restored business fingerprints differ"
+           ^^^^^^^^^^^^^^^^^^
+E   AssertionError: Restored business fingerprints differ</failure></testcase></testsuite></testsuites>

@@ -89,7 +89,8 @@ def test_actual_multi_failure_reading_shares_retained_and_rejects_late_byte_revo
     work = quality_work
     publish_policy(work)
     create_issue(work, 0)
-    create_issue(work, 1)
+    # Keep one failure unadmitted: its initial reading still requires the
+    # genuine retained terminal. The saved failure uses direct watermarks.
     baseline = counts(work)
     retained, reads = [], []
     actual_retained = bridge.inspect_retained_execution
@@ -203,20 +204,34 @@ def test_actual_multi_failure_reading_shares_retained_and_rejects_late_byte_revo
         event.remove(work.setup.engine, "before_cursor_execute", observe_query)
         observing_sources = False
     assert source_calls and not active_sources and not active_batches
-    assert any(len(call["batch"]["missing"]) > 1 for call in source_calls)
+    # Direct references can be checked individually from the request's raw
+    # bank. Require complete coverage of the saved failure's exact sources;
+    # the observer still checks one query for each actual missing set.
+    required_direct = {
+        UUID(failure[name]["id"])
+        for row in view["issues"]
+        for failure in row["issue"]["failures"]
+        for name in ("criterion", "method", "source")
+    }
+    observed_direct = set().union(*(call["ids"] for call in source_calls))
+    assert len(required_direct) > 1 and required_direct <= observed_direct
     # The real list reads every selected Issue snapshot in one query. Stored
     # writer/proof snapshots must neither be transferred nor lazily fetched.
     assert len(version_queries) == 1
     projection = version_queries[0].split("FROM", 1)[0]
     assert "issue_snapshot" in projection
+    assert "quality_issue_versions.source_basis" in projection
     assert all(
         f"quality_issue_versions.{column}" not in projection
-        for column in ("input_snapshot", "authority_snapshot", "policy_snapshot", "source_basis")
+        for column in ("input_snapshot", "authority_snapshot", "policy_snapshot")
     )
-    assert len(view["current_by_issue"]) == 2
+    assert len(view["current_by_issue"]) == 1
+    assert len(view["failures"]) == 2 and all(row["available"] for row in view["failures"])
     assert all(row["source_status"] == "current" for row in view["issues"] if row["is_current"])
     assert len(retained) == 2 and retained[0] == retained[1]
-    assert len(reads) >= 2  # Actual original bytes remain an obligation of each selection.
+    # Only the unadmitted failure reads these actual report bytes, once.
+    # The saved failure uses its direct Current/result/source watermarks.
+    assert len(reads) == 1
     assert counts(work) == baseline
 
     # Revoke after the last successful byte read from the positive candidate.
@@ -249,7 +264,7 @@ def test_actual_writer_preparation_keeps_record_fresh_and_seals_qualification_af
     quality_work, monkeypatch
 ):
     import re
-    from uuid import UUID
+    from uuid import UUID, uuid4
 
     from pdos_next import quality_result_bridge as bridge
     from pdos_next.domain.quality_execution import evidence
@@ -258,12 +273,15 @@ def test_actual_writer_preparation_keeps_record_fresh_and_seals_qualification_af
     work = quality_work
     publish_policy(work)
     first, _ = create_issue(work, 0)
+    second, _ = create_issue(work, 1)
+    # This genuine T1 merge keeps the complete retained writer boundary.
     value = command(
         work,
-        "quality.issue.triage",
+        "quality.issue.merge",
         {
             "issue_id": first["result"]["issue_id"],
             "expected_issue_revision": 1,
+            "sources": [{"id": second["result"]["issue_id"], "revision": 1}],
             "reason": "Actual held writer preparation and independently fresh record",
         },
     )
@@ -271,6 +289,7 @@ def test_actual_writer_preparation_keeps_record_fresh_and_seals_qualification_af
     original_retained = bridge.inspect_retained_execution
     advance_clock = False
     future = now() + timedelta(hours=3)
+    actual_now = service.now
     writer_batches, active_writer_batches = [], []
     observing_writer = {"phase": None}
     actual_writer_batch = evidence._batch_writer_native_registrations
@@ -404,11 +423,35 @@ def test_actual_writer_preparation_keeps_record_fresh_and_seals_qualification_af
         if observed["phase"] == "preview"
         for pairs in observed["queries"]
     )
+    # Probe expiry before the valid merge changes either Issue Current. The
+    # refused preview leaves the original reviewed confirmation usable.
+    refused_command = {
+        **value,
+        "command_id": str(uuid4()),
+        "idempotency_key": str(uuid4()),
+    }
+    baseline = counts(work)
+    retained.clear()
+    advance_clock = True
+    try:
+        with observe_writer_sql("late_preview"):
+            refused = post(work.quality, refused_command, True)
+    finally:
+        advance_clock = False
+        monkeypatch.setattr(service, "now", actual_now)
+    assert late_clock == [True]
+    assert retained == [(True, True), (True, False)]
+    assert refused.status_code == 409, refused.text
+    assert refused.json()["code"] == "SOURCE_STALE"
+    assert counts(work) == baseline
+
     retained.clear()
     with observe_writer_sql("commit"):
         committed = post(work.quality, preview.json()["command"])
     assert committed.status_code == 200, committed.text
-    assert retained == [(True, True), (True, False), (False, True)]
+    # Each of the merge's two failures gets an independently fresh record
+    # check after confirmation consumption invalidates the prepared raw bank.
+    assert retained == [(True, True), (True, False), (False, True), (False, True)]
     prepared_pairs, fresh_pairs = set(), set()
     for observed in writer_batches:
         if observed["phase"] == "commit":
@@ -417,27 +460,6 @@ def test_actual_writer_preparation_keeps_record_fresh_and_seals_qualification_af
     # Confirmation consumption discarded the first epoch's raw bank. These are
     # actual new SQL reads under the still-held gate, not a borrowed positive proof.
     assert len(prepared_pairs) > 1 and fresh_pairs == prepared_pairs
-
-    second, _ = create_issue(work, 1)
-    refused_command = command(
-        work,
-        "quality.issue.triage",
-        {
-            "issue_id": second["result"]["issue_id"],
-            "expected_issue_revision": 1,
-            "reason": "Terminal IO must not preserve an expired quality qualification",
-        },
-    )
-    baseline = counts(work)
-    retained.clear()
-    advance_clock = True
-    with observe_writer_sql("late_preview"):
-        refused = post(work.quality, refused_command, True)
-    assert late_clock == [True]
-    assert retained == [(True, True), (True, False)]
-    assert refused.status_code == 409, refused.text
-    assert refused.json()["code"] == "SOURCE_STALE"
-    assert counts(work) == baseline
 
 
 def test_actual_writer_late_access_io_cannot_revoke_original_run_issuer_and_return_preview(
@@ -448,14 +470,16 @@ def test_actual_writer_late_access_io_cannot_revoke_original_run_issuer_and_retu
 
     work = quality_work
     publish_policy(work)
-    created, _ = create_issue(work)
+    first, _ = create_issue(work, 0)
+    second, _ = create_issue(work, 1)
     value = command(
         work,
-        "quality.issue.triage",
+        "quality.issue.merge",
         {
-            "issue_id": created["result"]["issue_id"],
+            "issue_id": first["result"]["issue_id"],
             "expected_issue_revision": 1,
-            "reason": "Actual last quality source IO cannot invalidate earlier retained execution",
+            "sources": [{"id": second["result"]["issue_id"], "revision": 1}],
+            "reason": "Actual last quality source IO must retain the T1 merge boundary",
         },
     )
     baseline = counts(work)

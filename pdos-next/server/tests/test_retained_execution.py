@@ -371,13 +371,14 @@ def test_retained_proof_rejects_changed_fixed_run_basis_even_with_valid_snapshot
             assert proof["reason_codes"] == ["RUN_START_PROOF_INVALID"], (change, proof)
 
 
-def test_retained_proof_rechecks_source_terminal_withdrawal_and_resource_sample_epochs(
+def test_retained_proof_rechecks_source_withdrawal_without_reinterpreting_asset_sample_epochs(
     retained_started_work,
 ):
     work = retained_started_work
     with _scoped(work) as session:
         original = _effects(session, work)
-        _current(_proof(session, work))
+        baseline = _proof(session, work)
+        _current(baseline)
         equipment = next(
             r.resource for r in work.test_input.resources if r.resource.kind == "equipment"
         )
@@ -404,10 +405,14 @@ def test_retained_proof_rechecks_source_terminal_withdrawal_and_resource_sample_
                     .values(**values)
                 )
                 proof = _proof(session, work)
-                assert proof["current"] is False, model.__tablename__
-                # The real Start saves v2's exact resource dependency proof;
-                # changed asset/sample epochs fail that proof before effects.
-                assert proof["reason_codes"] == ["RESOURCE_FACTS_CHANGED"], proof
+                # Later capacity/usage watermarks cannot rewrite the exact
+                # already committed Start, reservation and usage identities.
+                _current(proof)
+                for key in (
+                    "facts_revision", "original_start_intent", "reservation",
+                    "occupancy", "sample_usage"
+                ):
+                    assert proof[key] == baseline[key], (model.__tablename__, key)
             finally:
                 savepoint.rollback()
                 session.expire_all()
@@ -439,18 +444,23 @@ def test_retained_proof_rechecks_source_terminal_withdrawal_and_resource_sample_
         assert _effects(session, work) == original
 
 
-def test_retained_proof_rejects_issuer_disable_restore_aba_without_new_effects(
+def test_retained_proof_preserves_fixed_issuer_evidence_after_registry_aba(
     retained_started_work,
 ):
     work = retained_started_work
     with _scoped(work) as session:
-        _current(_proof(session, work))
+        before = _proof(session, work)
+        _current(before)
     issuer = work.test_issuer
     resources.disable_issuer(work.setup.engine, issuer.key)
     with _scoped(work) as session:
         missing = _proof(session, work)
-        assert missing["current"] is False
-        assert missing["reason_codes"] == ["TRUSTED_ISSUER_REQUIRED"], missing
+        _current(missing)
+        for key in (
+            "facts_revision", "original_start_intent", "reservation",
+                    "occupancy", "sample_usage"
+        ):
+            assert missing[key] == before[key]
     restored = resources.configure_local_synthetic(
         work.setup.engine,
         tenant_id=issuer.tenant_id,
@@ -465,10 +475,14 @@ def test_retained_proof_rejects_issuer_disable_restore_aba_without_new_effects(
     assert restored.epoch > issuer.epoch and restored is not issuer
     with _scoped(work) as session:
         proof = _proof(session, work)
-        assert proof["current"] is False
-        # Restoring the issuer advances its epoch; v2 still requires the exact
-        # issuer of the saved fact and cannot revive the old execution proof.
-        assert proof["reason_codes"] == ["TRUSTED_ISSUER_REQUIRED"], proof
+        # Signed issuer material remains exact; current registry changes can
+        # restrict a new Start, never reinterpret the already saved event.
+        _current(proof)
+        for key in (
+            "facts_revision", "original_start_intent", "reservation",
+                    "occupancy", "sample_usage"
+        ):
+            assert proof[key] == before[key]
 
 
 def test_retained_proof_keeps_history_without_current_manufacturing_qualification(
@@ -540,12 +554,13 @@ def test_retained_proof_keeps_history_without_current_manufacturing_qualificatio
         assert current["qualified"] is True, current
 
 
-def test_retained_proof_rejects_new_real_observation_of_configuration_deviation(
+def test_retained_proof_preserves_fixed_start_after_new_configuration_observation(
     retained_started_work,
 ):
     work = retained_started_work
     with _scoped(work) as session:
-        _current(_proof(session, work))
+        before = _proof(session, work)
+        _current(before)
     # The shared launch fixture retains fixed IDs, not its original command
     # payloads. Reconstruct only new draft inputs from the exact saved versions;
     # never rewrite the planned configurations or substitute a current version.
@@ -605,7 +620,7 @@ def test_retained_proof_rejects_new_real_observation_of_configuration_deviation(
             differences=[
                 {
                     "path": difference["path"],
-                    "reason": "Synthetic new observed deviation requires retained-proof recheck",
+                    "reason": "Synthetic observation independent of the fixed Start",
                     "sources": [
                         {
                             "artifact_id": fixed["source"],
@@ -621,8 +636,12 @@ def test_retained_proof_rejects_new_real_observation_of_configuration_deviation(
     )
     with _scoped(work) as session:
         proof = _proof(session, work)
-        assert proof["current"] is False, proof
-        assert proof["reason_codes"] == ["RESOURCE_FACTS_CHANGED"], proof
+        _current(proof)
+        for key in (
+            "facts_revision", "original_start_intent", "reservation",
+                    "occupancy", "sample_usage"
+        ):
+            assert proof[key] == before[key]
 
 
 @pytest.fixture
@@ -868,12 +887,14 @@ def test_retained_final_dependency_forces_both_rows_actual(retained_raw_rows, un
     assert len(rows.calls) - before == (1 if unavailable is ResourceCurrent else 2)
 
 
-def test_retained_held_writer_read_permission_rechecks_untracked_current_after_source_io(
+def test_retained_held_writer_keeps_fixed_fact_after_late_current_successor(
     retained_started_work, monkeypatch
 ):
     """Actual PG lineage/trigger checks; root alone executes this guarded test."""
     work = retained_started_work
-    ordinary_effects, ordinary_basis = launch._saved_effects, retained.physical._basis
+    from pdos_next import source_current
+
+    ordinary_effects, ordinary_basis = launch._saved_effects, source_current.direct_source_basis
     with _scoped(work) as session:
         gate = session.scalar(
             select(Product)
@@ -882,7 +903,8 @@ def test_retained_held_writer_read_permission_rechecks_untracked_current_after_s
         )
         assert gate is not None
         request_proof(session).scope_locks.add(gate.id)
-        _current(_proof(session, work))
+        baseline = _proof(session, work)
+        _current(baseline)
         savepoint = session.begin_nested()
         try:
             pointer, original = resources._current(
@@ -920,8 +942,8 @@ def test_retained_held_writer_read_permission_rechecks_untracked_current_after_s
                 seen["fresh"].append(fresh)
                 return value
 
-            def source_io_changes_current(s, ctx, product_id, reads, refs):
-                value = ordinary_basis(s, ctx, product_id, reads, refs)
+            def source_io_changes_current(s, ctx, product_id, refs, reads):
+                value = ordinary_basis(s, ctx, product_id, refs, reads)
                 if s is session and seen["effects"] and not seen["changed"]:
                     proof = request_proof(session)
                     epoch = proof.mutation_epoch
@@ -949,16 +971,21 @@ def test_retained_held_writer_read_permission_rechecks_untracked_current_after_s
                 return value
 
             monkeypatch.setattr(launch, "_saved_effects", real_effects)
-            monkeypatch.setattr(retained.physical, "_basis", source_io_changes_current)
+            monkeypatch.setattr(source_current, "direct_source_basis", source_io_changes_current)
             # Permission remains read-only; this is an actual command Session
             # with a held Product gate, so its final owner SQL must be fresh.
             value = retained.inspect_retained_execution(
                 session, work.quality.ctx, work.setup.product, _run_row(session, work), write=False
             )
             assert seen["changed"] and seen["fresh"] == [True]
-            assert value["current"] is False and value["reason_codes"] == [
-                "RETAINED_EXECUTION_CHANGED"
-            ], value
+            # Direct source IO and terminal owner SQL are actual, but a new
+            # upstream Current version cannot replace the fixed saved Fact.
+            _current(value)
+            for key in (
+                "facts_revision", "original_start_intent", "reservation",
+                    "occupancy", "sample_usage"
+            ):
+                assert value[key] == baseline[key]
             assert _effects(session, work) == before, (
                 "Inspection changed retained execution effects"
             )

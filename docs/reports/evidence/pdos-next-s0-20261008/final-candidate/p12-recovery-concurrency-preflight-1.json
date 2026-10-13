@@ -1,0 +1,14 @@
+{
+  "exact_context_basename": "context-e3a9bacd-01cf-46f2-b569-1dc9bbb67123.json",
+  "birthtime_verified": true,
+  "before_principals": 5482,
+  "actual_dump_principals": 5502,
+  "writes_between_fingerprint_and_dump": true,
+  "cause": "Concurrent writes during prior backup window; writer identity not retrospectively established",
+  "current_two_snapshots_equal": true,
+  "current_nonidle_other_connections": [],
+  "head": "s0_0728",
+  "port": 62303,
+  "marker": "6712d849-f2c1-4b32-ae79-d50d9a31639d",
+  "prior_attempt_passed": false
+}

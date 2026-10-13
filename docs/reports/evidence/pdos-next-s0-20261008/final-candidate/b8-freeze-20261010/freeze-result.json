@@ -1,0 +1,43 @@
+{
+  "freeze_commit": "0eccfe0376d387de7a5211c2852f50f2432ca7b4",
+  "user_date": "2026-10-10",
+  "local_commit_only": true,
+  "pushed": false,
+  "s0_source_count": 1032,
+  "s0_source_digest": "7288048fe949dd0c845946e9e01f2ca9c7da846d05155cc5d418b3a303ba9c9e",
+  "full_candidate_source_count": 1250,
+  "full_candidate_source_digest": "cb5b506eac722a9081b09f827d3ac88796376c188c79cf82764b897f661c1021",
+  "commit_blobs_match_manifest": true,
+  "excluded_paths_absent_from_commit": true,
+  "archive": {
+    "manifest": "docs/reports/evidence/archive-manifest-20261010.json",
+    "count": 97,
+    "bytes": 746263718,
+    "all_sha256_verified": true,
+    "repository_files_over_5MB_remaining": 0
+  },
+  "inactive_empty_git_index_lock": {
+    "original_date": "2026-10-08",
+    "open_handles": 0,
+    "preserved_at": ".local/b8-freeze/index.lock.stale-20261010"
+  },
+  "diff_check": {
+    "runtime_source_findings": 0,
+    "raw_cpu_and_junit_whitespace_preserved": true,
+    "exit": 2,
+    "log_private": ".local/b8-freeze/diff-check.log"
+  },
+  "m3_worktree": "/Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform",
+  "m3_branch": "codex/m3-after-b8-20261010",
+  "b8_validation_owner_user_confirmed": "制定 M1 整体重构计划",
+  "own_overlapping_full_regression": {
+    "report": "p12-current-frozen-full-20261010-1.json",
+    "exit": 2,
+    "child_reaped": true,
+    "passed_claimed": false,
+    "cause": "Concurrent B8 recovery in the same 62303 marked fixture; stopped owned regression, preserved reports. Post-recovery ordinary-owner audit passed."
+  },
+  "current_workspace_business_source_changed": false,
+  "b8_complete_claimed": false,
+  "merge_gate": "B8 passed with one known performance exception before merging M3"
+}

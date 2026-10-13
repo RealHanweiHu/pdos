@@ -182,7 +182,7 @@ def test_concurrent_imports_same_run_cas_commit_exactly_one_atomic_group(results
         responses = list(pool.map(lambda value: post(work.quality, value), prepared))
     assert sorted(response.status_code for response in responses) == [200, 409]
     losing = next(response for response in responses if response.status_code == 409)
-    assert losing.json()["detail"]["reason"] == "MISSING_REQUIRED_EVIDENCE"
+    assert losing.json()["detail"]["reason"] == "VERSION_CONFLICT"
     after = counts(work)
     assert after[MeasurementRecord.__tablename__] == before[MeasurementRecord.__tablename__] + 1
     assert (

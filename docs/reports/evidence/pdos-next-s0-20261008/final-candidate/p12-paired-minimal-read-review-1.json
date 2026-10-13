@@ -1,0 +1,39 @@
+{
+  "scope": "Resolve actual complete-regression CAPA read failure without expanding Start read set; keep current direct event, exact source basis, immutable historical clock, source revocation, saved signer, retained, UOW and terminal gates",
+  "runtime_changes": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+      "before": "08d1b209f0253a4bd8cc20674cf8e42194534268e500664d7785c0ba3f6301ee",
+      "after": "36c5506bf8ec53e0133c79f069e55fb77317674f21ec6638c83ce14d65c4a951",
+      "changed_function": "verify_paired_material",
+      "all_other_module_ast_and_imports_unchanged": true,
+      "schema_or_migration_change": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/paired_output_bridge.py",
+      "before": "bbeb97f262cd777ee5ca3070db06483258f2dc8e18d9e507066bc5aa38f6d991",
+      "after": "3165acc957ddc3a22f5a8ce67f2351069fb6ce03d95c2076a06b2681ff7afeae",
+      "changed_function": "_fixed_source_basis",
+      "all_other_module_ast_and_imports_unchanged": true,
+      "schema_or_migration_change": false
+    }
+  ],
+  "added_tests": {
+    "path": "pdos-next/server/tests/capa_effectiveness/test_live_paired_owner.py",
+    "before": "c1d3f29a00376caa18d4ca571dd0034c9c4d1d46f4cba5e1a0aebf38a5f13911",
+    "after": "0a83625b8b890b95ece4b4f22d223ebb55e014a4b970c4832402a3352a63c56f",
+    "added_functions": [
+      "test_current_pair_event_original_remains_required",
+      "test_direct_start_basis_keeps_saved_contract_and_exact_launch_binding",
+      "test_historical_promise_original_is_not_a_later_read_but_clock_remains_immutable",
+      "without_artifact_read"
+    ],
+    "cases": 9,
+    "all_prior_tests_imports_and_fixtures_ast_unchanged": true
+  },
+  "runtime_operations_tiers_and_schema_unchanged": true,
+  "guarded_source_contract": "Direct Run is actual VerificationRunVersion operation test.run.start plus saved s0-direct-v1 marker; LaunchFact must bind that exact Run version. Later result versions keep their own source basis contract. Shape guessing does not select a branch.",
+  "prior_http_browser_recovery_scope": "Native category source/claim/T1 revert and category run failure/cancellation do not call paired Formal proof; restoration/receipt replay and schema DDL unchanged. Any reuse requires exact reviewed source deltas and complete current regression, not a partial result.",
+  "affected_attempt": "p12-current-paired-alignment-2.json: actual 62 passed; final typed row fence will also be covered in complete current full regression",
+  "complete_current_validation_pending": true
+}

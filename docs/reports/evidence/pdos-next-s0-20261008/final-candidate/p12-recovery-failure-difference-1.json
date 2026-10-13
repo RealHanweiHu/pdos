@@ -1,0 +1,357 @@
+{
+  "private_context_basename": "context-e3a9bacd-01cf-46f2-b569-1dc9bbb67123.json",
+  "differences": {
+    "builds": {
+      "before": {
+        "rows": 667,
+        "sha256": "bbbcf1412d25879513ab361b573e8c49f83bb3bb1e6d43b239962ce388eb6492"
+      },
+      "after": {
+        "rows": 672,
+        "sha256": "d3fd06ec6cb8e3c53970d575ca9bca9ae47186c1e840bd9c6cced3b5f19a8948"
+      }
+    },
+    "parts": {
+      "before": {
+        "rows": 923,
+        "sha256": "43ade640295618387e06fc634dc8b217bf1591ea91f8c20bbba64a82951790e0"
+      },
+      "after": {
+        "rows": 933,
+        "sha256": "ab619a8c84e38cc9df86807c7ab68ac01a29d8060ae19bc088704d788f8483b1"
+      }
+    },
+    "agent_validation_budgets": {
+      "before": {
+        "rows": 86,
+        "sha256": "39b135c3d47f91e15982e2d11e0589f2568498662cd90c6a9638465448d972bd"
+      },
+      "after": {
+        "rows": 88,
+        "sha256": "0ba52a25e30dfcc0cc4992d2308d71256ee2fdff6343d9c93ad43aad23d3e733"
+      }
+    },
+    "agent_run_events": {
+      "before": {
+        "rows": 347,
+        "sha256": "aad5b020e4b8857fe4287d9c5489bbef7bc9b62fe065542e7be8145e16844585"
+      },
+      "after": {
+        "rows": 350,
+        "sha256": "32d46fd427593a9737a877f34a17415a5762976f8c9d6af826d04c6acb459b00"
+      }
+    },
+    "process_revisions": {
+      "before": {
+        "rows": 843,
+        "sha256": "f55ba2c7108d534ce828eaae82494c82481b9bfac6729d54dd229d9cfae9343c"
+      },
+      "after": {
+        "rows": 853,
+        "sha256": "ff37c261229e4615badb1d7a87b566edf26e0cbf9d0556d6aaa21be5d21bb54f"
+      }
+    },
+    "principals": {
+      "before": {
+        "rows": 5482,
+        "sha256": "3693ba905c4e135d493d55fa804b53f1dbee756825fe3719e0945c474463df5c"
+      },
+      "after": {
+        "rows": 5630,
+        "sha256": "6db7d680615c6752d762a13456d7d16268e939f2fd877ee5f9a39556ecadf2d0"
+      }
+    },
+    "project_product_links": {
+      "before": {
+        "rows": 759,
+        "sha256": "08632197cc573ba4140710b6acc323aee8e6b53742c7b89563a438c5049ccbf3"
+      },
+      "after": {
+        "rows": 764,
+        "sha256": "7cd65bd2dc6719fbf76602006bb4dd7c705e218a51a0cf5456e59436678812eb"
+      }
+    },
+    "action_receipts": {
+      "before": {
+        "rows": 31502,
+        "sha256": "00a205df8bdd4f4174c5100c2620326f8bdf95da60207b328c5ea2824642c16f"
+      },
+      "after": {
+        "rows": 31577,
+        "sha256": "3527c0ddfce5e4f7814d10024105a461760fed1a5463516e9b380e5221ec938f"
+      }
+    },
+    "outbox_events": {
+      "before": {
+        "rows": 31425,
+        "sha256": "5025df8eb75ec831f283e52bc5ca6272c3ca2d3bfe16da0f6df42f11fc5fb9a6"
+      },
+      "after": {
+        "rows": 31485,
+        "sha256": "d55d8729be874e524b439895e50ebfceceb321e9d6361d3c7c233c14e9822f35"
+      }
+    },
+    "request_keys": {
+      "before": {
+        "rows": 31146,
+        "sha256": "8e693d3d9c9d4778806ce4c0cb505675dc4a7a742cadab598d4375ec670c175f"
+      },
+      "after": {
+        "rows": 31205,
+        "sha256": "0157ef1c740ec60764cbce151e17b17524632ec42d958e6f5cf9bf8972905198"
+      }
+    },
+    "build_operational_facts": {
+      "before": {
+        "rows": 593,
+        "sha256": "3c2ee2f2338ad9d5fa1cbf65d8448dbcb0ed39560e95f8508fc3ec7a82b153ca"
+      },
+      "after": {
+        "rows": 597,
+        "sha256": "da0097779302619bf4dd507cf9dd1a47be0ed3de97a168c60c25fa56a384b341"
+      }
+    },
+    "tenant_administrators": {
+      "before": {
+        "rows": 28,
+        "sha256": "f12d8c6043eb4f6e581d7a1bf53ad6ed92df7206dbe599465ad11b88e7cd0ea7"
+      },
+      "after": {
+        "rows": 29,
+        "sha256": "4598326708efae57ece1319e334d8fb37465beece9d941d43ea929446146da99"
+      }
+    },
+    "engineering_configurations": {
+      "before": {
+        "rows": 844,
+        "sha256": "250fc73db6826a9321eb84bcaf95b1341e5639073579d84695f0eba949e899c5"
+      },
+      "after": {
+        "rows": 854,
+        "sha256": "59d09c56b342fdaa5c5d785d2fe77a1f1d02f0584e3357627b264889d534f85c"
+      }
+    },
+    "claims": {
+      "before": {
+        "rows": 1156,
+        "sha256": "78399cebb2ec5cb31fe1a20ec18829fcd230f57bb2a23f0d5108df5c5f9babb7"
+      },
+      "after": {
+        "rows": 1161,
+        "sha256": "c80a577caa9f011ba874f2c471c774bb5c3a748f29ecec0663c443e1dbc2ce6e"
+      }
+    },
+    "agent_sessions": {
+      "before": {
+        "rows": 404,
+        "sha256": "d451a6a4870deaa7b25b51f189da0933bc2db7afb63de2b95f423dc985347c8a"
+      },
+      "after": {
+        "rows": 412,
+        "sha256": "94a495837dbbe97aa19adb959b7ff80923b56883c5c1781205d267c16daba4a9"
+      }
+    },
+    "login_sessions": {
+      "before": {
+        "rows": 4215,
+        "sha256": "4129692be012576bfc86e7951cd5b4c883e77aecf034853215d4643c679e04af"
+      },
+      "after": {
+        "rows": 4329,
+        "sha256": "7cec63d1d2260d2d6767b434d15e125aeea14ee9b567009b0cabf682340a54cd"
+      }
+    },
+    "definition_revisions": {
+      "before": {
+        "rows": 810,
+        "sha256": "af125198b50e2d527ef4261d694753d85e2e2274c9d5099fdcb9ee24d68e9ef0"
+      },
+      "after": {
+        "rows": 816,
+        "sha256": "f753823c9c85ddc3be6f50efccaa480e4fb575548cbc4b3a2f771036a233c3ec"
+      }
+    },
+    "change_dependency_clocks": {
+      "before": {
+        "rows": 1288,
+        "sha256": "fab3b8f9346435be352283876e5d19ab6f42fb7d9284494526e40131dd9f5b99"
+      },
+      "after": {
+        "rows": 1305,
+        "sha256": "35cd3d24396ebb3b3a550de756592244a9c3da91f40ace063611c93052e8b668"
+      }
+    },
+    "operational_asset_sentinels": {
+      "before": {
+        "rows": 1891,
+        "sha256": "9b5dd0fbf136d789ec7bd9397a5bb025f64d620d3f439b0ed0dbb29c714308c6"
+      },
+      "after": {
+        "rows": 1899,
+        "sha256": "21df6874d7352da294c3d1716cb4b9057f41acb12012dbdbf54165685c3af9ba"
+      }
+    },
+    "definition_sources": {
+      "before": {
+        "rows": 810,
+        "sha256": "8c3444c21cd4670e9189b29f47e38f776198fc2410ae977a684b2afcfaf7fba1"
+      },
+      "after": {
+        "rows": 816,
+        "sha256": "f61d7a1ff4f9d042808afc71c7349283b6105eac32723aa533200b7c48c92e55"
+      }
+    },
+    "grants": {
+      "before": {
+        "rows": 4216,
+        "sha256": "2ae79bd4a9fb857767d41da76c451dc30b46bc51d3836da7261e10e4a329e271"
+      },
+      "after": {
+        "rows": 4330,
+        "sha256": "581cffbfba85a2906e5fe94865a0af99ad4d9a04715ab1079cc78e4a57a55476"
+      }
+    },
+    "build_readiness": {
+      "before": {
+        "rows": 655,
+        "sha256": "fda470878f1c182df5363d880cdfbe2af047692e9bcbc27fdf00c0f9c05a79e6"
+      },
+      "after": {
+        "rows": 659,
+        "sha256": "677df8bd94d07ee9722306fb8483a621fad0d393a562c735fef6fe0ec4e06ec8"
+      }
+    },
+    "projects": {
+      "before": {
+        "rows": 759,
+        "sha256": "78f6c6813a428367812cb4d0d2bfd26db1d715e93034427b4a43bce8ac83219e"
+      },
+      "after": {
+        "rows": 764,
+        "sha256": "ff8335fd4087b043838af4ba5116b114d5e2844482b1735f0470f22fee37b9e9"
+      }
+    },
+    "products": {
+      "before": {
+        "rows": 1293,
+        "sha256": "7471685815fd3cd9ffd4125debfd62e4b95cd550a26c111270db7631de73c006"
+      },
+      "after": {
+        "rows": 1330,
+        "sha256": "93014854413a1d23d083d50d25f34b0ea0e820a80833b48c13edf5ea0655b7fb"
+      }
+    },
+    "model_configuration_heads": {
+      "before": {
+        "rows": 2525,
+        "sha256": "47527cfa09902f70bbed08b2679d10f881ca6f8cca0ce275344a17c032be1228"
+      },
+      "after": {
+        "rows": 2551,
+        "sha256": "746bf49e248085b9d9a52c9c99fbe4fc1dd6771c97557bfddbed26245b9a9fed"
+      }
+    },
+    "build_operational_current": {
+      "before": {
+        "rows": 581,
+        "sha256": "a940fc18c9b7759e9502ad444c7de739409dae39bfbaddbb202db46e26c18604"
+      },
+      "after": {
+        "rows": 585,
+        "sha256": "17af45cc7cbf155d597803d4a32f31f7125097d8250256e91d98d13252ad1715"
+      }
+    },
+    "audit_entries": {
+      "before": {
+        "rows": 31421,
+        "sha256": "e1a2d52d5bead14268c760c3a3f1c679779e9df6f73d11b39fbdf57859d03b70"
+      },
+      "after": {
+        "rows": 31485,
+        "sha256": "05e4345e038ce6c26e788312fda857c07de016304d033f843ec9f6c3b81838a8"
+      }
+    },
+    "bom_revisions": {
+      "before": {
+        "rows": 881,
+        "sha256": "76f6b1c260f0a3742f046ff5966ed634f88e58489171db714a6c6492517e4763"
+      },
+      "after": {
+        "rows": 891,
+        "sha256": "d1bbdad1ab927d9694a54e1cf5cf7ca9571798975aa4296317ccf82ff8462bf3"
+      }
+    },
+    "categories": {
+      "before": {
+        "rows": 1268,
+        "sha256": "e7dee0a6e65a232cc72985966656631f0ac6bf5bac23104d3210061b80dfb33e"
+      },
+      "after": {
+        "rows": 1310,
+        "sha256": "f3c96e67471137eb2e0f7c77014bea4ec3b661a5a970dc85f9c4b7ad5eacc7af"
+      }
+    },
+    "object_audiences": {
+      "before": {
+        "rows": 128,
+        "sha256": "b2d3575b3a8862ffd9eb77f9dc8ae092578884d533604e577b5c9c805f9cabb7"
+      },
+      "after": {
+        "rows": 129,
+        "sha256": "e76e6cbf5ddcebae041bb064fbcb006754e5a9906beda32d548c71028c6974b5"
+      }
+    },
+    "agent_runs": {
+      "before": {
+        "rows": 404,
+        "sha256": "f688c4cb47796d0351dda3eea5b9996f594e3e63acb894f88203b91f293aa9ef"
+      },
+      "after": {
+        "rows": 412,
+        "sha256": "d281bdbc8843b32c9c54b5cdc793bb7421aa03aac75d0ed2a006ac3b10cc8919"
+      }
+    },
+    "bom_lines": {
+      "before": {
+        "rows": 1096,
+        "sha256": "3dd32a5d7dcc31a803e7024523627085446fa0013c698738fef91e15f230f1c2"
+      },
+      "after": {
+        "rows": 1111,
+        "sha256": "ab73fa08b6f7b717e68a8a664ebe2b23a48cb6cec772707507f0dde9e05e2ed9"
+      }
+    },
+    "claim_consumptions": {
+      "before": {
+        "rows": 3,
+        "sha256": "6d6fb41e70fd845c1171eee2acee4a767b598e1d2d123d84ffde27100204eb08"
+      },
+      "after": {
+        "rows": 4,
+        "sha256": "e811d9a0d71ebdde22cf7b9c3fa6ae73619ef4d718819f0f835d0b23810342fe"
+      }
+    },
+    "artifact_versions": {
+      "before": {
+        "rows": 6849,
+        "sha256": "1fafc6278beb1bf4bcad66522a52e23e45c07a303e67194c4933fceccb2a1231"
+      },
+      "after": {
+        "rows": 6861,
+        "sha256": "f552ca524258f02d104a554d7077b673bcf019482882e2521196445a977d0925"
+      }
+    },
+    "confirmations": {
+      "before": {
+        "rows": 12828,
+        "sha256": "5f51e344162dbf0795ab66aef6ffc1d371e53fa373e60f387fc859c6a677f1e3"
+      },
+      "after": {
+        "rows": 12875,
+        "sha256": "77ffaab8d57fba7f2e4dacf435dcb25de7f0580fb6ef9954ada6cafd4505e8e1"
+      }
+    }
+  },
+  "head": "s0_0728",
+  "raw_row_to_json_fingerprint_equality": false
+}
