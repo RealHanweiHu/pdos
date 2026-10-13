@@ -170,6 +170,12 @@ class RowSchemaRegistry:
             raise ValueError("A registered row contract cannot be replaced in place")
         self._rows[key] = row_model
 
+    def row_model(self, declaration: RowSchemaDeclaration):
+        row = self._rows.get((declaration.kind, declaration.version))
+        if row is None:
+            raise ValueError("The requested data contract is not registered")
+        return row
+
     def rows_model(self, declaration: RowSchemaDeclaration):
         row = self._rows.get((declaration.kind, declaration.version))
         if row is None:

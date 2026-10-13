@@ -284,6 +284,10 @@ class ExtractReadLedger:
                 raise ValueError("Sources must be unique server seals")
             self._sources[source.artifact_id] = source
 
+    def has_page(self, call_id):
+        """Whether this exact completed call is already recorded (replay idempotency)."""
+        return str(call_id) in self._pages
+
     def record_successful_page(self, result, *, call_id, cursor, page_size):
         """The host verifies the actual call's success/provenance before invoking this.
 

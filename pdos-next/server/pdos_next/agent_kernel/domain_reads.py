@@ -10,13 +10,13 @@ from sqlalchemy import select, text
 
 from pdos_next.database import tenant_session
 from pdos_next.errors import DomainError
-from pdos_next.models import Category, UploadedOriginal
+from pdos_next.models import Category
 from pdos_next.schema_base import StrictModel
 from pdos_next.service import require_access, source_for
 
 from .extract_pages import located_page
-from .extract_read_ledger import ArtifactSeal
 from .extract_schemas import ArtifactReadInput
+from .extract_sources import seal_for
 
 
 class EmptyInput(StrictModel):
@@ -323,27 +323,12 @@ class DomainReads:
             ref = reads.get(payload.artifact_version_id)
             if ref is None:
                 raise DomainError("FORBIDDEN_SCOPE", "本次运行未绑定此原文。", 403)
-            source = source_for(
+            seal, _ = seal_for(
                 session,
                 ctx,
                 scope.product_id,
                 payload.artifact_version_id,
                 ref["expected_revision"],
-            )
-            original = (
-                session.get(UploadedOriginal, source.original_id) if source.original_id else None
-            )
-            if source.original_id and original is None:
-                raise DomainError("SOURCE_UNAVAILABLE", "原件元数据不可用。", 403)
-            seal = ArtifactSeal.from_server(
-                artifact_id=source.id,
-                revision=source.revision,
-                content_hash=source.content_hash,
-                text=source.content,
-                total_lines=len(source.content.splitlines()),
-                locator_map=original.locator_map if original else [],
-                parse_status=original.status if original else "parsed",
-                parse_code=original.parse_code if original else None,
             )
             return located_page(seal, arguments)
 

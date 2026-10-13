@@ -27,6 +27,18 @@ class Skill:
             "content": self.content,
         })
 
+    @property
+    def row_schemas(self):
+        """Extraction row contracts this skill declares; declaration alone grants no scope."""
+        from .extract_schemas import RowSchemaDeclaration
+
+        declared = self.metadata.get("row_schemas") or ()
+        if not isinstance(declared, (list, tuple)):
+            raise ValueError("Skill row_schemas must be a list of kind/version declarations")
+        return tuple(
+            RowSchemaDeclaration.model_validate(item) for item in declared
+        )
+
 
 class SkillCatalog:
     def __init__(self, directory=None):
@@ -59,6 +71,17 @@ class SkillCatalog:
             self._skills[data["key"]] = Skill(
                 data["key"], data["version"], data["purpose"], operations, data, content.strip()
             )
+        from .extract_schemas import draft_registry
+
+        rows = draft_registry()
+        for skill in self._skills.values():
+            for declaration in skill.row_schemas:
+                try:
+                    rows.rows_model(declaration)
+                except ValueError:
+                    raise ValueError(
+                        f"Skill {skill.key} declares an unregistered extraction row contract"
+                    ) from None
 
     @property
     def index(self):

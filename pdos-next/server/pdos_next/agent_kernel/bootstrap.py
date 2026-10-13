@@ -417,6 +417,21 @@ class Bootstrap:
             compute_engines=ENGINES,
             read_restores={**spec_compare.restores(), **definition_diff.restores()},
         )
+        from .extract_adapter import ExtractReadAdapter
+        from .extract_graph import ExtractGraph
+        from .extract_service import ExtractionService
+        from .host import BoundHost
+
+        extract_adapter = ExtractReadAdapter(
+            ExtractionService(self.store, self.commands, self.catalog),
+            ExtractGraph(
+                BoundHost(self.store, adapters),
+                artifact_read=adapters.read_tools["evidence.artifact.read"],
+                checkpointer_factory=self.ports.research_checkpointer_factory,
+            ),
+        )
+        adapters.read_tools.update(extract_adapter.handlers())
+        adapters.read_restores.update(extract_adapter.restores())
         if self.ports.research_service is not None:
             from pdos_next.research.tools import ResearchToolHost
 

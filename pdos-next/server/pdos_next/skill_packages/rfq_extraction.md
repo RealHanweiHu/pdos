@@ -1,7 +1,9 @@
 ---
 key: rfq_extraction
-version: 0.2.0-draft
+version: 0.3.0-draft
 purpose: 经隔离子任务从客户 RFQ、规格书、图纸说明和邮件中逐条抽取需求，保留原文位置、数值、单位、工况、否定与例外，映射到规格字典并登记为证据，列出冲突、未知、差距和待问客户/专家的问题。
+row_schemas:
+  - {kind: rfq_requirement, version: "1"}
 input_schema:
   type: object
   properties:
