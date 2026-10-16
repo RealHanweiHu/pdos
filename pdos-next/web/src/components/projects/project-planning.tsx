@@ -4,9 +4,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowClockwise, CalendarBlank, CheckCircle, Plus, Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { blankProjectDraft, buildSchedule, disciplineNames, durationText, forecastReasonNames, forecastWarningNames, utcText, weekdayNames, type ApplyPlanPayload, type PlanForecast, type PlanProposal, type PreparedProject, type Project, type ProjectApi, type ProjectCommand, type ProjectDraft, type ProjectList, type ProposePlanPayload, type ScheduleInput, type SourceRead, type TaskDraft, type WaitingProject } from "@/lib/project-plan-view";
-import { projectCreationMoved, restorePlanningDraft } from "./project-planning-state";
+import { globalHref } from "@/lib/global-navigation";
+import { planningStorageKey, projectCreationMoved, restorePlanningDraft } from "./project-planning-state";
 
-type Props = { product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: ProjectApi; onSaved: () => void | Promise<void> };
+type Props = { product: { id: string; name: string; purpose: string; revision: number }; categoryId?: string; projectId?: string; principalId: string; api: ProjectApi; onSaved: () => void | Promise<void> };
 type Receipt = { id: string; subject_type: string; subject_id: string };
 type PlanOperation = Exclude<ProjectCommand["operation"], "project.create">;
 const receiptTypes: Record<PlanOperation, string> = { "work.plan.propose": "plan_proposal", "work.plan.apply": "plan_revision" };
@@ -38,12 +39,12 @@ function TimelineFacts() {
 }
 
 export function ProjectPlanning(props: Props) {
-  return <ProjectPanel key={`${props.principalId}:${props.product.id}`} {...props}/>;
+  return <ProjectPanel key={`${props.principalId}:${props.product.id}:${props.projectId ?? ""}`} {...props}/>;
 }
 
-function ProjectPanel({ product, principalId, api, onSaved }: Props) {
-  const storageKey = `pdos-next:project-plan:${principalId}:${product.id}`;
-  const [draft, setDraft] = useState(() => blankProjectDraft(product.purpose));
+function ProjectPanel({ product, categoryId = "", projectId = "", principalId, api, onSaved }: Props) {
+  const storageKey = planningStorageKey(principalId, product.id, projectId);
+  const [draft, setDraft] = useState(() => ({ ...blankProjectDraft(product.purpose), projectId }));
   const [projects, setProjects] = useState<Project[]>([]);
   const [pending, setPending] = useState<WaitingProject | null>(null);
   const [preview, setPreview] = useState<PreparedProject | null>(null);
@@ -65,13 +66,15 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
   const owner = project?.owner_id === principalId;
 
   const refresh = useCallback(async () => {
+    setLoading(true); setProjects([]); setHidden(0); setHasMore(false);
     try {
-      const planned = await api<ProjectList>(`v1/products/${product.id}/projects`);
+      const planned = await api<ProjectList>(`v1/products/${product.id}/projects${projectId ? `/${projectId}` : ""}`);
+      if (projectId && (planned.items.length !== 1 || planned.items[0].id !== projectId)) throw new Error("当前项目资料未完整取得，请核对范围后刷新。");
       if (!alive.current) return;
       setProjects(planned.items); setHidden(planned.unavailable_count); setHasMore(planned.has_more);
     } catch (failure) { if (alive.current) setProjects([]); throw failure; }
     finally { if (alive.current) setLoading(false); }
-  }, [api, product.id]);
+  }, [api, product.id, projectId]);
 
   useEffect(() => {
     alive.current = true;
@@ -79,19 +82,20 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
     void Promise.resolve().then(() => {
       if (!alive.current) return;
       try {
-        const local = restorePlanningDraft(JSON.parse(localStorage.getItem(storageKey) ?? "null"), product.id);
+        const saved = localStorage.getItem(storageKey);
+        const local = restorePlanningDraft(JSON.parse(saved ?? (projectId ? localStorage.getItem(planningStorageKey(principalId, product.id)) : null) ?? "null"), product.id, projectId);
         if (local) {
           setDraft(local.draft); setPending(local.pending);
           if (local.retiredCreation) {
             setNotice(projectCreationMoved);
-            localStorage.setItem(storageKey, JSON.stringify({ draft: local.draft, pending: null }));
           }
+          if (local.retiredCreation || (projectId && !saved)) localStorage.setItem(storageKey, JSON.stringify({ draft: local.draft, pending: local.pending }));
         }
       } catch { /* Optional local storage does not alter server authority. */ }
       setReady(true);
     });
     return () => { alive.current = false; };
-  }, [refresh, storageKey, product.id]);
+  }, [refresh, storageKey, product.id, projectId, principalId]);
   useEffect(() => { if (preview) dialog.current?.showModal(); }, [preview]);
 
   function remember(next: ProjectDraft, waiting: WaitingProject | null) {
@@ -107,6 +111,7 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
     if (lock.current) return;
     const request = waiting.command;
     if (request.operation === "project.create") { waitFor(null); closePreview(); setNotice(projectCreationMoved); return; }
+    if (projectId && (!("project_id" in request.payload) || request.payload.project_id !== projectId)) { setError("此请求属于其他项目，不能在当前项目执行；原请求仍保留。"); return; }
     lock.current = true; setBusy(true); setError(""); setNotice(""); setRejected(false);
     if (element) trigger.current = element;
     waitFor(waiting);
@@ -114,7 +119,7 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
     try {
       if (waiting.stage === "preview") {
         const value = await api<PreparedProject>("v1/commands/preview", request);
-        if (!value.command || value.command.product_id !== product.id || value.command.operation !== request.operation || value.command.command_id !== request.command_id || value.command.idempotency_key !== request.idempotency_key || !value.confirmation_token || value.review?.operation !== request.operation || !value.review.effect || !value.review.name || !value.review.forecast || !value.review.input_snapshot) throw new Error("核对结果不完整；请保留输入，按原请求重新核对。");
+        if (!value.command || value.command.product_id !== product.id || value.command.operation !== request.operation || value.command.command_id !== request.command_id || value.command.idempotency_key !== request.idempotency_key || !("project_id" in value.command.payload) || !("project_id" in request.payload) || value.command.payload.project_id !== request.payload.project_id || !value.confirmation_token || value.review?.operation !== request.operation || !value.review.effect || !value.review.name || !value.review.forecast || !value.review.input_snapshot) throw new Error("核对结果不完整；请保留输入，按原请求重新核对。");
         if (!alive.current) return;
         waitFor(null); setPreview(value);
       } else {
@@ -155,10 +160,11 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
     edit({ ...draft, tasks: [...draft.tasks, { key: `task-${number}`, title: "", discipline: "engineering", depends_on: [], minimum: "", maximum: "", basis: "" }] });
   }
 
-  const showEditor = !!pending || (editorOpen ?? (!loading && projects.length === 0));
+  const showEditor = !!pending || (editorOpen ?? (!loading && !error && (projectId ? !!project && !project.plan : projects.length === 0)));
   return <section className="min-w-0 space-y-5" aria-label="项目与首版计划">
     <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="subtle">固定型号定义，组织真实研发工作</p><h2 className="mt-1 text-lg font-semibold">项目与首版计划</h2></div><div className="flex flex-wrap gap-2"><Button variant="outline" disabled={busy || !!pending || !!preview} aria-expanded={showEditor} aria-controls={`project-editor-pane-${product.id}`} onClick={() => setEditorOpen(!showEditor)}><CalendarBlank/>{showEditor ? "收起编排" : "编排首版计划"}</Button><Button variant="outline" disabled={busy || !!preview} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新项目</Button></div></header>
-    <p className="subtle">项目由立项提案的 G0 决定生成；在此查看项目并编排首版计划。</p>
+    <p className="subtle">项目由立项提案的 G0 决定生成；在此查看项目并编排首版计划。{projectId && "当前只办理所选项目。"}</p>
+    {projectId && categoryId && <Button asChild variant="outline"><a href={globalHref({ area: "cockpit", categoryId, projectId })}>返回项目驾驶舱</a></Button>}
     {error && <p role="alert" className="break-words rounded-lg border border-destructive p-3 text-destructive">{error}</p>}
     {notice && <p role="status" className="break-words rounded-lg border border-border p-3">{notice}</p>}
     {pending && <div className="min-w-0 rounded-lg border border-primary p-4"><p className="font-medium">{pending.stage === "preview" ? "本次范围核对需要重试" : "本次保存结果仍待确认"}</p><p className="subtle my-2">输入及原请求已保留。重试核对同一次请求，核对原计划保存结果。</p><div className="flex flex-wrap gap-2"><Button disabled={busy} onClick={() => void run(pending)}>按原请求重试</Button>{(pending.stage === "preview" || rejected) && <Button disabled={busy} variant="outline" onClick={() => { waitFor(null); setRejected(false); closePreview(); setNotice("输入已保留，可修改后重新核对范围。"); }}>保留输入，返回编辑</Button>}</div></div>}
@@ -167,8 +173,8 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
     {hasMore && <p className="subtle">当前显示最近 100 个可见项目。</p>}
     <div className={showEditor ? "grid min-w-0 items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]" : "min-w-0 max-w-5xl"}>
       <div id={`project-editor-pane-${product.id}`} hidden={!showEditor} className="min-w-0 space-y-5">
-        <section className="panel" aria-label="首版计划输入"><h3 className="font-semibold">准备首版计划候选</h3><p className="subtle mt-2 mb-4">本机输入按当前用户、当前型号保留。读取或刷新项目不会自动载入、覆盖或删除输入。</p><form noValidate onSubmit={event => { event.preventDefault(); proposePlan(); }}><fieldset disabled={!editable || loading} className="min-w-0">
-          <label>研发项目<select value={draft.projectId} onChange={event => edit({ ...draft, projectId: event.target.value })}><option value="">选择真实项目</option>{projects.map(item => <option key={item.id} value={item.id}>{item.name}{item.owner_id !== principalId ? " · 仅查看" : ""}{item.plan ? " · 已有首版计划" : ""}</option>)}</select></label>
+        <section className="panel" aria-label="首版计划输入"><h3 className="font-semibold">准备首版计划候选</h3><p className="subtle mt-2 mb-4">本机输入按当前用户、型号{projectId ? "及项目" : ""}保留。读取或刷新项目不会覆盖或删除输入。</p><form noValidate onSubmit={event => { event.preventDefault(); proposePlan(); }}><fieldset disabled={!editable || loading} className="min-w-0">
+          <label>研发项目<select disabled={!!projectId} value={draft.projectId} onChange={event => edit({ ...draft, projectId: event.target.value })}><option value="">选择真实项目</option>{projects.map(item => <option key={item.id} value={item.id}>{item.name}{item.owner_id !== principalId ? " · 仅查看" : ""}{item.plan ? " · 已有首版计划" : ""}</option>)}</select></label>
           {draft.projectId && !project && !loading && <p className="mb-3 text-sm">原选项目目前不可见；已保留输入，请重核权限后刷新。</p>}
           {project && <div className="mb-4 rounded-lg border border-border p-3 text-sm"><p className="break-words">固定定义：{project.definition.title} · v{project.definition.revision} · 尚未正式发布</p><p className="mt-2 whitespace-pre-wrap break-words">范围：{project.scope}</p>{!owner && <p className="mt-2">当前项目由其他负责人管理，你可以查看已保存计划。</p>}{project.plan && <p className="mt-2">首版计划已经应用。后续修订入口暂未开放。</p>}</div>}
           <fieldset disabled={!project || !owner || !!project.plan || project.source_status !== "current"} className="min-w-0">
@@ -182,7 +188,7 @@ function ProjectPanel({ product, principalId, api, onSaved }: Props) {
           </fieldset>
         </fieldset></form></section>
       </div>
-      <section className="min-w-0 space-y-4" aria-label="已保存项目与计划"><h3 className="font-semibold">已保存项目</h3>{!loading && projects.length === 0 && <div className="panel"><p className="subtle">当前范围尚无可见项目。请在品类的立项提案中完成 G0，通过后查看生成的项目。</p></div>}{projects.map(item => <article key={item.id} className="panel space-y-4"><div><div className="flex flex-wrap items-start justify-between gap-2"><h4 className="break-words font-semibold">{item.name}</h4><span className="subtle">{item.owner_id === principalId ? "本人负责" : "仅查看"} · {item.visibility === "private" ? "仅本人" : item.visibility === "audience" ? "指定评审人" : "品类授权成员"}</span></div><p className="mt-2 whitespace-pre-wrap break-words text-sm">{item.purpose}</p><p className="subtle mt-2 break-words">固定定义 v{item.definition.revision} · {item.definition.title} · 尚未正式发布</p><details className="mt-2 text-sm"><summary className="cursor-pointer">查看固定研发范围</summary><p className="mt-2 whitespace-pre-wrap break-words">{item.scope}</p></details>{item.source_status !== "current" && <p className="mt-2 text-sm">固定定义的来源需要重核，当前不可继续应用计划。</p>}</div><TimelineFacts/>
+      <section className="min-w-0 space-y-4" aria-label="已保存项目与计划"><h3 className="font-semibold">已保存项目</h3>{!loading && !error && hidden === 0 && projects.length === 0 && <div className="panel"><p className="subtle">当前范围尚无可见项目。请在品类的立项提案中完成 G0，通过后查看生成的项目。</p></div>}{projects.map(item => <article key={item.id} className="panel space-y-4"><div><div className="flex flex-wrap items-start justify-between gap-2"><h4 className="break-words font-semibold">{item.name}</h4><span className="subtle">{item.owner_id === principalId ? "本人负责" : "仅查看"} · {item.visibility === "private" ? "仅本人" : item.visibility === "audience" ? "指定评审人" : "品类授权成员"}</span></div><p className="mt-2 whitespace-pre-wrap break-words text-sm">{item.purpose}</p><p className="subtle mt-2 break-words">固定定义 v{item.definition.revision} · {item.definition.title} · 尚未正式发布</p><details className="mt-2 text-sm"><summary className="cursor-pointer">查看固定研发范围</summary><p className="mt-2 whitespace-pre-wrap break-words">{item.scope}</p></details>{item.source_status !== "current" && <p className="mt-2 text-sm">固定定义的来源需要重核，当前不可继续应用计划。</p>}</div><TimelineFacts/>
         {item.plan ? <section className="min-w-0 space-y-3"><p className="flex items-center gap-2 font-medium"><CheckCircle className="text-primary"/>首版计划 v{item.plan.revision} 已应用</p><p className="subtle">已建立工程与 NPI 工作包及 {item.tasks.length} 个任务。后续修订入口暂未开放。</p><Forecast value={item.plan.forecast}/></section> : <><p className="subtle">首版计划尚未应用，任务尚未正式建立。</p>{item.owner_id === principalId && <Button disabled={!editable} variant="outline" onClick={() => { setEditorOpen(true); edit({ ...draft, projectId: item.id }); setNotice("已选此项目；原有任务与日历输入保留，请核对后保存候选。"); }}>为此项目准备首版计划</Button>}<div className="min-w-0 space-y-3">{item.proposals.map(proposal => <details key={proposal.id} className="min-w-0 rounded-lg border border-border p-3"><summary className="cursor-pointer break-words font-medium">计划候选 v{proposal.revision}{proposal.project_revision !== item.revision ? " · 项目版本已变化" : ""}</summary><div className="mt-3 min-w-0 space-y-3"><p className="whitespace-pre-wrap break-words text-sm">{proposal.reason}</p><CalendarSnapshot value={proposal.input_snapshot}/><Forecast value={proposal.forecast}/>{item.owner_id === principalId && <Button disabled={!editable || proposal.project_revision !== item.revision || item.source_status !== "current"} onClick={event => applyPlan(item, proposal, event.currentTarget)}>核对并应用此首版计划</Button>}</div></details>)}</div></>}
       </article>)}</section>
     </div>

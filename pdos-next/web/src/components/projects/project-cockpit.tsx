@@ -60,14 +60,14 @@ function Overview({ portfolio, today, onOpenProject }: {
 
 function SingleCockpit({ entry, session, today, onBack, onOpenWorkbench }: {
   entry: PortfolioProject; session: { name: string; principal_id: string }; today: string;
-  onBack: () => void; onOpenWorkbench: (categoryId: string, productId: string) => void;
+  onBack: () => void; onOpenWorkbench: (categoryId: string, productId: string, projectId: string) => void;
 }) {
   const { project, category, product } = entry;
   const open = entry.openItems.filter(item => item.status !== "done" && item.status !== "closed" && item.status !== "cancelled");
   return <>
     <div className="workspace-page-heading flex-col sm:flex-row">
       <div className="min-w-0"><h1>{project.name}</h1><p>{category.name} · {product.name} · 项目驾驶舱</p></div>
-      <div className="flex flex-wrap gap-2"><Button variant="outline" onClick={onBack}><ArrowLeft/>经营总览</Button><Button variant="outline" onClick={() => onOpenWorkbench(category.id, product.id)}>进入项目工作台<ArrowRight size={14}/></Button></div>
+      <div className="flex flex-wrap gap-2"><Button variant="outline" onClick={onBack}><ArrowLeft/>经营总览</Button><Button variant="outline" onClick={() => onOpenWorkbench(category.id, product.id, project.id)}>进入项目工作台<ArrowRight size={14}/></Button></div>
     </div>
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
       <div className="space-y-6">
@@ -109,7 +109,7 @@ function SingleCockpit({ entry, session, today, onBack, onOpenWorkbench }: {
             <div className="flex justify-between gap-4"><dt className="subtle shrink-0">工作包</dt><dd>{project.plan_state === "unavailable" ? "暂不可读" : project.work_packages.length === 0 ? "尚无" : project.work_packages.map(item => disciplineLabels[item.discipline] ?? item.discipline).join(" · ")}</dd></div>
             <div className="flex justify-between gap-4"><dt className="subtle shrink-0">排期任务</dt><dd>{project.task_count === null ? "尚无可读计划" : `${project.task_count} 项`}</dd></div>
           </dl>
-          <div className="mt-5"><Button size="sm" variant="outline" onClick={() => onOpenWorkbench(category.id, product.id)}>在工作台办理计划与执行<ArrowRight size={14}/></Button></div>
+          <div className="mt-5"><Button size="sm" variant="outline" onClick={() => onOpenWorkbench(category.id, product.id, project.id)}>在工作台办理计划与执行<ArrowRight size={14}/></Button></div>
         </section>
       </div>
     </div>
@@ -120,7 +120,7 @@ export function ProjectCockpit({ api, session, location, onOpenProject, onOpenOv
   api: Api; session: { name: string; principal_id: string }; location: GlobalLocation;
   onOpenProject: (categoryId: string, projectId: string) => void;
   onOpenOverview: () => void;
-  onOpenWorkbench: (categoryId: string, productId: string) => void;
+  onOpenWorkbench: (categoryId: string, productId: string, projectId: string) => void;
 }) {
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
   const [error, setError] = useState("");

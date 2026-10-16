@@ -44,7 +44,7 @@ function load(filename) {
   return loaded.exports;
 }
 const { ProjectPlanning } = load(path.join(directory, "project-planning.tsx"));
-const { restorePlanningDraft, projectCreationMoved } = load(path.join(directory, "project-planning-state.ts"));
+const { restorePlanningDraft, projectCreationMoved, planningStorageKey } = load(path.join(directory, "project-planning-state.ts"));
 const { blankProjectDraft, buildSchedule } = load(path.join(webRoot, "src/lib/project-plan-view.ts"));
 const product = { id: "11111111-1111-4111-8111-111111111111", name: "合成型号", purpose: "合成用途", revision: 4 };
 const principal = "22222222-2222-4222-8222-222222222222";
@@ -74,12 +74,87 @@ async function withStorage(local, callback) {
   globalThis.localStorage = { getItem: key => entries.get(key) ?? null, setItem: (key, value) => entries.set(key, value) };
   try { await callback(entries); } finally { globalThis.localStorage = original; }
 }
-async function mounted(local, api, callback) {
+async function mounted(local, api, callback, extraProps = {}) {
   await withStorage(local, async entries => {
-    const component = session({ product, principalId: principal, api, onSaved() {} });
+    const component = session({ product, principalId: principal, api, onSaved() {}, ...extraProps });
     component.render(); component.mount(); await tick(); await callback(component, entries);
   });
 }
+
+test("direct project hydration reads only that project and migrates only its matching legacy input", async () => {
+  const calls = [];
+  await mounted({ draft, pending: null }, async (path, body) => {
+    calls.push({ path, body }); return { items: [project], has_more: false, unavailable_count: 0 };
+  }, async (component, entries) => {
+    assert.deepEqual(calls, [{ path: `v1/products/${product.id}/projects/${project.id}`, body: undefined }]);
+    assert.deepEqual(JSON.parse(entries.get(planningStorageKey(principal, product.id, project.id))), { draft, pending: null });
+    assert.deepEqual(JSON.parse(entries.get(storageKey)), { draft, pending: null });
+    const tree = component.render();
+    assert.ok(elements(tree, e => e.type === "select" && e.props.value === project.id && e.props.disabled).length);
+    assert.ok(elements(tree, e => e.type === "input" && e.props.value === "原工程任务").length);
+    const back = elements(tree, e => e.type === "a" && e.props.children === "返回项目驾驶舱")[0];
+    assert.equal(new URLSearchParams(back.props.href).get("project"), project.id);
+  }, { projectId: project.id, categoryId: "synthetic-category" });
+});
+
+test("other project input and unknown pending save remain in their old cache, never populate the direct editor", async () => {
+  const local = { draft: { ...draft, projectId: "another-project" }, pending: pending("work.plan.propose") };
+  local.pending.command.payload.project_id = "another-project";
+  const calls = [];
+  await mounted(local, async (path, body) => { calls.push({ path, body }); return { items: [project], has_more: false, unavailable_count: 0 }; }, async (component, entries) => {
+    const tree = component.render();
+    assert.deepEqual(JSON.parse(entries.get(storageKey)), local);
+    assert.equal(entries.has(planningStorageKey(principal, product.id, project.id)), false);
+    assert.equal(elements(tree, e => e.props?.children === "按原请求重试").length, 0);
+    assert.equal(elements(tree, e => e.type === "input" && e.props.value === "原工程任务").length, 0);
+    assert.equal(calls.filter(call => call.body).length, 0);
+  }, { projectId: project.id });
+});
+
+test("direct cache binding rejects a pending request to another project while preserving the original value", () => {
+  const local = { draft, pending: pending("work.plan.apply") };
+  local.pending.command.payload.project_id = "another-project";
+  const before = structuredClone(local);
+  assert.equal(restorePlanningDraft(local, product.id, project.id), null);
+  assert.deepEqual(local, before);
+  assert.notEqual(planningStorageKey(principal, product.id, project.id), planningStorageKey(principal, product.id, "another-project"));
+});
+
+test("direct project reload retains the unknown original save and only an explicit retry replays it unchanged", async () => {
+  const waiting = pending("work.plan.apply"), calls = [];
+  await mounted({ draft, pending: waiting }, async (path, body) => {
+    calls.push({ path, body });
+    return body ? { id: "original-receipt", subject_type: "plan_revision", subject_id: "actual-plan" }
+      : { items: [project], has_more: false, unavailable_count: 0 };
+  }, async (component, entries) => {
+    const scopedKey = planningStorageKey(principal, product.id, project.id);
+    assert.equal(calls.filter(call => call.body).length, 0);
+    assert.deepEqual(JSON.parse(entries.get(scopedKey)), { draft, pending: waiting });
+    const retry = elements(component.render(), e => e.props?.children === "按原请求重试")[0];
+    await retry.props.onClick(); await tick();
+    assert.deepEqual(calls.filter(call => call.body), [{ path: "v1/commands", body: waiting.command }]);
+    assert.deepEqual(JSON.parse(entries.get(scopedKey)), { draft, pending: null });
+  }, { projectId: project.id });
+});
+
+test("direct read failure keeps input, avoids a false empty project and refreshes without issuing a command", async () => {
+  let fails = true; const calls = [];
+  await mounted({ draft, pending: null }, async (path, body) => {
+    calls.push({ path, body });
+    if (fails) throw Object.assign(new Error("合成项目暂不可读"), { status: 503 });
+    return { items: [project], has_more: false, unavailable_count: 0 };
+  }, async (component, entries) => {
+    let tree = component.render();
+    assert.ok(elements(tree, e => e.props?.role === "alert" && e.props.children === "合成项目暂不可读").length);
+    assert.equal(elements(tree, e => e.type === "p" && String(e.props.children).includes("当前范围尚无可见项目")).length, 0);
+    assert.deepEqual(JSON.parse(entries.get(storageKey)), { draft, pending: null });
+    fails = false;
+    elements(tree, e => e.props?.children?.some?.(child => child === "刷新项目"))[0].props.onClick();
+    await tick(); tree = component.render();
+    assert.ok(elements(tree, e => e.type === "h4" && e.props.children === project.name).length);
+    assert.equal(calls.filter(call => call.body).length, 0);
+  }, { projectId: project.id });
+});
 
 for (const stage of ["preview", "execute"]) test(`retire ${stage} project.create only, preserving every plan draft field`, () => {
   const local = { draft, pending: pending("project.create", stage) }, before = structuredClone(local);

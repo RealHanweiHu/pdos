@@ -1,0 +1,112 @@
+- generic [ref=f2e1]:
+  - alert [ref=f2e2]
+  - generic [ref=f2e3]:
+    - link "跳到工作内容" [ref=f2e4] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - generic [ref=f2e59]:
+      - banner [ref=f2e60]:
+        - button "打开导航" [ref=f2e267]
+        - generic [ref=f2e61]: PDOS
+        - generic [ref=f2e66]:
+          - button "小Pai 工作栏" [ref=f2e67]
+          - button "切换明暗主题" [ref=f2e68]
+      - main [ref=f2e69]:
+        - navigation "品类工作台区" [ref=f2e142]:
+          - link "型号" [ref=f2e143] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=products&view=overview&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "项目" [ref=f2e147] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=overview&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "知识" [ref=f2e151] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=knowledge&view=sources&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "设置" [ref=f2e155] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=settings&view=preferences&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - button "快速查找入口或型号" [ref=f2e159] [cursor=pointer]
+          - combobox "当前型号" [ref=f2e162]:
+            - option "合成便携泵 · 待建计划" [selected]
+        - navigation "项目视图" [ref=f2e163]:
+          - link "现在" [ref=f2e164] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=overview&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "工作与计划" [ref=f2e168] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=plan&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "试制" [ref=f2e172] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=builds&task=prepare&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "测试与交接" [ref=f2e176] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=verification&task=prepare&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "问题与变更" [ref=f2e180] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=issues&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "评审与交付 尚未接入" [ref=f2e184] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=reviews&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+            - generic [ref=f2e187]: 评审与交付
+            - generic "尚未接入" [ref=f2e188]
+          - link "资料" [ref=f2e189] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=files&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+        - generic [ref=f2e193]:
+          - generic [ref=f2e195]:
+            - heading "工作与计划" [level=1] [ref=f2e196]
+            - paragraph [ref=f2e197]: 当前范围：合成便携泵 · 待建计划
+          - region "项目与首版计划" [ref=f2e199]:
+            - generic [ref=f2e200]:
+              - generic [ref=f2e201]:
+                - paragraph [ref=f2e202]: 固定型号定义，组织真实研发工作
+                - heading "项目与首版计划" [level=2] [ref=f2e203]
+              - generic [ref=f2e204]:
+                - button "编排首版计划" [ref=f2e205]
+                - button "刷新项目" [active] [ref=f2e206]
+            - paragraph [ref=f2e207]: 项目由立项提案的 G0 决定生成；在此查看项目并编排首版计划。当前只办理所选项目。
+            - link "返回项目驾驶舱" [ref=f2e208] [cursor=pointer]:
+              - /url: "?area=cockpit&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766"
+            - region "已保存项目与计划" [ref=f2e210]:
+              - heading "已保存项目" [level=3] [ref=f2e211]
+              - article [ref=f2e269]:
+                - generic [ref=f2e270]:
+                  - generic [ref=f2e271]:
+                    - heading "合成便携泵 · 待建计划" [level=4] [ref=f2e272]
+                    - generic [ref=f2e273]: 本人负责 · 仅本人
+                  - paragraph [ref=f2e274]: Build and verify a synthetic design
+                  - paragraph [ref=f2e275]: 固定定义 v1 · 合成便携泵 · 待建计划 · 尚未正式发布
+                  - group [ref=f2e276]:
+                    - generic "查看固定研发范围" [ref=f2e277] [cursor=pointer]
+                - generic [ref=f2e278]:
+                  - generic [ref=f2e279]:
+                    - term [ref=f2e280]: 批准基线
+                    - definition [ref=f2e281]: 尚未批准
+                  - generic [ref=f2e282]:
+                    - term [ref=f2e283]: 个人承诺
+                    - definition [ref=f2e284]: 尚未记录
+                  - generic [ref=f2e285]:
+                    - term [ref=f2e286]: 实绩
+                    - definition [ref=f2e287]: 尚未记录
+                - generic [ref=f2e288]:
+                  - paragraph [ref=f2e289]: 首版计划 v1 已应用
+                  - paragraph [ref=f2e292]: 已建立工程与 NPI 工作包及 2 个任务。后续修订入口暂未开放。
+                  - generic [ref=f2e293]:
+                    - generic [ref=f2e294]:
+                      - paragraph [ref=f2e295]: 全部任务预测完成区间
+                      - paragraph [ref=f2e296]: 未知 / 暂不可预测 ～ 未知 / 暂不可预测
+                      - paragraph [ref=f2e297]: 工作日历：Asia/Shanghai · synthetic-owner-v1。区间上界来自最高工时估计，不代表承诺日期；未考虑资源预约。
+                    - generic [ref=f2e298]:
+                      - article [ref=f2e299]:
+                        - paragraph [ref=f2e300]: 合成工程核对
+                        - paragraph [ref=f2e301]: 工程 · 60 ～ 120 分钟
+                        - generic [ref=f2e302]:
+                          - term [ref=f2e303]: 最低估时下的开始 / 完成
+                          - definition [ref=f2e304]: 2026-10-19 01:00 UTC / 2026-10-19 02:00 UTC
+                          - term [ref=f2e305]: 最高估时下的开始 / 完成
+                          - definition [ref=f2e306]: 2026-10-19 01:00 UTC / 2026-10-19 03:00 UTC
+                          - term [ref=f2e307]: 估计依据
+                          - definition [ref=f2e308]: 本次合成演练由负责人填写的估时
+                          - term [ref=f2e309]: 前置任务
+                          - definition [ref=f2e310]: 无
+                      - article [ref=f2e311]:
+                        - paragraph [ref=f2e312]: 合成NPI准备
+                        - paragraph [ref=f2e313]: NPI / 制造导入 · 未知 ～ 未知 分钟
+                        - generic [ref=f2e314]:
+                          - term [ref=f2e315]: 最低估时下的开始 / 完成
+                          - definition [ref=f2e316]: 2026-10-19 02:00 UTC / 未知 / 暂不可预测
+                          - term [ref=f2e317]: 最高估时下的开始 / 完成
+                          - definition [ref=f2e318]: 2026-10-19 03:00 UTC / 未知 / 暂不可预测
+                          - term [ref=f2e319]: 估计依据
+                          - definition [ref=f2e320]: 尚未记录
+                          - term [ref=f2e321]: 前置任务
+                          - definition [ref=f2e322]: 合成工程核对
+                        - paragraph [ref=f2e323]: 暂不可精确预测：最低工时未知；最高工时未知

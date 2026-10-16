@@ -478,3 +478,64 @@ def test_shared_project_semantics_include_the_accountable_owner(setup):
     )
     assert visible.status_code == 200, visible.text
     assert [row["id"] for row in visible.json()["items"]] == [derived.project_id]
+
+
+def test_direct_project_plan_reads_actual_g0_candidate_and_applied_result(
+    setup, definition, project
+):
+    path = f"/v1/categories/{setup.category}/products/{setup.product}/projects/{project}"
+    first = setup.client.get(path, headers=setup.headers)
+    assert first.status_code == 200, first.text
+    value = first.json()
+    assert value["has_more"] is False and value["unavailable_count"] == 0
+    assert [row["id"] for row in value["items"]] == [project]
+    assert value["items"][0]["definition"]["id"] == setup.g0.definition_id
+    assert value["items"][0]["plan"] is None
+    command = proposal_command(setup, definition, project)
+    command["source_read_set"] = value["items"][0]["required_source_read_set"]
+    saved = post(setup, command)
+    assert saved.status_code == 200, saved.text
+    candidate = setup.client.get(path, headers=setup.headers).json()["items"][0]
+    assert [row["id"] for row in candidate["proposals"]] == [saved.json()["subject_id"]]
+    apply = application(setup, definition, project, saved.json()["subject_id"])
+    apply["source_read_set"] = candidate["required_source_read_set"]
+    receipt, confirmed = accepted(setup, apply)
+    replay = post(setup, confirmed)
+    assert replay.status_code == 200 and replay.json()["id"] == receipt["id"]
+    result = setup.client.get(path, headers=setup.headers).json()["items"][0]
+    assert result["plan"]["id"] == receipt["subject_id"]
+    assert result["revision"] == 2 and len(result["tasks"]) == 2
+    assert result["plan"]["forecast"]["latest_finish"] is None
+    personal = setup.client.get(f"/v1/personal/projects/{project}", headers=setup.headers)
+    assert personal.status_code == 200, personal.text
+    assert personal.json()["items"][0]["project"]["plan"]["id"] == receipt["subject_id"]
+    assert personal.json()["items"][0]["project"]["task_count"] == 2
+
+
+def test_direct_project_read_does_not_fall_back_or_write_after_scope_change(setup):
+    original_product = setup.product
+    actual = create_g0_project(setup)
+    path = f"/v1/categories/{setup.category}/products/{setup.product}/projects/{actual.project_id}"
+    models = (Project, PlanProposal, PlanRevision, ProjectTask, Receipt, Confirmation)
+    with Session(setup.admin) as session:
+        before = [session.scalar(select(func.count()).select_from(model)) for model in models]
+    for suffix in [str(uuid4()), actual.project_id]:
+        target_product = setup.product if suffix != actual.project_id else original_product
+        response = setup.client.get(
+            f"/v1/categories/{setup.category}/products/{target_product}/projects/{suffix}",
+            headers=setup.headers,
+        )
+        assert response.status_code == 404, response.text
+        assert "items" not in response.json()
+    assert setup.client.get(path, headers=setup.headers).status_code == 200
+    with Session(setup.admin) as session, session.begin():
+        session.execute(
+            update(Grant)
+            .where(Grant.principal_id == setup.human, Grant.category_id == setup.category)
+            .values(expires_at=now() - timedelta(minutes=1))
+        )
+    revoked = setup.client.get(path, headers=setup.headers)
+    assert revoked.status_code == 403, revoked.text
+    with Session(setup.admin) as session:
+        after = [session.scalar(select(func.count()).select_from(model)) for model in models]
+        assert after == before

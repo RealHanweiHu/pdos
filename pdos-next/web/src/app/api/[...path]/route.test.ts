@@ -456,3 +456,18 @@ test("个人视图只读，拒绝伪造范围和无效分页", async () => {
     assert.equal(h.calls.length, 0);
   }
 });
+
+test("项目计划直达保留品类、型号和具体项目，只允许无额外条件的读取", async () => {
+  const path = `${base}/projects/${run}`, h = harness();
+  const result = await h.send(path);
+  assert.equal(result.response.status, 200);
+  assert.equal(h.calls[0].url, `http://synthetic-api.invalid/${path}`);
+  for (const options of [{ method: "POST" as const, status: 405 }, { query: "project_id=" + issue, status: 422 }]) {
+    const invalid = harness();
+    assert.equal((await invalid.send(path, options)).response.status, options.status);
+    assert.equal(invalid.calls.length, 0);
+  }
+  const invalid = harness();
+  assert.equal((await invalid.send(`${base}/projects/not-a-project`)).response.status, 404);
+  assert.equal(invalid.calls.length, 0);
+});

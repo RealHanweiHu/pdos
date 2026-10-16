@@ -39,6 +39,10 @@ export function globalHref(location: GlobalLocation, search = ""): string {
   return `?${params.toString()}`;
 }
 
+export function projectWorkbenchHref(categoryId: string, productId: string, projectId: string): string {
+  return `?${new URLSearchParams({ area: "category", category: categoryId, bench: "projects", view: "plan", product: productId, project: projectId })}`;
+}
+
 /** 旧 URL 规范化为新结构的一次性映射；未变化时 changed=false。 */
 export function normalizeGlobalSearch(search: string): { search: string; changed: boolean } {
   const params = new URLSearchParams(search);

@@ -841,8 +841,7 @@ def create_app(
         ) as s:
             return compare(s, ctx, product_id, variant_id, parent_definition_id)
 
-    @app.get("/v1/categories/{category_id}/products/{product_id}/projects")
-    def projects(product_id: UUID, ctx: Context = auth_dependency):
+    def read_project_planning(product_id, project_id, ctx):
         from pdos_next.domain.projects.service import list_projects
 
         with tenant_session(
@@ -851,8 +850,17 @@ def create_app(
             actor_id=ctx.actor_id,
             requester_id=ctx.requester_id,
             category_id=ctx.category_id,
+            read_snapshot=True,
         ) as s:
-            return list_projects(s, ctx, product_id)
+            return list_projects(s, ctx, product_id, project_id=project_id)
+
+    @app.get("/v1/categories/{category_id}/products/{product_id}/projects")
+    def projects(product_id: UUID, ctx: Context = auth_dependency):
+        return read_project_planning(product_id, None, ctx)
+
+    @app.get("/v1/categories/{category_id}/products/{product_id}/projects/{project_id}")
+    def project_planning(product_id: UUID, project_id: UUID, ctx: Context = auth_dependency):
+        return read_project_planning(product_id, project_id, ctx)
 
     from pdos_next.domain.manufacturing_baseline.api import (
         register_routes as register_manufacturing,

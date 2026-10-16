@@ -1,9 +1,20 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { globalHref, normalizeGlobalSearch, resolveGlobalLocation } from "./global-navigation";
+import { globalHref, normalizeGlobalSearch, projectWorkbenchHref, resolveGlobalLocation } from "./global-navigation";
 
 const category = "11111111-2222-4333-8444-555555555555";
 const project = "66666666-7777-4888-8999-aaaaaaaaaaaa";
+
+test("项目工作台直达保留具体项目和型号，直接进入计划", () => {
+  const href = projectWorkbenchHref(category, "model-identity", project);
+  const params = new URLSearchParams(href);
+  assert.equal(params.get("area"), "category");
+  assert.equal(params.get("bench"), "projects");
+  assert.equal(params.get("view"), "plan");
+  assert.equal(params.get("product"), "model-identity");
+  assert.equal(resolveGlobalLocation(href).projectId, project);
+  assert.equal(normalizeGlobalSearch(href).changed, false);
+});
 
 test("全局七入口解析与往返保持", () => {
   for (const area of ["work", "cockpit", "projects", "programs", "category", "knowledge", "settings"] as const) {

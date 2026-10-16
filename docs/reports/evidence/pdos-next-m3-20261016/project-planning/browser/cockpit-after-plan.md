@@ -1,0 +1,113 @@
+- generic [active] [ref=f2e1]:
+  - alert [ref=f2e2]
+  - generic [ref=f2e3]:
+    - link "跳到工作内容" [ref=f2e4] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=f2e5]:
+      - generic [ref=f2e6]:
+        - generic [ref=f2e9]: PDOS
+        - button "收起侧栏" [ref=f2e10]
+      - navigation "工作区导航" [ref=f2e11]:
+        - link "我的工作" [ref=f2e12] [cursor=pointer]:
+          - /url: "?area=work&category=09abfd74-586b-459f-8b80-b5a4ef7cb484"
+        - link "项目驾驶舱" [ref=f2e16] [cursor=pointer]:
+          - /url: "?area=cockpit&category=09abfd74-586b-459f-8b80-b5a4ef7cb484"
+        - link "项目列表" [ref=f2e20] [cursor=pointer]:
+          - /url: "?area=projects&category=09abfd74-586b-459f-8b80-b5a4ef7cb484"
+        - link "项目集" [ref=f2e24] [cursor=pointer]:
+          - /url: "?area=programs&category=09abfd74-586b-459f-8b80-b5a4ef7cb484"
+          - generic [ref=f2e28]: 尚未接入
+        - link "产品品类工作区" [ref=f2e29] [cursor=pointer]:
+          - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484"
+        - link "知识" [ref=f2e33] [cursor=pointer]:
+          - /url: "?area=knowledge&category=09abfd74-586b-459f-8b80-b5a4ef7cb484"
+        - generic [ref=f2e37]:
+          - paragraph [ref=f2e38]: 当前品类
+          - paragraph [ref=f2e39]: Synthetic second category
+          - paragraph [ref=f2e40]: 项目与专业工作按品类范围授权
+      - generic [ref=f2e41]:
+        - link "计划执行进度" [ref=f2e42] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=f2e45]: 计划进度
+        - button "小Pai 工作栏" [ref=f2e46]:
+          - generic [ref=f2e49]: 小Pai
+        - link "设置" [ref=f2e50] [cursor=pointer]:
+          - /url: "?area=settings&category=09abfd74-586b-459f-8b80-b5a4ef7cb484"
+        - generic [ref=f2e54]:
+          - generic [aria-hidden] [ref=f2e55]: S
+          - generic [ref=f2e56]:
+            - paragraph [ref=f2e57]: Synthetic owner
+            - paragraph [ref=f2e58]: 本地合成环境
+    - generic [ref=f2e59]:
+      - banner [ref=f2e60]:
+        - generic [ref=f2e61]:
+          - generic [ref=f2e62]: PDOS
+          - generic [ref=f2e65]: 项目驾驶舱
+        - generic [ref=f2e66]:
+          - button "小Pai 工作栏" [ref=f2e67]
+          - button "切换明暗主题" [ref=f2e68]
+      - main [ref=f2e69]:
+        - button "刷新" [ref=f2e70]
+        - paragraph [ref=f2e71]:
+          - text: 项目资料读取于
+          - time [ref=f2e72]: 10/16/2026, 11:05:16 AM
+        - generic [ref=f2e73]:
+          - generic [ref=f2e74]:
+            - heading "合成便携泵 · 待建计划" [level=1] [ref=f2e75]
+            - paragraph [ref=f2e76]: Synthetic second category · 合成便携泵 · 待建计划 · 项目驾驶舱
+          - generic [ref=f2e77]:
+            - button "经营总览" [ref=f2e78]
+            - button "进入项目工作台" [ref=f2e79]
+        - generic [ref=f2e80]:
+          - generic [ref=f2e81]:
+            - region "项目基础信息" [ref=f2e82]:
+              - heading "基础信息" [level=2] [ref=f2e83]
+              - generic [ref=f2e84]:
+                - generic [ref=f2e85]:
+                  - term [ref=f2e86]: 用途
+                  - definition [ref=f2e87]: Build and verify a synthetic design
+                - generic [ref=f2e88]:
+                  - term [ref=f2e89]: 工作范围
+                  - definition [ref=f2e90]: Build and verify a synthetic design
+                - generic [ref=f2e91]:
+                  - term [ref=f2e92]: 可见性
+                  - definition [ref=f2e93]: 私有
+                - generic [ref=f2e94]:
+                  - term [ref=f2e95]: 负责人
+                  - definition [ref=f2e96]: Synthetic owner（本人）
+                - generic [ref=f2e97]:
+                  - term [ref=f2e98]: 建立时间
+                  - definition [ref=f2e99]:
+                    - time [ref=f2e100]: 10/16/2026, 10:33:44 AM
+                - generic [ref=f2e101]:
+                  - term [ref=f2e102]: 立项定义
+                  - definition [ref=f2e103]: 合成便携泵 · 待建计划 · 固定 v1
+            - region "未决事项" [ref=f2e104]:
+              - generic [ref=f2e105]:
+                - heading "未决事项" [level=2] [ref=f2e108]
+                - generic [ref=f2e109]: 0 项
+              - paragraph [ref=f2e110]: 没有未决任务或风险。
+          - generic [ref=f2e111]:
+            - region "计划与时间线" [ref=f2e112]:
+              - heading "计划与时间线" [level=2] [ref=f2e116]
+              - generic [ref=f2e117]:
+                - generic [ref=f2e118]:
+                  - term [ref=f2e119]: 计划版本
+                  - definition [ref=f2e120]: v1
+                - generic [ref=f2e121]:
+                  - term [ref=f2e122]: 最早完成
+                  - definition [ref=f2e123]: 未知
+                - generic [ref=f2e124]:
+                  - term [ref=f2e125]: 最晚完成
+                  - definition [ref=f2e126]: 未知
+              - paragraph [ref=f2e127]: 批准基线、个人承诺与实绩时间线尚未记录；此处不填零，取得后分列显示。
+            - region "工作包与任务" [ref=f2e128]:
+              - heading "工作包与任务" [level=2] [ref=f2e129]
+              - generic [ref=f2e130]:
+                - generic [ref=f2e131]:
+                  - term [ref=f2e132]: 工作包
+                  - definition [ref=f2e133]: 工程 · NPI
+                - generic [ref=f2e134]:
+                  - term [ref=f2e135]: 排期任务
+                  - definition [ref=f2e136]: 2 项
+              - button "在工作台办理计划与执行" [ref=f2e138]

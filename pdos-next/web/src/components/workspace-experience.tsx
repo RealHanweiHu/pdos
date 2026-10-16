@@ -18,6 +18,7 @@ export type ExperienceData = {
 };
 type Props = {
   categoryId: string;
+  projectId?: string;
   auth: "loading" | "signed_out" | "ready"; session: { name: string; principal_id: string } | null;
   products: ExperienceProduct[]; productId: string; data: ExperienceData | null;
   locked: boolean; onProductChange: (id: string) => void; onCreateProduct: () => void;
@@ -54,7 +55,7 @@ function ThemeOptions() {
 }
 
 /** 品类工作台（内嵌于全局外壳）：区段页签 + 面板内容，不再自带侧栏与顶栏。 */
-export function WorkspaceExperience({ categoryId, auth, session, products, productId, data, locked, onProductChange, onCreateProduct, api, children }: Props) {
+export function WorkspaceExperience({ categoryId, projectId = "", auth, session, products, productId, data, locked, onProductChange, onCreateProduct, api, children }: Props) {
   const [location, setLocation] = useState(defaultWorkspaceLocation);
   const [query, setQuery] = useState("");
   const searchDialog = useRef<HTMLDialogElement>(null);
@@ -114,6 +115,7 @@ export function WorkspaceExperience({ categoryId, auth, session, products, produ
     const params = new URLSearchParams(workspaceHref(next, window.location.search));
     // 全局知识入口只是知识区的快捷方式；切到非知识区段时回到品类工作区上下文。
     if (next.area !== "knowledge") params.set("area", "category");
+    if (selectedProduct !== productId) params.delete("project");
     window.history.pushState(null, "", `?${params.toString()}`);
     setLocation(next);
     if (selectedProduct !== productId && !locked) onProductChange(selectedProduct);
@@ -126,7 +128,7 @@ export function WorkspaceExperience({ categoryId, auth, session, products, produ
     event.preventDefault(); navigate(area, view, task);
   }
   function href(area: WorkspaceArea, view = workspaceSections[area][0].id, task = "") {
-    return workspaceHref(resolveWorkspaceLocation(workspaceHref({ area, section: view, task, productId })), new URLSearchParams({ area: "category", category: categoryId }).toString());
+    return workspaceHref(resolveWorkspaceLocation(workspaceHref({ area, section: view, task, productId })), new URLSearchParams({ area: "category", category: categoryId, ...(projectId ? { project: projectId } : {}) }).toString());
   }
   const searchEntries = workspaceAreas.flatMap(area => workspaceSections[area.id].flatMap(item => [{ area: area.id, section: item.id, task: "", label: `${area.label} / ${item.label}`, planned: item.planned }, ...(workspaceTasks[`${area.id}/${item.id}`] ?? []).map(task => ({ area: area.id, section: item.id, task: task.id, label: `${area.label} / ${item.label} / ${task.label}`, planned: task.planned }))]));
   const matchedEntries = searchEntries.filter(item => item.label.toLowerCase().includes(query.trim().toLowerCase()));

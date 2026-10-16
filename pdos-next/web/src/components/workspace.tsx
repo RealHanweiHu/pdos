@@ -55,7 +55,7 @@ async function rawApi<T>(path: string, body?: unknown): Promise<T> {
   return value;
 }
 
-export function Workspace({ categoryId, onPaiContext }: { categoryId: string; onPaiContext?: (context: PaiContext | null) => void }) {
+export function Workspace({ categoryId, projectId = "", onPaiContext }: { categoryId: string; projectId?: string; onPaiContext?: (context: PaiContext | null) => void }) {
   const transport = useMemo(() => categoryTransport(categoryId, rawApi), [categoryId]);
   const [products, setProducts] = useState<Product[]>([]);
   const [productId, setProductId] = useState("");
@@ -188,7 +188,7 @@ export function Workspace({ categoryId, onPaiContext }: { categoryId: string; on
   }, [onPaiContext, categoryId, productId, data]);
 
   return <>
-    <WorkspaceExperience categoryId={categoryId} auth={auth} session={session} products={products} productId={productId} data={data} locked={busy || !!pending} onProductChange={setProductId} onCreateProduct={() => setNewProduct(!newProduct)} api={api}>
+    <WorkspaceExperience categoryId={categoryId} projectId={projectId} auth={auth} session={session} products={products} productId={productId} data={data} locked={busy || !!pending} onProductChange={setProductId} onCreateProduct={() => setNewProduct(!newProduct)} api={api}>
       <div className="workspace-alerts">
       {pending && !error && <div role="status" className="panel mt-5"><p>有一项原操作等待核对回执，重试会沿用同一请求。</p><Button variant="outline" className="mt-3" disabled={busy} onClick={() => void mutate(pending.path, pending.body, "原操作已取得回执。")}>重试原操作</Button></div>}
       {error && <div role="alert" className="panel mt-5 border-destructive"><p>{error}</p>{pending && <Button className="mt-3" variant="outline" disabled={busy} onClick={() => void mutate(pending.path, pending.body, "原操作已取得回执。")}>重试原操作</Button>}</div>}
@@ -209,7 +209,7 @@ export function Workspace({ categoryId, onPaiContext }: { categoryId: string; on
             setError("当前权限需重新核对，资料正文已隐藏。请刷新型号列表后继续。");
           }} />}</WorkspacePanel>
           <WorkspacePanel key={`variants:${session?.principal_id}:${productId}`} name="variants">{session && <><ProductVariants key={`variant:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} sources={data.sources} api={api} onSaved={refresh} /><ProductPlatforms product={data.product} categoryId={categoryId} principalId={session.principal_id} api={api} onSaved={refresh} /></>}</WorkspacePanel>
-          <WorkspacePanel key={`plan:${session?.principal_id}:${productId}`} name="plan">{session && <ProjectPlanning key={`project:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />}</WorkspacePanel>
+          <WorkspacePanel key={`plan:${session?.principal_id}:${productId}`} name="plan">{session && <ProjectPlanning key={`project:${session.principal_id}:${productId}:${projectId}`} categoryId={categoryId} projectId={projectId} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />}</WorkspacePanel>
           <WorkspacePanel key={`build:${session?.principal_id}:${productId}`} name="build">{session && <div className="space-y-6"><BuildPreparation key={`build:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} /><ManufacturingPreparation key={`manufacturing-preparation:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} /></div>}</WorkspacePanel>
           <WorkspacePanel key={`start:${session?.principal_id}:${productId}`} name="start">{session && <BuildStart key={`build-start:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />}</WorkspacePanel>
           <WorkspacePanel key={`execution:${session?.principal_id}:${productId}`} name="execution">{session && <BuildExecution key={`execution:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />}</WorkspacePanel>

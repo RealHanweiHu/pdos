@@ -1,0 +1,26 @@
+### Error
+route.fulfill: Route is already handled!
+    at evalmachine.<anonymous>:12:15
+### Result
+null
+### Ran Playwright code
+```js
+await (async (page) => {
+const pattern = "**/api/v1/categories/09abfd74-586b-459f-8b80-b5a4ef7cb484/commands";
+let captured = null;
+await page.route(pattern, async route => {
+  const request = route.request();
+  const body = request.method() === "POST" ? request.postDataJSON() : null;
+  if (body?.operation !== "work.plan.apply") return route.continue();
+  const response = await route.fetch();
+  if (response.status() !== 200) throw new Error("Actual plan apply failed: " + response.status());
+  const receipt = await response.json();
+  captured = {scenario:"browser_simulated_response_loss_after_actual_commit",backend_status:response.status(),command_id:body.command_id,idempotency_key:body.idempotency_key,project_id:body.payload.project_id,receipt_id:receipt.id,plan_id:receipt.subject_id};
+  await route.fulfill({status:503,contentType:"application/json",body:JSON.stringify({code:"EXTERNAL_OUTCOME_UNKNOWN",message:"合成响应丢失：实际保存结果须按原请求核对。"})});
+});
+await page.getByRole("button", {name:"确认应用此首版计划",exact:true}).click();
+await page.getByText("本次保存结果仍待确认",{exact:true}).waitFor({state:"visible"});
+await page.unroute(pattern);
+return captured;
+})(page);
+```

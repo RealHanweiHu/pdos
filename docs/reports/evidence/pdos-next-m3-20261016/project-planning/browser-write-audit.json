@@ -1,0 +1,18 @@
+{
+  "target": "verified independent 64245/pdos_test",
+  "head": "s0_0762",
+  "project_id": "413b59ef-b92d-4f52-8dfb-f36d6ea0f766",
+  "project_revision": 2,
+  "current_plan_id": "ed9bd162-d85e-4d47-9d53-73ee05cfd6b5",
+  "apply_receipt_id": "5838d109-d89d-4ad8-bf8e-dea7c81647f7",
+  "counts": {
+    "plan_proposals": 1,
+    "plan_revisions": 1,
+    "project_tasks": 2,
+    "project_work_packages": 2,
+    "task_dependencies": 1
+  },
+  "actual_business_result": "one applied plan, two tasks and one dependency; no duplicate records",
+  "real_model_calls": 0,
+  "browser_response_loss": "attempt did not produce loss state; normal actual success observed"
+}

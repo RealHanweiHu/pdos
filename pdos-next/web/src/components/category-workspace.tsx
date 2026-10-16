@@ -13,10 +13,11 @@ import type { PaiContext } from "@/components/pai-rail";
 type Category = { id: string; name: string; purpose: string };
 
 /** 产品品类工作区：品类选择 → 品类主页 → 品类工作台（内嵌）。 */
-export function CategoryArea({ area, categories, categoryId, onSelectCategory, onCreated, onPaiContext, onOpenPai }: {
+export function CategoryArea({ area, categories, categoryId, projectId, onSelectCategory, onCreated, onPaiContext, onOpenPai }: {
   area: "category" | "knowledge";
   categories: Category[];
   categoryId: string;
+  projectId: string;
   onSelectCategory: (id: string) => void;
   onCreated: (category: CreatedCategory) => void;
   onPaiContext: (context: PaiContext | null) => void;
@@ -71,5 +72,5 @@ export function CategoryArea({ area, categories, categoryId, onSelectCategory, o
     </>;
   }
 
-  return <Workspace key={categoryId} categoryId={categoryId} onPaiContext={onPaiContext} />;
+  return <Workspace key={categoryId} categoryId={categoryId} projectId={projectId} onPaiContext={onPaiContext} />;
 }

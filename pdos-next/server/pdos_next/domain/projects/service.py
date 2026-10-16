@@ -356,24 +356,22 @@ def apply(s, ctx, command, product, payload):
     return plan, "plan_revision", project.visibility
 
 
-def list_projects(s, ctx, product_id):
+def list_projects(s, ctx, product_id, *, project_id=None):
     from pdos_next.service import require_access
 
     require_access(s, ctx, product_id)
-    rows = s.scalars(
-        select(Project)
-        .where(
-            Project.product_id == product_id,
-        )
-        .order_by(Project.created_at.desc())
-        .limit(101)
-    ).all()
+    query = select(Project).where(Project.product_id == product_id)
+    if project_id is not None:
+        query = query.where(Project.id == project_id)
+    rows = s.scalars(query.order_by(Project.created_at.desc()).limit(101)).all()
+    if project_id is not None and not rows:
+        raise DomainError("NOT_FOUND", "当前项目不可读，请核对范围和权限。", 404)
     items, unavailable = [], 0
     for row in rows[:100]:
         try:
             _, link, definition = _project(s, ctx, product_id, row.id)
         except DomainError as error:
-            if error.code != "SOURCE_UNAVAILABLE":
+            if project_id is not None or error.code != "SOURCE_UNAVAILABLE":
                 raise
             unavailable += 1
             continue
@@ -386,6 +384,8 @@ def list_projects(s, ctx, product_id):
             .limit(100)
         ).all()
         plan = s.get(PlanRevision, row.current_plan_id) if row.current_plan_id else None
+        if project_id is not None and row.current_plan_id and plan is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前计划暂不可读，请核对权限后刷新。", 403)
         items.append(
             {
                 "id": str(row.id),

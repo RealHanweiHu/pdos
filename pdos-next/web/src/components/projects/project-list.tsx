@@ -12,7 +12,7 @@ const visibilityLabels: Record<string, string> = { private: "私有", category: 
 export function ProjectList({ api, onOpenProject, onOpenWorkbench }: {
   api: Api;
   onOpenProject: (categoryId: string, projectId: string) => void;
-  onOpenWorkbench: (categoryId: string, productId: string) => void;
+  onOpenWorkbench: (categoryId: string, productId: string, projectId: string) => void;
 }) {
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
   const [error, setError] = useState("");
@@ -50,7 +50,7 @@ export function ProjectList({ api, onOpenProject, onOpenWorkbench }: {
             <span className="workspace-state">{projectStateLabel(entry)}</span>
             <span className="workspace-revision">v{entry.project.revision}</span>
             <Button size="sm" variant="outline" onClick={() => onOpenProject(entry.category.id, entry.project.id)}>驾驶舱</Button>
-            <Button size="sm" variant="ghost" onClick={() => onOpenWorkbench(entry.category.id, entry.product.id)}>工作台<ArrowRight size={14}/></Button>
+            <Button size="sm" variant="ghost" onClick={() => onOpenWorkbench(entry.category.id, entry.product.id, entry.project.id)}>工作台<ArrowRight size={14}/></Button>
           </div>
         </div>)}
       </div>)}

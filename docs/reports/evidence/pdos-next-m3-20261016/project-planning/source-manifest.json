@@ -1,0 +1,37 @@
+{
+  "base_commit": "17b66213497446ce136185dc5ef8b284d6a17a2c",
+  "candidate": "project-planning-20261016",
+  "database_head": "s0_0762",
+  "schema_change": false,
+  "source_sha256": {
+    "pdos-next/server/pdos_next/api.py": "6e119e46631d442b688a9dc4a04ef6872048b84fbb596a9df35ef9f5dde1ac1b",
+    "pdos-next/server/pdos_next/domain/projects/service.py": "36564443c5fe6b0b985a86ff6ac7c17710f9d23246036ae47ade7cc4ef770de8",
+    "pdos-next/server/tests/test_project_first_plan.py": "5f17d515879ee49c65b6b206858450d28f21fe8a982df067fc3baee8c551887c",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "bc7949990a684227fec72b96680775c45e7feab3841a179c285daf8c0bd7389d",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "b1b27a980fe6efc77f4f7093d9f4515eea1e6ece159de5f15b4665dd69f5195c",
+    "pdos-next/web/src/components/app-shell.tsx": "0a14814533894328fd92e79314512526d34ae6ea9c976ccec76502413a3f8098",
+    "pdos-next/web/src/components/category-workspace.tsx": "e68240eeb922bf77c27ec2f5e1e5f88f3ff3761ea047401f8989925f7b79b1b6",
+    "pdos-next/web/src/components/projects/project-cockpit.tsx": "3e5521b73d86d287cf657d88c0277dad1eaa4641e0b5e524e581efe10a104d83",
+    "pdos-next/web/src/components/projects/project-list.tsx": "c5a05e279f98e42e13d46a4cdb6fe8cbe82817417a0df134bd168666b8099064",
+    "pdos-next/web/src/components/projects/project-planning-state.ts": "da701aae180c15840a4abc772aad520ad608204aa927ed4a33426b94007cc7be",
+    "pdos-next/web/src/components/projects/project-planning.tsx": "9b2b83d68a6fbed9495b8b045a0d8ac5c663be82d525a59fe0308e5787d4856f",
+    "pdos-next/web/src/components/projects/project-planning.test.mjs": "96b1b7cabc24480d6992edf713de1dd6f3c814a2babbab326f2e325269914663",
+    "pdos-next/web/src/components/workspace.tsx": "7b59101f99e639d6058473b1f68513d5f8f88a65a85e4bc61e05062eb153e9ce",
+    "pdos-next/web/src/components/workspace-experience.tsx": "b8b274f0ba6640f9b6a446a1eb356c93af17876fff55a4505fa6cc43cbeaebbc",
+    "pdos-next/web/src/lib/global-navigation.ts": "87ffbec10d85c463e579c4f3699961faffecbe4e2f8eee5b27ece8844587d98d",
+    "pdos-next/web/src/lib/global-navigation.test.ts": "a7be54a8e55c2b5e978f1442b1800dab141020525d0bb875f959eb6815f6f9e6"
+  },
+  "checks": {
+    "distinct_postgres": 27,
+    "backend_pure": 1,
+    "distinct_frontend": 64,
+    "ruff": "passed",
+    "affected_eslint": "passed",
+    "typescript": "passed",
+    "production_build": "passed",
+    "final_increment": "one component retry test + component/lint rerun; production code unchanged",
+    "browser_response_loss": "not achieved; actual normal success observed",
+    "browser_read_failure_recovery": "passed, browser-only simulated GET 503 then actual GET 200",
+    "real_model_calls": 0
+  }
+}
