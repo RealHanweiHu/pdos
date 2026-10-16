@@ -43,7 +43,7 @@ SCHEMAS = {"calc.spec_compare": AgentSpecCompareInput}
 def _unavailable():
     raise DomainError(
         "SOURCE_UNAVAILABLE",
-        "规格比较尚未接入私有资料的完整运行出站绑定。",
+        "规格比较资料不在本次运行的可用范围内，请核对提案、来源与共享对象。",
         403,
         detail={"reason": "private_material_context_binding_required"},
     )
@@ -273,6 +273,51 @@ class _PublicObjects:
         self.definition(row.id, row.revision)
 
 
+class _RunObjects(_PublicObjects):
+    """Read exact proposal-bound sources; other objects retain public preflight."""
+
+    def __init__(self, session, ctx, scope, run):
+        super().__init__(session, ctx)
+        from .proposal_context import reference_key, stored_references, validate
+
+        validate(session, scope, run)
+        self.scope, self.run = scope, run
+        self.keys = {reference_key(ref) for ref in stored_references(run)[1]} | {
+            ("original", raw["artifact_id"], raw["expected_revision"]) for raw in run.read_sources
+        }
+
+    def refs(self, refs):
+        from .proposal_context import reference_key
+
+        # Bound sources were checked by the same RR snapshot's metadata watermarks.
+        # The domain comparison still owns ordinary quote/value/current checks.
+        super().refs(ref for ref in refs if reference_key(ref) not in self.keys)
+
+    def proposal(self, identity):
+        from .proposal_context import validate
+
+        if identity != self.run.proposal_id:
+            raise DomainError("FORBIDDEN_SCOPE", "比较提案不属于当前运行。", 403)
+        validate(self.s, self.scope, self.run)
+        document = views.read(self.s, self.ctx, identity)
+        validate(self.s, self.scope, self.run, extra_value=document)
+        self.parameters(document)
+
+
+def _objects(session, ctx, scope, run):
+    from .proposal_context import KEY
+
+    if run.proposal_id is not None and KEY in getattr(run, "versions", {}):
+        return _RunObjects(session, ctx, scope, run)
+    if (
+        run.private_context
+        or run.customer_identities
+        or {"customer", "customer_original"}.intersection(run.data_categories)
+    ):
+        _unavailable()
+    return _PublicObjects(session, ctx)
+
+
 class SpecCompareReads:
     def __init__(self, store, commands, catalog=None):
         self.store, self.commands, self.catalog = store, commands, catalog
@@ -330,16 +375,10 @@ class SpecCompareReads:
                 self.store.authority(session, scope)
                 check_run_binding(session.get(AgentRun, scope.run_id), scope, for_write=False)
                 return result
-            if (
-                run.private_context
-                or run.customer_identities
-                or {"customer", "customer_original"}.intersection(run.data_categories)
-            ):
-                _unavailable()
             ctx = self.commands.context(scope)
             require_access(session, ctx, scope.product_id)
-            public = _PublicObjects(session, ctx)
             try:
+                public = _objects(session, ctx, scope, run)
                 public.refs(_references(run.read_sources))
                 for subject in payload.subjects:
                     if subject.type == "proposal":
@@ -362,7 +401,7 @@ class SpecCompareReads:
                 )
                 # Do not reuse the preflight seen set: every returned source gets
                 # an ordinary access/currentness check before it crosses the port.
-                final = _PublicObjects(session, ctx)
+                final = _objects(session, ctx, scope, run)
                 final.refs(_references(result))
                 final.parameters(result)
             except DomainError as error:

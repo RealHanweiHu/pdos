@@ -78,7 +78,7 @@ def default_registry():
                 "READ",
                 taint="external" if name in RESEARCH or name.startswith("evidence.") else "trusted",
                 parallel_safe=name != "skill.load",
-                version="3"
+                version="4"
                 if name == "calc.spec_compare"
                 else "2"
                 if name in {"evidence.artifact.read", "proposal.read", "proposal.items.read"}

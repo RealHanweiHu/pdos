@@ -1,0 +1,22 @@
+{
+  "base_commit": "a20c3f8f622d761bf2bd7bdc7f525d0083676896",
+  "scope": "Bound private proposal vs shared model/competitor; calc.spec_compare v4; no migration",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/m3_spec_compare.py",
+      "sha256": "73a2699477081e6e54f20bd7cda694688e84c4a1775ea7a385b6984bef5c53df"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/tools.py",
+      "sha256": "93771361171be1b480d57d74757b38f5df25b9ce3f25414becfc4f30616a3ccd"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_private_spec_compare_pg.py",
+      "sha256": "ea348d0942dabf68e14803f02723dbb1ad842ba93a506c5c25c3fb44979b4210"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_extracted_match.py",
+      "sha256": "8a21639fa4e483e714e37518e1b2607a8b4cf8aea65e97011f23190c9579e71b"
+    }
+  ]
+}

@@ -109,4 +109,4 @@ def test_registered_mode_accepts_only_actual_row_selectors_and_products():
     ):
         with pytest.raises(ValidationError):
             AgentSpecCompareInput.model_validate({**good, **changes})
-    assert default_registry().get("calc.spec_compare").version == "3"
+    assert default_registry().get("calc.spec_compare").version == "4"
