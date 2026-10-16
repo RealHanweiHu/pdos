@@ -1,0 +1,118 @@
+- generic [ref=f1e1]:
+  - alert [ref=f1e4]
+  - generic [ref=f1e16]:
+    - link "跳到工作内容" [ref=f1e17] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=f1e18]:
+      - generic [ref=f1e19]:
+        - generic [ref=f1e22]: PDOS
+        - button "收起侧栏" [ref=f1e23]
+      - navigation "工作区导航" [ref=f1e24]:
+        - link "我的工作" [ref=f1e25] [cursor=pointer]:
+          - /url: "?area=work"
+        - link "项目驾驶舱" [ref=f1e29] [cursor=pointer]:
+          - /url: "?area=cockpit"
+        - link "项目列表" [ref=f1e33] [cursor=pointer]:
+          - /url: "?area=projects"
+        - link "项目集" [ref=f1e37] [cursor=pointer]:
+          - /url: "?area=programs"
+          - generic [ref=f1e41]: 尚未接入
+        - link "产品品类工作区" [ref=f1e42] [cursor=pointer]:
+          - /url: "?area=category"
+        - link "知识" [ref=f1e46] [cursor=pointer]:
+          - /url: "?area=knowledge"
+      - generic [ref=f1e50]:
+        - link "计划执行进度" [ref=f1e51] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=f1e54]: 计划进度
+        - button "小Pai 工作栏" [pressed] [ref=f1e55]:
+          - generic [ref=f1e58]: 小Pai
+        - link "设置" [ref=f1e59] [cursor=pointer]:
+          - /url: "?area=settings"
+        - generic [ref=f1e63]:
+          - generic [aria-hidden] [ref=f1e64]: S
+          - generic [ref=f1e65]:
+            - paragraph [ref=f1e66]: Synthetic owner
+            - paragraph [ref=f1e67]: 本地合成环境
+    - generic [ref=f1e68]:
+      - banner [ref=f1e69]:
+        - generic [ref=f1e70]:
+          - generic [ref=f1e71]: PDOS
+          - generic [ref=f1e74]: 我的工作
+        - generic [ref=f1e75]:
+          - button "小Pai 工作栏" [pressed] [ref=f1e76]
+          - button "切换明暗主题" [ref=f1e77]
+      - main [ref=f1e78]:
+        - generic [ref=f1e371]:
+          - generic [ref=f1e372]:
+            - heading "我的工作" [level=1] [ref=f1e373]
+            - paragraph [ref=f1e374]: 查看本人可见项目中的未决事项，接续需要答复的工作与最近运行。
+          - generic [ref=f1e375]:
+            - button "刷新" [ref=f1e376]
+            - button "打开小Pai" [ref=f1e377]
+        - paragraph [ref=f1e378]:
+          - text: 项目资料读取于
+          - time [ref=f1e379]: 10/16/2026, 10:43:11 AM
+        - generic [ref=f1e380]:
+          - region "我的未决事项" [ref=f1e381]:
+            - generic [ref=f1e382]:
+              - heading "未决事项" [level=2] [ref=f1e383]
+              - generic [ref=f1e384]: 2 项
+            - generic [ref=f1e385]:
+              - generic [ref=f1e388]:
+                - paragraph [ref=f1e389]: 噪声
+                - paragraph [ref=f1e390]: 风险 · 合成充气泵 · 开发验证
+              - generic [ref=f1e391]: 2026-10-25
+              - button "项目驾驶舱" [ref=f1e392]
+            - generic [ref=f1e393]:
+              - generic [ref=f1e396]:
+                - paragraph [ref=f1e397]: 噪声条件待确定
+                - paragraph [ref=f1e398]: 任务 · 合成充气泵 · 开发验证
+              - generic [ref=f1e399]: 2026-10-25
+              - button "项目驾驶舱" [ref=f1e400]
+          - region "我的运行" [ref=f1e401]:
+            - generic [ref=f1e402]:
+              - heading "最近运行" [level=2] [ref=f1e403]
+              - generic [ref=f1e404]: 1 次
+            - generic [ref=f1e405]:
+              - generic [ref=f1e408]:
+                - paragraph [ref=f1e409]: 合成：整理下一步项目资料
+                - paragraph [ref=f1e410]:
+                  - text: 已保存，等待执行 · 个人 ·
+                  - time [ref=f1e411]: 10/16/2026, 10:33:44 AM
+              - button "查看" [active] [ref=f1e412]
+        - region "可见项目" [ref=f1e413]:
+          - heading "可见项目" [level=2] [ref=f1e415]
+          - generic [ref=f1e416]:
+            - generic [ref=f1e419]:
+              - paragraph [ref=f1e420]: 合成便携泵 · 待建计划
+              - paragraph [ref=f1e421]: Synthetic second category · 合成便携泵 · 待建计划
+            - button "驾驶舱" [ref=f1e422]
+          - generic [ref=f1e423]:
+            - generic [ref=f1e426]:
+              - paragraph [ref=f1e427]: 合成充气泵 · 开发验证
+              - paragraph [ref=f1e428]: 汽车充气泵 · 合成充气泵 · 已立项
+            - button "驾驶舱" [ref=f1e429]
+    - complementary "小Pai 工作栏" [ref=f1e430]:
+      - generic [ref=f1e431]:
+        - generic [ref=f1e434]:
+          - paragraph [ref=f1e435]: 小Pai
+          - paragraph [ref=f1e436]: 个人工作（跨品类）
+        - button "关闭小Pai 工作栏" [ref=f1e437]
+      - region "个人小 Pai" [ref=f1e439]:
+        - generic [ref=f1e440]:
+          - heading "个人小 Pai · 建立新品类" [level=2] [ref=f1e441]
+          - paragraph [ref=f1e444]: 描述品类用途，让小 Pai 准备公开研究与初始材料。执行需要已配置的模型和运行授权；缺少配置时会显示实际错误。建立品类仍需你逐组核对并确认。
+          - generic [ref=f1e445]:
+            - generic [ref=f1e446]:
+              - text: 要研究和建立什么品类？
+              - textbox "要研究和建立什么品类？" [ref=f1e447]:
+                - /placeholder: 说明产品用途、市场范围和希望核对的问题。请勿输入客户或个人识别信息。
+            - button "保存并启动个人任务" [disabled]
+          - group [ref=f1e448]:
+            - generic "个人任务记录" [ref=f1e449] [cursor=pointer]
+        - generic [ref=f1e450]:
+          - heading "已保存，等待执行" [level=3] [ref=f1e451]
+          - button "刷新实际结果" [ref=f1e452]
+          - button "取消后续执行" [ref=f1e453]
+          - paragraph [ref=f1e454]: 此运行尚无可采用的品类候选。

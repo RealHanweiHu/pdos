@@ -1,0 +1,51 @@
+{"first_page_ms": 428.96, "first_page_sql": 12, "real_model_calls": 0}
+....
+=============================== warnings summary ===============================
+tests/test_personal_views.py::test_actual_cross_category_projects_page_detail_and_no_read_writes
+tests/test_personal_views.py::test_actual_cross_category_projects_page_detail_and_no_read_writes
+tests/test_personal_views.py::test_actual_applied_plan_is_projected_without_copying_schedule_inputs
+tests/test_personal_views.py::test_current_source_and_category_revocation_are_visible_on_refresh
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/test_personal_views.py: 12 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/test_personal_views.py::test_actual_cross_category_projects_page_detail_and_no_read_writes
+tests/test_personal_views.py::test_actual_cross_category_projects_page_detail_and_no_read_writes
+tests/test_personal_views.py::test_actual_applied_plan_is_projected_without_copying_schedule_inputs
+tests/test_personal_views.py::test_current_source_and_category_revocation_are_visible_on_refresh
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/test_personal_views.py::test_actual_cross_category_projects_page_detail_and_no_read_writes
+tests/test_personal_views.py::test_actual_cross_category_projects_page_detail_and_no_read_writes
+tests/test_personal_views.py::test_actual_applied_plan_is_projected_without_copying_schedule_inputs
+tests/test_personal_views.py::test_current_source_and_category_revocation_are_visible_on_refresh
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/test_personal_views.py::test_actual_cross_category_projects_page_detail_and_no_read_writes
+tests/test_personal_views.py::test_actual_cross_category_projects_page_detail_and_no_read_writes
+tests/test_personal_views.py::test_actual_applied_plan_is_projected_without_copying_schedule_inputs
+tests/test_personal_views.py::test_current_source_and_category_revocation_are_visible_on_refresh
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/test_personal_views.py::test_actual_cross_category_projects_page_detail_and_no_read_writes
+tests/test_personal_views.py::test_actual_cross_category_projects_page_detail_and_no_read_writes
+tests/test_personal_views.py::test_actual_applied_plan_is_projected_without_copying_schedule_inputs
+tests/test_personal_views.py::test_current_source_and_category_revocation_are_visible_on_refresh
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/test_personal_views.py::test_actual_cross_category_projects_page_detail_and_no_read_writes
+tests/test_personal_views.py::test_actual_cross_category_projects_page_detail_and_no_read_writes
+tests/test_personal_views.py::test_actual_applied_plan_is_projected_without_copying_schedule_inputs
+tests/test_personal_views.py::test_current_source_and_category_revocation_are_visible_on_refresh
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 36 warnings in 10.33s

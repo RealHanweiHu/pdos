@@ -1,11 +1,16 @@
-import type { Project, ProjectList } from "@/lib/project-plan-view";
+import type { Project, PlanForecast } from "@/lib/project-plan-view";
 
 export type PortfolioApi = <T>(path: string, body?: unknown) => Promise<T>;
 export type PortfolioCategory = { id: string; name: string; purpose: string };
 export type PortfolioProduct = { id: string; name: string; purpose: string };
-export type OpenItem = { id: string; kind: string; title: string; owner_id: string; due_date: string | null; status: string };
+export type OpenItem = { id: string; kind: string; title: string; owner_id: string; owner_name?: string | null; due_date: string | null; status: string };
 export type PortfolioProject = {
-  project: Project;
+  project: Pick<Project, "id" | "name" | "purpose" | "scope" | "owner_id" | "visibility" | "revision" | "status" | "source_status" | "created_at" | "definition" | "work_packages"> & {
+    plan: { id: string; revision: number; status: string; forecast: Pick<PlanForecast, "earliest_finish" | "latest_finish"> } | null;
+    plan_state: "available" | "not_created" | "unavailable";
+    task_count: number | null;
+    owner_name?: string | null;
+  };
   category: PortfolioCategory;
   product: PortfolioProduct;
   openItems: OpenItem[];
@@ -15,51 +20,53 @@ export type Portfolio = {
   projects: PortfolioProject[];
   categories: PortfolioCategory[];
   readErrors: { path: string; message: string }[];
+  asOf?: string;
 };
 export type MyOpenItem = OpenItem & { projectId: string; projectName: string; categoryId: string; productId: string };
 export type DueState = "overdue" | "soon" | "scheduled" | "none";
 
-/** 逐品类汇总本人权限内的项目与未决事项；权限过滤由服务端完成。跨品类投影端点接入后替换。 */
-export async function readPortfolio(api: PortfolioApi): Promise<Portfolio> {
-  const readErrors: { path: string; message: string }[] = [];
-  let categories: PortfolioCategory[] = [];
-  try {
-    categories = await api<PortfolioCategory[]>("v1/categories");
-  } catch (failure) {
-    readErrors.push({ path: "v1/categories", message: (failure as Error).message });
-    return { projects: [], categories, readErrors };
-  }
-  const projects: PortfolioProject[] = [];
-  await Promise.all(categories.map(async category => {
-    let products: PortfolioProduct[] = [];
-    try {
-      products = await api<PortfolioProduct[]>(`v1/categories/${category.id}/products`);
-    } catch (failure) {
-      readErrors.push({ path: `v1/categories/${category.id}/products`, message: (failure as Error).message });
-      return;
+type ProjectPage = { items: PortfolioProject[]; next_cursor: string | null; unavailable_count: number; as_of: string };
+export type ActivityRun = { run_id: string; goal: string; status: string; created_at: string; product_id: string | null; scope: "personal" | "category"; categoryId: string; categoryName: string };
+type ActivityPage = { items: ActivityRun[]; next_cursor: string | null; as_of: string };
+
+/** 服务端按当前权限投影，连续读取全部页；单项目直接读取，避免扫描其他项目。 */
+export async function readPortfolio(api: PortfolioApi, projectId?: string): Promise<Portfolio> {
+  const projects = new Map<string, PortfolioProject>();
+  const categories = new Map<string, PortfolioCategory>();
+  const seen = new Set<string>();
+  let cursor: string | null = null, unavailable = 0, asOf: string | undefined;
+  do {
+    const path: string = projectId ? `v1/personal/projects/${projectId}`
+      : `v1/personal/projects?page_size=100${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`;
+    const page: ProjectPage = await api<ProjectPage>(path);
+    asOf = page.as_of;
+    for (const entry of page.items) {
+      projects.set(entry.project.id, entry);
+      categories.set(entry.category.id, entry.category);
     }
-    await Promise.all(products.map(async product => {
-      let list: ProjectList;
-      try {
-        list = await api<ProjectList>(`v1/categories/${category.id}/products/${product.id}/projects`);
-      } catch (failure) {
-        readErrors.push({ path: `v1/categories/${category.id}/products/${product.id}/projects`, message: (failure as Error).message });
-        return;
-      }
-      await Promise.all(list.items.map(async project => {
-        const entry: PortfolioProject = { project, category, product, openItems: [], openItemsError: "" };
-        try {
-          const result = await api<{ items: OpenItem[] }>(`v1/categories/${category.id}/projects/${project.id}/open-items`);
-          entry.openItems = result.items;
-        } catch (failure) {
-          entry.openItemsError = (failure as Error).message;
-        }
-        projects.push(entry);
-      }));
-    }));
-  }));
-  projects.sort((a, b) => b.project.created_at.localeCompare(a.project.created_at));
-  return { projects, categories, readErrors };
+    unavailable += page.unavailable_count;
+    cursor = projectId ? null : page.next_cursor;
+    if (cursor && seen.has(cursor)) throw new Error("项目分页位置未推进，请刷新重试。");
+    if (cursor) seen.add(cursor);
+  } while (cursor);
+  return {
+    projects: [...projects.values()], categories: [...categories.values()], asOf,
+    readErrors: unavailable ? [{ path: "v1/personal/projects", message: `${unavailable} 个项目的关联资料当前不可读，请核对权限后刷新。` }] : [],
+  };
+}
+
+/** 最近运行取明确的前 12 次；等待答复连续翻页，不会被最近记录挤掉。 */
+export async function readRunActivity(api: PortfolioApi, waiting = false): Promise<ActivityRun[]> {
+  const runs = new Map<string, ActivityRun>(), seen = new Set<string>();
+  let cursor: string | null = null;
+  do {
+    const page: ActivityPage = await api<ActivityPage>(`v1/personal/run-activity?page_size=${waiting ? 100 : 12}&waiting=${waiting}${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`);
+    for (const run of page.items) runs.set(run.run_id, run);
+    cursor = waiting ? page.next_cursor : null;
+    if (cursor && seen.has(cursor)) throw new Error("运行分页位置未推进，请刷新重试。");
+    if (cursor) seen.add(cursor);
+  } while (cursor);
+  return [...runs.values()];
 }
 
 export function findProject(portfolio: Portfolio, projectId: string): PortfolioProject | undefined {
@@ -104,7 +111,7 @@ export function openTasks(entry: PortfolioProject, now: string): { overdue: Open
 /** 与品类工作台项目行一致的状态口径：来源需重核优先于计划状态。 */
 export function projectStateLabel(entry: PortfolioProject): string {
   if (entry.project.source_status !== "current") return "需重核";
-  return entry.project.plan ? "已有计划" : "待建计划";
+  return entry.project.plan_state === "unavailable" ? "计划暂不可读" : entry.project.plan ? "已有计划" : "待建计划";
 }
 
 export type CategoryGroup = { category: PortfolioCategory; products: { product: PortfolioProduct; entries: PortfolioProject[] }[] };

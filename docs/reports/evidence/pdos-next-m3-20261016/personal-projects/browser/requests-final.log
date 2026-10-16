@@ -1,0 +1,11 @@
+### Result
+15. [GET] http://127.0.0.1:3037/api/v1/session => [200] OK
+16. [GET] http://127.0.0.1:3037/api/v1/categories => [200] OK
+17. [GET] http://127.0.0.1:3037/api/v1/personal/projects?page_size=100 => [200] OK
+18. [GET] http://127.0.0.1:3037/api/v1/categories/7ebe0da8-6cca-493e-b269-bd2ab348980f/agent-runs?page_size=50 => [200] OK
+33. [GET] http://127.0.0.1:3037/api/v1/session => [200] OK
+34. [GET] http://127.0.0.1:3037/api/v1/categories => [200] OK
+35. [GET] http://127.0.0.1:3037/api/v1/personal/projects?page_size=100 => [200] OK
+36. [GET] http://127.0.0.1:3037/api/v1/categories/7ebe0da8-6cca-493e-b269-bd2ab348980f/agent-runs?page_size=50 => [200] OK
+
+Note: 28 static requests not shown, run with --static option to see them.

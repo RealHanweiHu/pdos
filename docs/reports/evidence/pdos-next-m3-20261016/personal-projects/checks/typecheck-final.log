@@ -1,0 +1,2 @@
+src/app/api/[...path]/route.test.ts(440,27): error TS2339: Property 'status' does not exist on type '{ response: Response; reads: number; }'.
+src/app/api/[...path]/route.test.ts(455,75): error TS2339: Property 'status' does not exist on type '{ response: Response; reads: number; }'.

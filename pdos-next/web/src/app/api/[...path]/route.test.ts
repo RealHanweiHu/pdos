@@ -431,3 +431,28 @@ test("事实超时保留UNKNOWN且不重发，读取失败保留READ_UNAVAILABLE
   assert.equal(read.response.status, 503); assert.equal((await read.response.json()).code, "SOURCE_UNAVAILABLE");
   assert.equal(unread.calls.length, 1); assert.equal(read.reads, 0);
 });
+
+test("个人项目投影与运行摘要保留原路径及分页条件", async () => {
+  const h = harness();
+  for (const path of ["v1/personal/projects", `v1/personal/projects/${product}`, "v1/personal/run-activity"]) {
+    const query = path.endsWith("run-activity") ? `page_size=12&waiting=true&cursor=${run}` : path.endsWith("projects") ? `page_size=100&cursor=${product}` : undefined;
+    const response = await h.send(path, { unscoped: true, query });
+    assert.equal(response.response.status, 200);
+    assert.equal(h.calls.at(-1)?.url, `http://synthetic-api.invalid/${path}${query ? `?${query}` : ""}`);
+  }
+});
+
+test("个人视图只读，拒绝伪造范围和无效分页", async () => {
+  for (const input of [
+    { path: "v1/personal/projects", method: "POST" as const, status: 405 },
+    { path: "v1/personal/projects", query: "category_id=" + category, status: 422 },
+    { path: "v1/personal/projects", query: "page_size=201", status: 422 },
+    { path: "v1/personal/projects", query: "cursor=bad", status: 422 },
+    { path: `v1/personal/projects/${product}`, query: "page_size=1", status: 422 },
+    { path: "v1/personal/run-activity", query: "waiting=unknown", status: 422 },
+  ]) {
+    const h = harness();
+    assert.equal((await h.send(input.path, { ...input, unscoped: true })).response.status, input.status);
+    assert.equal(h.calls.length, 0);
+  }
+});

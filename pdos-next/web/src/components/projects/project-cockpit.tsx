@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, CalendarBlank, ClipboardText, FolderSimple, Warning } from "@phosphor-icons/react";
+import { ArrowClockwise, ArrowLeft, ArrowRight, CalendarBlank, ClipboardText, FolderSimple, Warning } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { dueState, findProject, openRisks, openTasks, projectStateLabel, readPortfolio, type Portfolio, type PortfolioProject } from "@/lib/portfolio-reads";
 import type { GlobalLocation } from "@/lib/global-navigation";
@@ -26,14 +26,15 @@ function Overview({ portfolio, today, onOpenProject }: {
 }) {
   const riskCount = portfolio.projects.reduce((count, entry) => count + openRisks(entry).length, 0);
   const conflictCount = portfolio.projects.reduce((count, entry) => { const { overdue, soon } = openTasks(entry, today); return count + overdue.length + soon.length; }, 0);
+  const partial = portfolio.readErrors.length > 0;
   return <>
-    <div className="workspace-page-heading"><div className="min-w-0"><h1>项目驾驶舱</h1><p>本人权限内项目的经营总览：开放风险与到期冲突逐项目列出。资源与供应冲突读集尚未接入；基线、承诺与实绩时间线尚未记录时不填零。</p></div></div>
+    <div className="workspace-page-heading flex-col sm:flex-row"><div className="min-w-0"><h1>项目驾驶舱</h1><p>本人权限内项目的经营总览：开放风险与到期冲突逐项目列出。资源与供应冲突读集尚未接入；基线、承诺与实绩时间线尚未记录时不填零。</p></div></div>
     <div className="workspace-object-counts">
-      <div><dt><FolderSimple size={16} aria-hidden="true"/>可见项目</dt><dd>{portfolio.projects.length}</dd></div>
-      <div><dt><Warning size={16} aria-hidden="true"/>开放风险</dt><dd>{riskCount}</dd></div>
-      <div><dt><CalendarBlank size={16} aria-hidden="true"/>逾期与临期任务</dt><dd>{conflictCount}</dd></div>
+      <div><dt><FolderSimple size={16} aria-hidden="true"/>可见项目</dt><dd>{partial ? "未完整读取" : portfolio.projects.length}</dd></div>
+      <div><dt><Warning size={16} aria-hidden="true"/>开放风险</dt><dd>{partial ? "未完整读取" : riskCount}</dd></div>
+      <div><dt><CalendarBlank size={16} aria-hidden="true"/>逾期与临期任务</dt><dd>{partial ? "未完整读取" : conflictCount}</dd></div>
     </div>
-    {portfolio.projects.length === 0 && <div className="workspace-empty" role="status"><FolderSimple size={24} aria-hidden="true"/><p>没有可见项目。立项提案经具名 G0 批准后建立项目。</p></div>}
+    {!partial && portfolio.projects.length === 0 && <div className="workspace-empty" role="status"><FolderSimple size={24} aria-hidden="true"/><p>没有可见项目。立项提案经具名 G0 批准后建立项目。</p></div>}
     <div className="grid gap-4 lg:grid-cols-2">{portfolio.projects.map(entry => {
       const risks = openRisks(entry);
       const { overdue, soon } = openTasks(entry, today);
@@ -64,9 +65,9 @@ function SingleCockpit({ entry, session, today, onBack, onOpenWorkbench }: {
   const { project, category, product } = entry;
   const open = entry.openItems.filter(item => item.status !== "done" && item.status !== "closed" && item.status !== "cancelled");
   return <>
-    <div className="workspace-page-heading">
+    <div className="workspace-page-heading flex-col sm:flex-row">
       <div className="min-w-0"><h1>{project.name}</h1><p>{category.name} · {product.name} · 项目驾驶舱</p></div>
-      <div className="flex gap-2"><Button variant="outline" onClick={onBack}><ArrowLeft/>经营总览</Button><Button variant="outline" onClick={() => onOpenWorkbench(category.id, product.id)}>进入项目工作台<ArrowRight size={14}/></Button></div>
+      <div className="flex flex-wrap gap-2"><Button variant="outline" onClick={onBack}><ArrowLeft/>经营总览</Button><Button variant="outline" onClick={() => onOpenWorkbench(category.id, product.id)}>进入项目工作台<ArrowRight size={14}/></Button></div>
     </div>
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
       <div className="space-y-6">
@@ -76,7 +77,7 @@ function SingleCockpit({ entry, session, today, onBack, onOpenWorkbench }: {
             <div className="flex justify-between gap-4"><dt className="subtle shrink-0">用途</dt><dd className="break-words text-right">{project.purpose}</dd></div>
             <div className="flex justify-between gap-4"><dt className="subtle shrink-0">工作范围</dt><dd className="break-words text-right">{project.scope}</dd></div>
             <div className="flex justify-between gap-4"><dt className="subtle shrink-0">可见性</dt><dd>{visibilityLabels[project.visibility] ?? project.visibility}</dd></div>
-            <div className="flex justify-between gap-4"><dt className="subtle shrink-0">负责人</dt><dd>{project.owner_id === session.principal_id ? `${session.name}（本人）` : project.owner_id}</dd></div>
+            <div className="flex justify-between gap-4"><dt className="subtle shrink-0">负责人</dt><dd>{project.owner_id === session.principal_id ? `${session.name}（本人）` : project.owner_name ?? "负责人信息暂不可读"}</dd></div>
             <div className="flex justify-between gap-4"><dt className="subtle shrink-0">建立时间</dt><dd><time dateTime={project.created_at}>{new Date(project.created_at).toLocaleString()}</time></dd></div>
             <div className="flex justify-between gap-4"><dt className="subtle shrink-0">立项定义</dt><dd className="text-right">{project.definition.title} · 固定 v{project.definition.revision}{project.source_status !== "current" ? " · 需重核" : ""}</dd></div>
           </dl>
@@ -87,7 +88,7 @@ function SingleCockpit({ entry, session, today, onBack, onOpenWorkbench }: {
           {!entry.openItemsError && open.length === 0 && <p className="subtle">没有未决任务或风险。</p>}
           <div className="space-y-3">{open.map(item => <div key={item.id} className="flex items-center gap-3 border-t border-border pt-3 first:border-0 first:pt-0">
             {item.kind === "risk" ? <Warning size={16} className="shrink-0" aria-hidden="true"/> : <ClipboardText size={16} className="shrink-0" aria-hidden="true"/>}
-            <div className="min-w-0 flex-1"><p className="break-words text-sm">{item.title}</p><p className="subtle mt-1">{kindLabels[item.kind] ?? item.kind} · {item.owner_id === session.principal_id ? "本人负责" : "他人负责"}</p></div>
+            <div className="min-w-0 flex-1"><p className="break-words text-sm">{item.title}</p><p className="subtle mt-1">{kindLabels[item.kind] ?? item.kind} · {item.owner_id === session.principal_id ? "本人负责" : item.owner_name ? `${item.owner_name}负责` : "负责人信息暂不可读"}</p></div>
             {dueChip(item, today)}
           </div>)}</div>
         </section>
@@ -99,14 +100,14 @@ function SingleCockpit({ entry, session, today, onBack, onOpenWorkbench }: {
             <div className="flex justify-between gap-4"><dt className="subtle">计划版本</dt><dd>v{project.plan.revision}</dd></div>
             <div className="flex justify-between gap-4"><dt className="subtle">最早完成</dt><dd>{project.plan.forecast?.earliest_finish ?? "未知"}</dd></div>
             <div className="flex justify-between gap-4"><dt className="subtle">最晚完成</dt><dd>{project.plan.forecast?.latest_finish ?? "未知"}</dd></div>
-          </dl> : <p className="subtle">尚无已应用计划。首版计划在工作与计划区起草并经一次确认应用。</p>}
+          </dl> : <p className="subtle">{project.plan_state === "unavailable" ? "当前计划暂不可读，请核对权限后刷新。" : "尚无已应用计划。首版计划在工作与计划区起草并经一次确认应用。"}</p>}
           <p className="subtle mt-4">批准基线、个人承诺与实绩时间线尚未记录；此处不填零，取得后分列显示。</p>
         </section>
         <section className="panel" aria-label="工作包与任务">
           <h2 className="mb-4 font-semibold">工作包与任务</h2>
           <dl className="space-y-3 text-sm">
-            <div className="flex justify-between gap-4"><dt className="subtle shrink-0">工作包</dt><dd>{project.work_packages.length === 0 ? "尚无" : project.work_packages.map(item => disciplineLabels[item.discipline] ?? item.discipline).join(" · ")}</dd></div>
-            <div className="flex justify-between gap-4"><dt className="subtle shrink-0">任务</dt><dd>{project.tasks.length} 项</dd></div>
+            <div className="flex justify-between gap-4"><dt className="subtle shrink-0">工作包</dt><dd>{project.plan_state === "unavailable" ? "暂不可读" : project.work_packages.length === 0 ? "尚无" : project.work_packages.map(item => disciplineLabels[item.discipline] ?? item.discipline).join(" · ")}</dd></div>
+            <div className="flex justify-between gap-4"><dt className="subtle shrink-0">排期任务</dt><dd>{project.task_count === null ? "尚无可读计划" : `${project.task_count} 项`}</dd></div>
           </dl>
           <div className="mt-5"><Button size="sm" variant="outline" onClick={() => onOpenWorkbench(category.id, product.id)}>在工作台办理计划与执行<ArrowRight size={14}/></Button></div>
         </section>
@@ -115,31 +116,35 @@ function SingleCockpit({ entry, session, today, onBack, onOpenWorkbench }: {
   </>;
 }
 
-export function ProjectCockpit({ api, session, location, onOpenProject, onOpenList, onOpenWorkbench }: {
+export function ProjectCockpit({ api, session, location, onOpenProject, onOpenOverview, onOpenWorkbench }: {
   api: Api; session: { name: string; principal_id: string }; location: GlobalLocation;
   onOpenProject: (categoryId: string, projectId: string) => void;
-  onOpenList: () => void;
+  onOpenOverview: () => void;
   onOpenWorkbench: (categoryId: string, productId: string) => void;
 }) {
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
   const [error, setError] = useState("");
+  const [reload, setReload] = useState(0);
   const today = new Date().toISOString().slice(0, 10);
 
   useEffect(() => {
     let active = true;
-    void readPortfolio(api).then(next => { if (active) setPortfolio(next); }).catch(failure => { if (active) setError((failure as Error).message); });
+    void readPortfolio(api, location.projectId || undefined).then(next => { if (active) { setPortfolio(next); setError(""); } }).catch(failure => { if (active) { setPortfolio(null); setError((failure as Error).message); } });
     return () => { active = false; };
-  }, [api]);
+  }, [api, location.projectId, reload]);
 
-  if (error) return <><div className="workspace-page-heading"><div className="min-w-0"><h1>项目驾驶舱</h1><p>读取失败。</p></div></div><p role="alert" className="workspace-read-error">{error}</p></>;
+  const refresh = <Button variant="outline" className="mb-4" onClick={() => { setPortfolio(null); setError(""); setReload(value => value + 1); }}><ArrowClockwise/>刷新</Button>;
+  if (error) return <><div className="workspace-page-heading flex-col sm:flex-row"><div className="min-w-0"><h1>项目驾驶舱</h1><p>读取失败。</p></div></div><p role="alert" className="workspace-read-error">{error}</p>{refresh}</>;
   if (!portfolio) return <p role="status" className="subtle">正在读取项目经营总览…</p>;
   const entry = location.projectId ? findProject(portfolio, location.projectId) : undefined;
   if (location.projectId && !entry) return <>
-    <div className="workspace-page-heading"><div className="min-w-0"><h1>项目驾驶舱</h1><p>此项目当前不可见或已移除；仅显示本人权限内项目。</p></div></div>
-    <Button variant="outline" onClick={onOpenList}><ArrowLeft/>返回经营总览</Button>
+    <div className="workspace-page-heading flex-col sm:flex-row"><div className="min-w-0"><h1>项目驾驶舱</h1><p>此项目当前不可见或已移除；仅显示本人权限内项目。</p></div></div>
+    <Button variant="outline" onClick={onOpenOverview}><ArrowLeft/>返回经营总览</Button>
   </>;
-  if (entry) return <SingleCockpit entry={entry} session={session} today={today} onBack={onOpenList} onOpenWorkbench={onOpenWorkbench} />;
+  const readTime = portfolio.asOf && <p className="subtle mb-4">项目资料读取于 <time dateTime={portfolio.asOf}>{new Date(portfolio.asOf).toLocaleString()}</time></p>;
+  if (entry) return <>{refresh}{readTime}<SingleCockpit entry={entry} session={session} today={today} onBack={onOpenOverview} onOpenWorkbench={onOpenWorkbench} /></>;
   return <>
+    {refresh}{readTime}
     {portfolio.readErrors.map(item => <p key={item.path} role="status" className="subtle">部分范围暂不可读：{item.message}</p>)}
     <Overview portfolio={portfolio} today={today} onOpenProject={onOpenProject} />
   </>;

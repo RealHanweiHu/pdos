@@ -1,0 +1,87 @@
+- generic [ref=f1e1]:
+  - alert [ref=f1e4]
+  - generic [ref=f1e16]:
+    - link "跳到工作内容" [ref=f1e17] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - generic [ref=f1e68]:
+      - banner [ref=f1e69]:
+        - button "打开导航" [active] [ref=f1e496]
+        - generic [ref=f1e70]: PDOS
+        - generic [ref=f1e75]:
+          - button "小Pai 工作栏" [ref=f1e76]
+          - button "切换明暗主题" [ref=f1e77]
+      - main [ref=f1e78]:
+        - button "刷新" [ref=f1e497]
+        - paragraph [ref=f1e498]:
+          - text: 项目资料读取于
+          - time [ref=f1e499]: 10/16/2026, 10:45:04 AM
+        - generic [ref=f1e500]:
+          - generic [ref=f1e501]:
+            - heading "合成充气泵 · 开发验证" [level=1] [ref=f1e502]
+            - paragraph [ref=f1e503]: 汽车充气泵 · 合成充气泵 · 已立项 · 项目驾驶舱
+          - generic [ref=f1e504]:
+            - button "经营总览" [ref=f1e505]
+            - button "进入项目工作台" [ref=f1e506]
+        - generic [ref=f1e507]:
+          - generic [ref=f1e508]:
+            - region "项目基础信息" [ref=f1e509]:
+              - heading "基础信息" [level=2] [ref=f1e510]
+              - generic [ref=f1e511]:
+                - generic [ref=f1e512]:
+                  - term [ref=f1e513]: 用途
+                  - definition [ref=f1e514]: 验证项目总览、真实计划和未决事项接续。
+                - generic [ref=f1e515]:
+                  - term [ref=f1e516]: 工作范围
+                  - definition [ref=f1e517]: 验证项目总览、真实计划和未决事项接续。
+                - generic [ref=f1e518]:
+                  - term [ref=f1e519]: 可见性
+                  - definition [ref=f1e520]: 私有
+                - generic [ref=f1e521]:
+                  - term [ref=f1e522]: 负责人
+                  - definition [ref=f1e523]: Synthetic owner（本人）
+                - generic [ref=f1e524]:
+                  - term [ref=f1e525]: 建立时间
+                  - definition [ref=f1e526]:
+                    - time [ref=f1e527]: 10/16/2026, 10:33:40 AM
+                - generic [ref=f1e528]:
+                  - term [ref=f1e529]: 立项定义
+                  - definition [ref=f1e530]: 合成充气泵 · 已立项 · 固定 v1
+            - region "未决事项" [ref=f1e531]:
+              - generic [ref=f1e532]:
+                - heading "未决事项" [level=2] [ref=f1e535]
+                - generic [ref=f1e536]: 2 项
+              - generic [ref=f1e537]:
+                - generic [ref=f1e538]:
+                  - generic [ref=f1e541]:
+                    - paragraph [ref=f1e542]: 噪声
+                    - paragraph [ref=f1e543]: 风险 · 本人负责
+                  - generic [ref=f1e544]: 2026-10-25
+                - generic [ref=f1e545]:
+                  - generic [ref=f1e548]:
+                    - paragraph [ref=f1e549]: 噪声条件待确定
+                    - paragraph [ref=f1e550]: 任务 · 本人负责
+                  - generic [ref=f1e551]: 2026-10-25
+          - generic [ref=f1e552]:
+            - region "计划与时间线" [ref=f1e553]:
+              - heading "计划与时间线" [level=2] [ref=f1e557]
+              - generic [ref=f1e558]:
+                - generic [ref=f1e559]:
+                  - term [ref=f1e560]: 计划版本
+                  - definition [ref=f1e561]: v1
+                - generic [ref=f1e562]:
+                  - term [ref=f1e563]: 最早完成
+                  - definition [ref=f1e564]: 未知
+                - generic [ref=f1e565]:
+                  - term [ref=f1e566]: 最晚完成
+                  - definition [ref=f1e567]: 未知
+              - paragraph [ref=f1e568]: 批准基线、个人承诺与实绩时间线尚未记录；此处不填零，取得后分列显示。
+            - region "工作包与任务" [ref=f1e569]:
+              - heading "工作包与任务" [level=2] [ref=f1e570]
+              - generic [ref=f1e571]:
+                - generic [ref=f1e572]:
+                  - term [ref=f1e573]: 工作包
+                  - definition [ref=f1e574]: 工程 · NPI
+                - generic [ref=f1e575]:
+                  - term [ref=f1e576]: 排期任务
+                  - definition [ref=f1e577]: 2 项
+              - button "在工作台办理计划与执行" [ref=f1e579]

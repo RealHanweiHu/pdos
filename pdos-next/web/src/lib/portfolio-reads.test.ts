@@ -1,20 +1,18 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { dueState, groupByCategory, myOpenItems, openRisks, openTasks, projectStateLabel, readPortfolio, type Portfolio, type PortfolioProject } from "./portfolio-reads";
-import type { Project } from "./project-plan-view";
+import { dueState, groupByCategory, myOpenItems, openRisks, openTasks, projectStateLabel, readPortfolio, readRunActivity, type Portfolio, type PortfolioProject } from "./portfolio-reads";
 
 const me = "11111111-2222-4333-8444-555555555555";
 const other = "99999999-8888-4333-8444-555555555555";
 
-function project(id: string, name: string, plan: boolean, sourceStatus = "current", created = "2026-10-01T00:00:00+00:00"): Project {
+function project(id: string, name: string, plan: boolean, sourceStatus = "current", created = "2026-10-01T00:00:00+00:00"): PortfolioProject["project"] {
   return {
     id, name, purpose: "用途", scope: "范围", owner_id: me, visibility: "category",
     revision: 1, status: "active", source_status: sourceStatus, created_at: created,
     definition: { id: "d", title: "定义", revision: 1, status: "frozen", source_status: sourceStatus },
-    required_source_read_set: [], proposals: [],
     plan: plan ? { id: "p", revision: 1, status: "applied", forecast: null as never } : null,
-    timeline: { baseline: null, forecast: null, commitment: null, actual: null },
-    work_packages: [], tasks: [],
+    plan_state: plan ? "available" : "not_created",
+    work_packages: [], task_count: plan ? 0 : null,
   };
 }
 
@@ -73,6 +71,9 @@ test("项目状态口径与品类工作台一致", () => {
   assert.equal(projectStateLabel(portfolio.projects[0]), "已有计划");
   assert.equal(projectStateLabel(portfolio.projects[1]), "需重核");
   assert.equal(projectStateLabel(entry("j3", "丙", false, [])), "待建计划");
+  const unavailable = entry("j4", "丁", false, []);
+  unavailable.project.plan_state = "unavailable";
+  assert.equal(projectStateLabel(unavailable), "计划暂不可读");
 });
 
 test("按品类与型号分组保持项目归属", () => {
@@ -82,17 +83,55 @@ test("按品类与型号分组保持项目归属", () => {
   assert.deepEqual(groups[0].products[0].entries.map(item => item.project.id), ["j1", "j2"]);
 });
 
-test("逐品类汇总保留各层读取失败且不中断", async () => {
+test("项目由个人投影连续取完分页，不再逐品类型号扇出", async () => {
+  const calls: string[] = [];
   const api = async <T,>(path: string): Promise<T> => {
-    if (path === "v1/categories") return [{ id: "c1", name: "品类一", purpose: "" }, { id: "c2", name: "品类二", purpose: "" }] as T;
-    if (path === "v1/categories/c1/products") return [{ id: "p1", name: "型号一", purpose: "" }] as T;
-    if (path === "v1/categories/c2/products") throw new Error("权限不足");
-    if (path === "v1/categories/c1/products/p1/projects") return { items: [project("j1", "甲", true)], has_more: false, unavailable_count: 0 } as T;
-    if (path === "v1/categories/c1/projects/j1/open-items") return { items: [] } as T;
-    throw new Error(`意外路径 ${path}`);
+    calls.push(path);
+    return { items: [portfolio.projects[calls.length - 1]], next_cursor: calls.length === 1 ? "next" : null, unavailable_count: 0, as_of: "2026-10-16T00:00:00Z" } as T;
   };
   const result = await readPortfolio(api);
+  assert.deepEqual(result.projects.map(item => item.project.id), ["j1", "j2"]);
+  assert.deepEqual(calls, ["v1/personal/projects?page_size=100", "v1/personal/projects?page_size=100&cursor=next"]);
+});
+
+test("单项目直达只读所选项目，关联不可读有明确提示", async () => {
+  const calls: string[] = [];
+  const result = await readPortfolio(async <T,>(path: string): Promise<T> => {
+    calls.push(path);
+    return { items: [portfolio.projects[0]], next_cursor: null, unavailable_count: 1, as_of: "now" } as T;
+  }, "j1");
+  assert.deepEqual(calls, ["v1/personal/projects/j1"]);
   assert.equal(result.projects.length, 1);
-  assert.equal(result.readErrors.length, 1);
-  assert.match(result.readErrors[0].message, /权限不足/);
+  assert.match(result.readErrors[0].message, /关联资料当前不可读/);
+});
+
+test("后续页失败保留失败，不用不完整结果冒充完整列表", async () => {
+  let calls = 0;
+  await assert.rejects(readPortfolio(async <T,>(): Promise<T> => {
+    if (++calls === 2) throw new Error("当前权限已失效");
+    return { items: [portfolio.projects[0]], next_cursor: "next", unavailable_count: 0 } as T;
+  }), /当前权限已失效/);
+});
+
+test("不推进的游标可恢复失败，避免无限加载", async () => {
+  let calls = 0;
+  await assert.rejects(readPortfolio(async <T,>(): Promise<T> => {
+    calls++;
+    return { items: [], next_cursor: "same", unavailable_count: 0 } as T;
+  }), /分页位置未推进/);
+  assert.equal(calls, 2);
+});
+
+test("等待答复跨页保留，最近运行只取明确的一页", async () => {
+  const calls: string[] = [];
+  const api = async <T,>(path: string): Promise<T> => {
+    calls.push(path);
+    return { items: [{ run_id: String(calls.length) }], next_cursor: calls.length === 1 ? "next" : null, as_of: "now" } as T;
+  };
+  assert.equal((await readRunActivity(api, true)).length, 2);
+  assert.equal(calls.length, 2);
+  assert.ok(calls.every(path => path.startsWith("v1/personal/run-activity?")));
+  calls.length = 0;
+  assert.equal((await readRunActivity(api)).length, 1);
+  assert.deepEqual(calls, ["v1/personal/run-activity?page_size=12&waiting=false"]);
 });

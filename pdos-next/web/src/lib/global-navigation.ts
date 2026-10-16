@@ -47,7 +47,9 @@ export function normalizeGlobalSearch(search: string): { search: string; changed
     params.set("area", "programs"); params.delete("category"); params.delete("view"); params.delete("task"); params.delete("product");
     return { search: `?${params.toString()}`, changed: true };
   }
-  if (legacyBenchAreas.has(raw) && params.get("category")) {
+  // 同名全局入口不携带旧工作台参数；带 bench 的链接已经规范化。
+  const legacyView = !params.has("bench") && ["view", "task", "product"].some(key => params.has(key));
+  if (legacyBenchAreas.has(raw) && params.get("category") && (raw === "products" || legacyView)) {
     params.set("area", raw === "knowledge" ? "knowledge" : "category");
     params.set("bench", raw === "knowledge" ? "knowledge" : raw);
     return { search: `?${params.toString()}`, changed: true };

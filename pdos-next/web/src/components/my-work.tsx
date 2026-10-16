@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, BellRinging, ClipboardText, FolderSimple, Sparkle, Warning } from "@phosphor-icons/react";
+import { ArrowClockwise, ArrowRight, BellRinging, ClipboardText, FolderSimple, Sparkle, Warning } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
-import { dueState, myOpenItems, readPortfolio, type MyOpenItem, type Portfolio } from "@/lib/portfolio-reads";
+import { dueState, myOpenItems, readPortfolio, readRunActivity, type ActivityRun, type MyOpenItem, type Portfolio } from "@/lib/portfolio-reads";
 import type { browserApi } from "@/lib/browser-api";
 
 type Api = typeof browserApi;
-type Run = { run_id: string; goal: string; status: string; created_at: string; product_id: string | null; scope: "personal" | "category"; categoryId: string; categoryName: string };
 const runLabels: Record<string, string> = { queued: "已保存，等待执行", running: "正在执行", waiting_input: "等待你的答复", completed: "已完成", partial: "已形成部分结果", cancelled: "已取消后续执行", failed: "执行未完成" };
 const kindLabels: Record<string, string> = { task: "任务", risk: "风险" };
 
@@ -26,7 +25,8 @@ export function MyWork({ api, session, onOpenRun, onOpenProject, onOpenPai }: {
   onOpenPai: () => void;
 }) {
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
-  const [runs, setRuns] = useState<Run[]>([]);
+  const [runs, setRuns] = useState<ActivityRun[]>([]);
+  const [reload, setReload] = useState(0);
   const [error, setError] = useState("");
   const today = new Date().toISOString().slice(0, 10);
 
@@ -34,32 +34,26 @@ export function MyWork({ api, session, onOpenRun, onOpenProject, onOpenPai }: {
     let active = true;
     void (async () => {
       try {
-        const next = await readPortfolio(api);
+        const [next, awaiting] = await Promise.all([readPortfolio(api), readRunActivity(api, true)]);
+        const recent = await readRunActivity(api);
         if (!active) return;
+        const merged = [...new Map([...awaiting, ...recent].map(run => [run.run_id, run])).values()]
+          .sort((a, b) => b.created_at.localeCompare(a.created_at));
         setPortfolio(next);
-        const personal = await api<{ items: Run[] }>("v1/personal/agent-runs?page_size=50").catch(() => ({ items: [] as Run[] }));
-        if (!active) return;
-        const categoryRuns = await Promise.all(next.categories.map(async category => {
-          const result = await api<{ items: Run[] }>(`v1/categories/${category.id}/agent-runs?page_size=50`).catch(() => ({ items: [] as Run[] }));
-          return result.items.map(run => ({ ...run, scope: "category" as const, categoryId: category.id, categoryName: category.name }));
-        }));
-        if (!active) return;
-        const merged = [
-          ...personal.items.map(run => ({ ...run, scope: "personal" as const, categoryId: "", categoryName: "个人" })),
-          ...categoryRuns.flat(),
-        ].sort((a, b) => b.created_at.localeCompare(a.created_at));
         setRuns(merged);
-      } catch (failure) { if (active) setError((failure as Error).message); }
+        setError("");
+      } catch (failure) { if (active) { setPortfolio(null); setRuns([]); setError((failure as Error).message); } }
     })();
     return () => { active = false; };
-  }, [api]);
+  }, [api, reload]);
 
   const items: MyOpenItem[] = portfolio ? myOpenItems(portfolio, session.principal_id) : [];
   const waiting = runs.filter(run => run.status === "waiting_input");
 
   return <>
-    <div className="workspace-page-heading"><div className="min-w-0"><h1>我的工作</h1><p>本人可见项目中的未决事项与运行在这里接续。跨品类服务器投影接入前，按品类逐一汇总；权限过滤由服务端完成。</p></div><Button variant="outline" onClick={onOpenPai}><Sparkle/>打开小Pai</Button></div>
+    <div className="workspace-page-heading flex-col sm:flex-row"><div className="min-w-0"><h1>我的工作</h1><p>查看本人可见项目中的未决事项，接续需要答复的工作与最近运行。</p></div><div className="flex flex-wrap gap-2"><Button variant="outline" onClick={() => { setPortfolio(null); setRuns([]); setError(""); setReload(value => value + 1); }}><ArrowClockwise/>刷新</Button><Button variant="outline" onClick={onOpenPai}><Sparkle/>打开小Pai</Button></div></div>
     {error && <p role="alert" className="workspace-read-error">{error}</p>}
+    {portfolio?.asOf && <p className="subtle mb-4">项目资料读取于 <time dateTime={portfolio.asOf}>{new Date(portfolio.asOf).toLocaleString()}</time></p>}
     {portfolio?.readErrors.map(item => <p key={item.path} role="status" className="subtle">部分范围暂不可读：{item.message}</p>)}
     {waiting.length > 0 && <section className="panel mb-6" aria-label="待答复">
       <div className="mb-4 flex items-center gap-2"><BellRinging className="text-primary" aria-hidden="true"/><h2 className="font-semibold">等待你的答复</h2><span className="subtle ml-auto">{waiting.length} 项</span></div>
@@ -70,9 +64,9 @@ export function MyWork({ api, session, onOpenRun, onOpenProject, onOpenPai }: {
     </section>}
     <div className="workspace-overview-columns">
       <section className="workspace-overview" aria-label="我的未决事项">
-        <header><h2>未决事项</h2><span className="subtle">{items.length} 项</span></header>
-        {!portfolio && <p className="workspace-list-empty">正在读取未决事项…</p>}
-        {portfolio && items.length === 0 && <p className="workspace-list-empty">当前没有指派给你的未决任务或风险。立项 G0 批准后，处置事项会按负责人出现在这里。</p>}
+        <header><h2>未决事项</h2><span className="subtle">{!portfolio ? error ? "暂不可读" : "读取中" : portfolio.readErrors.length ? "资料未完整读取" : `${items.length} 项`}</span></header>
+        {!portfolio && !error && <p className="workspace-list-empty">正在读取未决事项…</p>}
+        {portfolio && !portfolio.readErrors.length && items.length === 0 && <p className="workspace-list-empty">当前没有指派给你的未决任务或风险。立项 G0 批准后，处置事项会按负责人出现在这里。</p>}
         {items.map(item => <div className="workspace-record-row" key={item.id}>
           {item.kind === "risk" ? <Warning size={18} aria-hidden="true"/> : <ClipboardText size={18} aria-hidden="true"/>}
           <div className="min-w-0 flex-1">
@@ -84,8 +78,8 @@ export function MyWork({ api, session, onOpenRun, onOpenProject, onOpenPai }: {
         </div>)}
       </section>
       <section className="workspace-overview" aria-label="我的运行">
-        <header><h2>最近运行</h2><span className="subtle">{runs.length} 次</span></header>
-        {runs.length === 0 && <p className="workspace-list-empty">暂无运行。打开小Pai 委派第一项工作。</p>}
+        <header><h2>最近运行</h2><span className="subtle">{portfolio ? `${Math.min(runs.length, 12)} 次` : error ? "暂不可读" : "读取中"}</span></header>
+        {!error && portfolio && runs.length === 0 && <p className="workspace-list-empty">暂无运行。打开小Pai 委派第一项工作。</p>}
         {runs.slice(0, 12).map(run => <div className="workspace-record-row" key={run.run_id}>
           <Sparkle size={18} aria-hidden="true"/>
           <div className="min-w-0 flex-1">
@@ -98,7 +92,7 @@ export function MyWork({ api, session, onOpenRun, onOpenProject, onOpenPai }: {
     </div>
     <section className="workspace-overview" aria-label="可见项目">
       <header><h2>可见项目</h2></header>
-      {portfolio && portfolio.projects.length === 0 && <p className="workspace-list-empty">没有可见项目。立项提案经具名 G0 批准后建立项目；也可在产品品类工作区先起草提案。</p>}
+      {portfolio && !portfolio.readErrors.length && portfolio.projects.length === 0 && <p className="workspace-list-empty">没有可见项目。立项提案经具名 G0 批准后建立项目；也可在产品品类工作区先起草提案。</p>}
       {portfolio?.projects.slice(0, 6).map(entry => <div className="workspace-record-row" key={entry.project.id}>
         <FolderSimple size={18} aria-hidden="true"/>
         <div className="min-w-0 flex-1"><p className="truncate font-medium">{entry.project.name}</p><p className="subtle truncate">{entry.category.name} · {entry.product.name}</p></div>

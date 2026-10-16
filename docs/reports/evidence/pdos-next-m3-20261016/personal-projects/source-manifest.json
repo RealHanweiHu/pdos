@@ -1,0 +1,33 @@
+{
+  "base_commit": "670675ac2d403369f3e1a45f771f1ac6543ba712",
+  "candidate": "personal-projects-20261016-final",
+  "database_head": "s0_0762",
+  "schema_change": false,
+  "source_sha256": {
+    "pdos-next/server/pdos_next/api.py": "02c0c985cddd8d9dedbaba57f6cbf07b2b22302925b9c1acf44862eeb84d3680",
+    "pdos-next/server/pdos_next/personal_views.py": "d0577f0594d52bcc49210aa95079a0f01c473547237d6824c17e2d379a227c9d",
+    "pdos-next/server/tests/test_personal_views.py": "81e35e367e89ad62659aee74276b3547dc327a59261d9501a974f47e1d47e95f",
+    "pdos-next/web/next-env.d.ts": "1862ac4bbbc5192d4bf562161df66ea547ed3e67173100656ab606ae9797db2b",
+    "pdos-next/web/src/lib/portfolio-reads.ts": "a1feab5c866e729e7110cf89acd974a575c362e9b93eea4101dea3788266a658",
+    "pdos-next/web/src/lib/portfolio-reads.test.ts": "7fc1873537ddb72e410ac89e1ab47f4be21e833a2e81b119b4a9db5f2eeb1d37",
+    "pdos-next/web/src/lib/global-navigation.ts": "04317f5c87e8c82f7a4ae35875e2fca79512a5207c71ec5d007e26ba85a12162",
+    "pdos-next/web/src/lib/global-navigation.test.ts": "c71b1e5175b1fc45fcdcac4901891d19b5fb263cf58d9d895efc59eb30c61ff6",
+    "pdos-next/web/src/components/my-work.tsx": "720b7c82b38df2cdfb4ff5eef0afdd91ac1dfb0948b0f60c398cb7b5f3aceeb1",
+    "pdos-next/web/src/components/projects/project-list.tsx": "4ed05050667a71a8e4b7a60ee2be697dffba615a40b1b264815a6db25316b41d",
+    "pdos-next/web/src/components/projects/project-cockpit.tsx": "2de29aec1e66e4c57ca3e7b5005e6033879ee8241cd6d2fcd1618fb0e520c10d",
+    "pdos-next/web/src/components/app-shell.tsx": "cbe8c1f20d67dca0f9fdad0785b3c9ceb81fa65d6ab91654782848b338ada8ea",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "d345bebefbb33d8d2bac4d4db12346ad62ce3eca09992b440823dbfb6c60d631",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "a7b90f1dabe45378623517e3d28c426c87eb8c07a2aade00efb58b4f77085e62"
+  },
+  "checks": {
+    "distinct_postgres_cases": 10,
+    "backend_pure": 1,
+    "frontend_bff_navigation": 56,
+    "ruff": "passed",
+    "affected_eslint": "passed",
+    "whole_src_eslint": "existing ignored artifacts fail; see checks/lint-layout.log",
+    "typescript": "passed",
+    "production_build": "passed",
+    "real_model_calls": 0
+  }
+}
