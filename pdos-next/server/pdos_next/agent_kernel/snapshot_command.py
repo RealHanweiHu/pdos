@@ -433,6 +433,9 @@ def _sequence(session, run_id):
 
 
 def finalize_receipt(session, ctx, command, scope, payload, subject, receipt):
+    from .proposal_context import admit_created
+
+    admit_created(session, subject, receipt)
     if payload.prepared_event_id is None:
         return
     session.add(

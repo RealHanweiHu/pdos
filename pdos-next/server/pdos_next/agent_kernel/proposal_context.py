@@ -262,21 +262,8 @@ def _watermarks(session, ctx, run, refs):
                 _outbound_unavailable()
 
 
-def validate(session, scope, run, *, extra_value=None):
-    if run.proposal_id is None:
-        return
-    ctx = Context(
-        scope.tenant_id,
-        scope.writer_id,
-        scope.requester_id,
-        category_id=scope.category_id,
-        agent_run_id=scope.run_id,
-        cancel_epoch=scope.cancel_epoch,
-    )
-    row = proposal(session, ctx, run.proposal_id)
-    stored = bound_head(run, row)
-    if stored is None:
-        return  # The public-only tool ports retain their existing public-source guard.
+def stored_references(run):
+    stored = run.versions.get(KEY)
     if (
         not isinstance(stored, dict)
         or set(stored)
@@ -297,6 +284,25 @@ def validate(session, scope, run, *, extra_value=None):
         refs = [Reference.model_validate(raw) for raw in stored["references"]]
     except (TypeError, ValueError):
         _outbound_unavailable()
+    return stored, refs
+
+
+def validate(session, scope, run, *, extra_value=None):
+    if run.proposal_id is None:
+        return
+    ctx = Context(
+        scope.tenant_id,
+        scope.writer_id,
+        scope.requester_id,
+        category_id=scope.category_id,
+        agent_run_id=scope.run_id,
+        cancel_epoch=scope.cancel_epoch,
+    )
+    row = proposal(session, ctx, run.proposal_id)
+    stored = bound_head(run, row)
+    if stored is None:
+        return  # The public-only tool ports retain their existing public-source guard.
+    stored, refs = stored_references(run)
     keys = {reference_key(ref) for ref in refs} | {
         ("original", raw["artifact_id"], raw["expected_revision"]) for raw in run.read_sources
     }
@@ -328,3 +334,92 @@ def validate(session, scope, run, *, extra_value=None):
     if marker not in proof.read_rows:
         _watermarks(session, ctx, run, refs)
         proof.read_rows[marker] = True
+
+
+def admit_created(session, subject, receipt):
+    """Admit only a receipt-backed domain result, atomically in its existing UOW.
+
+    Both producers already own the Run lock and source proof. This adds no
+    authority, original read, data category, model qualification or business row.
+    Receipt replay returns directly; no second admission is needed after commit.
+    """
+    if isinstance(subject, Claim):
+        kind, operation, run_id = "claim", "evidence.claim.record", subject.run_id
+    elif isinstance(subject, PublicWebSnapshot):
+        kind, operation, run_id = (
+            "snapshot",
+            "research.snapshot.register",
+            subject.registered_by_run_id,
+        )
+    else:
+        return
+    run = session.get(AgentRun, run_id) if run_id else None
+    if run is None or run.proposal_id is None or KEY not in run.versions:
+        return  # Legacy/test runs have no proposal context to extend.
+    stored, refs = stored_references(run)
+    if (
+        subject.tenant_id != run.tenant_id
+        or subject.category_id != run.category_id
+        or subject.receipt_id != receipt.id
+        or receipt.subject_id != subject.id
+        or receipt.tenant_id != run.tenant_id
+        or receipt.category_id != run.category_id
+        or receipt.operation != operation
+        or receipt.subject_revision != 1
+        or receipt.subject_type != ("claim" if kind == "claim" else "public_web_snapshot")
+        or receipt.requester_id != run.requester_id
+        or receipt.agent_run_id != run.id
+    ):
+        _outbound_unavailable()
+    known = {reference_key(ref) for ref in refs} | {
+        ("original", raw["artifact_id"], raw["expected_revision"]) for raw in run.read_sources
+    }
+    additions = [Reference(type=kind, id=subject.id, version=1)]
+    if kind == "claim":
+        if (
+            subject.proposal_id != run.proposal_id
+            or subject.revision != 1
+            or subject.status != "active"
+            or subject.writer_id != run.writer_id
+            or (
+                (subject.privacy != "shared" or subject.visibility != "category")
+                and not run.private_context
+            )
+        ):
+            return
+        source = Reference(
+            type=subject.source_kind,
+            id=subject.artifact_id if subject.source_kind == "artifact" else subject.snapshot_id,
+            version=subject.source_revision,
+        )
+        if source.type == "artifact" and reference_key(source) not in known:
+            return  # A derived fact cannot introduce an unbound customer original.
+        if source.type == "snapshot":
+            snapshot = session.get(PublicWebSnapshot, source.id)
+            if (
+                not snapshot
+                or snapshot.tenant_id != run.tenant_id
+                or snapshot.category_id != run.category_id
+                or source.version != 1
+                or snapshot.status not in {"ok", "partial"}
+                or snapshot.visibility != "category"
+                and not (run.private_context and snapshot.registered_by_run_id == run.id)
+            ):
+                return
+            from .snapshot_read_ledger import _registration
+
+            _registration(session, snapshot)
+        additions.append(source)
+    elif subject.visibility != ("private" if run.private_context else "category"):
+        _outbound_unavailable()
+    merged = {reference_key(ref): ref for ref in refs}
+    for ref in additions:
+        merged.setdefault(reference_key(ref), ref)
+    if len(merged) != len(refs):
+        run.versions = {
+            **run.versions,
+            KEY: {
+                **stored,
+                "references": [merged[key].model_dump(mode="json") for key in sorted(merged)],
+            },
+        }

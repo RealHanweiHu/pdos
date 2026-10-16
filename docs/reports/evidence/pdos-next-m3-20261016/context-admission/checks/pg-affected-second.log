@@ -1,0 +1,15 @@
+....                                                                     [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_new_claim_can_be_adopted_read_and_replayed_in_original_run[False]
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_new_claim_can_be_adopted_read_and_replayed_in_original_run[True]
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_new_snapshot_then_claim_continue_in_same_run[False]
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_new_snapshot_then_claim_continue_in_same_run[True]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_proposal_context_admission_pg.py: 28 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 32 warnings in 12.61s

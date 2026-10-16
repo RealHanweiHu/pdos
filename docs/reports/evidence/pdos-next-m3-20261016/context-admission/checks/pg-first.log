@@ -1,0 +1,344 @@
+FFFF..                                                                   [100%]
+=================================== FAILURES ===================================
+____ test_new_claim_can_be_adopted_read_and_replayed_in_original_run[False] ____
+
+work = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10f9cc2f0>
+human = False
+
+    @pytest.mark.parametrize("human", [False, True])
+    def test_new_claim_can_be_adopted_read_and_replayed_in_original_run(work, monkeypatch, human):
+        f = bound(work, monkeypatch)
+        f.client, f.headers = work.client, work.headers
+        before = current(f)[1]
+        receipt, replay = execute(f, "evidence.claim.record", claim_args(f), human=human)
+        identity = UUID(receipt["subject_id"])
+        after = current(f)
+        assert {ref["type"] for ref in after[1]} >= {"claim", "artifact"}
+        assert not any(ref["id"] == str(identity) for ref in before)
+        attach(work, f, "claim", identity)
+        assert replay()["id"] == receipt["id"] and current(f) == after
+        with Session(work.admin) as session:
+            row = session.get(Claim, identity)
+            assert row.run_id == f.scope.run_id and row.writer_id == f.scope.writer_id
+            assert row.confirmed_by == (work.human if human else None)
+        agree(work, f.scope, f.scope.data_categories)
+        client = Client(lambda _: ModelTurn("Continued original Run", usage=ProviderUsage(1, 1)))
+>       assert turn(gateway(f.owner, client), f.scope).text == "Continued original Run"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_proposal_context_admission_pg.py:169:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_gateway.py:32: in turn
+    return gateway.turn(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.gateway.AgentGateway object at 0x10fc33920>
+scope = RunScope(tenant_id=UUID('4c7df21b-7a99-41b7-9a08-73351b8b8a7f'), requester_id=UUID('d887a84f-16fb-4e45-afac-770ca0f2b6...text=True, data_categories=frozenset({'internal'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+system = 'frozen', messages = [{'role': 'user', 'content': 'synthetic'}]
+tools = [], output_schema = {'type': 'object'}, emit = None, loaded_skills = ()
+
+    def turn(self, scope, *, system, messages, tools, output_schema, emit=None, loaded_skills=()):
+        if not in_registered_agent_graph():
+            raise DomainError("FORBIDDEN_SCOPE", "模型只能由登记的小Pai执行图调用。")
+        self.store.current(scope)
+        from .proposal_context import check
+
+        check(self.store, scope)
+        route = self.route_for(scope)
+        if route is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前模型未配置，AI 暂不可用。")
+        provider_key = self.provider_for(scope, route)
+        if not isinstance(provider_key, str) or not provider_key:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前服务商身份未登记。")
+        if not isinstance(system, str) or any(
+            not isinstance(message, dict) or not isinstance(message.get("content", ""), str)
+            for message in messages
+        ):
+            raise DomainError("VALIDATION_FAILED", "当前费用资格只覆盖纯文本模型请求。")
+        request = {
+            "system": system,
+            "messages": messages,
+            "tools": tools,
+            "output_schema": output_schema,
+            "route": route.digest,
+            "provider_key": provider_key,
+        }
+        with self.store.transaction(scope, lock=True) as (session, run):
+            for binding in loaded_skills:
+                validate_skill_load(session, scope, binding)
+            prior_model = run.versions.get("model_version")
+            prior_route = run.versions.get("model_route_digest")
+            if (
+                prior_model is not None
+                and prior_model != route.version
+                or prior_route is not None
+                and prior_route != route.digest
+            ):
+>               raise DomainError("VERSION_CONFLICT", "原运行的模型版本不能静默替换。")
+E               pdos_next.errors.DomainError: 原运行的模型版本不能静默替换。
+
+pdos_next/agent_kernel/gateway.py:74: DomainError
+____ test_new_claim_can_be_adopted_read_and_replayed_in_original_run[True] _____
+
+work = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x118556570>
+human = True
+
+    @pytest.mark.parametrize("human", [False, True])
+    def test_new_claim_can_be_adopted_read_and_replayed_in_original_run(work, monkeypatch, human):
+        f = bound(work, monkeypatch)
+        f.client, f.headers = work.client, work.headers
+        before = current(f)[1]
+        receipt, replay = execute(f, "evidence.claim.record", claim_args(f), human=human)
+        identity = UUID(receipt["subject_id"])
+        after = current(f)
+        assert {ref["type"] for ref in after[1]} >= {"claim", "artifact"}
+        assert not any(ref["id"] == str(identity) for ref in before)
+        attach(work, f, "claim", identity)
+        assert replay()["id"] == receipt["id"] and current(f) == after
+        with Session(work.admin) as session:
+            row = session.get(Claim, identity)
+            assert row.run_id == f.scope.run_id and row.writer_id == f.scope.writer_id
+            assert row.confirmed_by == (work.human if human else None)
+        agree(work, f.scope, f.scope.data_categories)
+        client = Client(lambda _: ModelTurn("Continued original Run", usage=ProviderUsage(1, 1)))
+>       assert turn(gateway(f.owner, client), f.scope).text == "Continued original Run"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_proposal_context_admission_pg.py:169:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_gateway.py:32: in turn
+    return gateway.turn(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.gateway.AgentGateway object at 0x11885b230>
+scope = RunScope(tenant_id=UUID('a17fffc2-cfd7-437c-b7d5-3a9ff52673b8'), requester_id=UUID('719d45b1-4d74-455f-bb83-4d7b4d916d...text=True, data_categories=frozenset({'internal'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+system = 'frozen', messages = [{'role': 'user', 'content': 'synthetic'}]
+tools = [], output_schema = {'type': 'object'}, emit = None, loaded_skills = ()
+
+    def turn(self, scope, *, system, messages, tools, output_schema, emit=None, loaded_skills=()):
+        if not in_registered_agent_graph():
+            raise DomainError("FORBIDDEN_SCOPE", "模型只能由登记的小Pai执行图调用。")
+        self.store.current(scope)
+        from .proposal_context import check
+
+        check(self.store, scope)
+        route = self.route_for(scope)
+        if route is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前模型未配置，AI 暂不可用。")
+        provider_key = self.provider_for(scope, route)
+        if not isinstance(provider_key, str) or not provider_key:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前服务商身份未登记。")
+        if not isinstance(system, str) or any(
+            not isinstance(message, dict) or not isinstance(message.get("content", ""), str)
+            for message in messages
+        ):
+            raise DomainError("VALIDATION_FAILED", "当前费用资格只覆盖纯文本模型请求。")
+        request = {
+            "system": system,
+            "messages": messages,
+            "tools": tools,
+            "output_schema": output_schema,
+            "route": route.digest,
+            "provider_key": provider_key,
+        }
+        with self.store.transaction(scope, lock=True) as (session, run):
+            for binding in loaded_skills:
+                validate_skill_load(session, scope, binding)
+            prior_model = run.versions.get("model_version")
+            prior_route = run.versions.get("model_route_digest")
+            if (
+                prior_model is not None
+                and prior_model != route.version
+                or prior_route is not None
+                and prior_route != route.digest
+            ):
+>               raise DomainError("VERSION_CONFLICT", "原运行的模型版本不能静默替换。")
+E               pdos_next.errors.DomainError: 原运行的模型版本不能静默替换。
+
+pdos_next/agent_kernel/gateway.py:74: DomainError
+___________ test_new_snapshot_then_claim_continue_in_same_run[False] ___________
+
+work = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x118df1af0>
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-223/test_new_snapshot_then_claim_c0')
+human = False
+
+    @pytest.mark.parametrize("human", [False, True])
+    def test_new_snapshot_then_claim_continue_in_same_run(work, monkeypatch, tmp_path, human):
+        f = bound(work, monkeypatch)
+        f.client, f.headers = work.client, work.headers
+        snapshot = retained_snapshot(f, tmp_path)
+        registered, replay = execute(
+            f, "research.snapshot.register", {"snapshot_id": str(snapshot.id)}, human=human
+        )
+        assert any(ref["type"] == "snapshot" and ref["id"] == str(snapshot.id) for ref in current(f)[1])
+        attach(work, f, "snapshot", snapshot.id)
+        before = current(f)
+        assert replay()["id"] == registered["id"] and current(f) == before
+        arguments = {
+            "source": {
+                "kind": "snapshot",
+                "id": str(snapshot.id),
+                "version": 1,
+                "line": 1,
+                "quote": "Synthetic public snapshot",
+            },
+            "nature": "extracted",
+            "content": {"text": "Synthetic public snapshot"},
+            "visibility": "audience",
+        }
+>       receipt, _ = execute(f, "evidence.claim.record", arguments, human=human)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_proposal_context_admission_pg.py:228:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_proposal_context_admission_pg.py:102: in execute
+    result = f.adapter.execute(f.scope, tool, arguments, intent, source=source)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/domain_adapter.py:308: in execute
+    return category_transaction(self.engine, ctx, write)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:81: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/agent_kernel/domain_adapter.py:281: in write
+    command = self.command(session, scope, operation, arguments, intent_key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x118f6e180>
+session = <sqlalchemy.orm.session.Session object at 0x119216090>
+scope = RunScope(tenant_id=UUID('a58c2612-15ab-40b0-b6e4-740fc2055bc0'), requester_id=UUID('5234a2ee-57d2-48bc-8811-b615ff924f...text=True, data_categories=frozenset({'internal'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'snapshot', 'id': '7ed08fc2-d9c8-445a-bdc1-50cf35b448f6', 'version': 1, 'line': 1, ...}, 'nature': 'extracted', 'content': {'text': 'Synthetic public snapshot'}, 'visibility': 'audience'}
+intent_key = 'agent:b56e7f4c-d9fa-4b9a-80d5-aef4f005535c:model:3e17e8ad-5874-451d-b87e-569c7581ea8a:0'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+>       normalized = PAYLOADS[operation].model_validate(payload)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for ClaimRecord
+E         Value error, Canonical source cannot include legacy source or visibility fields [type=value_error, input_value={'source': {'kind': 'snap...ff7-87a7-d4862852af8b')}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.13/v/value_error
+
+pdos_next/agent_kernel/domain_adapter.py:128: ValidationError
+___________ test_new_snapshot_then_claim_continue_in_same_run[True] ____________
+
+work = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x119496d20>
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-223/test_new_snapshot_then_claim_c1')
+human = True
+
+    @pytest.mark.parametrize("human", [False, True])
+    def test_new_snapshot_then_claim_continue_in_same_run(work, monkeypatch, tmp_path, human):
+        f = bound(work, monkeypatch)
+        f.client, f.headers = work.client, work.headers
+        snapshot = retained_snapshot(f, tmp_path)
+        registered, replay = execute(
+            f, "research.snapshot.register", {"snapshot_id": str(snapshot.id)}, human=human
+        )
+        assert any(ref["type"] == "snapshot" and ref["id"] == str(snapshot.id) for ref in current(f)[1])
+        attach(work, f, "snapshot", snapshot.id)
+        before = current(f)
+        assert replay()["id"] == registered["id"] and current(f) == before
+        arguments = {
+            "source": {
+                "kind": "snapshot",
+                "id": str(snapshot.id),
+                "version": 1,
+                "line": 1,
+                "quote": "Synthetic public snapshot",
+            },
+            "nature": "extracted",
+            "content": {"text": "Synthetic public snapshot"},
+            "visibility": "audience",
+        }
+>       receipt, _ = execute(f, "evidence.claim.record", arguments, human=human)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_proposal_context_admission_pg.py:228:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_proposal_context_admission_pg.py:88: in execute
+    candidate = f.owner.prepare_candidate(f.scope, f.registry.get(tool), arguments, intent)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/bootstrap.py:260: in prepare_candidate
+    return prepare(session, scope, spec, arguments, intent_key, self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/claim_candidate.py:72: in prepare
+    command = bootstrap.commands.command(session, scope, spec.name, arguments, intent_key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x119673530>
+session = <sqlalchemy.orm.session.Session object at 0x11969efc0>
+scope = RunScope(tenant_id=UUID('1705faf1-7127-4314-886e-29526d1b6247'), requester_id=UUID('d649e9d5-f25c-419d-ab7e-a42e5eb316...text=True, data_categories=frozenset({'internal'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'snapshot', 'id': '42c520cc-240f-498d-b616-c5bfe5f0f0ba', 'version': 1, 'line': 1, ...}, 'nature': 'extracted', 'content': {'text': 'Synthetic public snapshot'}, 'visibility': 'audience'}
+intent_key = 'agent:06835ac3-a25a-458b-afa0-99406e1b29f4:model:1e528e3c-5f4c-475b-a197-319a0aaaa193:0'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+>       normalized = PAYLOADS[operation].model_validate(payload)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for ClaimRecord
+E         Value error, Canonical source cannot include legacy source or visibility fields [type=value_error, input_value={'source': {'kind': 'snap...f7d-87a8-1df504f40eb2')}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.13/v/value_error
+
+pdos_next/agent_kernel/domain_adapter.py:128: ValidationError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_new_claim_can_be_adopted_read_and_replayed_in_original_run[False]
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_new_claim_can_be_adopted_read_and_replayed_in_original_run[True]
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_new_snapshot_then_claim_continue_in_same_run[False]
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_new_snapshot_then_claim_continue_in_same_run[True]
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_admission_rolls_back_with_receipt_and_retries_without_duplicate
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_newly_admitted_claim_withdrawal_still_stops_original_run
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_proposal_context_admission_pg.py: 40 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_proposal_context_admission_pg.py::test_new_claim_can_be_adopted_read_and_replayed_in_original_run[False]
+FAILED tests/agent_kernel/test_proposal_context_admission_pg.py::test_new_claim_can_be_adopted_read_and_replayed_in_original_run[True]
+FAILED tests/agent_kernel/test_proposal_context_admission_pg.py::test_new_snapshot_then_claim_continue_in_same_run[False]
+FAILED tests/agent_kernel/test_proposal_context_admission_pg.py::test_new_snapshot_then_claim_continue_in_same_run[True]
+4 failed, 2 passed, 46 warnings in 19.91s

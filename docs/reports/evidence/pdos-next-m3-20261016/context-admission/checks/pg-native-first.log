@@ -1,0 +1,18 @@
+.
+=============================== warnings summary ===============================
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_registered_graph_records_new_claim_adopts_it_and_finishes_without_new_run
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_registered_graph_records_new_claim_adopts_it_and_finishes_without_new_run
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_registered_graph_records_new_claim_adopts_it_and_finishes_without_new_run
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_registered_graph_records_new_claim_adopts_it_and_finishes_without_new_run
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_registered_graph_records_new_claim_adopts_it_and_finishes_without_new_run
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_registered_graph_records_new_claim_adopts_it_and_finishes_without_new_run
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_registered_graph_records_new_claim_adopts_it_and_finishes_without_new_run
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_registered_graph_records_new_claim_adopts_it_and_finishes_without_new_run
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 8 warnings in 8.53s
