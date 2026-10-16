@@ -35,5 +35,20 @@
     "horizontal_overflow": false
   },
   "real_model_calls": 0,
-  "formal_m3_or_s1_acceptance": false
+  "formal_m3_or_s1_acceptance": false,
+  "local_integration": {
+    "merge_commit": "00f86e1",
+    "feature_commit": "5ba7e39",
+    "main_directory_updated": true,
+    "original_ui_preserved": true,
+    "read_compatibility_module_passed": 33,
+    "expanded_group": {
+      "passed_before_stop": 68,
+      "observed_failures": 0,
+      "complete": false,
+      "not_formal_m3_acceptance": true
+    },
+    "own_preview_services_stopped": true,
+    "existing_database_preserved": true
+  }
 }
