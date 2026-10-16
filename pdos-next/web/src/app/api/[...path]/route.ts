@@ -65,6 +65,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const preproject = preprojectPaths.test(pathname);
   const proposalView = proposalViewPaths.test(pathname);
   const categoryKnowledge = categoryKnowledgePaths.test(pathname);
+  const standardMatch = pathname === "v1/standard-match";
   const proposalClaim = proposalClaimPaths.test(pathname);
   const agent = agentPaths.test(pathname) || personalAgent;
   const modelConfiguration = pathname === "v1/model-configuration";
@@ -72,9 +73,12 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const manufacturingPreparation = manufacturingPreparationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !categoryKnowledge) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !categoryKnowledge && !standardMatch) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
-  if (categoryPreview || categorySeed || categoryRoot) {
+  if (standardMatch) {
+    if (request.method !== "POST") return Response.json({ code: "VALIDATION_FAILED", message: "请提交要核对的规格。" }, { status: 405, headers: { Allow: "POST" } });
+    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "规格核对不接受额外查询条件。" }, { status: 422 });
+  } else if (categoryPreview || categorySeed || categoryRoot) {
     const allowed = categoryRoot ? ["GET", "POST"] : categorySeed ? ["GET"] : ["POST"];
     if (!allowed.includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405 });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "品类入口不接受额外查询条件。" }, { status: 422 });
@@ -244,7 +248,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     if (disposition) headers.set("Content-Disposition", disposition);
     return new Response(await response.arrayBuffer(), { status: response.status, headers });
   } catch {
-    if (request.method === "GET" || resourceInspect) return Response.json({ code: "SOURCE_UNAVAILABLE", detail: { reason: "TRANSPORT_UNAVAILABLE" }, message: "暂未读取到当前事实，请刷新核对。本次读取没有发起操作。" }, { status: 503 });
+    if (request.method === "GET" || resourceInspect || standardMatch) return Response.json({ code: "SOURCE_UNAVAILABLE", detail: { reason: "TRANSPORT_UNAVAILABLE" }, message: "暂未读取到当前事实，请刷新核对。本次读取没有发起操作。" }, { status: 503 });
     return Response.json({ code: "EXTERNAL_OUTCOME_UNKNOWN", detail: { reason: "TRANSPORT_OUTCOME_UNKNOWN" }, message: "暂未取得服务回执。请重试原操作以核对结果。" }, { status: 503 });
   }
 }

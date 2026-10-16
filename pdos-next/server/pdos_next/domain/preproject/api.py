@@ -9,6 +9,8 @@ from sqlalchemy import select, text
 from pdos_next.database import tenant_session
 from pdos_next.service import Context, require_access
 
+from .standard_match import StandardMatchInput
+
 
 def register_routes(app, engine, auth_dependency):
     def scope(ctx):
@@ -20,6 +22,14 @@ def register_routes(app, engine, auth_dependency):
             category_id=ctx.category_id,
             read_snapshot=True,
         )
+
+    @app.post("/v1/categories/{category_id}/standard-match")
+    def standard_match(payload: StandardMatchInput, ctx: Context = auth_dependency):
+        from .standard_match import match
+
+        with scope(ctx) as s:
+            require_access(s, ctx, None)
+            return match(s, ctx, payload)
 
     @app.get("/v1/categories/{category_id}/products/{product_id}/baseline")
     def product_baseline(

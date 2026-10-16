@@ -49,6 +49,34 @@ function harness(options = {}) {
   } };
 }
 
+test("standard matching forwards a scoped read-only POST without creating commands", async () => {
+  const h = harness({ response: { products: [], next_step: "confirm_full_scope_then_crm" } });
+  const body = JSON.stringify({ product_ids: [proposal], requirements: [{ availability: "unknown" }] });
+  const response = await h.send(`${root}/standard-match`, { method: "POST", body });
+  assert.equal(response.status, 200);
+  assert.equal(h.calls.length, 1);
+  assert.equal(h.calls[0].url, `http://synthetic-api.invalid/${root}/standard-match`);
+  assert.equal(h.calls[0].init.body, body);
+  assert.equal(h.calls[0].init.cache, "no-store");
+  assert.equal(response.headers.get("Cache-Control"), "no-store");
+});
+
+test("standard matching rejects unscoped paths, queries and wrong origins", async () => {
+  const h = harness();
+  assert.equal((await h.send("v1/standard-match", { method: "POST" })).status, 404);
+  assert.equal((await h.send(`${root}/standard-match`)).status, 405);
+  assert.equal((await h.send(`${root}/standard-match`, { method: "POST", query: "tenant_id=other" })).status, 422);
+  assert.equal((await h.send(`${root}/standard-match`, { method: "POST", origin: "http://other.invalid" })).status, 403);
+  assert.equal(h.calls.length, 0);
+});
+
+test("standard matching transport failure is a failed read with no uncertain write", async () => {
+  const h = harness({ transportFailure: true });
+  const response = await h.send(`${root}/standard-match`, { method: "POST", body: "{}" });
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).code, "SOURCE_UNAVAILABLE");
+});
+
 for (const view of views) test(`${view} forwards the exact scoped GET and every parameter occurrence`, async () => {
   const envelope = { view, proposal_id: proposal, revision: 2, document_mode: "frozen", document_digest: "actual-digest", submission_id: "actual-submission", data: { untouched: true } };
   const h = harness({ response: envelope });

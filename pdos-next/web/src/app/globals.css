@@ -216,3 +216,5 @@ dialog::backdrop { background: rgb(0 0 0 / .35); }
 .plan-filter[aria-pressed="true"] { border-color: var(--primary); color: var(--foreground); font-weight: 500; }
 .plan-back { margin-left: auto; color: var(--text-subtle); font-size: 12px; text-decoration: none; }
 .plan-back:hover { color: var(--foreground); }
+.standard-match-product { display: flex; align-items: center; gap: 8px; margin-bottom: 0; }
+.standard-match-product input[type="checkbox"] { width: 16px; height: 16px; margin: 0; padding: 0; accent-color: var(--primary); }

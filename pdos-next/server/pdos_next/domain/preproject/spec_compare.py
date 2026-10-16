@@ -312,7 +312,11 @@ def _subject(s, ctx, subject, proposals, *, before_definition_read=None):
             s, ctx, subject.id, definition_revision=chosen[1], **guarded_read
         )
         doc = read["definition"]
-        meta.update(baseline_kind=read["baseline_kind"], issues=read["source_issues"])
+        meta.update(
+            baseline_kind=read["baseline_kind"],
+            issues=read["source_issues"],
+            unavailable_definition_count=read.get("unavailable_definition_count", 0),
+        )
         product = s.get(Product, subject.id)
         if (
             not product
@@ -501,6 +505,12 @@ def compare(s, ctx, payload, *, before_definition_read=None):
                 if note
                 else ("parameter_standard" if effective_note else "unspecified"),
                 "test_conditions": conditions,
+                "tolerance": raw.get("tolerance"),
+                "verification_method": raw.get("verification_method", raw.get("method")),
+                "acceptance_criterion": raw.get("acceptance_criterion"),
+                "modality": raw.get("modality"),
+                "exceptions": deepcopy(raw.get("exceptions", [])),
+                "applicable_variants": deepcopy(raw.get("applicable_variants", [])),
                 "source_refs": sources,
                 "comparable": not reasons,
                 "reasons": sorted(set(reasons)),

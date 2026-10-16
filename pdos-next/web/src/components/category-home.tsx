@@ -5,6 +5,7 @@ import { ArrowRight, Books, ClipboardText, FileText, Package, Sparkle } from "@p
 import { Button } from "@/components/ui/button";
 import { browserApi } from "@/lib/browser-api";
 import { ProposalList } from "@/components/proposals/proposal-list";
+import { StandardMatch } from "@/components/preproject/standard-match";
 
 type Api = typeof browserApi;
 type Product = { id: string; name: string; purpose: string };
@@ -45,6 +46,7 @@ export function CategoryHome({ categoryId, categoryName, api, onOpenWorkbench, o
   return <>
     <div className="workspace-page-heading"><div className="min-w-0"><h1>{categoryName}</h1><p>品类是权限范围根：共享知识、规格字典、型号与立项提案都在这里汇聚，项目经提案 G0 评审后建立。</p></div><Button variant="outline" onClick={() => onOpenWorkbench("products")}>打开品类工作台<ArrowRight size={14}/></Button></div>
     {errors.map(message => <p key={message} role="status" className="subtle">部分内容暂不可读：{message}</p>)}
+    {products && <StandardMatch key={categoryId} categoryId={categoryId} products={products} api={api} onOpenProduct={id => onOpenWorkbench("products", id)}/>}
     <section className="panel mb-6" aria-label="立项提案">
       <div className="mb-4 flex items-center gap-2"><FileText className="text-primary" aria-hidden="true"/><h2 className="font-semibold">立项提案</h2><span className="subtle ml-auto">一案一页 · 唯一关卡是具名 G0 评审</span></div>
       <p className="subtle mb-4">客户需求、自主新品、派生迭代三个入口都落到同一种立项提案；AI 先起草，人做取舍。从对话创建的提案一律私有。</p>
