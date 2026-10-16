@@ -22,12 +22,39 @@
 
 隔离 `McpService` 消费当前有效、未过期且绑定实际工具合同的授权；只承认真实 Run 的已加载技能或现有规则上下文。调用前校验参数、当前来源出站政策和服务商协议，解析服务器凭据后再次检查准入与授权。已结算调用可沿原意图恢复，授权撤销后不开放新调用。
 
-原始响应仅交隔离抽取端口，主任务只接收结构化行和运行回执。参数 Schema 仅接受同份登记内的引用，验证器使用无网络检索的 registry；参见 [jsonschema 引用说明](https://github.com/python-jsonschema/jsonschema/blob/main/docs/referencing.rst)与[校验说明](https://github.com/python-jsonschema/jsonschema/blob/main/docs/validate.rst)。结果 Schema 目前是供隔离抽取端口使用的登记合同，并未新增通用输出校验器。
+默认 API/Worker 已接入固定的 `mcp.tools.list` 与 `mcp.read` 注册入口。发现只返回实际模型账本中已加载、仍启用技能的有效只读授权及工具合同，不向远程服务导入工具或指令，也不回传服务地址或凭据引用。目标和参数是工具选择，租户、Run、当前权限与已加载技能均由服务器核对。
 
-当前尚未把 MCP 发现/读取适配器和真实协议传输接入默认注册执行图。此管理闭环不能宣称小Pai已经可以调用真实连接器，也不提供绕过 Temporal/LangGraph 的直连入口。自动化规则的管理属于 S5，本次只提供技能授权管理。向外写入仍须后续调用路径取得具名 T2 或对应明确授权；勾选工具授权不能替代实际业务授权。
+原始响应先保存在运行私有作业目录，仅由同一小Pai图的只读 MCP 子任务通过 `mcp.result.read` 分页读取。子任务没有联网、领域写入或再次委派能力；主任务只接收按实际读取页核对的事实行、精确引文位置与运行回执。返回内容中的指令和批准文字不产生权限；行也不自动登记为领域事实。凭据回显在落盘及进入模型前脱敏。
+
+参数及可选结构化输出 Schema 使用离线 registry，不读取远程引用。登记了输出 Schema 时，实际 MCP `structuredContent` 必须与之相容后才进入子任务；文本输出未登记 Schema 时仍须按实际读取页核对引文。参见 [jsonschema 引用说明](https://github.com/python-jsonschema/jsonschema/blob/main/docs/referencing.rst)与[校验说明](https://github.com/python-jsonschema/jsonschema/blob/main/docs/validate.rst)。
+
+只读调用保留父图模型/读取证明、授权版本及网络调用记录。网络响应已落盘时，进程中断后可在当前权限与合同仍有效时继续原子任务；响应未落盘时返回待核对，不自动重发。读取结果提交前后继续核对准入、授权、出站与来源状态。子任务模型调用继续使用原价格卡、预算、服务商协议和网关，未知模型响应沿原有规则处理。
+
+自动化规则管理属于 S5，本次只提供技能授权管理。主图的外发执行仍待后续建设：勾选工具授权不会立即发送资料，不能替代实际业务的具名 T2 或对应明确授权。
+
+## 服务器运行配置
+
+API 与 Worker 使用同一份 `PDOS_TENANT_RUNTIME_CONFIG`。可选的 `mcp` 块独立于模型凭据槽位：
+
+```json
+{
+  "mcp": {
+    "artifact_root": "/absolute/private/pdos-mcp-artifacts",
+    "secrets": [{
+      "tenant_id": "00000000-0000-4000-8000-000000000001",
+      "reference": "replace-with-admitted-server-reference",
+      "secret_arn": "acs:kms:cn-hangzhou:000000000000:secret/replace-with-mcp-bearer"
+    }]
+  }
+}
+```
+
+以上仅为元数据示例。`reference` 与管理页登记的服务器凭据引用精确一致，每个租户与引用只能有一个当前槽位；ARN 地域与既有 KMS 网关一致。值只在调用时从 KMS 当前版本取得，引用不会给其他租户提供凭据。配置块或私有目录改变后重启 API 与 Worker；既有模型、协议、预算和检查点配置仍适用，见[租户宿主手册](pdos-next-tenant-model-runtime.md)。
+
+协议实现使用 [官方 Python SDK v1.30.0](https://github.com/modelcontextprotocol/python-sdk/tree/v1.30.0)，当前接入 Streamable HTTP + Bearer。HTTP 不使用环境代理、不跟随重定向；不处理服务端 OAuth、sampling、elicitation、roots 或原文中的动作。非文本媒体只记录类型，不下载或转发媒体正文；单次结果最多 2 MiB，读取和模型预算不足会如实失败或返回未完成。未接入 stdio、旧 SSE、资源/提示词或外发执行路径。
 
 ## 恢复真实联验的条件
 
-先完成默认注册图的发现/读取桥接，再提供获得授权的真实服务、服务器凭据解析/KMS、所需签约材料及可用模型运行环境。测试在显式核对的独立 `TEST_DATABASE_URL` 上执行；真实连接、数据出站、资格授予和生产操作按既有批准边界办理。
+提供获得授权的真实服务与只读工具合同、服务器 KMS 引用、所需签约材料及可用模型运行环境。测试在显式核对的独立 `TEST_DATABASE_URL` 上执行；真实连接、数据出站、资格授予和生产操作按既有批准边界办理。
 
-本地合成证据见 [M3 MCP 管理闭环](../reports/evidence/pdos-next-m3-20261016/mcp-management/result.md)。完整 M3/S1、真实连接器以及正式性能/恢复出口仍未完成。
+本地合成证据见[管理闭环](../reports/evidence/pdos-next-m3-20261016/mcp-management/result.md)与[默认图只读接线](../reports/evidence/pdos-next-m3-20261016/mcp-graph/result.md)。真实 MCP/模型/KMS 均未调用，完整 M3/S1、真实连接器以及正式性能/恢复出口仍未完成。

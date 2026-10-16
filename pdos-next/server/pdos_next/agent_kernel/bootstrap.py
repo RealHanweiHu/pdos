@@ -39,6 +39,10 @@ class RuntimePorts:
     research_service: object | None = None
     research_artifacts: object | None = None
     research_checkpointer_factory: object | None = None
+    mcp_resolve_secret: object | None = None
+    mcp_transport: object | None = None
+    mcp_artifacts: object | None = None
+    mcp_checkpointer_factory: object | None = None
 
 
 class Bootstrap:
@@ -461,6 +465,19 @@ class Bootstrap:
         from .extract_graph import ExtractGraph
         from .extract_service import ExtractionService
         from .host import BoundHost
+        from .mcp_adapter import McpReadAdapter
+        from .mcp_graph import McpGraph
+
+        mcp_adapter = McpReadAdapter(
+            self.store, self.catalog,
+            resolve_secret=self.ports.mcp_resolve_secret, transport=self.ports.mcp_transport,
+            artifacts=self.ports.mcp_artifacts,
+            graph=McpGraph(BoundHost(self.store, adapters),
+                           checkpointer_factory=self.ports.mcp_checkpointer_factory),
+        )
+        adapters.read_tools.update(mcp_adapter.handlers())
+        adapters.read_resumes.update(mcp_adapter.resumes())
+        adapters.read_restores["mcp.read"] = mcp_adapter.restore
 
         extract_adapter = ExtractReadAdapter(
             ExtractionService(self.store, self.commands, self.catalog),

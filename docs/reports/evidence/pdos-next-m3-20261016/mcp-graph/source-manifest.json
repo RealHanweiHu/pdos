@@ -1,0 +1,95 @@
+{
+  "base_commit": "ba162b12854c7af81210af20da4103ef2467be8e",
+  "branch": "pdos-next/design-v1.1",
+  "schema_head": "s0_0770",
+  "validation": {
+    "ruff_ignore": [
+      "E501"
+    ],
+    "frontend_changed": false,
+    "new_migration": false,
+    "checks": "checks-result.json"
+  },
+  "files": [
+    {
+      "path": "docs/runbooks/mcp-admission-and-grants.md",
+      "sha256": "505ce390e78c56b0b92356a9d56e96d31e591946f2a42abb7d987dc530b2de59"
+    },
+    {
+      "path": "docs/runbooks/pdos-next-tenant-model-runtime.md",
+      "sha256": "d08ac6bd0f71dbf3a34c8d268ba91a532f4c4690b26e31a41cf2a45a815ad93f"
+    },
+    {
+      "path": "pdos-next/config/tenant-runtime.example.json",
+      "sha256": "17ed6c2b9a3b3d1344dfb773c3d998a6feca38f2c715b8b49bc5186d47fe0488"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/bootstrap.py",
+      "sha256": "101cae566a047f03230141e18a3c448b63582fb8f35c4f2b45e9977aa508a4ce"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/mcp.py",
+      "sha256": "bbb93d9e6439d778279ab6972d91d2d48c4e613fca84ad5d1795b76fdfd4291c"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/mcp_adapter.py",
+      "sha256": "92b9c07897d9ac2573413ce61675182027051560dcc6a33ef5dff27d21724333"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/mcp_binding.py",
+      "sha256": "2ba02013c2a88c46878982baa13eb5e17cdd19c3a83440d3ddcfed4164418383"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/mcp_graph.py",
+      "sha256": "a72250fc1ef27fa6ffe92e917d3c4565b5b4576648d5b623864e8e4d1ab11ad3"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/mcp_runtime.py",
+      "sha256": "c487eb9538d88894aed1f8e6adde911baead2888bd20a3af9129a5864212199c"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/mcp_schemas.py",
+      "sha256": "9e61cd6b0907eb736410d5832bb4da16e04eedb64a8d7a4da88a42665ea82b3d"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/mcp_transport.py",
+      "sha256": "827e7250644d655f5642b6d5717ceaa832e7f45cadc97eb6f487d4846c72f389"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/persistence.py",
+      "sha256": "51e88e60f94f470bd81bd8002a59feea23f6781690f7d90333220fe555ac6a08"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/registry.py",
+      "sha256": "0bfeaa1a7b5005fb5d88be10bb90634f2e71de7d84e309afc6e469a527300054"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/tools.py",
+      "sha256": "720a0fa9dbbe770c235e609ae5258db81572a98d92fe4914f63a49bf6139a745"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_configuration/host.py",
+      "sha256": "a0d199ff1c40d8e46f2df5fd05629fc6bdb6bc9c213e611f08c6b06b80549f4a"
+    },
+    {
+      "path": "pdos-next/server/pyproject.toml",
+      "sha256": "999d201be5708b26840fd5de8bf1b046a98ba1d70137bc2099ba65356f9260f4"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_mcp_graph_transactions.py",
+      "sha256": "866a1fed7a521507a77a6b73ff2d20533618652ddaa27d23b4d52d19f9851a8d"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_mcp_runtime.py",
+      "sha256": "941989bf7256b9849806d1abedb3786cf0c8a1c77c2ce7cea9ed717686f8b8e2"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_mcp_transport.py",
+      "sha256": "0950f25090f34cf55aa4c76a092eb2426966e2211210c3030afa13e7860c8425"
+    },
+    {
+      "path": "pdos-next/server/uv.lock",
+      "sha256": "49816940fc7cb32969041cb78bfb11cc6860b1a3dd0d2bb8236e419d7ac0eead"
+    }
+  ]
+}

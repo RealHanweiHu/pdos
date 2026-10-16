@@ -19,7 +19,9 @@ PREPARE_ONLY = frozenset(
         "provider.agreement.register",
     }
 )
-ISOLATED = {"research.read": "research", "evidence.artifact.read": "extract"}
+ISOLATED = {
+    "research.read": "research", "evidence.artifact.read": "extract", "mcp.result.read": "mcp",
+}
 SCOPE_KEYS = frozenset(
     {
         "tenant_id",
@@ -107,7 +109,7 @@ class ToolRegistry:
         allowed = {
             "research": {"research.search", "research.read"},
             "extract": {"evidence.artifact.read"},
-            "mcp": {n for n, s in self._specs.items() if n.startswith("mcp.") and s.tier == "READ"},
+            "mcp": {"mcp.result.read"},
         }
         return [
             self._specs[n].definition()

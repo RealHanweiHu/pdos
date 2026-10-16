@@ -52,4 +52,6 @@
 
 ## 已验证范围
 
+可选 `mcp` 块为已准入连接器绑定独立的租户凭据引用和私有作业目录，不复用模型密钥或资格。默认 Worker 经同一注册图提供工具发现、只读调用和隔离结果处理，具体字段、协议范围与恢复条件见 [MCP 准入与逐项授权](mcp-admission-and-grants.md)。缺少此配置只使对应 MCP 读取显示不可用，不发起真实连接。
+
 [本地接线证据](../reports/evidence/pdos-next-m3-20261016/tenant-host/result.md)覆盖默认宿主、实际鉴权 API/lifespan、Temporal、独立 Worker 进程、LangGraph/PostgreSQL、费用账本和 T1 提案保存。KMS 与模型网络使用合成传输，未读取真实密钥、创建云资源、进行真实模型调用或改变 golden-case。真实 KMS 连通性、实际服务商协议/单价、模型质量与资格和生产启用仍需对应授权及材料。

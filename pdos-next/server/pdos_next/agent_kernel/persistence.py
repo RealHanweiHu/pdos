@@ -236,15 +236,33 @@ class KernelStore:
     ):
         fingerprint = digest([tool, payload])
         binding = execution_binding or {"kind": "unbound"}
-        if resume_started and not (
-            tool == "research.fanout" and binding.get("kind") == "read"
+        resumable_read = (
+            tool in {"research.fanout", "mcp.tools.list", "mcp.read"} and binding.get("kind") == "read"
             and binding.get("read_kind") == "ordinary/v1" and binding.get("isolation") == "main"
             and reservation == 0 and cost_lease is None
-        ):
-            raise DomainError("FORBIDDEN_SCOPE", "只有已绑定的只读研究编排可接续原调用。")
+        )
+        resumable_mcp = (
+            binding.get("kind") == "unbound" and binding.get("dispatch") == "mcp-read/v1"
+            and binding.get("isolation") == "mcp" and scope.isolation == "mcp"
+            and tool.startswith("mcp.") and reservation == 0 and cost_lease is None
+        )
+        if resume_started and not (resumable_read or resumable_mcp):
+            raise DomainError("FORBIDDEN_SCOPE", "只有已绑定的只读编排可接续原调用。")
         if binding.get("kind") == "domain_t0":
             raise DomainError("FORBIDDEN_SCOPE", "T0 调用须在领域事务内领取。")
         with self.transaction(scope, lock=True) as (session, run):
+            if resume_started and resumable_mcp:
+                try:
+                    parent = session.get(AgentToolCall, UUID(binding["parent_read_call_id"]))
+                    if (
+                        not parent or parent.run_id != run.id or parent.tenant_id != run.tenant_id
+                        or parent.tool != "mcp.read" or parent.state not in {"started", "completed"}
+                        or parent.execution_binding.get("kind") != "read"
+                        or parent.execution_binding.get("isolation") != "main"
+                    ):
+                        raise ValueError
+                except (KeyError, TypeError, ValueError):
+                    raise DomainError("FORBIDDEN_SCOPE", "MCP 接续缺少实际主图读取。") from None
             call = session.scalar(
                 select(AgentToolCall)
                 .where(AgentToolCall.run_id == run.id, AgentToolCall.call_key == call_key)

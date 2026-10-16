@@ -54,6 +54,7 @@ def default_registry():
     from .m3_definition_diff import SCHEMAS as DEFINITION_SCHEMAS
     from .m3_object_reads import SCHEMAS as OBJECT_SCHEMAS
     from .m3_spec_compare import SCHEMAS as COMPARE_SCHEMAS
+    from .mcp_schemas import SCHEMAS as MCP_SCHEMAS
     from .platform_reads import SCHEMAS as PLATFORM_SCHEMAS
 
     schemas = {
@@ -66,6 +67,16 @@ def default_registry():
     }
 
     registry = ToolRegistry(command_tools())
+    for name, schema in MCP_SCHEMAS.items():
+        registry.add(ToolSpec(
+            name,
+            {
+                "mcp.tools.list": "按实际已加载技能发现当前获授权的 MCP 只读工具；分页读取。",
+                "mcp.read": "调用获授权的 MCP 只读工具，由隔离子任务返回有原文依据的行。",
+                "mcp.result.read": "只在 MCP 隔离子任务内分页读取固定的不可信响应。",
+            }[name], schema.model_json_schema(), {"type": "object"}, "read", "READ",
+            taint="external" if name != "mcp.tools.list" else "trusted",
+        ))
     for name in sorted(READS | COMPUTE | {"skill.load"}):
         kind = "research" if name in RESEARCH else "compute" if name in COMPUTE else "read"
         registry.add(

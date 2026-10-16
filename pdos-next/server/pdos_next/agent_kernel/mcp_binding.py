@@ -5,10 +5,28 @@ import json
 
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import SchemaError, ValidationError
+from pydantic import SecretStr
 from referencing import Registry
 from referencing.exceptions import Unresolvable
 
 from pdos_next.errors import DomainError
+
+
+def redact_credential(raw, credential):
+    secret = credential.get_secret_value() if isinstance(credential, SecretStr) else credential
+    if not isinstance(secret, str) or not secret:
+        raise DomainError("SOURCE_UNAVAILABLE", "MCP 服务器凭据不可用。")
+
+    def redact(value):
+        if isinstance(value, str):
+            return value.replace(secret, "[REDACTED]")
+        if isinstance(value, dict):
+            return {redact(key): redact(item) for key, item in value.items()}
+        if isinstance(value, list):
+            return [redact(item) for item in value]
+        return value
+
+    return redact(raw)
 
 
 def connector_binding(connector, tool=None):
@@ -53,3 +71,13 @@ def validate_arguments(spec, arguments):
         Draft202012Validator(schema, registry=Registry()).validate(arguments)
     except (ValidationError, Unresolvable, RecursionError):
         raise DomainError("VALIDATION_FAILED", "MCP 参数与已登记工具结构不一致。", 422) from None
+
+
+def validate_result(spec, raw):
+    schema = spec.get("output_schema")
+    if schema is None:
+        return
+    try:
+        Draft202012Validator(schema, registry=Registry()).validate(raw.get("structured_content"))
+    except (AttributeError, ValidationError, Unresolvable, RecursionError):
+        raise DomainError("SOURCE_UNAVAILABLE", "MCP 结构化响应与已登记结果合同不同。") from None

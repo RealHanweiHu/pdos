@@ -10,6 +10,7 @@ from uuid import UUID, uuid5
 
 from pydantic import Field, model_validator
 
+from pdos_next.agent_kernel.mcp_runtime import McpConfiguration
 from pdos_next.agent_kernel.pricing import RateCard
 from pdos_next.errors import DomainError
 from pdos_next.model_configuration.kms import AliyunKms
@@ -96,6 +97,7 @@ class HostConfiguration(ClosedDTO):
     secrets: list[SecretSlot]
     models: list[ModelHost]
     research: ResearchConfiguration | None = None
+    mcp: McpConfiguration | None = None
 
     @model_validator(mode="after")
     def unique_bindings(self):
@@ -105,6 +107,8 @@ class HostConfiguration(ClosedDTO):
             raise ValueError("Tenant runtime bindings must be unique")
         if any(slot.secret_arn.split(":")[2] != self.kms.region for slot in self.secrets):
             raise ValueError("KMS secret and endpoint regions must match")
+        if self.mcp and any(slot.secret_arn.split(":")[2] != self.kms.region for slot in self.mcp.secrets):
+            raise ValueError("MCP KMS secret and endpoint regions must match")
         return self
 
 
@@ -180,6 +184,16 @@ class TenantRuntime:
             raise DomainError("SOURCE_UNAVAILABLE", "当前模型未绑定租户服务商与价格卡。")
         return selected
 
+    def mcp_secret(self, tenant_id, reference):
+        config = self.configuration()
+        slot = next((item for item in config.mcp.secrets
+                     if item.tenant_id == tenant_id and item.reference == reference), None) if config.mcp else None
+        if slot is None:
+            return None
+        kms = self.kms(config)
+        version = kms.current_version(slot.secret_arn)
+        return kms.value(slot.secret_arn, version) if version else None
+
     def provider_for(self, scope, route):
         return self.model(scope, route).provider
 
@@ -203,6 +217,7 @@ def runtime_ports(engine=None):
         return RuntimePorts()
     host = TenantRuntime(path)
     research = {}
+    mcp = {}
     if engine is not None:
         try:
             config = host.configuration().research
@@ -215,9 +230,20 @@ def runtime_ports(engine=None):
                 research = configured_ports(engine, config)
             except OSError:
                 research = {}  # A missing research volume must not disable ordinary business APIs.
+        try:
+            config = host.configuration().mcp
+        except DomainError:
+            config = None
+        if config is not None:
+            from pdos_next.agent_kernel.mcp_runtime import configured_ports as mcp_ports
+            try:
+                mcp = mcp_ports(engine, config, host)
+            except OSError:
+                mcp = {}  # Missing MCP storage only disables the corresponding read path.
     return RuntimePorts(
         secrets=host,
         provider_for=host.provider_for,
         rate_card_for=host.rate_card_for,
         **research,
+        **mcp,
     )

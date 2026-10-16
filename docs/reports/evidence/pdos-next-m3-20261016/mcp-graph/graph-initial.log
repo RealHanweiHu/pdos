@@ -1,0 +1,375 @@
+FF
+=================================== FAILURES ===================================
+_ test_default_graph_discovers_actual_grant_reads_isolated_reply_and_only_returns_verified_rows _
+
+setup = <isolated synthetic test scope>
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-256/test_default_graph_discovers_a0')
+
+    def test_default_graph_discovers_actual_grant_reads_isolated_reply_and_only_returns_verified_rows(
+        setup, tmp_path
+    ):
+        f = fixture(setup, tmp_path)
+>       state = execute(f)
+                ^^^^^^^^^^
+
+tests/agent_kernel/test_mcp_graph_transactions.py:195: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_mcp_graph_transactions.py:166: in execute
+    return AgentKernel(f.host, f.bootstrap.registry).execute(
+pdos_next/agent_kernel/graph.py:632: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:236: in model
+    turn = ports.model(
+pdos_next/agent_kernel/host.py:89: in model
+    return self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.gateway.AgentGateway object at 0x12990d2e0>
+scope = RunScope(tenant_id=UUID('5f092fe0-763b-43a4-87b9-6d8f8030fa6e'), requester_id=UUID('350c8fc7-6da4-44d2-9472-fc655432d7...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+system = 'You are 小Pai, the single PDOS assistant.\nUse registered tools and loaded skills. Authority, scope, privacy and tiers...xtraction", "purpose": "经隔离子任务从客户 RFQ、规格书、图纸说明和邮件中逐条抽取需求，保留原文位置、数值、单位、工况、否定与例外，映射到规格字典并登记为证据，列出冲突、未知、差距和待问客户/专家的问题。"}]'
+messages = [{'role': 'user', 'content': '{"goal": "合成 MCP 只读查询", "context": {"goal": "合成 MCP 只读查询", "sources": [], "category": {"...durance_tires@1`（700×25C 每次 0→80 psi）或其竞品值作参照：同名不同参数。\n→ summary："续航目标已改为 8 次补气（AI起草）；电池容量改为待专家，已记一条待验证假设，复核问题待你确认。"'}]
+tools = [{'name': 'ai.budget.configure', 'description': '办理 ai.budget.configure；结果以领域回执为准。', 'parameters': {'$defs': {'Limits'..., 'required': ['skill_key', 'skill_digest', 'tool_digest', 'model_digest', 'cases', 'personally_reviewed'], ...}}, ...]
+output_schema = {'$defs': {'ClarifyOption': {'additionalProperties': False, 'properties': {'value': {'title': 'Value', 'type': 'string...estions': {'items': {'$ref': '#/$defs/WireQuestion'}, 'maxItems': 3, 'title': 'Questions', 'type': 'array'}, ...}, ...}
+emit = <function BoundHost.model.<locals>.<lambda> at 0x129c9f100>
+loaded_skills = (SkillBinding(key='proposal_drafting', version='0.2.2-draft', digest='83cac5c95f4734991339328dcbe085f48629919914442e5e83f15743a221ff88', load_event_id=UUID('eefc6104-a22d-436c-b57c-a3cc11a7d364')),)
+
+    def turn(self, scope, *, system, messages, tools, output_schema, emit=None, loaded_skills=()):
+        if not in_registered_agent_graph():
+            raise DomainError("FORBIDDEN_SCOPE", "模型只能由登记的小Pai执行图调用。")
+        self.store.current(scope)
+        from .proposal_context import check
+    
+        check(self.store, scope)
+        route = self.route_for(scope)
+        if route is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前模型未配置，AI 暂不可用。")
+        provider_key = self.provider_for(scope, route)
+        if not isinstance(provider_key, str) or not provider_key:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前服务商身份未登记。")
+        if not isinstance(system, str) or any(
+            not isinstance(message, dict) or not isinstance(message.get("content", ""), str)
+            for message in messages
+        ):
+            raise DomainError("VALIDATION_FAILED", "当前费用资格只覆盖纯文本模型请求。")
+        request = {
+            "system": system,
+            "messages": messages,
+            "tools": tools,
+            "output_schema": output_schema,
+            "route": route.digest,
+            "provider_key": provider_key,
+        }
+        with self.store.transaction(scope, lock=True) as (session, run):
+            for binding in loaded_skills:
+                validate_skill_load(session, scope, binding)
+            prior_model = run.versions.get("model_version")
+            prior_route = run.versions.get("model_route_digest")
+            prior_provider = run.versions.get("provider_key")
+            if (
+                prior_model is not None
+                and prior_model != route.version
+                or prior_route is not None
+                and prior_route != route.digest
+                or prior_provider is not None
+                and prior_provider != provider_key
+            ):
+                raise DomainError("VERSION_CONFLICT", "原运行的模型版本不能静默替换。")
+            from pdos_next.service import digest
+    
+            tool_digests = run.versions.get("tool_definitions", {})
+            prompt_digests = run.versions.get("prompt_prefixes", {})
+            if tool_digests.get(scope.isolation, digest(tools)) != digest(
+                tools
+            ) or prompt_digests.get(scope.isolation, digest(system)) != digest(system):
+                raise DomainError("VERSION_CONFLICT", "原运行的提示与工具前缀不能静默替换。")
+            run.versions = {
+                **run.versions,
+                "model_version": route.version,
+                "model_route_digest": route.digest,
+                "provider_key": provider_key,
+                "tool_definitions": {**tool_digests, scope.isolation: digest(tools)},
+                "prompt_prefixes": {**prompt_digests, scope.isolation: digest(system)},
+            }
+            binding = ModelBinding(
+                model_version=route.version, model_route_digest=route.digest,
+                tool_definitions_digest=digest(tools), prompt_digest=digest(system),
+                isolation=scope.isolation, cancel_epoch=scope.cancel_epoch,
+                loaded_skills=tuple(loaded_skills),
+            ).model_dump(mode="json")
+            request["execution_binding"] = binding
+            decision = egress(session, scope, provider_key, text=str(request))
+        from pdos_next.service import digest
+    
+        call_key = "model:" + digest(request)
+        import json
+    
+        wire = request_body(route, system, messages, tools, output_schema, bool(emit))
+        wire_bytes = len(json.dumps(wire, ensure_ascii=False).encode())
+        input_upper = wire_bytes + 4096  # Explicitly unmetered synthetic transport fixtures only.
+        pricing = self.rate_card_for(scope, route) if self.rate_card_for else None
+        if self.cost_required and pricing is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "模型费用尚无当前价格卡与验证预算。")
+        cost_lease = None
+        if pricing:
+            pricing.validate(provider_key, route)
+            input_upper = pricing.input_upper_bound(wire_bytes)
+            cost_lease = (
+                pricing.reserve(input_upper, route.max_output_tokens),
+                input_upper,
+                route.max_output_tokens,
+                pricing.snapshot(),
+            )
+        reserve = input_upper + route.max_output_tokens
+        call_id, saved = self.store.claim(
+            scope, call_key, "model", request, reservation=reserve, cost_lease=cost_lease,
+            execution_binding=binding,
+        )
+        if saved is not None:
+            from .types import ModelTurn, ToolCall
+    
+            return ModelTurn(
+                saved["text"],
+                tuple(ToolCall.model_validate(c) for c in saved["calls"]),
+                usage=ProviderUsage(**saved["usage"]),
+                request_id=saved["request_id"],
+                structured=saved["structured"],
+                ledger_call_id=call_id,
+            )
+        dispatch_started = False
+        try:
+            self.store.emit(
+                scope,
+                {
+                    "type": "egress_checked",
+                    **{
+                        k: v.isoformat() if hasattr(v, "isoformat") else v
+                        for k, v in asdict(decision).items()
+                    },
+                },
+            )
+            # Revocation/rotation after reservation still prevents sending the old scope.
+            self.store.current(scope)
+            latest = self.route_for(scope)
+            if (
+                latest is None
+                or latest.digest != route.digest
+                or self.provider_for(scope, latest) != provider_key
+            ):
+                raise DomainError("VERSION_CONFLICT", "模型配置已变化。")
+            check(self.store, scope)
+            with self.store.transaction(scope) as (session, _):
+                egress(session, scope, provider_key, text=str(request))
+            if pricing:
+                latest_price = self.rate_card_for(scope, latest)
+                if latest_price is None or latest_price.snapshot() != pricing.snapshot():
+>                   raise DomainError("VERSION_CONFLICT", "价格卡已变化。")
+E                   pdos_next.errors.DomainError: 价格卡已变化。
+E                   During task with name 'model' and id 'b93900cd-5a68-e60c-a928-0b6af3d62b8e'
+
+pdos_next/agent_kernel/gateway.py:166: DomainError
+_ test_missing_runtime_is_visible_without_transport_and_never_fakes_connected_result _
+
+setup = <isolated synthetic test scope>
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-256/test_missing_runtime_is_visibl0')
+
+    def test_missing_runtime_is_visible_without_transport_and_never_fakes_connected_result(
+        setup, tmp_path
+    ):
+        f = fixture(setup, tmp_path, keys=False)
+>       state = execute(f)
+                ^^^^^^^^^^
+
+tests/agent_kernel/test_mcp_graph_transactions.py:224: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_mcp_graph_transactions.py:166: in execute
+    return AgentKernel(f.host, f.bootstrap.registry).execute(
+pdos_next/agent_kernel/graph.py:632: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:236: in model
+    turn = ports.model(
+pdos_next/agent_kernel/host.py:89: in model
+    return self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.gateway.AgentGateway object at 0x129907590>
+scope = RunScope(tenant_id=UUID('47c117bb-035a-4cce-aee0-50e085e93c6e'), requester_id=UUID('074027db-44ca-472d-a51b-bee4ad75dd...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+system = 'You are 小Pai, the single PDOS assistant.\nUse registered tools and loaded skills. Authority, scope, privacy and tiers...xtraction", "purpose": "经隔离子任务从客户 RFQ、规格书、图纸说明和邮件中逐条抽取需求，保留原文位置、数值、单位、工况、否定与例外，映射到规格字典并登记为证据，列出冲突、未知、差距和待问客户/专家的问题。"}]'
+messages = [{'role': 'user', 'content': '{"goal": "合成 MCP 只读查询", "context": {"goal": "合成 MCP 只读查询", "sources": [], "category": {"...durance_tires@1`（700×25C 每次 0→80 psi）或其竞品值作参照：同名不同参数。\n→ summary："续航目标已改为 8 次补气（AI起草）；电池容量改为待专家，已记一条待验证假设，复核问题待你确认。"'}]
+tools = [{'name': 'ai.budget.configure', 'description': '办理 ai.budget.configure；结果以领域回执为准。', 'parameters': {'$defs': {'Limits'..., 'required': ['skill_key', 'skill_digest', 'tool_digest', 'model_digest', 'cases', 'personally_reviewed'], ...}}, ...]
+output_schema = {'$defs': {'ClarifyOption': {'additionalProperties': False, 'properties': {'value': {'title': 'Value', 'type': 'string...estions': {'items': {'$ref': '#/$defs/WireQuestion'}, 'maxItems': 3, 'title': 'Questions', 'type': 'array'}, ...}, ...}
+emit = <function BoundHost.model.<locals>.<lambda> at 0x1297aaca0>
+loaded_skills = (SkillBinding(key='proposal_drafting', version='0.2.2-draft', digest='83cac5c95f4734991339328dcbe085f48629919914442e5e83f15743a221ff88', load_event_id=UUID('c1131481-8490-4c69-b80d-7bce400bb226')),)
+
+    def turn(self, scope, *, system, messages, tools, output_schema, emit=None, loaded_skills=()):
+        if not in_registered_agent_graph():
+            raise DomainError("FORBIDDEN_SCOPE", "模型只能由登记的小Pai执行图调用。")
+        self.store.current(scope)
+        from .proposal_context import check
+    
+        check(self.store, scope)
+        route = self.route_for(scope)
+        if route is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前模型未配置，AI 暂不可用。")
+        provider_key = self.provider_for(scope, route)
+        if not isinstance(provider_key, str) or not provider_key:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前服务商身份未登记。")
+        if not isinstance(system, str) or any(
+            not isinstance(message, dict) or not isinstance(message.get("content", ""), str)
+            for message in messages
+        ):
+            raise DomainError("VALIDATION_FAILED", "当前费用资格只覆盖纯文本模型请求。")
+        request = {
+            "system": system,
+            "messages": messages,
+            "tools": tools,
+            "output_schema": output_schema,
+            "route": route.digest,
+            "provider_key": provider_key,
+        }
+        with self.store.transaction(scope, lock=True) as (session, run):
+            for binding in loaded_skills:
+                validate_skill_load(session, scope, binding)
+            prior_model = run.versions.get("model_version")
+            prior_route = run.versions.get("model_route_digest")
+            prior_provider = run.versions.get("provider_key")
+            if (
+                prior_model is not None
+                and prior_model != route.version
+                or prior_route is not None
+                and prior_route != route.digest
+                or prior_provider is not None
+                and prior_provider != provider_key
+            ):
+                raise DomainError("VERSION_CONFLICT", "原运行的模型版本不能静默替换。")
+            from pdos_next.service import digest
+    
+            tool_digests = run.versions.get("tool_definitions", {})
+            prompt_digests = run.versions.get("prompt_prefixes", {})
+            if tool_digests.get(scope.isolation, digest(tools)) != digest(
+                tools
+            ) or prompt_digests.get(scope.isolation, digest(system)) != digest(system):
+                raise DomainError("VERSION_CONFLICT", "原运行的提示与工具前缀不能静默替换。")
+            run.versions = {
+                **run.versions,
+                "model_version": route.version,
+                "model_route_digest": route.digest,
+                "provider_key": provider_key,
+                "tool_definitions": {**tool_digests, scope.isolation: digest(tools)},
+                "prompt_prefixes": {**prompt_digests, scope.isolation: digest(system)},
+            }
+            binding = ModelBinding(
+                model_version=route.version, model_route_digest=route.digest,
+                tool_definitions_digest=digest(tools), prompt_digest=digest(system),
+                isolation=scope.isolation, cancel_epoch=scope.cancel_epoch,
+                loaded_skills=tuple(loaded_skills),
+            ).model_dump(mode="json")
+            request["execution_binding"] = binding
+            decision = egress(session, scope, provider_key, text=str(request))
+        from pdos_next.service import digest
+    
+        call_key = "model:" + digest(request)
+        import json
+    
+        wire = request_body(route, system, messages, tools, output_schema, bool(emit))
+        wire_bytes = len(json.dumps(wire, ensure_ascii=False).encode())
+        input_upper = wire_bytes + 4096  # Explicitly unmetered synthetic transport fixtures only.
+        pricing = self.rate_card_for(scope, route) if self.rate_card_for else None
+        if self.cost_required and pricing is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "模型费用尚无当前价格卡与验证预算。")
+        cost_lease = None
+        if pricing:
+            pricing.validate(provider_key, route)
+            input_upper = pricing.input_upper_bound(wire_bytes)
+            cost_lease = (
+                pricing.reserve(input_upper, route.max_output_tokens),
+                input_upper,
+                route.max_output_tokens,
+                pricing.snapshot(),
+            )
+        reserve = input_upper + route.max_output_tokens
+        call_id, saved = self.store.claim(
+            scope, call_key, "model", request, reservation=reserve, cost_lease=cost_lease,
+            execution_binding=binding,
+        )
+        if saved is not None:
+            from .types import ModelTurn, ToolCall
+    
+            return ModelTurn(
+                saved["text"],
+                tuple(ToolCall.model_validate(c) for c in saved["calls"]),
+                usage=ProviderUsage(**saved["usage"]),
+                request_id=saved["request_id"],
+                structured=saved["structured"],
+                ledger_call_id=call_id,
+            )
+        dispatch_started = False
+        try:
+            self.store.emit(
+                scope,
+                {
+                    "type": "egress_checked",
+                    **{
+                        k: v.isoformat() if hasattr(v, "isoformat") else v
+                        for k, v in asdict(decision).items()
+                    },
+                },
+            )
+            # Revocation/rotation after reservation still prevents sending the old scope.
+            self.store.current(scope)
+            latest = self.route_for(scope)
+            if (
+                latest is None
+                or latest.digest != route.digest
+                or self.provider_for(scope, latest) != provider_key
+            ):
+                raise DomainError("VERSION_CONFLICT", "模型配置已变化。")
+            check(self.store, scope)
+            with self.store.transaction(scope) as (session, _):
+                egress(session, scope, provider_key, text=str(request))
+            if pricing:
+                latest_price = self.rate_card_for(scope, latest)
+                if latest_price is None or latest_price.snapshot() != pricing.snapshot():
+>                   raise DomainError("VERSION_CONFLICT", "价格卡已变化。")
+E                   pdos_next.errors.DomainError: 价格卡已变化。
+E                   During task with name 'model' and id 'c1426d04-7e7a-e9a4-6c96-2931bcf08442'
+
+pdos_next/agent_kernel/gateway.py:166: DomainError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_mcp_graph_transactions.py::test_default_graph_discovers_actual_grant_reads_isolated_reply_and_only_returns_verified_rows
+FAILED tests/agent_kernel/test_mcp_graph_transactions.py::test_missing_runtime_is_visible_without_transport_and_never_fakes_connected_result
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 2 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+2 failed in 8.05s
