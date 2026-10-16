@@ -349,6 +349,36 @@ class _RunObjects(_PublicObjects):
             _unavailable()
         self.product(row["product_id"])
 
+    def baseline_sources_current(self, view):
+        """Reuse only a fixed bound definition under the current RR source proof."""
+        from pdos_next.domain.preproject.baseline import _source_references
+        from pdos_next.request_proof import request_proof
+
+        from .proposal_context import KEY, reference_key
+
+        if (
+            not isinstance(self.s, Session)
+            or not self.s.info.get("read_snapshot")
+            or (KEY, self.run.id) not in request_proof(self.s).read_rows
+            or ("definition", str(view["id"]), view["revision"]) not in self.keys
+        ):
+            return False
+        refs = list(_source_references(view))
+        if view.get("derived_from_definition_id"):
+            refs.append(
+                Reference(
+                    type="definition",
+                    id=view["derived_from_definition_id"],
+                    version=view["derived_from_definition_revision"],
+                )
+            )
+        parent = view.get("parent_definition_id")
+        if parent and not any(
+            kind == "definition" and identity == str(parent) for kind, identity, _ in self.keys
+        ):
+            return False
+        return all(reference_key(ref) in self.keys for ref in refs)
+
     def refs(self, refs):
         from .proposal_context import reference_key
 

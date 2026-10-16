@@ -1,0 +1,30 @@
+{
+  "base_commit": "8b9472fbc36bfe0b1ff2f69edf4933eab7a04135",
+  "scope": "Run-bound baseline source watermarks and single direct-body projection; no schema or tool contract change",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/domain_reads.py",
+      "sha256": "fef4f57a9808f415540a7a1d02e552e5b971878ee5bfc7ea031a44f6701db620"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/m3_spec_compare.py",
+      "sha256": "c798a0f97d52ba8966d21adfcf5f8c32f7a10e6f13fc918c2e400ea9f37cadf6"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/preproject/baseline.py",
+      "sha256": "ffa27107c32fddc47a8a303778bdff17c90283014ff2280225b0c3c73b1df763"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/products/definitions.py",
+      "sha256": "1d6af7645d0b5eb2b990f2ca829849d8a1fac4a654c7f26efa9ab2e3c8e68e20"
+    },
+    {
+      "path": "pdos-next/server/tests/preproject/test_baseline_guard_callback.py",
+      "sha256": "8bdcf601c2ed7fa8f7775db66de8a1fd7ad37403c86feadddc7c7290fb42bb06"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_baseline_watermarks_pg.py",
+      "sha256": "5362b65858dfc84e9c5511aa4ba2083c984cc0a5b4b5154367e004a6664cf0bb"
+    }
+  ]
+}

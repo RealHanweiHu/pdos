@@ -279,11 +279,27 @@ def difference(previous: dict, current: dict) -> list[dict]:
 
 
 def definition_view(s, ctx, row) -> dict:
+    from sqlalchemy import inspect
+    from sqlalchemy.orm import Session, load_only
+
     from pdos_next.original_security import source_status
     from pdos_next.request_proof import snapshot_rows
     from pdos_next.service import require_access
 
     require_access(s, ctx, row.product_id)
+    if isinstance(s, Session) and s.info.get("read_snapshot") and inspect(row).unloaded:
+        # Baseline selection first reads a header and authorizes that exact row.
+        # Load the requested body once, rather than lazy-loading each field.
+        row = s.scalar(
+            select(DefinitionRevision).where(
+                DefinitionRevision.id == row.id,
+                DefinitionRevision.tenant_id == ctx.tenant_id,
+                DefinitionRevision.category_id == ctx.category_id,
+                DefinitionRevision.product_id == row.product_id,
+            )
+        )
+        if row is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "固定定义不在当前可读范围。", 403)
 
     refs = snapshot_rows(
         s,
@@ -298,6 +314,23 @@ def definition_view(s, ctx, row) -> dict:
     )
     sources = []
     source_rows = batch_read(s, Artifact, (ref.artifact_id for ref in refs))
+    if isinstance(s, Session) and s.info.get("read_snapshot"):
+        missing_titles = {
+            identity for identity, source in source_rows.items()
+            if source is not None and "title" in inspect(source).unloaded
+        }
+        if missing_titles:
+            # Source watermarks already hold the authorized raw headers. Only
+            # display titles are missing; never fetch their unused source bodies.
+            list(
+                s.scalars(
+                    select(Artifact).where(
+                        Artifact.tenant_id == ctx.tenant_id,
+                        Artifact.category_id == ctx.category_id,
+                        Artifact.id.in_(missing_titles),
+                    ).options(load_only(Artifact.id, Artifact.title))
+                )
+            )
     for ref in refs:
         source = source_rows[ref.artifact_id]
         readable = bool(source and source.tenant_id == ctx.tenant_id)

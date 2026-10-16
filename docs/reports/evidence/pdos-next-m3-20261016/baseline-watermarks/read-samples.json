@@ -1,0 +1,26 @@
+{
+  "scope": "one BoundHost.read per synthetic fixture; application-issued SELECTs only; not p95 or paired benchmark",
+  "head": "s0_0762",
+  "port": 64245,
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "samples": [
+    {
+      "kind": "published",
+      "direct_definition_body_selects": 1,
+      "upstream_source_body_selects": 0,
+      "tool": "product.baseline.read",
+      "elapsed_ms": 1108.15,
+      "sql_count": 61,
+      "real_provider_calls": 0
+    },
+    {
+      "kind": "inherited_draft",
+      "direct_definition_body_selects": 1,
+      "upstream_source_body_selects": 0,
+      "tool": "product.baseline.read",
+      "elapsed_ms": 2453.73,
+      "sql_count": 61,
+      "real_provider_calls": 0
+    }
+  ]
+}

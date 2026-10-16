@@ -160,3 +160,24 @@ def test_excluded_blocks_skip_all_block_reads_and_retain_explicit_unknown(fixtur
     assert all(
         block["status"] == "unknown" and block["items"] == [] for block in result["blocks"].values()
     )
+
+
+@pytest.mark.parametrize("bound", [False, True])
+def test_only_trusted_current_source_proof_replaces_legacy_traversal(fixture, monkeypatch, bound):
+    checks = []
+
+    def legacy(_s, _ctx, candidate, **options):
+        checks.append(options.get("history_permissions", False))
+        assert candidate["id"] == str(fixture.definition.id)
+
+    def current(candidate):
+        assert candidate["publication"]["definition_digest"] == fixture.receipt.result[
+            "definition_digest"
+        ]
+        return bound
+
+    monkeypatch.setattr(baseline, "validate_sources", legacy)
+    result = read(fixture, [fixture.product, [fixture.definition], fixture.receipt, fixture.signer],
+                  sources_current=current)
+    assert result["derivation_eligible"]
+    assert checks == ([] if bound else [True, False])

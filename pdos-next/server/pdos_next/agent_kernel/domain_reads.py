@@ -410,6 +410,7 @@ class DomainReads:
                     **(
                         {
                             "before_definition_read": objects.definition_head,
+                            "sources_current": objects.baseline_sources_current,
                             "block_areas": payload.areas,
                         }
                         if objects

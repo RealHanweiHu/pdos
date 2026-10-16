@@ -580,6 +580,7 @@ def read_baseline(
     definition_revision=None,
     *,
     before_definition_read=None,
+    sources_current=None,
     include_blocks=True,
     block_areas=None,
 ):
@@ -664,22 +665,24 @@ def read_baseline(
                 else:
                     authorize(row)
                     candidate = definition_view(s, ctx, row)
-                # Traverse the complete tree even if an earlier edge is withdrawn.
-                # A stale metadata projection never proves historical body access.
-                validate_sources(s, ctx, candidate, history_permissions=True)
                 issues = []
-                try:
-                    validate_sources(s, ctx, candidate)
-                except DomainError as error:
-                    if error.code != "SOURCE_STALE":
-                        raise
-                    issues.append(
-                        {
-                            "code": error.code,
-                            "reason": (error.detail or {}).get("reason", "source_stale"),
-                        }
-                    )
-                    candidate = _redact_source_metadata(candidate)
+                # A trusted Run reader can reuse its initial source closure and
+                # this RR transaction's current watermarks. Other readers retain
+                # the ordinary full proof, including historical body access.
+                if sources_current is None or not sources_current(candidate):
+                    validate_sources(s, ctx, candidate, history_permissions=True)
+                    try:
+                        validate_sources(s, ctx, candidate)
+                    except DomainError as error:
+                        if error.code != "SOURCE_STALE":
+                            raise
+                        issues.append(
+                            {
+                                "code": error.code,
+                                "reason": (error.detail or {}).get("reason", "source_stale"),
+                            }
+                        )
+                        candidate = _redact_source_metadata(candidate)
             except DomainError as error:
                 if callback_failed or error.code not in hidden_errors:
                     raise
