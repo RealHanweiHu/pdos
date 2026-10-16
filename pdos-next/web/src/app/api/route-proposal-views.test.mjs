@@ -61,6 +61,20 @@ test("standard matching forwards a scoped read-only POST without creating comman
   assert.equal(response.headers.get("Cache-Control"), "no-store");
 });
 
+test("durable run candidates allow only scoped paginated reads", async () => {
+  const h = harness();
+  const endpoint = `${root}/agent-runs/${proposal}/candidates`;
+  const response = await h.send(endpoint, { query: "after=0&page_size=50" });
+  assert.equal(response.status, 200);
+  assert.equal(h.calls[0].url, `http://synthetic-api.invalid/${endpoint}?after=0&page_size=50`);
+  assert.equal(response.headers.get("Cache-Control"), "no-store");
+  const before = h.calls.length;
+  for (const query of ["after=-1", "after=bad", "page_size=201", "after=0&after=0", `tenant_id=${category}`, `product_id=${parameter}`, `cursor=${parameter}`]) assert.equal((await h.send(endpoint, { query })).status, 422, query);
+  assert.equal((await h.send(endpoint, { method: "POST", body: "{}" })).status, 405);
+  assert.equal((await h.send(`v1/agent-runs/${proposal}/candidates`)).status, 404);
+  assert.equal(h.calls.length, before);
+});
+
 test("platform collection, detail and product links forward scoped no-store reads", async () => {
   const h = harness();
   for (const [endpoint, query] of [

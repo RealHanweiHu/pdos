@@ -1,0 +1,88 @@
+{
+  "base_commit": "6a4b5a9420d51892428de89faac7f9ff5bd23a78",
+  "database_head": "s0_0760",
+  "web_build_id": "0jOezNxJ1AkSmqjtmgQRx",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/api.py",
+      "bytes": 12875,
+      "sha256": "59121228ee8d67614a0fa2de785afb898813fa7f1c32b4464811963bd6d5a60a"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/bootstrap.py",
+      "bytes": 23329,
+      "sha256": "c8bac4aba4023780a782b556be956602f98a64dde2ec5430bcffb524426235f9"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/domain_candidates.py",
+      "bytes": 8575,
+      "sha256": "59a70eef4121f0eda60a9aceb54691bc0ee525736450ebe470511208bef49d04"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/preproject/service.py",
+      "bytes": 42398,
+      "sha256": "2d0dc75757d8477cb0c482c25d8988be67bfc0f68e869ba2d73409bda501c2a8"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "bytes": 50494,
+      "sha256": "0ff813e106a839fd7b79a3ef651e755e44adf2cc9b064968fc4ab010589c8f99"
+    },
+    {
+      "path": "pdos-next/server/tests/products/test_definition_item_revert_pg.py",
+      "bytes": 17631,
+      "sha256": "70e10e63fc3c6c00e94fb988a91b3c3c333b6a3083782575d1369569796ee05a"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_domain_candidates_pg.py",
+      "bytes": 12730,
+      "sha256": "2c3d8d4d112040a7eac45e63a3d486a61588b8aa6a12105347e99fdefb8f5bea"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0760.py",
+      "bytes": 21981,
+      "sha256": "553c4f43e53ad37ad238e980bdc0928cabd032a5f6df6b8df7ee68c65521ea0a"
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0760_prepared_proposal_receipts.py",
+      "bytes": 1476,
+      "sha256": "6970785a5600f1b44c81758837eeb6d5e430fa83e3107b850d64b8f7efb734ea"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "bytes": 26614,
+      "sha256": "93757a402ea84d3ddcced30b422fff4c375b3e82089e7c10ce4522e8f77c9da3"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/route-proposal-views.test.mjs",
+      "bytes": 17205,
+      "sha256": "94ddda7a7c9c7b6b64162fb366e910530b73fcbc6a7c80035d84d8310508aee2"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai-rail.tsx",
+      "bytes": 2854,
+      "sha256": "71d754b6834f656f12eebc1e60acecdf91b851574a3ccb123fc31c5d945bcab6"
+    },
+    {
+      "path": "pdos-next/web/src/components/xiaopai.tsx",
+      "bytes": 15567,
+      "sha256": "546e58d867ab0333633bb49d4229ddded23be27f2b67d7ae295298f91eb67423"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/run-candidates.tsx",
+      "bytes": 16599,
+      "sha256": "635f26bb528adb5f70760587b76f8f98655095987f9a6bb5c5d07e38712457c0"
+    },
+    {
+      "path": "pdos-next/web/src/lib/domain-candidate.ts",
+      "bytes": 3105,
+      "sha256": "f7cdc5d915617f5fa885a04af4a7c13a6bf8be7c8e495ca275e36469f1754334"
+    },
+    {
+      "path": "pdos-next/web/src/lib/domain-candidate.test.mjs",
+      "bytes": 3080,
+      "sha256": "ceb9d27e7a6c1c3ce9cca4c103e3d17846a753942ccf703b397a02c44cf9c689"
+    }
+  ],
+  "scope": "Only this business checkpoint. Existing user UI index/mockup changes are excluded."
+}

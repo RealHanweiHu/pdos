@@ -1,0 +1,35 @@
+✔ standard matching forwards a scoped read-only POST without creating commands (29.368584ms)
+✔ durable run candidates allow only scoped paginated reads (3.655292ms)
+✔ platform collection, detail and product links forward scoped no-store reads (1.985542ms)
+✔ platform queries reject extra scope, repeated values and invalid filters (1.943125ms)
+✔ platform reads open no unscoped, write or standalone creation route (1.442792ms)
+✔ standard matching rejects unscoped paths, queries and wrong origins (1.207292ms)
+✔ standard matching transport failure is a failed read with no uncertain write (1.54675ms)
+✔ positioning forwards the exact scoped GET and every parameter occurrence (2.210833ms)
+✔ spec-benchmark forwards the exact scoped GET and every parameter occurrence (1.306708ms)
+✔ feature-config forwards the exact scoped GET and every parameter occurrence (1.212458ms)
+✔ definition-maturity forwards the exact scoped GET and every parameter occurrence (1.109708ms)
+✔ parameter filters are optional but a single valid proposal id is mandatory for every view (2.798167ms)
+✔ each repeated parameter is validated and extra scope or query keys are rejected (1.729542ms)
+✔ only the four exact scoped paths are opened (1.284209ms)
+✔ views reject writes and other methods without forwarding (1.895459ms)
+✔ existing proposal collection, document, items and participants reads preserve their URLs (1.730417ms)
+✔ session and configuration requirements still guard the new reads (3.213417ms)
+✔ backend denial and read transport failure never become a successful view (2.23975ms)
+✔ existing command body and same-origin write protection remain unchanged (1.10275ms)
+✔ proposal claims collection and fixed detail preserve the authenticated category scope (1.101375ms)
+✔ claim reads reject ambiguous filters, unbound collections and extra scopes before forwarding (1.696791ms)
+✔ only exact claim GET routes are opened and writes remain domain commands (1.645583ms)
+✔ claim reads propagate privacy denial and missing sessions without rewriting results (4.383958ms)
+✔ only an actual scoped domain candidate can be restored for confirmation (1.007334ms)
+✔ preview comparison tolerates JSON key order and the one server confirmation token (0.3645ms)
+✔ changed scope, material, version or original request is not the same preview (0.21175ms)
+✔ nested business fields called confirmation_token are still compared (0.106791ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 355.640583

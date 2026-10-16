@@ -264,11 +264,18 @@ class Bootstrap:
                 # Question confirmation uses the proposal revision supplied in
                 # the actual model response, rather than the category revision.
                 command.expected_revision = arguments["expected_revision"]
+            if spec.name in CONTENT_OPERATIONS:
+                from .domain_candidates import record
+
+                event_id = record(session, scope, command, intent_key)
+            else:
+                event_id = None
             return {
                 "command": command.model_dump(mode="json"),
                 "requires_human": True,
                 "write_tier": "T2" if spec.tier == "T2-prepare-only" else "T1",
                 "state": "candidate",
+                **({"event_id": str(event_id)} if event_id else {}),
             }
 
     def recover_call(self, ctx, run_id, call_id):

@@ -38,14 +38,23 @@ from tests.products.test_definition_item_commands_pg import (
 from tests.products.test_definition_transactions import command, post
 
 
-def agent_fixture(setup, arguments, *, operation=OPERATION, skill_key="gap_check"):
+def agent_fixture(
+    setup,
+    arguments,
+    *,
+    operation=OPERATION,
+    skill_key="gap_check",
+    product_bound=True,
+    proposal_id=None,
+    goal="Synthetic definition item regression",
+):
     fixture = ledger()
     fixture.scope = replace(
         fixture.scope,
         tenant_id=setup.tenant,
         category_id=setup.category,
-        product_id=setup.product,
-        proposal_id=None,
+        product_id=setup.product if product_bound else None,
+        proposal_id=proposal_id,
         requester_id=setup.human,
         writer_id=setup.agent,
     )
@@ -58,7 +67,7 @@ def agent_fixture(setup, arguments, *, operation=OPERATION, skill_key="gap_check
         "writer_id",
     ):
         setattr(fixture.run, name, getattr(fixture.scope, name))
-    fixture.run.trigger, fixture.run.goal = "page", "Synthetic definition item regression"
+    fixture.run.trigger, fixture.run.goal = "page", goal
     fixture.run.intent_key, fixture.run.intent_digest = str(uuid4()), digest(str(uuid4()))
     skill = fixture.catalog._skills[skill_key]
     assert operation in skill.operations
@@ -92,7 +101,8 @@ def agent_fixture(setup, arguments, *, operation=OPERATION, skill_key="gap_check
                 id=fixture.scope.session_id,
                 tenant_id=setup.tenant,
                 category_id=setup.category,
-                product_id=setup.product,
+                product_id=fixture.scope.product_id,
+                proposal_id=fixture.scope.proposal_id,
                 owner_id=setup.human,
             )
         )

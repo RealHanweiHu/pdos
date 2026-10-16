@@ -1,0 +1,12 @@
+..........                                                               [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_domain_candidates_pg.py::test_confirmation_receipt_resolves_candidate_even_after_run_completion
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:175: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([platform])
+
+tests/agent_kernel/test_domain_candidates_pg.py::test_confirmation_receipt_resolves_candidate_even_after_run_completion
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:192: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([link])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+10 passed, 2 warnings in 27.95s

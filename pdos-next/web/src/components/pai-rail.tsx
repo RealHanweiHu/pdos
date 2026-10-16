@@ -39,7 +39,7 @@ export function PaiRail({ open, onClose, categoryId, categoryName, paiContext, f
     </div>
     <div className="workspace-pai-rail-body">
       {transport
-        ? <Xiaopai key={`rail:${session.principal_id}:${categoryId}`} api={transport} productId={inContext?.productId ?? ""} sources={inContext?.sources ?? []} composeOpen={composeOpen} onComposeChange={next => setCompose({ scope, open: next })} initialRunId={focusRunId} />
+        ? <Xiaopai key={`rail:${session.principal_id}:${categoryId}`} api={transport} categoryId={categoryId} principalId={session.principal_id} productId={inContext?.productId ?? ""} sources={inContext?.sources ?? []} composeOpen={composeOpen} onComposeChange={next => setCompose({ scope, open: next })} initialRunId={focusRunId} />
         : <PersonalXiaopai key={`rail-personal:${session.principal_id}`} onCreated={onCreated} initialRunId={focusRun && !focusRun.categoryId ? focusRun.runId : undefined} />}
     </div>
   </aside>;

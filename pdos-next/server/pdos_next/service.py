@@ -1086,6 +1086,9 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
         else:
             subject, subject_type, visibility = module.apply(s, ctx, command, product, payload)
         if material_confirmation is not None and command.operation in {
+            "proposal.create",
+            "proposal.item.patch",
+            "proposal.question.create",
             "category.knowledge.add",
             "category.knowledge.withdraw",
             "category.knowledge.promote",

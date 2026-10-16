@@ -937,9 +937,18 @@ def apply_validated(s, ctx, command, scope, payload, validated):
             }
         row.revision += 1
     row.prepared_receipt_id = receipt_id
+    row.prepared_by_run_id = provenance["run_id"]
     row.action_result = {
         **getattr(row, "action_result", {}),
         "proposal_url": f"/categories/{ctx.category_id}/proposals/{row.id}",
+        **(
+            {
+                "prepared_candidate_id": str(provenance["prepared_candidate_id"]),
+                "candidate_digest": payload.candidate_digest,
+            }
+            if provenance["prepared_candidate_id"]
+            else {}
+        ),
     }
     s.flush()
     s.add(
@@ -950,7 +959,7 @@ def apply_validated(s, ctx, command, scope, payload, validated):
             revision=row.revision,
             changed_items=changed,
             actor_id=ctx.actor_id,
-            run_id=ctx.agent_run_id,
+            run_id=provenance["run_id"],
             receipt_id=receipt_id,
             document_digest=digest(document(s, row)),
         )

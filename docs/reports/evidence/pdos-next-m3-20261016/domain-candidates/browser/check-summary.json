@@ -1,0 +1,43 @@
+{
+  "kind": "Summary of actual CLI results; not a simulated browser outcome",
+  "environment": "synthetic, stored model ledger, no provider calls",
+  "platform_response_loss": {
+    "actual_status": 200,
+    "actual_receipt": "2111729a-d28f-4ff8-a7ba-8151c552a204",
+    "browser_response": "aborted after successful upstream response",
+    "pending_button_enabled": true,
+    "scoped_original_requests_stored": 1,
+    "after_reload_original_receipt_resolved": true,
+    "pending_storage_after_recovery": 0,
+    "subsequent_reload_post_count": 0
+  },
+  "proposal": {
+    "actual_receipt": "ae469a0b-7129-46b6-990d-194f096b1a90",
+    "subject_id": "c5ca98f7-9378-482c-9807-0d85ae68600f",
+    "confirmed_once": true,
+    "restored_link_post_count": 0,
+    "raw_final_result": "proposal-restored.log"
+  },
+  "layouts": {
+    "desktop_light": [
+      1440,
+      1000
+    ],
+    "mobile_dark": [
+      320,
+      780
+    ],
+    "mobile_modal_width": 286,
+    "horizontal_overflow": false
+  },
+  "harness_recovery": [
+    "History button accessible name included timestamp; replaced exact name with observed goal filter.",
+    "Work rail open state was remembered; inspect aria-pressed before opening."
+  ],
+  "cleanup": {
+    "browser_session": "closed",
+    "ports_8036_3036": "released",
+    "database": "retained",
+    "shared_runtime": "retained"
+  }
+}

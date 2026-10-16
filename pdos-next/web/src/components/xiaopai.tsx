@@ -5,6 +5,7 @@ import { Sparkle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import type { WorkspaceTransport } from "@/lib/workspace-api";
 import { proofClockCurrent } from "@/lib/proof-clock";
+import { RunCandidates } from "@/components/pai/run-candidates";
 
 type Source = { id: string; title: string; revision: number; status: string };
 type Question = { id: string; question: string; why: string; options: { value: string; label: string }[]; allow_free_text: boolean };
@@ -16,9 +17,10 @@ type Pending = { path: string; body: unknown };
 const labels: Record<string, string> = { queued: "已保存，等待执行", running: "正在执行", waiting_input: "等待你的答复", completed: "已完成", partial: "已形成部分结果", cancelled: "已取消后续执行", failed: "执行未完成" };
 
 /** Runs and events are server facts. Reading or reopening this panel never starts inference. */
-export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange, initialRunId }: {
+export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange, initialRunId, categoryId, principalId }: {
   api: WorkspaceTransport; productId: string; sources: Source[]; composeOpen: boolean; onComposeChange: (open: boolean) => void;
   initialRunId?: string;
+  categoryId: string; principalId: string;
 }) {
   const [goal, setGoal] = useState("");
   const [useProduct, setUseProduct] = useState(false);
@@ -28,6 +30,7 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [eventSequence, setEventSequence] = useState(0);
   const [adoption, setAdoption] = useState<{ command: unknown; expires_at: string; review: { effect: string } } | null>(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -56,6 +59,7 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
     }
     if (own !== generation.current) return;
     setRun(value);
+    setEventSequence(events.at(-1)?.sequence ?? 0);
     const adopted = new Set(events.filter(item => item.event.type === "claim_candidate_adopted").map(item => item.event.prepared_event_id));
     setCandidates(events.filter(item => item.event.type === "claim_candidate" && item.event.command && !adopted.has(item.event.command.payload.prepared_event_id)).map(item => ({ command: item.event.command!, event_id: item.event.command!.payload.prepared_event_id })));
     setAdoption(null);
@@ -137,6 +141,7 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
       {run.result?.result && Object.keys(run.result.result).length > 0 && <details><summary className="cursor-pointer">查看实际结果与回执</summary><pre className="mt-3 max-h-80 overflow-auto whitespace-pre-wrap break-words text-sm">{JSON.stringify(run.result.result, null, 2)}</pre></details>}
       {!run.reverted && run.status !== "cancelled" && candidates.map(candidate => <section key={candidate.event_id} className="rounded-lg border p-3 space-y-3"><h3 className="font-medium">待你确认的来源事实</h3><p>{candidate.command.payload.statement}</p><blockquote className="text-sm text-muted-foreground">{candidate.command.payload.quote}</blockquote><Button variant="outline" disabled={busy || !!pending} onClick={() => void read(async () => { setAdoption(await api("v1/commands/preview", candidate.command)); })}>核对并预览此事实</Button></section>)}
       {adoption && <section className="rounded-lg border p-3 space-y-3"><p>{adoption.review.effect}</p><Button disabled={busy || !!pending || !proofClockCurrent("T1", adoption.expires_at)} onClick={() => void send({ path: "v1/commands", body: adoption.command })}>确认登记此事实</Button></section>}
+      <RunCandidates api={api} categoryId={categoryId} principalId={principalId} runId={run.run_id} eventSequence={eventSequence} disabled={busy || !!pending} />
       {questions.length > 0 && <form onSubmit={event => { event.preventDefault(); void send({ path: `v1/agent-runs/${run.run_id}/answers`, body: { answers, idempotency_key: crypto.randomUUID() } }); }}><fieldset disabled={busy || !!pending}>
         {questions.map(question => <div key={question.id} className="mb-4"><label htmlFor={`pai-${question.id}`}>{question.question}</label><p className="subtle mb-2">{question.why}</p>{question.allow_free_text ? <><input id={`pai-${question.id}`} list={`pai-options-${question.id}`} required value={answers[question.id] ?? ""} onChange={event => setAnswers(old => ({ ...old, [question.id]: event.target.value }))} /><datalist id={`pai-options-${question.id}`}>{question.options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}</datalist></> : <select id={`pai-${question.id}`} required value={answers[question.id] ?? ""} onChange={event => setAnswers(old => ({ ...old, [question.id]: event.target.value }))}><option value="">请选择</option>{question.options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}</select>}</div>)}
         <Button>提交答复并继续</Button>

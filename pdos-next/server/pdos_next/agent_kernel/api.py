@@ -5,7 +5,7 @@ import json
 from dataclasses import dataclass
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import Field
 from sqlalchemy import and_, or_, select
@@ -219,6 +219,28 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                 "status": row.state,
                 "reverted": row.reverted_at is not None,
             }
+
+    @result.get("/v1/categories/{category_id}/agent-runs/{run_id}/candidates")
+    def candidates(
+        run_id: UUID,
+        after: int = Query(default=0, ge=0),
+        page_size: int = Query(default=50, ge=1, le=200),
+        ctx=run_dependency,
+    ):
+        from .domain_candidates import read as read_candidates
+
+        with tenant_session(
+            engine,
+            ctx.tenant_id,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=ctx.category_id,
+            read_snapshot=True,
+        ) as s:
+            row = s.get(AgentRun, run_id)
+            if row is None or row.requester_id != ctx.requester_id:
+                raise DomainError("FORBIDDEN_SCOPE", "运行不在当前可读范围。", 403)
+            return read_candidates(s, ctx, row, after=after, page_size=page_size)
 
     @result.post("/v1/categories/{category_id}/agent-runs/{run_id}/answers", status_code=202)
     @result.post("/v1/personal/agent-runs/{run_id}/answers", status_code=202)
