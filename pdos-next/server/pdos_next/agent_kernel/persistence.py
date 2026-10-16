@@ -19,6 +19,23 @@ class KernelStore:
     def __init__(self, engine):
         self.engine = engine
 
+    @contextmanager
+    def composition_lock(self, scope, call_key):
+        """Fence the resumable read orchestrator across processes, without a long transaction."""
+        key = int(
+            digest(["research-composition", scope.tenant_id, scope.run_id, call_key])[:16], 16
+        )
+        if key >= 2**63:
+            key -= 2**64
+        self.current(scope)
+        with self.engine.connect().execution_options(isolation_level="AUTOCOMMIT") as connection:
+            if not connection.scalar(text("SELECT pg_try_advisory_lock(:key)"), {"key": key}):
+                raise RuntimeError("Research composition is already advancing in another process")
+            try:
+                yield
+            finally:
+                connection.execute(text("SELECT pg_advisory_unlock(:key)"), {"key": key})
+
     def release_call(
         self, scope, call_id, *, error, unknown=False, usage=0, request_id=None, cost_usage=None
     ):
@@ -193,12 +210,13 @@ class KernelStore:
 
     def claim(
         self, scope, call_key, tool, payload, *, reservation=0, cost_lease=None,
-        execution_binding=None,
+        execution_binding=None, resume_started=False,
     ):
         try:
             return self._claim(
                 scope, call_key, tool, payload, reservation=reservation, cost_lease=cost_lease,
                 execution_binding=execution_binding,
+                resume_started=resume_started,
             )
         except DomainError as error:
             if error.code == "EXTERNAL_OUTCOME_UNKNOWN" and error.detail.get("call_id"):
@@ -214,10 +232,16 @@ class KernelStore:
 
     def _claim(
         self, scope, call_key, tool, payload, *, reservation=0, cost_lease=None,
-        execution_binding=None,
+        execution_binding=None, resume_started=False,
     ):
         fingerprint = digest([tool, payload])
         binding = execution_binding or {"kind": "unbound"}
+        if resume_started and not (
+            tool == "research.fanout" and binding.get("kind") == "read"
+            and binding.get("read_kind") == "ordinary/v1" and binding.get("isolation") == "main"
+            and reservation == 0 and cost_lease is None
+        ):
+            raise DomainError("FORBIDDEN_SCOPE", "只有已绑定的只读研究编排可接续原调用。")
         if binding.get("kind") == "domain_t0":
             raise DomainError("FORBIDDEN_SCOPE", "T0 调用须在领域事务内领取。")
         with self.transaction(scope, lock=True) as (session, run):
@@ -242,6 +266,10 @@ class KernelStore:
                             detail={"reason": "read_call_invalid"},
                         )
                     return call.id, call.result
+                if resume_started and call.state == "started" and call.error_code is None:
+                    # Only the orchestrator resumes. Its child model/network calls retain
+                    # their original completed/unknown rules and cannot be blindly reissued.
+                    return call.id, None
                 raise DomainError(
                     "EXTERNAL_OUTCOME_UNKNOWN",
                     "原调用须按回执对账，不能盲目重发。",

@@ -8,7 +8,7 @@ import tempfile
 from copy import deepcopy
 from dataclasses import asdict, fields
 from pathlib import Path
-from uuid import UUID
+from uuid import UUID, uuid5
 
 from pdos_next.errors import DomainError
 from pdos_next.research.service import ResearchChild
@@ -102,11 +102,28 @@ class ResearchReadAdapter:
         self.tool_host, self.artifacts, self.user_messages = tool_host, artifacts, user_messages
         self.read_refs = read_refs
 
-    def __call__(self, scope, arguments, *, name):
+    def resume(self, scope, arguments, *, intent_key):
+        identity = uuid5(scope.run_id, "research.fanout:" + intent_key)
+        if self.artifacts._path(scope, identity).exists():
+            saved = self.artifacts.get(scope, identity)
+            if saved.get("kind") != "research_ledger":
+                raise DomainError("SOURCE_UNAVAILABLE", "原研究作业引用类型不一致。")
+            return self.restore_fanout(scope, arguments, saved["value"])
+        return self(scope, arguments, name="research.fanout", job_id=identity)
+
+    def __call__(self, scope, arguments, *, name, job_id=None):
         # URLs are extracted from actual persisted human messages at the host.
         for message in self.user_messages(scope):
             self.tool_host.service.register_user_message(scope, message)
-        result = asyncio.run(self.tool_host.call(scope, name, arguments))
+        def pin_plan(tasks):
+            self.artifacts.put(scope, uuid5(job_id, "research_plan"), {
+                "kind": "research_plan", "tasks": [asdict(task) for task in tasks],
+            })
+
+        result = asyncio.run(
+            self.tool_host.call(scope, name, arguments, job_id=job_id, pin_plan=pin_plan)
+            if job_id is not None else self.tool_host.call(scope, name, arguments)
+        )
         if name == "research.search":
             # The tool host retains its list contract; the persisted read uses
             # the same object envelope as the isolated research graph.

@@ -1,0 +1,62 @@
+[
+  {
+    "run_id": "9e0bb52c-9170-43ef-ac81-3272f8f5e319",
+    "state": "completed",
+    "fanout_call_id": "a96e679a-993e-4e30-a1bf-59a768fbea0f",
+    "job_id": "ac43eb79-cc9f-530c-b9ee-4bb6a8bc580a",
+    "snapshot_count": 1,
+    "receipt_count": 1,
+    "receipt_id": "fe417eee-48b6-4140-b32b-949af610b4da",
+    "human_confirmation": true,
+    "model_calls": 7,
+    "cost_micro_usd": 840,
+    "held_tokens": 0,
+    "held_micro_usd": 0,
+    "external_calls": 0
+  },
+  {
+    "run_id": "ded3939f-8176-463d-9b72-8772d255e269",
+    "state": "completed",
+    "fanout_call_id": "27295959-b368-42d7-a56f-347a8f3c708e",
+    "job_id": "7a69ea9e-c3bc-552c-9078-66e85dceca61",
+    "snapshot_count": 1,
+    "receipt_count": 1,
+    "receipt_id": "dbf83a8a-466f-4e90-bfa5-7c4299207b8f",
+    "human_confirmation": true,
+    "model_calls": 7,
+    "cost_micro_usd": 840,
+    "held_tokens": 0,
+    "held_micro_usd": 0,
+    "external_calls": 0
+  },
+  {
+    "run_id": "0bb72508-78f9-4fff-aad5-00f50be0a06a",
+    "state": "completed",
+    "fanout_call_id": "6e039760-60bd-472c-9f31-fd0fab0dde44",
+    "job_id": "8284fce6-e3f5-58f8-bfa4-5f2f44794005",
+    "snapshot_count": 1,
+    "receipt_count": 1,
+    "receipt_id": "b9f6574a-2c29-4b0b-8326-62d8a4ad6a82",
+    "human_confirmation": true,
+    "model_calls": 7,
+    "cost_micro_usd": 840,
+    "held_tokens": 0,
+    "held_micro_usd": 0,
+    "external_calls": 0
+  },
+  {
+    "run_id": "550c2ea6-237a-4f47-b694-9f2f3fc16b51",
+    "state": "completed",
+    "fanout_call_id": "5d51da93-e1c1-4235-b295-98e868950f04",
+    "job_id": "267f1ded-cf88-5c7e-bec8-c6fe721e8d1e",
+    "snapshot_count": 1,
+    "receipt_count": 1,
+    "receipt_id": "6a082a93-922c-41a9-9799-775a11bae645",
+    "human_confirmation": true,
+    "model_calls": 7,
+    "cost_micro_usd": 840,
+    "held_tokens": 0,
+    "held_micro_usd": 0,
+    "external_calls": 0
+  }
+]

@@ -4,8 +4,9 @@ import json
 import os
 import subprocess
 import sys
+import time
 from datetime import timedelta
-from uuid import UUID, uuid4
+from uuid import UUID, uuid4, uuid5
 
 import pytest
 from fastapi.testclient import TestClient
@@ -27,11 +28,12 @@ from pdos_next.api import create_app
 from pdos_next.database import tenant_session
 from pdos_next.model_configuration.kms import AliyunKms
 from pdos_next.models import Receipt, now
+from pdos_next.service import digest
 from pdos_next.workflows.checkpoints import verified_checkpoint_url
 from tests.agent_kernel.test_cost_budget import wallet
 from tests.agent_kernel.test_domain_adapter_transactions import fixture
 from tests.agent_kernel.test_model_configuration_transactions import submit
-from tests.agent_kernel.test_worker_process_recovery import wait_for
+from tests.agent_kernel.test_worker_process_recovery import temporal_state, wait_for
 from tests.model_configuration.test_host_runtime import KmsSdk, document, write_config
 
 pytestmark = pytest.mark.skipif(
@@ -58,8 +60,8 @@ class OfflineResearchClient:
         messages = kwargs["messages"]
         context = json.loads(messages[0]["content"])["context"]
         kind = "research" if "research_task" in context else "main"
-        self.turns[kind] += 1
-        number = self.turns[kind]
+        number = 1 + sum(row["role"] == "tool" for row in messages)
+        self.turns[kind] = number
         print(json.dumps({"mode": kind, "turn": number}), flush=True)
         results = [json.loads(row["content"]) for row in messages if row["role"] == "tool"]
         assert all("error" not in result for result in results), results
@@ -130,7 +132,7 @@ class OfflineResearchClient:
         pass
 
 
-@pytest.mark.parametrize("confirmation", ["api", "browser_success", "browser_recovery"])
+@pytest.mark.parametrize("confirmation", ["api", "browser_success", "browser_recovery", "restart"])
 def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
     setup, monkeypatch, tmp_path, confirmation
 ):
@@ -222,12 +224,52 @@ def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
                     PDOS_OBJECT_ROOT=str(tmp_path / "objects"),
                     PDOS_OBJECT_LIFECYCLE_PROFILE="local-synthetic-v1",
                 )
+                if confirmation == "restart":
+                    env["PDOS_RESEARCH_RESTART_FIXTURE"] = str(tmp_path)
                 process = subprocess.Popen(
                     [sys.executable, "-m", "tests.agent_kernel.test_research_runtime_process"],
                     env=env,
                     stdout=log,
                     stderr=subprocess.STDOUT,
                 )
+                restarts = []
+                if confirmation == "restart":
+                    for phase in ("search", "read"):
+                        marker = tmp_path / f"restart-{phase}.json"
+                        wait_for(marker.exists, process, seconds=90)
+                        stamp = json.loads(marker.read_text())
+                        assert stamp["run_id"] == str(identity)
+                        with Session(setup.admin) as session:
+                            fanout = session.scalar(select(AgentToolCall).where(
+                                AgentToolCall.run_id == identity,
+                                AgentToolCall.tool == "research.fanout",
+                            ))
+                            assert fanout.state == "started"
+                            fanout_id = str(fanout.id)
+                            actual_job = str(uuid5(identity, "research.fanout:" + fanout.call_key))
+                        with PostgresSaver.from_conn_string(checkpoint_url) as saver:
+                            prefix = f"xiaopai:{setup.tenant}:{stamp['session_id']}:{identity}:"
+                            execution = {"job_id": actual_job, "task": stamp["context"]}
+                            thread = prefix + digest([identity, "research", execution])
+                            latest = saver.get_tuple({"configurable": {"thread_id": thread}})
+                            assert latest is not None
+                            assert any(
+                                row["tool"] == f"research.{phase}"
+                                for row in latest.checkpoint["channel_values"]["tool_results"]
+                            )
+                        current_temporal, _ = temporal_state(identity, setup)
+                        restarts.append(dict(
+                            phase=phase, child_thread=thread, temporal_run_id=current_temporal,
+                            fanout_call_id=fanout_id,
+                            checkpoint_id=latest.config["configurable"]["checkpoint_id"],
+                        ))
+                        process.kill()
+                        process.wait(timeout=10)
+                        process = subprocess.Popen(
+                            [sys.executable, "-m",
+                             "tests.agent_kernel.test_research_runtime_process"],
+                            env=env, stdout=log, stderr=subprocess.STDOUT,
+                        )
 
                 def terminal():
                     result = api.get(path + f"/{identity}", headers=setup.headers).json()
@@ -235,7 +277,7 @@ def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
                         result if result["status"] in {"completed", "partial", "failed"} else None
                     )
 
-                result = wait_for(terminal, process, seconds=60)
+                result = wait_for(terminal, process, seconds=90)
                 assert result["status"] == "completed", result
                 report = result["result"]["result"]["research"]
                 assert report["source_count"] == report["row_count"] == 1
@@ -267,7 +309,7 @@ def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
                 item = candidates.json()["items"][0]
                 assert item["state"] == "pending" and item["command"] == candidate["command"]
                 assert item["summary"]["title"] == "Synthetic specs" and RAW not in candidates.text
-                if confirmation != "api":
+                if confirmation.startswith("browser_"):
                     with Session(setup.admin) as session:
                         assert (
                             session.scalar(
@@ -320,6 +362,22 @@ def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
                         )
                     )
                     previous, job_id = fanout.result, fanout.result["job_id"]
+                    if confirmation == "restart":
+                        assert len({row["child_thread"] for row in restarts}) == 1
+                        assert len({row["temporal_run_id"] for row in restarts}) == 1
+                        assert len({row["fanout_call_id"] for row in restarts}) == 1
+                        assert str(fanout.id) == restarts[0]["fanout_call_id"]
+                        assert temporal_state(identity, setup)[0] == restarts[0]["temporal_run_id"]
+                        assert job_id == str(uuid5(identity, "research.fanout:" + fanout.call_key))
+                        log.flush()
+                        worker_output = (tmp_path / "research-worker.log").read_text()
+                        assert worker_output.count('"transport": "search"') == 1
+                        assert worker_output.count('"transport": "web"') == 1
+                        print(json.dumps(dict(
+                            actual_worker_processes=3, hard_restarts=2, restarts=restarts,
+                            same_research_call=True, model_calls=budget.calls,
+                            search_requests=1, web_requests=1,
+                        )), flush=True)
                     session.expunge(run)
                 owner = Bootstrap(setup.engine)
 
@@ -394,6 +452,7 @@ if __name__ == "__main__":
     real_search, real_service = search.SearxSearchAdapter, service.ResearchService
 
     def offline_search(request):
+        print(json.dumps({"transport": "search"}), flush=True)
         assert request.url.params["q"] == "synthetic pump"
         return httpx.Response(
             200, json={"results": [{"url": URL, "title": "Synthetic pump specs"}]}
@@ -404,6 +463,7 @@ if __name__ == "__main__":
 
     class Web:
         async def request(self, url, address, _limits):
+            print(json.dumps({"transport": "web"}), flush=True)
             assert url == URL and address == "8.8.8.8"
             return HTTPResponse(
                 200,
@@ -421,4 +481,25 @@ if __name__ == "__main__":
     )
     AliyunKms.sdk = lambda _self: KmsSdk()
     gateway.AgentProviderClient = OfflineResearchClient
+    if os.environ.get("PDOS_RESEARCH_RESTART_FIXTURE"):
+        from pathlib import Path
+
+        original_turn = gateway.AgentGateway.turn
+
+        def before_new_model(self, bound, **kwargs):
+            messages = kwargs["messages"]
+            if bound.isolation == "research" and messages[-1]["role"] == "tool":
+                previous = json.loads(messages[-1]["content"])
+                phase = "search" if "hits" in previous else "read"
+                marker = Path(os.environ["PDOS_RESEARCH_RESTART_FIXTURE"]) / f"restart-{phase}.json"
+                if not marker.exists():
+                    marker.write_text(json.dumps(dict(
+                        run_id=str(bound.run_id), session_id=str(bound.session_id), phase=phase,
+                        context=json.loads(messages[0]["content"])["context"]["research_task"],
+                    )))
+                    while True:
+                        time.sleep(0.1)
+            return original_turn(self, bound, **kwargs)
+
+        gateway.AgentGateway.turn = before_new_model
     asyncio.run(main())

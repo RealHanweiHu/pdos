@@ -1,0 +1,31 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__ test_identical_tasks_in_different_jobs_have_independent_child_checkpoints ___
+
+    def test_identical_tasks_in_different_jobs_have_independent_child_checkpoints():
+        import asyncio
+        from contextlib import nullcontext
+        from types import SimpleNamespace
+    
+        from langgraph.checkpoint.memory import InMemorySaver
+    
+        from pdos_next.agent_kernel.research_graph import ResearchGraph
+        from pdos_next.research.types import ResearchTask
+        from tests.agent_kernel.test_research_instruction import Host
+    
+        host, saver = Host(), InMemorySaver()
+        graph = ResearchGraph(host, checkpointer_factory=lambda: nullcontext(saver))
+        bound, task = scope().child("research"), ResearchTask("same", "same public question")
+        first = SimpleNamespace(_scope=bound, job_id=uuid4())
+        second = SimpleNamespace(_scope=bound, job_id=uuid4())
+        assert asyncio.run(graph(task, first)) == []
+        assert asyncio.run(graph(task, second)) == []
+>       assert len(host.models) == 2
+E       AssertionError: assert 1 == 2
+E        +  where 1 = len([{'emit': <function ResearchGraph.__call__.<locals>.ReadOnlyHost.model.<locals>.<lambda> at 0x120d276a0>, 'system': 'Y...itionalProperties': False, 'properties': {'query': {...}}, 'required': ['query'], 'title': 'SearchInput', ...}}], ...}])
+E        +    where [{'emit': <function ResearchGraph.__call__.<locals>.ReadOnlyHost.model.<locals>.<lambda> at 0x120d276a0>, 'system': 'Y...itionalProperties': False, 'properties': {'query': {...}}, 'required': ['query'], 'title': 'SearchInput', ...}}], ...}] = <tests.agent_kernel.test_research_instruction.Host object at 0x117dc7e30>.models
+
+tests/agent_kernel/test_research_plan.py:87: AssertionError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_research_plan.py::test_identical_tasks_in_different_jobs_have_independent_child_checkpoints
+1 failed, 2 deselected in 0.71s

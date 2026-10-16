@@ -71,7 +71,7 @@ class ResearchToolHost:
         self.service, self.researcher = service, researcher
         self.parameter_versions = parameter_versions
 
-    async def call(self, scope, name, arguments):
+    async def call(self, scope, name, arguments, *, job_id=None, pin_plan=None):
         if name == "research.search":
             payload = SearchInput.model_validate(arguments)
             return [asdict(hit) for hit in await self.service.search(scope, payload.query)]
@@ -95,5 +95,8 @@ class ResearchToolHost:
                 ResearchTask(task.key, task.focus, task.brand, task.source_type, parameters)
                 for task in payload.tasks
             )
-            return (await self.service.fanout(scope, tasks, self.researcher)).to_dict()
+            if pin_plan is not None:
+                pin_plan(tasks)
+            result = await self.service.fanout(scope, tasks, self.researcher, job_id=job_id)
+            return result.to_dict()
         raise ValueError("Unregistered research tool")

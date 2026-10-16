@@ -1,0 +1,55 @@
+{
+  "base_commit": "77595e9c96f847d89a3ce51a4dbe29c208200618",
+  "candidate": "research-restart-20261016",
+  "database_head": "s0_0762",
+  "schema_changed": false,
+  "frontend_changed": false,
+  "source_sha256": {
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py": "0d2ee1502c5ec5cade4a70077af394929a9c723ab069f6f0ad1f991146f9514a",
+    "pdos-next/server/pdos_next/agent_kernel/graph.py": "49c0129397ebff3a1962eb27e7956469412fb2d253819d04fc9c9581c75a3805",
+    "pdos-next/server/pdos_next/agent_kernel/host.py": "528f1b8ff44505217372202b5b3c749403773ebeb97f29c42f6b00f7ce681e2e",
+    "pdos-next/server/pdos_next/agent_kernel/persistence.py": "2cb5bc747f4c402153a69bf3255c4b600cdb62455fbd77e120c83468eb63501e",
+    "pdos-next/server/pdos_next/agent_kernel/research_adapter.py": "16697dd61326133c9a0e2f8de2008ce24bd6a87a7f3186ca27ff16b386190ffa",
+    "pdos-next/server/pdos_next/agent_kernel/research_graph.py": "14f82466a580e3c525ab53b25215a1c0d117c6792a79eb777b79817898227147",
+    "pdos-next/server/pdos_next/agent_kernel/research_checkpoint.py": "d6d9eec27907bdb2bd064887fe467117c041653f259b2c5fde69fff49fdcfc12",
+    "pdos-next/server/pdos_next/research/service.py": "a535542b55e1c8ad387c288a3a845bc074ce8beae444de8022436a5cdfbe2d86",
+    "pdos-next/server/pdos_next/research/tools.py": "f3d0f01f986007b7a209a17a65225074e1ce3d93e5d0d8c821f4e97ecaf55d80",
+    "pdos-next/server/tests/agent_kernel/test_research_runtime_process.py": "6b10ed4cf8f7378bf5ef9944b2ba06db634015a1aa5b9cdbeb3b2d3aeb2a027d",
+    "pdos-next/server/tests/agent_kernel/test_research_checkpoint_pg.py": "cb475e8f781ca55626d9b7aa8d63c77e12314cccf697b64bce285a2db16ad3db",
+    "pdos-next/server/tests/agent_kernel/test_research_plan.py": "8b79e1414b0b5671e9be7e2a22f741411da547c2b4994fd998596224933656a3",
+    "docs/runbooks/pdos-next-public-research-runtime.md": "5086286d270272ee4cb19693dc7eb552ab7b6e4b9b41c54ad00558e05978fdad"
+  },
+  "checks": {
+    "distinct_postgres_cases": 59,
+    "concentrated_postgres_groups": [
+      25,
+      32,
+      2
+    ],
+    "incremental_postgres_cases": 8,
+    "incremental_postgres_new_cases": 0,
+    "concentrated_pure_cases": 141,
+    "incremental_pure_cases": 94,
+    "incremental_pure_new_cases": 1,
+    "distinct_pure_cases": 142,
+    "distinct_total": 201,
+    "ruff": "passed",
+    "build_and_browser": "not rerun; frontend unchanged"
+  },
+  "actual_final_worker_case": {
+    "processes": 3,
+    "hard_restarts": 2,
+    "same_temporal_execution": true,
+    "same_research_call": true,
+    "same_child_thread": true,
+    "stable_job_id": true,
+    "synthetic_model_calls": 7,
+    "search_requests": 1,
+    "web_requests": 1,
+    "snapshots": 1,
+    "human_receipts": 1,
+    "held_budgets_zero": true
+  },
+  "external_model_kms_search_dns_web_calls": 0,
+  "golden_case_writes": 0
+}

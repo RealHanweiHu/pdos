@@ -597,6 +597,9 @@ class AgentKernel:
         self.ports.current(scope)
         saved = compiled.get_state(config) if checkpointer is not None else None
         if saved and saved.values:
+            restore_checkpoint = getattr(self.ports, "restore_checkpoint", None)
+            if callable(restore_checkpoint):
+                restore_checkpoint(scope, saved.values)
             if not saved.next:
                 return saved.values
             pending = saved.values.get("pending_categories", [])

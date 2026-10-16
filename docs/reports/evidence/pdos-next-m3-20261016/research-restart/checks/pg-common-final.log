@@ -1,0 +1,17 @@
+................................
+=============================== warnings summary ===============================
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+32 passed, 7 warnings in 35.10s

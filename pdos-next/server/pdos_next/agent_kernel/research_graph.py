@@ -48,6 +48,21 @@ class ResearchGraph:
             def qualified(self, *_):
                 return False
 
+            def restore_checkpoint(self, bound, state):
+                from .research_checkpoint import restore_reads
+
+                self.current(bound)
+                if instruction:
+                    try:
+                        actual = json.loads(state["messages"][0]["content"])["context"]
+                        if actual["research_skill"] != instruction.context():
+                            raise ValueError
+                    except (KeyError, IndexError, TypeError, ValueError):
+                        raise DomainError(
+                            "VERSION_CONFLICT", "原研究检查点技能说明已变化。"
+                        ) from None
+                restore_reads(host, child, state, self.read)
+
             def context(self, *_):
                 return {
                     "research_task": context,
@@ -176,9 +191,13 @@ class ResearchGraph:
                 self.checkpointer_factory() if self.checkpointer_factory else nullcontext(None)
             )
             with checkpoint as saver:
+                execution = (
+                    {"job_id": str(child.job_id), "task": context}
+                    if getattr(child, "job_id", None) is not None else context
+                )
                 state = AgentKernel(
                     ReadOnlyHost(), default_registry(), budget=Budget(model_turns=8, tool_calls=20)
-                ).execute(scope, goal=task.focus, execution_key=context, checkpointer=saver)
+                ).execute(scope, goal=task.focus, execution_key=execution, checkpointer=saver)
             if state.get("__interrupt__"):
                 raise DomainError("SOURCE_UNAVAILABLE", "研究子任务未完成，需主循环澄清。")
             output = state["output"]

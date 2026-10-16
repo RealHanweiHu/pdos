@@ -1,0 +1,15 @@
+.........................
+=============================== warnings summary ===============================
+tests/agent_kernel/test_research_projection_pg.py::test_actual_proposal_text_is_projected_before_unsigned_research[public]
+tests/agent_kernel/test_research_projection_pg.py::test_actual_proposal_text_is_projected_before_unsigned_research[customer]
+tests/agent_kernel/test_research_projection_pg.py::test_actual_proposal_text_is_projected_before_unsigned_research[filename]
+tests/agent_kernel/test_research_projection_pg.py::test_actual_proposal_text_is_projected_before_unsigned_research[fragment]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_research_projection_pg.py: 24 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+25 passed, 28 warnings in 31.94s

@@ -34,6 +34,7 @@ class KernelAdapters:
     recover_command: object | None = None
     compute_engines: dict = field(default_factory=dict)
     read_restores: dict = field(default_factory=dict)
+    read_resumes: dict = field(default_factory=dict)
 
 
 class BoundHost:
@@ -86,6 +87,15 @@ class BoundHost:
             )
         engine = self.adapters.compute_engines.get(spec.name)
         restore = self.adapters.read_restores.get(spec.name)
+        resume = self.adapters.read_resumes.get(spec.name)
+        if resume is not None:
+            with self.store.composition_lock(scope, intent_key):
+                return self.read_callback(
+                    scope, spec, arguments, intent_key, source=source,
+                    callback=lambda bound, args: resume(bound, args, intent_key=intent_key),
+                    restore=(lambda previous: restore(scope, arguments, previous)),
+                    resume_started=True,
+                )
         return self.read_callback(
             scope, spec, arguments, intent_key, source=source,
             callback=callback, engine=engine,
@@ -94,7 +104,7 @@ class BoundHost:
 
     def read_callback(
         self, scope, spec, arguments, intent_key, *, source, callback,
-        engine=None, read_kind="ordinary/v1", metadata=None, restore=None,
+        engine=None, read_kind="ordinary/v1", metadata=None, restore=None, resume_started=False,
     ):
         """Registered graph composition supplies callbacks and proof policy.
 
@@ -123,6 +133,7 @@ class BoundHost:
             ).model_dump(mode="json")
         call_id, previous = self.store.claim(
             scope, intent_key, spec.name, arguments, execution_binding=binding,
+            **({"resume_started": True} if resume_started else {}),
         )
         try:
             if previous is not None and restore is not None:

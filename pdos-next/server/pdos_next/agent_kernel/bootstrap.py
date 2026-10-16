@@ -501,6 +501,8 @@ class Bootstrap:
             )
             adapters.read_tools.update(research_adapter.handlers())
             adapters.read_restores.update(research_adapter.restores())
+            if self.ports.research_checkpointer_factory is not None:
+                adapters.read_resumes["research.fanout"] = research_adapter.resume
         return adapters
 
     def research_messages(self, scope):

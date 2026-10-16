@@ -331,7 +331,7 @@ class ResearchService:
         raise AssertionError("Redirect loop must return or fail")
 
     async def fanout(
-        self, scope: RunScope, tasks: Sequence[ResearchTask], researcher
+        self, scope: RunScope, tasks: Sequence[ResearchTask], researcher, *, job_id=None
     ) -> FanoutResult:
         if scope.isolation != "main":
             raise DomainError("FORBIDDEN_SCOPE", "隔离研究子任务不能再次派发子任务。")
@@ -340,11 +340,11 @@ class ResearchService:
         if len({task.key for task in tasks}) != len(tasks):
             raise DomainError("VALIDATION_FAILED", "研究任务键重复。")
         semaphore = asyncio.Semaphore(self.limits.concurrency)
-        job_id = uuid4()
+        job_id = job_id or uuid4()
 
         async def run(task):
             async with semaphore:
-                child = ResearchChild(self, scope.child("research"), task)
+                child = ResearchChild(self, scope.child("research"), task, job_id=job_id)
                 rejected, rows = 0, []
                 try:
                     drafts = await _invoke(researcher, task, child)
@@ -428,11 +428,12 @@ class ResearchService:
 class ResearchChild:
     """The child API has only search/read; raw source text never enters FanoutResult."""
 
-    __slots__ = ("_service", "_scope", "task", "searches", "reads", "pages", "failures")
+    __slots__ = ("_service", "_scope", "task", "job_id", "searches", "reads", "pages", "failures")
     tool_names = frozenset({"research.search", "research.read"})
 
-    def __init__(self, service, scope, task):
+    def __init__(self, service, scope, task, *, job_id=None):
         self._service, self._scope, self.task = service, scope, task
+        self.job_id = job_id
         self.searches, self.reads, self.pages, self.failures = [], [], {}, []
 
     async def search(self, query):
