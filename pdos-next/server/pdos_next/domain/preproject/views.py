@@ -229,17 +229,21 @@ def read(s, ctx, proposal_id):
             ),
         ]
         if submission.frozen_document.get("baseline_definition_id"):
-            document_refs.append({
-                "type": "definition",
-                "id": submission.frozen_document["baseline_definition_id"],
-                "version": submission.frozen_document["baseline_definition_revision"],
-            })
+            document_refs.append(
+                {
+                    "type": "definition",
+                    "id": submission.frozen_document["baseline_definition_id"],
+                    "version": submission.frozen_document["baseline_definition_revision"],
+                }
+            )
         try:
             # A later share authorizes the current proposal, not old private
             # bodies in a retained submission. Read the full fixed tree through
             # the actual caller's ordinary audience before returning that copy.
             validate_sources(
-                s, ctx, None,
+                s,
+                ctx,
+                None,
                 extra_refs=[Reference.model_validate(ref) for ref in document_refs],
                 history_permissions=True,
             )
@@ -285,7 +289,11 @@ def read(s, ctx, proposal_id):
             "id": str(decision.id),
             "outcome": decision.outcome,
             "rationale": decision.rationale,
+            "decided_by": str(decision.decided_by),
+            "decided_at": decision.created_at.isoformat(),
+            "receipt_id": str(decision.receipt_id) if decision.receipt_id else None,
             "product_id": str(decision.created_product_id) if decision.created_product_id else None,
+            "variant_id": str(decision.created_variant_id) if decision.created_variant_id else None,
             "definition_id": str(decision.created_definition_id)
             if decision.created_definition_id
             else None,

@@ -328,6 +328,13 @@ def register_routes(app, engine, auth_dependency):
                 ]
             }
 
+    @app.get("/v1/categories/{category_id}/proposals/{proposal_id}/handoff")
+    def proposal_handoff(proposal_id: UUID, ctx: Context = auth_dependency):
+        from .handoff import read
+
+        with scope(ctx) as s:
+            return read(s, ctx, proposal_id)
+
     @app.get("/v1/categories/{category_id}/g0-definitions/{definition_id}")
     def g0_definition(definition_id: UUID, ctx: Context = auth_dependency):
         from .access import fail, installed

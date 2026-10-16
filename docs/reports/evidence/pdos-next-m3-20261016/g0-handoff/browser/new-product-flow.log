@@ -1,0 +1,34 @@
+### Result
+{"preview":"确认具名 G0 决定\n\n批准立项后将建立型号、封存定义 v1、项目和待办。\n\n决定：已立项 · 合成自主新品具名评审：保留未知并明确项目安排。\n\n选定方案：开发便携款\n\n项目：合成自主新品项目 · 负责人：Synthetic owner\n\n新型号：合成自主新品型号\n\n噪声 → 风险 · Synthetic owner · 2026-10-30\n\n噪声条件待确定 → 任务 · Synthetic owner · 2026-10-30\n\n噪声\n\n噪声条件待确定\n\n确认办理\n返回修改\n\n暂未取得回执时可重试本次办理，重复请求会返回原结果。","result":"立项结果与项目承接\n\n新型号：合成自主新品型号\n\n立项定义 v1 · 已封存立项副本\n\n立项保留未知与草稿状态，后续规格冻结在项目内办理。\n\n项目：合成自主新品项目\n\n负责人：Synthetic owner\n\n进入项目驾驶舱\n带入项目的任务与风险 · 2 项\n\n风险 · 噪声\n\nSynthetic owner · 2026-10-30 · 待办理\n\n任务 · 噪声条件待确定\n\nSynthetic owner · 2026-10-30 · assigned\n\n具名决定与回执","href":"/?area=cockpit&category=acfb7c01-e339-4030-a780-0e4caf6c96aa&project=ad5ca245-1b9d-4a18-8654-d777b520b89e","cockpit":"合成自主新品项目\n\n汽车充气泵 · 合成自主新品型号 · 项目驾驶舱\n\n经营总览\n进入项目工作台\n基础信息\n用途\n合成新品评审\n工作范围\n合成新品评审\n可见性\n私有\n负责人\nc2da0c15-8732-4494-b8ab-15043dfee911\n建立时间\n10/16/2026, 8:13:03 AM\n立项定义\n合成自主新品型号 · 固定 v1\n未决事项\n2 项\n\n噪声\n\n风险 · 他人负责\n\n2026-10-30\n\n噪声条件待确定\n\n任务 · 他人负责\n\n2026-10-30\n计划与时间线\n\n尚无已应用计划。首版计划在工作与计划区起草并经一次确认应用。\n\n批准基线、个人承诺与实绩时间线尚未记录；此处不填零，取得后分列显示。\n\n工作包与任务\n工作包\n尚无\n任务\n0 项\n在工作台办理计划与执行"}
+### Ran Playwright code
+```js
+await (async (page) => {
+ await page.goto("http://127.0.0.1:3036/categories/acfb7c01-e339-4030-a780-0e4caf6c96aa/proposals/2c5f617e-f626-473b-97eb-a6f97ed02d04");
+ await page.getByRole("textbox",{name:"新型号名称",exact:true}).fill("合成自主新品型号");
+ await page.getByRole("textbox",{name:"理由",exact:true}).fill("合成自主新品具名评审：保留未知并明确项目安排。");
+ await page.getByRole("combobox",{name:"选定方案",exact:true}).selectOption({index:1});
+ await page.getByRole("textbox",{name:"项目名称",exact:true}).fill("合成自主新品项目");
+ await page.getByRole("combobox",{name:"项目负责人",exact:true}).selectOption("c2da0c15-8732-4494-b8ab-15043dfee911");
+ const groups=page.locator("fieldset");
+ for(let i=0;i<await groups.count();i++){
+   const g=groups.nth(i);
+   await g.getByRole("combobox",{name:"处置",exact:true}).selectOption(i===0?"risk":"task");
+   await g.getByRole("combobox",{name:"负责人",exact:true}).selectOption("c2da0c15-8732-4494-b8ab-15043dfee911");
+   await g.getByRole("textbox",{name:"期限",exact:true}).fill("2026-10-30");
+ }
+ await page.getByRole("button",{name:"核对具名决定",exact:true}).click();
+ const dialog=page.getByRole("dialog",{name:"确认具名 G0 决定",exact:true}); await dialog.waitFor({timeout:10000});
+ const preview=await dialog.innerText();
+ await dialog.getByRole("button",{name:"确认办理",exact:true}).click();
+ const handoff=page.getByRole("region",{name:"G0立项结果",exact:true});
+ await handoff.getByRole("link").waitFor({timeout:10000});
+ const result=await handoff.innerText(),href=await handoff.getByRole("link").getAttribute("href");
+ await handoff.getByRole("link").click();
+ await page.getByRole("heading",{name:"合成自主新品项目",exact:true}).waitFor({timeout:10000});
+ await page.screenshot({path:"docs/reports/evidence/pdos-next-m3-20261016/g0-handoff/browser/new-product-cockpit-desktop-light.png"});
+ return {preview,result,href,cockpit:await page.locator("main").innerText()};
+})(page);
+```
+### Page
+- Page URL: http://127.0.0.1:3036/?area=cockpit&category=acfb7c01-e339-4030-a780-0e4caf6c96aa&project=ad5ca245-1b9d-4a18-8654-d777b520b89e
+- Page Title: PDOS · 研发工作区

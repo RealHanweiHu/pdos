@@ -551,7 +551,16 @@ def preview_view(s, ctx, command, scope, payload):
             project_owner_id=str(owner),
             project_owner_audience_added=added,
             required_dispositions=required_dispositions(sub.frozen_document),
-            effect="批准立项后将建立型号、封存定义 v1、项目和待办。"
+            target_kind=sub.frozen_document["target_kind"],
+            identity_name=payload.new_identity.name if payload.new_identity else row.title,
+            variant_kind=payload.new_identity.variant_kind
+            if payload.new_identity
+            else "configuration",
+            effect=(
+                "批准立项后将建立变体、封存定义 v1、项目和待办。"
+                if sub.frozen_document["target_kind"] == "new_variant"
+                else "批准立项后将建立型号、封存定义 v1、项目和待办。"
+            )
             if payload.outcome == "approved"
             else "写入具名决定。",
         )

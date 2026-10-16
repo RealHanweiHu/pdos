@@ -86,6 +86,21 @@ test("proposal run history filter stays on the scoped category collection", asyn
   assert.equal(h.calls.length, 1);
 });
 
+test("G0 handoff is an exact scoped no-store read without alternate targets", async () => {
+  const h = harness();
+  const endpoint = `${root}/proposals/${proposal}/handoff`;
+  const response = await h.send(endpoint);
+  assert.equal(response.status, 200);
+  assert.equal(h.calls[0].url, `http://synthetic-api.invalid/${endpoint}`);
+  assert.equal(response.headers.get("Cache-Control"), "no-store");
+  for (const query of [`tenant_id=${category}`, `product_id=${parameter}`, "include_history=true", "page_size=1"]) {
+    assert.equal((await h.send(endpoint, { query })).status, 422);
+  }
+  assert.equal((await h.send(endpoint, { method: "POST", body: "{}" })).status, 405);
+  assert.equal((await h.send(`v1/proposals/${proposal}/handoff`)).status, 404);
+  assert.equal(h.calls.length, 1);
+});
+
 test("platform collection, detail and product links forward scoped no-store reads", async () => {
   const h = harness();
   for (const [endpoint, query] of [

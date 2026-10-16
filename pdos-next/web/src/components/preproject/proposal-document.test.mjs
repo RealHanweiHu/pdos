@@ -113,7 +113,7 @@ function environment(t, props = { categoryId: "category-a", proposalId: "proposa
 }
 function proposal({ id = "proposal-a", frozen = false } = {}) {
   const items = [{ item_id: "section-one", version: 1, kind: "section", content: { key: "worth_it", text: "Synthetic document text" }, source_refs: [], origin: "human" }];
-  const copy = { title: frozen ? "Frozen title" : "Current title", brief: "Synthetic brief", items };
+  const copy = { title: frozen ? "Frozen title" : "Current title", brief: "Synthetic brief", items, entry_kind: "new_product", target_kind: "new_product" };
   return { id, title: "Current title", brief: "Synthetic current brief", owner_id: "owner", revision: 3, status: frozen ? "in_review" : "draft", visibility: "private", private_source_count: 0, items,
     document_identity: { proposal_id: id, revision: frozen ? 2 : 3, document_digest: "same-frozen-digest", submission_id: frozen ? "submission" : null, document_mode: frozen ? "frozen" : "current" },
     display_document: copy,
@@ -240,6 +240,27 @@ test("view changes preserve G0 form values and the prepared command for same-key
   assert.equal(env.calls.filter(call => call.url.endsWith("/commands/preview")).length, 1);
   env.respond(second, { subject_id: doc.id }); await env.flush();
   assert.ok(env.pending(call => !call.options.signal.aborted && call.url.endsWith(`/proposals/${doc.id}`)));
+});
+
+test("variant G0 uses the frozen target and sends the named identity for explicit review", async t => {
+  const env = environment(t), doc = proposal({ frozen: true });
+  doc.display_document.entry_kind = "derivative";
+  doc.display_document.target_kind = "new_variant";
+  doc.target_kind = "new_product"; // Current metadata cannot replace the frozen review target.
+  await ready(env, doc, "reviewer");
+  const label = name => elements(env.tree(), element => element.type === "label" && Array.isArray(element.props.children) && element.props.children[0] === name)[0];
+  elements(label("新变体名称"), element => element.type === "input")[0].props.onChange({ target: { value: "客户限定版本" } });
+  elements(label("变体类别"), element => element.type === "select")[0].props.onChange({ target: { value: "customer" } });
+  await env.flush();
+  elements(env.tree(), element => element.type === "form")[0].props.onSubmit({ preventDefault() {} });
+  await env.flush();
+  const call = env.pending(item => item.url.endsWith("/commands/preview"));
+  const command = JSON.parse(call.options.body);
+  assert.deepEqual(command.payload.new_identity, { name: "客户限定版本", variant_kind: "customer" });
+  assert.equal("target_kind" in command.payload, false);
+  env.respond(call, { command, review: { target_kind: "new_variant", identity_name: "客户限定版本", variant_kind: "customer" } });
+  await env.flush();
+  assert.ok(env.html().includes("客户限定版本 · 客户变体"));
 });
 
 test("foreground refresh is read-only, hidden pages do not refresh, and cleanup removes listeners", async t => {

@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { ProposalViews } from "@/components/preproject/proposal-views";
 import { ProposalShare } from "@/components/preproject/proposal-share";
 import { ProposalPai } from "@/components/preproject/proposal-pai";
+import { ProposalHandoff } from "@/components/preproject/proposal-handoff";
+import type { G0Decision } from "@/lib/proposal-handoff";
 import type { ProposalShareReceipt } from "@/components/preproject/proposal-share";
 import { isProposalViewResponse, matchesProposalDocument } from "@/components/preproject/proposal-view-contracts";
 import type { ProposalViewDocument, ProposalViewName, ProposalViewResponse } from "@/components/preproject/proposal-view-contracts";
@@ -19,17 +21,18 @@ type Proposal = {
   id: string; title: string; brief: string; owner_id: string; revision: number; status: string;
   visibility: string; private_source_count: number; items: Item[];
   document_identity: ProposalViewDocument;
-  display_document: { title: string; brief: string; items: Item[] };
+  display_document: { title: string; brief: string; items: Item[]; entry_kind: "customer_request" | "new_product" | "derivative"; target_kind: "new_product" | "new_variant"; baseline_product_id?: string | null; baseline_definition_revision?: number | null };
   maturity: { spec_count: number; option_count: number; required_dispositions: Disposition[]; freeze_blockers: Item[] };
   submission: { id: string; reviewer_id: string; frozen_document: { items: Item[] } | null } | null;
-  decision: { outcome: string; rationale: string; product_id: string | null; project_id: string | null } | null;
+  decision: G0Decision | null;
 };
 type Command = { command_id: string; idempotency_key: string; category_id: string; product_id: null; operation: string; expected_revision: number; source_read_set: unknown[]; payload: Record<string, unknown> };
-type Prepared = { command: Command; review: { effect?: string; dispositions?: { note: string; audience_added: boolean }[]; project_owner_audience_added?: boolean } };
+type Prepared = { command: Command; review: { effect?: string; target_kind?: string; identity_name?: string; variant_kind?: string; dispositions?: { note: string; audience_added: boolean }[]; project_owner_audience_added?: boolean } };
 type Assignment = { kind: string; owner_id: string; due_date: string };
 
 const statuses: Record<string, string> = { draft: "草稿", returned: "已退回", in_review: "G0 评审中", approved: "已立项", rejected: "不立项" };
 const itemStatuses: Record<string, string> = { confirmed: "人工确认", ai_draft: "AI 草稿", expert_pending: "待专家确认", unknown: "未知" };
+const variantNames: Record<string, string> = { customer: "客户变体", region: "地区变体", configuration: "配置变体" };
 
 async function api<T>(path: string, body?: unknown, signal?: AbortSignal): Promise<T> {
   const response = await fetch(`/api/v1/${path}`, {
@@ -84,6 +87,8 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
   const [selectedOption, setSelectedOption] = useState("");
   const [projectName, setProjectName] = useState("");
   const [projectOwner, setProjectOwner] = useState("");
+  const [identityName, setIdentityName] = useState("");
+  const [variantKind, setVariantKind] = useState("configuration");
   const [dispositions, setDispositions] = useState<Record<string, Assignment>>({});
   const reviewTrigger = useRef<HTMLButtonElement>(null);
   const loadDocument = useCallback(() => {
@@ -105,13 +110,15 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
         || (identity.document_mode === "frozen" ? typeof identity.submission_id !== "string" : identity.submission_id !== null)
         || !value.display_document || !Array.isArray(value.display_document.items)
         || typeof value.display_document.title !== "string" || typeof value.display_document.brief !== "string"
+        || !["customer_request", "new_product", "derivative"].includes(value.display_document.entry_kind)
+        || !["new_product", "new_variant"].includes(value.display_document.target_kind)
         || (value.status === "in_review" && value.submission?.reviewer_id === session.principal_id
           && (!value.submission.frozen_document || identity.document_mode !== "frozen"))) {
         throw new Error("当前接口未提供可读的提案文档身份，请重新读取。");
       }
       setProposal(value); setPeople(participants.items); setMe(session.principal_id);
       if (!initialized.current) {
-        setProjectName(value.display_document.title); setProjectOwner(value.owner_id);
+        setProjectName(value.display_document.title); setProjectOwner(value.owner_id); setIdentityName(value.display_document.title);
         initialized.current = true;
       }
       // A frozen identity can remain unchanged after source withdrawal or ACL changes.
@@ -209,6 +216,7 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
   const frozenAvailable = !!proposal?.submission?.frozen_document;
   const docItems = proposal?.display_document.items ?? [];
   const options = docItems.filter(item => item.kind === "option");
+  const variantTarget = proposal?.display_document.target_kind === "new_variant";
   return <main className="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:px-8">
     <Link href={`/?category=${categoryId}`} className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft />品类工作区</Link>
     <Button type="button" variant="outline" disabled={busy} onClick={() => { void reload(); }}>刷新文档与视图</Button>
@@ -218,6 +226,7 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
       <header className="space-y-3">
         <div className="flex flex-wrap items-center gap-3"><h1 className="text-2xl font-semibold">{proposal.display_document.title}</h1><span className="rounded-md border px-2 py-1 text-xs">{statuses[proposal.status] ?? proposal.status}</span><span className="inline-flex items-center gap-1 text-sm text-muted-foreground"><LockKey />{proposal.visibility === "private" ? "私有提案" : "已共享"}</span></div>
         <p className="text-muted-foreground">{proposal.display_document.brief}</p>
+        <p className="subtle">{{ customer_request: "客户需求", new_product: "自主新品", derivative: "派生迭代" }[proposal.display_document.entry_kind]} · {variantTarget ? "新变体" : "新型号"}{proposal.display_document.baseline_definition_revision ? ` · 固定父定义 v${proposal.display_document.baseline_definition_revision}` : ""}</p>
         {proposal.private_source_count > 0 && <p className="text-sm">引用了私有来源，内容只对提案受众可见。</p>}
       </header>
       <ProposalViews view={selectedView} result={viewResult} document={proposal.document_identity} people={people}
@@ -240,7 +249,7 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
           event.preventDefault();
           preview("proposal.g0.decide", { proposal_id: proposalId, submission_id: proposal.submission!.id,
             expected_revision: proposal.revision, outcome, rationale, selected_option_item_id: selectedOption || null,
-            project: { name: projectName, owner_id: projectOwner },
+            ...(outcome === "approved" ? { project: { name: projectName, owner_id: projectOwner }, new_identity: { name: identityName, ...(variantTarget ? { variant_kind: variantKind } : {}) } } : {}),
             dispositions: outcome === "approved" ? proposal.maturity.required_dispositions.map(item => ({
               subject_type: item.subject_type, subject_id: item.subject_id, note: item.title, ...dispositions[item.subject_id],
             })) : [] });
@@ -248,6 +257,8 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
           <h2 className="font-semibold">具名 G0 决定</h2><label className="block text-sm">决定<select value={outcome} onChange={event => setOutcome(event.target.value)}><option value="approved">批准立项</option><option value="returned">退回完善</option><option value="rejected">不立项</option></select></label>
           <label className="block text-sm">理由<textarea required value={rationale} onChange={event => setRationale(event.target.value)} /></label>
           {outcome === "approved" && <>
+            <label className="block text-sm">{variantTarget ? "新变体名称" : "新型号名称"}<input required value={identityName} onChange={event => setIdentityName(event.target.value)} /></label>
+            {variantTarget && <label className="block text-sm">变体类别<select value={variantKind} onChange={event => setVariantKind(event.target.value)}><option value="customer">客户变体</option><option value="region">地区变体</option><option value="configuration">配置变体</option></select></label>}
             {options.length > 0 && <label className="block text-sm">选定方案<select required value={selectedOption} onChange={event => setSelectedOption(event.target.value)}><option value="">选择方案</option>{options.map(item => <option key={item.item_id} value={item.item_id}>{String(item.content.name)}</option>)}</select></label>}
             <label className="block text-sm">项目名称<input required value={projectName} onChange={event => setProjectName(event.target.value)} /></label><label className="block text-sm">项目负责人<select required value={projectOwner} onChange={event => setProjectOwner(event.target.value)}>{people.map(person => <option key={person.id} value={person.id}>{person.name}</option>)}</select></label>
             {proposal.maturity.required_dispositions.map(item => {
@@ -258,7 +269,8 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
           </>}
           <Button ref={reviewTrigger} disabled={busy || !!prepared}>核对具名决定</Button>
         </form>}
-        {proposal.decision && <section className="panel space-y-2"><h2 className="flex items-center gap-2 font-semibold"><CheckCircle />决定记录</h2><p className="text-sm">{proposal.decision.rationale}</p>{proposal.decision.product_id && <Link className="text-sm underline" href={`/?category=${categoryId}&product=${proposal.decision.product_id}&area=products&view=overview`}>查看立项结果</Link>}</section>}
+        {proposal.decision && <section className="panel space-y-2"><h2 className="flex items-center gap-2 font-semibold"><CheckCircle />决定记录</h2><p className="text-sm">{proposal.decision.rationale}</p><p className="subtle">具名评审人：{people.find(person => person.id === proposal.decision?.decided_by)?.name ?? "原签发人"}{proposal.decision.decided_at && <> · <time dateTime={proposal.decision.decided_at}>{new Date(proposal.decision.decided_at).toLocaleString()}</time></>}</p></section>}
+        {proposal.decision?.outcome === "approved" && <ProposalHandoff categoryId={categoryId} proposalId={proposalId} decision={proposal.decision} />}
         <ProposalPai key={`${me}:${categoryId}:${proposalId}`} categoryId={categoryId} proposalId={proposalId} principalId={me} />
       </aside></div>
     </>}
@@ -271,6 +283,7 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
       {prepared.command.operation === "proposal.g0.submit" && <p className="mb-4 text-sm">评审人：{people.find(person => person.id === prepared.command.payload.reviewer_id)?.name}</p>}
       {prepared.command.operation === "proposal.g0.decide" && <><p className="mb-4 text-sm">决定：{statuses[String(prepared.command.payload.outcome)]} · {String(prepared.command.payload.rationale)}</p>
         {prepared.command.payload.outcome === "approved" && <div className="mb-4 space-y-2 text-sm"><p>选定方案：{String(options.find(item => item.item_id === prepared.command.payload.selected_option_item_id)?.content.name ?? "无方案")}</p><p>项目：{String((prepared.command.payload.project as { name: string }).name)} · 负责人：{people.find(person => person.id === (prepared.command.payload.project as { owner_id: string }).owner_id)?.name}</p>
+          <p>{prepared.review.target_kind === "new_variant" ? "新变体" : "新型号"}：{prepared.review.identity_name ?? String((prepared.command.payload.new_identity as { name?: string } | undefined)?.name ?? "未提供")}{prepared.review.target_kind === "new_variant" && ` · ${variantNames[prepared.review.variant_kind ?? ""] ?? "类别待核对"}`}</p>
           {(prepared.command.payload.dispositions as (Assignment & { note: string })[]).map((item, index) => <p key={index}>{item.note} → {item.kind === "task" ? "任务" : "风险"} · {people.find(person => person.id === item.owner_id)?.name} · {item.due_date}</p>)}
         </div>}
       </>}
