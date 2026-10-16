@@ -1,0 +1,27 @@
+{
+  "shared_temporal_retained": true,
+  "head": "s0_0762",
+  "namespaces": [
+    {
+      "namespace": "pdos-next-m3-worker-20261016-query-candidate",
+      "workflows": [
+        {
+          "workflow_id": "pdos-next:xiaopai:f0a2968b-d230-42b6-90fc-cfb1a8962d0d:3522b9ba-a361-41a4-8c4c-faca56f53414",
+          "run_id": "01a14612-d378-7c0a-bbc3-2d0c552035bd",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "namespace": "pdos-next-m3-worker-20261016-query-projection",
+      "workflows": [
+        {
+          "workflow_id": "pdos-next:xiaopai:3cc27d1b-b04a-4008-b520-a8ec661ec5a5:9f6e732e-a8e8-4115-b02c-c1203c7c45af",
+          "run_id": "01a14611-483f-7975-9770-d13be5b50350",
+          "status": "COMPLETED"
+        }
+      ]
+    }
+  ],
+  "temporary_preview_login_expired": true
+}

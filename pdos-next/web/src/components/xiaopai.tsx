@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import type { WorkspaceTransport } from "@/lib/workspace-api";
 import { proofClockCurrent } from "@/lib/proof-clock";
 import { RunCandidates } from "@/components/pai/run-candidates";
+import { ResearchResult } from "@/components/pai/research-result";
 import { restoreRunStart } from "@/lib/run-start-intent";
 
 type Source = { id: string; title: string; revision: number; status: string };
@@ -162,6 +163,7 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
     {run && <div className="space-y-4 border-t pt-4">
       <div className="flex flex-wrap items-center gap-3"><h3 className="font-medium">{run.reverted ? "已整次撤回" : labels[run.status] ?? run.status}</h3><Button size="sm" variant="outline" disabled={busy} onClick={() => void read(() => readRun(run.run_id))}>核对当前状态</Button></div>
       {run.result?.summary && <p className="whitespace-pre-wrap break-words">{run.result.summary}</p>}
+      <ResearchResult value={run.result?.result?.research} />
       {run.error_code && <p role="status">执行未完成 · {run.error_code}</p>}
       {!!run.result?.unfinished?.length && <div><h4 className="font-medium">未完成事项</h4><ul className="mt-2 list-disc pl-5">{run.result.unfinished.map((item, i) => <li key={i}>{item}</li>)}</ul></div>}
       {run.result?.result && Object.keys(run.result.result).length > 0 && <details><summary className="cursor-pointer">查看实际结果与回执</summary><pre className="mt-3 max-h-80 overflow-auto whitespace-pre-wrap break-words text-sm">{JSON.stringify(run.result.result, null, 2)}</pre></details>}

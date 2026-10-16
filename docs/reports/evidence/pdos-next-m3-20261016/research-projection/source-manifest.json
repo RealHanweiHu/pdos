@@ -1,0 +1,48 @@
+{
+  "base_commit": "9f02b89d0c083e6491f6d08d8aa8269abf1ef1ca",
+  "candidate": "research-projection-20261016",
+  "database_head": "s0_0762",
+  "schema_changed": false,
+  "source_sha256": {
+    "pdos-next/server/pdos_next/research/egress.py": "c09fcda46b0f62e4a8e87fa53c988bb813b1c00dde1585db2ec68b56fbd23ac2",
+    "pdos-next/server/pdos_next/research/runtime.py": "7754cbf6a1374aedd9fa43a970d7207f00a8ad14927a19638f1bd5663ffc4917",
+    "pdos-next/server/pdos_next/agent_kernel/research_result.py": "a8ac661463a226b26d0cb68cea99250e7ff52494af832e44203cb6f71c801cc7",
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py": "4e0e2dafb857c3d009b6a6664760d53860e0d533446e662f684897ef6c01cac2",
+    "pdos-next/server/tests/agent_kernel/test_research_result.py": "f1d63f9303a39eb8ce926ead4f214158c0a2c3196bcf54c6ebb5f1652bb8070e",
+    "pdos-next/server/tests/agent_kernel/test_research_projection_pg.py": "937dda2f5671615a41c56fe546178b03937e60ec35fe7fe7ff64243f1ada8a05",
+    "pdos-next/server/tests/agent_kernel/test_research_runtime_process.py": "2112fab7579edb4d08dcbc4f4f515903fdea3f50af41df6d3e341af9373ac4f0",
+    "pdos-next/server/tests/agent_kernel/test_research_runtime_transactions.py": "be7da358485556b8d26d3c8866a4838d5d10ba950fe747a2d75d2f417d17d813",
+    "pdos-next/web/src/components/pai/research-result.tsx": "8102d2a80d156e009ff0569a8904a5d3f50f4769b748a1103c429cd523f91cea",
+    "pdos-next/web/src/components/pai/research-result.test.mjs": "3d5222ff67fce1908e3bb0d94de4c5fd65e61b0e2161bfa1c3ac2dbd9e161272",
+    "pdos-next/web/src/components/xiaopai.tsx": "17fe5feadc8b7204b21fe1b733636cc132533fc2b9248ad26a50a55c0c06abcf",
+    "pdos-next/web/src/components/category-create/personal-xiaopai.tsx": "c4238d4502a15576fe6eaf74ddda8a4dfd2ee35649e6e94f23c3dac3c31478ea",
+    "docs/runbooks/pdos-next-public-research-runtime.md": "30e1aa513e332b1deb2f0a076efa06ae4a8f4a5998bd745f73478ca8f8f07747"
+  },
+  "checks": {
+    "distinct_postgres_cases": 21,
+    "concentrated_pure_cases": 68,
+    "incremental_partial_cases": 9,
+    "distinct_pure_cases": 69,
+    "distinct_frontend_cases": 24,
+    "distinct_total": 114,
+    "ruff": "passed",
+    "lint": "passed",
+    "typecheck": "passed",
+    "production_build": "passed"
+  },
+  "browser": {
+    "actual_existing_completed_run": true,
+    "desktop_light": [
+      1280,
+      900
+    ],
+    "mobile_dark": [
+      320,
+      900
+    ],
+    "same_source_on_reopen": true,
+    "browser_snapshot_adoption": "not yet implemented; next closure"
+  },
+  "external_model_kms_search_dns_web_calls": 0,
+  "golden_case_writes": 0
+}

@@ -1,0 +1,32 @@
+✔ rendering makes no model or write requests and preserves sealed source reading (10.370667ms)
+✔ manual create previews key/name/purpose then separately confirms with server token (20.905ms)
+✔ whole-group adoption preserves sealed content, original run and digest across failed create retry (2.680459ms)
+✔ snapshot-dependent knowledge cannot survive omission of research group (0.420708ms)
+✔ revoked run cannot preview and malformed events cannot become candidates (1.419ms)
+✔ definite expired confirmation allows explicit new preview; uncertain outcomes retain original request (3.911291ms)
+✔ refresh and reopen read actual adoption receipt, suppress adoption form and navigate to original category (4.58775ms)
+✔ an adoption from another run cannot suppress the current run candidate (1.416959ms)
+✔ committed creation awaiting signal delivery renders success and cannot submit again (2.048625ms)
+✔ switching away while creation is pending cannot navigate using the old run response (2.667166ms)
+✔ personal start retries the identical request and never fans out another model call (1.601708ms)
+✔ successful personal start followed by read failure cannot resend start (1.072083ms)
+✔ clarification exposes actual recommendation reasons and dependencies without selecting an answer (0.947ms)
+✔ panel visibility excludes background, detached, hidden and offscreen panels (0.124167ms)
+✔ only a new live visible interrupt opens; closing, repeat polls and hidden delivery preserve inline answers (5.800958ms)
+✔ history and manual refresh restore unanswered questions inline without opening old dialogs (2.309209ms)
+✔ closed dialog answers use the actual original run and preserve a failed answer request for retry (3.399042ms)
+✔ late poll for a previous run cannot open or replace the current run questions (3.284667ms)
+✔ failed run refresh hides material but restores the original confirmation token and creation key (5.322083ms)
+✔ dialog dismissal returns keyboard focus to inline answering without submitting (0.391ms)
+✔ actual partial evidence shows source, exact quote, uncovered work and original failure (5.722834ms)
+✔ missing evidence is absent; inconsistent counts and malformed records are visible failures (0.433042ms)
+✔ unavailable work remains visible without fabricated sources (0.552875ms)
+✔ source URL cannot become an executable link and quotes stay escaped (0.627667ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 560.331291

@@ -1,5 +1,7 @@
 "use client";
 
+import { ResearchResult } from "@/components/pai/research-result";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Sparkle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
@@ -9,7 +11,7 @@ import type { Question } from "./clarification";
 import { adoptedCategory, asCandidate, personalApi } from "./contracts";
 import type { Api, CategoryAdopted, CategoryCandidate, CategoryConfirmationDraft, CreatedCategory } from "./contracts";
 
-type Run = { run_id: string; status: string; cancel_epoch: number; reverted: boolean; error_code?: string; result?: { summary?: string; unfinished?: string[] } };
+type Run = { run_id: string; status: string; cancel_epoch: number; reverted: boolean; error_code?: string; result?: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
 type History = { items: (Run & { goal: string })[]; next_cursor: string | null };
 type Event = { sequence: number; event: { type: string; questions?: Question[] } };
 type Pending = { path: string; body: unknown };
@@ -174,6 +176,7 @@ export function PersonalXiaopai({ api = personalApi, onCreated, initialRunId }: 
       <h3 className="font-medium">{labels[run.status] ?? run.status}{run.reverted ? " · 已撤回" : ""}</h3>
       {run.error_code && <p role="alert" className="text-sm">执行未完成：{run.error_code}。请检查模型配置、权限或执行服务后再继续。</p>}
       {run.result?.summary && <p className="whitespace-pre-wrap text-sm">{run.result.summary}</p>}
+      <ResearchResult value={run.result?.result?.research} />
       {run.result?.unfinished?.map((item, index) => <p key={index} className="text-sm text-muted-foreground">待完成：{item}</p>)}
       <Button variant="outline" disabled={busy} onClick={() => void read(() => readRun(run.run_id))}>刷新实际结果</Button>
       {!run.reverted && ["queued", "running", "waiting_input"].includes(run.status) && <Button variant="ghost" disabled={busy || !!pending}

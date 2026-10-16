@@ -48,11 +48,11 @@ def checkpoints():
 
 
 def configured_ports(engine, config):
-    from pdos_next.agent_kernel import policy
     from pdos_next.agent_kernel.persistence import KernelStore
     from pdos_next.agent_kernel.proposal_context import check
     from pdos_next.agent_kernel.research_adapter import ResearchArtifacts
 
+    from .egress import decide
     from .search import SearxSearchAdapter
     from .service import ResearchService
 
@@ -62,8 +62,8 @@ def configured_ports(engine, config):
     def egress(scope, provider, _categories, text):
         # The service's arguments cannot replace current persisted authority or categories.
         check(store, scope)
-        with store.transaction(scope) as (session, _run):
-            decision = policy.egress(session, scope, provider, text=text)
+        with store.transaction(scope) as (session, run):
+            decision = decide(session, scope, run, provider, text)
         store.emit(
             scope,
             {

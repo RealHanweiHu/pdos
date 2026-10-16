@@ -116,7 +116,7 @@ class OfflineResearchClient:
                     },
                 )
             assert number == 4 and results[-1]["requires_human"] is True
-            output = {"snapshot_confirmation_pending": True}
+            output = {"snapshot_confirmation_pending": True, "research": {"source_count": 999}}
         return ModelTurn(
             usage=ProviderUsage(20, 10),
             structured={
@@ -160,7 +160,7 @@ def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
         requester_id=setup.human,
         category_id=setup.category,
     ) as session:
-        for provider in ("synthetic@1", "synthetic-search", "public-web:maker.example"):
+        for provider in ("synthetic@1",):
             register_agreement(
                 session,
                 setup.ctx,
@@ -236,6 +236,13 @@ def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
 
                 result = wait_for(terminal, process, seconds=60)
                 assert result["status"] == "completed", result
+                report = result["result"]["result"]["research"]
+                assert report["source_count"] == report["row_count"] == 1
+                assert (
+                    len(report["jobs"]) == 1
+                    and report["jobs"][0]["coverage"][0]["accepted_rows"] == 1
+                )
+                assert RAW not in json.dumps(report)
                 events = api.get(path + f"/{identity}/events", headers=setup.headers)
                 assert RAW not in events.text
                 outbound = [
@@ -247,7 +254,8 @@ def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
                     "synthetic-search",
                     "public-web:maker.example",
                 }
-                assert len(outbound) == 2 and all(row["agreement_id"] for row in outbound)
+                assert len(outbound) == 2 and all(row["agreement_id"] is None for row in outbound)
+                assert all(row["data_categories"] == ["public"] for row in outbound)
                 candidate = next(
                     row["event"]
                     for row in events.json()["items"]

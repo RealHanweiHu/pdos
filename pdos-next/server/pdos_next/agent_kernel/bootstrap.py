@@ -357,7 +357,9 @@ class Bootstrap:
                     if row is None:
                         raise DomainError("FORBIDDEN_SCOPE", "结果没有当前可读的领域回执。", 403)
                     self.commands.read_receipt(session, scope, row)
-        return result
+        from .research_result import attach
+
+        return attach(result, tool_results)
 
     def default_preload(self, scope):
         if scope.isolation != "main":

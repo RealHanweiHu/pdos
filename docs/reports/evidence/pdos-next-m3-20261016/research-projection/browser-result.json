@@ -1,0 +1,16 @@
+{
+  "run_id": "9f6e732e-a8e8-4115-b02c-c1203c7c45af",
+  "desktop_light": [
+    1280,
+    900
+  ],
+  "mobile_dark": [
+    320,
+    900
+  ],
+  "reopened_actual_sources": true,
+  "model_calls_after_ui": 7,
+  "api_port": 8042,
+  "web_port": 3042,
+  "new_inference_from_open_refresh": 0
+}
