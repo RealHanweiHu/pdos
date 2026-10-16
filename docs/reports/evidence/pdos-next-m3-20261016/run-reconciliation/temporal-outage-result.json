@@ -1,0 +1,35 @@
+{
+  "target": "127.0.0.1:61596",
+  "reused_existing_service": true,
+  "technical_cleanup_attempts": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "advance_calls": 1,
+  "technical_retry_maximum_attempts": 0,
+  "technical_retry_maximum_interval_seconds": 60,
+  "result": {
+    "reconciliation": {
+      "business_receipt_count": 0,
+      "closed_at": "2026-10-16T22:58:17.385271+00:00",
+      "estimated_micro_usd": 1600,
+      "event_id": "3285178f-6cf3-43ba-b83b-548396f2d5ed",
+      "external_effect_unknown": false,
+      "failed_call_count": 1,
+      "held_tokens": 0,
+      "initiated_by": null,
+      "may_start_new_request": true,
+      "mode": "automatic",
+      "original_cancel_epoch": 0,
+      "recovered_call_count": 0
+    },
+    "run_id": "d18c2e4e-636f-4cc6-82d8-22550055b7bb",
+    "status": "failed"
+  },
+  "real_model_calls": 0,
+  "real_external_calls": 0,
+  "own_worker_stopped": true,
+  "ordinary_definer_owner": "pdos_next_owner"
+}

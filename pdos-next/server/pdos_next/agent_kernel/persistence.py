@@ -763,6 +763,8 @@ def record_answers(session, ctx, run_id, *, answers, idempotency_key):
         return prior
     if run.state != "waiting_input":
         raise DomainError("VERSION_CONFLICT", "运行当前没有待答问题。")
+    if run.error_code == "EXTERNAL_OUTCOME_UNKNOWN":
+        raise DomainError("VERSION_CONFLICT", "原调用结果待核对，普通答复不能重发此调用。")
     row = AgentInput(
         tenant_id=ctx.tenant_id,
         run_id=run.id,

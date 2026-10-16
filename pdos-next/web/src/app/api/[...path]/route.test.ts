@@ -608,3 +608,24 @@ test("MCP 读取不接受伪造范围、异常游标或写入方法", async () =
   const h = harness({ response: async () => { throw new Error("synthetic unavailable"); } });
   assert.equal((await (await h.send("v1/agent-mcp/recover", { method: "POST", body: "{}" })).response.json()).code, "SOURCE_UNAVAILABLE");
 });
+
+test("原运行对账按原范围读取分页并提交同一技术版本", async () => {
+  const h = harness();
+  const path = `v1/agent-runs/${run}/reconciliation`;
+  assert.equal((await h.send(path, { query: `page_size=20&call_cursor=${product}&receipt_cursor=${build}` })).response.status, 200);
+  assert.equal(h.calls[0].url, `http://synthetic-api.invalid/v1/categories/${category}/agent-runs/${run}/reconciliation?page_size=20&call_cursor=${product}&receipt_cursor=${build}`);
+  const body = JSON.stringify({ expected_cancel_epoch: 0 });
+  assert.equal((await h.send(path, { method: "POST", body })).response.status, 200);
+  assert.equal(h.calls.at(-1)?.init.body, body);
+  assert.equal((await h.send(`v1/personal/agent-runs/${run}/reconciliation`, { unscoped: true })).response.status, 200);
+});
+
+test("对账入口拒绝伪造范围、重复游标与跨站提交", async () => {
+  const path = `v1/agent-runs/${run}/reconciliation`;
+  for (const [options, status] of [
+    [{ query: "tenant_id=forged" }, 422], [{ query: "call_cursor=bad" }, 422],
+    [{ query: `call_cursor=${product}&call_cursor=${build}` }, 422], [{ query: "page_size=101" }, 422],
+    [{ method: "POST", query: "automatic=true", body: "{}" }, 422],
+    [{ method: "POST", origin: "https://other.invalid", body: "{}" }, 403],
+  ] as const) { const h = harness(); assert.equal((await h.send(path, options)).response.status, status); assert.equal(h.calls.length, 0); }
+});

@@ -1,0 +1,36 @@
+{
+  "target": "verified independent 64245/pdos_test",
+  "head": "s0_0771",
+  "path": [
+    "s0_0771",
+    "s0_0770",
+    "s0_0771"
+  ],
+  "catalog_before": {
+    "tables": "89743bff5db506f53f43a3fca6308bcf0ff8f6f72987f713b289e92a965717d6",
+    "columns": "d5ee518d1c8fe126b8a0f21ede7c32812e2e56709f28bb03d73ab43d80e69a42",
+    "constraints": "da5b39fec308325f2ea5759153eb582e8568fdc7a66658982db5fa7880fd371c",
+    "functions": "37319d0e56d37181b3d90be3415e3caacbeb908e26b4cdf1ce0fdfffacb5fd54",
+    "triggers": "2fcaf25939345fd73021a9c9d5ef7404bd85c9ec38a6682859fc4f0bbba5e024",
+    "policies": "f19075ec14e526ef5dfd713650c47162c4450ba91dbc0e79cccc3c7e7978c21c",
+    "grants": "5d30233fa8624bd6cb2c0b83c6aa990091ed08a06c5574898e5aaeb7c0fbe35f",
+    "column_grants": "b9f261b1fc4a075e8e9efdd71f398f08ce97c55f4e5007520b0bf529ca5241e2",
+    "indexes": "51c633a75946c96e7d5853083bb0e0cb9a2a5e9c1e5ee6d67e5121cffc8abf95"
+  },
+  "catalog_final": {
+    "tables": "89743bff5db506f53f43a3fca6308bcf0ff8f6f72987f713b289e92a965717d6",
+    "columns": "d5ee518d1c8fe126b8a0f21ede7c32812e2e56709f28bb03d73ab43d80e69a42",
+    "constraints": "da5b39fec308325f2ea5759153eb582e8568fdc7a66658982db5fa7880fd371c",
+    "functions": "37319d0e56d37181b3d90be3415e3caacbeb908e26b4cdf1ce0fdfffacb5fd54",
+    "triggers": "2fcaf25939345fd73021a9c9d5ef7404bd85c9ec38a6682859fc4f0bbba5e024",
+    "policies": "f19075ec14e526ef5dfd713650c47162c4450ba91dbc0e79cccc3c7e7978c21c",
+    "grants": "5d30233fa8624bd6cb2c0b83c6aa990091ed08a06c5574898e5aaeb7c0fbe35f",
+    "column_grants": "b9f261b1fc4a075e8e9efdd71f398f08ce97c55f4e5007520b0bf529ca5241e2",
+    "indexes": "51c633a75946c96e7d5853083bb0e0cb9a2a5e9c1e5ee6d67e5121cffc8abf95"
+  },
+  "exact_catalog_restored": true,
+  "ordinary_owner_verified": true,
+  "only_added_function_removed_on_downgrade": true,
+  "business_table_changes": 0,
+  "prior_issue": "Initial function inherited the local migration superuser; explicit ordinary owner added, real up/down repeated, affected 11 tests rerun under final rights."
+}

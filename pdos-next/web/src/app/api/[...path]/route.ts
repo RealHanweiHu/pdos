@@ -5,8 +5,8 @@ import { candidateTransportOptions } from "@/lib/candidate-transport";
 
 const paths = /^(?:v1\/(?:session|products|commands(?:\/preview)?)|v1\/products\/[a-f0-9-]+\/(?:workspace|definitions|projects|configurations|builds|supply|supply-captures|costs|cost-captures|verification|verification-professional|verification-handoff|verification-launch(?:\/inputs)?|verification-results(?:\/(?:inputs|captures))?|sample-handoff|build-start(?:\/assessment-inputs)?|build-execution(?:\/compare)?|model-calls|variants(?:\/[a-f0-9-]+\/compare)?|original-lifecycle(?:\/[a-f0-9-]+\/candidate|\/intents\/[a-f0-9-]+\/reconcile)?|originals(?:\/[a-f0-9-]+\/(?:download|scan))?|receipts\/[a-f0-9-]+\/revert-preview))$/;
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
-const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|candidates|answers|cancel|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
-const personalAgentPaths = /^v1\/personal\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|cancel|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
+const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|candidates|answers|cancel|reconciliation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
+const personalAgentPaths = /^v1\/personal\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|cancel|reconciliation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
 const personalViewPaths = /^v1\/personal\/(?:projects(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|run-activity|search)$/i;
 const preprojectPaths = /^v1\/(?:proposals(?:\/[a-f0-9-]{36}(?:\/(?:items|participants|handoff))?)?|g0-definitions\/[a-f0-9-]{36}|projects\/[a-f0-9-]{36}\/open-items)$/i;
 const proposalViewPaths = /^v1\/views\/(?:positioning|spec-benchmark|feature-config|definition-maturity)$/;
@@ -173,11 +173,12 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     const collection = agentPath.length === 2;
     const create = collection && request.method === "POST";
     const action = /\/(?:answers|cancel|recover)$/.test(pathname);
-    const method = create || action ? "POST" : "GET";
+    const reconciliation = pathname.endsWith("/reconciliation");
+    const method = create || action || reconciliation && request.method === "POST" ? "POST" : "GET";
     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405 });
     for (const [key, value] of request.nextUrl.searchParams) {
       const events = pathname.endsWith("/events") || pathname.endsWith("/candidates");
-      const valid = method === "GET" && (events || collection) && (key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 200 : key === "cursor" ? collection && uuid.test(value) : key === "proposal_id" ? collection && !!categoryId && uuid.test(value) : key === "after" && events && /^\d+$/.test(value) && Number.isSafeInteger(Number(value)));
+      const valid = method === "GET" && (reconciliation ? key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 100 : ["call_cursor", "receipt_cursor"].includes(key) && uuid.test(value) : (events || collection) && (key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 200 : key === "cursor" ? collection && uuid.test(value) : key === "proposal_id" ? collection && !!categoryId && uuid.test(value) : key === "after" && events && /^\d+$/.test(value) && Number.isSafeInteger(Number(value))));
       if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "运行分页条件无效。" }, { status: 422 });
       query.set(key, value);
     }

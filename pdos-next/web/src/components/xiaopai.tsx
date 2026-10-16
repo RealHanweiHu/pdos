@@ -5,13 +5,15 @@ import { Sparkle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import type { WorkspaceTransport } from "@/lib/workspace-api";
 import { proofClockCurrent } from "@/lib/proof-clock";
+import { RunReconciliation } from "@/components/pai/run-reconciliation";
+import { reconciliationNeeded } from "@/lib/run-reconciliation";
 import { RunCandidates } from "@/components/pai/run-candidates";
 import { ResearchResult } from "@/components/pai/research-result";
 import { restoreRunStart } from "@/lib/run-start-intent";
 
 type Source = { id: string; title: string; revision: number; status: string };
 type Question = { id: string; question: string; why: string; options: { value: string; label: string }[]; allow_free_text: boolean };
-type Run = { run_id: string; product_id: string | null; proposal_id?: string | null; cancel_epoch: number; status: string; error_code: string | null; reverted: boolean; result: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
+type Run = { reconciliation?: unknown; run_id: string; product_id: string | null; proposal_id?: string | null; cancel_epoch: number; status: string; error_code: string | null; reverted: boolean; result: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
 type History = { items: (Run & { goal: string; created_at: string; product_id: string | null })[]; next_cursor: string | null };
 type Candidate = { command: Record<string, unknown> & { payload: { statement: string; quote: string; prepared_event_id: string } }; event_id: string };
 type Event = { id?: string; sequence: number; event: { type: string; questions?: Question[]; status?: string; command?: Candidate["command"]; prepared_event_id?: string } };
@@ -78,10 +80,10 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
     setRun(value);
     setEventSequence(events.at(-1)?.sequence ?? 0);
     const adopted = new Set(events.filter(item => item.event.type === "claim_candidate_adopted").map(item => item.event.prepared_event_id));
-    setCandidates(events.filter(item => item.event.type === "claim_candidate" && item.event.command && !adopted.has(item.event.command.payload.prepared_event_id)).map(item => ({ command: item.event.command!, event_id: item.event.command!.payload.prepared_event_id })));
+    setCandidates(value.reconciliation ? [] : events.filter(item => item.event.type === "claim_candidate" && item.event.command && !adopted.has(item.event.command.payload.prepared_event_id)).map(item => ({ command: item.event.command!, event_id: item.event.command!.payload.prepared_event_id })));
     setAdoption(null);
     setRevert(null);
-    setQuestions(value.status === "waiting_input" && !value.reverted ? [...events].reverse().find(item => item.event.type === "needs_input")?.event.questions ?? [] : []);
+    setQuestions(value.status === "waiting_input" && !value.reverted && !reconciliationNeeded(value) ? [...events].reverse().find(item => item.event.type === "needs_input")?.event.questions ?? [] : []);
   }, [api, proposalId]);
   const refreshHistory = useCallback(async (cursor?: string) => {
     const next = await api<History>(`${historyPath}${cursor ? `&cursor=${cursor}` : ""}`);
@@ -99,7 +101,7 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
     return () => { active = false; };
   }, [initialRunId, readRun]);
   useEffect(() => {
-    if (!run || run.reverted || !["queued", "running"].includes(run.status)) return;
+    if (!run || run.reverted || !["queued", "running"].includes(run.status) && !reconciliationNeeded(run)) return;
     const timer = setInterval(() => {
       if (!writeLock.current) void readRun(run.run_id).catch(failure => setError(failure.message));
     }, 3000);
@@ -161,15 +163,16 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
       </form>
     </details>
     {run && <div className="space-y-4 border-t pt-4">
-      <div className="flex flex-wrap items-center gap-3"><h3 className="font-medium">{run.reverted ? "已整次撤回" : labels[run.status] ?? run.status}</h3><Button size="sm" variant="outline" disabled={busy} onClick={() => void read(() => readRun(run.run_id))}>核对当前状态</Button></div>
+      <div className="flex flex-wrap items-center gap-3"><h3 className="font-medium">{run.reverted ? "已整次撤回" : reconciliationNeeded(run) ? "原调用结果待核对" : labels[run.status] ?? run.status}</h3><Button size="sm" variant="outline" disabled={busy} onClick={() => void read(() => readRun(run.run_id))}>核对当前状态</Button></div>
       {run.result?.summary && <p className="whitespace-pre-wrap break-words">{run.result.summary}</p>}
       <ResearchResult value={run.result?.result?.research} />
       {run.error_code && <p role="status">执行未完成 · {run.error_code}</p>}
+      <RunReconciliation key={run.run_id} api={api} root="v1/agent-runs" run={run} onSettled={() => readRun(run.run_id)} />
       {!!run.result?.unfinished?.length && <div><h4 className="font-medium">未完成事项</h4><ul className="mt-2 list-disc pl-5">{run.result.unfinished.map((item, i) => <li key={i}>{item}</li>)}</ul></div>}
       {run.result?.result && Object.keys(run.result.result).length > 0 && <details><summary className="cursor-pointer">查看实际结果与回执</summary><pre className="mt-3 max-h-80 overflow-auto whitespace-pre-wrap break-words text-sm">{JSON.stringify(run.result.result, null, 2)}</pre></details>}
       {!run.reverted && run.status !== "cancelled" && candidates.map(candidate => <section key={candidate.event_id} className="rounded-lg border p-3 space-y-3"><h3 className="font-medium">待你确认的来源事实</h3><p>{candidate.command.payload.statement}</p><blockquote className="text-sm text-muted-foreground">{candidate.command.payload.quote}</blockquote><Button variant="outline" disabled={busy || !!pending} onClick={() => void read(async () => { setAdoption(await api("v1/commands/preview", candidate.command)); })}>核对并预览此事实</Button></section>)}
       {adoption && <section className="rounded-lg border p-3 space-y-3"><p>{adoption.review.effect}</p><Button disabled={busy || !!pending || !proofClockCurrent("T1", adoption.expires_at)} onClick={() => void send({ path: "v1/commands", body: adoption.command })}>确认登记此事实</Button></section>}
-      <RunCandidates api={api} categoryId={categoryId} principalId={principalId} runId={run.run_id} eventSequence={eventSequence} disabled={busy || !!pending} />
+      {!run.reconciliation && <RunCandidates api={api} categoryId={categoryId} principalId={principalId} runId={run.run_id} eventSequence={eventSequence} disabled={busy || !!pending} />}
       {questions.length > 0 && <form onSubmit={event => { event.preventDefault(); void send({ path: `v1/agent-runs/${run.run_id}/answers`, body: { answers, idempotency_key: crypto.randomUUID() } }); }}><fieldset disabled={busy || !!pending}>
         {questions.map(question => <div key={question.id} className="mb-4"><label htmlFor={`pai-${question.id}`}>{question.question}</label><p className="subtle mb-2">{question.why}</p>{question.allow_free_text ? <><input id={`pai-${question.id}`} list={`pai-options-${question.id}`} required value={answers[question.id] ?? ""} onChange={event => setAnswers(old => ({ ...old, [question.id]: event.target.value }))} /><datalist id={`pai-options-${question.id}`}>{question.options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}</datalist></> : <select id={`pai-${question.id}`} required value={answers[question.id] ?? ""} onChange={event => setAnswers(old => ({ ...old, [question.id]: event.target.value }))}><option value="">请选择</option>{question.options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}</select>}</div>)}
         <Button>提交答复并继续</Button>
@@ -179,6 +182,6 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
         setRevert(await api("v1/commands/preview", { command_id: crypto.randomUUID(), idempotency_key: crypto.randomUUID(), operation: "ai.run.revert", product_id: run.product_id, expected_revision: run.cancel_epoch + 1, source_read_set: [], payload: { run_id: run.run_id } }));
       })}>预览整次撤回</Button>{revert && <div className="mt-4 space-y-3"><p>{revert.review.effect}</p><p className="subtle">本次包含 {revert.review.receipts.length} 条结果回执。</p><Button disabled={busy || !!pending || !proofClockCurrent("T1", revert.expires_at)} onClick={() => void send({ path: "v1/commands", body: revert.command })}>确认整次撤回</Button></div>}</details>}
     </div>}
-    <div className="space-y-3 border-t pt-4"><h3 className="font-medium">我的运行历史</h3>{history.items.length === 0 && <p className="subtle">{proposalId ? "当前提案暂无运行。" : "当前品类暂无运行。"}</p>}{history.items.map(item => <button type="button" disabled={busy} key={item.run_id} className="block w-full rounded-lg border p-3 text-left" aria-pressed={item.run_id === run?.run_id} onClick={() => void read(() => readRun(item.run_id))}><p className="break-words">{item.goal}</p><p className="subtle mt-1">{item.reverted ? "已整次撤回" : labels[item.status] ?? item.status} · <time dateTime={item.created_at}>{new Date(item.created_at).toLocaleString()}</time></p></button>)}{history.next_cursor && <Button variant="outline" disabled={busy} onClick={() => void read(() => refreshHistory(history.next_cursor!))}>查看更多运行</Button>}</div>
+    <div className="space-y-3 border-t pt-4"><h3 className="font-medium">我的运行历史</h3>{history.items.length === 0 && <p className="subtle">{proposalId ? "当前提案暂无运行。" : "当前品类暂无运行。"}</p>}{history.items.map(item => <button type="button" disabled={busy} key={item.run_id} className="block w-full rounded-lg border p-3 text-left" aria-pressed={item.run_id === run?.run_id} onClick={() => void read(() => readRun(item.run_id))}><p className="break-words">{item.goal}</p><p className="subtle mt-1">{item.reverted ? "已整次撤回" : reconciliationNeeded(item) ? "原调用结果待核对" : labels[item.status] ?? item.status} · <time dateTime={item.created_at}>{new Date(item.created_at).toLocaleString()}</time></p></button>)}{history.next_cursor && <Button variant="outline" disabled={busy} onClick={() => void read(() => refreshHistory(history.next_cursor!))}>查看更多运行</Button>}</div>
   </section>;
 }

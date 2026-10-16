@@ -1,0 +1,18 @@
+error TS6053: File '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/.next/types/app/api/[...path]/route.ts' not found.
+  The file is in the program because:
+    Matched by include pattern '.next/types/**/*.ts' in '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/tsconfig.json'
+error TS6053: File '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/.next/types/app/api/local-session/route.ts' not found.
+  The file is in the program because:
+    Matched by include pattern '.next/types/**/*.ts' in '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/tsconfig.json'
+error TS6053: File '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/.next/types/app/categories/[categoryId]/proposals/[proposalId]/page.ts' not found.
+  The file is in the program because:
+    Matched by include pattern '.next/types/**/*.ts' in '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/tsconfig.json'
+error TS6053: File '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/.next/types/app/layout.ts' not found.
+  The file is in the program because:
+    Matched by include pattern '.next/types/**/*.ts' in '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/tsconfig.json'
+error TS6053: File '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/.next/types/app/page.ts' not found.
+  The file is in the program because:
+    Matched by include pattern '.next/types/**/*.ts' in '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/tsconfig.json'
+error TS6053: File '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/.next/types/app/plan/page.ts' not found.
+  The file is in the program because:
+    Matched by include pattern '.next/types/**/*.ts' in '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/tsconfig.json'

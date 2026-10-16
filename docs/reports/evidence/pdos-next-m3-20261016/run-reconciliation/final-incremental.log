@@ -1,0 +1,271 @@
+.F
+=================================== FAILURES ===================================
+_ test_real_temporal_technical_cleanup_survives_more_than_three_outage_attempts _
+
+setup = <isolated synthetic test scope>
+
+    @pytest.mark.skipif(
+        not os.environ.get("PDOS_RECONCILE_TEMPORAL_ADDRESS"),
+        reason="Explicit existing local Temporal target required",
+    )
+    def test_real_temporal_technical_cleanup_survives_more_than_three_outage_attempts(setup):
+        address = os.environ["PDOS_RECONCILE_TEMPORAL_ADDRESS"]
+        assert address == "127.0.0.1:61596"
+        item = lost(setup, admin=False, waiting=False)
+        attempts = []
+        actual_cleanup = KernelActivities(setup.engine, technical_engine=setup.dispatch)
+    
+        @activity.defn(name="advance_xiaopai_run")
+        async def interrupted(ref):
+            raise ApplicationError("Synthetic exhausted execution", non_retryable=True)
+    
+        @activity.defn(name="reconcile_xiaopai_run")
+        def temporary_outage(ref):
+            attempts.append(activity.info().attempt)
+            if len(attempts) <= 3:
+                raise ApplicationError("Synthetic temporary database unavailability")
+            return actual_cleanup.reconcile(ref)
+    
+        async def actual():
+            async with asyncio.timeout(15):
+                client = await Client.connect(address)
+                assert await client.service_client.check_health()
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                async with Worker(
+                    client,
+                    task_queue="reconcile-outage-" + str(item.scope.run_id),
+                    workflows=[XiaopaiWork],
+                    activities=[interrupted, temporary_outage],
+                    activity_executor=executor,
+                ):
+                    handle = await client.start_workflow(
+                        XiaopaiWork.run,
+                        reference(setup, item),
+                        id="reconcile-outage-" + str(item.scope.run_id),
+                        task_queue="reconcile-outage-" + str(item.scope.run_id),
+                    )
+                    try:
+                        result = await asyncio.wait_for(handle.result(), timeout=45)
+                        history = await handle.fetch_history()
+                    except BaseException:
+                        await handle.cancel()
+                        raise
+            scheduled = [
+                event.activity_task_scheduled_event_attributes
+                for event in history.events
+                if event.HasField("activity_task_scheduled_event_attributes")
+            ]
+            assert [row.activity_type.name for row in scheduled] == [
+                "advance_xiaopai_run",
+                "reconcile_xiaopai_run",
+            ]
+            assert scheduled[-1].retry_policy.maximum_attempts == 0
+            assert scheduled[-1].retry_policy.maximum_interval.seconds == 60
+            return result
+    
+        result = asyncio.run(actual())
+        assert attempts == [1, 2, 3, 4]
+        assert result["status"] == "failed" and result["reconciliation"]["held_tokens"] == 0
+        with Session(setup.admin) as session:
+            row = session.get(AgentRun, item.scope.run_id)
+            assert row.state == "failed" and row.cancel_epoch == 1
+        evidence = os.environ.get("PDOS_RUN_RECONCILIATION_EVIDENCE_DIR")
+        if evidence:
+            target = Path(evidence) / "temporal-outage-result.json"
+            assert not target.exists()
+            target.write_text(
+                json.dumps(
+                    {
+                        "target": address,
+                        "reused_existing_service": True,
+                        "technical_cleanup_attempts": attempts,
+                        "advance_calls": 1,
+                        "technical_retry_maximum_attempts": 0,
+                        "technical_retry_maximum_interval_seconds": 60,
+                        "result": result,
+                        "real_model_calls": 0,
+                        "real_external_calls": 0,
+                        "own_worker_stopped": True,
+                        "ordinary_definer_owner": "pdos_next_owner",
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+                + "\n"
+            )
+    
+        async def actual():
+            async with asyncio.timeout(15):
+                client = await Client.connect(address)
+                assert await client.service_client.check_health()
+            queue = "reconcile-fixture-" + str(uuid4())
+            activities = KernelActivities(setup.engine, technical_engine=setup.dispatch)
+            handles, finished = [], False
+            with ThreadPoolExecutor(max_workers=3) as executor:
+                async with Worker(
+                    client,
+                    task_queue=queue,
+                    workflows=[XiaopaiWork],
+                    activities=[interrupted, activities.reconcile],
+                    activity_executor=executor,
+                ):
+                    try:
+                        for item in [delayed, exhausted]:
+                            handles.append(
+                                await client.start_workflow(
+                                    XiaopaiWork.run,
+                                    reference(setup, item),
+                                    id="reconcile-fixture-" + str(item.scope.run_id),
+                                    task_queue=queue,
+                                )
+                            )
+                        note(
+                            "started",
+                            delayed_run=str(delayed.scope.run_id),
+                            exhausted_run=str(exhausted.scope.run_id),
+                        )
+                        results = await asyncio.wait_for(
+                            asyncio.gather(*(handle.result() for handle in handles)), timeout=420
+                        )
+                        assert all(row["status"] == "failed" for row in results)
+                        history = await handles[0].fetch_history()
+                        timers = [
+                            event.timer_started_event_attributes.start_to_fire_timeout.seconds
+                            for event in history.events
+                            if event.HasField("timer_started_event_attributes")
+                        ]
+                        assert 300 in timers
+                        assert any(
+                            event.HasField("timer_fired_event_attributes") for event in history.events
+                        )
+                        scheduled = [
+                            event.activity_task_scheduled_event_attributes.activity_type.name
+                            for event in history.events
+                            if event.HasField("activity_task_scheduled_event_attributes")
+                        ]
+                        assert scheduled == ["advance_xiaopai_run", "reconcile_xiaopai_run"]
+                        finished = True
+                        note("completed", results=results, timer_seconds=timers, activities=scheduled)
+                    finally:
+                        if not finished:
+                            await asyncio.gather(
+                                *(handle.cancel() for handle in handles), return_exceptions=True
+                            )
+            return results
+    
+>       results = asyncio.run(actual())
+                  ^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_run_reconciliation_temporal.py:206: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    async def actual():
+        async with asyncio.timeout(15):
+            client = await Client.connect(address)
+            assert await client.service_client.check_health()
+        queue = "reconcile-fixture-" + str(uuid4())
+        activities = KernelActivities(setup.engine, technical_engine=setup.dispatch)
+        handles, finished = [], False
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            async with Worker(
+                client,
+                task_queue=queue,
+                workflows=[XiaopaiWork],
+                activities=[interrupted, activities.reconcile],
+                activity_executor=executor,
+            ):
+                try:
+>                   for item in [delayed, exhausted]:
+                                 ^^^^^^^
+E                   NameError: name 'delayed' is not defined
+
+tests/agent_kernel/test_run_reconciliation_temporal.py:163: NameError
+------------------------------ Captured log call -------------------------------
+WARNING  temporalio.activity:_activity.py:452 Completing activity as failed ({'activity_id': '1', 'activity_type': 'advance_xiaopai_run', 'attempt': 1, 'namespace': 'default', 'task_queue': 'reconcile-outage-d18c2e4e-636f-4cc6-82d8-22550055b7bb', 'workflow_id': 'reconcile-outage-d18c2e4e-636f-4cc6-82d8-22550055b7bb', 'workflow_run_id': '01a146ef-e8c4-7bea-a720-de84352d41ed', 'workflow_type': 'XiaopaiWork'})
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 351, in _handle_start_activity_task
+    result = await self._execute_activity(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 681, in _execute_activity
+    return await impl.execute_activity(input)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 889, in execute_activity
+    return await input.fn(*input.args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/agent_kernel/test_run_reconciliation_temporal.py", line 70, in interrupted
+    raise ApplicationError("Synthetic exhausted execution", non_retryable=True)
+temporalio.exceptions.ApplicationError: Synthetic exhausted execution
+WARNING  temporalio.activity:_activity.py:452 Completing activity as failed ({'activity_id': '2', 'activity_type': 'reconcile_xiaopai_run', 'attempt': 1, 'namespace': 'default', 'task_queue': 'reconcile-outage-d18c2e4e-636f-4cc6-82d8-22550055b7bb', 'workflow_id': 'reconcile-outage-d18c2e4e-636f-4cc6-82d8-22550055b7bb', 'workflow_run_id': '01a146ef-e8c4-7bea-a720-de84352d41ed', 'workflow_type': 'XiaopaiWork'})
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 351, in _handle_start_activity_task
+    result = await self._execute_activity(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 681, in _execute_activity
+    return await impl.execute_activity(input)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 884, in execute_activity
+    return await loop.run_in_executor(input.executor, func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 951, in _execute_sync_activity
+    return fn(*args)
+           ^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/agent_kernel/test_run_reconciliation_temporal.py", line 76, in temporary_outage
+    raise ApplicationError("Synthetic temporary database unavailability")
+temporalio.exceptions.ApplicationError: Synthetic temporary database unavailability
+WARNING  temporalio.activity:_activity.py:452 Completing activity as failed ({'activity_id': '2', 'activity_type': 'reconcile_xiaopai_run', 'attempt': 2, 'namespace': 'default', 'task_queue': 'reconcile-outage-d18c2e4e-636f-4cc6-82d8-22550055b7bb', 'workflow_id': 'reconcile-outage-d18c2e4e-636f-4cc6-82d8-22550055b7bb', 'workflow_run_id': '01a146ef-e8c4-7bea-a720-de84352d41ed', 'workflow_type': 'XiaopaiWork'})
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 351, in _handle_start_activity_task
+    result = await self._execute_activity(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 681, in _execute_activity
+    return await impl.execute_activity(input)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 884, in execute_activity
+    return await loop.run_in_executor(input.executor, func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 951, in _execute_sync_activity
+    return fn(*args)
+           ^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/agent_kernel/test_run_reconciliation_temporal.py", line 76, in temporary_outage
+    raise ApplicationError("Synthetic temporary database unavailability")
+temporalio.exceptions.ApplicationError: Synthetic temporary database unavailability
+WARNING  temporalio.activity:_activity.py:452 Completing activity as failed ({'activity_id': '2', 'activity_type': 'reconcile_xiaopai_run', 'attempt': 3, 'namespace': 'default', 'task_queue': 'reconcile-outage-d18c2e4e-636f-4cc6-82d8-22550055b7bb', 'workflow_id': 'reconcile-outage-d18c2e4e-636f-4cc6-82d8-22550055b7bb', 'workflow_run_id': '01a146ef-e8c4-7bea-a720-de84352d41ed', 'workflow_type': 'XiaopaiWork'})
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 351, in _handle_start_activity_task
+    result = await self._execute_activity(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 681, in _execute_activity
+    return await impl.execute_activity(input)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 884, in execute_activity
+    return await loop.run_in_executor(input.executor, func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 951, in _execute_sync_activity
+    return fn(*args)
+           ^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/agent_kernel/test_run_reconciliation_temporal.py", line 76, in temporary_outage
+    raise ApplicationError("Synthetic temporary database unavailability")
+temporalio.exceptions.ApplicationError: Synthetic temporary database unavailability
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_run_reconciliation_temporal.py::test_real_temporal_technical_cleanup_survives_more_than_three_outage_attempts
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 1 passed in 10.08s

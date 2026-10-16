@@ -156,6 +156,7 @@ async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
             ],
             activities=[
                 kernel_activities.advance,
+                kernel_activities.reconcile,
                 activities.parse,
                 activities.queue,
                 activities.scan,

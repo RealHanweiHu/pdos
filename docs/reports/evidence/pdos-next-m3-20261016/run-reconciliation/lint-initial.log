@@ -1,0 +1,22 @@
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/pai/run-reconciliation.tsx
+  39:122  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/pai/run-reconciliation.tsx:39:122
+  37 |     if (!visible) return;
+  38 |     let active = true;
+> 39 |     try { const value = restoreReconciliation(JSON.parse(localStorage.getItem(storageKey) ?? "null"), run.run_id, root); setPending(value); } catch { setPending(null); }
+     |                                                                                                                          ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  40 |     void load().catch(failure => { if (active) setError(failure.message); });
+  41 |     return () => { active = false; generation.current++; };
+  42 |   }, [visible, storageKey, root, run.run_id, run.status, run.cancel_epoch, load]);  react-hooks/set-state-in-effect
+  41:47   warning  The ref value 'generation.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'generation.current' to a variable inside the effect, and use that variable in the cleanup function                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               react-hooks/exhaustive-deps
+
+✖ 2 problems (1 error, 1 warning)
+

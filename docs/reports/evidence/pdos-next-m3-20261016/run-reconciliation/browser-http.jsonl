@@ -1,0 +1,5 @@
+{"method": "GET", "path": "/v1/categories/09486290-7c92-461a-9361-2b06b0ebb164/agent-runs/4e90b7bf-6e8f-4f3f-a475-83790672538e/reconciliation", "actual_status": 200, "client_status": 200, "duration_ms": 67.97, "driver_sql": 16}
+{"method": "GET", "path": "/v1/categories/09486290-7c92-461a-9361-2b06b0ebb164/agent-runs/4e90b7bf-6e8f-4f3f-a475-83790672538e/reconciliation", "actual_status": 200, "client_status": 200, "duration_ms": 85.83, "driver_sql": 16}
+{"method": "POST", "path": "/v1/categories/09486290-7c92-461a-9361-2b06b0ebb164/agent-runs/4e90b7bf-6e8f-4f3f-a475-83790672538e/reconciliation", "actual_status": 200, "client_status": 503, "duration_ms": 119.46, "driver_sql": 33}
+{"method": "GET", "path": "/v1/categories/09486290-7c92-461a-9361-2b06b0ebb164/agent-runs/4e90b7bf-6e8f-4f3f-a475-83790672538e/reconciliation", "actual_status": 200, "client_status": 200, "duration_ms": 45.92, "driver_sql": 15}
+{"method": "GET", "path": "/v1/categories/09486290-7c92-461a-9361-2b06b0ebb164/agent-runs/4e90b7bf-6e8f-4f3f-a475-83790672538e/reconciliation", "actual_status": 200, "client_status": 200, "duration_ms": 49.99, "driver_sql": 15}

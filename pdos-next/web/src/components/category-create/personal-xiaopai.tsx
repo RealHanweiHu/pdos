@@ -1,5 +1,7 @@
 "use client";
 
+import { RunReconciliation } from "@/components/pai/run-reconciliation";
+import { reconciliationNeeded } from "@/lib/run-reconciliation";
 import { ResearchResult } from "@/components/pai/research-result";
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -11,7 +13,7 @@ import type { Question } from "./clarification";
 import { adoptedCategory, asCandidate, personalApi } from "./contracts";
 import type { Api, CategoryAdopted, CategoryCandidate, CategoryConfirmationDraft, CreatedCategory } from "./contracts";
 
-type Run = { run_id: string; status: string; cancel_epoch: number; reverted: boolean; error_code?: string; result?: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
+type Run = { reconciliation?: unknown; run_id: string; status: string; cancel_epoch: number; reverted: boolean; error_code?: string; result?: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
 type History = { items: (Run & { goal: string })[]; next_cursor: string | null };
 type Event = { sequence: number; event: { type: string; questions?: Question[] } };
 type Pending = { path: string; body: unknown };
@@ -65,9 +67,9 @@ export function PersonalXiaopai({ api = personalApi, onCreated, initialRunId }: 
           purpose: candidate?.input.purpose ?? "", receiptId: proof.receipt_id } }] : [];
       });
       setAdoptions(adopted);
-      setCandidates(allCandidates.filter(item => !adopted.some(adoption => adoption.proof.candidate_digest === item.candidate_digest)));
+      setCandidates(value.reconciliation ? [] : allCandidates.filter(item => !adopted.some(adoption => adoption.proof.candidate_digest === item.candidate_digest)));
       const latestInput = [...events].reverse().find(item => ["needs_input", "category_candidate", "category_adopted"].includes(item.event.type));
-      const currentQuestions = value.status === "waiting_input" && !value.reverted && latestInput?.event.type === "needs_input"
+      const currentQuestions = value.status === "waiting_input" && !value.reverted && !reconciliationNeeded(value) && latestInput?.event.type === "needs_input"
         ? latestInput.event.questions ?? [] : [];
       const identity = currentQuestions.length && latestInput ? `${id}:${latestInput.sequence}` : null;
       if (identity !== questionIdentity.current) {
@@ -110,7 +112,7 @@ export function PersonalXiaopai({ api = personalApi, onCreated, initialRunId }: 
     return () => { active = false; };
   }, [initialRunId, readRun]);
   useEffect(() => {
-    if (!run || run.reverted || !["queued", "running"].includes(run.status)) return;
+    if (!run || run.reverted || !["queued", "running"].includes(run.status) && !reconciliationNeeded(run)) return;
     let reading = false;
     const timer = setInterval(() => {
       if (lock.current || reading) return;
@@ -165,7 +167,7 @@ export function PersonalXiaopai({ api = personalApi, onCreated, initialRunId }: 
       {pending && <Button variant="outline" disabled={busy} onClick={() => { if (request.current) void send(request.current); }}>重试同一请求</Button>}
       <details><summary className="cursor-pointer text-sm">个人任务记录</summary>
         <div className="mt-3 space-y-2">{history.items.map(item => <Button key={item.run_id} variant="outline" className="h-auto w-full justify-start whitespace-normal text-left" disabled={busy || !!pending}
-          onClick={() => void read(() => readRun(item.run_id), true)}>{item.goal} · {labels[item.status] ?? item.status}</Button>)}
+          onClick={() => void read(() => readRun(item.run_id), true)}>{item.goal} · {reconciliationNeeded(item) ? "原调用结果待核对" : labels[item.status] ?? item.status}</Button>)}
           {!history.items.length && <p className="text-sm text-muted-foreground">暂无可见的个人任务。</p>}
           <Button variant="ghost" disabled={busy} onClick={() => void read(() => readHistory())}>刷新记录</Button>
           {history.next_cursor && <Button variant="ghost" disabled={busy} onClick={() => void read(() => readHistory(history.next_cursor!))}>更多记录</Button>}
@@ -173,8 +175,9 @@ export function PersonalXiaopai({ api = personalApi, onCreated, initialRunId }: 
       </details>
     </div>
     {run && <div className="panel space-y-3">
-      <h3 className="font-medium">{labels[run.status] ?? run.status}{run.reverted ? " · 已撤回" : ""}</h3>
+      <h3 className="font-medium">{reconciliationNeeded(run) ? "原调用结果待核对" : labels[run.status] ?? run.status}{run.reverted ? " · 已撤回" : ""}</h3>
       {run.error_code && <p role="alert" className="text-sm">执行未完成：{run.error_code}。请检查模型配置、权限或执行服务后再继续。</p>}
+      <RunReconciliation key={run.run_id} api={api} root={root} run={run} onSettled={() => readRun(run.run_id)} />
       {run.result?.summary && <p className="whitespace-pre-wrap text-sm">{run.result.summary}</p>}
       <ResearchResult value={run.result?.result?.research} />
       {run.result?.unfinished?.map((item, index) => <p key={index} className="text-sm text-muted-foreground">待完成：{item}</p>)}

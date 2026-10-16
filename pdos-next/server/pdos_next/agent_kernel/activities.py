@@ -170,6 +170,9 @@ class KernelActivities:
                         row.state = (
                             "waiting_input" if exc.code == "EXTERNAL_OUTCOME_UNKNOWN" else "failed"
                         )
+                    if exc.code == "EXTERNAL_OUTCOME_UNKNOWN":
+                        from .run_reconciliation import mark_required
+                        mark_required(self.store, scope)
                 except DomainError:
                     if self.scope_failed(ctx, run_id):
                         return self.scope_failure(run_id)
@@ -187,3 +190,28 @@ class KernelActivities:
             if thread.is_alive():
                 thread.join(timeout=1)
             host.gateway.close()
+
+    @activity.defn(name="reconcile_xiaopai_run")
+    def reconcile(self, reference):
+        keys = {"tenant_id", "category_id", "actor_id", "requester_id", "subject_id"}
+        if (
+            not isinstance(reference, dict) or not keys <= reference.keys()
+            or set(reference) - keys - {"activity_exhausted"}
+            or type(reference.get("activity_exhausted", False)) is not bool
+        ):
+            raise DomainError("FORBIDDEN_SCOPE", "核对须使用服务器固定的运行信封。")
+        if reference.get("category_id"):
+            ctx = event_context({key: reference[key] for key in keys})
+        else:
+            ctx = Context(
+                *(UUID(reference[key]) for key in ("tenant_id", "actor_id", "requester_id"))
+            )
+        run_id = UUID(reference["subject_id"])
+        from .run_reconciliation import finalize
+        try:
+            return finalize(self.engine, ctx, run_id, automatic=True,
+                            activity_exhausted=reference.get("activity_exhausted", False))
+        except DomainError:
+            if self.scope_failed(ctx, run_id):
+                return self.scope_failure(run_id)
+            raise

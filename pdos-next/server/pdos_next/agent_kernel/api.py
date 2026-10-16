@@ -18,6 +18,7 @@ from pdos_next.service import digest, require_access
 
 from .models import AgentEvent, AgentRun
 from .persistence import cancel_run, create_run, record_answers, run_revert_status
+from .run_reconciliation import ReconcileInput
 
 
 class StartInput(StrictModel):
@@ -156,19 +157,48 @@ def router(engine, *, context_dependency, ports: ApiPorts):
     @result.get("/v1/categories/{category_id}/agent-runs/{run_id}")
     @result.get("/v1/personal/agent-runs/{run_id}")
     def read(run_id: UUID, ctx=run_dependency):
+        from .run_reconciliation import completed_record
         with transaction(ctx) as s:
             row = visible_run(s, ctx, s.get(AgentRun, run_id))
             return {
                 "run_id": str(row.id),
+                "goal": row.goal,
                 "session_id": str(row.session_id),
                 "product_id": str(row.product_id) if row.product_id else None,
                 "proposal_id": str(row.proposal_id) if row.proposal_id else None,
                 "status": row.state,
                 "result": row.result,
                 "error_code": row.error_code,
+                "reconciliation": completed_record(s, row),
                 "versions": row.versions,
                 **run_revert_status(row),
             }
+
+    @result.get("/v1/categories/{category_id}/agent-runs/{run_id}/reconciliation")
+    @result.get("/v1/personal/agent-runs/{run_id}/reconciliation")
+    def inspect_reconciliation(
+        run_id: UUID, call_cursor: UUID | None = None, receipt_cursor: UUID | None = None,
+        page_size: int = Query(default=50, ge=1, le=100), ctx=run_dependency,
+    ):
+        from .run_reconciliation import inspect
+        with transaction(ctx) as session:
+            row = visible_run(session, ctx, session.get(AgentRun, run_id))
+            return inspect(session, ctx, row, call_cursor=call_cursor,
+                           receipt_cursor=receipt_cursor, page_size=page_size)
+
+    @result.post("/v1/categories/{category_id}/agent-runs/{run_id}/reconciliation")
+    @result.post("/v1/personal/agent-runs/{run_id}/reconciliation")
+    async def finalize_reconciliation(run_id: UUID, data: ReconcileInput, ctx=run_dependency):
+        from .run_reconciliation import finalize
+        value = finalize(engine, ctx, run_id, expected_cancel_epoch=data.expected_cancel_epoch)
+        if value["reconciliation"] is not None:
+            with transaction(ctx) as session:
+                ref = reference(visible_run(session, ctx, session.get(AgentRun, run_id)), ctx)
+            try:
+                await ports.cancel_workflow(ref)
+            except Exception:
+                value["workflow_cleanup_pending"] = True
+        return value
 
     @result.get("/v1/categories/{category_id}/agent-runs")
     @result.get("/v1/personal/agent-runs")
