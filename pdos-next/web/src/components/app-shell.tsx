@@ -11,6 +11,7 @@ import { ProjectList } from "@/components/projects/project-list";
 import { ProjectCockpit } from "@/components/projects/project-cockpit";
 import { CategoryArea } from "@/components/category-workspace";
 import { PaiRail, type PaiContext } from "@/components/pai-rail";
+import { ObjectSearch } from "@/components/object-search";
 
 type Session = { name: string; principal_id: string };
 type Category = { id: string; name: string; purpose: string };
@@ -166,6 +167,7 @@ export function AppShell() {
         <Button ref={mobileTrigger} size="icon" variant="ghost" className="workspace-mobile-trigger" aria-label="打开导航" onClick={() => mobileDialog.current?.showModal()}><List/></Button>
         <div className="workspace-breadcrumb"><span>PDOS</span><CaretRight size={12} aria-hidden="true"/><span className="font-medium">{areaEntry.label}</span>{category && (location.area === "category" || location.area === "knowledge") && <><CaretRight size={12} aria-hidden="true"/><span className="font-medium truncate">{category.name}</span></>}</div>
         <div className="workspace-header-actions">
+          <ObjectSearch api={browserApi} onNavigate={href => { pushAndApply(href); requestAnimationFrame(() => document.getElementById("workspace-content")?.focus()); }} />
           <Button size="icon" variant="ghost" aria-label="小Pai 工作栏" aria-pressed={paiOpen} onClick={togglePai}><Sparkle/></Button>
           <Button size="icon" variant="ghost" aria-label="切换明暗主题" onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>{resolvedTheme === "dark" ? <Sun/> : <Moon/>}</Button>
         </div>

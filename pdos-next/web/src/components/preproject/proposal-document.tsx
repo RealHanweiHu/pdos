@@ -5,6 +5,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Dialog } from "radix-ui";
 import { ArrowLeft, LockKey, CheckCircle, WarningCircle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
+import { ObjectSearch } from "@/components/object-search";
+import { browserApi } from "@/lib/browser-api";
 import { ProposalViews } from "@/components/preproject/proposal-views";
 import { ProposalShare } from "@/components/preproject/proposal-share";
 import { ProposalPai } from "@/components/preproject/proposal-pai";
@@ -218,8 +220,11 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
   const options = docItems.filter(item => item.kind === "option");
   const variantTarget = proposal?.display_document.target_kind === "new_variant";
   return <main className="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:px-8">
-    <Link href={`/?category=${categoryId}`} className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft />品类工作区</Link>
-    <Button type="button" variant="outline" disabled={busy} onClick={() => { void reload(); }}>刷新文档与视图</Button>
+    <div className="flex flex-wrap items-center gap-3">
+      <Link href={`/?category=${categoryId}`} className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft />品类工作区</Link>
+      <Button type="button" variant="outline" disabled={busy} onClick={() => { void reload(); }}>刷新文档与视图</Button>
+      {me && <div className="ml-auto"><ObjectSearch api={browserApi}/></div>}
+    </div>
     {documentError && <p role="alert">{documentError}</p>}
     {error && <div role="alert" className="panel flex items-start gap-2"><WarningCircle size={20} /><span>{error}</span></div>}
     {!proposal || !documentReady ? <p role="status">{documentError ? "请核对当前会话与提案受众后重新读取。" : "正在读取提案…"}</p> : <>

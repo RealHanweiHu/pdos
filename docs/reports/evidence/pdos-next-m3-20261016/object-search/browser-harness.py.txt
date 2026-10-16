@@ -1,0 +1,53 @@
+from pathlib import Path
+from datetime import timedelta
+from uuid import UUID
+import json, os, re, secrets, sys
+
+root=Path(__file__).resolve().parents[2]
+sys.path[:0]=[str(root/'pdos-next/tools'),str(root/'pdos-next/server')]
+import m3_environment as m
+m.local.STATE=m.local.ROOT/'.local/candidate-runtime-20261016.json'
+state=m.state()
+assert state['port']==64245 and state['marker']=='f9048729-3f2a-4494-af75-56e1db7d743d'
+env=m.local.environment(state)
+env.update(PYTHONPATH=str(root/'pdos-next/server')+':'+str(root/'packages/pdos-agent-runtime/src'),PDOS_WORKFLOWS_ENABLED='0')
+os.environ.update(env)
+private=root/'pdos-next/.local/object-search-preview-20261016.json'
+from sqlalchemy import text
+from sqlalchemy.orm import Session
+from pdos_next.database import engine_for
+engine=engine_for(state['admin_url'])
+with engine.connect() as connection:assert connection.scalar(text('SELECT version_num FROM alembic_version'))=='s0_0762'
+
+if sys.argv[1]=='seed':
+    assert not private.exists()
+    from pdos_next.models import LoginSession, now
+    from pdos_next.service import digest
+    log=(root/'docs/reports/evidence/pdos-next-m3-20261016/object-search/checks/pg-first.log').read_text()
+    entry=json.loads(next(line for line in log.splitlines() if line.startswith('{') and 'browser_fixture' in line))['browser_fixture']
+    token=secrets.token_urlsafe(32)
+    with Session(engine) as session,session.begin():
+        session.add(LoginSession(tenant_id=UUID(entry['tenant_id']),principal_id=UUID(entry['actor_id']),token_hash=digest(token),expires_at=now()+timedelta(hours=2)))
+    value=dict(marker=state['marker'],**entry,token=token,api_port=8046,web_port=3046)
+    fd=os.open(private,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+    with os.fdopen(fd,'w') as stream:json.dump(value,stream)
+    print('Prepared one isolated login for the actual two-category G0 search fixture.')
+elif sys.argv[1]=='api':
+    from pdos_next.api import create_app
+    from starlette.responses import JSONResponse
+    import uvicorn
+    app=create_app(engine_for(state['app_url']),engine_for(state['auth_url']),workflow_enabled=False)
+    fault=root/'pdos-next/.local/object-search-fault-20261016.json'
+    @app.middleware('http')
+    async def fail_one_search(request,call_next):
+        if request.method=='GET' and request.url.path=='/v1/personal/search' and request.query_params.get('q')=='充气' and not fault.exists():
+            fault.write_text(json.dumps(dict(one_search_response_503=True)))
+            return JSONResponse(dict(code='SOURCE_UNAVAILABLE',message='合成检查：搜索暂不可用，请重试。'),status_code=503)
+        return await call_next(request)
+    os.chdir(root/'pdos-next/server')
+    uvicorn.run(app,host='127.0.0.1',port=8046)
+else:
+    seed=json.loads(private.read_text());assert seed['marker']==state['marker']
+    env.update(PDOS_NEXT_API_URL='http://127.0.0.1:8046',PDOS_NEXT_LOCAL_SESSION=seed['token'])
+    os.chdir(root/'pdos-next/web')
+    os.execvpe('pnpm',['pnpm','start','--hostname','127.0.0.1','--port','3046'],env)

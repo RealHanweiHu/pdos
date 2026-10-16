@@ -1,0 +1,75 @@
+Browser tab: 5, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+	2 container
+		3 link Description: 跳到工作内容, Value: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a#workspace-content
+		4 text PDOS
+		5 button 收起侧栏
+			6 image
+		7 container 工作区导航
+			8 link Description: 我的工作, Value: 127.0.0.1:3046/?area=work&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+			9 link Description: 项目驾驶舱, Value: 127.0.0.1:3046/?area=cockpit&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+			10 link Description: 项目列表, Value: 127.0.0.1:3046/?area=projects&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+			11 link Description: 项目集, Value: 127.0.0.1:3046/?area=programs&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+			12 link Description: 产品品类工作区, Value: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+			13 link Description: 知识, Value: 127.0.0.1:3046/?area=knowledge&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+			14 text 当前品类
+			15 text 自行车充气泵
+			16 text 项目与专业工作按品类范围授权
+		17 link Description: 计划执行进度, Help: 计划执行进度（唯一清单只读投影）, Value: 127.0.0.1:3046/plan
+		18 checkbox Description: 小Pai 工作栏, Value: 0
+		19 link Description: 设置, Value: 127.0.0.1:3046/?area=settings&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+		20 text Synthetic owner
+		21 text 本地合成环境
+		22 text PDOS 产品品类工作区 自行车充气泵
+		23 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			24 image
+			25 text 搜索
+		26 checkbox Description: 小Pai 工作栏, Value: 0
+			27 image
+		28 button 切换明暗主题
+			29 image
+		30 container workspace-content
+			31 heading 自行车充气泵, Value: 1
+				32 text 自行车充气泵
+			33 text 品类是权限范围根：共享知识、规格字典、型号与立项提案都在这里汇聚，项目经提案 G0 评审后建立。
+			34 button 打开品类工作台
+				35 text 打开品类工作台
+				36 image
+			37 container 标准品匹配
+				38 heading 先核对现有型号, Value: 2
+					39 text 先核对现有型号
+				40 text 只核对所选规格。全部满足且确认没有开发活动时，回到 CRM 办理报价与沟通，无需立项。
+				41 button (collapsed) 核对标准品规格, Secondary Actions: Expand
+					42 text 核对标准品规格
+			43 container 立项提案
+				44 heading 立项提案, Value: 2
+					45 text 立项提案
+				46 text 一案一页 · 唯一关卡是具名 G0 评审
+				47 text 客户需求、自主新品、派生迭代三个入口都落到同一种立项提案；AI 先起草，人做取舍。从对话创建的提案一律私有。
+				48 button 打开品类小Pai，起草立项提案
+					49 image
+					50 text 打开品类小Pai，起草立项提案
+				51 link Description: 自行车充气泵开发 私有提案 已立项 v3, Value: 127.0.0.1:3046/categories/f7ea946c-f579-476e-9cba-f0138957ea5a/proposals/03ca13d4-a017-4806-bd15-c23ae32caf5b
+			52 container 型号列表
+				53 heading 型号, Value: 2
+					54 text 型号
+				55 text 1  个
+				56 text 自行车充气泵开发
+				57 text Build and verify a synthetic design
+				58 button 打开
+					59 text 打开
+					60 image
+			61 container 共享知识
+				62 heading 共享知识, Value: 2
+					63 text 共享知识
+				64 button 进入知识区
+					65 text 进入知识区
+					66 image
+				67 text 尚无共享知识。品类研究产生的事实经确认后在这里共享。
+			68 container 规格字典
+				69 heading 规格字典, Value: 2
+					70 text 规格字典
+				71 text 0  条参数当前版本
+				72 text 尚无字典参数。规格条目的键、名称、单位与测试条件都来自字典；缺失时按人工映射逐步补齐。
+
+The focused UI element is 1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a

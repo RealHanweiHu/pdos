@@ -99,7 +99,7 @@ export function WorkspaceExperience({ categoryId, projectId = "", auth, session,
   useEffect(() => {
     if (auth !== "ready") return;
     const handler = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+      if ((event.metaKey || event.ctrlKey) && event.shiftKey && !event.altKey && !event.isComposing && event.key.toLowerCase() === "k") {
         // A business confirmation owns focus until the user resolves it.
         if (document.querySelector("dialog[open]")) return;
         event.preventDefault(); openSearch(document.activeElement instanceof HTMLElement ? document.activeElement : null);
@@ -141,7 +141,7 @@ export function WorkspaceExperience({ categoryId, projectId = "", auth, session,
     <nav className="workspace-tabs" aria-label="品类工作台区">
       {workspaceAreas.map(item => { const Icon = areaIcons[item.id]; return <a key={item.id} href={href(item.id)} aria-current={location.area === item.id ? "page" : undefined} onClick={event => follow(event, item.id)}><Icon size={16} aria-hidden="true"/><span>{item.label}</span></a>; })}
       <span className="workspace-tabs-spacer"/>
-      <button type="button" className="workspace-tabs-search" aria-label="快速查找入口或型号" title="快速查找 · ⌘ / Ctrl K" onClick={event => openSearch(event.currentTarget)}><MagnifyingGlass size={15} aria-hidden="true"/></button>
+      <button type="button" className="workspace-tabs-search" aria-label="快速查找入口或型号" title="当前品类快速查找 · ⌘ / Ctrl Shift K" onClick={event => openSearch(event.currentTarget)}><MagnifyingGlass size={15} aria-hidden="true"/></button>
       <select aria-label="当前型号" value={productId} disabled={locked} onChange={event => navigate(location.area, location.section, location.task, event.target.value)}>{products.length === 0 && <option value="">尚无型号</option>}{products.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select>
     </nav>
     <nav className="workspace-sections" aria-label={`${workspaceAreas.find(item => item.id === location.area)?.label}视图`}>

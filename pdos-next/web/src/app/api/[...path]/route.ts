@@ -7,7 +7,7 @@ const paths = /^(?:v1\/(?:session|products|commands(?:\/preview)?)|v1\/products\
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|candidates|answers|cancel|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
 const personalAgentPaths = /^v1\/personal\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|cancel|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
-const personalViewPaths = /^v1\/personal\/(?:projects(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|run-activity)$/i;
+const personalViewPaths = /^v1\/personal\/(?:projects(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|run-activity|search)$/i;
 const preprojectPaths = /^v1\/(?:proposals(?:\/[a-f0-9-]{36}(?:\/(?:items|participants|handoff))?)?|g0-definitions\/[a-f0-9-]{36}|projects\/[a-f0-9-]{36}\/open-items)$/i;
 const proposalViewPaths = /^v1\/views\/(?:positioning|spec-benchmark|feature-config|definition-maturity)$/;
 const categoryKnowledgePaths = /^v1\/(?:knowledge|parameters)$/;
@@ -87,13 +87,19 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   } else if (personalView) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
     const collection = ["v1/personal/projects", "v1/personal/run-activity"].includes(pathname);
+    const searching = pathname === "v1/personal/search";
     for (const [key, value] of request.nextUrl.searchParams) {
-      const valid = collection && (key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 200
+      const valid = searching ? (key === "q" ? !!value.trim() && value.length <= 200
+        : key === "kind" ? ["all", "category", "project", "product", "proposal"].includes(value)
+        : key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 100
+        : key === "cursor" && /^(?:category|project|product|proposal):[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}:[a-f0-9]{16}$/.test(value))
+        : collection && (key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 200
         : key === "cursor" ? uuid.test(value)
         : key === "waiting" && pathname.endsWith("/run-activity") && ["true", "false"].includes(value));
       if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "个人视图分页条件无效。" }, { status: 422 });
       query.set(key, value);
     }
+    if (searching && !query.has("q")) return Response.json({ code: "VALIDATION_FAILED", message: "请输入名称或完整 ID。" }, { status: 422 });
   } else if (standardMatch) {
     if (request.method !== "POST") return Response.json({ code: "VALIDATION_FAILED", message: "请提交要核对的规格。" }, { status: 405, headers: { Allow: "POST" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "规格核对不接受额外查询条件。" }, { status: 422 });

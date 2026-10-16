@@ -457,6 +457,24 @@ test("个人视图只读，拒绝伪造范围和无效分页", async () => {
   }
 });
 
+test("对象搜索保持个人只读路径和文字，不放行伪造范围或无效条件", async () => {
+  const h = harness();
+  const query = new URLSearchParams({ q: "100%_充气", kind: "project", page_size: "20", cursor: `project:${product}:0123456789abcdef` }).toString();
+  assert.equal((await h.send("v1/personal/search", { unscoped: true, query })).response.status, 200);
+  assert.equal(h.calls[0].url, `http://synthetic-api.invalid/v1/personal/search?${query}`);
+  for (const value of [
+    { method: "POST" as const, query: "q=x", status: 405 },
+    { query: "", status: 422 }, { query: "q=%20", status: 422 },
+    { query: "q=x&q=y", status: 422 }, { query: "q=x&kind=claim", status: 422 },
+    { query: "q=x&page_size=101", status: 422 }, { query: "q=x&cursor=bad", status: 422 },
+    { query: `q=x&category_id=${category}`, status: 422 }, { query: "q=x&tenant_id=other", status: 422 },
+  ]) {
+    const invalid = harness();
+    assert.equal((await invalid.send("v1/personal/search", { ...value, unscoped: true })).response.status, value.status);
+    assert.equal(invalid.calls.length, 0);
+  }
+});
+
 test("项目计划直达保留品类、型号和具体项目，只允许无额外条件的读取", async () => {
   const path = `${base}/projects/${run}`, h = harness();
   const result = await h.send(path);

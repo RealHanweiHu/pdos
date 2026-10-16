@@ -1,0 +1,77 @@
+Browser tab: 5, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3046/?area=cockpit&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&project=1cccb082-0e44-4c16-acac-e601819de857".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3046/?area=cockpit&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&project=1cccb082-0e44-4c16-acac-e601819de857
+	2 container
+		3 link Description: 跳到工作内容, Value: 127.0.0.1:3046/?area=cockpit&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&project=1cccb082-0e44-4c16-acac-e601819de857#workspace-content
+		4 button 打开导航
+			5 image
+		6 text PDOS
+		7 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			8 image
+		9 checkbox Description: 小Pai 工作栏, Value: 0
+			10 image
+		11 button 切换明暗主题
+			12 image
+		13 container workspace-content
+			14 button 刷新
+				15 image
+				16 text 刷新
+			17 container
+				18 text 项目资料读取于  10/16/2026, 12:52:54 PM
+			19 heading 便携充气泵研发, Value: 1
+				20 text 便携充气泵研发
+			21 container
+				22 text 汽车充气泵  ·  便携充气泵研发  · 项目驾驶舱
+			23 button 经营总览
+				24 image
+				25 text 经营总览
+			26 button 进入项目工作台
+				27 text 进入项目工作台
+				28 image
+			29 container 项目基础信息
+				30 heading 基础信息, Value: 2
+					31 text 基础信息
+				32 definition list
+					33 container 用途
+						34 text 用途
+					35 text Build and verify a synthetic design
+					36 container 工作范围
+						37 text 工作范围
+					38 text Build and verify a synthetic design
+					39 container 可见性
+						40 text 可见性
+					41 text 私有
+					42 container 负责人
+						43 text 负责人
+					44 text Synthetic owner（本人）
+					45 container 建立时间
+						46 text 建立时间
+					47 text 10/16/2026, 12:45:42 PM
+					48 container 立项定义
+						49 text 立项定义
+					50 container
+						51 text 便携充气泵研发  · 固定 v 1
+			52 container 未决事项
+				53 heading 未决事项, Value: 2
+					54 text 未决事项
+				55 text 0  项
+				56 text 没有未决任务或风险。
+			57 container 计划与时间线
+				58 heading 计划与时间线, Value: 2
+					59 text 计划与时间线
+				60 text 尚无已应用计划。首版计划在工作与计划区起草并经一次确认应用。
+				61 text 批准基线、个人承诺与实绩时间线尚未记录；此处不填零，取得后分列显示。
+			62 container 工作包与任务
+				63 heading 工作包与任务, Value: 2
+					64 text 工作包与任务
+				65 definition list
+					66 container 工作包
+						67 text 工作包
+					68 text 尚无
+					69 container 排期任务
+						70 text 排期任务
+					71 text 尚无可读计划
+				72 button 在工作台办理计划与执行
+					73 text 在工作台办理计划与执行
+					74 image
+
+The focused UI element is 13 container workspace-content

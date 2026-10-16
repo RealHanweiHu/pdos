@@ -53,7 +53,7 @@ function load(filename) {
   const loaded = new Module(filename); modules.set(filename, loaded);
   loaded.require = name => name === "react" ? react
     : name === "next/link" ? props => React.createElement("a", { href: props.href }, props.children)
-    : name === "@phosphor-icons/react" ? Object.fromEntries(["ArrowLeft", "LockKey", "CheckCircle", "WarningCircle", "ShareNetwork"].map(key => [key, () => React.createElement("svg")]))
+    : name === "@phosphor-icons/react" ? Object.fromEntries(["ArrowLeft", "LockKey", "CheckCircle", "WarningCircle", "ShareNetwork", "MagnifyingGlass", "X"].map(key => [key, () => React.createElement("svg")]))
     : name === "radix-ui" ? { Dialog: Object.fromEntries(["Root", "Portal", "Overlay", "Content", "Title", "Description"].map(key => [key, container])) }
     : name.startsWith("@/") ? load(path.join(webRoot, "src", name.slice(2)))
     : name.startsWith(".") ? load(path.resolve(path.dirname(filename), name)) : dependency(name);

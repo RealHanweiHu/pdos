@@ -1,0 +1,28 @@
+Browser tab: 5, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3046/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/proposals/de42754d-a6b2-4758-bb39-2fe3500468aa".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3046/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/proposals/de42754d-a6b2-4758-bb39-2fe3500468aa
+	2 container 搜索对象
+		3 heading 搜索对象, Value: 2
+			4 text 搜索对象
+		5 button 关闭搜索
+			6 image
+		7 text 按名称或完整 ID 查找你当前可读的项目、型号、立项提案和品类。
+		8 container
+			9 text 名称或完整 ID
+			10 text field (settable) 名称或完整 ID, Value: 自行车
+			11 text 对象类型
+			12 pop up button (collapsed, settable) 对象类型, Value: 品类, Secondary Actions: Expand
+				13 menu
+					14 全部对象
+					15 项目
+					16 型号
+					17 立项提案
+					18 (selected) 品类
+			19 button 搜索
+				20 image
+				21 text 搜索
+		23 content list 搜索结果
+			24 link Description: 品类 自行车充气泵 自行车充气泵 f7ea946c-f579-476e-9cba-f0138957ea5a, Value: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+		25 container
+			26 text 按当前权限查询 ·  2026/10/16 12:52:01
+
+The focused UI element is 10 text field (settable) 名称或完整 ID, Value: 自行车

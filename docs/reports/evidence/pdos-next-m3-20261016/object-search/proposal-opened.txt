@@ -1,0 +1,94 @@
+Browser tab: 5, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3046/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/proposals/de42754d-a6b2-4758-bb39-2fe3500468aa".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3046/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/proposals/de42754d-a6b2-4758-bb39-2fe3500468aa
+	2 container
+		3 link Description: 品类工作区, Value: 127.0.0.1:3046/?category=41232990-a38c-4cd2-b354-09d1a5bfc33b
+		4 button 刷新文档与视图
+		5 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			6 image
+			7 text 搜索
+		8 heading 便携充气泵研发, Value: 1
+			9 text 便携充气泵研发
+		10 text 已立项
+		11 image
+		12 text 私有提案
+		13 text Build and verify a synthetic design
+		14 container
+			15 text 自主新品  ·  新型号
+		16 container 提案视图
+			17 container 切换提案视图
+				18 button 定位图
+				19 button 规格对标
+				20 button 功能配置
+				21 button 定义成熟度
+			22 heading 规格对标, Value: 2
+				23 text 规格对标
+			24 container
+				25 text 提案第  3  版 ·  文档视图
+			26 container
+				27 text 服务器尚未提供 规格对标 分组。
+		28 heading 为什么值得做, Value: 2
+			29 text 为什么值得做
+		30 text 人工记录
+		31 text Build and verify a synthetic design
+		32 container
+			33 text 第  1  版 ·  0  个来源
+		34 heading 方案对比, Value: 2
+			35 text 方案对比
+		36 text 人工记录
+		37 text Develop
+		38 container
+			39 text 第  1  版 ·  0  个来源
+		40 heading 方案对比, Value: 2
+			41 text 方案对比
+		42 text 人工记录
+		43 text Keep current state
+		44 container
+			45 text 第  1  版 ·  0  个来源
+		46 container
+			47 heading 定义成熟度, Value: 2
+				48 text 定义成熟度
+			49 text 0  条规格 ·  2  个方案 0  条规格仍需完善
+			50 text 10–20 条关键规格仅作提示。G0 批准后封存定义 v1，保留未知与草稿状态。
+		51 container
+			52 heading 决定记录, Value: 2
+				53 image
+				54 text 决定记录
+			55 text Named independent review of a synthetic project 具名评审人： Synthetic peer  · 
+			56 text 10/16/2026, 12:45:42 PM
+		57 container G0立项结果
+			58 heading 立项结果与项目承接, Value: 2
+				59 text 立项结果与项目承接
+			60 text 新型号：便携充气泵研发
+			61 container
+				62 text 立项定义 v 1  · 已封存立项副本
+			63 text 立项保留未知与草稿状态，后续规格冻结在项目内办理。
+			64 container
+				65 text 项目： 便携充气泵研发
+			66 container
+				67 text 负责人： Synthetic owner
+			68 link Description: 进入项目驾驶舱, Value: 127.0.0.1:3046/?area=cockpit&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&project=1cccb082-0e44-4c16-acac-e601819de857
+			69 heading 带入项目的任务与风险 · 0 项, Value: 3
+				70 text 带入项目的任务与风险 ·  0  项
+			71 text 本次没有需要带入的待决事项。
+			72 button (collapsed) 具名决定与回执, Secondary Actions: Expand
+				73 text 具名决定与回执
+		74 container 当前提案的小Pai
+			75 button (collapsed) 用小Pai起草或查漏, Secondary Actions: Expand
+		76 container 提案共享与事实撤回
+			77 heading 共享与事实撤回, Value: 2
+				78 image
+				79 text 共享与事实撤回
+			80 text 仅由提案负责人本人办理。预览不会共享或撤回；请核对后再确认。
+			81 button 重新读取提案
+			82 container
+				83 text 当前提案第  3  版 · 阅读文档第  3  版 · 文档摘要： 31f42a780f06e2f0c96d94d2b68d21c132e5279ea38b537d1c569cc103b8c59f
+				84 text 当前可见范围： 私有  · 私有来源  0  项
+			85 container 选择共享范围
+				86 text 选择共享范围
+				87 radio button (settable, integer) Description: 品类内有效成员, Value: 0
+				88 radio button (settable, integer) Description: 指定品类成员, Value: 0
+				89 checkbox (settable, integer) Description: 我确认拟共享内容已去除客户身份；将逐项核对服务器预览。, Value: 0
+				90 button (disabled) 预览共享影响
+			91 button 读取可撤回事实
+
+The focused UI element is 1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3046/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/proposals/de42754d-a6b2-4758-bb39-2fe3500468aa

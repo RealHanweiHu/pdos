@@ -1,11 +1,11 @@
 """Personal cross-category projections under the caller's ordinary RR/RLS scope."""
 
 from collections import defaultdict
-from typing import Annotated
+from typing import Annotated, Literal
 from uuid import UUID
 
 from fastapi import Query
-from pydantic import Field
+from pydantic import Field, field_validator
 from sqlalchemy import and_, func, or_, select
 from sqlalchemy.orm import load_only
 
@@ -420,6 +420,23 @@ class ActivityPage(ProjectPage):
     waiting: bool = False
 
 
+class SearchPage(StrictModel):
+    q: str = Field(min_length=1, max_length=200)
+    kind: Literal["all", "category", "project", "product", "proposal"] = "all"
+    cursor: str | None = Field(default=None, pattern=(
+        r"^(?:category|project|product|proposal):"
+        r"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}:[a-f0-9]{16}$"
+    ))
+    page_size: int = Field(default=20, ge=1, le=100)
+
+    @field_validator("q")
+    @classmethod
+    def nonblank(cls, value):
+        if not value.strip():
+            raise ValueError("请输入名称或完整 ID。")
+        return value.strip()
+
+
 def register_routes(app, engine, auth_dependency):
     def scope(ctx):
         return tenant_session(
@@ -445,4 +462,14 @@ def register_routes(app, engine, auth_dependency):
         with scope(ctx) as session:
             return run_activity(
                 session, ctx, cursor=page.cursor, page_size=page.page_size, waiting=page.waiting
+            )
+
+    @app.get("/v1/personal/search")
+    def object_search(page: Annotated[SearchPage, Query()], ctx: Context = auth_dependency):
+        from pdos_next.personal_search import search
+
+        with scope(ctx) as session:
+            _personal(session, ctx)
+            return search(
+                session, ctx, page.q, kind=page.kind, cursor=page.cursor, page_size=page.page_size,
             )
