@@ -1,0 +1,8 @@
+[
+  "tests/quality_execution/test_transactions.py::test_original_bytes_read_runtime_revocation_is_atomic",
+  "tests/quality_execution_transactions/test_read_batch.py::test_actual_multi_failure_reading_shares_retained_and_rejects_late_byte_revocation",
+  "tests/quality_execution_transactions/test_read_batch.py::test_actual_writer_preparation_keeps_record_fresh_and_seals_qualification_after_terminal_io",
+  "tests/quality_execution_transactions/test_read_batch.py::test_actual_writer_late_access_io_cannot_revoke_original_run_issuer_and_return_preview",
+  "tests/quality_execution_transactions/test_request_prepare.py::test_direct_preparation_rejects_late_source_io_issuer_or_context_changes[issuer]",
+  "tests/quality_execution_transactions/test_minimal_current.py::test_direct_source_withdrawn_after_preview_rejects_without_consuming_or_new_effects"
+]

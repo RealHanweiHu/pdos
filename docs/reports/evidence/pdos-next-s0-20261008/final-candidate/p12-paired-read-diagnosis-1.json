@@ -1,0 +1,18 @@
+{
+  "read_only": true,
+  "head": "s0_0728",
+  "state_files_unchanged": true,
+  "observed": [
+    {
+      "paths": [
+        "material.request_before.snapshot.timeline.promised_start.source",
+        "material.request_after.snapshot.timeline.promised_start.source"
+      ],
+      "missing_count": 1,
+      "read_count": 11,
+      "nested_count": 8,
+      "fact_operation": "test.results.import"
+    }
+  ],
+  "runtime_source_modified": false
+}

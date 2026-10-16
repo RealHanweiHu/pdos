@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="104.238" timestamp="2026-10-10T22:01:55.075329-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.quality_execution_transactions.test_read_batch" name="test_actual_multi_failure_reading_shares_retained_and_rejects_late_byte_revocation" time="49.831"><failure message="AssertionError: assert 1 &gt;= 2&#10; +  where 1 = len([UUID('75b59b3f-8825-4cf4-9d10-c95b25065423')])">tests/quality_execution_transactions/test_read_batch.py:232: in test_actual_multi_failure_reading_shares_retained_and_rejects_late_byte_revocation
+    assert len(reads) &gt;= 2  # Actual original bytes remain an obligation of each selection.
+    ^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: assert 1 &gt;= 2
+E    +  where 1 = len([UUID('75b59b3f-8825-4cf4-9d10-c95b25065423')])</failure></testcase><testcase classname="tests.quality_execution_transactions.test_read_batch" name="test_actual_writer_preparation_keeps_record_fresh_and_seals_qualification_after_terminal_io" time="54.126" /></testsuite></testsuites>

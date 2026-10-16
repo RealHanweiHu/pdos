@@ -207,6 +207,145 @@ def code(call, expected):
     assert error.value.reason == expected
 
 
+def without_artifact_read(material, source):
+    updates = {}
+    for name in (
+        "request_before",
+        "request_after",
+        "origin_request",
+        "run_before",
+        "run_after",
+        "fact",
+        "projection",
+        "projection_run",
+    ):
+        row = getattr(material, name)
+        if row is not None:
+            updates[name] = row.model_copy(
+                update={
+                    "reads": tuple(
+                        r
+                        for r in row.reads
+                        if (r.artifact_id, r.expected_revision) != (source.id, source.revision)
+                    )
+                }
+            )
+    return material.model_copy(update=updates)
+
+
+@pytest.mark.parametrize(
+    "operation",
+    ("test.run.start", "test.results.import", "test.run.review", "test.disposition.decide"),
+)
+def test_historical_promise_original_is_not_a_later_read_but_clock_remains_immutable(operation):
+    binding, material = structural.saved(operation)
+    clock = material.request_after.snapshot.timeline.promised_start
+    narrowed = without_artifact_read(material, clock.source)
+    proof = paired.verify_paired_material(binding, narrowed, at=structural.AT).proof
+    assert proof is not None
+    assert (clock.source.id, clock.source.revision) not in {
+        (r.artifact_id, r.expected_revision) for r in proof.required_source_read_set
+    }
+    changed_clock = clock.model_copy(
+        update={"source": clock.source.model_copy(update={"id": structural.uid("changed-promise")})}
+    )
+    snapshot = narrowed.request_after.snapshot.model_copy(
+        update={
+            "timeline": narrowed.request_after.snapshot.timeline.model_copy(
+                update={"promised_start": changed_clock}
+            )
+        }
+    )
+    changed = narrowed.model_copy(
+        update={
+            "request_after": narrowed.request_after.model_copy(
+                update={
+                    "snapshot": snapshot,
+                    "snapshot_sha256": paired.digest(snapshot.model_dump(mode="json")),
+                }
+            )
+        }
+    )
+    code(
+        lambda: paired.verify_paired_material(binding, changed, at=structural.AT),
+        "PAIR_TRANSITION_MISMATCH"
+        if operation == "test.run.review"
+        else "PAIR_FIXED_SCOPE_CHANGED",
+    )
+
+
+@pytest.mark.parametrize("operation", ("verification.schedule.promise", "test.run.start"))
+def test_current_pair_event_original_remains_required(operation):
+    binding, material = structural.saved(operation)
+    narrowed = without_artifact_read(material, material.fact.kernel_event.at.source)
+    code(
+        lambda: paired.verify_paired_material(binding, narrowed, at=structural.AT),
+        "MISSING_REQUIRED_EVIDENCE",
+    )
+
+
+@pytest.mark.parametrize("change", (None, "changed_basis", "detached_fact"))
+def test_direct_start_basis_keeps_saved_contract_and_exact_launch_binding(monkeypatch, change):
+    from pdos_next import source_current
+
+    source = structural.exact("actual-start")
+    direct_basis = [{"id": str(source.artifact_id), "revision": 1}]
+    legacy_basis = {"refs": [], "security": []}
+    shared = {
+        "operation": "test.run.start",
+        "visibility": "category",
+        "sources": [source.model_dump(mode="json")],
+        "required_source_read_set": [
+            {"artifact_id": str(source.artifact_id), "expected_revision": 1}
+        ],
+        "source_basis": deepcopy(direct_basis),
+    }
+    run = VerificationRunVersion(
+        id=structural.uid("direct-start-row"),
+        input_snapshot={"execution_proof_contract": "s0-direct-v1"},
+        **shared,
+    )
+    fact = VerificationLaunchFact(
+        id=structural.uid("direct-start-fact"), run_version_id=run.id, **shared
+    )
+    # Result versions may inherit the execution marker while saving their own
+    # complete legacy source basis. The marker alone cannot change its contract.
+    result = VerificationRunVersion(
+        id=structural.uid("later-result-row"),
+        operation="test.results.import",
+        input_snapshot=deepcopy(run.input_snapshot),
+        visibility="category",
+        sources=[],
+        required_source_read_set=deepcopy(run.required_source_read_set),
+        source_basis=deepcopy(legacy_basis),
+    )
+    calls = []
+    monkeypatch.setattr(bridge.launch, "_read_evidence", lambda *args: "current")
+    monkeypatch.setattr(bridge.evidence, "refs_from_exact", lambda *args: args[-1])
+
+    def current(*args):
+        calls.append("direct")
+        return ([{"id": "changed"}] if change == "changed_basis" else direct_basis), False
+
+    def legacy(*args):
+        calls.append("legacy")
+        return legacy_basis, False
+
+    monkeypatch.setattr(source_current, "direct_source_basis", current)
+    monkeypatch.setattr(bridge.physical, "_basis", legacy)
+    if change == "detached_fact":
+        fact.run_version_id = structural.uid("other-start-row")
+    rows = {row.id: row for row in (run, fact, result)}
+    if change is None:
+        bridge._fixed_source_basis(None, None, structural.uid("product"), rows)
+        assert calls == ["direct", "direct", "legacy"]
+    else:
+        code(
+            lambda: bridge._fixed_source_basis(None, None, structural.uid("product"), rows),
+            "SOURCE_STALE",
+        )
+
+
 def test_actual_storage_shape_attests_separate_saved_signers_and_caller_without_mutation(
     monkeypatch,
 ):

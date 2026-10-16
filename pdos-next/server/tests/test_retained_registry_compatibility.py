@@ -97,8 +97,19 @@ def test_new_v2_start_preserves_its_exact_dependency_with_multiple_registered_ke
             assert after[field] == before[field]
 
 
-def test_boolean_epoch_does_not_reproduce_real_original_dependency(retained_started_work):
+def test_registry_boolean_epoch_cannot_reinterpret_fixed_proof_or_supply_a_valid_saved_epoch(
+    retained_started_work,
+):
+    from copy import deepcopy
+
+    from pdos_next.errors import DomainError
+
     work = retained_started_work
+    with _scoped(work) as s:
+        before = _proof(s, work)
+        _current(before)
+        original = _run_row(s, work)
+        fixed = deepcopy(original.input_snapshot["resource_dependency_proof"])
     add_unrelated_scope(work)
     epochs = dict(work.setup.engine._pdos_test_resource_issuer_epochs)
     assert type(epochs[work.test_issuer.key]) is int
@@ -107,5 +118,15 @@ def test_boolean_epoch_does_not_reproduce_real_original_dependency(retained_star
     work.setup.engine._pdos_test_resource_issuer_epochs = epochs
     with _scoped(work) as s:
         after = _proof(s, work)
-        assert after["current"] is False
-        assert after["reason_codes"]
+        _current(after)
+        for key in (
+            "facts_revision", "original_start_intent", "reservation", "occupancy", "sample_usage"
+        ):
+            assert after[key] == before[key]
+    # A later registry is not consumed; the persisted typed dependency still
+    # rejects a boolean masquerading as its real original integer epoch.
+    assert type(fixed["material"]["issuer_epochs"][work.test_issuer.key]) is int
+    malformed = deepcopy(fixed)
+    malformed["material"]["issuer_epochs"][work.test_issuer.key] = True
+    with pytest.raises(DomainError):
+        resources._verify_stored_fingerprint_v2(malformed)

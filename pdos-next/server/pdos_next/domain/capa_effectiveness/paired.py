@@ -1142,11 +1142,18 @@ def verify_paired_material(
         if row is not None
     ]
     reads = _merged_reads(groups)
-    needed = _merged_reads([_artifact_refs(_json(m))])
+    direct_material = _json(m)
+    if f.operation != "verification.schedule.promise":
+        # The transition above preserves this historical clock in the exact
+        # immutable Formal versions. Later actions do not consume its original
+        # again; their own event and all other direct sources remain required.
+        for name in ("request_before", "request_after"):
+            direct_material[name]["snapshot"]["timeline"]["promised_start"] = None
+    needed = _merged_reads([_artifact_refs(direct_material)])
     _require(
         set(needed) <= set(reads),
         "MISSING_REQUIRED_EVIDENCE",
-        "All fixed nested Artifact and exact source versions must be in the complete read set.",
+        "All direct Artifact sources and exact versions must be in the complete read set.",
     )
     return PairInspection(
         proof=StructuralPairProof(

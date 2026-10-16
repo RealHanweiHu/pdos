@@ -180,13 +180,34 @@ def _refs_reads(rows, *extra_reads):
 
 
 def _fixed_source_basis(s, ctx, pid, rows):
+    direct_runs = {
+        row.id
+        for row in rows.values()
+        if isinstance(row, VerificationRunVersion)
+        and row.operation == "test.run.start"
+        and row.input_snapshot.get("execution_proof_contract") == "s0-direct-v1"
+    }
     for row in rows.values():
         if launch._read_evidence(s, ctx, pid, row) != "current":
             raise DomainError("SOURCE_STALE", "配对固定版本的来源当前不可用。")
         if hasattr(row, "source_basis"):
-            actual, private = physical._basis(
-                s, ctx, pid, row.required_source_read_set, row.sources
+            direct = (isinstance(row, VerificationRunVersion) and row.id in direct_runs) or (
+                isinstance(row, VerificationLaunchFact)
+                and row.operation == "test.run.start"
+                and row.run_version_id in direct_runs
             )
+            if direct:
+                from pdos_next.source_current import direct_source_basis
+
+                references = tuple(DefinitionReference.model_validate(v) for v in row.sources)
+                sources = evidence.refs_from_exact(s, ctx, pid, references)
+                actual, private = direct_source_basis(
+                    s, ctx, pid, sources, row.required_source_read_set
+                )
+            else:
+                actual, private = physical._basis(
+                    s, ctx, pid, row.required_source_read_set, row.sources
+                )
             _require(actual == row.source_basis and (row.visibility != "category" or not private))
 
 

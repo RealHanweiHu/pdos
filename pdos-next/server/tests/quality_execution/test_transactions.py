@@ -406,13 +406,17 @@ def test_source_revocation_and_named_scope_apply_before_successful_receipt_repla
 def test_original_bytes_read_runtime_revocation_is_atomic(quality_work, monkeypatch, issuer_kind):
     work = quality_work
     publish_policy(work)
-    first, _ = create_issue(work)
+    first, _ = create_issue(work, 0)
+    second, _ = create_issue(work, 1)
+    # Merge remains a T1 action with a complete retained boundary. Direct
+    # triage/containment use their saved Issue/source watermarks instead.
     value = command(
         work,
-        "quality.issue.triage",
+        "quality.issue.merge",
         {
             "issue_id": first["result"]["issue_id"],
             "expected_issue_revision": 1,
+            "sources": [{"id": second["result"]["issue_id"], "revision": 1}],
             "reason": "Original-byte callback revocation probe",
         },
     )

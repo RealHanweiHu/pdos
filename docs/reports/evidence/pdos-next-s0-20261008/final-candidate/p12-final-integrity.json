@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "checked_at_utc": "2026-10-11T11:10:02.720203+00:00",
+  "closure_sha256": "812a6d131d5194361b1c5845d1336707de8952e4964ddffddb1616af82a37fe6",
+  "queue_sha256": "b3e95190b6d2af19da17d5eb5c9caafcc41db8783f0107bdc37c018a00e7f632",
+  "current_source_matches_complete_regression": true,
+  "closure_evidence_sha256_verified": 32,
+  "browser_nested_proofs_and_screenshots_verified": true,
+  "original_state_bytes_unchanged": true,
+  "three_owned_containers_stopped_with_exact_identity": true,
+  "main_test_container_running": true,
+  "three_business_and_one_checkpoint_backups_private_hash_verified": true,
+  "shared_temporal_m3_preservation_actual_cleanup_evidence": "p12-owned-cleanup.json",
+  "backend_passed": 5603,
+  "backend_skipped": 1,
+  "frontend_passed": 673,
+  "known_performance_exceptions": 1,
+  "new_performance_sampling": false,
+  "no_new_regression_run": true
+}
