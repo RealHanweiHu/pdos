@@ -1,0 +1,92 @@
+{
+  "target": "verified independent 64245/pdos_test",
+  "head": "s0_0771",
+  "category_status": "partial",
+  "personal_status": "waiting_input",
+  "seeded_historical_feedback": 26,
+  "category_feedback": 27,
+  "personal_feedback": 1,
+  "category_new_feedback": {
+    "type": "run_feedback",
+    "request": {
+      "comment": "合成联验：请核对压力规格的单位和来源，不把这条反馈当作正式规格决定。",
+      "categories": [
+        "missing_source",
+        "wrong_value"
+      ],
+      "idempotency_key": "69e17992-9fe0-4c6c-a118-499ade22c5d3",
+      "skill_load_event_id": "00e14f68-f49e-4c1c-a000-ac397ac26dee"
+    },
+    "versions": {
+      "skills": [
+        {
+          "key": "public_research",
+          "digest": "02c9d49a9782653a146d7fbfcd158a2219f4b1ca7c9fe05bd1a102dd6d6e541f",
+          "version": "0.2.1-draft",
+          "isolation": "main",
+          "load_event_id": "00e14f68-f49e-4c1c-a000-ac397ac26dee"
+        }
+      ],
+      "cancel_epoch": 0,
+      "model_version": "synthetic@1",
+      "prompt_prefixes": {
+        "main": "e7a2e8b216e5aec3facf743962d3997f2e7d70088ef257de472d6a258049832e"
+      },
+      "tool_definitions": {
+        "main": "f94766155ebc9a671f8423ac69ba0cbff763f317ca9d41c7bce1c201c3de5fb7"
+      },
+      "model_route_digest": "6e9ad00716ce9b360ada47b8da2d22c754351358e4be0baaabe1dfea26e677a8"
+    },
+    "feedback_id": "08bbef4c-6eea-4eab-9852-fdf7969f6cf7",
+    "recorded_by": "56769f66-3948-4c40-aa4a-636e1711c021",
+    "request_digest": "d5f351ca64aa9c09f53931ab0481a2fccf8419c16244187805337bcdefc6c67e"
+  },
+  "personal_new_feedback": {
+    "type": "run_feedback",
+    "request": {
+      "comment": "合成联验：模型未配置时保持明确失能，反馈记录不得补造模型版本。",
+      "categories": [
+        "not_useful"
+      ],
+      "idempotency_key": "28f86249-f09e-44b6-a497-aa277ec61f6b",
+      "skill_load_event_id": null
+    },
+    "versions": {
+      "skills": [],
+      "cancel_epoch": 0,
+      "model_version": null,
+      "prompt_prefixes": {},
+      "tool_definitions": {},
+      "model_route_digest": null
+    },
+    "feedback_id": "b974b793-e323-4677-b46e-255facaf3bd0",
+    "recorded_by": "56769f66-3948-4c40-aa4a-636e1711c021",
+    "request_digest": "73f1eb33cbf1cfa3c2978f8a5c6f1dbe3aaafc3497cf210d4c7dada604920120"
+  },
+  "browser_posts": [
+    {
+      "method": "POST",
+      "path": "/v1/categories/fbf3b883-7fe6-448b-bafd-0e0f429b97bb/agent-runs/22be2272-9a38-4646-8eef-a770535983b2/feedback",
+      "query": "",
+      "actual_status": 200,
+      "client_status": 503,
+      "duration_ms": 189.87
+    },
+    {
+      "method": "POST",
+      "path": "/v1/personal/agent-runs/7c31bef3-d305-48fa-a264-daaa327b1c0e/feedback",
+      "query": "",
+      "actual_status": 200,
+      "client_status": 200,
+      "duration_ms": 35.28
+    }
+  ],
+  "original_business_claims": 1,
+  "original_business_receipts": 1,
+  "model_ledger_calls_unchanged": 2,
+  "agent_inputs": 0,
+  "synthetic_session_expired": true,
+  "synthetic_pilot_disabled": true,
+  "real_model_calls": 0,
+  "real_network_calls": 0
+}

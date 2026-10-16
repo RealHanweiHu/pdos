@@ -84,6 +84,23 @@ function harness(configuration: { token?: string | null; api?: string | null; re
 }
 
 const resourceInspect = `${base}/builds/${build}/resources/inspect`;
+test("本人运行反馈按当前范围读写原正文，原请求核对与历史分页保持只读",async()=>{
+ const h=harness();const path=`v1/agent-runs/${run}/feedback`;
+ const body=JSON.stringify({idempotency_key:issue,categories:["wrong_value"],comment:"Actual issue",skill_load_event_id:null});
+ assert.equal((await h.send(path,{method:"POST",body})).response.status,200);assert.equal(h.calls[0].init.body,body);
+ assert.equal((await h.send(path,{query:`request_key=${issue}`})).response.status,200);
+ assert.ok(h.calls.at(-1)?.url.endsWith(`feedback?request_key=${issue}`));assert.equal(h.calls.at(-1)?.init.method,"GET");
+ assert.equal((await h.send(`v1/personal/agent-runs/${run}/feedback`,{unscoped:true,query:"before=9&page_size=25"})).response.status,200);
+});
+test("反馈拒绝范围覆盖、混合恢复游标与跨站写入，读取失败不会变成保存",async()=>{
+ const path=`v1/agent-runs/${run}/feedback`;
+ for(const query of ["actor_id=forged","page_size=101","before=0","request_key=invalid",`before=1&request_key=${issue}`,`request_key=${issue}&request_key=${run}`]){
+  const h=harness();assert.equal((await h.send(path,{query})).response.status,422);assert.equal(h.calls.length,0);
+ }
+ const h=harness();assert.equal((await h.send(path,{method:"POST",body:"{}",origin:"https://other.invalid"})).response.status,403);assert.equal(h.calls.length,0);
+ const down=harness({response:async()=>{throw new Error("Synthetic unavailable");}});
+ assert.equal((await down.send(path)).response.status,503);assert.equal(down.calls.length,1);
+});
 test("运行过程保持只读分页，个人与品类使用各自当前范围", async () => {
   const h=harness();
   const path=`v1/agent-runs/${run}/process`;

@@ -5,6 +5,7 @@ import { Sparkle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import type { WorkspaceTransport } from "@/lib/workspace-api";
 import { proofClockCurrent } from "@/lib/proof-clock";
+import { RunFeedback } from "@/components/pai/run-feedback";
 import { RunProcess } from "@/components/pai/run-process";
 import type { RunProcessData } from "@/lib/run-process";
 import { RunReconciliation } from "@/components/pai/run-reconciliation";
@@ -172,6 +173,7 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
       <ResearchResult value={run.result?.result?.research} />
       {run.error_code && <p role="status">执行未完成 · {run.error_code}</p>}
       {run.process && <RunProcess key={`process:${run.run_id}`} value={run.process} api={api} root="v1/agent-runs" />}
+      <RunFeedback key={`feedback:${run.run_id}`} api={api} root="v1/agent-runs" runId={run.run_id} />
       <RunReconciliation key={run.run_id} api={api} root="v1/agent-runs" run={run} onSettled={() => readRun(run.run_id)} />
       {!!run.result?.unfinished?.length && <div><h4 className="font-medium">未完成事项</h4><ul className="mt-2 list-disc pl-5">{run.result.unfinished.map((item, i) => <li key={i}>{item}</li>)}</ul></div>}
       {run.result?.result && Object.keys(run.result.result).length > 0 && <details><summary className="cursor-pointer">查看实际结果与回执</summary><pre className="mt-3 max-h-80 overflow-auto whitespace-pre-wrap break-words text-sm">{JSON.stringify(run.result.result, null, 2)}</pre></details>}

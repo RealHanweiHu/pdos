@@ -1,5 +1,6 @@
 "use client";
 
+import { RunFeedback } from "@/components/pai/run-feedback";
 import { RunProcess } from "@/components/pai/run-process";
 import type { RunProcessData } from "@/lib/run-process";
 import { RunReconciliation } from "@/components/pai/run-reconciliation";
@@ -180,6 +181,7 @@ export function PersonalXiaopai({ api = personalApi, onCreated, initialRunId }: 
       <h3 className="font-medium">{reconciliationNeeded(run) ? "原调用结果待核对" : labels[run.status] ?? run.status}{run.reverted ? " · 已撤回" : ""}</h3>
       {run.error_code && <p role="alert" className="text-sm">执行未完成：{run.error_code}。请检查模型配置、权限或执行服务后再继续。</p>}
       {run.process && <RunProcess key={`process:${run.run_id}`} value={run.process} api={api} root={root} />}
+      <RunFeedback key={`feedback:${run.run_id}`} api={api} root={root} runId={run.run_id} />
       <RunReconciliation key={run.run_id} api={api} root={root} run={run} onSettled={() => readRun(run.run_id)} />
       {run.result?.summary && <p className="whitespace-pre-wrap text-sm">{run.result.summary}</p>}
       <ResearchResult value={run.result?.result?.research} />

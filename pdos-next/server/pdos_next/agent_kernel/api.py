@@ -19,6 +19,7 @@ from pdos_next.service import digest, require_access
 
 from .models import AgentEvent, AgentRun
 from .persistence import cancel_run, create_run, record_answers, run_revert_status
+from .run_feedback import FeedbackInput
 from .run_reconciliation import ReconcileInput
 
 
@@ -207,6 +208,24 @@ def router(engine, *, context_dependency, ports: ApiPorts):
             row = visible_run(session, ctx, session.get(AgentRun, run_id))
             return inspect(session, ctx, row, call_cursor=call_cursor,
                            receipt_cursor=receipt_cursor, page_size=page_size)
+
+    @result.get("/v1/categories/{category_id}/agent-runs/{run_id}/feedback")
+    @result.get("/v1/personal/agent-runs/{run_id}/feedback")
+    def feedback(run_id: UUID, before: int | None = Query(default=None, ge=1),
+                 page_size: int = Query(default=25, ge=1, le=100),
+                 request_key: UUID | None = None, ctx=run_dependency):
+        from .run_feedback import lookup, read
+        with transaction(ctx, read_snapshot=True) as session:
+            return read(session, ctx, visible_run(session, ctx, lookup(session, run_id)),
+                        before=before, page_size=page_size, request_key=request_key)
+
+    @result.post("/v1/categories/{category_id}/agent-runs/{run_id}/feedback")
+    @result.post("/v1/personal/agent-runs/{run_id}/feedback")
+    def save_feedback(run_id: UUID, data: FeedbackInput, ctx=run_dependency):
+        from .run_feedback import lookup, record
+        with transaction(ctx) as session:
+            row = lookup(session, run_id, lock=True)
+            return record(session, ctx, visible_run(session, ctx, row), data)
 
     @result.post("/v1/categories/{category_id}/agent-runs/{run_id}/reconciliation")
     @result.post("/v1/personal/agent-runs/{run_id}/reconciliation")

@@ -1,0 +1,14 @@
+
+> pdos-next-web@0.1.0 lint
+> eslint src
+
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/pai/run-feedback.tsx
+  6:64  warning  'FeedbackRequest' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/verification/contracts.js
+  132:16  warning  '_a' is defined but never used  @typescript-eslint/no-unused-vars
+  167:12  warning  '_a' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 3 problems (0 errors, 3 warnings)
+

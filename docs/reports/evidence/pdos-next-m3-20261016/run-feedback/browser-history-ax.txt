@@ -1,0 +1,319 @@
+Browser tab: 13, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3051/?area=category&category=fbf3b883-7fe6-448b-bafd-0e0f429b97bb".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3051/?area=category&category=fbf3b883-7fe6-448b-bafd-0e0f429b97bb
+	2 container
+		3 link Description: 跳到工作内容, Value: 127.0.0.1:3051/?area=category&category=fbf3b883-7fe6-448b-bafd-0e0f429b97bb#workspace-content
+		4 text PDOS
+		5 button 收起侧栏
+			6 image
+		7 container 工作区导航
+			8 link Description: 我的工作, Value: 127.0.0.1:3051/?area=work&category=fbf3b883-7fe6-448b-bafd-0e0f429b97bb
+			9 link Description: 项目驾驶舱, Value: 127.0.0.1:3051/?area=cockpit&category=fbf3b883-7fe6-448b-bafd-0e0f429b97bb
+			10 link Description: 项目列表, Value: 127.0.0.1:3051/?area=projects&category=fbf3b883-7fe6-448b-bafd-0e0f429b97bb
+			11 link Description: 项目集, Value: 127.0.0.1:3051/?area=programs&category=fbf3b883-7fe6-448b-bafd-0e0f429b97bb
+			12 link Description: 产品品类工作区, Value: 127.0.0.1:3051/?area=category&category=fbf3b883-7fe6-448b-bafd-0e0f429b97bb
+			13 link Description: 知识, Value: 127.0.0.1:3051/?area=knowledge&category=fbf3b883-7fe6-448b-bafd-0e0f429b97bb
+			14 text 当前品类
+			15 text 工作反馈联验
+			16 text 项目与专业工作按品类范围授权
+		17 link Description: 计划执行进度, Help: 计划执行进度（唯一清单只读投影）, Value: 127.0.0.1:3051/plan
+		18 checkbox Description: 小Pai 工作栏, Value: 1
+		19 link Description: 设置, Value: 127.0.0.1:3051/?area=settings&category=fbf3b883-7fe6-448b-bafd-0e0f429b97bb
+		20 text 合成工作反馈用户
+		21 text 本地合成环境
+		22 text PDOS 产品品类工作区 工作反馈联验
+		23 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			24 image
+			25 text 搜索
+		26 checkbox Description: 小Pai 工作栏, Value: 1
+			27 image
+		28 button 切换明暗主题
+			310 image
+		30 container workspace-content
+			31 heading 工作反馈联验, Value: 1
+				32 text 工作反馈联验
+			33 text 品类是权限范围根：共享知识、规格字典、型号与立项提案都在这里汇聚，项目经提案 G0 评审后建立。
+			34 button 打开品类工作台
+				35 text 打开品类工作台
+				36 image
+			37 container 标准品匹配
+				38 heading 先核对现有型号, Value: 2
+					39 text 先核对现有型号
+				40 text 只核对所选规格。全部满足且确认没有开发活动时，回到 CRM 办理报价与沟通，无需立项。
+				41 button (collapsed) 核对标准品规格, Secondary Actions: Expand
+					42 text 核对标准品规格
+			43 container 立项提案
+				44 heading 立项提案, Value: 2
+					45 text 立项提案
+				46 text 一案一页 · 唯一关卡是具名 G0 评审
+				47 text 客户需求、自主新品、派生迭代三个入口都落到同一种立项提案；AI 先起草，人做取舍。从对话创建的提案一律私有。
+				48 button 打开品类小Pai，起草立项提案
+					49 image
+					50 text 打开品类小Pai，起草立项提案
+				51 text 尚无立项提案。与品类小Pai 对话起草第一份提案；提案默认私有。
+			52 container 型号列表
+				53 heading 型号, Value: 2
+					54 text 型号
+				55 text 1  个
+				56 text 合成型号
+				57 text 反馈示例
+				58 button 打开
+					59 text 打开
+					60 image
+			61 container 共享知识
+				62 heading 共享知识, Value: 2
+					63 text 共享知识
+				64 button 进入知识区
+					65 text 进入知识区
+					66 image
+				67 text 尚无共享知识。品类研究产生的事实经确认后在这里共享。
+			68 container 规格字典
+				69 heading 规格字典, Value: 2
+					70 text 规格字典
+				71 text 0  条参数当前版本
+				72 text 尚无字典参数。规格条目的键、名称、单位与测试条件都来自字典；缺失时按人工映射逐步补齐。
+		73 container 小Pai 工作栏
+			74 text 小Pai
+			75 text 当前品类：工作反馈联验
+			76 button 关闭小Pai 工作栏
+				77 image
+			78 container 小Pai 运行
+				79 heading 小Pai, Value: 2
+					80 text 小Pai
+				81 button 刷新运行
+				82 text 在当前品类委派工作。结果、待答问题和未完成事项会保留，关闭页面后仍可回来查看。
+				83 button (collapsed) 新建委派, Secondary Actions: Expand
+					84 text 新建委派
+				91 heading 已形成部分结果, Value: 3
+					92 text 已形成部分结果
+				93 button 核对当前状态
+				94 text 合成联验：已保存一条有来源的压力事实，待反馈核对。
+				95 container 小Pai处理过程
+					96 text 处理过程 受理至结束 1 秒
+					97 text 已形成部分结果，仍有待完成事项
+					98 container
+						99 text 已保存  2  次处理 · 已提交  1  条动作
+					100 button (collapsed) 查看步骤、依据与提交记录, Secondary Actions: Expand
+						101 text 查看步骤、依据与提交记录
+				120 container
+					121 button (expanded) 反馈这次工作, Secondary Actions: Collapse
+						122 text 反馈这次工作
+					123 text 反馈只保存在本次工作中，关联原方法和模型版本。若要立即停止后续执行，请使用取消。 已读回原反馈，记录 08bbef4c-6eea-4eab-9852-fdf7969f6cf7。
+					124 button 读取原反馈记录
+					125 container
+						126 container 哪里需要改进？（可多选）
+							127 text 哪里需要改进？（可多选）
+							128 container
+								129 checkbox (settable, integer) Description: 对象错误, Value: 0
+								130 text 对象错误
+							131 container
+								132 checkbox (settable, integer) Description: 数值错误, Value: 0
+								133 text 数值错误
+							134 container
+								135 checkbox (settable, integer) Description: 缺少来源, Value: 0
+								136 text 缺少来源
+							137 container
+								138 checkbox (settable, integer) Description: 没有帮助, Value: 0
+								139 text 没有帮助
+							140 container
+								141 checkbox (settable, integer) Description: 操作过多, Value: 0
+								142 text 操作过多
+							143 container
+								144 checkbox (settable, integer) Description: 不应自动执行, Value: 0
+								145 text 不应自动执行
+						146 text 针对哪种方法
+						147 pop up button (collapsed, settable) 针对哪种方法, Value: 本次工作整体, Secondary Actions: Expand
+							148 menu
+								149 (disabled) 本次工作整体
+								150 (disabled) 公开研究 · 0.2.1-draft · main
+						151 text 补充说明（可选）
+						152 text entry area (settable) 补充说明（可选）
+						153 button (disabled) 保存本次反馈
+					154 text 本次模型版本：synthetic@1 反馈不改变业务决定或资格。
+					155 text 缺少来源、数值错误
+					156 text 合成联验：请核对压力规格的单位和来源，不把这条反馈当作正式规格决定。
+					157 container
+						158 text 10/16/2026, 4:36:05 PM  ·  模型版本 synthetic@1
+					306 container
+						307 button (expanded) 所针对的方法与记录, Secondary Actions: Collapse
+							308 text 所针对的方法与记录
+						309 text 反馈记录  08bbef4c-6eea-4eab-9852-fdf7969f6cf7 公开研究  ·  0.2.1-draft  ·  main
+					161 text 没有帮助
+					162 text 合成历史反馈 26
+					163 container
+						164 text 10/16/2026, 4:32:50 PM  ·  模型版本 synthetic@1
+					165 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						166 text 所针对的方法与记录
+					167 text 没有帮助
+					168 text 合成历史反馈 25
+					169 container
+						170 text 10/16/2026, 4:32:50 PM  ·  模型版本 synthetic@1
+					171 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						172 text 所针对的方法与记录
+					173 text 没有帮助
+					174 text 合成历史反馈 24
+					175 container
+						176 text 10/16/2026, 4:32:50 PM  ·  模型版本 synthetic@1
+					177 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						178 text 所针对的方法与记录
+					179 text 没有帮助
+					180 text 合成历史反馈 23
+					181 container
+						182 text 10/16/2026, 4:32:50 PM  ·  模型版本 synthetic@1
+					183 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						184 text 所针对的方法与记录
+					185 text 没有帮助
+					186 text 合成历史反馈 22
+					187 container
+						188 text 10/16/2026, 4:32:50 PM  ·  模型版本 synthetic@1
+					189 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						190 text 所针对的方法与记录
+					191 text 没有帮助
+					192 text 合成历史反馈 21
+					193 container
+						194 text 10/16/2026, 4:32:50 PM  ·  模型版本 synthetic@1
+					195 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						196 text 所针对的方法与记录
+					197 text 没有帮助
+					198 text 合成历史反馈 20
+					199 container
+						200 text 10/16/2026, 4:32:50 PM  ·  模型版本 synthetic@1
+					201 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						202 text 所针对的方法与记录
+					203 text 没有帮助
+					204 text 合成历史反馈 19
+					205 container
+						206 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					207 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						208 text 所针对的方法与记录
+					209 text 没有帮助
+					210 text 合成历史反馈 18
+					211 container
+						212 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					213 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						214 text 所针对的方法与记录
+					215 text 没有帮助
+					216 text 合成历史反馈 17
+					217 container
+						218 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					219 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						220 text 所针对的方法与记录
+					221 text 没有帮助
+					222 text 合成历史反馈 16
+					223 container
+						224 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					225 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						226 text 所针对的方法与记录
+					227 text 没有帮助
+					228 text 合成历史反馈 15
+					229 container
+						230 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					231 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						232 text 所针对的方法与记录
+					233 text 没有帮助
+					234 text 合成历史反馈 14
+					235 container
+						236 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					237 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						238 text 所针对的方法与记录
+					239 text 没有帮助
+					240 text 合成历史反馈 13
+					241 container
+						242 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					243 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						244 text 所针对的方法与记录
+					245 text 没有帮助
+					246 text 合成历史反馈 12
+					247 container
+						248 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					249 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						250 text 所针对的方法与记录
+					251 text 没有帮助
+					252 text 合成历史反馈 11
+					253 container
+						254 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					255 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						256 text 所针对的方法与记录
+					257 text 没有帮助
+					258 text 合成历史反馈 10
+					259 container
+						260 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					261 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						262 text 所针对的方法与记录
+					263 text 没有帮助
+					264 text 合成历史反馈 9
+					265 container
+						266 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					267 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						268 text 所针对的方法与记录
+					269 text 没有帮助
+					270 text 合成历史反馈 8
+					271 container
+						272 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					273 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						274 text 所针对的方法与记录
+					275 text 没有帮助
+					276 text 合成历史反馈 7
+					277 container
+						278 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					279 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						280 text 所针对的方法与记录
+					281 text 没有帮助
+					282 text 合成历史反馈 6
+					283 container
+						284 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					285 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						286 text 所针对的方法与记录
+					287 text 没有帮助
+					288 text 合成历史反馈 5
+					289 container
+						290 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					291 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						292 text 所针对的方法与记录
+					293 text 没有帮助
+					294 text 合成历史反馈 4
+					295 container
+						296 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					297 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						298 text 所针对的方法与记录
+					299 text 没有帮助
+					300 text 合成历史反馈 3
+					301 container
+						302 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					303 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						304 text 所针对的方法与记录
+					311 text 没有帮助
+					312 text 合成历史反馈 2
+					313 container
+						314 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					315 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						316 text 所针对的方法与记录
+					317 text 没有帮助
+					318 text 合成历史反馈 1
+					319 container
+						320 text 10/16/2026, 4:32:49 PM  ·  模型版本 synthetic@1
+					321 button (collapsed) 所针对的方法与记录, Secondary Actions: Expand
+						322 text 所针对的方法与记录
+				104 heading 未完成事项, Value: 4
+					105 text 未完成事项
+				106 content list
+					107 container
+						108 AXListMarker • 
+						109 text 合成案例，尚未形成完整对标或立项决定。
+				110 button (collapsed) 查看实际结果与回执, Secondary Actions: Expand
+					111 text 查看实际结果与回执
+				112 container 小Pai 待确认动作
+					113 heading 待你确认的动作, Value: 3
+						114 text 待你确认的动作
+					115 button 刷新候选
+					116 text 候选保留小Pai署名。核对实际范围后由你一次确认，打开页面不会执行。
+					117 text 当前没有领域候选。
+				118 button (collapsed) 整次撤回草稿结果, Secondary Actions: Expand
+					119 text 整次撤回草稿结果
+				85 heading 我的运行历史, Value: 3
+					86 text 我的运行历史
+				87 checkbox Synthetic whole-run revert history 已形成部分结果 · 10/16/2026, 4:32:48 PM, Value: 1
+					88 text Synthetic whole-run revert history
+					89 container
+						90 text 已形成部分结果  ·  10/16/2026, 4:32:48 PM
+
+The focused UI element is 1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3051/?area=category&category=fbf3b883-7fe6-448b-bafd-0e0f429b97bb

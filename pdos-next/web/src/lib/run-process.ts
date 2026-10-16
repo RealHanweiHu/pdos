@@ -9,6 +9,7 @@ export type RunProcessData = {
   next_receipt_cursor: string | null; steps: ProcessStep[]; next_before: number | null;
 };
 const skills: Record<string, string> = { public_research: "公开研究", category_framing: "品类边界", proposal_drafting: "提案起草", rfq_extraction: "客户需求提取", competitor_comparison: "竞品对比", price_band: "价格带分析", review_pain_clustering: "用户痛点归纳", jtbd: "用户任务分析", option_comparison: "方案比较", opportunity_scoring: "机会评估", derivative_diff: "派生差异", gap_check: "缺口核对" };
+export function usedSkillName(key: string): string { return skills[key] ?? key; }
 export function actionLabel(tool: string | null): string {
   if (!tool) return "已登记处理步骤";
   if (tool === "mcp.tools.list") return "核对已授权的外部工具";

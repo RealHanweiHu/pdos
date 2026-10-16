@@ -1,0 +1,129 @@
+Browser tab: 13, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3051/?area=work".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3051/?area=work
+	2 container
+		3 link Description: 跳到工作内容, Value: 127.0.0.1:3051/?area=work#workspace-content
+		425 button 打开导航
+			426 image
+		22 text PDOS
+		23 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			24 image
+		26 checkbox Description: 小Pai 工作栏, Value: 1
+			27 image
+		28 button 切换明暗主题
+			427 image
+		30 container workspace-content
+			323 heading 我的工作, Value: 1
+				324 text 我的工作
+			325 text 查看本人可见项目中的未决事项，接续需要答复的工作与最近运行。
+			326 button 刷新
+				327 image
+				328 text 刷新
+			329 button 打开小Pai
+				330 image
+				331 text 打开小Pai
+			332 container
+				333 text 项目资料读取于  10/16/2026, 4:41:20 PM
+			334 container 待答复
+				335 heading 等待你的答复, Value: 2
+					336 text 等待你的答复
+				337 text 1  项
+				338 text 合成联验：无模型版本的个人反馈
+				339 container
+					340 text 个人  ·  10/16/2026, 4:32:50 PM
+				341 button 去答复
+			342 container 我的未决事项
+				343 container
+					344 heading 未决事项, Value: 2
+						345 text 未决事项
+					346 text 0 项
+				347 text 当前没有指派给你的未决任务或风险。立项 G0 批准后，处置事项会按负责人出现在这里。
+			348 container 我的运行
+				349 container
+					350 heading 最近运行, Value: 2
+						351 text 最近运行
+					352 text 2 次
+				353 text 合成联验：无模型版本的个人反馈
+				354 container
+					355 text 等待你的答复  ·  个人  ·  10/16/2026, 4:32:50 PM
+				356 button 查看
+				357 text Synthetic whole-run revert history
+				358 container
+					359 text 已形成部分结果  ·  工作反馈联验  ·  10/16/2026, 4:32:48 PM
+				360 button 查看
+			361 container 可见项目
+				362 heading 可见项目, Value: 2
+					363 text 可见项目
+				364 text 没有可见项目。立项提案经具名 G0 批准后建立项目；也可在产品品类工作区先起草提案。
+		73 container 小Pai 工作栏
+			74 text 小Pai
+			75 text 个人工作（跨品类）
+			76 button 关闭小Pai 工作栏
+				77 image
+			365 container 个人小 Pai
+				366 heading 个人小 Pai · 建立新品类, Value: 2
+					367 text 个人小 Pai · 建立新品类
+				368 text 描述品类用途，让小 Pai 准备公开研究与初始材料。执行需要已配置的模型和运行授权；缺少配置时会显示实际错误。建立品类仍需你逐组核对并确认。
+				369 container
+					370 text 要研究和建立什么品类？
+					371 text entry area (settable) 要研究和建立什么品类？
+					372 button (disabled) 保存并启动个人任务
+				373 button (collapsed) 个人任务记录, Secondary Actions: Expand
+					374 text 个人任务记录
+				375 heading 等待你的答复, Value: 3
+					376 text 等待你的答复
+				377 container
+					378 text 执行未完成： SOURCE_UNAVAILABLE 。请检查模型配置、权限或执行服务后再继续。
+				379 container 小Pai处理过程
+					380 text 处理过程 从受理起（含等待） 9 分 1 秒
+					381 text 等待执行条件恢复
+					382 container
+						383 text 已保存  0  次处理 · 已提交  0  条动作
+					384 button (collapsed) 查看步骤、依据与提交记录, Secondary Actions: Expand
+						385 text 查看步骤、依据与提交记录
+				391 container
+					392 button (expanded) 反馈这次工作, Secondary Actions: Collapse
+						393 text 反馈这次工作
+					394 text 反馈只保存在本次工作中，关联原方法和模型版本。若要立即停止后续执行，请使用取消。 反馈已保存，记录 b974b793-e323-4677-b46e-255facaf3bd0。
+					395 button 读取原反馈记录
+					396 container
+						397 container 哪里需要改进？（可多选）
+							398 text 哪里需要改进？（可多选）
+							399 container
+								400 checkbox (settable, integer) Description: 对象错误, Value: 0
+								401 text 对象错误
+							402 container
+								403 checkbox (settable, integer) Description: 数值错误, Value: 0
+								404 text 数值错误
+							405 container
+								406 checkbox (settable, integer) Description: 缺少来源, Value: 0
+								407 text 缺少来源
+							408 container
+								409 checkbox (settable, integer) Description: 没有帮助, Value: 0
+								410 text 没有帮助
+							411 container
+								412 checkbox (settable, integer) Description: 操作过多, Value: 0
+								413 text 操作过多
+							414 container
+								415 checkbox (settable, integer) Description: 不应自动执行, Value: 0
+								416 text 不应自动执行
+						417 text 针对哪种方法
+						418 pop up button (collapsed, settable) 针对哪种方法, Value: 本次工作整体, Secondary Actions: Expand
+							419 menu
+								420 (selected) 本次工作整体
+						421 text 补充说明（可选）
+						422 text entry area (settable) 补充说明（可选）
+						423 button (disabled) 保存本次反馈
+					424 text 本次尚无模型执行版本。 反馈不改变业务决定或资格。
+					428 text 没有帮助
+					429 text 合成联验：模型未配置时保持明确失能，反馈记录不得补造模型版本。
+					430 container
+						431 text 10/16/2026, 4:41:46 PM  ·  本次尚无模型执行版本
+					432 container
+						433 button (expanded) 所针对的方法与记录, Secondary Actions: Collapse
+							434 text 所针对的方法与记录
+						435 text 反馈记录  b974b793-e323-4677-b46e-255facaf3bd0 本次尚无实际加载的方法。
+				388 button 刷新实际结果
+				389 button 取消后续执行
+				390 text 此运行尚无可采用的品类候选。
+
+The focused UI element is 433 button (expanded) 所针对的方法与记录, Secondary Actions: Collapse
