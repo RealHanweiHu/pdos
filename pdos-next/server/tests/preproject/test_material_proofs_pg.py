@@ -3,6 +3,8 @@
 
 from contextlib import contextmanager
 from copy import deepcopy
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
+
 from uuid import UUID, uuid4
 
 import pytest
@@ -63,6 +65,9 @@ def material_command(work, monkeypatch, operation):
         }
         ledger.qualification.skill_key = skill.key
         ledger.qualification.qualified_skill_version = skill.version
+        ledger.qualification.qualified_skill_digest = skill.digest
+        ledger.qualification.qualified_tool_digest = tool_identity(skill, ledger.registry)
+        ledger.qualification.qualified_model_digest = model_identity(ledger.route)
         return ledger
 
     # Administrative access is confined to the existing synthetic ledger bootstrap.
@@ -388,6 +393,9 @@ def t0_material_fixture(work, monkeypatch, arguments, *, private_context=False):
         }
         ledger.qualification.skill_key = skill.key
         ledger.qualification.qualified_skill_version = skill.version
+        ledger.qualification.qualified_skill_digest = skill.digest
+        ledger.qualification.qualified_tool_digest = tool_identity(skill, ledger.registry)
+        ledger.qualification.qualified_model_digest = model_identity(ledger.route)
         ledger.scope = replace(ledger.scope, private_context=private_context)
         ledger.run.private_context = private_context
         return ledger

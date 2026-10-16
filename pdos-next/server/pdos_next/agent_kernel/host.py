@@ -69,12 +69,21 @@ class BoundHost:
         if route is None:
             return False
         with self.store.transaction(scope) as (session, run):
-            if (
-                route.version != run.versions.get("model_version")
-                or route.digest != run.versions.get("model_route_digest")
-            ):
+            if route.version != run.versions.get(
+                "model_version"
+            ) or route.digest != run.versions.get("model_route_digest"):
                 raise DomainError("VERSION_CONFLICT", "原模型输出不能使用其他模型的资格。")
-            return policy.qualified(session, scope, skill, run.versions["model_version"])
+            from .qualification_binding import model_identity, tool_identity
+            from .tools import default_registry
+
+            return policy.qualified(
+                session,
+                scope,
+                skill,
+                run.versions["model_version"],
+                model_digest=model_identity(route),
+                tool_digest=tool_identity(skill, self.adapters.tool_registry or default_registry()),
+            )
 
     def model(self, scope, **kwargs):
         return self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)

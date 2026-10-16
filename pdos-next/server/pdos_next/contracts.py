@@ -121,6 +121,11 @@ from pdos_next.agent_kernel.skill_management import EnableSkill  # noqa: E402
 
 PAYLOADS["ai.skill.enable"] = EnableSkill
 
+from pdos_next.agent_kernel.skill_qualification import QualifySkill, RecordReviews  # noqa: E402
+
+PAYLOADS["ai.skill.qualify"] = QualifySkill
+PAYLOADS["ai.skill.review.record"] = RecordReviews
+
 from pdos_next.agent_kernel.budget_management import ConfigureBudget  # noqa: E402
 
 PAYLOADS["ai.budget.configure"] = ConfigureBudget

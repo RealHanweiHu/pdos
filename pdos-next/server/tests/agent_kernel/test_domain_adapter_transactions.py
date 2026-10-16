@@ -23,6 +23,7 @@ from pdos_next.models import Artifact, Audit, Claim, Grant, Outbox, Receipt, Req
 from pdos_next.safety import verify_test_target
 from pdos_next.service import digest, execute
 from tests.agent_kernel.test_execution_binding import ledger
+from pdos_next.agent_kernel.qualification_binding import tool_identity
 
 
 def fixture(setup, *, artifact_id=None, proposal_id=None, skill_key="public_research"):
@@ -112,6 +113,8 @@ def fixture(setup, *, artifact_id=None, proposal_id=None, skill_key="public_rese
     f.source = WriteSource(skill=bound, model_call_id=model.id, response_index=0)
     f.qualification.tenant_id, f.qualification.skill_key = setup.tenant, skill.key
     f.qualification.qualified_skill_version = skill.version
+    f.qualification.qualified_skill_digest = skill.digest
+    f.qualification.qualified_tool_digest = tool_identity(skill, f.registry)
     f.qualification.reviewed_by = setup.human
     with tenant_session(
         setup.admin,

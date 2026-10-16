@@ -3,6 +3,8 @@
 
 from copy import deepcopy
 from types import SimpleNamespace
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
+
 from uuid import UUID, uuid4
 
 import pytest
@@ -78,6 +80,9 @@ def drafting_model_source(work, fixture, arguments):
                     qualification_revoked=False,
                     qualified_skill_version=skill.version,
                     qualified_model_version=fixture.route.version,
+                    qualified_skill_digest=skill.digest,
+                    qualified_tool_digest=tool_identity(skill, fixture.registry),
+                    qualified_model_digest=model_identity(fixture.route),
                     review_case_refs=[str(uuid4()) for _ in range(10)],
                     reviewed_by=work.human,
                     reviewed_at=now(),

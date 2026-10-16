@@ -196,15 +196,38 @@ class TenantSkillEnablement(KernelRow, Base):
     enabled: Mapped[bool] = mapped_column(Boolean, default=False)
     pilot: Mapped[bool] = mapped_column(Boolean, default=False)
     qualified_skill_version: Mapped[str | None] = mapped_column(String(160))
-    qualified_model_version: Mapped[str | None] = mapped_column(String(160))
+    qualified_model_version: Mapped[str | None] = mapped_column(String(200))
     review_case_refs: Mapped[list] = mapped_column(JSONB, default=list)
     reviewed_by: Mapped[UUID | None]
     reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     qualification_revoked: Mapped[bool] = mapped_column(Boolean, default=False)
+    qualified_skill_digest: Mapped[str | None] = mapped_column(String(64))
+    qualified_tool_digest: Mapped[str | None] = mapped_column(String(64))
+    qualified_model_digest: Mapped[str | None] = mapped_column(String(64))
+    qualification_id: Mapped[UUID | None]
+    quality_paused: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
+    quality_paused_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    quality_review_id: Mapped[UUID | None]
     revision: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     receipt_id: Mapped[UUID | None]
     __table_args__ = (
         UniqueConstraint("tenant_id", "skill_key"),
+        ForeignKeyConstraint(
+            ["tenant_id", "qualification_id"],
+            ["agent_skill_qualifications.tenant_id", "agent_skill_qualifications.id"],
+            name="skill_qualification_fk",
+            deferrable=True,
+            initially="DEFERRED",
+            use_alter=True,
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "quality_review_id"],
+            ["agent_skill_review_batches.tenant_id", "agent_skill_review_batches.id"],
+            name="skill_quality_review_fk",
+            deferrable=True,
+            initially="DEFERRED",
+            use_alter=True,
+        ),
         ForeignKeyConstraint(
             ["tenant_id", "receipt_id"],
             ["action_receipts.tenant_id", "action_receipts.id"],
@@ -269,8 +292,10 @@ class PublicWebSnapshot(KernelRow, Base):
             ["tenant_id", "registered_by_run_id"], ["agent_runs.tenant_id", "agent_runs.id"]
         ),
         ForeignKeyConstraint(
-            ["tenant_id", "receipt_id"], ["action_receipts.tenant_id", "action_receipts.id"],
-            deferrable=True, initially="DEFERRED",
+            ["tenant_id", "receipt_id"],
+            ["action_receipts.tenant_id", "action_receipts.id"],
+            deferrable=True,
+            initially="DEFERRED",
         ),
     )
 
@@ -325,3 +350,82 @@ class ValidationBudget(KernelRow, Base):
         Index("ix_agent_budget_active", "tenant_id", "requester_id", "id",
               postgresql_where=text("active IS TRUE")),
     )
+
+
+class TenantPilotAdmission(Base):
+    __tablename__ = "tenant_pilot_admissions"
+    tenant_id: Mapped[UUID] = mapped_column(primary_key=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
+    approval_reference: Mapped[str] = mapped_column(String(2000))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class SkillReviewBatch(KernelRow, Base):
+    __tablename__ = "agent_skill_review_batches"
+    reviewed_by: Mapped[UUID]
+    skill_key: Mapped[str] = mapped_column(String(160))
+    skill_version: Mapped[str] = mapped_column(String(160))
+    skill_digest: Mapped[str] = mapped_column(String(64))
+    tool_digest: Mapped[str] = mapped_column(String(64))
+    model_version: Mapped[str] = mapped_column(String(200))
+    model_digest: Mapped[str] = mapped_column(String(64))
+    model_label: Mapped[str] = mapped_column(String(200))
+    cases: Mapped[list] = mapped_column(JSONB)
+    receipt_id: Mapped[UUID]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "reviewed_by"], ["principals.tenant_id", "principals.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"],
+            ["action_receipts.tenant_id", "action_receipts.id"],
+            name="skill_review_receipt_fk",
+            deferrable=True,
+            initially="DEFERRED",
+            use_alter=True,
+        ),
+        Index(
+            "ix_skill_reviews_owner", "tenant_id", "reviewed_by", "skill_key", "created_at", "id"
+        ),
+    )
+
+    @property
+    def revision(self):
+        return 1
+
+    @property
+    def status(self):
+        return "reviewed"
+
+
+class SkillQualification(KernelRow, Base):
+    __tablename__ = "agent_skill_qualifications"
+    decided_by: Mapped[UUID]
+    skill_key: Mapped[str] = mapped_column(String(160))
+    decision: Mapped[str] = mapped_column(String(16))
+    reason: Mapped[str] = mapped_column(String(4000))
+    after_snapshot: Mapped[dict] = mapped_column(JSONB)
+    receipt_id: Mapped[UUID]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "decided_by"], ["principals.tenant_id", "principals.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"],
+            ["action_receipts.tenant_id", "action_receipts.id"],
+            name="skill_decision_receipt_fk",
+            deferrable=True,
+            initially="DEFERRED",
+            use_alter=True,
+        ),
+    )
+
+    @property
+    def revision(self):
+        return 1
+
+    @property
+    def status(self):
+        return "qualified" if self.decision == "批准" else "revoked"

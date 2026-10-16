@@ -1,0 +1,134 @@
+{
+  "target": "verified independent 64245/pdos_test",
+  "head": "s0_0769",
+  "receipts": [
+    {
+      "id": "cded30ec-5391-47d6-b9ee-216c5efefdc5",
+      "operation": "ai.skill.review.record",
+      "result": {
+        "id": "b5a41c26-f801-4a3b-9fd8-75e1bffadcea",
+        "status": "reviewed",
+        "revision": 1,
+        "skill_key": "public_research",
+        "case_count": 9,
+        "quality_paused": false
+      },
+      "atom_counts": {
+        "audit_entries": 1,
+        "outbox_events": 1
+      }
+    },
+    {
+      "id": "bae7bbb3-3ef4-4fdc-b944-6f9b31d639e9",
+      "operation": "ai.skill.review.record",
+      "result": {
+        "id": "2238ee8b-715c-4ccf-8b20-1c7e48595948",
+        "status": "reviewed",
+        "revision": 1,
+        "skill_key": "public_research",
+        "case_count": 1,
+        "quality_paused": false
+      },
+      "atom_counts": {
+        "audit_entries": 1,
+        "outbox_events": 1
+      }
+    },
+    {
+      "id": "6c653d00-33a9-40fe-a3fb-e65ffe139a2e",
+      "operation": "ai.skill.qualify",
+      "result": {
+        "id": "018cfefa-657e-444a-8e53-6b196473f65e",
+        "status": "qualified",
+        "binding": {
+          "pilot": true,
+          "revision": 2,
+          "reviewed_by": "f3584118-b44c-4bae-806e-23010b47e6f0",
+          "quality_paused": false,
+          "qualification_id": "018cfefa-657e-444a-8e53-6b196473f65e",
+          "review_case_refs": [
+            "2238ee8b-715c-4ccf-8b20-1c7e48595948:0",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:0",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:1",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:2",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:3",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:4",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:5",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:6",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:7",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:8"
+          ],
+          "quality_paused_at": null,
+          "quality_review_id": null,
+          "qualification_revoked": false,
+          "qualified_tool_digest": "2802d599ffc85393aaa2f7b5954cc0fd7ee663d4e8ab400e64f3623310da3204",
+          "qualified_model_digest": "92bec25532c728d712418277e06248e1f1fe12b30a5f9a9ab5e1eae48c8c1d2d",
+          "qualified_skill_digest": "02c9d49a9782653a146d7fbfcd158a2219f4b1ca7c9fe05bd1a102dd6d6e541f",
+          "qualified_model_version": "synthetic@1",
+          "qualified_skill_version": "0.2.1-draft"
+        },
+        "decision": "批准",
+        "revision": 1,
+        "skill_key": "public_research",
+        "case_count": 10,
+        "next_revision": 2
+      },
+      "atom_counts": {
+        "audit_entries": 1,
+        "outbox_events": 1
+      }
+    },
+    {
+      "id": "2230d7ae-ce41-4be1-9924-1f28e7e5eff7",
+      "operation": "ai.skill.qualify",
+      "result": {
+        "id": "2837ba6c-d2d0-4370-8fa6-81546a399f7a",
+        "status": "revoked",
+        "binding": {
+          "pilot": true,
+          "revision": 3,
+          "reviewed_by": "f3584118-b44c-4bae-806e-23010b47e6f0",
+          "quality_paused": false,
+          "qualification_id": "2837ba6c-d2d0-4370-8fa6-81546a399f7a",
+          "review_case_refs": [
+            "2238ee8b-715c-4ccf-8b20-1c7e48595948:0",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:0",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:1",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:2",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:3",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:4",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:5",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:6",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:7",
+            "b5a41c26-f801-4a3b-9fd8-75e1bffadcea:8"
+          ],
+          "quality_paused_at": null,
+          "quality_review_id": null,
+          "qualification_revoked": true,
+          "qualified_tool_digest": "2802d599ffc85393aaa2f7b5954cc0fd7ee663d4e8ab400e64f3623310da3204",
+          "qualified_model_digest": "92bec25532c728d712418277e06248e1f1fe12b30a5f9a9ab5e1eae48c8c1d2d",
+          "qualified_skill_digest": "02c9d49a9782653a146d7fbfcd158a2219f4b1ca7c9fe05bd1a102dd6d6e541f",
+          "qualified_model_version": "synthetic@1",
+          "qualified_skill_version": "0.2.1-draft"
+        },
+        "decision": "撤销",
+        "revision": 1,
+        "skill_key": "public_research",
+        "case_count": 10,
+        "next_revision": 3
+      },
+      "atom_counts": {
+        "audit_entries": 1,
+        "outbox_events": 1
+      }
+    }
+  ],
+  "review_batches": 2,
+  "case_count": 10,
+  "qualification_records": 2,
+  "skill_revision": 3,
+  "revoked": true,
+  "real_model_calls": 0,
+  "real_tenant_admissions": 0,
+  "real_qualifications": 0
+}

@@ -37,6 +37,8 @@ def engines():
 
 @pytest.fixture
 def setup(engines):
+    from pdos_next.agent_kernel.models import TenantPilotAdmission
+
     admin, app, auth = engines
     tenant, human, peer, agent, other_tenant, other_human = (uuid4() for _ in range(6))
     category, product = uuid4(), uuid4()
@@ -53,6 +55,7 @@ def setup(engines):
             ]
         )
         s.flush()
+        s.add(TenantPilotAdmission(tenant_id=tenant, active=True, approval_reference="isolated synthetic test only"))
         s.add(
             Category(
                 id=category,

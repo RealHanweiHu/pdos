@@ -4,6 +4,8 @@
 import json
 from dataclasses import replace
 from types import SimpleNamespace
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
+
 from uuid import UUID, uuid4
 
 import pytest
@@ -67,6 +69,9 @@ def bound(work, *, human=False):
                     pilot=True,
                     qualified_skill_version=skill.version,
                     qualified_model_version=route.version,
+                    qualified_skill_digest=skill.digest,
+                    qualified_tool_digest=tool_identity(skill, owner.registry),
+                    qualified_model_digest=model_identity(route),
                     reviewed_by=work.human,
                     reviewed_at=now(),
                     qualification_revoked=human,

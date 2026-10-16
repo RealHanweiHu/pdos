@@ -78,18 +78,29 @@ def skill_enabled(session, scope, skill):
     return bool(row and row.enabled)
 
 
-def qualified(session, scope, skill, model_version, *, lock=False):
+def qualified(
+    session, scope, skill, model_version, *, model_digest=None, tool_digest=None, lock=False
+):
+    from .skill_qualification import is_pilot
+
     query = select(TenantSkillEnablement).where(
-            TenantSkillEnablement.tenant_id == scope.tenant_id,
-            TenantSkillEnablement.skill_key == skill.key,
-        )
+        TenantSkillEnablement.tenant_id == scope.tenant_id,
+        TenantSkillEnablement.skill_key == skill.key,
+    )
     query = query.execution_options(populate_existing=True)
     row = session.scalar(query.with_for_update() if lock else query)
     # A case list is evidence of the user's review, never automatically created by the Agent.
     return bool(
         row
         and row.enabled
+        and is_pilot(session, scope.tenant_id, lock=lock)
         and row.pilot
+        and not row.quality_paused
+        and row.qualified_skill_digest == skill.digest
+        and model_digest is not None
+        and row.qualified_model_digest == model_digest
+        and tool_digest is not None
+        and row.qualified_tool_digest == tool_digest
         and not row.qualification_revoked
         and row.qualified_skill_version == skill.version
         and row.qualified_model_version == model_version

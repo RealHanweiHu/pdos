@@ -6,6 +6,8 @@ EvidenceLinks and receipts come from normal HTTP or the registered command port.
 
 from copy import deepcopy
 from types import SimpleNamespace
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
+
 from uuid import UUID, uuid4
 
 import pytest
@@ -76,6 +78,9 @@ def actual_model(setup, fixture, operation, arguments, *, skill_key="gap_check")
                         qualification_revoked=False,
                         qualified_skill_version=skill.version,
                         qualified_model_version=fixture.route.version,
+                        qualified_skill_digest=skill.digest,
+                        qualified_tool_digest=tool_identity(skill, fixture.registry),
+                        qualified_model_digest=model_identity(fixture.route),
                         review_case_refs=deepcopy(template.review_case_refs),
                         reviewed_by=setup.human,
                         reviewed_at=template.reviewed_at,

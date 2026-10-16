@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ConnectedSkillQualification } from "./skill-qualification";
 import { Button } from "@/components/ui/button";
 import { matchSkillReceipt, parseSkillPending, skillPendingKey, skillTitle, type AgentSkill, type SkillCommand, type SkillPreview, type SkillReading, type SkillReceipt } from "@/lib/agent-skills";
 import { proofClockCurrent } from "@/lib/proof-clock";
@@ -96,7 +97,7 @@ export function ConnectedAgentSkills({ api, principalId, categoryId }: { api: Wo
     catch { if (epoch.current === current) setError("已取得技能变更回执，当前列表读取失败，请刷新。"); }
   }
   const disabled = busy || !reading?.can_edit || !!preview || !!pending || broken;
-  return <section aria-label="租户技能包" className="space-y-4 rounded-lg border border-border p-4 sm:p-5">
+  return <><section aria-label="租户技能包" className="space-y-4 rounded-lg border border-border p-4 sm:p-5">
     <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-semibold">租户技能包</h2><Button variant="outline" disabled={busy} onClick={() => void run(async current => { await load(current); })}>刷新技能状态</Button></div>
     <p className="text-sm text-muted-foreground">技能启用状态在当前租户所有品类共用，由管理员核对后一次确认。启用只开放该能力，不授予自动写入资格；实际调用仍核对当前权限、协议、资格和预算。</p>
     {error && <p role="alert" className="break-words text-sm text-destructive">{error}</p>}
@@ -124,5 +125,7 @@ export function ConnectedAgentSkills({ api, principalId, categoryId }: { api: Wo
       })}>核对并重试原技能请求</Button>
     </section>}
     {broken && <Button variant="outline" className="h-auto whitespace-normal" disabled={busy || !reading} onClick={() => { try { localStorage.removeItem(key); setBroken(false); setError(""); } catch { setError("本地恢复记录暂时无法移除。"); } }}>已核对当前状态，移除损坏的恢复记录</Button>}
-  </section>;
+  </section>
+    {reading && <ConnectedSkillQualification api={api} principalId={principalId} categoryId={categoryId} catalog={reading} onUpdated={() => load(epoch.current)} />}
+  </>;
 }

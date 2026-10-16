@@ -153,6 +153,10 @@ def test_checkpoint_restore_rejects_skill_drift_before_another_model_turn(change
     assert error.value.code == "VERSION_CONFLICT" and not host.prefixes and not host.writes
 
 
+from pdos_next.agent_kernel.models import TenantPilotAdmission
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
+
+
 class LedgerSession:
     """In-memory Session port double; deliberately provides no commit/transaction API."""
     def __init__(self, actual, run, model, event, qualification):
@@ -164,9 +168,13 @@ class LedgerSession:
         self.flushes = 0
 
     def get(self, model, identity):
+        if model is TenantPilotAdmission:
+            return SimpleNamespace(active=True)
         return self.rows.get((model, identity))
 
-    def scalar(self, query):
+    def scalar(self, query, params=None):
+        if str(query).startswith("SELECT kernel_pilot_active"):
+            return True
         entity = query.column_descriptions[0]["entity"]
         if entity is AgentToolCall:
             return self.domain
@@ -188,7 +196,7 @@ def ledger():
     skill = catalog._skills["proposal_drafting"]
     bound = SkillBinding(key=skill.key, version=skill.version, digest=skill.digest,
                          load_event_id=uuid4())
-    route = SimpleNamespace(version="synthetic@1", digest=digest("synthetic route"))
+    route = SimpleNamespace(version="synthetic@1", digest=digest("synthetic route"), protocol="openai-compatible", base_url="https://synthetic.invalid/v1", model="synthetic-model")
     spec, arguments = registry.get("proposal.item.patch"), {"text": "draft"}
     model_binding = ModelBinding(
         model_version=route.version, model_route_digest=route.digest,
@@ -217,7 +225,9 @@ def ledger():
     qualification = TenantSkillEnablement(
         id=uuid4(), tenant_id=actual.tenant_id, skill_key=skill.key, enabled=True, pilot=True,
         qualification_revoked=False, qualified_skill_version=skill.version,
-        qualified_model_version=route.version, review_case_refs=[str(uuid4()) for _ in range(10)],
+        qualified_model_version=route.version, qualified_skill_digest=skill.digest,
+        qualified_tool_digest=tool_identity(skill, registry), qualified_model_digest=model_identity(route), quality_paused=False,
+        review_case_refs=[str(uuid4()) for _ in range(10)],
         reviewed_by=actual.requester_id, reviewed_at=now(),
     )
     f = SimpleNamespace(

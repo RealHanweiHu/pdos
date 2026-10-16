@@ -3,6 +3,8 @@
 
 from copy import copy, deepcopy
 from dataclasses import replace
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
+
 from uuid import UUID, uuid4
 
 import pytest
@@ -123,6 +125,9 @@ def claim_fixture(
         }
         ledger.qualification.skill_key = skill.key
         ledger.qualification.qualified_skill_version = skill.version
+        ledger.qualification.qualified_skill_digest = skill.digest
+        ledger.qualification.qualified_tool_digest = tool_identity(skill, ledger.registry)
+        ledger.qualification.qualified_model_digest = model_identity(ledger.route)
         ledger.scope = replace(ledger.scope, private_context=private_context)
         ledger.run.private_context = private_context
         ledger.run.read_sources = [

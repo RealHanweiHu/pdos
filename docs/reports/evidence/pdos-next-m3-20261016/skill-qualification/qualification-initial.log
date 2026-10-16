@@ -1,0 +1,14 @@
+ImportError while loading conftest '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/conftest.py'.
+tests/conftest.py:11: in <module>
+    from pdos_next.agent_kernel.models import TenantPilotAdmission
+pdos_next/agent_kernel/models.py:22: in <module>
+    from pdos_next.models import Base
+pdos_next/models.py:1132: in <module>
+    import pdos_next.domain.preproject.category_models  # noqa: E402,F401
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/preproject/category_models.py:20: in <module>
+    from .models import category_fk, principal_fk
+pdos_next/domain/preproject/models.py:18: in <module>
+    from pdos_next.agent_kernel.models import AgentRun  # noqa: F401 -- lazy FK metadata
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ImportError: cannot import name 'AgentRun' from partially initialized module 'pdos_next.agent_kernel.models' (most likely due to a circular import) (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/models.py)

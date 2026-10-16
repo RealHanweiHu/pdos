@@ -4,6 +4,8 @@
 import hashlib
 from dataclasses import replace
 from types import SimpleNamespace
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
+
 from uuid import UUID, uuid4
 
 import pytest
@@ -347,6 +349,10 @@ def test_registered_graph_records_new_claim_adopts_it_and_finishes_without_new_r
     )
     skill = f.owner.catalog._skills["proposal_drafting"]
     with Session(work.admin) as session, session.begin():
+        # The synthetic model route changed above; pin that actual quality identity too.
+        prior = session.get(TenantSkillEnablement, f.qualification.id)
+        prior.qualified_model_digest = model_identity(route)
+        prior.qualified_model_version = route.version
         session.add(
             TenantSkillEnablement(
                 tenant_id=work.tenant,
@@ -355,6 +361,9 @@ def test_registered_graph_records_new_claim_adopts_it_and_finishes_without_new_r
                 pilot=True,
                 qualified_skill_version=skill.version,
                 qualified_model_version=route.version,
+                qualified_skill_digest=skill.digest,
+                qualified_tool_digest=tool_identity(skill, f.owner.registry),
+                qualified_model_digest=model_identity(route),
                 reviewed_by=work.human,
                 reviewed_at=now(),
                 review_case_refs=["synthetic-review-" + str(i) for i in range(10)],

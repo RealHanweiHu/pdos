@@ -569,3 +569,19 @@ test("项目计划直达保留品类、型号和具体项目，只允许无额�
   assert.equal((await invalid.send(`${base}/projects/not-a-project`)).response.status, 404);
   assert.equal(invalid.calls.length, 0);
 });
+
+test("案例审阅按明确技能读取并用完整原请求只读恢复", async () => {
+  const h = harness();
+  assert.equal((await h.send("v1/agent-skill-qualification", { query: "skill_key=public_research" })).response.status, 200);
+  assert.equal(h.calls[0].url, `http://synthetic-api.invalid/v1/categories/${category}/agent-skill-qualification?skill_key=public_research`);
+  const body = JSON.stringify({ operation: "ai.skill.qualify", payload: { decision: "撤销" } });
+  assert.equal((await h.send("v1/agent-skill-qualification/recover", { method: "POST", body })).response.status, 200);
+  assert.equal(h.calls.at(-1)?.init.body, body);
+});
+test("审阅入口拒绝伪造人和租户范围以及重复或不明确选择", async () => {
+  for (const [path, options, status] of [
+    ["v1/agent-skill-qualification", {}, 422], ["v1/agent-skill-qualification", { query: "skill_key=public_research&reviewed_by=forged" }, 422],
+    ["v1/agent-skill-qualification", { query: "skill_key=a&skill_key=b" }, 422], ["v1/agent-skill-qualification", { query: "skill_key=a&cursor=bad" }, 422],
+    ["v1/agent-skill-qualification", { unscoped: true, query: "skill_key=a" }, 404], ["v1/agent-skill-qualification/recover", {}, 405],
+  ] as const) { const h = harness(); assert.equal((await h.send(path, options)).response.status, status); assert.equal(h.calls.length, 0); }
+});

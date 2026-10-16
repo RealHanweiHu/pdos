@@ -6,6 +6,8 @@ qualification is made, and all commands use the registered domain execution port
 
 from copy import deepcopy
 from dataclasses import replace
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
+
 from uuid import uuid4
 
 import pytest
@@ -88,6 +90,9 @@ def agent_fixture(
     }
     fixture.qualification.skill_key = skill.key
     fixture.qualification.qualified_skill_version = skill.version
+    fixture.qualification.qualified_skill_digest = skill.digest
+    fixture.qualification.qualified_tool_digest = tool_identity(skill, fixture.registry)
+    fixture.qualification.qualified_model_digest = model_identity(fixture.route)
     fixture.qualification.reviewed_by = setup.human
     fixture.model.tenant_id = fixture.event.tenant_id = fixture.qualification.tenant_id = (
         setup.tenant

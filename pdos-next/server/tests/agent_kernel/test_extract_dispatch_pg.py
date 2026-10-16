@@ -3,6 +3,8 @@
 
 import json
 from datetime import timedelta
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
+
 from uuid import UUID, uuid4
 
 import pytest
@@ -159,6 +161,9 @@ def fixture(
                     qualification_revoked=False,
                     qualified_skill_version=skill.version,
                     qualified_model_version=route.version,
+                    qualified_skill_digest=skill.digest,
+                    qualified_tool_digest=tool_identity(skill, owner.registry),
+                    qualified_model_digest=model_identity(route),
                     reviewed_by=work.human,
                     reviewed_at=now(),
                     review_case_refs=[f"synthetic-reviewed-case-{index}" for index in range(10)],

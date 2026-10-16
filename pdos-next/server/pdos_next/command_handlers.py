@@ -3,7 +3,9 @@
 CATEGORY_OPERATIONS = frozenset(
     {
         "model.configuration.save",
+        "ai.skill.qualify",
         "ai.skill.enable",
+        "ai.skill.review.record",
         "ai.budget.configure",
         "evidence.artifact.register",
         "evidence.original.withdraw",
@@ -32,6 +34,7 @@ CATEGORY_OPERATIONS = frozenset(
 
 T2_OPERATIONS = frozenset(
     {
+        "ai.skill.qualify",
         "change.order.approve",
         "proposal.g0.decide",
         "change.selection.decide",
@@ -48,6 +51,7 @@ T1_OPERATIONS = frozenset(
     {
         "platform.link.create",
         "ai.skill.enable",
+        "ai.skill.review.record",
         "ai.budget.configure",
         "model.configuration.save",
         "ai.run.revert",
@@ -126,6 +130,10 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation in {"ai.skill.qualify", "ai.skill.review.record"}:
+        from pdos_next.agent_kernel import skill_qualification
+
+        return skill_qualification
     if operation == "ai.budget.configure":
         from pdos_next.agent_kernel import budget_management
 

@@ -6,6 +6,8 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from datetime import timedelta
 from pathlib import Path
+from pdos_next.agent_kernel.qualification_binding import model_identity
+
 from uuid import UUID, uuid4
 
 import httpx
@@ -45,6 +47,7 @@ def test_actual_authenticated_run_uses_temporal_graph_and_common_claim_owner(
 
         qualification = session.get(TenantSkillEnablement, f.qualification.id)
         qualification.qualified_model_version = f.route.version if qualified else None
+        qualification.qualified_model_digest = model_identity(f.route) if qualified else None
 
     class SyntheticClient:
         def __init__(self):

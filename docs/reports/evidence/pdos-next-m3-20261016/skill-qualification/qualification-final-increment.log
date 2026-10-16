@@ -1,0 +1,87 @@
+..............F..F
+=================================== FAILURES ===================================
+_ test_active_qualification_invalidates_on_actual_skill_tool_model_and_pilot_change _
+
+f = namespace(setup=<isolated synthetic test scope>, client=<starlette.testclient.TestClient object at 0x129d25250>, ports...None, read_tools={}, preload=None, research_service=None, research_artifacts=None, research_checkpointer_factory=None))
+
+    
+    def test_active_qualification_invalidates_on_actual_skill_tool_model_and_pilot_change(f):
+        _, _, refs = review(f)
+        confirmed(f, grant_command(f, refs))
+        assert eligible(f)
+        skill, tools = SkillCatalog().configuration("public_research"), default_registry()
+        from pdos_next.agent_kernel.skill_qualification import current_model
+    
+        with human_session(f.setup) as session:
+            metadata = current_model(session, f.setup.tenant).metadata
+            model_digest = model_identity(metadata)
+            for selected_skill, selected_tool, selected_model in (
+>               (
+                  
+                    replace(skill, content=skill.content + " changed"),
+                    tool_identity(skill, tools),
+                    model_digest,
+                ),
+                (skill, "0" * 64, model_digest),
+                (skill, tool_identity(skill, tools), "0" * 64),
+            ):
+E           NameError: name 'replace' is not defined
+
+tests/agent_kernel/test_skill_qualification.py:313: NameError
+_ test_quality_identity_excludes_credentials_and_prices_but_tracks_relevant_tool_contract _
+
+    
+    def test_quality_identity_excludes_credentials_and_prices_but_tracks_relevant_tool_contract():
+        from dataclasses import replace
+    
+        from pdos_next.agent_kernel.registry import ToolRegistry
+        from tests.agent_kernel.test_gateway import configured_route
+    
+        route = configured_route()
+>       assert model_identity(route) == model_identity(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            replace(route, configuration_digest="rotated-secret-price-config")
+        )
+
+tests/agent_kernel/test_skill_qualification.py:408: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/dataclasses.py:1588: in replace
+    return obj.__class__(**changes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:13: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = ProviderRoute(protocol='openai-compatible', base_url='https://synthetic-provider.test/v1', model='synthetic-model', ve...x_completion_tokens', timeout_seconds=30.0, response_bytes=1048576, configuration_digest='rotated-secret-price-config')
+
+    def __post_init__(self):
+        if self.protocol not in {"openai-compatible", "anthropic-native"}:
+            raise ValueError("Unsupported model protocol")
+        if not isinstance(self.api_key, SecretStr) or not self.api_key.get_secret_value():
+            raise ValueError("A server-injected model credential is required")
+        if any(ord(c) <= 32 for c in self.api_key.get_secret_value()):
+            raise ValueError("Invalid server-injected credential")
+        if any(not isinstance(v, str) or not v.strip() for v in (self.model, self.version)):
+            raise ValueError("A configured model and version are required")
+        if len(self.model) > 200 or len(self.version) > 200:
+            raise ValueError("Model configuration exceeds its bound")
+        if type(self.max_output_tokens) is not int or not 1 <= self.max_output_tokens <= 32768:
+            raise ValueError("Invalid model output limit")
+        if self.openai_output_parameter not in {"max_tokens", "max_completion_tokens"}:
+            raise ValueError("An explicit supported output parameter is required")
+        if type(self.timeout_seconds) not in {int, float} or not 1 <= self.timeout_seconds <= 90:
+            raise ValueError("Invalid provider timeout")
+        if type(self.response_bytes) is not int or not 1024 <= self.response_bytes <= 2_097_152:
+            raise ValueError("Invalid provider response bound")
+        if self.configuration_digest is not None and not re.fullmatch(
+            r"[a-f0-9]{64}", self.configuration_digest
+        ):
+>           raise ValueError("Invalid server configuration binding")
+E           ValueError: Invalid server configuration binding
+
+pdos_next/providers/types.py:52: ValueError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_skill_qualification.py::test_active_qualification_invalidates_on_actual_skill_tool_model_and_pilot_change
+FAILED tests/agent_kernel/test_skill_qualification.py::test_quality_identity_excludes_credentials_and_prices_but_tracks_relevant_tool_contract
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 2 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+2 failed, 16 passed in 55.06s

@@ -1,0 +1,7 @@
+{
+  "target": "verified independent 64245/pdos_test",
+  "head": "s0_0766",
+  "roundtrip": true,
+  "old_skill_records_preserved": true,
+  "orm_differences": []
+}

@@ -1,0 +1,17 @@
+{
+  "own_preview_ports_closed": {
+    "3050": true,
+    "8050": true
+  },
+  "own_browser_tab_closed": true,
+  "viewport_reset": true,
+  "synthetic_login_expired": true,
+  "synthetic_administrator_disabled": true,
+  "synthetic_pilot_inactive": true,
+  "main_marked_test_database_preserved": true,
+  "temporary_empty_schema_container_stopped": true,
+  "shared_temporal_and_state_services_unchanged": true,
+  "real_model_calls": 0,
+  "real_tenant_admissions": 0,
+  "real_qualifications": 0
+}

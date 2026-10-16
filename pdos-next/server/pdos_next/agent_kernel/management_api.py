@@ -144,6 +144,27 @@ def register_routes(app, engine, auth_dependency):
 
     from pdos_next.contracts import Command
 
+    @app.get("/v1/categories/{category_id}/agent-skill-qualification")
+    def qualification(
+        category_id: UUID,
+        skill_key: str = Query(min_length=1, max_length=160),
+        cursor: UUID | None = None,
+        ctx: Context = auth_dependency,
+    ):
+        from .skill_qualification import reading as qualification_reading
+
+        with scope(ctx) as session:
+            human(session, ctx)
+            return qualification_reading(session, ctx, skill_key, cursor)
+
+    @app.post("/v1/categories/{category_id}/agent-skill-qualification/recover")
+    def qualification_recover(category_id: UUID, data: Command, ctx: Context = auth_dependency):
+        from .skill_qualification import recover as qualification_receipt
+
+        with scope(ctx) as session:
+            human(session, ctx)
+            return {"receipt": qualification_receipt(session, ctx, data)}
+
     from .budget_management import BudgetPage
 
     @app.get("/v1/categories/{category_id}/agent-budgets")

@@ -14036,6 +14036,383 @@
       ],
       "title": "BaselinePayload",
       "type": "object"
+    },
+    "ai.skill.qualify": {
+      "$defs": {
+        "CaseReference": {
+          "additionalProperties": false,
+          "properties": {
+            "batch_id": {
+              "format": "uuid",
+              "title": "Batch Id",
+              "type": "string"
+            },
+            "index": {
+              "maximum": 19,
+              "minimum": 0,
+              "title": "Index",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "batch_id",
+            "index"
+          ],
+          "title": "CaseReference",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "skill_key": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Skill Key",
+          "type": "string"
+        },
+        "expected_revision": {
+          "minimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "decision": {
+          "enum": [
+            "批准",
+            "撤销"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "skill_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Skill Digest"
+        },
+        "tool_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Digest"
+        },
+        "model_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Digest"
+        },
+        "case_refs": {
+          "items": {
+            "$ref": "#/$defs/CaseReference"
+          },
+          "maxItems": 20,
+          "title": "Case Refs",
+          "type": "array"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "skill_key",
+        "expected_revision",
+        "decision",
+        "reason"
+      ],
+      "title": "QualifySkill",
+      "type": "object"
+    },
+    "ai.skill.review.record": {
+      "$defs": {
+        "ReviewCase": {
+          "additionalProperties": false,
+          "properties": {
+            "source_ref": {
+              "maxLength": 1000,
+              "minLength": 1,
+              "title": "Source Ref",
+              "type": "string"
+            },
+            "material_kind": {
+              "enum": [
+                "own",
+                "synthetic"
+              ],
+              "title": "Material Kind",
+              "type": "string"
+            },
+            "conclusion": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Conclusion",
+              "type": "string"
+            },
+            "severity": {
+              "default": "unknown",
+              "enum": [
+                "unknown",
+                "none",
+                "minor",
+                "major",
+                "critical"
+              ],
+              "title": "Severity",
+              "type": "string"
+            },
+            "criteria": {
+              "$ref": "#/$defs/ReviewCriteria"
+            }
+          },
+          "required": [
+            "source_ref",
+            "material_kind",
+            "conclusion"
+          ],
+          "title": "ReviewCase",
+          "type": "object"
+        },
+        "ReviewCriteria": {
+          "additionalProperties": false,
+          "properties": {
+            "coverage": {
+              "default": "unknown",
+              "enum": [
+                "acceptable",
+                "issues",
+                "unknown",
+                "not_applicable"
+              ],
+              "title": "Coverage",
+              "type": "string"
+            },
+            "citations": {
+              "default": "unknown",
+              "enum": [
+                "acceptable",
+                "issues",
+                "unknown",
+                "not_applicable"
+              ],
+              "title": "Citations",
+              "type": "string"
+            },
+            "units_conditions": {
+              "default": "unknown",
+              "enum": [
+                "acceptable",
+                "issues",
+                "unknown",
+                "not_applicable"
+              ],
+              "title": "Units Conditions",
+              "type": "string"
+            },
+            "unknowns": {
+              "default": "unknown",
+              "enum": [
+                "acceptable",
+                "issues",
+                "unknown",
+                "not_applicable"
+              ],
+              "title": "Unknowns",
+              "type": "string"
+            },
+            "scope": {
+              "default": "unknown",
+              "enum": [
+                "acceptable",
+                "issues",
+                "unknown",
+                "not_applicable"
+              ],
+              "title": "Scope",
+              "type": "string"
+            },
+            "length": {
+              "default": "unknown",
+              "enum": [
+                "acceptable",
+                "issues",
+                "unknown",
+                "not_applicable"
+              ],
+              "title": "Length",
+              "type": "string"
+            }
+          },
+          "title": "ReviewCriteria",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "skill_key": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Skill Key",
+          "type": "string"
+        },
+        "skill_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Skill Digest",
+          "type": "string"
+        },
+        "tool_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Tool Digest",
+          "type": "string"
+        },
+        "model_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Model Digest",
+          "type": "string"
+        },
+        "cases": {
+          "items": {
+            "$ref": "#/$defs/ReviewCase"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Cases",
+          "type": "array"
+        },
+        "personally_reviewed": {
+          "const": true,
+          "title": "Personally Reviewed",
+          "type": "boolean"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "skill_key",
+        "skill_digest",
+        "tool_digest",
+        "model_digest",
+        "cases",
+        "personally_reviewed"
+      ],
+      "title": "RecordReviews",
+      "type": "object"
+    },
+    "ai.skill.enable": {
+      "additionalProperties": false,
+      "properties": {
+        "skill_key": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Skill Key",
+          "type": "string"
+        },
+        "expected_revision": {
+          "minimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "skill_version": {
+          "anyOf": [
+            {
+              "maxLength": 160,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Skill Version"
+        },
+        "skill_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Skill Digest"
+        },
+        "enabled": {
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "skill_key",
+        "expected_revision",
+        "enabled"
+      ],
+      "title": "EnableSkill",
+      "type": "object"
     }
   },
   "scope": "implemented local domain slices; real AI qualification and formal exits are separate"

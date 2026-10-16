@@ -18,6 +18,7 @@ from pdos_next.service import Context, digest, receipt_view
 from . import policy
 from .bindings import DomainBinding, ModelBinding, SkillBinding, WriteSource, execution_key
 from .models import AgentEvent, AgentRun, AgentToolCall
+from .qualification_binding import model_identity, tool_identity
 from .types import RunScope
 
 
@@ -109,6 +110,7 @@ def qualify_command(session, ctx, operation, run):
         model_call_id=binding.model_call_id,
         response_index=binding.response_index,
     )
+    actual_route = owner.route(session, scope)
     model, skill = verify_source(
         session,
         scope,
@@ -118,7 +120,7 @@ def qualify_command(session, ctx, operation, run):
         source,
         catalog=owner.catalog,
         registry=owner.registry,
-        route=owner.route(session, scope),
+        route=actual_route,
     )
     if (
         spec.operation_key != operation
@@ -126,7 +128,15 @@ def qualify_command(session, ctx, operation, run):
         or binding.model_version != model.model_version
         or binding.model_route_digest != model.model_route_digest
         or binding.tool_definitions_digest != model.tool_definitions_digest
-        or not policy.qualified(session, scope, skill, model.model_version, lock=True)
+        or not policy.qualified(
+            session,
+            scope,
+            skill,
+            model.model_version,
+            model_digest=model_identity(actual_route),
+            tool_digest=tool_identity(skill, owner.registry),
+            lock=True,
+        )
     ):
         raise DomainError("QUALIFICATION_REQUIRED", "此技能与实际模型没有当前自动执行资格。", 403)
 
@@ -408,7 +418,15 @@ def prepare_domain_call(
             or call.execution_binding != binding
         ):
             raise DomainError("DUPLICATE_INTENT_CONFLICT", "原执行已绑定其他实质或版本。")
-    if not policy.qualified(session, scope, skill, model.model_version, lock=True):
+    if not policy.qualified(
+        session,
+        scope,
+        skill,
+        model.model_version,
+        model_digest=model_identity(actual_route),
+        tool_digest=tool_identity(skill, registry),
+        lock=True,
+    ):
         raise DomainError("QUALIFICATION_REQUIRED", "所选技能与实际模型尚无当前资格。")
     if call:
         # This path has no network side effect. Caller can retry the rolled-back UOW.

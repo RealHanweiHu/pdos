@@ -1,6 +1,8 @@
 """Real common HTTP owner with explicitly synthetic AI history; no model is called."""
 
 from dataclasses import replace
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
+
 from uuid import UUID, uuid4
 
 import pytest
@@ -60,6 +62,9 @@ def claim_ledger(setup, artifact):
     f.source = WriteSource(skill=bound, model_call_id=f.model.id, response_index=0)
     f.qualification.tenant_id, f.qualification.skill_key = setup.tenant, skill.key
     f.qualification.qualified_skill_version = skill.version
+    f.qualification.qualified_skill_digest = skill.digest
+    f.qualification.qualified_tool_digest = tool_identity(skill, f.registry)
+    f.qualification.qualified_model_digest = model_identity(f.route)
     f.qualification.reviewed_by = setup.human
     with tenant_session(
         setup.admin, setup.tenant, actor_id=setup.human, requester_id=setup.human,
