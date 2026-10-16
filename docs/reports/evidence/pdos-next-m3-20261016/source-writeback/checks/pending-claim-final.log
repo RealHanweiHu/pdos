@@ -1,0 +1,17 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_category_source_writeback_pg.py::test_pending_product_original_blocks_category_reference_without_committing_fake_state[claim]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_source_writeback_pg.py::test_pending_product_original_blocks_category_reference_without_committing_fake_state[claim]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_pending_product_original_blocks_category_reference_without_committing_fake_state[claim]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_pending_product_original_blocks_category_reference_without_committing_fake_state[claim]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_pending_product_original_blocks_category_reference_without_committing_fake_state[claim]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_pending_product_original_blocks_category_reference_without_committing_fake_state[claim]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_pending_product_original_blocks_category_reference_without_committing_fake_state[claim]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 7 warnings in 4.08s

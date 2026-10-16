@@ -176,8 +176,8 @@ def test_cross_tenant_and_revoked_scope_are_denied(setup):
 @pytest.mark.parametrize(
     "change,code",
     [
-        ({"line": 99}, "MISSING_REQUIRED_EVIDENCE"),
-        ({"quote": "invented quotation"}, "MISSING_REQUIRED_EVIDENCE"),
+        ({"line": 99}, "VALIDATION_FAILED"),
+        ({"quote": "invented quotation"}, "VALIDATION_FAILED"),
     ],
 )
 def test_exact_source_locator_required(setup, change, code):
@@ -255,26 +255,30 @@ def test_revert_preview_confirmation_and_history(setup):
 
 
 @pytest.mark.parametrize("protection", ["manual_edit", "downstream"])
-def test_revert_blocks_manual_edit_and_downstream_consumption(setup, protection):
+def test_claim_history_rejects_manual_edit_and_consumption_blocks_revert(setup, protection):
     artifact, _ = source(setup)
     r = post(setup, claim_cmd(setup, artifact)).json()
     preview = setup.client.post(
         f"/v1/categories/{setup.category}/products/{setup.product}/receipts/{r['id']}/revert-preview",
         headers=setup.headers,
     ).json()
+    if protection == "manual_edit":
+        with pytest.raises(DBAPIError, match="claim only permits named withdrawal"):
+            with Session(setup.admin) as s, s.begin():
+                s.get(Claim, UUID(r["subject_id"])).revision += 1
+        with Session(setup.admin) as s:
+            assert s.get(Claim, UUID(r["subject_id"])).revision == 1
+        return
     with Session(setup.admin) as s, s.begin():
-        if protection == "manual_edit":
-            s.get(Claim, UUID(r["subject_id"])).revision += 1
-        else:
-            s.add(
-                Consumption(
-                    tenant_id=setup.tenant,
-                    product_id=setup.product,
-                    claim_id=UUID(r["subject_id"]),
-                    consumer_type="synthetic-verification",
-                    consumer_id=uuid4(),
-                )
+        s.add(
+            Consumption(
+                tenant_id=setup.tenant,
+                product_id=setup.product,
+                claim_id=UUID(r["subject_id"]),
+                consumer_type="synthetic-verification",
+                consumer_id=uuid4(),
             )
+        )
     cmd = command(
         setup,
         "ai.run.revert",

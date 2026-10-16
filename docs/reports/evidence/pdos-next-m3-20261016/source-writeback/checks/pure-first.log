@@ -1,0 +1,1430 @@
+FFFFFF..F.............FFFFFFFFFF..F..................................... [ 37%]
+........................................................................ [ 75%]
+..............................................                           [100%]
+=================================== FAILURES ===================================
+_ test_artifact_claim_keeps_real_read_version_and_server_proposal_binding[False] _
+
+bound = namespace(scope=RunScope(tenant_id=UUID('f30b2593-aca9-448a-b0c8-7f4c71a467f1'), requester_id=UUID('20330e78-c4a4-4941...rySession object at 0x10d726ed0>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10ec5e030>)
+legacy = False
+
+    @pytest.mark.parametrize("legacy", [False, True])
+    def test_artifact_claim_keeps_real_read_version_and_server_proposal_binding(bound, legacy):
+        identity = uuid4()
+        bound.run.read_sources = [
+            {"artifact_id": str(identity), "expected_revision": 2, "product_id": None}
+        ]
+        args = canonical(identity, version=2)
+        if legacy:
+            args = {
+                "artifact_id": str(identity),
+                "line": 1,
+                "quote": "exact text",
+                "statement": "supported fact",
+                "visibility": "private",
+            }
+>       actual = command(bound, args)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_evidence_adapter_unit.py:112:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10ec5e030>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10d726ed0>
+scope = RunScope(tenant_id=UUID('f30b2593-aca9-448a-b0c8-7f4c71a467f1'), requester_id=UUID('20330e78-c4a4-4941-a62c-39cf814ed9...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'artifact', 'id': 'bd2c5f9e-88f6-43d7-ada1-3e8e8ffeaee2', 'version': 2, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+_ test_artifact_claim_keeps_real_read_version_and_server_proposal_binding[True] _
+
+bound = namespace(scope=RunScope(tenant_id=UUID('83db7b28-6446-4d47-a4e4-e101de24e339'), requester_id=UUID('93f2e8ef-c1ca-455f...rySession object at 0x10ec5edb0>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10ed092b0>)
+legacy = True
+
+    @pytest.mark.parametrize("legacy", [False, True])
+    def test_artifact_claim_keeps_real_read_version_and_server_proposal_binding(bound, legacy):
+        identity = uuid4()
+        bound.run.read_sources = [
+            {"artifact_id": str(identity), "expected_revision": 2, "product_id": None}
+        ]
+        args = canonical(identity, version=2)
+        if legacy:
+            args = {
+                "artifact_id": str(identity),
+                "line": 1,
+                "quote": "exact text",
+                "statement": "supported fact",
+                "visibility": "private",
+            }
+>       actual = command(bound, args)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_evidence_adapter_unit.py:112:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10ed092b0>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10ec5edb0>
+scope = RunScope(tenant_id=UUID('83db7b28-6446-4d47-a4e4-e101de24e339'), requester_id=UUID('93f2e8ef-c1ca-455f-aaeb-3798ed9b29...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'artifact_id': '7ccd263d-4a2c-4d54-b05c-ee567b04d374', 'line': 1, 'quote': 'exact text', 'statement': 'supported fact', ...}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+__ test_snapshot_claim_does_not_treat_legacy_artifact_none_as_a_missing_read ___
+
+bound = namespace(scope=RunScope(tenant_id=UUID('7769ed0f-2571-4292-a957-e33eab7403ab'), requester_id=UUID('b6dd770d-07e6-482d...rySession object at 0x10ed09160>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10ee1d880>)
+
+    def test_snapshot_claim_does_not_treat_legacy_artifact_none_as_a_missing_read(bound):
+        source, _ = snapshot(bound)
+>       actual = command(bound, canonical(source.id, kind="snapshot"))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_evidence_adapter_unit.py:124:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10ee1d880>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10ed09160>
+scope = RunScope(tenant_id=UUID('7769ed0f-2571-4292-a957-e33eab7403ab'), requester_id=UUID('b6dd770d-07e6-482d-b722-0a94dd3204...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'snapshot', 'id': '10dbf3d1-d5f2-4045-b619-8f774615deac', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+________ test_canonical_artifact_version_must_equal_actual_run_read[1] _________
+
+bound = namespace(scope=RunScope(tenant_id=UUID('861c1b64-9b34-4c46-bd03-99c132f4e931'), requester_id=UUID('681f2aa1-a6b7-4506...rySession object at 0x10ee1d040>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10ee1f080>)
+version = 1
+
+    @pytest.mark.parametrize("version", [1, 3])
+    def test_canonical_artifact_version_must_equal_actual_run_read(bound, version):
+        identity = uuid4()
+        bound.run.read_sources = [{"artifact_id": str(identity), "expected_revision": 2}]
+        with pytest.raises(DomainError) as error:
+>           command(bound, canonical(identity, version=version))
+
+tests/agent_kernel/test_evidence_adapter_unit.py:135:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10ee1f080>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10ee1d040>
+scope = RunScope(tenant_id=UUID('861c1b64-9b34-4c46-bd03-99c132f4e931'), requester_id=UUID('681f2aa1-a6b7-4506-ad79-2a61fa039f...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'artifact', 'id': '3a7bbebd-70fc-461e-bced-eda643b29299', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+________ test_canonical_artifact_version_must_equal_actual_run_read[3] _________
+
+bound = namespace(scope=RunScope(tenant_id=UUID('9002bf8f-a295-4b10-8196-0205bc1ee6b8'), requester_id=UUID('3490d6c6-20f8-46f7...rySession object at 0x10ef35580>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f0abd10>)
+version = 3
+
+    @pytest.mark.parametrize("version", [1, 3])
+    def test_canonical_artifact_version_must_equal_actual_run_read(bound, version):
+        identity = uuid4()
+        bound.run.read_sources = [{"artifact_id": str(identity), "expected_revision": 2}]
+        with pytest.raises(DomainError) as error:
+>           command(bound, canonical(identity, version=version))
+
+tests/agent_kernel/test_evidence_adapter_unit.py:135:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f0abd10>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10ef35580>
+scope = RunScope(tenant_id=UUID('9002bf8f-a295-4b10-8196-0205bc1ee6b8'), requester_id=UUID('3490d6c6-20f8-46f7-aa2c-10ae4112c5...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'artifact', 'id': '7efc2f1a-c1f7-475d-9b86-7e0e7382be00', 'version': 3, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+_ test_unread_artifact_cannot_be_claimed_merely_because_the_model_supplies_a_version _
+
+bound = namespace(scope=RunScope(tenant_id=UUID('5ac196e3-21cc-4b06-aa41-d03a2bd15269'), requester_id=UUID('a0aa8560-1458-4a0d...rySession object at 0x10f01ba10>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f1b9fd0>)
+
+    def test_unread_artifact_cannot_be_claimed_merely_because_the_model_supplies_a_version(bound):
+        with pytest.raises(DomainError) as error:
+>           command(bound, canonical(uuid4()))
+
+tests/agent_kernel/test_evidence_adapter_unit.py:141:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f1b9fd0>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10f01ba10>
+scope = RunScope(tenant_id=UUID('5ac196e3-21cc-4b06-aa41-d03a2bd15269'), requester_id=UUID('a0aa8560-1458-4a0d-b7b4-4af19fa217...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'artifact', 'id': '307951d5-292a-4302-bb17-729382447545', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+_____ test_malformed_or_out_of_scope_read_ledger_fails_closed[bad_reads2] ______
+
+bound = namespace(scope=RunScope(tenant_id=UUID('110bcd1b-5911-49f5-8e67-eac2d6779a9c'), requester_id=UUID('28fe6f26-ff1c-4dd3...rySession object at 0x10f27e630>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f23b2c0>)
+bad_reads = [{'artifact_id': 'f69a5b0b-5ca5-422b-a123-abc3aeb5d1e3', 'expected_revision': 1, 'product_id': '5aff3bfa-88fa-410c-b5ec-d9065e28fea3'}]
+
+    @pytest.mark.parametrize(
+        "bad_reads",
+        [
+            [{}],
+            [{"artifact_id": "not-a-uuid", "expected_revision": 1}],
+            [{"artifact_id": str(uuid4()), "expected_revision": 1, "product_id": str(uuid4())}],
+        ],
+    )
+    def test_malformed_or_out_of_scope_read_ledger_fails_closed(bound, bad_reads):
+        bound.run.read_sources = bad_reads
+        with pytest.raises(DomainError) as error:
+>           command(bound, canonical(uuid4()))
+
+tests/agent_kernel/test_evidence_adapter_unit.py:156:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f23b2c0>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10f27e630>
+scope = RunScope(tenant_id=UUID('110bcd1b-5911-49f5-8e67-eac2d6779a9c'), requester_id=UUID('28fe6f26-ff1c-4dd3-87f8-07a13634f0...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'artifact', 'id': '49b932a5-76ff-4ac5-aa8c-0285040bcbba', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+_ test_snapshot_requires_same_run_registration_scope_and_actual_receipt[tenant] _
+
+bound = namespace(scope=RunScope(tenant_id=UUID('bd39f1e5-4270-472f-a476-19c1f0169853'), requester_id=UUID('746e60a9-8f95-4fdc...rySession object at 0x10f36ed80>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f37a8a0>)
+mutation = 'tenant'
+
+    @pytest.mark.parametrize(
+        "mutation",
+        [
+            "tenant",
+            "category",
+            "version",
+            "status",
+            "other_run",
+            "receipt_missing",
+            "receipt_subject",
+            "receipt_run",
+        ],
+    )
+    def test_snapshot_requires_same_run_registration_scope_and_actual_receipt(bound, mutation):
+        source, receipt = snapshot(bound)
+        args = canonical(source.id, kind="snapshot")
+        reason = "snapshot_unavailable"
+        if mutation in {"tenant", "category"}:
+            setattr(source, f"{mutation}_id", uuid4())
+        elif mutation == "version":
+            args["source"]["version"] = 2
+        elif mutation == "status":
+            source.status = "failed"
+        elif mutation == "other_run":
+            source.registered_by_run_id = uuid4()
+            reason = "snapshot_read_not_bound"
+        else:
+            reason = "snapshot_registration_invalid"
+            if mutation == "receipt_missing":
+                del bound.session.rows[(Receipt, receipt.id)]
+            elif mutation == "receipt_subject":
+                receipt.subject_id = uuid4()
+            else:
+                receipt.agent_run_id = uuid4()
+        with pytest.raises(DomainError) as error:
+>           command(bound, args)
+
+tests/agent_kernel/test_evidence_adapter_unit.py:244:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f37a8a0>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10f36ed80>
+scope = RunScope(tenant_id=UUID('bd39f1e5-4270-472f-a476-19c1f0169853'), requester_id=UUID('746e60a9-8f95-4fdc-a701-e1ef81cdec...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'snapshot', 'id': '6af4aa68-0bfa-4ccc-8753-108f77f0ba16', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+_ test_snapshot_requires_same_run_registration_scope_and_actual_receipt[category] _
+
+bound = namespace(scope=RunScope(tenant_id=UUID('4b6ccfab-fe8b-4275-963d-8e49d9f747f7'), requester_id=UUID('d31ebbf4-7969-488b...rySession object at 0x10f385a90>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f3f1d90>)
+mutation = 'category'
+
+    @pytest.mark.parametrize(
+        "mutation",
+        [
+            "tenant",
+            "category",
+            "version",
+            "status",
+            "other_run",
+            "receipt_missing",
+            "receipt_subject",
+            "receipt_run",
+        ],
+    )
+    def test_snapshot_requires_same_run_registration_scope_and_actual_receipt(bound, mutation):
+        source, receipt = snapshot(bound)
+        args = canonical(source.id, kind="snapshot")
+        reason = "snapshot_unavailable"
+        if mutation in {"tenant", "category"}:
+            setattr(source, f"{mutation}_id", uuid4())
+        elif mutation == "version":
+            args["source"]["version"] = 2
+        elif mutation == "status":
+            source.status = "failed"
+        elif mutation == "other_run":
+            source.registered_by_run_id = uuid4()
+            reason = "snapshot_read_not_bound"
+        else:
+            reason = "snapshot_registration_invalid"
+            if mutation == "receipt_missing":
+                del bound.session.rows[(Receipt, receipt.id)]
+            elif mutation == "receipt_subject":
+                receipt.subject_id = uuid4()
+            else:
+                receipt.agent_run_id = uuid4()
+        with pytest.raises(DomainError) as error:
+>           command(bound, args)
+
+tests/agent_kernel/test_evidence_adapter_unit.py:244:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f3f1d90>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10f385a90>
+scope = RunScope(tenant_id=UUID('4b6ccfab-fe8b-4275-963d-8e49d9f747f7'), requester_id=UUID('d31ebbf4-7969-488b-90f5-74f04e9e38...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'snapshot', 'id': 'd8f484e5-81c7-48c2-8a23-b4cf6b1123b8', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+_ test_snapshot_requires_same_run_registration_scope_and_actual_receipt[version] _
+
+bound = namespace(scope=RunScope(tenant_id=UUID('6aa5ddad-8c16-4c8a-af93-a1a7085679e2'), requester_id=UUID('06368b4a-8cad-42c1...rySession object at 0x10f2dab40>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f151850>)
+mutation = 'version'
+
+    @pytest.mark.parametrize(
+        "mutation",
+        [
+            "tenant",
+            "category",
+            "version",
+            "status",
+            "other_run",
+            "receipt_missing",
+            "receipt_subject",
+            "receipt_run",
+        ],
+    )
+    def test_snapshot_requires_same_run_registration_scope_and_actual_receipt(bound, mutation):
+        source, receipt = snapshot(bound)
+        args = canonical(source.id, kind="snapshot")
+        reason = "snapshot_unavailable"
+        if mutation in {"tenant", "category"}:
+            setattr(source, f"{mutation}_id", uuid4())
+        elif mutation == "version":
+            args["source"]["version"] = 2
+        elif mutation == "status":
+            source.status = "failed"
+        elif mutation == "other_run":
+            source.registered_by_run_id = uuid4()
+            reason = "snapshot_read_not_bound"
+        else:
+            reason = "snapshot_registration_invalid"
+            if mutation == "receipt_missing":
+                del bound.session.rows[(Receipt, receipt.id)]
+            elif mutation == "receipt_subject":
+                receipt.subject_id = uuid4()
+            else:
+                receipt.agent_run_id = uuid4()
+        with pytest.raises(DomainError) as error:
+>           command(bound, args)
+
+tests/agent_kernel/test_evidence_adapter_unit.py:244:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f151850>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10f2dab40>
+scope = RunScope(tenant_id=UUID('6aa5ddad-8c16-4c8a-af93-a1a7085679e2'), requester_id=UUID('06368b4a-8cad-42c1-b831-32c56063ea...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'snapshot', 'id': '44e38408-b9d7-4611-bac8-628659660202', 'version': 2, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+_ test_snapshot_requires_same_run_registration_scope_and_actual_receipt[status] _
+
+bound = namespace(scope=RunScope(tenant_id=UUID('93de434e-907d-41f2-a614-665f181d24fd'), requester_id=UUID('8016a978-14aa-4bc6...rySession object at 0x10f1516d0>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f0aa120>)
+mutation = 'status'
+
+    @pytest.mark.parametrize(
+        "mutation",
+        [
+            "tenant",
+            "category",
+            "version",
+            "status",
+            "other_run",
+            "receipt_missing",
+            "receipt_subject",
+            "receipt_run",
+        ],
+    )
+    def test_snapshot_requires_same_run_registration_scope_and_actual_receipt(bound, mutation):
+        source, receipt = snapshot(bound)
+        args = canonical(source.id, kind="snapshot")
+        reason = "snapshot_unavailable"
+        if mutation in {"tenant", "category"}:
+            setattr(source, f"{mutation}_id", uuid4())
+        elif mutation == "version":
+            args["source"]["version"] = 2
+        elif mutation == "status":
+            source.status = "failed"
+        elif mutation == "other_run":
+            source.registered_by_run_id = uuid4()
+            reason = "snapshot_read_not_bound"
+        else:
+            reason = "snapshot_registration_invalid"
+            if mutation == "receipt_missing":
+                del bound.session.rows[(Receipt, receipt.id)]
+            elif mutation == "receipt_subject":
+                receipt.subject_id = uuid4()
+            else:
+                receipt.agent_run_id = uuid4()
+        with pytest.raises(DomainError) as error:
+>           command(bound, args)
+
+tests/agent_kernel/test_evidence_adapter_unit.py:244:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f0aa120>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10f1516d0>
+scope = RunScope(tenant_id=UUID('93de434e-907d-41f2-a614-665f181d24fd'), requester_id=UUID('8016a978-14aa-4bc6-8170-3a42e79efb...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'snapshot', 'id': '8ee45622-8567-443c-bad2-cd09565c92e7', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+_ test_snapshot_requires_same_run_registration_scope_and_actual_receipt[other_run] _
+
+bound = namespace(scope=RunScope(tenant_id=UUID('54d1db66-1898-4329-9790-32c09a0aab2f'), requester_id=UUID('dbce4165-3aa2-4221...rySession object at 0x10f0aabd0>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10ef930b0>)
+mutation = 'other_run'
+
+    @pytest.mark.parametrize(
+        "mutation",
+        [
+            "tenant",
+            "category",
+            "version",
+            "status",
+            "other_run",
+            "receipt_missing",
+            "receipt_subject",
+            "receipt_run",
+        ],
+    )
+    def test_snapshot_requires_same_run_registration_scope_and_actual_receipt(bound, mutation):
+        source, receipt = snapshot(bound)
+        args = canonical(source.id, kind="snapshot")
+        reason = "snapshot_unavailable"
+        if mutation in {"tenant", "category"}:
+            setattr(source, f"{mutation}_id", uuid4())
+        elif mutation == "version":
+            args["source"]["version"] = 2
+        elif mutation == "status":
+            source.status = "failed"
+        elif mutation == "other_run":
+            source.registered_by_run_id = uuid4()
+            reason = "snapshot_read_not_bound"
+        else:
+            reason = "snapshot_registration_invalid"
+            if mutation == "receipt_missing":
+                del bound.session.rows[(Receipt, receipt.id)]
+            elif mutation == "receipt_subject":
+                receipt.subject_id = uuid4()
+            else:
+                receipt.agent_run_id = uuid4()
+        with pytest.raises(DomainError) as error:
+>           command(bound, args)
+
+tests/agent_kernel/test_evidence_adapter_unit.py:244:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10ef930b0>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10f0aabd0>
+scope = RunScope(tenant_id=UUID('54d1db66-1898-4329-9790-32c09a0aab2f'), requester_id=UUID('dbce4165-3aa2-4221-a740-c2adf36c62...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'snapshot', 'id': 'fa48f83c-2df4-455a-ac1d-d1fb313faa6b', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+_ test_snapshot_requires_same_run_registration_scope_and_actual_receipt[receipt_missing] _
+
+bound = namespace(scope=RunScope(tenant_id=UUID('fb013d4c-ded3-490c-a143-26bc58f72acb'), requester_id=UUID('d0c94d94-54bf-438d...rySession object at 0x10ef93e90>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10eeb8fe0>)
+mutation = 'receipt_missing'
+
+    @pytest.mark.parametrize(
+        "mutation",
+        [
+            "tenant",
+            "category",
+            "version",
+            "status",
+            "other_run",
+            "receipt_missing",
+            "receipt_subject",
+            "receipt_run",
+        ],
+    )
+    def test_snapshot_requires_same_run_registration_scope_and_actual_receipt(bound, mutation):
+        source, receipt = snapshot(bound)
+        args = canonical(source.id, kind="snapshot")
+        reason = "snapshot_unavailable"
+        if mutation in {"tenant", "category"}:
+            setattr(source, f"{mutation}_id", uuid4())
+        elif mutation == "version":
+            args["source"]["version"] = 2
+        elif mutation == "status":
+            source.status = "failed"
+        elif mutation == "other_run":
+            source.registered_by_run_id = uuid4()
+            reason = "snapshot_read_not_bound"
+        else:
+            reason = "snapshot_registration_invalid"
+            if mutation == "receipt_missing":
+                del bound.session.rows[(Receipt, receipt.id)]
+            elif mutation == "receipt_subject":
+                receipt.subject_id = uuid4()
+            else:
+                receipt.agent_run_id = uuid4()
+        with pytest.raises(DomainError) as error:
+>           command(bound, args)
+
+tests/agent_kernel/test_evidence_adapter_unit.py:244:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10eeb8fe0>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10ef93e90>
+scope = RunScope(tenant_id=UUID('fb013d4c-ded3-490c-a143-26bc58f72acb'), requester_id=UUID('d0c94d94-54bf-438d-b809-b9cd61a463...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'snapshot', 'id': 'b95ea5a1-d748-4ddf-94a2-a0725778de76', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+_ test_snapshot_requires_same_run_registration_scope_and_actual_receipt[receipt_subject] _
+
+bound = namespace(scope=RunScope(tenant_id=UUID('4d726d9d-e6ab-412f-aa4c-4326b24b8295'), requester_id=UUID('0549d83f-a361-4232...rySession object at 0x10ed0b4d0>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10edb5ac0>)
+mutation = 'receipt_subject'
+
+    @pytest.mark.parametrize(
+        "mutation",
+        [
+            "tenant",
+            "category",
+            "version",
+            "status",
+            "other_run",
+            "receipt_missing",
+            "receipt_subject",
+            "receipt_run",
+        ],
+    )
+    def test_snapshot_requires_same_run_registration_scope_and_actual_receipt(bound, mutation):
+        source, receipt = snapshot(bound)
+        args = canonical(source.id, kind="snapshot")
+        reason = "snapshot_unavailable"
+        if mutation in {"tenant", "category"}:
+            setattr(source, f"{mutation}_id", uuid4())
+        elif mutation == "version":
+            args["source"]["version"] = 2
+        elif mutation == "status":
+            source.status = "failed"
+        elif mutation == "other_run":
+            source.registered_by_run_id = uuid4()
+            reason = "snapshot_read_not_bound"
+        else:
+            reason = "snapshot_registration_invalid"
+            if mutation == "receipt_missing":
+                del bound.session.rows[(Receipt, receipt.id)]
+            elif mutation == "receipt_subject":
+                receipt.subject_id = uuid4()
+            else:
+                receipt.agent_run_id = uuid4()
+        with pytest.raises(DomainError) as error:
+>           command(bound, args)
+
+tests/agent_kernel/test_evidence_adapter_unit.py:244:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10edb5ac0>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10ed0b4d0>
+scope = RunScope(tenant_id=UUID('4d726d9d-e6ab-412f-aa4c-4326b24b8295'), requester_id=UUID('0549d83f-a361-4232-bb1a-43cf3146e4...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'snapshot', 'id': 'c71f36ef-7714-43c0-8481-249231dda712', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+_ test_snapshot_requires_same_run_registration_scope_and_actual_receipt[receipt_run] _
+
+bound = namespace(scope=RunScope(tenant_id=UUID('d11ade3b-3410-4cad-8eae-e28135125a8f'), requester_id=UUID('da76b448-5fcb-4d94...rySession object at 0x10ebbf5f0>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10d7beab0>)
+mutation = 'receipt_run'
+
+    @pytest.mark.parametrize(
+        "mutation",
+        [
+            "tenant",
+            "category",
+            "version",
+            "status",
+            "other_run",
+            "receipt_missing",
+            "receipt_subject",
+            "receipt_run",
+        ],
+    )
+    def test_snapshot_requires_same_run_registration_scope_and_actual_receipt(bound, mutation):
+        source, receipt = snapshot(bound)
+        args = canonical(source.id, kind="snapshot")
+        reason = "snapshot_unavailable"
+        if mutation in {"tenant", "category"}:
+            setattr(source, f"{mutation}_id", uuid4())
+        elif mutation == "version":
+            args["source"]["version"] = 2
+        elif mutation == "status":
+            source.status = "failed"
+        elif mutation == "other_run":
+            source.registered_by_run_id = uuid4()
+            reason = "snapshot_read_not_bound"
+        else:
+            reason = "snapshot_registration_invalid"
+            if mutation == "receipt_missing":
+                del bound.session.rows[(Receipt, receipt.id)]
+            elif mutation == "receipt_subject":
+                receipt.subject_id = uuid4()
+            else:
+                receipt.agent_run_id = uuid4()
+        with pytest.raises(DomainError) as error:
+>           command(bound, args)
+
+tests/agent_kernel/test_evidence_adapter_unit.py:244:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10d7beab0>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10ebbf5f0>
+scope = RunScope(tenant_id=UUID('d11ade3b-3410-4cad-8eae-e28135125a8f'), requester_id=UUID('da76b448-5fcb-4d94-a572-1c97535e5f...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'snapshot', 'id': 'c2327916-8b69-4653-bcfd-9c02cd7cd738', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+____ test_registered_human_snapshot_receipt_is_bound_by_snapshot_actual_run ____
+
+bound = namespace(scope=RunScope(tenant_id=UUID('d5aece38-1204-447a-84a4-28b8e7a22777'), requester_id=UUID('2eb1fd61-76ee-4ebd...rySession object at 0x10f386b10>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f4c48f0>)
+
+    def test_registered_human_snapshot_receipt_is_bound_by_snapshot_actual_run(bound):
+        source, receipt = snapshot(bound)
+        receipt.agent_run_id = None
+>       assert command(bound, canonical(source.id, kind="snapshot")).payload["source"]["id"] == str(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            source.id
+        )
+
+tests/agent_kernel/test_evidence_adapter_unit.py:251:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f4c48f0>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10f386b10>
+scope = RunScope(tenant_id=UUID('d5aece38-1204-447a-84a4-28b8e7a22777'), requester_id=UUID('2eb1fd61-76ee-4ebd-bfd4-1034495d58...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.claim.record'
+arguments = {'source': {'kind': 'snapshot', 'id': '46fe6a07-24b4-448f-afd9-31213d9b735e', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': 'supported fact'}}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+____________ test_link_artifact_reference_uses_real_run_read_ledger ____________
+
+bound = namespace(scope=RunScope(tenant_id=UUID('61e9e826-e4b9-46a1-b678-3e380921e86f'), requester_id=UUID('fee38469-7fed-41e9...rySession object at 0x10eef6a80>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10efe7c20>)
+
+    def test_link_artifact_reference_uses_real_run_read_ledger(bound):
+        evidence_id = uuid4()
+        args = {
+            "evidence": {"type": "artifact", "id": str(evidence_id), "version": 1},
+            "target": {"type": "proposal_item", "id": str(uuid4()), "version": 1},
+            "relation": "supports",
+        }
+        with pytest.raises(DomainError) as error:
+            command(bound, args, "evidence.link.create")
+        assert_reason(error, "MISSING_REQUIRED_EVIDENCE", "source_read_not_bound")
+        bound.run.read_sources = [{"artifact_id": str(evidence_id), "expected_revision": 1}]
+>       assert command(bound, args, "evidence.link.create").operation == "evidence.link.create"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_evidence_adapter_unit.py:267:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_evidence_adapter_unit.py:65: in command
+    return f.adapter.command(f.session, f.scope, operation, arguments, "synthetic-command-key")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10efe7c20>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10eef6a80>
+scope = RunScope(tenant_id=UUID('61e9e826-e4b9-46a1-b678-3e380921e86f'), requester_id=UUID('fee38469-7fed-41e9-9aef-8746053ed4...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.link.create'
+arguments = {'evidence': {'type': 'artifact', 'id': 'a7aa75d3-77b1-4b89-9148-8168ac119f0c', 'version': 1}, 'target': {'type': 'proposal_item', 'id': '21e97b4b-526a-4681-b4e3-47089c935475', 'version': 1}, 'relation': 'supports'}
+intent_key = 'synthetic-command-key'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+__ test_link_t0_dispatch_passes_server_run_and_completed_call_to_common_owner __
+
+bound = namespace(scope=RunScope(tenant_id=UUID('a1308707-23d1-49d0-b5c0-2cd968cbcb8c'), requester_id=UUID('d72e2f72-f6fd-4fbc...rySession object at 0x10f675730>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f677200>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10f6756d0>
+
+    def test_link_t0_dispatch_passes_server_run_and_completed_call_to_common_owner(bound, monkeypatch):
+        args = {
+            "evidence": {"type": "claim", "id": str(uuid4()), "version": 1},
+            "target": {"type": "proposal_item", "id": str(uuid4()), "version": 1},
+            "relation": "supports",
+        }
+        call = SimpleNamespace(id=uuid4())
+        receipt_id = uuid4()
+        seen = []
+        monkeypatch.setattr(bound.adapter, "recover", lambda *_a, **_k: None)
+        monkeypatch.setattr(module, "command_scope", lambda *_a, **_k: None)
+        monkeypatch.setattr(module, "category_transaction", lambda _engine, _ctx, fn: fn(bound.session))
+        monkeypatch.setattr(module, "prepare_domain_call", lambda *_a, **_k: (call, None))
+
+        def common_owner(session, ctx, cmd):
+            seen.append(ctx)
+            assert session.info["domain_command_owner"] is bound.adapter
+            assert ctx.actor_id == bound.run.writer_id and ctx.requester_id == bound.run.requester_id
+            assert ctx.agent_run_id == bound.run.id and ctx.agent_call_id == call.id
+            receipt = SimpleNamespace(
+                id=receipt_id,
+                agent_run_id=ctx.agent_run_id,
+                command_id=cmd.command_id,
+                request_digest=module.command_digest(cmd),
+            )
+            session.rows[(Receipt, receipt_id)] = receipt
+            return {"id": str(receipt_id)}
+
+        def complete(_session, scope, call_id, identity):
+            assert scope is bound.scope and call_id == call.id and identity == receipt_id
+            return {"id": str(identity), "agent_call_id": str(call_id)}
+
+        monkeypatch.setattr(module, "execute", common_owner)
+        monkeypatch.setattr(module, "finish_domain_call", complete)
+>       result = bound.adapter.execute(
+            bound.scope,
+            "evidence.link.create",
+            args,
+            execution_key(bound.run.id, uuid4(), 0),
+            source=None,
+        )
+
+tests/agent_kernel/test_evidence_adapter_unit.py:315:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pdos_next/agent_kernel/domain_adapter.py:354: in execute
+    return category_transaction(self.engine, ctx, write)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_evidence_adapter_unit.py:292: in <lambda>
+    monkeypatch.setattr(module, "category_transaction", lambda _engine, _ctx, fn: fn(bound.session))
+                                                                                  ^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/domain_adapter.py:327: in write
+    command = self.command(session, scope, operation, arguments, intent_key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10f677200>
+session = <test_evidence_adapter_unit.MemorySession object at 0x10f675730>
+scope = RunScope(tenant_id=UUID('a1308707-23d1-49d0-b5c0-2cd968cbcb8c'), requester_id=UUID('d72e2f72-f6fd-4fbc-82c8-952d899f51...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+operation = 'evidence.link.create'
+arguments = {'evidence': {'type': 'claim', 'id': '80e6c474-0e8d-470e-b870-4a604390f291', 'version': 1}, 'target': {'type': 'proposal_item', 'id': '525f4aa5-503d-4815-b09c-e782d4715874', 'version': 1}, 'relation': 'supports'}
+intent_key = 'agent:cf5199e2-3f93-4c42-a3bb-cf981a35aa24:model:42d2ea30-b564-4d74-b5d7-3cef68a23790:0'
+
+    def command(self, session, scope, operation, arguments, intent_key):
+        if operation not in PAYLOADS or not isinstance(arguments, dict):
+            raise DomainError("SOURCE_UNAVAILABLE", "此领域命令尚未接入。")
+        run = session.get(AgentRun, scope.run_id)
+        # Even candidate preparation is pinned to the stored Run; payload fields
+        # and a caller-provided RunScope never establish scope by themselves.
+        check_run_binding(run, scope)
+        payload = dict(arguments)
+        for key in ("product_id", "proposal_id"):
+            if key in PAYLOADS[operation].model_fields:
+                actual = getattr(run, key)
+                if key in payload and str(payload[key]) != str(actual):
+                    fail(
+                        "FORBIDDEN_SCOPE",
+                        "proposal_run_mismatch" if key == "proposal_id" else "product_run_mismatch",
+                        "命令对象与实际运行不一致。",
+                        403,
+                    )
+                payload[key] = actual
+        normalized = PAYLOADS[operation].model_validate(payload)
+        current = require_access(session, self.context(scope), run.product_id)
+        reads = self._artifact_reads(run)
+        pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+>       if KEY in run.versions:
+                  ^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'versions'
+
+pdos_next/agent_kernel/domain_adapter.py:139: AttributeError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_artifact_claim_keeps_real_read_version_and_server_proposal_binding[False]
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_artifact_claim_keeps_real_read_version_and_server_proposal_binding[True]
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_snapshot_claim_does_not_treat_legacy_artifact_none_as_a_missing_read
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_canonical_artifact_version_must_equal_actual_run_read[1]
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_canonical_artifact_version_must_equal_actual_run_read[3]
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_unread_artifact_cannot_be_claimed_merely_because_the_model_supplies_a_version
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_malformed_or_out_of_scope_read_ledger_fails_closed[bad_reads2]
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_snapshot_requires_same_run_registration_scope_and_actual_receipt[tenant]
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_snapshot_requires_same_run_registration_scope_and_actual_receipt[category]
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_snapshot_requires_same_run_registration_scope_and_actual_receipt[version]
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_snapshot_requires_same_run_registration_scope_and_actual_receipt[status]
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_snapshot_requires_same_run_registration_scope_and_actual_receipt[other_run]
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_snapshot_requires_same_run_registration_scope_and_actual_receipt[receipt_missing]
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_snapshot_requires_same_run_registration_scope_and_actual_receipt[receipt_subject]
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_snapshot_requires_same_run_registration_scope_and_actual_receipt[receipt_run]
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_registered_human_snapshot_receipt_is_bound_by_snapshot_actual_run
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_link_artifact_reference_uses_real_run_read_ledger
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_link_t0_dispatch_passes_server_run_and_completed_call_to_common_owner
+18 failed, 172 passed, 10 deselected in 10.93s

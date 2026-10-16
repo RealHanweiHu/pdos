@@ -147,13 +147,29 @@ def test_unread_artifact_cannot_be_claimed_merely_because_the_model_supplies_a_v
     [
         [{}],
         [{"artifact_id": "not-a-uuid", "expected_revision": 1}],
-        [{"artifact_id": str(uuid4()), "expected_revision": 1, "product_id": str(uuid4())}],
+        [{"artifact_id": str(uuid4()), "expected_revision": 1, "product_id": "not-a-uuid"}],
     ],
 )
 def test_malformed_or_out_of_scope_read_ledger_fails_closed(bound, bad_reads):
     bound.run.read_sources = bad_reads
     with pytest.raises(DomainError) as error:
         command(bound, canonical(uuid4()))
+    assert_reason(error, "SOURCE_UNAVAILABLE", "run_source_binding_invalid")
+
+
+def test_category_run_keeps_source_product_while_product_run_rejects_another(bound):
+    from dataclasses import replace
+
+    identity, product = uuid4(), uuid4()
+    bound.run.read_sources = [
+        {"artifact_id": str(identity), "expected_revision": 1, "product_id": str(product)}
+    ]
+    actual = command(bound, canonical(identity))
+    assert actual.product_id is None and actual.source_read_set[0].artifact_id == identity
+    bound.scope = replace(bound.scope, product_id=uuid4())
+    bound.run.product_id = bound.scope.product_id
+    with pytest.raises(DomainError) as error:
+        command(bound, canonical(identity))
     assert_reason(error, "SOURCE_UNAVAILABLE", "run_source_binding_invalid")
 
 

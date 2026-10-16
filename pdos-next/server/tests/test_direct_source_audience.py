@@ -186,23 +186,27 @@ def _category(setup, tenant, owner):
     return category
 
 
-def test_private_product_artifact_and_original_audiences_are_independent_and_live(setup):
+@pytest.mark.parametrize("category_consumer", [False, True])
+def test_private_product_artifact_and_original_audiences_are_independent_and_live(
+    setup, category_consumer,
+):
     source = _private_chain(setup)
+    target = None if category_consumer else source.product
     refs = [source.artifact]
-    assert _visible(setup, source.product, refs) is True
-    assert _visible(setup, source.product, refs, actor=setup.peer) is False
+    assert _visible(setup, target, refs) is True
+    assert _visible(setup, target, refs, actor=setup.peer) is False
     audiences = _chain_audiences(source, setup.peer)
     for audience in audiences:
         _grant_audience(setup, audience)
-    assert _visible(setup, source.product, refs, actor=setup.peer) is True
+    assert _visible(setup, target, refs, actor=setup.peer) is True
     for audience in audiences:
         _remove_audience(setup, audience)
-        assert _visible(setup, source.product, refs, actor=setup.peer) is False, audience[
+        assert _visible(setup, target, refs, actor=setup.peer) is False, audience[
             "object_type"
         ]
-        assert _visible(setup, source.product, refs) is True
+        assert _visible(setup, target, refs) is True
         _grant_audience(setup, audience)
-        assert _visible(setup, source.product, refs, actor=setup.peer) is True
+        assert _visible(setup, target, refs, actor=setup.peer) is True
 
 
 def test_nullable_scope_exact_joins_and_complete_reference_set(setup):
@@ -217,12 +221,13 @@ def test_nullable_scope_exact_joins_and_complete_reference_set(setup):
         _visible(setup, None, [native.artifact, category_source.artifact], actor=setup.peer) is True
     )
     for artifact in (native.artifact, category_source.artifact):
-        assert _visible(setup, setup.product, [artifact]) is False
+        # Category-native sources are valid for an authorized product consumer.
+        assert _visible(setup, setup.product, [artifact]) is True
 
     source = _private_chain(setup)
     for audience in _chain_audiences(source, setup.peer):
         _grant_audience(setup, audience)
-    assert _visible(setup, None, [source.artifact]) is False
+    assert _visible(setup, None, [source.artifact]) is True
     assert _visible(setup, setup.product, [source.artifact]) is False
     shared = [_source(setup, source.product, visibility="category").artifact for _ in range(20)]
     refs = [*shared, source.artifact]

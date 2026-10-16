@@ -1,0 +1,42 @@
+{
+  "base_commit": "a2ff4908ee131b1c077cde80812c7ba6d3ae2897",
+  "scope": "Category proposal Run product-source T0/T1 Claim adoption and readback; migration s0_0762",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/domain_adapter.py",
+      "sha256": "eea7045253854e305d3954f308c43661540d5968ce527e37b994bb9e6da4a591"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "sha256": "e127f43c0d1b7c0378f46e6aacfb413feed81dca4790cb0f76a696f23f49cb16"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0762.py",
+      "sha256": "48d36d0f58352aa1cec513f166b2e0242514ce7643a52bdda8335e63448a997b"
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0762_category_source_consumers.py",
+      "sha256": "9ee85cc4f580a7ba9ff598508e3b4519fb8b12d9db5413279c44804bc46accd8"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_category_source_writeback_pg.py",
+      "sha256": "65dfa834048be5bdfebf0e0c3d5683d20b5e3fbe563f64151104c3bad015e525"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_evidence_adapter_unit.py",
+      "sha256": "d2e46df7e5d0107af9ad975506e7c34a91b5c10f834be5f73fa9632905c282ea"
+    },
+    {
+      "path": "pdos-next/server/tests/quality_execution_transactions/test_native_registration_batch.py",
+      "sha256": "17ea44f646ab43cd8b31592dafca0dc18d61b7affa7515987ed4ad249410cf89"
+    },
+    {
+      "path": "pdos-next/server/tests/test_direct_source_audience.py",
+      "sha256": "1faf3ae0a4e6f5d658e6e55a14e16fe067e2a17a29fa1080ce0a8d45bd44378c"
+    },
+    {
+      "path": "pdos-next/server/tests/test_trusted_source_work.py",
+      "sha256": "31943e65710074e2256b3174718812cd0bcea6dea2603c4f144249d49a5e004f"
+    }
+  ]
+}

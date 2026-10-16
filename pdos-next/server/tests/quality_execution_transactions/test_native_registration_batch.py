@@ -10,6 +10,7 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.exc import UnboundExecutionError
 from sqlalchemy.orm import Session, make_transient_to_detached
 
+from pdos_next.domain.products.models import DefinitionSource
 from pdos_next.domain.quality_execution import evidence
 from pdos_next.errors import DomainError
 from pdos_next.models import Artifact, Category, Grant, Principal, Product, Receipt, Run
@@ -383,8 +384,15 @@ def _real_source_transport(session, monkeypatch, rows, queries):
         assert model is Receipt
         return receipts
 
+    def scalar(query):
+        # The real source guard may look for a sealed G0 citation after a
+        # missing/mismatched native source. This fixture has no signed bridge.
+        if query.column_descriptions[0]["entity"] is DefinitionSource:
+            return None
+        return _no_scalar(query)
+
     monkeypatch.setattr(session, "scalars", scalars)
-    monkeypatch.setattr(session, "scalar", _no_scalar)
+    monkeypatch.setattr(session, "scalar", scalar)
     return receipts
 
 
@@ -486,13 +494,16 @@ def test_rr_artifact_batch_real_source_for_missing_row_keeps_first_source_reject
     ctx, pid = _actual_scope()
     first, missing = _artifact(ctx, pid, 1), _artifact(ctx, None, 2)
     reads = _reads([first, missing])
-    queries, scalar_queries = [], []
+    queries, scalar_queries, signed_queries = [], [], []
     with Session() as session, session.begin():
         _rr(session, ctx)
         session.info["pure_ctx"] = ctx
         _real_source_transport(session, monkeypatch, [first], queries)
 
         def unavailable(query):
+            if query.column_descriptions[0]["entity"] is DefinitionSource:
+                signed_queries.append(query)
+                return None  # No actual sealed G0 citation in this native fixture.
             scalar_queries.append(query)
             assert query.column_descriptions[0]["entity"] is Artifact
             assert query.compile().params["id_1"] == missing.id
@@ -502,12 +513,12 @@ def test_rr_artifact_batch_real_source_for_missing_row_keeps_first_source_reject
         first.revision += 1
         with pytest.raises(DomainError) as failure:
             evidence.source_basis(session, ctx, pid, reads)
-        assert failure.value.reason == "SOURCE_STALE" and not scalar_queries
+        assert failure.value.reason == "SOURCE_STALE" and not scalar_queries and not signed_queries
         first.revision -= 1
         with pytest.raises(DomainError) as failure:
             evidence.source_basis(session, ctx, pid, reads)
         assert failure.value.reason == "SOURCE_UNAVAILABLE" and failure.value.status == 403
-        assert len(scalar_queries) == 1
+        assert len(scalar_queries) == len(signed_queries) == 1
         assert all(model is Artifact for model, _query in queries)
         assert not request_proof(session).scalar_rows
 

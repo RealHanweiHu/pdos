@@ -1,0 +1,11 @@
+{
+  "head": "s0_0762",
+  "port": 64245,
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "catalog_downgrade_exact": true,
+  "catalog_reupgrade_exact": true,
+  "forced_rls": true,
+  "all_three_function_definitions_exact": true,
+  "nullable_personal_scope_retained": true,
+  "real_provider_calls": 0
+}

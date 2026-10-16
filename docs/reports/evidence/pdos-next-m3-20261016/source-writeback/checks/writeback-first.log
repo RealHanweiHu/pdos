@@ -1,0 +1,37 @@
+F
+=================================== FAILURES ===================================
+___ test_category_run_records_adopts_reads_and_replays_product_source[False] ___
+
+work = <isolated synthetic test scope>, human = False
+
+    @pytest.mark.parametrize("human", [False, True])
+    def test_category_run_records_adopts_reads_and_replays_product_source(work, human):
+>       f = bound(work, human=human)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_source_writeback_pg.py:172:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_category_source_writeback_pg.py:39: in bound
+    proposal_id, _ = create(work, data)
+                     ^^^^^^^^^^^^^^^^^^
+tests/preproject/test_g0.py:132: in create
+    result, req = save(work, request(work, "proposal.create", data or payload(work)))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+work = <isolated synthetic test scope>
+req = {'command_id': 'c0c4595e-fdd9-4e7a-8700-803b363d4d09', 'idempotency_key': 'e2a67e73-812f-48c4-9dfe-cc82c08fa70e', 'category_id': '589d4f7b-c61c-413c-b504-ad074fe9a8af', 'product_id': None, ...}
+actor = None
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+>       assert checked.status_code == 200, checked.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"引用片段不在原件指定行内。","detail":{"reason":"quote_not_in_source"}}
+E       assert 409 == 200
+E        +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/preproject/test_g0.py:93: AssertionError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_category_source_writeback_pg.py::test_category_run_records_adopts_reads_and_replays_product_source[False]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 1.92s

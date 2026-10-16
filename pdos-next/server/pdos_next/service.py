@@ -426,8 +426,9 @@ def source_for(s, ctx, product_id, artifact_id, revision=None):
         query = select(Artifact).where(
             Artifact.id == artifact_id,
             Artifact.category_id == category_id,
-            Artifact.product_id.is_(None) | (Artifact.product_id == product_id),
         )
+        if product_id is not None:
+            query = query.where(Artifact.product_id.is_(None) | (Artifact.product_id == product_id))
         source = s.scalar(
             (query.with_for_update(read=True) if writing else query).execution_options(
                 populate_existing=True
@@ -451,11 +452,16 @@ def source_for(s, ctx, product_id, artifact_id, revision=None):
         or source.tenant_id != ctx.tenant_id
         or source.category_id != category_id
         or (
-            source.product_id not in (None, product_id)
+            product_id is not None
+            and source.product_id not in (None, product_id)
             and not _signed_product_source(s, ctx, product_id, artifact_id, revision)
         )
     ):
         raise DomainError("SOURCE_UNAVAILABLE", "来源不在当前授权范围。", 403)
+    if product_id is None and source.product_id is not None:
+        # A category consumer retains the source's actual model audience. The
+        # source ID/version comes from the command or the immutable Run read-set.
+        require_access(s, ctx, source.product_id)
     if source.status != "active":
         raise DomainError("SOURCE_UNAVAILABLE", "来源已撤回，不能继续使用。")
     if revision is not None and source.revision != revision:
@@ -493,16 +499,13 @@ def prove_sources(s, ctx, product_id, reads):
     ]
     if missing:
         category_id = ctx.category_id or require_access(s, ctx, product_id).category_id
-        rows = s.scalars(
-            select(Artifact)
-            .where(
-                Artifact.category_id == category_id,
-                Artifact.product_id.is_(None) | (Artifact.product_id == product_id),
-                Artifact.id.in_(missing),
-            )
-            .order_by(Artifact.id)
-            .with_for_update(read=True)
+        query = select(Artifact).where(
+            Artifact.category_id == category_id,
+            Artifact.id.in_(missing),
         )
+        if product_id is not None:
+            query = query.where(Artifact.product_id.is_(None) | (Artifact.product_id == product_id))
+        rows = s.scalars(query.order_by(Artifact.id).with_for_update(read=True))
         for row in rows:
             proof.source_rows[(*prefix, row.id)] = row
             proof.read_rows[(Artifact, ("locked", row.id))] = True

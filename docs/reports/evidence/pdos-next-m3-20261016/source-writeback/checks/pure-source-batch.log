@@ -1,0 +1,114 @@
+....F...F.                                                               [100%]
+=================================== FAILURES ===================================
+_ test_rr_artifact_batch_real_source_for_rechecks_every_raw_scope_version_and_content[product] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d954530>
+changed = 'product'
+
+    @pytest.mark.parametrize("changed", ["tenant", "category", "product", "status", "revision", "hash"])
+    def test_rr_artifact_batch_real_source_for_rechecks_every_raw_scope_version_and_content(
+        monkeypatch,
+        changed,
+    ):
+        ctx, pid = _actual_scope()
+        row, queries = _artifact(ctx, pid, 1), []
+        reads = _reads([row])
+        assert evidence.source_for is source_for
+        with Session() as session, session.begin():
+            _rr(session, ctx)
+            session.info["pure_ctx"] = ctx
+            _real_source_transport(session, monkeypatch, [row], queries)
+            assert evidence.source_basis(session, ctx, pid, reads)[0]
+            if changed in ("tenant", "category", "product"):
+                setattr(row, f"{changed}_id", UUID(int=999))
+            elif changed == "status":
+                row.status = "withdrawn"
+            elif changed == "revision":
+                row.revision += 1
+            else:
+                row.content = "Changed bytes without changing immutable content hash"
+            with pytest.raises(DomainError) as failure:
+>               evidence.source_basis(session, ctx, pid, reads)
+
+tests/quality_execution_transactions/test_native_registration_batch.py:473:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pdos_next/domain/quality_execution/evidence.py:330: in source_basis
+    rows = list(rows)
+           ^^^^^^^^^^
+pdos_next/domain/quality_execution/evidence.py:50: in _checked_sources
+    row = source_for(s, ctx, pid, UUID(read["artifact_id"]), read["expected_revision"])
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:457: in source_for
+    and not _signed_product_source(s, ctx, product_id, artifact_id, revision)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:397: in _signed_product_source
+    return s.scalar(query) is not None
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+_query = <sqlalchemy.sql.selectable.Select object at 0x10d90b560>
+
+    def _no_scalar(_query):
+>       raise AssertionError("The batch must fill every native source's exact raw scalar key")
+E       AssertionError: The batch must fill every native source's exact raw scalar key
+
+tests/quality_execution_transactions/test_native_registration_batch.py:89: AssertionError
+_ test_rr_artifact_batch_real_source_for_missing_row_keeps_first_source_rejection_order _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d956270>
+
+    def test_rr_artifact_batch_real_source_for_missing_row_keeps_first_source_rejection_order(
+        monkeypatch,
+    ):
+        ctx, pid = _actual_scope()
+        first, missing = _artifact(ctx, pid, 1), _artifact(ctx, None, 2)
+        reads = _reads([first, missing])
+        queries, scalar_queries = [], []
+        with Session() as session, session.begin():
+            _rr(session, ctx)
+            session.info["pure_ctx"] = ctx
+            _real_source_transport(session, monkeypatch, [first], queries)
+
+            def unavailable(query):
+                scalar_queries.append(query)
+                assert query.column_descriptions[0]["entity"] is Artifact
+                assert query.compile().params["id_1"] == missing.id
+                return None  # Explicit denied/missing SQL row, never an ACL-positive substitute.
+
+            monkeypatch.setattr(session, "scalar", unavailable)
+            first.revision += 1
+            with pytest.raises(DomainError) as failure:
+                evidence.source_basis(session, ctx, pid, reads)
+            assert failure.value.reason == "SOURCE_STALE" and not scalar_queries
+            first.revision -= 1
+            with pytest.raises(DomainError) as failure:
+>               evidence.source_basis(session, ctx, pid, reads)
+
+tests/quality_execution_transactions/test_native_registration_batch.py:508:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pdos_next/domain/quality_execution/evidence.py:330: in source_basis
+    rows = list(rows)
+           ^^^^^^^^^^
+pdos_next/domain/quality_execution/evidence.py:50: in _checked_sources
+    row = source_for(s, ctx, pid, UUID(read["artifact_id"]), read["expected_revision"])
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:437: in source_for
+    if source is None and _signed_product_source(s, ctx, product_id, artifact_id, revision):
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:397: in _signed_product_source
+    return s.scalar(query) is not None
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+query = <sqlalchemy.sql.selectable.Select object at 0x10d955b80>
+
+    def unavailable(query):
+        scalar_queries.append(query)
+>       assert query.column_descriptions[0]["entity"] is Artifact
+E       AssertionError: assert <class 'pdos_next.domain.products.models.DefinitionSource'> is Artifact
+
+tests/quality_execution_transactions/test_native_registration_batch.py:497: AssertionError
+=========================== short test summary info ============================
+FAILED tests/quality_execution_transactions/test_native_registration_batch.py::test_rr_artifact_batch_real_source_for_rechecks_every_raw_scope_version_and_content[product]
+FAILED tests/quality_execution_transactions/test_native_registration_batch.py::test_rr_artifact_batch_real_source_for_missing_row_keeps_first_source_rejection_order
+2 failed, 8 passed, 47 deselected in 0.31s

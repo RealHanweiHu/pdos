@@ -129,6 +129,23 @@ class DomainCommands:
         current = require_access(session, self.context(scope), run.product_id)
         reads = self._artifact_reads(run)
         pinned = {read.artifact_id: read.expected_revision for read in reads}
+        from .m3_object_reads import _references
+        from .proposal_context import KEY, reference_key, stored_references
+
+        refs = list(_references(arguments))
+        for ref in refs:
+            if ref.type in {"artifact", "original"}:
+                self._require_artifact_read(pinned, ref.id, ref.version)
+        if KEY in getattr(run, "versions", {}):
+            allowed = {reference_key(ref) for ref in stored_references(run)[1]} | {
+                ("original", str(read.artifact_id), read.expected_revision) for read in reads
+            }
+            if any(reference_key(ref) not in allowed for ref in refs):
+                fail(
+                    "MISSING_REQUIRED_EVIDENCE",
+                    "source_read_not_bound",
+                    "草稿引用须属于本次运行已绑定的资料。",
+                )
         source = getattr(normalized, "source", None)
         if operation == "evidence.claim.record" and source is not None:
             if source.kind == "artifact":
@@ -174,8 +191,10 @@ class DomainCommands:
                     }
                 )
                 product_id = raw.get("product_id")
-                if product_id is not None and UUID(str(product_id)) != run.product_id:
-                    raise ValueError("Artifact belongs to another product")
+                if product_id is not None:
+                    source_product = UUID(str(product_id))
+                    if run.product_id is not None and source_product != run.product_id:
+                        raise ValueError("Artifact belongs to another product")
                 if (
                     parsed.artifact_id in versions
                     and versions[parsed.artifact_id] != parsed.expected_revision
