@@ -149,6 +149,9 @@ def fixture(monkeypatch):
     # Receipt tests isolate source resolution; dedicated traversal tests below use it.
     monkeypatch.setattr(baseline, "validate_sources", lambda *args, **kwargs: ())
     monkeypatch.setattr(baseline, "read_blocks", lambda *args: {})
+    from pdos_next.domain.products import platforms
+
+    monkeypatch.setattr(platforms, "read", lambda *args, **kw: {"items": [], "next_cursor": None})
     accesses = []
     monkeypatch.setattr(service, "require_access", lambda *args, **kw: accesses.append(args[2]))
     monkeypatch.setattr(baseline, "definition_view", lambda *args: deepcopy(document))

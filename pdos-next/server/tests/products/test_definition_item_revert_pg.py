@@ -38,7 +38,7 @@ from tests.products.test_definition_item_commands_pg import (
 from tests.products.test_definition_transactions import command, post
 
 
-def agent_fixture(setup, arguments):
+def agent_fixture(setup, arguments, *, operation=OPERATION, skill_key="gap_check"):
     fixture = ledger()
     fixture.scope = replace(
         fixture.scope,
@@ -60,8 +60,8 @@ def agent_fixture(setup, arguments):
         setattr(fixture.run, name, getattr(fixture.scope, name))
     fixture.run.trigger, fixture.run.goal = "page", "Synthetic definition item regression"
     fixture.run.intent_key, fixture.run.intent_digest = str(uuid4()), digest(str(uuid4()))
-    skill = fixture.catalog._skills["gap_check"]
-    assert OPERATION in skill.operations
+    skill = fixture.catalog._skills[skill_key]
+    assert operation in skill.operations
     bound = SkillBinding(
         key=skill.key, version=skill.version, digest=skill.digest, load_event_id=fixture.event.id
     )
@@ -84,8 +84,8 @@ def agent_fixture(setup, arguments):
         setup.tenant
     )
     fixture.model.call_key, fixture.model.input_digest = str(uuid4()), digest(arguments)
-    fixture.model.result = {"calls": [{"name": OPERATION, "arguments": arguments}]}
-    fixture.arguments, fixture.spec = arguments, fixture.registry.get(OPERATION)
+    fixture.model.result = {"calls": [{"name": operation, "arguments": arguments}]}
+    fixture.arguments, fixture.spec = arguments, fixture.registry.get(operation)
     with Session(setup.admin) as session, session.begin():
         session.add(
             AgentSession(

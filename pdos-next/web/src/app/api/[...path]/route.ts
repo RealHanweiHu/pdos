@@ -10,6 +10,7 @@ const personalAgentPaths = /^v1\/personal\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:e
 const preprojectPaths = /^v1\/(?:proposals(?:\/[a-f0-9-]{36}(?:\/(?:items|participants))?)?|g0-definitions\/[a-f0-9-]{36}|projects\/[a-f0-9-]{36}\/open-items)$/i;
 const proposalViewPaths = /^v1\/views\/(?:positioning|spec-benchmark|feature-config|definition-maturity)$/;
 const categoryKnowledgePaths = /^v1\/(?:knowledge|parameters)$/;
+const platformPaths = /^v1\/(?:platforms(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/platform-links)$/i;
 const proposalClaimPaths = /^v1\/claims(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
 const resourceInspectPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/builds\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/resources\/inspect$/;
 const manufacturingPreparationPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/manufacturing-preparations(?:\/inputs|\/(?:work_instruction|control_plan|manufacturing_baseline)\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})?$/;
@@ -65,6 +66,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const preproject = preprojectPaths.test(pathname);
   const proposalView = proposalViewPaths.test(pathname);
   const categoryKnowledge = categoryKnowledgePaths.test(pathname);
+  const platform = platformPaths.test(pathname);
   const standardMatch = pathname === "v1/standard-match";
   const proposalClaim = proposalClaimPaths.test(pathname);
   const agent = agentPaths.test(pathname) || personalAgent;
@@ -73,11 +75,25 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const manufacturingPreparation = manufacturingPreparationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !categoryKnowledge && !standardMatch) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !categoryKnowledge && !standardMatch && !platform) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (standardMatch) {
     if (request.method !== "POST") return Response.json({ code: "VALIDATION_FAILED", message: "请提交要核对的规格。" }, { status: 405, headers: { Allow: "POST" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "规格核对不接受额外查询条件。" }, { status: 422 });
+  } else if (platform) {
+    if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
+    const collection = pathname === "v1/platforms", productLinks = pathname.endsWith("/platform-links");
+    for (const [key, value] of request.nextUrl.searchParams) {
+      const valid = key === "include_history" ? ["true", "false"].includes(value)
+        : (collection || productLinks) && key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 200
+        : (collection || productLinks) && ["cursor", "variant_id"].includes(key) ? uuid.test(value)
+        : collection && key === "product_id" ? uuid.test(value)
+        : collection && ["code", "name_query"].includes(key) ? value.trim().length > 0 && value.length <= 200
+        : false;
+      if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "平台查询范围或分页条件无效。" }, { status: 422 });
+      query.set(key, value);
+    }
+    if (collection && query.has("variant_id") && !query.has("product_id")) return Response.json({ code: "VALIDATION_FAILED", message: "查询变体时请选择所属型号。" }, { status: 422 });
   } else if (categoryPreview || categorySeed || categoryRoot) {
     const allowed = categoryRoot ? ["GET", "POST"] : categorySeed ? ["GET"] : ["POST"];
     if (!allowed.includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405 });

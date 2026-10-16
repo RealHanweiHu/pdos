@@ -15,6 +15,7 @@ from .models import PreparedCandidate
 
 CONTENT_OPERATIONS = frozenset(
     {
+        "platform.link.create",
         "proposal.create",
         "proposal.item.patch",
         "product.definition.item.patch",
@@ -75,7 +76,9 @@ def prepare_candidate(s, scope, operation, arguments, source, *, catalog, regist
     payload = PAYLOADS[operation].model_validate(arguments)
     if payload.prepared_by_run_id or payload.candidate_digest or payload.confirmation_token:
         fail("FORBIDDEN_SCOPE", "server_candidate_binding", "候选身份与摘要由服务器绑定。", 403)
-    product_patch = operation == "product.definition.item.patch"
+    product_patch = operation in {"product.definition.item.patch", "platform.link.create"}
+    if operation == "platform.link.create" and payload.product_id != scope.product_id:
+        fail("FORBIDDEN_SCOPE", "product_run_mismatch", "平台关联不属于运行绑定的型号。", 403)
     if (product_patch and (scope.product_id is None or scope.proposal_id is not None)) or (
         not product_patch
         and (scope.product_id is not None or not _scope_matches(payload, scope.proposal_id))
@@ -205,7 +208,9 @@ def writing_path(s, ctx, command, payload):
         or not candidate
         or run.category_id != ctx.category_id
         or run.requester_id != ctx.requester_id
-        or run.product_id is not None
+        or run.product_id
+        != (command.product_id if command.operation == "platform.link.create" else None)
+        or (command.operation == "platform.link.create" and run.proposal_id is not None)
         or run.reverted_at
         or run.state == "cancelled"
         or candidate.execution_binding["model"]["cancel_epoch"] != run.cancel_epoch

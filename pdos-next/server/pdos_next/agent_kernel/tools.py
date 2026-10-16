@@ -54,6 +54,7 @@ def default_registry():
     from .m3_definition_diff import SCHEMAS as DEFINITION_SCHEMAS
     from .m3_object_reads import SCHEMAS as OBJECT_SCHEMAS
     from .m3_spec_compare import SCHEMAS as COMPARE_SCHEMAS
+    from .platform_reads import SCHEMAS as PLATFORM_SCHEMAS
 
     schemas = {
         **SCHEMAS,
@@ -61,6 +62,7 @@ def default_registry():
         **OBJECT_SCHEMAS,
         **COMPARE_SCHEMAS,
         **DEFINITION_SCHEMAS,
+        **PLATFORM_SCHEMAS,
     }
 
     registry = ToolRegistry(command_tools())

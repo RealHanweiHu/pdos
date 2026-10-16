@@ -1,0 +1,61 @@
+✔ standard matching forwards a scoped read-only POST without creating commands (30.045917ms)
+✔ platform collection, detail and product links forward scoped no-store reads (3.619667ms)
+✔ platform queries reject extra scope, repeated values and invalid filters (2.306166ms)
+✔ platform reads open no unscoped, write or standalone creation route (1.514ms)
+✔ standard matching rejects unscoped paths, queries and wrong origins (1.261084ms)
+✔ standard matching transport failure is a failed read with no uncertain write (1.38125ms)
+✔ positioning forwards the exact scoped GET and every parameter occurrence (2.204291ms)
+✔ spec-benchmark forwards the exact scoped GET and every parameter occurrence (1.236083ms)
+✔ feature-config forwards the exact scoped GET and every parameter occurrence (1.468167ms)
+✔ definition-maturity forwards the exact scoped GET and every parameter occurrence (1.455041ms)
+✔ parameter filters are optional but a single valid proposal id is mandatory for every view (2.831042ms)
+✔ each repeated parameter is validated and extra scope or query keys are rejected (1.670375ms)
+✔ only the four exact scoped paths are opened (1.442375ms)
+✔ views reject writes and other methods without forwarding (3.181042ms)
+✔ existing proposal collection, document, items and participants reads preserve their URLs (1.821542ms)
+✔ session and configuration requirements still guard the new reads (2.076458ms)
+✔ backend denial and read transport failure never become a successful view (2.200333ms)
+✔ existing command body and same-origin write protection remain unchanged (1.188375ms)
+✔ proposal claims collection and fixed detail preserve the authenticated category scope (1.184375ms)
+✔ claim reads reject ambiguous filters, unbound collections and extra scopes before forwarding (1.994417ms)
+✔ only exact claim GET routes are opened and writes remain domain commands (1.681208ms)
+✔ claim reads propagate privacy denial and missing sessions without rewriting results (4.1755ms)
+(node:95684) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/web/src/lib/category-transport.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+node:internal/modules/esm/resolve:271
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/web/src/lib/category-transport' imported from /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/web/src/lib/category-transport.test.ts
+    at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+    at moduleResolve (node:internal/modules/esm/resolve:861:10)
+    at defaultResolve (node:internal/modules/esm/resolve:988:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:697:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:714:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:746:52)
+    at #resolve (node:internal/modules/esm/loader:679:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:599:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:160:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:245:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/web/src/lib/category-transport'
+}
+
+Node.js v25.8.1
+✖ src/lib/category-transport.test.ts (143.996416ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 22
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 385.192792
+
+✖ failing tests:
+
+test at src/lib/category-transport.test.ts:1:1
+✖ src/lib/category-transport.test.ts (143.996416ms)
+  'test failed'

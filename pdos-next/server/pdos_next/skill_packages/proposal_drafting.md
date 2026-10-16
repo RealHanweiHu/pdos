@@ -1,6 +1,6 @@
 ---
 key: proposal_drafting
-version: 0.2.1-draft
+version: 0.2.2-draft
 purpose: 在当前品类内按客户需求、自主新品、派生迭代三个入口起草或修订立项提案，以条目级补丁写入草稿，标明来源、状态与未知，并只提少量关键问题。
 input_schema:
   type: object
@@ -128,7 +128,7 @@ allowed_operations:
   - {tool: proposal.read, tier: READ}
   - {tool: proposal.items.read, tier: READ}
   - {tool: product.baseline.read, tier: READ}
-  - {tool: platform.read, tier: READ, note: 目标为平台兼容范围与版本；当前默认仅占位 schema，实际 handler 未接通，不可视为已可执行}
+  - {tool: platform.read, tier: READ, note: 读取真实平台兼容范围与版本；模型端仅返回品类共享关联}
   - {tool: evidence.search, tier: READ, note: 查已有证据；对原件和网页快照只返回定位与已登记 Claim，不含正文}
   - {tool: calc.cost_subtotal, tier: READ, kind: compute}
   - {tool: skill.load, tier: READ}
@@ -172,7 +172,7 @@ preload_when:
 
 1. **读现状**：`category.read`、`category.parameters.list`（字典骨架与参数版本）、`category.knowledge.list`、`category.competitors.list`；有提案时 `proposal.read`、`proposal.items.read`，记下人工值、各条目 base_version 和已有待决问题。
 2. **按入口加载子技能**（`skill.load`）：
-   - 客户需求 → `rfq_extraction`（客户原件经其 `evidence.extract` 隔离读取；与现有型号的差距由其 `calc.spec_compare` 给出），平台读取须先具备实际 platform.read handler；当前默认缺此前置，保留兼容性未知；
+   - 客户需求 → `rfq_extraction`（客户原件经其 `evidence.extract` 隔离读取；与现有型号的差距由其 `calc.spec_compare` 给出），平台可用性通过 platform.read 实际记录核对，未记录兼容范围或版本时保留 unknown；
    - 派生迭代 → `derivative_diff`（基线用 `product.baseline.read`）；
    - 自主新品 → `competitor_comparison`、`price_band`、`review_pain_clustering`、`jtbd`、`option_comparison`，需要时 `opportunity_scoring`。
    - 提交 G0 前或用户要求"查漏" → `gap_check`。
@@ -192,7 +192,7 @@ proposal.item.patch 接收当前 DTO 的 proposal_id、ops、source_refs 等字�
 
 用户请求撤回单条 Claim 时，evidence.claim.withdraw 的业务输入为 `{claim_id,expected_version,reason}`；引用实际可读 Claim 及版本，工具调用只准备 T1 候选，必须由人确认。不要用 proposal.item.patch 或运行撤回来冒充单条 Claim 撤回；只有真实撤回回执后才说已撤回。
 
-当前默认 platform.read 与 evidence.extract 只有占位注册，尚无实际 handler。客户原件/导入评论须先具备 evidence.extract 隔离抽取能力及真实回执；未接通时保留待抽取，不调用主循环 evidence.artifact.read 或研究工具代读私有原件。平台兼容性保持未知，不把已有平台名当可复用证明。下游涉及的 platform.link.create、product.definition.item.patch 当前也未接通实际 schema/执行端口，不描述为已可执行。对这些缺口明确记录 unfinished，继续其他可核对的起草工作。
+platform.read 已接实际平台记录与受众过滤；私有型号或变体内容须有受控模型出站绑定，当前读取不代发私有兼容说明。evidence.extract 经隔离任务、原件定位和真实回执读取，客户原件/导入评论缺抽取结果时仍保留待抽取，不调用主循环 evidence.artifact.read 或研究工具代读。平台名称或一条关联不证明兼容性，兼容范围或平台版本缺失时保持 unknown。platform.link.create 由 derivative_diff 在用户明确要求后准备 T1 候选，人一次确认；本技能不增获该工具。product.definition.item.patch 按对应技能、实际资格与当前授权办理，不把准备候选描述为已保存。
 
 ### 单条撤回调用示例（纯示意）
 

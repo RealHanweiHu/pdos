@@ -61,6 +61,38 @@ test("standard matching forwards a scoped read-only POST without creating comman
   assert.equal(response.headers.get("Cache-Control"), "no-store");
 });
 
+test("platform collection, detail and product links forward scoped no-store reads", async () => {
+  const h = harness();
+  for (const [endpoint, query] of [
+    [`${root}/platforms`, `product_id=${proposal}&variant_id=${parameter}&code=PLATFORM&include_history=true&page_size=200&cursor=${otherParameter}`],
+    [`${root}/platforms/${proposal}`, "include_history=true"],
+    [`${root}/products/${proposal}/platform-links`, `variant_id=${parameter}&include_history=false`],
+    [`${root}/platforms`, "name_query=%E5%B9%B3%E5%8F%B0"],
+  ]) {
+    const response = await h.send(endpoint, { query });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("Cache-Control"), "no-store");
+    assert.equal(h.calls.at(-1).url, `http://synthetic-api.invalid/${endpoint}?${query}`);
+  }
+});
+
+test("platform queries reject extra scope, repeated values and invalid filters", async () => {
+  const h = harness();
+  for (const query of ["tenant_id=other", `category_id=${category}`, `variant_id=${parameter}`, "product_id=bad", "page_size=201", "page_size=0", "cursor=bad", "include_history=1", "code=", "name_query=%20", "code=A&code=A"]) {
+    assert.equal((await h.send(`${root}/platforms`, { query })).status, 422, query);
+  }
+  assert.equal((await h.send(`${root}/platforms/${proposal}`, { query: `product_id=${parameter}` })).status, 422);
+  assert.equal((await h.send(`${root}/products/${proposal}/platform-links`, { query: `product_id=${parameter}` })).status, 422);
+  assert.equal(h.calls.length, 0);
+});
+
+test("platform reads open no unscoped, write or standalone creation route", async () => {
+  const h = harness();
+  for (const endpoint of ["v1/platforms", `${root}/platforms/invalid`, `${root}/platforms/${proposal}/links`, `${root}/products/invalid/platform-links`]) assert.equal((await h.send(endpoint)).status, 404);
+  for (const endpoint of [`${root}/platforms`, `${root}/platforms/${proposal}`, `${root}/products/${proposal}/platform-links`]) assert.equal((await h.send(endpoint, { method: "POST", body: "{}" })).status, 405);
+  assert.equal(h.calls.length, 0);
+});
+
 test("standard matching rejects unscoped paths, queries and wrong origins", async () => {
   const h = harness();
   assert.equal((await h.send("v1/standard-match", { method: "POST" })).status, 404);

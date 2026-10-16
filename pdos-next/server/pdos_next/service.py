@@ -83,6 +83,7 @@ def command_digest(command: Command) -> str:
 
 
 EVENTS = {
+    "platform.link.create": "platform.linked",
     "research.snapshot.register": "research.snapshot_registered",
     "category.knowledge.add": "category.knowledge_added",
     "category.knowledge.withdraw": "category.knowledge_withdrawn",
@@ -1094,6 +1095,7 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
             "evidence.claim.withdraw",
             "proposal.share",
             "product.definition.item.patch",
+            "platform.link.create",
             "ai.run.revert",
         }:
             subject.confirmation_id = material_confirmation.id

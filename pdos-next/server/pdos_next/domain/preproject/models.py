@@ -39,7 +39,7 @@ class PreparedCandidate(Row, Base):
         CheckConstraint(
             "operation IN ('proposal.create','proposal.item.patch','proposal.question.create',"
             "'category.knowledge.add','category.knowledge.withdraw','category.knowledge.promote',"
-            "'category.parameter.publish','product.definition.item.patch')"
+            "'category.parameter.publish','product.definition.item.patch','platform.link.create')"
         ),
     )
 

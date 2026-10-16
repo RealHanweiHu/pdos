@@ -49,7 +49,7 @@ from tests.products.test_definition_item_commands_pg import current_items, patch
 TOOL = "calc.derivation_diff"
 
 
-def reader(work, arguments, *, proposal_id=None, product_bound=False):
+def reader(work, arguments, *, proposal_id=None, product_bound=False, tool=TOOL):
     store, scope = create_read_run(
         work,
         proposal_id=UUID(proposal_id) if proposal_id else None,
@@ -83,16 +83,16 @@ def reader(work, arguments, *, proposal_id=None, product_bound=False):
         {"fixture": "no provider invocation"},
         execution_binding=binding.model_dump(mode="json"),
     )
-    store.settle(scope, model_id, result={"calls": [{"name": TOOL, "arguments": arguments}]})
+    store.settle(scope, model_id, result={"calls": [{"name": tool, "arguments": arguments}]})
     adapters = bootstrap.adapters()
-    assert TOOL in adapters.read_tools and TOOL in adapters.read_restores
-    assert TOOL not in adapters.compute_engines
+    assert tool in adapters.read_tools and tool in adapters.read_restores
+    assert tool not in adapters.compute_engines
     return SimpleNamespace(
         store=store,
         scope=scope,
         bootstrap=bootstrap,
         host=BoundHost(store, adapters),
-        spec=bootstrap.registry.get(TOOL),
+        spec=bootstrap.registry.get(tool),
         arguments=arguments,
         ctx=bootstrap.commands.context(scope),
         source=ReadSource(model_call_id=model_id, response_index=0),

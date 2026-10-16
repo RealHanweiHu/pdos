@@ -9,6 +9,7 @@ import { OriginalLifecycle } from "@/components/product/original-lifecycle";
 import { OriginalFiles } from "@/components/product/original-files";
 import type { OriginalSecurity } from "@/lib/original-security";
 import { ProductVariants } from "@/components/product/product-variants";
+import { ProductPlatforms } from "@/components/product/product-platforms";
 import { ModelAccounting } from "@/components/product/model-accounting";
 import { BuildPreparation } from "@/components/builds/build-preparation";
 import { ManufacturingPreparation } from "@/components/manufacturing-preparation/manufacturing-preparation";
@@ -207,7 +208,7 @@ export function Workspace({ categoryId, onPaiContext }: { categoryId: string; on
             setData(null); setProducts([]); setProductId(""); setDraft(emptyDraft); setSourceId(""); setQuote(""); setStatement("");
             setError("当前权限需重新核对，资料正文已隐藏。请刷新型号列表后继续。");
           }} />}</WorkspacePanel>
-          <WorkspacePanel key={`variants:${session?.principal_id}:${productId}`} name="variants">{session && <ProductVariants key={`variant:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} sources={data.sources} api={api} onSaved={refresh} />}</WorkspacePanel>
+          <WorkspacePanel key={`variants:${session?.principal_id}:${productId}`} name="variants">{session && <><ProductVariants key={`variant:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} sources={data.sources} api={api} onSaved={refresh} /><ProductPlatforms product={data.product} categoryId={categoryId} principalId={session.principal_id} api={api} onSaved={refresh} /></>}</WorkspacePanel>
           <WorkspacePanel key={`plan:${session?.principal_id}:${productId}`} name="plan">{session && <ProjectPlanning key={`project:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />}</WorkspacePanel>
           <WorkspacePanel key={`build:${session?.principal_id}:${productId}`} name="build">{session && <div className="space-y-6"><BuildPreparation key={`build:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} /><ManufacturingPreparation key={`manufacturing-preparation:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} /></div>}</WorkspacePanel>
           <WorkspacePanel key={`start:${session?.principal_id}:${productId}`} name="start">{session && <BuildStart key={`build-start:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />}</WorkspacePanel>

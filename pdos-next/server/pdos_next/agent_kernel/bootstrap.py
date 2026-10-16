@@ -387,10 +387,12 @@ class Bootstrap:
         from .m3_definition_diff import DefinitionDiffReads
         from .m3_object_reads import M3ObjectReads
         from .m3_spec_compare import SpecCompareReads
+        from .platform_reads import PlatformReads
 
         domain_reads = DomainReads(self.store, self.commands)
         definition_diff = DefinitionDiffReads(self.store, self.commands, domain_reads)
         spec_compare = SpecCompareReads(self.store, self.commands)
+        platform_reads = PlatformReads(self.store, self.commands)
 
         adapters = KernelAdapters(
             route_for=self.route_for,
@@ -405,6 +407,7 @@ class Bootstrap:
                 **M3ObjectReads(self.store, self.commands).handlers(),
                 **handlers,
                 **spec_compare.handlers(),
+                **platform_reads.handlers(),
                 **self.ports.read_tools,
             },
             provider_client=self.ports.provider_client,
@@ -415,7 +418,9 @@ class Bootstrap:
             skill_catalog=self.catalog,
             tool_registry=self.registry,
             compute_engines=ENGINES,
-            read_restores={**spec_compare.restores(), **definition_diff.restores()},
+            read_restores={
+                **spec_compare.restores(), **definition_diff.restores(), **platform_reads.restores()
+            },
         )
         from .extract_adapter import ExtractReadAdapter
         from .extract_graph import ExtractGraph

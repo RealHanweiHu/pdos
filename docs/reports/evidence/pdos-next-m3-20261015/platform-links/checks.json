@@ -1,0 +1,71 @@
+{
+  "migration_head": "s0_0759",
+  "test_database": {
+    "name": "pdos_test",
+    "port": 64245,
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d"
+  },
+  "schema": {
+    "empty_new_tables_roundtrip": [
+      "s0_0758",
+      "s0_0759",
+      "s0_0758",
+      "s0_0759"
+    ],
+    "new_orm_tables_match": true,
+    "history_downgrade_refusal": true
+  },
+  "backend": {
+    "unique_cases": 135,
+    "main_run": {
+      "passed": 134,
+      "failed": 1,
+      "reason": "skill version assertion still expected previous draft version"
+    },
+    "final_affected_recheck": {
+      "passed": 14,
+      "failed": 0,
+      "scope": [
+        "platform read selectors, current restoration, private output, scope and schema",
+        "skill contracts"
+      ]
+    },
+    "full_backend_run": false
+  },
+  "frontend": {
+    "bff_passed": 22,
+    "typecheck": true,
+    "lint": "passed, two existing verification/contracts.js warnings",
+    "production_build": "passed, final platform UI with lazy history and refresh remount"
+  },
+  "browser": {
+    "desktop": {
+      "width": 1440,
+      "scroll_width": 1440,
+      "theme": "light"
+    },
+    "mobile": {
+      "width": 320,
+      "scroll_width": 320,
+      "theme": "dark"
+    },
+    "history_requests_before_expansion": 0,
+    "history_requests_after_expansion": 1,
+    "refresh_closes_obsolete_history": true,
+    "detach_version": 2,
+    "reattach_version": 3,
+    "response_loss_after_actual_commit": true,
+    "reload_original_request_recovery": true,
+    "retry_added_business_rows": 0,
+    "missing_compatibility_and_version": "unknown"
+  },
+  "real_model_calls": 0,
+  "qualification_granted": false,
+  "production_or_push": false,
+  "formal_m3_s1_accepted": false,
+  "remaining": [
+    "Xiaopai natural-language platform candidate UI adoption and real-model end-to-end validation",
+    "private platform-link model outbound binding",
+    "three M3 scenario demonstrations and formal performance/recovery/S1 exits"
+  ]
+}

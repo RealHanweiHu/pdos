@@ -690,6 +690,29 @@ def read_baseline(
     }
     if include_blocks:
         blocks.update(read_blocks(s, ctx, chosen))
+        from pdos_next.domain.products.platforms import read as read_platforms
+
+        linked = read_platforms(
+            s,
+            ctx,
+            {
+                "product_id": product_id,
+                "variant_id": variant_id,
+                "page_size": 200,
+            },
+        )
+        references = [
+            {**platform, "links": [link for link in platform["links"] if link["attached"]]}
+            for platform in linked["items"]
+            if any(link["attached"] for link in platform["links"])
+        ]
+        blocks["platform"] = {
+            "status": "available" if references else "unknown",
+            "items": references,
+            "basis": "current_product_links",
+            "next_cursor": linked["next_cursor"],
+            "reason": None if references else "no_current_platform_links",
+        }
     return {
         "definition": chosen,
         "baseline_kind": kind,

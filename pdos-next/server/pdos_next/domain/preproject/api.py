@@ -49,6 +49,69 @@ def register_routes(app, engine, auth_dependency):
                 definition_revision=definition_revision,
             )
 
+    @app.get("/v1/categories/{category_id}/platforms")
+    def platform_list(
+        product_id: UUID | None = None,
+        variant_id: UUID | None = None,
+        code: str | None = None,
+        name_query: str | None = None,
+        include_history: bool = False,
+        cursor: UUID | None = None,
+        page_size: int = Query(default=50, ge=1, le=200),
+        ctx: Context = auth_dependency,
+    ):
+        from pdos_next.domain.products.platforms import read
+
+        with scope(ctx) as s:
+            return read(
+                s,
+                ctx,
+                {
+                    "product_id": product_id,
+                    "variant_id": variant_id,
+                    "code": code,
+                    "name_query": name_query,
+                    "include_history": include_history,
+                    "cursor": cursor,
+                    "page_size": page_size,
+                },
+            )
+
+    @app.get("/v1/categories/{category_id}/platforms/{platform_id}")
+    def platform_detail(
+        platform_id: UUID,
+        include_history: bool = False,
+        ctx: Context = auth_dependency,
+    ):
+        from pdos_next.domain.products.platforms import read
+
+        with scope(ctx) as s:
+            return read(s, ctx, {"platform_id": platform_id, "include_history": include_history})
+
+    @app.get("/v1/categories/{category_id}/products/{product_id}/platform-links")
+    def product_platform_links(
+        product_id: UUID,
+        variant_id: UUID | None = None,
+        include_history: bool = False,
+        cursor: UUID | None = None,
+        page_size: int = Query(default=50, ge=1, le=200),
+        ctx: Context = auth_dependency,
+    ):
+        from pdos_next.domain.products.platforms import read
+
+        with scope(ctx) as s:
+            return read(
+                s,
+                ctx,
+                {
+                    "product_id": product_id,
+                    "variant_id": variant_id,
+                    "include_history": include_history,
+                    "cursor": cursor,
+                    "page_size": page_size,
+                },
+            )
+
     @app.get("/v1/categories/{category_id}/proposals/{proposal_id}/derivation-diff")
     def derivation_diff(proposal_id: UUID, ctx: Context = auth_dependency):
         from .access import fail, proposal

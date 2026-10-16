@@ -133,7 +133,7 @@ class ToolRegistry:
             raise DomainError("FORBIDDEN_SCOPE", "模型参数不能声明运行权限或身份。")
         for key in ("category_id", "product_id", "proposal_id"):
             if (
-                key == "product_id" and name == "product.baseline.read"
+                key == "product_id" and name in {"product.baseline.read", "platform.read"}
                 and scope.product_id is None and scope.category_id is not None
                 and spec.tier == "READ"
             ):

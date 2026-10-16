@@ -1,0 +1,42 @@
+{
+  "checkpoint": "final-candidate-after-original-retry",
+  "head": "s0_0759",
+  "counts": {
+    "platforms": 2,
+    "platform_product_links": 4,
+    "platform_link_current": 2,
+    "action_receipts": 5,
+    "audit_entries": 5,
+    "outbox_events": 5
+  },
+  "links": [
+    {
+      "id": "13a80967-a45c-42e8-8c7b-0f8e40f52b10",
+      "platform_id": "a9de9dd9-e685-42d6-af41-855f175ceb03",
+      "version": 1,
+      "action": "attach",
+      "receipt_id": "ebe503d7-1ad7-4f09-8717-6cb766f3e4c8"
+    },
+    {
+      "id": "a1b390f4-8d47-4a47-bbf1-683c30927924",
+      "platform_id": "c0a6a6ca-8fe7-41fb-8a8b-11a799b9e265",
+      "version": 1,
+      "action": "attach",
+      "receipt_id": "12c26735-ca6a-4a98-8462-1764cc5a35d7"
+    },
+    {
+      "id": "518a112c-01ca-488a-a0e4-05190b5165f5",
+      "platform_id": "a9de9dd9-e685-42d6-af41-855f175ceb03",
+      "version": 2,
+      "action": "detach",
+      "receipt_id": "12d47e05-67dd-4791-a19f-075f89293d63"
+    },
+    {
+      "id": "806c5612-fc50-42b7-99db-d5f33fac3437",
+      "platform_id": "a9de9dd9-e685-42d6-af41-855f175ceb03",
+      "version": 3,
+      "action": "attach",
+      "receipt_id": "0db3cac5-5ade-48ca-b17d-b079c080cdf7"
+    }
+  ]
+}

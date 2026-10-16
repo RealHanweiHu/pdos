@@ -1,0 +1,76 @@
+.....................F.................................................. [ 53%]
+...............................................................          [100%]
+=================================== FAILURES ===================================
+_______ test_skill_declares_actual_native_wire_schema[proposal_drafting] _______
+
+key = 'proposal_drafting'
+
+    @pytest.mark.parametrize("key", SKILLS)
+    def test_skill_declares_actual_native_wire_schema(key):
+        current = skill(key)
+        assert current.metadata["output_schema"] == WireAgentOutput.model_json_schema()
+>       assert current.version == "0.2.1-draft"
+E       AssertionError: assert '0.2.2-draft' == '0.2.1-draft'
+E         
+E         - 0.2.1-draft
+E         ?     ^
+E         + 0.2.2-draft
+E         ?     ^
+
+tests/agent_kernel/test_m3_skill_contracts.py:34: AssertionError
+=============================== warnings summary ===============================
+tests/products/test_platform_links_pg.py: 10 warnings
+tests/agent_kernel/test_platform_reads_pg.py: 2 warnings
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:175: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([platform])
+
+tests/products/test_platform_links_pg.py: 13 warnings
+tests/agent_kernel/test_platform_reads_pg.py: 3 warnings
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:192: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([link])
+
+tests/products/test_platform_links_pg.py: 1 warning
+tests/agent_kernel/test_platform_reads_pg.py: 1 warning
+tests/products/test_definition_item_revert_pg.py: 8 warnings
+tests/products/test_variants_transactions.py: 19 warnings
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/products/test_definition_item_revert_pg.py: 11 warnings
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_items.py:369: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(rows)
+
+tests/products/test_definition_item_revert_pg.py: 11 warnings
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_items.py:409: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(subject.changed_rows)
+
+tests/products/test_definition_item_revert_pg.py::test_revert_compensates_entire_same_run_chain_and_preserves_history
+tests/products/test_definition_item_revert_pg.py::test_revert_restores_value_before_this_run_not_previous_run
+tests/products/test_definition_item_revert_pg.py::test_revert_keeps_human_changed_item_and_reverts_unmodified_sibling
+tests/products/test_definition_item_revert_pg.py::test_revert_receipt_failure_is_atomic_and_confirmation_reusable
+tests/products/test_definition_item_revert_pg.py::test_revert_receipt_failure_is_atomic_and_confirmation_reusable
+tests/products/test_definition_item_revert_pg.py::test_actual_t0_remove_keeps_sparse_request_and_reverts_whole_chain
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_items.py:548: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(rows)
+
+tests/products/test_definition_item_revert_pg.py::test_revert_cannot_change_fixed_definition_consumed_by_private_proposal
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:689: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/products/test_definition_item_revert_pg.py::test_revert_cannot_change_fixed_definition_consumed_by_private_proposal
+tests/products/test_definition_item_revert_pg.py::test_revert_cannot_change_fixed_definition_consumed_by_private_proposal
+tests/products/test_definition_item_revert_pg.py::test_revert_cannot_change_fixed_definition_consumed_by_private_proposal
+tests/products/test_definition_item_revert_pg.py::test_revert_cannot_change_fixed_definition_consumed_by_private_proposal
+tests/products/test_definition_item_revert_pg.py::test_revert_cannot_change_fixed_definition_consumed_by_private_proposal
+tests/products/test_definition_item_revert_pg.py::test_revert_cannot_change_fixed_definition_consumed_by_private_proposal
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:574: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/products/test_variants_transactions.py::test_foreign_product_parent_is_rejected_even_for_same_owner
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_m3_skill_contracts.py::test_skill_declares_actual_native_wire_schema[proposal_drafting]
+1 failed, 134 passed, 93 warnings in 88.71s (0:01:28)
