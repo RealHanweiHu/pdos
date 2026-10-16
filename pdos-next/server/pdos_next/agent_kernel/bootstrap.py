@@ -398,7 +398,7 @@ class Bootstrap:
 
         domain_reads = DomainReads(self.store, self.commands)
         definition_diff = DefinitionDiffReads(self.store, self.commands, domain_reads)
-        spec_compare = SpecCompareReads(self.store, self.commands)
+        spec_compare = SpecCompareReads(self.store, self.commands, self.catalog)
         platform_reads = PlatformReads(self.store, self.commands)
 
         adapters = KernelAdapters(

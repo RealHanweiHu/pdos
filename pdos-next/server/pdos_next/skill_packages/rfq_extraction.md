@@ -1,6 +1,6 @@
 ---
 key: rfq_extraction
-version: 0.3.0-draft
+version: 0.4.0-draft
 purpose: 经隔离子任务从客户 RFQ、规格书、图纸说明和邮件中逐条抽取需求，保留原文位置、数值、单位、工况、否定与例外，映射到规格字典并登记为证据，列出冲突、未知、差距和待问客户/专家的问题。
 row_schemas:
   - {kind: rfq_requirement, version: "1"}
@@ -89,7 +89,7 @@ preload_when:
 1. `proposal.read` 确认提案私有、入口为客户需求；`proposal.items.read` 看已有条目与已登记证据，避免重复抽取。
 2. **读原件一律走 `evidence.extract`**：按原件版本发起隔离子任务（默认本提案挂载的全部原件，可分批并行），传本技能的需求行结构作为 row_schema，用户只看某主题时传 focus；子任务用 `evidence.artifact.read` 按定位分页读原文，交回结构化需求行和代码生成的覆盖说明。主循环只看这些行，不调用 `evidence.artifact.read`；`evidence.search` 对原件只返回定位与已登记 Claim、不返回正文，只用于在本提案范围内查已登记证据，不能代替抽取。
 3. `category.parameters.list` 把需求映射到参数版本；字典确实缺某参数时，起草通用新参数，用 `category.parameter.publish`（T1）请人确认。本技能在私有提案中运行，服务器在预览与确认时对候选做与去标识沉淀相同的身份检查：含客户名、该提案原件文件名或来源链接即被拒（identity_not_removed），预览列出命中项；被拒后去掉命中内容重拟，不绕过。
-4. `product.baseline.read` 读候选型号/变体已发布定义；用 `calc.spec_compare` 做需求与现有型号的同口径差距比较。
+4. **先核对标准型号**：拿到 `evidence.extract` 返回的实际 `execution_ref.call_id`，调用 `calc.spec_compare`，传 `subjects=[{type: product, id: 候选型号ID}]` 和 `extraction_ref={call_id, row_indices: [本次选取的行号]}`；不传 `parameter_ids`，省略 row_indices 表示本次实际抽取的全部行。服务器只消费本运行已结算并重验的 RFQ 行，按实际参数版本或唯一精确键/名称给出映射，用既有标准品引擎核对已发布定义；不接受另填客户值。映射有歧义或无对应参数时保留待映射。原单位、工况、单边上下限、否定和例外不补全、不换算；每条行号、引文、覆盖范围和非规格要求都保留。`selected_specs_meet` 只说明所选规格数值满足，不代表客户全部要求满足或人的理解已确认；未知/覆盖缺口/非规格要求须一并说明。需补参数时按第3步办理；派生差距另读候选型号/变体的固定定义，不以此结果代替 G0。
 5. **登记证据**：每条需求 `evidence.claim.record`（T0，性质 extracted，引用原件定位与片段，可一批登记）。spec 类用 `proposal.item.patch`（T0，op=upsert）写 spec 条目，source_refs 指向该 Claim；功能与包装类用 `evidence.link.create`（T0）关联到 section `features_in_out`，合规类到 `certification_regions`，商务类到 commercial_target，其他到 `summary`，不再只能写成叙述。目标 section 还没有时先 upsert 一段只列需求要点的简短 section。
 6. `proposal.question.create`（T1）建专家问题：所需专业角色写在问题正文，负责人只能是提案负责人或评审人（私有提案），期限必填。客户澄清问题只在输出中起草，由人通过 CRM 发送。
 7. `category.knowledge.promote`（T1）只在用户明确要求沉淀时调用，提交去标识后的摘要；人必须确认已去标识。

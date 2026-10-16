@@ -1,0 +1,652 @@
+{
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "database": "pdos_test",
+  "head": "s0_0760",
+  "real_provider_calls": 0,
+  "note": "Historical actual completed read results from the final three isolated synthetic cases. Dictionary/source changes performed by those tests can now invalidate replay; these are immutable original results, not current applicability claims.",
+  "items": [
+    {
+      "call_id": "84ed07d3-5190-4a3e-9893-2385cbe89141",
+      "run_id": "820f169b-c818-4905-9486-90e57d72140b",
+      "proposal_id": "e58c044b-c9c0-4f8e-a72b-890c2ce7fe86",
+      "run_private_context": true,
+      "data_categories": [
+        "customer_original",
+        "internal"
+      ],
+      "binding": {
+        "kind": "read",
+        "step": "tools",
+        "tool": "calc.spec_compare",
+        "graph": "xiaopai",
+        "run_id": "820f169b-c818-4905-9486-90e57d72140b",
+        "call_key": "agent:820f169b-c818-4905-9486-90e57d72140b:model:2ca3c0a1-762c-4285-a278-c4840ec27360:0",
+        "isolation": "main",
+        "read_kind": "ordinary/v1",
+        "tenant_id": "b6751413-b5d3-4eb0-b12c-7834d845f4a3",
+        "writer_id": "0f12df16-1ec1-41f3-b439-2b0a2e3ad70d",
+        "product_id": null,
+        "session_id": "6dcb3cbe-c9b2-4408-b24e-4e09fb20b482",
+        "category_id": "bd872e72-2cf6-4d0f-b805-1ef3d7613caa",
+        "proposal_id": "e58c044b-c9c0-4f8e-a72b-890c2ce7fe86",
+        "cancel_epoch": 0,
+        "requester_id": "945d366c-3fa4-47a0-80fb-477fd5cef2ae",
+        "model_call_id": "2ca3c0a1-762c-4285-a278-c4840ec27360",
+        "model_version": "synthetic@1",
+        "prompt_digest": "983f7396a3e4276f149cf6c0c5ee8b3fd0c6984fcf9647da21f0cd818a737563",
+        "proof_version": 1,
+        "response_index": 0,
+        "data_categories": [
+          "customer_original",
+          "internal"
+        ],
+        "private_context": true,
+        "model_route_digest": "e1ef59e89f88cc72b7dbb265b0958ddea22251263c0633ae93ac09d7da13ed4c",
+        "customer_identities": [],
+        "tool_definitions_digest": "e968aca3838f809e2cedbf5470380c31da59975c58383d36bb9f66cf636cb1ee"
+      },
+      "actual_result": {
+        "mode": "extracted_standard_match",
+        "rows": [
+          {
+            "kind": "compliance",
+            "missing": [],
+            "citation": {
+              "quote": "Synthetic requirement: noise must not exceed 75 dB(A), measured at one meter.",
+              "locator": "line:1",
+              "revision": 1,
+              "artifact_id": "60be36b7-d2ee-4109-9d8f-1247c15a567f",
+              "read_call_ids": [
+                "e284bfac-3be9-42ab-b6eb-51bf7b5b097e"
+              ]
+            },
+            "row_index": 0,
+            "statement": "噪声不高于75 dB(A)，一米处测量"
+          }
+        ],
+        "summary": {
+          "spec_rows": 0,
+          "mapped_specs": 0,
+          "non_spec_rows": 1,
+          "selected_rows": 1,
+          "unmapped_specs": 0,
+          "ambiguous_specs": 0
+        },
+        "coverage": [
+          {
+            "revision": 1,
+            "parse_code": null,
+            "artifact_id": "60be36b7-d2ee-4109-9d8f-1247c15a567f",
+            "parsed_text": {
+              "fully_read": true,
+              "read_ranges": [
+                [
+                  1,
+                  1
+                ]
+              ],
+              "total_lines": 1,
+              "unread_ranges": []
+            },
+            "content_hash": "b354d1cdc56602433497c5fbcea89a8ad6566a4e395c6886943ff73c36f8fe66",
+            "parse_status": "parsed",
+            "locator_digest": "d1a155fe56286347897eadde2cd52efa2b89ddc9a43521a676c2d2be08c16f1e",
+            "original_locations": {
+              "read": [
+                {
+                  "row": null,
+                  "cell": null,
+                  "kind": "line",
+                  "line": 1,
+                  "page": null,
+                  "sheet": null,
+                  "column": null
+                }
+              ],
+              "basis": "line",
+              "reason": null,
+              "unlisted": [],
+              "fully_read": true,
+              "limitation": "Parser-declared text locations only; visual/OCR and semantic extraction completeness are not established.",
+              "represented": [
+                {
+                  "row": null,
+                  "cell": null,
+                  "kind": "line",
+                  "line": 1,
+                  "page": null,
+                  "sheet": null,
+                  "column": null
+                }
+              ],
+              "extent_known": true,
+              "unrepresented": [],
+              "parser_version": "pdos-evidence-v1",
+              "fully_represented": true
+            }
+          }
+        ],
+        "failures": [],
+        "products": [],
+        "rejected": [],
+        "next_step": "confirm_full_scope_then_crm",
+        "limitations": [
+          "selected_specifications_only",
+          "human_understanding_not_confirmed",
+          "non_spec_requirements_require_review"
+        ],
+        "proposal_id": "e58c044b-c9c0-4f8e-a72b-890c2ce7fe86",
+        "input_digest": "a685f5252420d50b6aa73b2b0f3340c047094d10dadc5d651e6a25de8919fe4d",
+        "requirements": [],
+        "engine_version": "extracted-standard-match/v1",
+        "extraction_ref": {
+          "call_id": "732b798f-f364-46d3-b826-710eb80b550e",
+          "row_indices": [
+            0
+          ],
+          "result_digest": "a1fd8253e2d19a2a078ddeb4cca766113c07ba1b2ed2a0d1d7d248ee47c8db7c"
+        },
+        "comparison_digest": null,
+        "selected_product_ids": [
+          "18f1de9f-a3b0-487e-9c23-7642c59241e9"
+        ]
+      }
+    },
+    {
+      "call_id": "af43892a-c285-48ce-92c8-2a461b57a885",
+      "run_id": "832c7a81-56cf-4a79-a669-7ae9a5e17f9e",
+      "proposal_id": "b0ba4a1b-ed68-4c82-897d-0b0ec1c92496",
+      "run_private_context": true,
+      "data_categories": [
+        "customer_original",
+        "internal"
+      ],
+      "binding": {
+        "kind": "read",
+        "step": "tools",
+        "tool": "calc.spec_compare",
+        "graph": "xiaopai",
+        "run_id": "832c7a81-56cf-4a79-a669-7ae9a5e17f9e",
+        "call_key": "agent:832c7a81-56cf-4a79-a669-7ae9a5e17f9e:model:8ab7ca8e-3a49-44cd-86b3-be5c57abaea0:0",
+        "isolation": "main",
+        "read_kind": "ordinary/v1",
+        "tenant_id": "8b4cf2a3-508c-4cf8-8af0-6c097029e135",
+        "writer_id": "89274b69-96e3-4bbc-84e2-f4355c4a6be0",
+        "product_id": null,
+        "session_id": "e4f6757e-cb7e-4e6a-abe1-340978cd52b1",
+        "category_id": "ee730861-c3b9-4dbf-ba39-8d1ade6115a2",
+        "proposal_id": "b0ba4a1b-ed68-4c82-897d-0b0ec1c92496",
+        "cancel_epoch": 0,
+        "requester_id": "6fd5a7df-6cb5-4f3a-862a-01846054c6c9",
+        "model_call_id": "8ab7ca8e-3a49-44cd-86b3-be5c57abaea0",
+        "model_version": "synthetic@1",
+        "prompt_digest": "983f7396a3e4276f149cf6c0c5ee8b3fd0c6984fcf9647da21f0cd818a737563",
+        "proof_version": 1,
+        "response_index": 0,
+        "data_categories": [
+          "customer_original",
+          "internal"
+        ],
+        "private_context": true,
+        "model_route_digest": "e1ef59e89f88cc72b7dbb265b0958ddea22251263c0633ae93ac09d7da13ed4c",
+        "customer_identities": [],
+        "tool_definitions_digest": "e968aca3838f809e2cedbf5470380c31da59975c58383d36bb9f66cf636cb1ee"
+      },
+      "actual_result": {
+        "mode": "extracted_standard_match",
+        "rows": [
+          {
+            "kind": "spec",
+            "missing": [
+              "unit",
+              "condition_note"
+            ],
+            "citation": {
+              "quote": "Synthetic requirement: noise must not exceed 75 dB(A), measured at one meter.",
+              "locator": "line:1",
+              "revision": 1,
+              "artifact_id": "fbed39ee-233f-4ab0-9702-21a5ee45ded9",
+              "read_call_ids": [
+                "ee53bd2e-769d-45bc-ba2f-9de0a6056ef3"
+              ]
+            },
+            "row_index": 0,
+            "statement": "噪声不高于75 dB(A)，一米处测量",
+            "extracted_spec": {
+              "key": "noise",
+              "unit": null,
+              "lower": null,
+              "upper": "75",
+              "value": null,
+              "reason": null,
+              "modality": null,
+              "parameter": "噪声",
+              "tolerance": null,
+              "exceptions": [],
+              "text_value": null,
+              "value_type": "number",
+              "availability": "known",
+              "parameter_id": null,
+              "condition_note": null,
+              "test_conditions": [],
+              "parameter_version": null,
+              "applicable_variants": [],
+              "verification_method": null,
+              "acceptance_criterion": null
+            },
+            "parameter_mapping": {
+              "basis": "exact_dictionary_label",
+              "status": "mapped",
+              "candidates": [],
+              "parameter_id": "d358323e-130f-47ff-a0f4-0ea004dcc9f7",
+              "parameter_version": 1
+            },
+            "requirement_index": 0
+          }
+        ],
+        "summary": {
+          "spec_rows": 1,
+          "mapped_specs": 1,
+          "non_spec_rows": 0,
+          "selected_rows": 1,
+          "unmapped_specs": 0,
+          "ambiguous_specs": 0
+        },
+        "coverage": [
+          {
+            "revision": 1,
+            "parse_code": null,
+            "artifact_id": "fbed39ee-233f-4ab0-9702-21a5ee45ded9",
+            "parsed_text": {
+              "fully_read": true,
+              "read_ranges": [
+                [
+                  1,
+                  1
+                ]
+              ],
+              "total_lines": 1,
+              "unread_ranges": []
+            },
+            "content_hash": "b354d1cdc56602433497c5fbcea89a8ad6566a4e395c6886943ff73c36f8fe66",
+            "parse_status": "parsed",
+            "locator_digest": "d1a155fe56286347897eadde2cd52efa2b89ddc9a43521a676c2d2be08c16f1e",
+            "original_locations": {
+              "read": [
+                {
+                  "row": null,
+                  "cell": null,
+                  "kind": "line",
+                  "line": 1,
+                  "page": null,
+                  "sheet": null,
+                  "column": null
+                }
+              ],
+              "basis": "line",
+              "reason": null,
+              "unlisted": [],
+              "fully_read": true,
+              "limitation": "Parser-declared text locations only; visual/OCR and semantic extraction completeness are not established.",
+              "represented": [
+                {
+                  "row": null,
+                  "cell": null,
+                  "kind": "line",
+                  "line": 1,
+                  "page": null,
+                  "sheet": null,
+                  "column": null
+                }
+              ],
+              "extent_known": true,
+              "unrepresented": [],
+              "parser_version": "pdos-evidence-v1",
+              "fully_represented": true
+            }
+          }
+        ],
+        "failures": [],
+        "products": [
+          {
+            "name": "Synthetic product",
+            "checks": [
+              {
+                "status": "unknown",
+                "reasons": [
+                  "condition_missing",
+                  "different_parameter_or_conditions",
+                  "unit_missing"
+                ],
+                "observation": null,
+                "requirement_index": 0
+              }
+            ],
+            "counts": {
+              "meets": 0,
+              "differs": 0,
+              "unknown": 1
+            },
+            "status": "needs_review",
+            "product_id": "41b1ea4e-b71c-4a4d-b7f0-cc9ec9bcc159",
+            "baseline_kind": "published",
+            "definition_id": "fe46c712-7edc-40b2-921b-e3f94b9e6b30",
+            "definition_revision": 1
+          }
+        ],
+        "rejected": [],
+        "next_step": "confirm_full_scope_then_crm",
+        "limitations": [
+          "selected_specifications_only",
+          "human_understanding_not_confirmed"
+        ],
+        "proposal_id": "b0ba4a1b-ed68-4c82-897d-0b0ec1c92496",
+        "input_digest": "9ebba1e94d082e3f93b3d0f56363b5651dd8d965b4f204c72bb39365aae9c05e",
+        "requirements": [
+          {
+            "key": "noise",
+            "unit": null,
+            "lower": null,
+            "upper": "75",
+            "value": null,
+            "nature": "extracted",
+            "reason": null,
+            "modality": null,
+            "owner_id": null,
+            "parameter": "噪声",
+            "tolerance": null,
+            "exceptions": [],
+            "text_value": null,
+            "value_type": "number",
+            "item_status": "ai_draft",
+            "availability": "known",
+            "parameter_id": "d358323e-130f-47ff-a0f4-0ea004dcc9f7",
+            "condition_note": null,
+            "test_conditions": [],
+            "parameter_version": 1,
+            "applicable_variants": [],
+            "verification_method": null,
+            "acceptance_criterion": null
+          }
+        ],
+        "engine_version": "extracted-standard-match/v1",
+        "extraction_ref": {
+          "call_id": "fdafdc86-e575-4475-90ee-5208171b2628",
+          "row_indices": [
+            0
+          ],
+          "result_digest": "722a594b11e3b649b1c1f4905ae3c4b25932f1b27a2d8d29fb2ca9e18bd32ce0"
+        },
+        "comparison_digest": "222dd53596312800804186b4e1214259dd7e0b532e8e7d89ab438958a90bfe35",
+        "selected_product_ids": [
+          "41b1ea4e-b71c-4a4d-b7f0-cc9ec9bcc159"
+        ]
+      }
+    },
+    {
+      "call_id": "cb9fe252-fce9-48a9-a282-a0b5fb12a89e",
+      "run_id": "81b058ec-d3d3-4ad1-8e49-ec644872b6c1",
+      "proposal_id": "20630136-6819-428a-81dd-561c4d5a210e",
+      "run_private_context": true,
+      "data_categories": [
+        "customer_original",
+        "internal"
+      ],
+      "binding": {
+        "kind": "read",
+        "step": "tools",
+        "tool": "calc.spec_compare",
+        "graph": "xiaopai",
+        "run_id": "81b058ec-d3d3-4ad1-8e49-ec644872b6c1",
+        "call_key": "agent:81b058ec-d3d3-4ad1-8e49-ec644872b6c1:model:74764721-9e78-4354-b389-58551098b51e:0",
+        "isolation": "main",
+        "read_kind": "ordinary/v1",
+        "tenant_id": "7418d298-317f-4637-a65e-10231c2c316c",
+        "writer_id": "0f002050-f8ec-4847-abd8-a04d6351ab9d",
+        "product_id": null,
+        "session_id": "9c8a4a3a-7a00-40fc-9ba2-c710b2ccdb2c",
+        "category_id": "c89f51d7-2576-4f45-81fd-8d13ee3f523c",
+        "proposal_id": "20630136-6819-428a-81dd-561c4d5a210e",
+        "cancel_epoch": 0,
+        "requester_id": "6d41685f-29f5-43e6-84c5-b588ec741ba0",
+        "model_call_id": "74764721-9e78-4354-b389-58551098b51e",
+        "model_version": "synthetic@1",
+        "prompt_digest": "983f7396a3e4276f149cf6c0c5ee8b3fd0c6984fcf9647da21f0cd818a737563",
+        "proof_version": 1,
+        "response_index": 0,
+        "data_categories": [
+          "customer_original",
+          "internal"
+        ],
+        "private_context": true,
+        "model_route_digest": "e1ef59e89f88cc72b7dbb265b0958ddea22251263c0633ae93ac09d7da13ed4c",
+        "customer_identities": [],
+        "tool_definitions_digest": "e968aca3838f809e2cedbf5470380c31da59975c58383d36bb9f66cf636cb1ee"
+      },
+      "actual_result": {
+        "mode": "extracted_standard_match",
+        "rows": [
+          {
+            "kind": "spec",
+            "missing": [],
+            "citation": {
+              "quote": "Synthetic requirement: noise must not exceed 75 dB(A), measured at one meter.",
+              "locator": "line:1",
+              "revision": 1,
+              "artifact_id": "5bb84296-92fc-4f11-8777-0b822417bb87",
+              "read_call_ids": [
+                "aa370290-6d99-4e91-abc4-ed6b80b0d129"
+              ]
+            },
+            "row_index": 0,
+            "statement": "噪声不高于75 dB(A)，一米处测量",
+            "extracted_spec": {
+              "key": "noise",
+              "unit": "dB(A)",
+              "lower": null,
+              "upper": "75",
+              "value": null,
+              "reason": null,
+              "modality": null,
+              "parameter": "噪声",
+              "tolerance": null,
+              "exceptions": [],
+              "text_value": null,
+              "value_type": "number",
+              "availability": "known",
+              "parameter_id": null,
+              "condition_note": "one meter",
+              "test_conditions": [],
+              "parameter_version": null,
+              "applicable_variants": [],
+              "verification_method": null,
+              "acceptance_criterion": null
+            },
+            "parameter_mapping": {
+              "basis": "exact_dictionary_label",
+              "status": "mapped",
+              "candidates": [],
+              "parameter_id": "9e9182f7-0e38-480b-80ae-074f749c71e7",
+              "parameter_version": 1
+            },
+            "requirement_index": 0
+          }
+        ],
+        "summary": {
+          "spec_rows": 1,
+          "mapped_specs": 1,
+          "non_spec_rows": 0,
+          "selected_rows": 1,
+          "unmapped_specs": 0,
+          "ambiguous_specs": 0
+        },
+        "coverage": [
+          {
+            "revision": 1,
+            "parse_code": null,
+            "artifact_id": "5bb84296-92fc-4f11-8777-0b822417bb87",
+            "parsed_text": {
+              "fully_read": true,
+              "read_ranges": [
+                [
+                  1,
+                  1
+                ]
+              ],
+              "total_lines": 1,
+              "unread_ranges": []
+            },
+            "content_hash": "b354d1cdc56602433497c5fbcea89a8ad6566a4e395c6886943ff73c36f8fe66",
+            "parse_status": "parsed",
+            "locator_digest": "d1a155fe56286347897eadde2cd52efa2b89ddc9a43521a676c2d2be08c16f1e",
+            "original_locations": {
+              "read": [
+                {
+                  "row": null,
+                  "cell": null,
+                  "kind": "line",
+                  "line": 1,
+                  "page": null,
+                  "sheet": null,
+                  "column": null
+                }
+              ],
+              "basis": "line",
+              "reason": null,
+              "unlisted": [],
+              "fully_read": true,
+              "limitation": "Parser-declared text locations only; visual/OCR and semantic extraction completeness are not established.",
+              "represented": [
+                {
+                  "row": null,
+                  "cell": null,
+                  "kind": "line",
+                  "line": 1,
+                  "page": null,
+                  "sheet": null,
+                  "column": null
+                }
+              ],
+              "extent_known": true,
+              "unrepresented": [],
+              "parser_version": "pdos-evidence-v1",
+              "fully_represented": true
+            }
+          }
+        ],
+        "failures": [],
+        "products": [
+          {
+            "name": "Synthetic product",
+            "checks": [
+              {
+                "status": "meets",
+                "reasons": [],
+                "observation": {
+                  "key": "noise",
+                  "kind": "spec",
+                  "unit": "dB(A)",
+                  "lower": null,
+                  "upper": null,
+                  "value": "70.000000000000",
+                  "nature": "extracted",
+                  "reasons": [],
+                  "subject": {
+                    "id": "09308db0-75c6-4630-89fc-56c8e633c367",
+                    "type": "product"
+                  },
+                  "modality": "should",
+                  "parameter": "噪声",
+                  "tolerance": null,
+                  "comparable": true,
+                  "exceptions": [],
+                  "text_value": null,
+                  "value_type": "number",
+                  "source_refs": [
+                    {
+                      "id": "6d41685f-29f5-43e6-84c5-b588ec741ba0",
+                      "type": "human",
+                      "version": 1,
+                      "statement": "仅父来源保留的合成逐字原文"
+                    }
+                  ],
+                  "availability": "known",
+                  "parameter_id": "9e9182f7-0e38-480b-80ae-074f749c71e7",
+                  "evidence_kind": "extracted",
+                  "condition_note": "one meter",
+                  "evidence_label": "原文抽取",
+                  "observation_id": "672401e2-e670-47f0-88cd-c73c92da8d34:specs:0",
+                  "vendor_claimed": null,
+                  "test_conditions": [],
+                  "condition_source": "observation",
+                  "parameter_version": 1,
+                  "applicable_variants": [],
+                  "verification_method": "合成检查方法",
+                  "acceptance_criterion": "合成验收口径"
+                },
+                "requirement_index": 0
+              }
+            ],
+            "counts": {
+              "meets": 1,
+              "differs": 0,
+              "unknown": 0
+            },
+            "status": "selected_specs_meet",
+            "product_id": "09308db0-75c6-4630-89fc-56c8e633c367",
+            "baseline_kind": "published",
+            "definition_id": "672401e2-e670-47f0-88cd-c73c92da8d34",
+            "definition_revision": 1
+          }
+        ],
+        "rejected": [],
+        "next_step": "confirm_full_scope_then_crm",
+        "limitations": [
+          "selected_specifications_only",
+          "human_understanding_not_confirmed"
+        ],
+        "proposal_id": "20630136-6819-428a-81dd-561c4d5a210e",
+        "input_digest": "d70daaf759bb8422cf061b06b81ba2ddcd0b08cf66d7df5d47ac8fcd2cb006aa",
+        "requirements": [
+          {
+            "key": "noise",
+            "unit": "dB(A)",
+            "lower": null,
+            "upper": "75",
+            "value": null,
+            "nature": "extracted",
+            "reason": null,
+            "modality": null,
+            "owner_id": null,
+            "parameter": "噪声",
+            "tolerance": null,
+            "exceptions": [],
+            "text_value": null,
+            "value_type": "number",
+            "item_status": "ai_draft",
+            "availability": "known",
+            "parameter_id": "9e9182f7-0e38-480b-80ae-074f749c71e7",
+            "condition_note": "one meter",
+            "test_conditions": [],
+            "parameter_version": 1,
+            "applicable_variants": [],
+            "verification_method": null,
+            "acceptance_criterion": null
+          }
+        ],
+        "engine_version": "extracted-standard-match/v1",
+        "extraction_ref": {
+          "call_id": "81573718-5ab4-4e6a-af10-60c93933f696",
+          "row_indices": [
+            0
+          ],
+          "result_digest": "b916be522b9f03f723db976b8e3e3c80ce7da54cdae13ece6a4c11ecbd72e673"
+        },
+        "comparison_digest": "0eaad0456d14b52d736c1439a9180a49f1ee000a2de212668382f2f1366abe12",
+        "selected_product_ids": [
+          "09308db0-75c6-4630-89fc-56c8e633c367"
+        ]
+      }
+    }
+  ]
+}

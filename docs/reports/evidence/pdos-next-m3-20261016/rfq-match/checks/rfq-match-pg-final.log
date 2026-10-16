@@ -1,0 +1,50 @@
+..........................                                               [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_extracted_match_pg.py: 4 warnings
+tests/agent_kernel/test_m3_spec_compare_pg.py: 1 warning
+tests/preproject/test_standard_match_pg.py: 11 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:512: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_extracted_match_pg.py: 3 warnings
+tests/agent_kernel/test_m3_spec_compare_pg.py: 6 warnings
+tests/agent_kernel/test_extract_dispatch_pg.py: 5 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:689: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_m3_spec_compare_pg.py: 30 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:574: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_private_objects_stop_before_comparison_or_source_projection[product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_g0_baseline_ignores_unselected_private_definition_history
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:854: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_private_objects_stop_before_comparison_or_source_projection[product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_g0_baseline_ignores_unselected_private_definition_history
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:909: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_private_objects_stop_before_comparison_or_source_projection[product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_g0_baseline_ignores_unselected_private_definition_history
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_private_objects_stop_before_comparison_or_source_projection[product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_g0_baseline_ignores_unselected_private_definition_history
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_g0_baseline_ignores_unselected_private_definition_history
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_private_objects_stop_before_comparison_or_source_projection[product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_g0_baseline_ignores_unselected_private_definition_history
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_claim_withdrawal_invalidates_completed_comparison_recovery
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:557: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+26 passed, 72 warnings in 60.98s (0:01:00)

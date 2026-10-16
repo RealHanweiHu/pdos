@@ -2,6 +2,7 @@
 
 from uuid import UUID
 
+from pydantic import model_validator
 from sqlalchemy import select
 
 from pdos_next.database import tenant_session
@@ -17,10 +18,26 @@ from pdos_next.service import digest, require_access
 
 from .domain_reads import _public_definition
 from .execution import check_run_binding
+from .m3_extracted_match import ExtractionRows, compare_extracted
 from .m3_object_reads import _public_proposal, _public_sources, _references
 from .models import AgentRun, AgentSession, PublicWebSnapshot
 
-SCHEMAS = {"calc.spec_compare": spec_compare.SpecCompareInput}
+
+class AgentSpecCompareInput(spec_compare.SpecCompareInput):
+    extraction_ref: ExtractionRows | None = None
+
+    @model_validator(mode="after")
+    def extracted_products_only(self):
+        if self.extraction_ref is not None and (
+            self.parameter_ids or any(subject.type != "product" for subject in self.subjects)
+        ):
+            raise ValueError(
+                "Extracted requirements compare selected product subjects without parameter filters"
+            )
+        return self
+
+
+SCHEMAS = {"calc.spec_compare": AgentSpecCompareInput}
 
 
 def _unavailable():
@@ -257,8 +274,8 @@ class _PublicObjects:
 
 
 class SpecCompareReads:
-    def __init__(self, store, commands):
-        self.store, self.commands = store, commands
+    def __init__(self, store, commands, catalog=None):
+        self.store, self.commands, self.catalog = store, commands, catalog
 
     def handlers(self):
         return {"calc.spec_compare": self.call}
@@ -267,7 +284,7 @@ class SpecCompareReads:
         return {"calc.spec_compare": self.restore}
 
     def call(self, scope, arguments):
-        payload = spec_compare.SpecCompareInput.model_validate(arguments)
+        payload = AgentSpecCompareInput.model_validate(arguments)
         if scope.category_id is None:
             raise DomainError("FORBIDDEN_SCOPE", "规格比较须绑定当前品类。", 403)
         with tenant_session(
@@ -292,6 +309,27 @@ class SpecCompareReads:
             ):
                 raise DomainError("FORBIDDEN_SCOPE", "比较未绑定实际会话范围。", 403)
             self.store.authority(session, scope)
+            if payload.extraction_ref is not None:
+                from .extract_service import ExtractionService
+
+                if self.catalog is None:
+                    raise DomainError("SOURCE_UNAVAILABLE", "抽取结果核对端口尚未绑定。", 503)
+                ctx = self.commands.context(scope)
+                public = _PublicObjects(session, ctx)
+                result = compare_extracted(
+                    session,
+                    ctx,
+                    scope,
+                    payload,
+                    extraction=ExtractionService(self.store, self.commands, self.catalog),
+                    public=public,
+                )
+                final = _PublicObjects(session, ctx)
+                final.refs(_references(result["products"]))
+                final.parameters(result["products"])
+                self.store.authority(session, scope)
+                check_run_binding(session.get(AgentRun, scope.run_id), scope, for_write=False)
+                return result
             if (
                 run.private_context
                 or run.customer_identities
@@ -315,7 +353,12 @@ class SpecCompareReads:
                     else:
                         public.knowledge(subject.id, competitor=True)
                 result = spec_compare.compare(
-                    session, ctx, payload, before_definition_read=public.definition_head
+                    session,
+                    ctx,
+                    spec_compare.SpecCompareInput.model_validate(
+                        payload.model_dump(exclude={"extraction_ref"})
+                    ),
+                    before_definition_read=public.definition_head,
                 )
                 # Do not reuse the preflight seen set: every returned source gets
                 # an ordinary access/currentness check before it crosses the port.

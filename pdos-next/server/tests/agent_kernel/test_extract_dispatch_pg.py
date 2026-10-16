@@ -304,7 +304,7 @@ def test_extract_dispatch_full_chain_and_exact_replay(work, security_work):
     assert result["row_schema"] == {"kind": "rfq_requirement", "version": "1"}
     assert (
         result["skill"]["key"] == "rfq_extraction"
-        and result["skill"]["version"] == "0.3.0-draft"
+        and result["skill"]["version"] == owner.catalog._skills["rfq_extraction"].version
     )
     assert result["proposal_id"] == str(scope.proposal_id)
     assert result["failures"] == [] and result["rejected"] == []

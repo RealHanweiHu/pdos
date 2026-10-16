@@ -148,10 +148,13 @@ def check_requirement(required, reasons, subject, groups):
     return {"status": status, "reasons": reasons, "observation": actual}
 
 
-def match(s, ctx, payload):
+def match(s, ctx, payload, *, before_definition_read=None):
     payload = StandardMatchInput.model_validate(payload)
     comparison = spec_compare.compare(
-        s, ctx, {"subjects": [{"type": "product", "id": item} for item in payload.product_ids]}
+        s,
+        ctx,
+        {"subjects": [{"type": "product", "id": item} for item in payload.product_ids]},
+        **({"before_definition_read": before_definition_read} if before_definition_read else {}),
     )
     requirements = [requirement_view(s, ctx, item) for item in payload.requirements]
     products = []
