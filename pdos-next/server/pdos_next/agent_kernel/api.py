@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import Field
 from sqlalchemy import and_, or_, select
+from sqlalchemy.orm import load_only
 
 from pdos_next.contracts import SourceRead
 from pdos_next.database import tenant_session
@@ -68,13 +69,14 @@ def router(engine, *, context_dependency, ports: ApiPorts):
 
     run_dependency = Depends(scoped_context)
 
-    def transaction(ctx):
+    def transaction(ctx, *, read_snapshot=False):
         return tenant_session(
             engine,
             ctx.tenant_id,
             actor_id=ctx.actor_id,
             requester_id=ctx.requester_id,
             category_id=ctx.category_id,
+            read_snapshot=read_snapshot,
         )
 
     def visible_run(session, ctx, row):
@@ -157,8 +159,9 @@ def router(engine, *, context_dependency, ports: ApiPorts):
     @result.get("/v1/categories/{category_id}/agent-runs/{run_id}")
     @result.get("/v1/personal/agent-runs/{run_id}")
     def read(run_id: UUID, ctx=run_dependency):
+        from .process_view import read_process
         from .run_reconciliation import completed_record
-        with transaction(ctx) as s:
+        with transaction(ctx, read_snapshot=True) as s:
             row = visible_run(s, ctx, s.get(AgentRun, run_id))
             return {
                 "run_id": str(row.id),
@@ -170,9 +173,28 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                 "result": row.result,
                 "error_code": row.error_code,
                 "reconciliation": completed_record(s, row),
+                "process": read_process(s, row),
                 "versions": row.versions,
                 **run_revert_status(row),
             }
+
+    @result.get("/v1/categories/{category_id}/agent-runs/{run_id}/process")
+    @result.get("/v1/personal/agent-runs/{run_id}/process")
+    def process(
+        run_id: UUID, before: int | None = Query(default=None, ge=1),
+        source_cursor: UUID | None = None, receipt_cursor: UUID | None = None,
+        page_size: int = Query(default=25, ge=1, le=100), ctx=run_dependency,
+    ):
+        from .process_view import read_process
+        with transaction(ctx, read_snapshot=True) as session:
+            row = session.scalar(select(AgentRun).where(AgentRun.id == run_id).options(load_only(
+                AgentRun.id, AgentRun.tenant_id, AgentRun.category_id, AgentRun.proposal_id,
+                AgentRun.requester_id, AgentRun.state, AgentRun.error_code, AgentRun.created_at,
+                AgentRun.reverted_at, AgentRun.read_sources, raiseload=True,
+            )))
+            return read_process(session, visible_run(session, ctx, row),
+                                before=before, page_size=page_size,
+                                source_cursor=source_cursor, receipt_cursor=receipt_cursor)
 
     @result.get("/v1/categories/{category_id}/agent-runs/{run_id}/reconciliation")
     @result.get("/v1/personal/agent-runs/{run_id}/reconciliation")
@@ -193,9 +215,9 @@ def router(engine, *, context_dependency, ports: ApiPorts):
         value = finalize(engine, ctx, run_id, expected_cancel_epoch=data.expected_cancel_epoch)
         if value["reconciliation"] is not None:
             with transaction(ctx) as session:
-                ref = reference(visible_run(session, ctx, session.get(AgentRun, run_id)), ctx)
+                visible_run(session, ctx, session.get(AgentRun, run_id))
             try:
-                await ports.cancel_workflow(ref)
+                await ports.cancel_workflow(ctx.tenant_id, run_id)
             except Exception:
                 value["workflow_cleanup_pending"] = True
         return value

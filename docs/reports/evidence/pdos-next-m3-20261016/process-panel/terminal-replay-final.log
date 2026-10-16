@@ -1,0 +1,69 @@
+..F
+=================================== FAILURES ===================================
+_ test_completed_run_is_not_claimed_as_business_approval_and_old_missing_end_stays_unknown _
+
+setup = <isolated synthetic test scope>
+
+    def test_completed_run_is_not_claimed_as_business_approval_and_old_missing_end_stays_unknown(setup):
+        store, scope = run(setup)
+        store.finish(scope, {"status": "completed", "summary": "Synthetic complete", "result": {}})
+        data = setup.client.get(path(setup, scope) + "/process", headers=setup.headers).json()
+        assert data["ended_at"] and data["business_receipt_count"] == 0
+        now_for_replay = now() + timedelta(hours=1)
+        with using_clock(lambda: now_for_replay):
+>           store.finish(scope, {"status": "completed", "summary": "Synthetic complete", "result": {}})
+
+tests/agent_kernel/test_process_view.py:91: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/agent_kernel/persistence.py:435: in finish
+    with self.transaction(scope, lock=True) as (session, run):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+pdos_next/agent_kernel/persistence.py:108: in transaction
+    self.authority(session, scope)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.persistence.KernelStore object at 0x135377a10>
+session = <sqlalchemy.orm.session.Session object at 0x1355ea0f0>
+scope = RunScope(tenant_id=UUID('1765abfa-e400-4782-ae0a-0bb1798fb53c'), requester_id=UUID('5cf24269-d463-410b-a882-efce8af346...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+
+    def authority(self, session, scope):
+        for person in {scope.writer_id, scope.requester_id}:
+            row = session.get(Principal, person)
+            if not row or row.tenant_id != scope.tenant_id or not row.active:
+                raise DomainError("FORBIDDEN_SCOPE", "运行身份失效。")
+        if scope.product_id:
+            require_access(
+                session,
+                Context(
+                    scope.tenant_id,
+                    scope.writer_id,
+                    scope.requester_id,
+                    category_id=scope.category_id,
+                ),
+                scope.product_id,
+                write=False,
+            )
+        elif scope.category_id:
+            category = session.get(Category, scope.category_id)
+            grants = session.scalars(
+                select(Grant).where(
+                    Grant.category_id == scope.category_id,
+                    Grant.principal_id.in_({scope.writer_id, scope.requester_id}),
+                    or_(Grant.expires_at.is_(None), Grant.expires_at > now()),
+                )
+            ).all()
+            if not category or {g.principal_id for g in grants} != {
+                scope.writer_id,
+                scope.requester_id,
+            }:
+>               raise DomainError("FORBIDDEN_SCOPE", "品类运行授权失效。")
+E               pdos_next.errors.DomainError: 品类运行授权失效。
+
+pdos_next/agent_kernel/persistence.py:143: DomainError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_process_view.py::test_completed_run_is_not_claimed_as_business_approval_and_old_missing_end_stays_unknown
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 2 passed in 2.66s

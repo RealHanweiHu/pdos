@@ -5,6 +5,8 @@ import { Sparkle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import type { WorkspaceTransport } from "@/lib/workspace-api";
 import { proofClockCurrent } from "@/lib/proof-clock";
+import { RunProcess } from "@/components/pai/run-process";
+import type { RunProcessData } from "@/lib/run-process";
 import { RunReconciliation } from "@/components/pai/run-reconciliation";
 import { reconciliationNeeded } from "@/lib/run-reconciliation";
 import { RunCandidates } from "@/components/pai/run-candidates";
@@ -13,7 +15,7 @@ import { restoreRunStart } from "@/lib/run-start-intent";
 
 type Source = { id: string; title: string; revision: number; status: string };
 type Question = { id: string; question: string; why: string; options: { value: string; label: string }[]; allow_free_text: boolean };
-type Run = { reconciliation?: unknown; run_id: string; product_id: string | null; proposal_id?: string | null; cancel_epoch: number; status: string; error_code: string | null; reverted: boolean; result: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
+type Run = { process?: RunProcessData; reconciliation?: unknown; run_id: string; product_id: string | null; proposal_id?: string | null; cancel_epoch: number; status: string; error_code: string | null; reverted: boolean; result: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
 type History = { items: (Run & { goal: string; created_at: string; product_id: string | null })[]; next_cursor: string | null };
 type Candidate = { command: Record<string, unknown> & { payload: { statement: string; quote: string; prepared_event_id: string } }; event_id: string };
 type Event = { id?: string; sequence: number; event: { type: string; questions?: Question[]; status?: string; command?: Candidate["command"]; prepared_event_id?: string } };
@@ -64,6 +66,7 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
   const readRun = useCallback(async (id: string) => {
     const own = ++generation.current;
     current.current = id;
+    try {
     const value = await api<Run>(`v1/agent-runs/${id}`);
     if (own !== generation.current) return;
     if (proposalId && value.proposal_id !== proposalId) throw new Error("运行不属于当前提案，请刷新本提案的运行历史。");
@@ -84,6 +87,7 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
     setAdoption(null);
     setRevert(null);
     setQuestions(value.status === "waiting_input" && !value.reverted && !reconciliationNeeded(value) ? [...events].reverse().find(item => item.event.type === "needs_input")?.event.questions ?? [] : []);
+    } catch (failure) { if (own === generation.current) setRun(prior => prior?.run_id === id ? { ...prior, process: undefined } : prior); throw failure; }
   }, [api, proposalId]);
   const refreshHistory = useCallback(async (cursor?: string) => {
     const next = await api<History>(`${historyPath}${cursor ? `&cursor=${cursor}` : ""}`);
@@ -167,6 +171,7 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
       {run.result?.summary && <p className="whitespace-pre-wrap break-words">{run.result.summary}</p>}
       <ResearchResult value={run.result?.result?.research} />
       {run.error_code && <p role="status">执行未完成 · {run.error_code}</p>}
+      {run.process && <RunProcess key={`process:${run.run_id}`} value={run.process} api={api} root="v1/agent-runs" />}
       <RunReconciliation key={run.run_id} api={api} root="v1/agent-runs" run={run} onSettled={() => readRun(run.run_id)} />
       {!!run.result?.unfinished?.length && <div><h4 className="font-medium">未完成事项</h4><ul className="mt-2 list-disc pl-5">{run.result.unfinished.map((item, i) => <li key={i}>{item}</li>)}</ul></div>}
       {run.result?.result && Object.keys(run.result.result).length > 0 && <details><summary className="cursor-pointer">查看实际结果与回执</summary><pre className="mt-3 max-h-80 overflow-auto whitespace-pre-wrap break-words text-sm">{JSON.stringify(run.result.result, null, 2)}</pre></details>}

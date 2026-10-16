@@ -1,5 +1,7 @@
 "use client";
 
+import { RunProcess } from "@/components/pai/run-process";
+import type { RunProcessData } from "@/lib/run-process";
 import { RunReconciliation } from "@/components/pai/run-reconciliation";
 import { reconciliationNeeded } from "@/lib/run-reconciliation";
 import { ResearchResult } from "@/components/pai/research-result";
@@ -13,7 +15,7 @@ import type { Question } from "./clarification";
 import { adoptedCategory, asCandidate, personalApi } from "./contracts";
 import type { Api, CategoryAdopted, CategoryCandidate, CategoryConfirmationDraft, CreatedCategory } from "./contracts";
 
-type Run = { reconciliation?: unknown; run_id: string; status: string; cancel_epoch: number; reverted: boolean; error_code?: string; result?: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
+type Run = { process?: RunProcessData; reconciliation?: unknown; run_id: string; status: string; cancel_epoch: number; reverted: boolean; error_code?: string; result?: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
 type History = { items: (Run & { goal: string })[]; next_cursor: string | null };
 type Event = { sequence: number; event: { type: string; questions?: Question[] } };
 type Pending = { path: string; body: unknown };
@@ -83,7 +85,7 @@ export function PersonalXiaopai({ api = personalApi, onCreated, initialRunId }: 
         if (event.event.type === "needs_input") seenInterrupts.current.add(`${id}:${event.sequence}`);
       }
       setQuestions(currentQuestions);
-    } catch (failure) { if (generation.current === own) throw failure; }
+    } catch (failure) { if (generation.current === own) { setRun(prior => prior?.run_id === id ? { ...prior, process: undefined } : prior); throw failure; } }
   }, [api]);
 
   const readHistory = useCallback(async (cursor?: string) => {
@@ -177,6 +179,7 @@ export function PersonalXiaopai({ api = personalApi, onCreated, initialRunId }: 
     {run && <div className="panel space-y-3">
       <h3 className="font-medium">{reconciliationNeeded(run) ? "原调用结果待核对" : labels[run.status] ?? run.status}{run.reverted ? " · 已撤回" : ""}</h3>
       {run.error_code && <p role="alert" className="text-sm">执行未完成：{run.error_code}。请检查模型配置、权限或执行服务后再继续。</p>}
+      {run.process && <RunProcess key={`process:${run.run_id}`} value={run.process} api={api} root={root} />}
       <RunReconciliation key={run.run_id} api={api} root={root} run={run} onSettled={() => readRun(run.run_id)} />
       {run.result?.summary && <p className="whitespace-pre-wrap text-sm">{run.result.summary}</p>}
       <ResearchResult value={run.result?.result?.research} />

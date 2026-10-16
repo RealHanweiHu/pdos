@@ -1,0 +1,5 @@
+{
+  "cause": "Private preview helper omitted tenant_session import after saving category history",
+  "recovery": "Reused same synthetic category Run and real Claim/Receipt, expired initial login; created only the missing personal Run",
+  "duplicated_business_actions": 0
+}

@@ -432,11 +432,15 @@ class KernelStore:
             }
 
     def finish(self, scope, result):
-        with self.transaction(scope, lock=True) as (_, run):
+        with self.transaction(scope, lock=True) as (session, run):
+            previous_state = run.state
             run.result, run.state = (
                 result,
                 "partial" if result["status"] == "partial" else "completed",
             )
+            from .process_view import record_state
+            if previous_state != run.state:
+                record_state(session, run)
 
 
 def create_run(
@@ -585,6 +589,8 @@ def cancel_run(session, ctx, run_id):
             call.reserved_tokens, call.state, call.error_code = 0, "unknown", "CANCELLED_RUN"
         run.held_tokens, run.state = 0, "cancelled"
         run.cancel_epoch += 1
+        from .process_view import record_state
+        record_state(session, run)
     return {
         "run_id": str(run.id),
         "status": run.state,

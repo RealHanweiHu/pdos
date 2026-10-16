@@ -1,0 +1,85 @@
+Browser tab: 12, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3051/?area=work".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3051/?area=work
+	2 container
+		3 link Description: 跳到工作内容, Value: 127.0.0.1:3051/?area=work#workspace-content
+		257 button 打开导航
+			258 image
+		22 text PDOS
+		23 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			24 image
+		26 checkbox Description: 小Pai 工作栏, Value: 1
+			27 image
+		28 button 切换明暗主题
+			180 image
+		30 container workspace-content
+			200 heading 我的工作, Value: 1
+				201 text 我的工作
+			202 text 查看本人可见项目中的未决事项，接续需要答复的工作与最近运行。
+			203 button 刷新
+				204 image
+				205 text 刷新
+			206 button 打开小Pai
+				207 image
+				208 text 打开小Pai
+			223 container
+				224 text 项目资料读取于  10/16/2026, 4:14:43 PM
+			209 container 我的未决事项
+				210 container
+					211 heading 未决事项, Value: 2
+						212 text 未决事项
+					213 text 0 项
+				225 text 当前没有指派给你的未决任务或风险。立项 G0 批准后，处置事项会按负责人出现在这里。
+			215 container 我的运行
+				216 container
+					217 heading 最近运行, Value: 2
+						218 text 最近运行
+					219 text 2 次
+				226 text 合成联验：运行中步骤与取消后停止计时
+				227 container
+					228 text 正在执行  ·  个人  ·  10/16/2026, 4:09:30 PM
+				229 button 查看
+				230 text Synthetic whole-run revert history
+				231 container
+					232 text 已形成部分结果  ·  处理过程联验  ·  10/16/2026, 4:07:03 PM
+				233 button 查看
+			220 container 可见项目
+				221 heading 可见项目, Value: 2
+					222 text 可见项目
+				234 text 没有可见项目。立项提案经具名 G0 批准后建立项目；也可在产品品类工作区先起草提案。
+		73 container 小Pai 工作栏
+			74 text 小Pai
+			75 text 个人工作（跨品类）
+			76 button 关闭小Pai 工作栏
+				77 image
+			235 container 个人小 Pai
+				236 heading 个人小 Pai · 建立新品类, Value: 2
+					237 text 个人小 Pai · 建立新品类
+				238 text 描述品类用途，让小 Pai 准备公开研究与初始材料。执行需要已配置的模型和运行授权；缺少配置时会显示实际错误。建立品类仍需你逐组核对并确认。
+				239 container
+					240 text 要研究和建立什么品类？
+					241 text entry area (settable) 要研究和建立什么品类？
+					242 button (disabled) 保存并启动个人任务
+				245 text 请求已保存，以下显示服务器的实际运行结果。
+				243 button (collapsed) 个人任务记录, Secondary Actions: Expand
+					244 text 个人任务记录
+				246 heading 已取消, Value: 3
+					247 text 已取消
+				248 container 小Pai处理过程
+					249 text 处理过程 受理至结束 6 分 51 秒
+					250 text 后续执行已停止
+					251 container
+						252 text 已保存  0  次处理 · 已提交  0  条动作
+					259 container
+						260 button (expanded) 查看步骤、依据与提交记录, Secondary Actions: Collapse
+							261 text 查看步骤、依据与提交记录
+						262 text 以下为实际行动记录；步骤返回不等于业务批准。绑定依据  0  份，人员等待计入总历时。
+						263 content list
+							264 container
+								265 text 整理已取得的信息并选择下一步 10/16/2026, 4:09:30 PM
+							266 container
+								267 text 已停止后续执行，已做结果保留 10/16/2026, 4:16:21 PM
+						268 text 运行中按实际记录更新；关闭或刷新页面不启动新的模型调用。
+				255 button 刷新实际结果
+				256 text 此运行尚无可采用的品类候选。
+
+The focused UI element is 260 button (expanded) 查看步骤、依据与提交记录, Secondary Actions: Collapse

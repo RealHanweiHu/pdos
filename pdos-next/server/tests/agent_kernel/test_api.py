@@ -14,7 +14,7 @@ from pdos_next.errors import DomainError
 from pdos_next.models import Grant
 
 
-def client(setup, *, binding_state=None):
+def client(setup, *, binding_state=None, cancel_calls=None):
     calls = []
 
     async def start(ref):
@@ -24,6 +24,9 @@ def client(setup, *, binding_state=None):
         calls.append(("signal", args))
 
     async def cancel(*args):
+        if cancel_calls is not None:
+            cancel_calls.append(args)
+            return
         raise RuntimeError("Synthetic worker unavailable")
 
     app = FastAPI()
@@ -71,7 +74,9 @@ def test_run_returns_stable_work_id_and_missing_model_wait_has_zero_inference(se
     read = api.get(path + "/" + first.json()["run_id"])
     assert read.json()["status"] == "waiting_input"
     stream = api.get(path + "/" + first.json()["run_id"] + "/events")
-    assert [r["event"]["type"] for r in stream.json()["items"]] == ["accepted", "model_unavailable"]
+    assert [r["event"]["type"] for r in stream.json()["items"]] == [
+        "accepted", "run_state", "model_unavailable"
+    ]
     assert api.post(path, json={**payload, "private_context": True}).status_code == 422
     assert (
         api.get(f"/v1/categories/{uuid4()}/agent-runs/" + first.json()["run_id"]).status_code == 403

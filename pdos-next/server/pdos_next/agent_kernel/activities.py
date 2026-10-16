@@ -106,8 +106,10 @@ class KernelActivities:
             raise
         adapters = getattr(self.engine, "_pdos_agent_kernel_adapters", None)
         if adapters is None:
-            with self.store.transaction(scope, lock=True) as (_, row):
+            with self.store.transaction(scope, lock=True) as (session, row):
                 row.state, row.error_code = "waiting_input", "SOURCE_UNAVAILABLE"
+                from .process_view import record_state
+                record_state(session, row)
             self.store.emit(scope, {"type": "model_unavailable", "code": "SOURCE_UNAVAILABLE"})
             return {
                 "run_id": str(scope.run_id),
@@ -165,11 +167,13 @@ class KernelActivities:
                 exc = DomainError("INTERNAL_ERROR", "执行未完成，已提交结果保留，请核对运行记录。")
             if exc.code != "CANCELLED_RUN":
                 try:
-                    with self.store.transaction(scope, lock=True) as (_, row):
+                    with self.store.transaction(scope, lock=True) as (session, row):
                         row.error_code = exc.code
                         row.state = (
                             "waiting_input" if exc.code == "EXTERNAL_OUTCOME_UNKNOWN" else "failed"
                         )
+                        from .process_view import record_state
+                        record_state(session, row)
                     if exc.code == "EXTERNAL_OUTCOME_UNKNOWN":
                         from .run_reconciliation import mark_required
                         mark_required(self.store, scope)

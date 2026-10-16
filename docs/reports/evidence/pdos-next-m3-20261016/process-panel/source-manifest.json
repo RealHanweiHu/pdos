@@ -1,0 +1,21 @@
+{
+  "base_commit": "7804c149adedebd1ae0182ba6980aba881d8a06c",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/agent_kernel/process_view.py": "71e8b511c8d0f1a0a53d21908f306043c2e429c6394491798bbb30cff316e4b9",
+    "pdos-next/server/pdos_next/agent_kernel/activities.py": "6a98aac633edf292e43fa0442facfd34c91c72d1e46046938b5df0c7a13c26cd",
+    "pdos-next/server/pdos_next/agent_kernel/persistence.py": "ed546184b87cd8516a9e9cdf9182d2a17cfb08ccc7d7b8828727307b5bbf83e8",
+    "pdos-next/server/pdos_next/agent_kernel/api.py": "3fb688c44e3875e254f4fb755980c7d954e6ccde371c35b12d2c67ef4b63610b",
+    "pdos-next/server/tests/agent_kernel/test_process_view.py": "c642e0f488531dec31b41efe65b13ce1504b31063f3217c656b45ac60ec1a1b8",
+    "pdos-next/server/tests/agent_kernel/test_api.py": "d8a305f002e73250f7b5e9191ebf7bd6ed6c5ba78c5aef25a319fecc4f5a6024",
+    "pdos-next/server/tests/agent_kernel/test_run_reconciliation.py": "76394284d4d0cdb4279a850452906acb84bc91285379f0ef148472207075de63",
+    "pdos-next/web/src/components/pai/run-process.tsx": "4e8d45c70413fc848414f010c66317ea15f05b877a506a2bdf47c205be3619cb",
+    "pdos-next/web/src/components/pai/run-process.test.mjs": "fafc55e5c5271397622bff85d1d8800658a532ef7c0a9b02e34230bfdb30c1bf",
+    "pdos-next/web/src/lib/run-process.ts": "a55e86eacf99019d25be86f7e87dcf5949a9e80fd0fbc2548ceed5b459e7f2eb",
+    "pdos-next/web/src/lib/run-process.test.ts": "0362eecbb148d879c60b1deca54185b432caea980b81e5d2df55c019cf6d75a9",
+    "pdos-next/web/src/components/xiaopai.tsx": "13e986616fa1a14d115224ad4b95a3bb195c47f041804d91dd048c723f27b726",
+    "pdos-next/web/src/components/category-create/personal-xiaopai.tsx": "1c7b1301434995a7d22c5ba8a98bce045f19318971a120044225421f6d03ed20",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "eeb5a2d9fdd5d4e0687979668f1a4286ed8ce1751ddeb6be44b1dd9f58eb24fd",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "406a037c9e1a6d1770b5e34df482234c4e031337c3a23d5ea489c643abcda1de",
+    "docs/runbooks/xiaopai-process-panel.md": "b716291d1b6fa92a983d1f2181911d44c36c32083d020e98fa15dbcb87feb257"
+  }
+}

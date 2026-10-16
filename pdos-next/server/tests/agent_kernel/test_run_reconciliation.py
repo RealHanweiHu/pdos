@@ -123,6 +123,18 @@ def test_admin_http_finalizes_unknown_once_releases_slots_and_keeps_bounded_cost
     new_store.settle(new_scope, new_call, result={"new_request_allowed": True})
 
 
+def test_admin_closure_notifies_the_existing_two_argument_workflow_cancel_port(setup):
+    from tests.agent_kernel.test_api import client
+    f = lost(setup)
+    calls = []
+    api, _ = client(setup, cancel_calls=calls)
+    response = api.post(path(setup, f), json={"expected_cancel_epoch": 0})
+    assert response.status_code == 200
+    assert calls == [(setup.tenant, f.scope.run_id)]
+    assert "workflow_cleanup_pending" not in response.json()
+    api.close()
+
+
 def test_owner_read_scope_and_admin_revocation_are_current_but_system_cleanup_still_works(setup):
     f = lost(setup)
     denied = setup.client.get(

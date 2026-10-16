@@ -84,6 +84,25 @@ function harness(configuration: { token?: string | null; api?: string | null; re
 }
 
 const resourceInspect = `${base}/builds/${build}/resources/inspect`;
+test("运行过程保持只读分页，个人与品类使用各自当前范围", async () => {
+  const h=harness();
+  const path=`v1/agent-runs/${run}/process`;
+  assert.equal((await h.send(path,{query:"before=25&page_size=20"})).response.status,200);
+  assert.equal(h.calls[0].url,`http://synthetic-api.invalid/v1/categories/${category}/agent-runs/${run}/process?before=25&page_size=20`);
+  assert.equal(h.calls[0].init.method,"GET");
+  assert.equal((await h.send(path,{query:`source_cursor=${product}&receipt_cursor=${build}`})).response.status,200);
+  assert.ok(h.calls.at(-1)?.url.endsWith(`source_cursor=${product}&receipt_cursor=${build}`));
+  assert.equal((await h.send(`v1/personal/agent-runs/${run}/process`,{unscoped:true})).response.status,200);
+});
+test("过程入口拒绝写入、伪造范围与错误分页，失败不自动派发", async()=>{
+  const path=`v1/agent-runs/${run}/process`;
+  for (const query of ["before=0","before=-1","before=abc","before=25&before=30","after=0","cursor=forged","source_cursor=forged","receipt_cursor=forged","page_size=101","actor_id=forged"]) {
+    const h=harness(); assert.equal((await h.send(path,{query})).response.status,422); assert.equal(h.calls.length,0);
+  }
+  const h=harness(); assert.equal((await h.send(path,{method:"POST",body:"{}"})).response.status,405); assert.equal(h.calls.length,0);
+  const down=harness({response:async()=>{throw new Error("Synthetic unavailable");}});
+  assert.equal((await down.send(path)).response.status,503); assert.equal(down.calls.length,1);
+});
 test("本人预算读取分页与原回执查询保持实际品类和原正文", async () => {
   const h = harness();
   const read = await h.send("v1/agent-budgets", { query: `page_size=20&cursor=${product}` });

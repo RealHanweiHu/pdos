@@ -1,0 +1,177 @@
+Browser tab: 12, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3051/?area=category&category=27567ef3-5027-48ea-91a2-87c5ae590f41".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3051/?area=category&category=27567ef3-5027-48ea-91a2-87c5ae590f41
+	2 container
+		3 link Description: 跳到工作内容, Value: 127.0.0.1:3051/?area=category&category=27567ef3-5027-48ea-91a2-87c5ae590f41#workspace-content
+		4 text PDOS
+		5 button 收起侧栏
+			6 image
+		7 container 工作区导航
+			8 link Description: 我的工作, Value: 127.0.0.1:3051/?area=work&category=27567ef3-5027-48ea-91a2-87c5ae590f41
+			9 link Description: 项目驾驶舱, Value: 127.0.0.1:3051/?area=cockpit&category=27567ef3-5027-48ea-91a2-87c5ae590f41
+			10 link Description: 项目列表, Value: 127.0.0.1:3051/?area=projects&category=27567ef3-5027-48ea-91a2-87c5ae590f41
+			11 link Description: 项目集, Value: 127.0.0.1:3051/?area=programs&category=27567ef3-5027-48ea-91a2-87c5ae590f41
+			12 link Description: 产品品类工作区, Value: 127.0.0.1:3051/?area=category&category=27567ef3-5027-48ea-91a2-87c5ae590f41
+			13 link Description: 知识, Value: 127.0.0.1:3051/?area=knowledge&category=27567ef3-5027-48ea-91a2-87c5ae590f41
+			14 text 当前品类
+			15 text 处理过程联验
+			16 text 项目与专业工作按品类范围授权
+		17 link Description: 计划执行进度, Help: 计划执行进度（唯一清单只读投影）, Value: 127.0.0.1:3051/plan
+		18 checkbox Description: 小Pai 工作栏, Value: 1
+		19 link Description: 设置, Value: 127.0.0.1:3051/?area=settings&category=27567ef3-5027-48ea-91a2-87c5ae590f41
+		20 text 合成处理过程用户
+		21 text 本地合成环境
+		22 text PDOS 产品品类工作区 处理过程联验
+		23 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			24 image
+			25 text 搜索
+		26 checkbox Description: 小Pai 工作栏, Value: 1
+			27 image
+		28 button 切换明暗主题
+			29 image
+		30 container workspace-content
+			31 heading 处理过程联验, Value: 1
+				32 text 处理过程联验
+			33 text 品类是权限范围根：共享知识、规格字典、型号与立项提案都在这里汇聚，项目经提案 G0 评审后建立。
+			34 button 打开品类工作台
+				35 text 打开品类工作台
+				36 image
+			37 container 标准品匹配
+				38 heading 先核对现有型号, Value: 2
+					39 text 先核对现有型号
+				40 text 只核对所选规格。全部满足且确认没有开发活动时，回到 CRM 办理报价与沟通，无需立项。
+				41 button (collapsed) 核对标准品规格, Secondary Actions: Expand
+					42 text 核对标准品规格
+			43 container 立项提案
+				44 heading 立项提案, Value: 2
+					45 text 立项提案
+				46 text 一案一页 · 唯一关卡是具名 G0 评审
+				47 text 客户需求、自主新品、派生迭代三个入口都落到同一种立项提案；AI 先起草，人做取舍。从对话创建的提案一律私有。
+				48 button 打开品类小Pai，起草立项提案
+					49 image
+					50 text 打开品类小Pai，起草立项提案
+				51 text 尚无立项提案。与品类小Pai 对话起草第一份提案；提案默认私有。
+			52 container 型号列表
+				53 heading 型号, Value: 2
+					54 text 型号
+				55 text 1  个
+				56 text 合成型号
+				57 text 过程示例
+				58 button 打开
+					59 text 打开
+					60 image
+			61 container 共享知识
+				62 heading 共享知识, Value: 2
+					63 text 共享知识
+				64 button 进入知识区
+					65 text 进入知识区
+					66 image
+				67 text 尚无共享知识。品类研究产生的事实经确认后在这里共享。
+			68 container 规格字典
+				69 heading 规格字典, Value: 2
+					70 text 规格字典
+				71 text 0  条参数当前版本
+				72 text 尚无字典参数。规格条目的键、名称、单位与测试条件都来自字典；缺失时按人工映射逐步补齐。
+		73 container 小Pai 工作栏
+			74 text 小Pai
+			75 text 当前品类：处理过程联验
+			76 button 关闭小Pai 工作栏
+				77 image
+			78 container 小Pai 运行
+				79 heading 小Pai, Value: 2
+					80 text 小Pai
+				81 button 刷新运行
+				82 text 在当前品类委派工作。结果、待答问题和未完成事项会保留，关闭页面后仍可回来查看。
+				83 button (collapsed) 新建委派, Secondary Actions: Expand
+					84 text 新建委派
+				91 heading 已形成部分结果, Value: 3
+					92 text 已形成部分结果
+				93 button 核对当前状态
+				94 text 合成联验：已登记有来源的压力事实，部分问题仍待核对。
+				95 container 小Pai处理过程
+					96 text 处理过程 受理至结束 2 分 8 秒
+					97 text 已形成部分结果，仍有待完成事项
+					98 container
+						99 text 已保存  2  次处理 · 已提交  1  条动作
+					118 container
+						119 button (expanded) 查看步骤、依据与提交记录, Secondary Actions: Collapse
+							120 text 查看步骤、依据与提交记录
+						121 text 以下为实际行动记录；步骤返回不等于业务批准。绑定依据  1  份，人员等待计入总历时。
+						122 button 读取更早步骤
+						123 text 本次绑定依据 合成产品压力规格  · 第  1  版
+						124 content list
+							125 container
+								126 text 本步处理已返回 · 核对品类资料 10/16/2026, 4:07:39 PM
+							127 container
+								128 text 按固定口径计算或比较 10/16/2026, 4:07:42 PM
+							129 container
+								130 text 本步处理已返回 · 按固定口径计算或比较 10/16/2026, 4:07:45 PM
+							131 container
+								132 text 按固定口径计算或比较 10/16/2026, 4:07:48 PM
+							133 container
+								134 text 本步处理已返回 · 核对品类资料 10/16/2026, 4:07:51 PM
+							135 container
+								136 text 按固定口径计算或比较 10/16/2026, 4:07:54 PM
+							137 container
+								138 text 本步处理已返回 · 按固定口径计算或比较 10/16/2026, 4:07:57 PM
+							139 container
+								140 text 按固定口径计算或比较 10/16/2026, 4:08:00 PM
+							141 container
+								142 text 本步处理已返回 · 核对品类资料 10/16/2026, 4:08:03 PM
+							143 container
+								144 text 按固定口径计算或比较 10/16/2026, 4:08:06 PM
+							145 container
+								146 text 本步处理已返回 · 按固定口径计算或比较 10/16/2026, 4:08:09 PM
+							147 container
+								148 text 按固定口径计算或比较 10/16/2026, 4:08:12 PM
+							149 container
+								150 text 本步处理已返回 · 核对品类资料 10/16/2026, 4:08:15 PM
+							151 container
+								152 text 按固定口径计算或比较 10/16/2026, 4:08:18 PM
+							153 container
+								154 text 本步处理已返回 · 按固定口径计算或比较 10/16/2026, 4:08:21 PM
+							155 container
+								156 text 按固定口径计算或比较 10/16/2026, 4:08:24 PM
+							157 container
+								158 text 本步处理已返回 · 核对品类资料 10/16/2026, 4:08:27 PM
+							159 container
+								160 text 按固定口径计算或比较 10/16/2026, 4:08:30 PM
+							161 container
+								162 text 本步处理已返回 · 按固定口径计算或比较 10/16/2026, 4:08:33 PM
+							163 container
+								164 text 按固定口径计算或比较 10/16/2026, 4:08:36 PM
+							165 container
+								166 text 本步处理已返回 · 核对品类资料 10/16/2026, 4:08:39 PM
+							167 container
+								168 text 按固定口径计算或比较 10/16/2026, 4:08:42 PM
+							169 container
+								170 text 本步处理已返回 · 按固定口径计算或比较 10/16/2026, 4:08:45 PM
+							171 container
+								172 text 按固定口径计算或比较 10/16/2026, 4:08:48 PM
+							173 container
+								174 text 已形成部分结果，仍有待完成事项 10/16/2026, 4:09:12 PM
+						175 text 实际提交记录 evidence.claim.record  · 第  1  版
+						176 text 回执  40724f48-8eb2-4c7d-9a2a-2d45d4144b09 运行中按实际记录更新；关闭或刷新页面不启动新的模型调用。
+				102 heading 未完成事项, Value: 4
+					103 text 未完成事项
+				104 content list
+					105 container
+						106 AXListMarker • 
+						107 text 合成对标材料不齐；尚未作出立项或规格批准。
+				108 button (collapsed) 查看实际结果与回执, Secondary Actions: Expand
+					109 text 查看实际结果与回执
+				110 container 小Pai 待确认动作
+					111 heading 待你确认的动作, Value: 3
+						112 text 待你确认的动作
+					113 button 刷新候选
+					114 text 候选保留小Pai署名。核对实际范围后由你一次确认，打开页面不会执行。
+					177 text 当前没有领域候选。
+				116 button (collapsed) 整次撤回草稿结果, Secondary Actions: Expand
+					117 text 整次撤回草稿结果
+				85 heading 我的运行历史, Value: 3
+					86 text 我的运行历史
+				87 checkbox Synthetic whole-run revert history 已形成部分结果 · 10/16/2026, 4:07:03 PM, Value: 1
+					88 text Synthetic whole-run revert history
+					89 container
+						90 text 已形成部分结果  ·  10/16/2026, 4:07:03 PM
+
+The focused UI element is 119 button (expanded) 查看步骤、依据与提交记录, Secondary Actions: Collapse
