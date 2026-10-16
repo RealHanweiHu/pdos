@@ -7,6 +7,7 @@ import { ArrowLeft, LockKey, CheckCircle, WarningCircle } from "@phosphor-icons/
 import { Button } from "@/components/ui/button";
 import { ProposalViews } from "@/components/preproject/proposal-views";
 import { ProposalShare } from "@/components/preproject/proposal-share";
+import { ProposalPai } from "@/components/preproject/proposal-pai";
 import type { ProposalShareReceipt } from "@/components/preproject/proposal-share";
 import { isProposalViewResponse, matchesProposalDocument } from "@/components/preproject/proposal-view-contracts";
 import type { ProposalViewDocument, ProposalViewName, ProposalViewResponse } from "@/components/preproject/proposal-view-contracts";
@@ -258,7 +259,7 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
           <Button ref={reviewTrigger} disabled={busy || !!prepared}>核对具名决定</Button>
         </form>}
         {proposal.decision && <section className="panel space-y-2"><h2 className="flex items-center gap-2 font-semibold"><CheckCircle />决定记录</h2><p className="text-sm">{proposal.decision.rationale}</p>{proposal.decision.product_id && <Link className="text-sm underline" href={`/?category=${categoryId}&product=${proposal.decision.product_id}&area=products&view=overview`}>查看立项结果</Link>}</section>}
-        <p className="text-xs text-muted-foreground">小Pai 接入后可起草与查漏。人工编辑与 G0 可独立办理。</p>
+        <ProposalPai key={`${me}:${categoryId}:${proposalId}`} categoryId={categoryId} proposalId={proposalId} principalId={me} />
       </aside></div>
     </>}
     {owner && <ProposalShare categoryId={categoryId} proposalId={proposalId} principalId={me}

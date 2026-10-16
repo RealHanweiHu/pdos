@@ -1,0 +1,57 @@
+{
+  "base_commit": "f31e3ecb4ddda0f0d7df609b17c1772c831c7c8e",
+  "database_head": "s0_0760",
+  "web_build_id": "wcbVWSlpPVEWrozbccY6A",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/api.py",
+      "bytes": 13999,
+      "sha256": "58f13bc1d97a984f3602589cb35d7981bc2e8d7fa82a1509db24803f5d065245"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_proposal_runs_pg.py",
+      "bytes": 4066,
+      "sha256": "58609171ffa8af628a37c887033199066498b4069abed93447b15edf4783cc34"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "bytes": 26687,
+      "sha256": "f728a70414bab173166b0a5971f48c05841dbd4534e683f04b65f9a094a3030f"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/route-proposal-views.test.mjs",
+      "bytes": 17923,
+      "sha256": "9c1a15b0cdb153094d40cc204ebafb7619af286ddcf172beb874cadc542053ad"
+    },
+    {
+      "path": "pdos-next/web/src/components/xiaopai.tsx",
+      "bytes": 17581,
+      "sha256": "41c4a5534863454afe7d26b144c2b99aa4c5e3000bb9a798b5bedfa46e0b7464"
+    },
+    {
+      "path": "pdos-next/web/src/components/preproject/proposal-document.tsx",
+      "bytes": 25539,
+      "sha256": "f0242e13521adc691bf4ebd9f58dc62e30b22ae2846bfcf8cdc4b312dac3cc3f"
+    },
+    {
+      "path": "pdos-next/web/src/components/preproject/proposal-document.test.mjs",
+      "bytes": 19469,
+      "sha256": "9b281e21f95e23d7af6ca0426dbfa03a1761a5b9801fde3f1d29829effe8b205"
+    },
+    {
+      "path": "pdos-next/web/src/components/preproject/proposal-pai.tsx",
+      "bytes": 1109,
+      "sha256": "c100a3e01d7aafc33fd77ddcedcdd90409eb0c24f3a3ef203eea8829448202f1"
+    },
+    {
+      "path": "pdos-next/web/src/lib/run-start-intent.ts",
+      "bytes": 1756,
+      "sha256": "4b19c712f9e9fca59d6f9572fdaa9f67c882d4c94376d28e102c7047c438f40b"
+    },
+    {
+      "path": "pdos-next/web/src/lib/run-start-intent.test.mjs",
+      "bytes": 1789,
+      "sha256": "1e586312cf8deb73d8174cd61db79059eef95878679e25bf94a6a7de7a00daca"
+    }
+  ]
+}

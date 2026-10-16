@@ -76,6 +76,15 @@ def router(engine, *, context_dependency, ports: ApiPorts):
             category_id=ctx.category_id,
         )
 
+    def visible_run(session, ctx, row):
+        if row is None or row.requester_id != ctx.requester_id:
+            raise DomainError("FORBIDDEN_SCOPE", "运行不在当前可读范围。", 403)
+        if row.proposal_id is not None:
+            from pdos_next.domain.preproject.access import proposal
+
+            proposal(session, ctx, row.proposal_id)
+        return row
+
     @result.post("/v1/categories/{category_id}/agent-runs", status_code=202)
     @result.post("/v1/personal/agent-runs", status_code=202)
     async def start(data: StartInput, ctx=run_dependency):
@@ -98,6 +107,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                     raise DomainError("DUPLICATE_INTENT_CONFLICT", "请求编号对应不同目标。")
                 if ctx.category_id is not None:
                     require_access(s, ctx, row.product_id)
+                visible_run(s, ctx, row)
             else:
                 binding = ports.binding_for(s, ctx, data)
                 row = create_run(
@@ -146,13 +156,12 @@ def router(engine, *, context_dependency, ports: ApiPorts):
     @result.get("/v1/personal/agent-runs/{run_id}")
     def read(run_id: UUID, ctx=run_dependency):
         with transaction(ctx) as s:
-            row = s.get(AgentRun, run_id)
-            if not row or row.requester_id != ctx.requester_id:
-                raise DomainError("FORBIDDEN_SCOPE", "运行不在当前可读范围。")
+            row = visible_run(s, ctx, s.get(AgentRun, run_id))
             return {
                 "run_id": str(row.id),
                 "session_id": str(row.session_id),
                 "product_id": str(row.product_id) if row.product_id else None,
+                "proposal_id": str(row.proposal_id) if row.proposal_id else None,
                 "status": row.state,
                 "result": row.result,
                 "error_code": row.error_code,
@@ -162,15 +171,41 @@ def router(engine, *, context_dependency, ports: ApiPorts):
 
     @result.get("/v1/categories/{category_id}/agent-runs")
     @result.get("/v1/personal/agent-runs")
-    def history(cursor: UUID | None = None, page_size: int = 50, ctx=run_dependency):
+    def history(
+        cursor: UUID | None = None,
+        page_size: int = 50,
+        proposal_id: UUID | None = None,
+        ctx=run_dependency,
+    ):
+        from pdos_next.domain.preproject.models import Proposal
+
         with transaction(ctx) as s:
+            if proposal_id is not None:
+                from pdos_next.domain.preproject.access import proposal
+
+                if ctx.category_id is None:
+                    raise DomainError("FORBIDDEN_SCOPE", "个人入口不能读取提案运行。", 403)
+                proposal(s, ctx, proposal_id)
             query = select(AgentRun).where(
-                AgentRun.requester_id == ctx.requester_id, AgentRun.category_id == ctx.category_id
+                AgentRun.requester_id == ctx.requester_id,
+                AgentRun.category_id == ctx.category_id,
+                or_(
+                    AgentRun.proposal_id.is_(None),
+                    AgentRun.proposal_id.in_(select(Proposal.id)),
+                ),
             )
+            if proposal_id is not None:
+                query = query.where(AgentRun.proposal_id == proposal_id)
             if cursor is not None:
                 anchor = s.get(AgentRun, cursor)
-                if anchor is None or anchor.requester_id != ctx.requester_id:
+                if (
+                    anchor is None
+                    or anchor.requester_id != ctx.requester_id
+                    or proposal_id is not None
+                    and anchor.proposal_id != proposal_id
+                ):
                     raise DomainError("FORBIDDEN_SCOPE", "运行历史游标不在当前可读范围。", 403)
+                visible_run(s, ctx, anchor)
                 query = query.where(
                     or_(
                         AgentRun.created_at < anchor.created_at,
@@ -190,6 +225,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                         "run_id": str(row.id),
                         "goal": row.goal,
                         "product_id": str(row.product_id) if row.product_id else None,
+                        "proposal_id": str(row.proposal_id) if row.proposal_id else None,
                         "status": row.state,
                         "error_code": row.error_code,
                         "created_at": row.created_at.isoformat(),
@@ -204,9 +240,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
     @result.get("/v1/personal/agent-runs/{run_id}/events")
     def events(run_id: UUID, after: int = 0, page_size: int = 50, ctx=run_dependency):
         with transaction(ctx) as s:
-            row = s.get(AgentRun, run_id)
-            if not row or row.requester_id != ctx.requester_id:
-                raise DomainError("FORBIDDEN_SCOPE", "运行不在当前可读范围。")
+            row = visible_run(s, ctx, s.get(AgentRun, run_id))
             rows = s.scalars(
                 select(AgentEvent)
                 .where(AgentEvent.run_id == row.id, AgentEvent.sequence > after)
@@ -237,9 +271,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
             category_id=ctx.category_id,
             read_snapshot=True,
         ) as s:
-            row = s.get(AgentRun, run_id)
-            if row is None or row.requester_id != ctx.requester_id:
-                raise DomainError("FORBIDDEN_SCOPE", "运行不在当前可读范围。", 403)
+            row = visible_run(s, ctx, s.get(AgentRun, run_id))
             return read_candidates(s, ctx, row, after=after, page_size=page_size)
 
     @result.post("/v1/categories/{category_id}/agent-runs/{run_id}/answers", status_code=202)

@@ -1,0 +1,6 @@
+### Result
+{"dark":true,"overflow":false}
+### Ran Playwright code
+```js
+await (async (page) => { await page.evaluate(()=>document.documentElement.classList.add("dark")); const section=page.getByRole("region",{name:"当前提案的小Pai"}); await section.scrollIntoViewIfNeeded(); await page.screenshot({path:"docs/reports/evidence/pdos-next-m3-20261016/proposal-pai/browser/known-rejection-dark-final.png"}); return {dark:await page.evaluate(()=>document.documentElement.classList.contains("dark")),overflow:await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)}; })(page);
+```

@@ -1,0 +1,46 @@
+✔ standard matching forwards a scoped read-only POST without creating commands (33.598875ms)
+✔ durable run candidates allow only scoped paginated reads (4.427083ms)
+✔ proposal run history filter stays on the scoped category collection (1.825291ms)
+✔ platform collection, detail and product links forward scoped no-store reads (1.759ms)
+✔ platform queries reject extra scope, repeated values and invalid filters (2.170583ms)
+✔ platform reads open no unscoped, write or standalone creation route (1.52475ms)
+✔ standard matching rejects unscoped paths, queries and wrong origins (1.336667ms)
+✔ standard matching transport failure is a failed read with no uncertain write (2.069625ms)
+✔ positioning forwards the exact scoped GET and every parameter occurrence (2.694417ms)
+✔ spec-benchmark forwards the exact scoped GET and every parameter occurrence (1.62275ms)
+✔ feature-config forwards the exact scoped GET and every parameter occurrence (1.225125ms)
+✔ definition-maturity forwards the exact scoped GET and every parameter occurrence (1.19875ms)
+✔ parameter filters are optional but a single valid proposal id is mandatory for every view (4.056125ms)
+✔ each repeated parameter is validated and extra scope or query keys are rejected (2.226666ms)
+✔ only the four exact scoped paths are opened (1.959833ms)
+✔ views reject writes and other methods without forwarding (2.599416ms)
+✔ existing proposal collection, document, items and participants reads preserve their URLs (1.891125ms)
+✔ session and configuration requirements still guard the new reads (2.028583ms)
+✔ backend denial and read transport failure never become a successful view (3.043333ms)
+✔ existing command body and same-origin write protection remain unchanged (1.977708ms)
+✔ proposal claims collection and fixed detail preserve the authenticated category scope (1.767583ms)
+✔ claim reads reject ambiguous filters, unbound collections and extra scopes before forwarding (2.273208ms)
+✔ only exact claim GET routes are opened and writes remain domain commands (1.88775ms)
+✔ claim reads propagate privacy denial and missing sessions without rewriting results (4.342125ms)
+✔ reads only scoped GETs and displays the server document identity (18.397416ms)
+✔ scope remount aborts old reads and ignores responses arriving after abort (3.7655ms)
+✔ a late view response cannot replace a newer selected view (4.073208ms)
+✔ same frozen identity refresh hides old sources and fetches fresh redaction (12.252875ms)
+✔ failed document or view reads hide old success and retry first reloads the document (6.9335ms)
+✔ mismatched envelopes are unavailable and never trigger an automatic retry loop (3.321166ms)
+✔ view changes preserve G0 form values and the prepared command for same-key retry (16.275625ms)
+✔ foreground refresh is read-only, hidden pages do not refresh, and cleanup removes listeners (20.423583ms)
+✔ superseded same-scope reload cannot replace a newer source projection (9.698416ms)
+✔ late confirmed write from an unmounted scope does not reload or replace the new proposal (9.619541ms)
+✔ missing identity or unreadable frozen copy cannot fall back to current document content (1.113208ms)
+✔ legacy responses without document identity remain unavailable (0.761958ms)
+✔ restoring a start preserves the exact goal, intent and proposal without executing (0.986584ms)
+✔ local recovery cannot substitute another operation, proposal or policy context (0.259167ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 559.456667

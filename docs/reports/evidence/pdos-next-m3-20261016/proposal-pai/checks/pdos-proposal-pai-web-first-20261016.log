@@ -1,0 +1,146 @@
+✔ standard matching forwards a scoped read-only POST without creating commands (30.299542ms)
+✔ durable run candidates allow only scoped paginated reads (3.778042ms)
+✔ proposal run history filter stays on the scoped category collection (1.717958ms)
+✔ platform collection, detail and product links forward scoped no-store reads (1.728208ms)
+✔ platform queries reject extra scope, repeated values and invalid filters (1.732791ms)
+✔ platform reads open no unscoped, write or standalone creation route (1.472542ms)
+✔ standard matching rejects unscoped paths, queries and wrong origins (1.227ms)
+✔ standard matching transport failure is a failed read with no uncertain write (1.366458ms)
+✔ positioning forwards the exact scoped GET and every parameter occurrence (2.175166ms)
+✔ spec-benchmark forwards the exact scoped GET and every parameter occurrence (1.654ms)
+✔ feature-config forwards the exact scoped GET and every parameter occurrence (1.273542ms)
+✔ definition-maturity forwards the exact scoped GET and every parameter occurrence (1.245917ms)
+✔ parameter filters are optional but a single valid proposal id is mandatory for every view (2.612625ms)
+✔ each repeated parameter is validated and extra scope or query keys are rejected (3.2335ms)
+✔ only the four exact scoped paths are opened (1.722709ms)
+✔ views reject writes and other methods without forwarding (2.51975ms)
+✔ existing proposal collection, document, items and participants reads preserve their URLs (2.213125ms)
+✔ session and configuration requirements still guard the new reads (2.439458ms)
+✔ backend denial and read transport failure never become a successful view (2.286541ms)
+✔ existing command body and same-origin write protection remain unchanged (1.50675ms)
+✔ proposal claims collection and fixed detail preserve the authenticated category scope (1.21025ms)
+✔ claim reads reject ambiguous filters, unbound collections and extra scopes before forwarding (1.679333ms)
+✔ only exact claim GET routes are opened and writes remain domain commands (1.562958ms)
+✔ claim reads propagate privacy denial and missing sessions without rewriting results (4.256708ms)
+✖ reads only scoped GETs and displays the server document identity (17.240167ms)
+✔ scope remount aborts old reads and ignores responses arriving after abort (2.804542ms)
+✖ a late view response cannot replace a newer selected view (3.643333ms)
+✖ same frozen identity refresh hides old sources and fetches fresh redaction (4.624584ms)
+✖ failed document or view reads hide old success and retry first reloads the document (5.762792ms)
+✖ mismatched envelopes are unavailable and never trigger an automatic retry loop (3.507166ms)
+✖ view changes preserve G0 form values and the prepared command for same-key retry (10.461875ms)
+✔ foreground refresh is read-only, hidden pages do not refresh, and cleanup removes listeners (21.457084ms)
+✖ superseded same-scope reload cannot replace a newer source projection (7.101625ms)
+✔ late confirmed write from an unmounted scope does not reload or replace the new proposal (12.003125ms)
+✔ missing identity or unreadable frozen copy cannot fall back to current document content (1.862542ms)
+✔ legacy responses without document identity remain unavailable (0.964792ms)
+✔ restoring a start preserves the exact goal, intent and proposal without executing (1.285417ms)
+✔ local recovery cannot substitute another operation, proposal or policy context (0.370375ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 31
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 589.700583
+
+✖ failing tests:
+
+test at src/components/preproject/proposal-document.test.mjs:150:1
+✖ reads only scoped GETs and displays the server document identity (17.240167ms)
+  ReferenceError: T is not defined
+      at categoryTransport (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/lib/category-transport.ts:8:36)
+      at /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/preproject/proposal-pai.tsx:14:93
+      at Object.useMemo (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:3966:20)
+      at process.env.NODE_ENV.exports.useMemo (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react.development.js:1251:34)
+      at ProposalPai (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/preproject/proposal-pai.tsx:14:43)
+      at Object.react_stack_bottom_frame (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at renderNodeDestructive (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6367:11)
+
+test at src/components/preproject/proposal-document.test.mjs:171:1
+✖ a late view response cannot replace a newer selected view (3.643333ms)
+  ReferenceError: T is not defined
+      at categoryTransport (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/lib/category-transport.ts:8:36)
+      at /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/preproject/proposal-pai.tsx:14:93
+      at Object.useMemo (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:3966:20)
+      at process.env.NODE_ENV.exports.useMemo (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react.development.js:1251:34)
+      at ProposalPai (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/preproject/proposal-pai.tsx:14:43)
+      at Object.react_stack_bottom_frame (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at renderNodeDestructive (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6367:11)
+
+test at src/components/preproject/proposal-document.test.mjs:183:1
+✖ same frozen identity refresh hides old sources and fetches fresh redaction (4.624584ms)
+  ReferenceError: T is not defined
+      at categoryTransport (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/lib/category-transport.ts:8:36)
+      at /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/preproject/proposal-pai.tsx:14:93
+      at Object.useMemo (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:3966:20)
+      at process.env.NODE_ENV.exports.useMemo (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react.development.js:1251:34)
+      at ProposalPai (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/preproject/proposal-pai.tsx:14:43)
+      at Object.react_stack_bottom_frame (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at renderNodeDestructive (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6367:11)
+
+test at src/components/preproject/proposal-document.test.mjs:197:1
+✖ failed document or view reads hide old success and retry first reloads the document (5.762792ms)
+  ReferenceError: T is not defined
+      at categoryTransport (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/lib/category-transport.ts:8:36)
+      at /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/preproject/proposal-pai.tsx:14:93
+      at Object.useMemo (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:3966:20)
+      at process.env.NODE_ENV.exports.useMemo (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react.development.js:1251:34)
+      at ProposalPai (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/preproject/proposal-pai.tsx:14:43)
+      at Object.react_stack_bottom_frame (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at renderNodeDestructive (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6367:11)
+
+test at src/components/preproject/proposal-document.test.mjs:211:1
+✖ mismatched envelopes are unavailable and never trigger an automatic retry loop (3.507166ms)
+  ReferenceError: T is not defined
+      at categoryTransport (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/lib/category-transport.ts:8:36)
+      at /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/preproject/proposal-pai.tsx:14:93
+      at Object.useMemo (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:3966:20)
+      at process.env.NODE_ENV.exports.useMemo (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react.development.js:1251:34)
+      at ProposalPai (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/preproject/proposal-pai.tsx:14:43)
+      at Object.react_stack_bottom_frame (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at renderNodeDestructive (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6367:11)
+
+test at src/components/preproject/proposal-document.test.mjs:219:1
+✖ view changes preserve G0 form values and the prepared command for same-key retry (10.461875ms)
+  ReferenceError: T is not defined
+      at categoryTransport (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/lib/category-transport.ts:8:36)
+      at /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/preproject/proposal-pai.tsx:14:93
+      at Object.useMemo (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:3966:20)
+      at process.env.NODE_ENV.exports.useMemo (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react.development.js:1251:34)
+      at ProposalPai (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/preproject/proposal-pai.tsx:14:43)
+      at Object.react_stack_bottom_frame (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at renderNodeDestructive (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6367:11)
+
+test at src/components/preproject/proposal-document.test.mjs:262:1
+✖ superseded same-scope reload cannot replace a newer source projection (7.101625ms)
+  ReferenceError: T is not defined
+      at categoryTransport (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/lib/category-transport.ts:8:36)
+      at /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/preproject/proposal-pai.tsx:14:93
+      at Object.useMemo (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:3966:20)
+      at process.env.NODE_ENV.exports.useMemo (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react.development.js:1251:34)
+      at ProposalPai (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/preproject/proposal-pai.tsx:14:43)
+      at Object.react_stack_bottom_frame (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at renderNodeDestructive (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6367:11)

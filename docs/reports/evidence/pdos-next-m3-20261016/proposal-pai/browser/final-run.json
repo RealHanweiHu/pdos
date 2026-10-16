@@ -1,0 +1,21 @@
+{
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "head": "s0_0760",
+  "proposal_runs": [
+    {
+      "id": "ad25c084-445c-49b6-b6c0-48c6f05bebf1",
+      "category_id": "63851664-f5ab-4f27-ab68-d137b5f2d135",
+      "proposal_id": "c5ca98f7-9378-482c-9807-0d85ae68600f",
+      "product_id": null,
+      "requester_id": "bda64547-fcc0-481f-bcd7-2a58323ce8a3",
+      "writer_id": "62b4fe31-5e31-4f52-bdee-965ff088174f",
+      "state": "queued",
+      "private_context": true,
+      "read_sources": [],
+      "held_tokens": 0,
+      "used_tokens": 0
+    }
+  ],
+  "run_tool_and_model_calls": 0,
+  "real_provider_calls": 0
+}

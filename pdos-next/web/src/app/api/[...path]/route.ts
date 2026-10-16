@@ -111,7 +111,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405 });
     for (const [key, value] of request.nextUrl.searchParams) {
       const events = pathname.endsWith("/events") || pathname.endsWith("/candidates");
-      const valid = method === "GET" && (events || collection) && (key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 200 : key === "cursor" ? collection && uuid.test(value) : key === "after" && events && /^\d+$/.test(value) && Number.isSafeInteger(Number(value)));
+      const valid = method === "GET" && (events || collection) && (key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 200 : key === "cursor" ? collection && uuid.test(value) : key === "proposal_id" ? collection && !!categoryId && uuid.test(value) : key === "after" && events && /^\d+$/.test(value) && Number.isSafeInteger(Number(value)));
       if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "运行分页条件无效。" }, { status: 422 });
       query.set(key, value);
     }

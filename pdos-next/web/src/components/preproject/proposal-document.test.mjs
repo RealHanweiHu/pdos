@@ -57,7 +57,7 @@ function load(filename) {
     : name === "radix-ui" ? { Dialog: Object.fromEntries(["Root", "Portal", "Overlay", "Content", "Title", "Description"].map(key => [key, container])) }
     : name.startsWith("@/") ? load(path.join(webRoot, "src", name.slice(2)))
     : name.startsWith(".") ? load(path.resolve(path.dirname(filename), name)) : dependency(name);
-  loaded._compile(ts.transpileModule(readFileSync(filename, "utf8"), { compilerOptions: {
+  loaded._compile(ts.transpileModule(readFileSync(filename, "utf8"), { fileName: filename, compilerOptions: {
     module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2017, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true,
   } }).outputText, filename);
   return loaded.exports;

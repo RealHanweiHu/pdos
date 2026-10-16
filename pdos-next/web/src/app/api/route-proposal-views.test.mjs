@@ -75,6 +75,17 @@ test("durable run candidates allow only scoped paginated reads", async () => {
   assert.equal(h.calls.length, before);
 });
 
+test("proposal run history filter stays on the scoped category collection", async () => {
+  const h = harness();
+  const endpoint = `${root}/agent-runs`;
+  assert.equal((await h.send(endpoint, { query: `proposal_id=${proposal}&page_size=50` })).status, 200);
+  assert.equal(h.calls[0].url, `http://synthetic-api.invalid/${endpoint}?proposal_id=${proposal}&page_size=50`);
+  for (const [path, query] of [[endpoint, "proposal_id=bad"], [endpoint, `proposal_id=${proposal}&proposal_id=${proposal}`], [`v1/personal/agent-runs`, `proposal_id=${proposal}`], [`${endpoint}/${proposal}`, `proposal_id=${proposal}`]]) {
+    assert.equal((await h.send(path, { query })).status, 422);
+  }
+  assert.equal(h.calls.length, 1);
+});
+
 test("platform collection, detail and product links forward scoped no-store reads", async () => {
   const h = harness();
   for (const [endpoint, query] of [

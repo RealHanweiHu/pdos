@@ -1,0 +1,12 @@
+### Result
+{"editable":true,"retryCount":0,"journalCount":0,"overflow":false,"historyCount":1}
+### Ran Playwright code
+```js
+await (async (page) => { await page.reload(); await page.getByRole("button",{name:"用小Pai起草或查漏",exact:true}).click(); const section=page.getByRole("region",{name:"当前提案的小Pai"}); await section.getByRole("button").filter({hasText:"合成演练：核对本提案的未知规格并列出待决问题"}).waitFor(); await section.getByText("新建委派",{exact:true}).click(); const input=section.getByRole("textbox",{name:"希望得到什么结果"}); await input.fill("合成演练：验证明确拒绝后继续修改"); await page.route("**/api/v1/categories/*/agent-runs",async route=>{if(route.request().method()!=="POST")return route.continue(); await route.fulfill({status:422,contentType:"application/json",body:JSON.stringify({code:"VALIDATION_FAILED",message:"合成检查：本次目标无效，请修改后重试。"})});},{times:1}); await section.getByRole("button",{name:"保存并开始",exact:true}).click(); await section.getByText("合成检查：本次目标无效，请修改后重试。",{exact:true}).waitFor(); await section.getByRole("button",{name:"保存并开始",exact:true,disabled:false}).waitFor(); await input.fill("目标可以继续修改；此演练不再次派发"); await section.scrollIntoViewIfNeeded(); await page.screenshot({path:"docs/reports/evidence/pdos-next-m3-20261016/proposal-pai/browser/known-rejection-mobile-dark.png"}); return {editable:await input.isEditable(),retryCount:await section.getByRole("button",{name:"重试原请求",exact:true}).count(),journalCount:await page.evaluate(()=>Object.keys(localStorage).filter(k=>k.startsWith("pdos-next:run-start:")).length),overflow:await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),historyCount:await section.getByRole("button").filter({hasText:"合成演练：核对本提案的未知规格并列出待决问题"}).count()}; })(page);
+```
+### Page
+- Page URL: http://127.0.0.1:3036/categories/63851664-f5ab-4f27-ab68-d137b5f2d135/proposals/c5ca98f7-9378-482c-9807-0d85ae68600f
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Events
+- New console entries: .playwright-cli/console-2026-10-16T14-33-50-586Z.log#L6-L23
