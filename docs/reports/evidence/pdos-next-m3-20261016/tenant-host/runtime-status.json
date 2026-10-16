@@ -1,0 +1,67 @@
+{
+  "shared_temporal_retained": true,
+  "isolated_postgres_port": 64245,
+  "head": "s0_0762",
+  "namespaces": [
+    {
+      "namespace": "pdos-next-m3-worker-20261016-host-fixed",
+      "marker_checked": true,
+      "workflows": [
+        {
+          "workflow_id": "pdos-next:xiaopai:d446adf9-e3e4-48fb-9996-0d4ff7f572c0:b2ca534d-3593-47f2-9d84-fc3829548672",
+          "run_id": "01a145fb-6e90-7098-82cc-681b19987a85",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "namespace": "pdos-next-m3-worker-20261016-host-category",
+      "marker_checked": true,
+      "workflows": [
+        {
+          "workflow_id": "pdos-next:xiaopai:59876dec-b672-4c5a-a90a-98f3d9cbd80f:0fe7f710-d0e4-4f26-86ba-be8a4e3ffd32",
+          "run_id": "01a145ff-5541-762a-ab36-6fdfbd453ee7",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "namespace": "pdos-next-m3-worker-20261016-host-final",
+      "marker_checked": true,
+      "workflows": [
+        {
+          "workflow_id": "pdos-next:xiaopai:6ab85b9b-fd02-4026-981b-f9a694fc26fe:9521bd69-1182-4a49-a16b-d54c7d767569",
+          "run_id": "01a14600-8c37-75b1-94b0-96e0d24c41e8",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "namespace": "pdos-next-m3-worker-20261016-host-regression",
+      "marker_checked": true,
+      "workflows": [
+        {
+          "workflow_id": "pdos-next:xiaopai:4eb9be5f-29f9-434b-bb81-35b7fde36336:d113503a-6fb5-4eff-9e1b-00c75f903073",
+          "run_id": "01a14600-c39c-795e-9fa5-aba6201523af",
+          "status": "CANCELED"
+        },
+        {
+          "workflow_id": "pdos-next:xiaopai:071bf3cf-c12d-4b4f-8582-f22cd1e1e557:7c050716-0dc9-4b11-8f29-2ebc54c8205c",
+          "run_id": "01a14600-7d03-7a4c-afac-c57324c22963",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "namespace": "pdos-next-m3-worker-20261016-host-first",
+      "marker_checked": true,
+      "workflows": [
+        {
+          "workflow_id": "pdos-next:xiaopai:ee61d076-b5d6-4b9f-b0cc-7bee6014b4c9:fd1d8d19-70d4-4753-b217-e2bfec43ed88",
+          "run_id": "01a145f9-7fb5-702e-8b95-cabda2590075",
+          "status": "COMPLETED"
+        }
+      ]
+    }
+  ]
+}

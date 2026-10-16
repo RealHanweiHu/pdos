@@ -97,6 +97,26 @@ def test_private_run_dpa_failure_prevents_network_and_reservation(setup):
         assert row.held_tokens == 0
 
 
+def test_run_provider_identity_cannot_change_between_model_calls(setup):
+    store, scope = run(setup)
+    client = Client(lambda _: ModelTurn(usage=ProviderUsage(1, 1), structured={"ok": True}))
+    provider = ["synthetic@1"]
+    gateway = AgentGateway(
+        store,
+        cost_required=False,
+        route_for=lambda _: configured_route(),
+        provider_for=lambda *_: provider[0],
+        client=client,
+    )
+    turn(gateway, scope)
+    provider[0] = "different-provider"
+    with pytest.raises(DomainError) as error:
+        turn(gateway, scope)
+    assert error.value.code == "VERSION_CONFLICT" and client.calls == 1
+    with store.transaction(scope) as (_, row):
+        assert row.versions["provider_key"] == "synthetic@1" and row.held_tokens == 0
+
+
 def test_generic_capability_graph_cannot_bypass_registered_xiaopai_gateway(setup):
     from pdos_agent_runtime.graph import execute_graph
 

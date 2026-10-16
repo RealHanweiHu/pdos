@@ -104,10 +104,10 @@ async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
     if agent_kernel_adapters is not None:
         configure_agent_kernel(engine, agent_kernel_adapters)
     else:
-        from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
+        from pdos_next.agent_kernel.bootstrap import Bootstrap
 
         configure_agent_kernel(
-            engine, Bootstrap(engine, ports=agent_runtime_ports or RuntimePorts()).adapters()
+            engine, Bootstrap(engine, ports=agent_runtime_ports).adapters()
         )
     kernel_activities = KernelActivities(
         engine,

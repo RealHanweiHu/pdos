@@ -65,11 +65,14 @@ class AgentGateway:
                 validate_skill_load(session, scope, binding)
             prior_model = run.versions.get("model_version")
             prior_route = run.versions.get("model_route_digest")
+            prior_provider = run.versions.get("provider_key")
             if (
                 prior_model is not None
                 and prior_model != route.version
                 or prior_route is not None
                 and prior_route != route.digest
+                or prior_provider is not None
+                and prior_provider != provider_key
             ):
                 raise DomainError("VERSION_CONFLICT", "原运行的模型版本不能静默替换。")
             from pdos_next.service import digest
@@ -84,6 +87,7 @@ class AgentGateway:
                 **run.versions,
                 "model_version": route.version,
                 "model_route_digest": route.digest,
+                "provider_key": provider_key,
                 "tool_definitions": {**tool_digests, scope.isolation: digest(tools)},
                 "prompt_prefixes": {**prompt_digests, scope.isolation: digest(system)},
             }

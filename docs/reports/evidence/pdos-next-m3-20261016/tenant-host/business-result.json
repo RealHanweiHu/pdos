@@ -1,0 +1,33 @@
+{
+  "run_id": "9521bd69-1182-4a49-a16b-d54c7d767569",
+  "state": "completed",
+  "product_id": null,
+  "provider": "synthetic@1",
+  "token_limit": 1322880,
+  "used_tokens": 60,
+  "held_tokens": 0,
+  "proposal_id": "690139dc-7caa-4049-b774-49e7772a943c",
+  "proposal_status": "draft",
+  "receipt_id": "f0a14ba1-adea-48f5-b559-cccfe8e861be",
+  "receipt_run_matches": true,
+  "model_calls": [
+    {
+      "id": "e4c8ff2e-0803-4d37-8380-4d001ff6a7d2",
+      "state": "completed",
+      "cost_state": "actual",
+      "charged_micro_usd": 120
+    },
+    {
+      "id": "aceebbc5-d929-4b36-8f69-0367db2ef256",
+      "state": "completed",
+      "cost_state": "actual",
+      "charged_micro_usd": 120
+    }
+  ],
+  "wallet": {
+    "calls": 2,
+    "spent_micro_usd": 240,
+    "held_micro_usd": 0
+  },
+  "synthetic_transports_only": true
+}

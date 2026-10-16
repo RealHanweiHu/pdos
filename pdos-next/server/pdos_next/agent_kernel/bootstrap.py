@@ -43,7 +43,9 @@ class RuntimePorts:
 
 class Bootstrap:
     def __init__(self, engine, *, ports=None):
-        self.engine, self.ports = engine, ports or RuntimePorts()
+        from pdos_next.model_configuration.host import runtime_ports
+
+        self.engine, self.ports = engine, ports if ports is not None else runtime_ports()
         self.store = KernelStore(engine)
         self.catalog, self.registry = SkillCatalog(), default_registry()
         self.commands = DomainCommands(
@@ -206,6 +208,10 @@ class Bootstrap:
             read_sources=reads,
             outbound_context=outbound_context,
             validation_budget_id=budgets[0].id if budgets else None,
+            token_limit=(
+                min(2_147_483_647, budgets[0].input_token_limit + budgets[0].output_token_limit)
+                if budgets else 100000
+            ),
         )
 
     def project_context(self, scope, goal):
