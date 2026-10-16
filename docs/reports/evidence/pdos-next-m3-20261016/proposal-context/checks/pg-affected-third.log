@@ -1,0 +1,150 @@
+F.F..                                                                    [100%]
+=================================== FAILURES ===================================
+____ test_changed_source_scope_cannot_reach_model_or_read_port[new_source] _____
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...790>, parser=<function parse_original at 0x10fa40cc0>), client=<starlette.testclient.TestClient object at 0x11e109220>)
+change = 'new_source'
+
+    @pytest.mark.parametrize("change", ["withdraw_source", "new_source", "audience", "manifest"])
+    def test_changed_source_scope_cannot_reach_model_or_read_port(work, security_work, change):
+        owner, scope = start(work, security_work, "customer_request")
+        agree(work, scope, scope.data_categories)
+        client = Client(lambda _: pytest.fail("Changed private context must not reach a model"))
+        if change == "new_source":
+            _, source = uploaded(work, security_work)
+            response = post(
+                work,
+                request(
+                    work,
+                    "proposal.item.patch",
+                    {
+                        "proposal_id": str(scope.proposal_id),
+                        "ops": [
+                            {
+                                "kind": "section",
+                                "content": {
+                                    "key": "summary",
+                                    "text": "New synthetic mounted source",
+                                },
+                                "source_refs": [
+                                    {
+                                        "type": "original",
+                                        "id": str(source),
+                                        "version": 1,
+                                        "line": 1,
+                                        "quote": QUOTE,
+                                    }
+                                ],
+                            }
+                        ],
+                    },
+                ),
+            )
+            assert response.status_code == 200, response.text
+        with Session(work.admin) as session, session.begin():
+            run = session.get(AgentRun, scope.run_id)
+            if change == "withdraw_source":
+                session.get(Artifact, UUID(run.read_sources[0]["artifact_id"])).status = "withdrawn"
+            elif change == "audience":
+                grant = session.scalar(
+                    select(Grant).where(
+                        Grant.category_id == scope.category_id, Grant.principal_id == scope.writer_id
+                    )
+                )
+                grant.expires_at = now() - timedelta(seconds=1)
+            elif change == "manifest":
+                versions = deepcopy(run.versions)
+                versions[KEY]["proposal_id"] = str(work.product)
+                run.versions = versions
+
+        for action in (
+            lambda: owner.project_context(scope, "Synthetic work"),
+            lambda: read(owner, scope),
+            lambda: turn(gateway(owner, client), scope),
+        ):
+>           with pytest.raises(DomainError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE DomainError
+
+tests/agent_kernel/test_proposal_context_pg.py:194: Failed
+_ test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result _
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...240>, parser=<function parse_original at 0x10fa40cc0>), client=<starlette.testclient.TestClient object at 0x16a059250>)
+
+    def test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result(
+        work, security_work
+    ):
+        owner, scope = start(work, security_work, "customer_request")
+        agree(work, scope, scope.data_categories)
+        # The intentionally unmetered transport reserves bytes, rather than real model tokens.
+        with Session(work.admin) as session, session.begin():
+            session.get(AgentRun, scope.run_id).token_limit = 1_000_000
+        seen = []
+
+        def response(kwargs):
+            context = json.loads(kwargs["messages"][0]["content"])["context"]
+            assert context["proposal"]["id"] == str(scope.proposal_id)
+            assert QUOTE in kwargs["messages"][0]["content"]
+            seen.append(kwargs["messages"])
+            if len(seen) == 1:
+                return ModelTurn(
+                    calls=(
+                        ToolCall(
+                            id="synthetic-private-read",
+                            name="proposal.items.read",
+                            arguments={"proposal_id": str(scope.proposal_id)},
+                        ),
+                    ),
+                    usage=ProviderUsage(2, 1),
+                )
+            assert any(message.get("role") == "tool" for message in kwargs["messages"])
+            return ModelTurn(
+                structured={
+                    "status": "completed",
+                    "summary": "Synthetic private gap check",
+                    "result_json": "{}",
+                    "questions": [],
+                    "unfinished": [],
+                },
+                usage=ProviderUsage(2, 1),
+            )
+
+        client = Client(response)
+        adapters = replace(
+            owner.adapters(),
+            route_for=lambda _: configured_route(),
+            provider_for=lambda *_: "synthetic-provider",
+            provider_client=client,
+            cost_required=False,
+        )
+        result = AgentKernel(BoundHost(owner.store, adapters), owner.registry).execute(
+            scope, goal="Synthetic private proposal gap check"
+        )
+>       assert result["output"]["status"] == "completed" and client.calls == 2, result["output"]
+E       AssertionError: {'status': 'partial', 'summary': '结果未通过完整核对。', 'result': {'actions': [{'tool': 'proposal.items.read', 'tier': 'READ', ...revision': 1, 'items': [{...}, {...}, {...}, {...}, {...}, {...}], 'questions': [{...}], ...}}]}, 'questions': [], ...}
+E       assert ('partial' == 'completed'
+E
+E         - completed
+E         + partial)
+
+tests/agent_kernel/test_proposal_context_pg.py:257: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_proposal_context_pg.py::test_changed_source_scope_cannot_reach_model_or_read_port[new_source]
+tests/agent_kernel/test_proposal_context_pg.py::test_changed_source_scope_cannot_reach_model_or_read_port[audience]
+tests/agent_kernel/test_proposal_context_pg.py::test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result
+tests/agent_kernel/test_proposal_context_pg.py::test_original_mounted_only_below_item_or_claim_has_same_run_and_egress_binding[item]
+tests/agent_kernel/test_proposal_context_pg.py::test_original_mounted_only_below_item_or_claim_has_same_run_and_egress_binding[claim]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_proposal_context_pg.py: 32 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_proposal_context_pg.py::test_changed_source_scope_cannot_reach_model_or_read_port[new_source]
+FAILED tests/agent_kernel/test_proposal_context_pg.py::test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result
+2 failed, 3 passed, 37 warnings in 17.49s

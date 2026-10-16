@@ -81,7 +81,7 @@ def default_registry():
                 version="3"
                 if name == "calc.spec_compare"
                 else "2"
-                if name == "evidence.artifact.read"
+                if name in {"evidence.artifact.read", "proposal.read", "proposal.items.read"}
                 else "1",
             )
         )

@@ -1,0 +1,14 @@
+.............{"scope": "one synthetic original, outbound watermark read", "elapsed_ms": 56.26, "sql_count": 20, "artifact_body_selects": 0}
+.....................
+=============================== warnings summary ===============================
+tests/agent_kernel/test_proposal_context_pg.py: 14 warnings
+tests/agent_kernel/test_m3_original_binding_pg.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_proposal_context_pg.py: 92 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+34 passed, 110 warnings in 64.97s (0:01:04)

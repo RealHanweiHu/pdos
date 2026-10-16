@@ -38,6 +38,9 @@ class AgentGateway:
         if not in_registered_agent_graph():
             raise DomainError("FORBIDDEN_SCOPE", "模型只能由登记的小Pai执行图调用。")
         self.store.current(scope)
+        from .proposal_context import check
+
+        check(self.store, scope)
         route = self.route_for(scope)
         if route is None:
             raise DomainError("SOURCE_UNAVAILABLE", "当前模型未配置，AI 暂不可用。")
@@ -150,6 +153,7 @@ class AgentGateway:
                 or self.provider_for(scope, latest) != provider_key
             ):
                 raise DomainError("VERSION_CONFLICT", "模型配置已变化。")
+            check(self.store, scope)
             with self.store.transaction(scope) as (session, _):
                 egress(session, scope, provider_key, text=str(request))
             if pricing:
@@ -255,6 +259,7 @@ class AgentGateway:
                 result.usage.input_tokens, result.usage.output_tokens, pricing.actual(result.usage)
             )
         try:
+            check(self.store, scope)
             self.store.settle(
                 scope,
                 call_id,

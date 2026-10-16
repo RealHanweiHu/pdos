@@ -123,6 +123,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                     data_categories=binding.data_categories,
                     customer_identities=binding.customer_identities,
                     read_sources=binding.read_sources,
+                    outbound_context=getattr(binding, "outbound_context", None),
                     token_limit=getattr(binding, "token_limit", 100000),
                     validation_budget_id=getattr(binding, "validation_budget_id", None),
                     request_digest=request_digest,

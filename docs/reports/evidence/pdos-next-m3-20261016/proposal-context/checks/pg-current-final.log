@@ -1,0 +1,44 @@
+.............F.....
+=================================== FAILURES ===================================
+__ test_bound_egress_check_compares_metadata_without_reopening_upstream_body ___
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...4c0>, parser=<function parse_original at 0x10b93c7c0>), client=<starlette.testclient.TestClient object at 0x11f65eae0>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11e3e34a0>
+
+    def test_bound_egress_check_compares_metadata_without_reopening_upstream_body(
+        work, security_work, monkeypatch
+    ):
+        from pdos_next.agent_kernel import proposal_context
+        from pdos_next.domain.preproject import views
+
+        owner, scope = start(work, security_work, "customer_request")
+        monkeypatch.setattr(
+            proposal_context, "collect", lambda *a, **k: pytest.fail("Source tree recollected")
+        )
+        monkeypatch.setattr(
+            proposal_context.baseline,
+            "validate_sources",
+            lambda *a, **k: pytest.fail("Source tree revalidated"),
+        )
+>       monkeypatch.setattr(
+            ^^^^^^^^^^^^^^^^^
+            views, "read", lambda *a, **k: pytest.fail("Proposal body reread")
+        )
+E       AttributeError: module 'pdos_next.agent_kernel.proposal_context' has no attribute 'views'
+
+tests/agent_kernel/test_proposal_context_pg.py:349: AttributeError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_proposal_context_pg.py: 14 warnings
+tests/agent_kernel/test_m3_original_binding_pg.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_proposal_context_pg.py: 92 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_proposal_context_pg.py::test_bound_egress_check_compares_metadata_without_reopening_upstream_body
+1 failed, 18 passed, 110 warnings in 62.84s (0:01:02)

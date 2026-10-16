@@ -358,22 +358,22 @@ class M3ObjectReads:
                     403,
                 )
             row = proposal(session, ctx, run.proposal_id)
-            # Reject private heads before loading their body into the adapter.
-            from .domain_reads import _outbound_unavailable
+            from .proposal_context import bound_head, validate
 
-            if (
-                row.effective_visibility != "category"
-                or row.private_source_count
-                or row.customer_identities
-            ):
-                _outbound_unavailable()
+            bound_context = bound_head(run, row)
             doc = views.document(session, row)
-            _public_proposal(session, ctx, row, doc)
+            if bound_context:
+                validate(session, scope, run, extra_value=doc)
+            else:
+                _public_proposal(session, ctx, row, doc)
             if name == "proposal.items.read":
                 items = _item_views(session, ctx, row, payload)
                 # History can retain formerly private evidence after current items
                 # were deidentified. Every returned version has its own check.
-                _public_sources(session, ctx, _references(items))
+                if bound_context:
+                    validate(session, scope, run, extra_value=items)
+                else:
+                    _public_sources(session, ctx, _references(items))
                 return {
                     "proposal_id": str(row.id),
                     "revision": row.revision,
@@ -408,7 +408,13 @@ class M3ObjectReads:
                 "revision": row.revision,
                 "visibility": row.visibility,
                 "effective_visibility": row.effective_visibility,
-                "visibility_reasons": ["category_shared"],
+                "visibility_reasons": [
+                    "private_sources"
+                    if row.private_source_count
+                    else "proposal_private"
+                    if row.effective_visibility != "category"
+                    else "category_shared"
+                ],
                 "private_source_count": row.private_source_count,
                 "baseline_product_id": str(row.baseline_product_id)
                 if row.baseline_product_id

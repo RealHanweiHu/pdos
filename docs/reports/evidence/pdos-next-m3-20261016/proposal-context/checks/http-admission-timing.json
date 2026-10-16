@@ -1,0 +1,36 @@
+{
+  "target": "marked isolated pdos_test:64245",
+  "head": "s0_0760",
+  "sample_size": 1,
+  "measurements": [
+    {
+      "operation": "first_admission",
+      "elapsed_ms": 2066.77,
+      "sql_count_app_and_auth": 34,
+      "response": {
+        "run_id": "6be3ea72-c2b0-44bd-add7-5e313647179c",
+        "session_id": "b6448309-e4fc-4862-801f-1b8c784c7e30",
+        "status": "queued"
+      }
+    },
+    {
+      "operation": "same_request_replay",
+      "elapsed_ms": 1254.6,
+      "sql_count_app_and_auth": 11,
+      "response": {
+        "run_id": "6be3ea72-c2b0-44bd-add7-5e313647179c",
+        "session_id": "b6448309-e4fc-4862-801f-1b8c784c7e30",
+        "status": "queued"
+      }
+    }
+  ],
+  "technical_counts": {
+    "agent_runs": 1,
+    "agent_sessions": 1,
+    "agent_run_events": 1
+  },
+  "dispatches_same_run_reference": true,
+  "scope": "actual HTTP admission; workflow dispatch is a synthetic stub; no real provider or qualification",
+  "model_calls": 0,
+  "formal_p95_pass": false
+}

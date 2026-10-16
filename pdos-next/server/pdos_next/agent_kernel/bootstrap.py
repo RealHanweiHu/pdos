@@ -14,7 +14,7 @@ from pdos_next.errors import DomainError
 from pdos_next.model_configuration.persistence import SessionConfigurationStore
 from pdos_next.model_configuration.ports import SecretMaterial
 from pdos_next.model_configuration.service import current_secret, secret_digest
-from pdos_next.models import Category, Grant, Principal, Product, UploadedOriginal
+from pdos_next.models import Artifact, Category, Grant, Principal, Product, UploadedOriginal
 from pdos_next.service import require_access, source_for
 
 from .api import ApiPorts
@@ -119,6 +119,7 @@ class Bootstrap:
     def binding_for(self, session, ctx, data):
         writer = self.writer_for(session, ctx)
         private, identities, refs = False, (), []
+        proposal_facts, outbound_context = None, None
         if ctx.category_id is not None:
             require_access(session, ctx, data.product_id, lock=True)
             writer_grant = session.scalar(
@@ -151,24 +152,29 @@ class Bootstrap:
             raise DomainError("FORBIDDEN_SCOPE", "个人入口不能绑定业务对象。", 403)
         if data.proposal_id is not None:
             from pdos_next.domain.preproject.access import proposal
+            from pdos_next.domain.preproject.views import read
+
+            from .proposal_context import binding, collect
 
             actual = proposal(session, ctx, data.proposal_id, lock=True)
-            private = private or actual.effective_visibility != "category"
-            identities = tuple(actual.customer_identities)
-            # Registered proposal source facts belong to its owner, never to client policy input.
-            for ref in actual.source_refs:
-                if ref.get("type") == "original":
-                    refs.append(
-                        source_for(session, ctx, None, UUID(ref["id"]), ref["version"])
-                    )
+            proposal_facts = collect(session, ctx, actual, read(session, ctx, actual.id))
+            outbound_context = binding(ctx, actual, proposal_facts)
+            private = private or proposal_facts.private_context
+            identities = proposal_facts.customer_identities
+            refs.extend(session.get(Artifact, UUID(ref["artifact_id"]))
+                        for ref in proposal_facts.read_sources)
         for ref in data.sources:
             refs.append(
                 source_for(session, ctx, data.product_id, ref.artifact_id, ref.expected_revision)
             )
         reads = {}
         for artifact in refs:
-            source_for(session, ctx, data.product_id, artifact.id, artifact.revision)
-            private = private or artifact.visibility != "category"
+            from pdos_next.domain.preproject.claim_access import source_privacy
+
+            source_for(session, ctx, artifact.product_id, artifact.id, artifact.revision)
+            private = private or source_privacy(
+                session, ctx, SimpleNamespace(source_kind="artifact", artifact_id=artifact.id)
+            ) != "shared"
             reads[artifact.id] = {
                 **SourceRead(
                     artifact_id=artifact.id, expected_revision=artifact.revision
@@ -188,6 +194,8 @@ class Bootstrap:
             )
         )
         categories = {"customer" if identities else "internal"}
+        if proposal_facts:
+            categories.update(proposal_facts.data_categories)
         if any(artifact.original_id is not None for artifact in refs):
             # Registered bytes have original provenance regardless of a free-text label.
             categories.add("customer_original")
@@ -196,13 +204,20 @@ class Bootstrap:
             data_categories=tuple(sorted(categories)),
             customer_identities=identities,
             read_sources=reads,
+            outbound_context=outbound_context,
             validation_budget_id=budgets[0].id if budgets else None,
         )
 
     def project_context(self, scope, goal):
-        with self.commands.transaction(scope) as session:
+        with tenant_session(
+            self.engine, scope.tenant_id, actor_id=scope.writer_id,
+            requester_id=scope.requester_id, category_id=scope.category_id, read_snapshot=True,
+        ) as session:
             self.store.authority(session, scope)
             run = session.get(AgentRun, scope.run_id)
+            from .execution import check_run_binding
+
+            check_run_binding(run, scope, for_write=False)
             value = {"goal": goal, "sources": run.read_sources}
             if scope.category_id:
                 category = session.get(Category, scope.category_id)
@@ -220,9 +235,14 @@ class Bootstrap:
                     "visibility": product.visibility,
                 }
             if scope.proposal_id:
+                from pdos_next.domain.preproject.access import proposal
                 from pdos_next.domain.preproject.views import read
 
+                from .proposal_context import bound_head, validate
+
+                bound_head(run, proposal(session, self.commands.context(scope), scope.proposal_id))
                 value["proposal"] = read(session, self.commands.context(scope), scope.proposal_id)
+                validate(session, scope, run, extra_value=value["proposal"])
             return value
 
     def prepare_candidate(self, scope, spec, arguments, intent_key):

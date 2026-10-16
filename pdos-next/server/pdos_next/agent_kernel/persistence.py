@@ -1,7 +1,7 @@
 """Durable run, call and budget state. Every attempt checks current bound principals/ACL."""
 
 from contextlib import contextmanager
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from sqlalchemy import func, or_, select, text
 
@@ -124,6 +124,11 @@ class KernelStore:
                 scope.requester_id,
             }:
                 raise DomainError("FORBIDDEN_SCOPE", "品类运行授权失效。")
+        if scope.proposal_id is not None:
+            from pdos_next.domain.preproject.access import proposal
+
+            proposal(session, Context(scope.tenant_id, scope.writer_id, scope.requester_id,
+                                     category_id=scope.category_id), scope.proposal_id)
 
     def scope(self, *, tenant_id, requester_id, writer_id, category_id, run_id):
         with tenant_session(
@@ -397,6 +402,7 @@ def create_run(
     customer_identities=(),
     token_limit=100000,
     read_sources=(),
+    outbound_context=None,
     validation_budget_id=None,
     request_digest=None,
 ):
@@ -445,7 +451,8 @@ def create_run(
         for ref in read_sources:
             parsed = SourceRead.model_validate({key: value for key, value in ref.items()
                                                if key != "product_id"})
-            actual = source_for(session, ctx, product_id, parsed.artifact_id,
+            source_product = UUID(ref["product_id"]) if ref.get("product_id") else None
+            actual = source_for(session, ctx, product_id or source_product, parsed.artifact_id,
                                 parsed.expected_revision)
             actual_product = str(actual.product_id) if actual.product_id else None
             if ref.get("product_id") != actual_product:
@@ -492,6 +499,7 @@ def create_run(
         customer_identities=list(customer_identities),
         token_limit=token_limit,
         read_sources=list(read_sources),
+        versions={"proposal_context": outbound_context} if outbound_context is not None else {},
         validation_budget_id=validation_budget_id,
     )
     session.add(run)

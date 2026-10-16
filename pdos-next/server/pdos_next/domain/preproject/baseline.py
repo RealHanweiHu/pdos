@@ -344,7 +344,9 @@ def _redact_source_metadata(document):
     return result
 
 
-def validate_sources(s, ctx, view, *, extra_refs=(), history_permissions=False):
+def validate_sources(
+    s, ctx, view, *, extra_refs=(), history_permissions=False, resolved_references=None
+):
     """Revalidate the entire readable fixed tree before allowing new consumption.
 
     Traversal acquires no Claim locks. All Claims are then locked together in the
@@ -530,6 +532,11 @@ def validate_sources(s, ctx, view, *, extra_refs=(), history_permissions=False):
         else:
             # AT53 preserves fixed historic knowledge entries and parameter versions.
             _references(s, ctx, [ref], approved=True)
+    if resolved_references is not None:
+        from .claim_access import source_reference
+
+        resolved_references.extend(ref for _, ref in pending)
+        resolved_references.extend(source_reference(claim) for claim in claims.values())
     return tuple(
         Reference(type="claim", id=identity, version=claims[identity].revision)
         for identity in sorted({ref.id for _, ref in pending if ref.type == "claim"}, key=str)

@@ -12,7 +12,11 @@ def fail(code, reason, message, status=409, **detail):
 
 
 def installed(s):
-    if not s.scalar(text("SELECT to_regclass('public.proposals') IS NOT NULL")):
+    from pdos_next.request_proof import snapshot_scalar
+
+    if not snapshot_scalar(
+        s, ("m3", "installed"), text("SELECT to_regclass('public.proposals') IS NOT NULL")
+    ):
         fail("SOURCE_UNAVAILABLE", "m3_schema_pending", "M3 提前候选尚未安装到此环境。", 503)
 
 
@@ -67,8 +71,12 @@ def proposal(s, ctx, proposal_id, *, lock=False):
         Proposal.category_id == ctx.category_id,
         Proposal.id == proposal_id,
     )
-    row = s.scalar(query.with_for_update() if lock else query)
-    if not row:
+    row = (
+        s.get(Proposal, proposal_id)
+        if not lock and getattr(s, "info", {}).get("read_snapshot")
+        else s.scalar(query.with_for_update() if lock else query)
+    )
+    if not row or row.tenant_id != ctx.tenant_id or row.category_id != ctx.category_id:
         fail("NOT_FOUND", "proposal_not_found", "提案不存在或不在当前受众内。", 404)
     return row
 
