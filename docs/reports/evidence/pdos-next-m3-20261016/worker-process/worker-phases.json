@@ -1,0 +1,33 @@
+{
+  "first": {
+    "test_production_worker_restart0/worker-1.log": [
+      "claim_candidate",
+      "final"
+    ],
+    "test_production_worker_restart0/worker-0.log": [
+      "question"
+    ]
+  },
+  "candidate": {
+    "test_cancel_while_production_w0/worker-1.log": [],
+    "test_cancel_while_production_w0/worker-0.log": [
+      "question"
+    ],
+    "test_production_worker_restart0/worker-1.log": [
+      "claim_candidate",
+      "final"
+    ],
+    "test_production_worker_restart0/worker-0.log": [
+      "question"
+    ]
+  },
+  "checkpoint-final": {
+    "test_production_worker_restart0/worker-1.log": [
+      "claim_candidate",
+      "final"
+    ],
+    "test_production_worker_restart0/worker-0.log": [
+      "question"
+    ]
+  }
+}

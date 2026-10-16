@@ -1,0 +1,32 @@
+{
+  "base_commit": "c01f5c42a6d12008ead88caaa8945c08bd385c4a",
+  "candidate": "worker-process-20261016",
+  "database_head": "s0_0762",
+  "schema_change": false,
+  "new_sources": [
+    "pdos-next/server/tests/agent_kernel/test_worker_process_recovery.py",
+    "pdos-next/server/tests/agent_kernel/worker_process_fixture.py"
+  ],
+  "source_sha256": {
+    "pdos-next/server/tests/agent_kernel/test_worker_process_recovery.py": "636d4f0ba0b8c642756188129153a4ec77b84c7d9803d434fa707d939ce4264e",
+    "pdos-next/server/tests/agent_kernel/worker_process_fixture.py": "d2d54ed4683a3346f39c80c856a7a364fd0906ff85970b6b726aa52c2f4eeac6",
+    "pdos-next/server/pdos_next/api.py": "6e119e46631d442b688a9dc4a04ef6872048b84fbb596a9df35ef9f5dde1ac1b",
+    "pdos-next/server/pdos_next/workflows/worker.py": "48813345216907301bcc819266ac18e690640f46fab40fa67b68328f53a24208",
+    "pdos-next/server/pdos_next/workflows/xiaopai.py": "fdb40dbfad324d8cc8eac17c2e8dec6e87f62825760a56056b687105529a73fb",
+    "pdos-next/server/pdos_next/workflows/checkpoints.py": "2c32065d538249097537916fa27d65a84b8c91fa207b7e79a4fa0b1e91890e75",
+    "pdos-next/server/pdos_next/agent_kernel/activities.py": "62544fba764367b80dc9a146459323e2554d7ec827bf9a2b3c08534d48e63689",
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py": "c8e11000540a1d3654b39f60ea65897aa39a79ece942911aa40a51407509facf",
+    "pdos-next/server/pdos_next/agent_kernel/temporal_port.py": "868c25b33a8a3cb93f6755b5e4994c9fd5dc3a928ce5db3584e5b831d75252f8",
+    "pdos-next/server/pdos_next/agent_kernel/graph.py": "8b66992a439f3781400ac45a0722144e7f1fcf00a16b0aa192ebd47fc3d6448d",
+    "pdos-next/server/pdos_next/model_configuration/service.py": "2d72dfc56f91bc5285ef3c6a8de1519c0e5e58702c3cf5cb7e037909912de86d"
+  },
+  "checks": {
+    "distinct_process_postgres_cases": 2,
+    "concentrated_cases": 2,
+    "incremental_checkpoint_case": 1,
+    "ruff": "passed",
+    "real_model_calls": 0,
+    "frontend_changed": false,
+    "default_host_runtime_configuration": "implementation still required; successful cases inject offline adapters"
+  }
+}
