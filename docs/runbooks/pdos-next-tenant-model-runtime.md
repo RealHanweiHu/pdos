@@ -18,7 +18,7 @@
 
 凭据状态读取使用 [ListSecretVersionIds](https://www.alibabacloud.com/help/en/kms/key-management-service/developer-reference/api-kms-2016-01-20-listsecretversionids) 的版本元数据，不解密密钥。实际模型调用前复核当前版本，再使用 [GetSecretValue](https://www.alibabacloud.com/help/en/kms/key-management-service/developer-reference/api-kms-2016-01-20-getsecretvalue) 同时指定 `VersionId` 与 `ACSCurrent`，并核对返回名称、版本、阶段和通用文本类型。KMS 由官方 SDK 签名，有限连接/读取超时且不开 SDK 自动重试；SDK 原始异常不对外传播。
 
-当前绑定包含租户、协议、凭据引用、完整 ARN、网关和实际 KMS 版本。轮换 `ACSCurrent` 或改指其他 ARN/网关后，旧模型配置显示“需重新绑定”，旧绑定不能解密新值；管理员须重新预览确认，并按变更后的实际模型/技能资格规则处理。运行已经开始后，服务商身份和模型路由不能静默替换。配置与版本每次读取，不缓存密钥材料。
+当前绑定包含租户、协议、凭据引用、完整 ARN、网关和实际 KMS 版本。轮换 `ACSCurrent` 或改指其他 ARN/网关后，旧模型配置显示“需重新绑定”，旧绑定不能解密新值；管理员须重新预览确认，并按变更后的实际模型/技能资格规则处理。运行已经开始后，服务商身份和模型路由不能静默替换。模型路由、价格卡和凭据版本每次读取，不缓存密钥材料。可选 `research` 块配置默认研究服务，服务端点/目录修改后重启 API 和 Worker，见[公开研究配置](pdos-next-public-research-runtime.md)。
 
 每个 Run 的 token 上限由服务器当前选中的活动预算输入/输出额度之和确定（受数据库整数上界约束）；钱包继续跨 Run 原子限制总金额、调用数及输入/输出量。无活动预算不能绕过现行费用检查。保守预留失败时运行保留已完成结果，费用未知时继续按既有未知结算规则保留占账，不自动重发不确定调用。
 

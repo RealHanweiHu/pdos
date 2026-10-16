@@ -12,6 +12,7 @@
       "secret_arn": "acs:kms:cn-hangzhou:000000000000:secret/replace-with-tenant-model-key"
     }
   ],
+  "research": null,
   "models": [
     {
       "tenant_id": "00000000-0000-4000-8000-000000000001",

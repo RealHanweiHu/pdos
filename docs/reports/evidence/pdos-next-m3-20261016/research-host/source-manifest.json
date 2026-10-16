@@ -1,0 +1,40 @@
+{
+  "base_commit": "d1647132d3d0ea0a4db0a7dada3f611ab0d9aa61",
+  "candidate": "research-host-20261016",
+  "database_head": "s0_0762",
+  "schema_change": false,
+  "frontend_change": false,
+  "source_sha256": {
+    "pdos-next/server/pdos_next/research/runtime.py": "779902e18e312ba58410d2d5edeba37d764d120495582a626c173e1000918c19",
+    "pdos-next/server/pdos_next/model_configuration/host.py": "934195106c06e5f50a6dc9c86caa59a64a559e4e3d4b4fddc414f288e6fe6d12",
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py": "7712b91a8133eff323565c39575f4f7e98432f4bf9c0da147fdadf55a3e5ed8e",
+    "pdos-next/server/tests/agent_kernel/test_research_runtime.py": "9dd14c54c8a742eb34f932caee9b3558b3231219e1e50457d9eb23bb358ea4bf",
+    "pdos-next/server/tests/agent_kernel/test_research_runtime_process.py": "09cf33e180e10c50d76ecad857668fb85db37be0571b86055816db1069f3b23c",
+    "pdos-next/server/tests/agent_kernel/test_research_runtime_transactions.py": "465cab2a2d7eeb329d0242bb474cbab4a10b53df71fac8cb4aa4db1e779fb738",
+    "pdos-next/server/pdos_next/agent_kernel/research_graph.py": "d5fdf0c523d0d7f829240487076d1f2cd75b4d3457b061ed258d75e53c88a88b",
+    "pdos-next/server/pdos_next/agent_kernel/research_adapter.py": "e2d13cf7413275707085b8f5b5a85c5886f1dd55d2c48c2d854916964e023993",
+    "pdos-next/server/pdos_next/research/service.py": "10b574caea6343c6846db238b1ae01dbd0d3fb6eeeff2d0a99f3a446fdc770ff",
+    "pdos-next/server/pdos_next/research/search.py": "5877a419dd122cbf43c34413f7fabc58ca13a94dfe97e4f1c471832da6c2c6e2",
+    "pdos-next/server/pdos_next/agent_kernel/snapshot_command.py": "5606f701da4fda8b6a0188cfea401963dfbbfed17b4430e4213cd4ab758876e5",
+    "pdos-next/config/tenant-runtime.example.json": "179817017baf4a7bc9f3c7586b4cdd5e129f32e84d4f74ea44acfb3ac1f984af",
+    "pdos-next/.env.example": "2d90dfc29fab990a3f890243eb610cbb7f777ab0647d5a3759984afcaa05ff3c",
+    "docs/runbooks/pdos-next-public-research-runtime.md": "ec189c22094b95381d98151634835ce318ce27d78eb0d3b30a32cf5cc58d9fff",
+    "docs/runbooks/pdos-next-tenant-model-runtime.md": "194818c66e674e4b817cffda07ed4a91d5d4cfdf76197bb95d64a86b047c01b8"
+  },
+  "checks": {
+    "pure_cases": 150,
+    "postgres_cases": 29,
+    "distinct_total": 179,
+    "regression_first_passed": 27,
+    "agreement_targeted_passed": 1,
+    "default_research_process_passed": 1,
+    "ruff": "passed",
+    "external_model_kms_search_dns_web_calls": 0
+  },
+  "remaining": [
+    "actual-field outbound projection for public queries and complete private identifier checks",
+    "fixed source and coverage projection in user-visible research results",
+    "real provider materials and qualification",
+    "formal M3/S1 exit and recovery/performance evidence"
+  ]
+}

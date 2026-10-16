@@ -1,0 +1,3 @@
+{"run_id": "2dcc3669-9de3-4cdb-ac19-8d504b2f1994", "snapshot_id": "75d8aa43-5ba6-4c2b-b1b0-ea09c04e8843", "job_id": "34ecc235-f1db-440e-b24c-f4e46d2deec3", "model_calls": 7, "cost_micro_usd": 840, "checkpoint_threads": 2, "exact_job_replay": true, "external_model_calls": 0, "external_search_read_calls": 0}
+.
+1 passed in 13.13s

@@ -15,6 +15,7 @@ from pdos_next.errors import DomainError
 from pdos_next.model_configuration.kms import AliyunKms
 from pdos_next.model_configuration.ports import SecretBinding, SecretMaterial
 from pdos_next.providers.types import ProtocolKind
+from pdos_next.research.runtime import ResearchConfiguration
 from pdos_next.schemas.model_configuration.dto import ClosedDTO
 
 
@@ -94,6 +95,7 @@ class HostConfiguration(ClosedDTO):
     kms: KmsLocation
     secrets: list[SecretSlot]
     models: list[ModelHost]
+    research: ResearchConfiguration | None = None
 
     @model_validator(mode="after")
     def unique_bindings(self):
@@ -193,13 +195,29 @@ class TenantRuntime:
         return card
 
 
-def runtime_ports():
+def runtime_ports(engine=None):
     from pdos_next.agent_kernel.bootstrap import RuntimePorts
 
     path = os.environ.get("PDOS_TENANT_RUNTIME_CONFIG")
     if not path:
         return RuntimePorts()
     host = TenantRuntime(path)
+    research = {}
+    if engine is not None:
+        try:
+            config = host.configuration().research
+        except DomainError:
+            config = None  # Other business features stay available; model status reports the error.
+        if config is not None:
+            from pdos_next.research.runtime import configured_ports
+
+            try:
+                research = configured_ports(engine, config)
+            except OSError:
+                research = {}  # A missing research volume must not disable ordinary business APIs.
     return RuntimePorts(
-        secrets=host, provider_for=host.provider_for, rate_card_for=host.rate_card_for
+        secrets=host,
+        provider_for=host.provider_for,
+        rate_card_for=host.rate_card_for,
+        **research,
     )

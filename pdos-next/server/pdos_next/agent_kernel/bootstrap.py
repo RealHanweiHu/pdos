@@ -45,7 +45,7 @@ class Bootstrap:
     def __init__(self, engine, *, ports=None):
         from pdos_next.model_configuration.host import runtime_ports
 
-        self.engine, self.ports = engine, ports if ports is not None else runtime_ports()
+        self.engine, self.ports = engine, ports if ports is not None else runtime_ports(engine)
         self.store = KernelStore(engine)
         self.catalog, self.registry = SkillCatalog(), default_registry()
         self.commands = DomainCommands(

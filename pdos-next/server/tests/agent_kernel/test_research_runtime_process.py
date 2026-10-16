@@ -1,0 +1,380 @@
+"""Default API/Worker research, durable child, verified ledger and actual T1 snapshot."""
+
+import json
+import os
+import subprocess
+import sys
+from datetime import timedelta
+from uuid import UUID, uuid4
+
+import pytest
+from fastapi.testclient import TestClient
+from langgraph.checkpoint.postgres import PostgresSaver
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from pdos_next.agent_kernel.bootstrap import Bootstrap
+from pdos_next.agent_kernel.management import AgreementInput, register_agreement
+from pdos_next.agent_kernel.models import (
+    AgentRun,
+    AgentToolCall,
+    PublicWebSnapshot,
+    TenantAdministrator,
+    TenantSkillEnablement,
+    ValidationBudget,
+)
+from pdos_next.api import create_app
+from pdos_next.database import tenant_session
+from pdos_next.model_configuration.kms import AliyunKms
+from pdos_next.models import Receipt, now
+from pdos_next.workflows.checkpoints import verified_checkpoint_url
+from tests.agent_kernel.test_cost_budget import wallet
+from tests.agent_kernel.test_domain_adapter_transactions import fixture
+from tests.agent_kernel.test_model_configuration_transactions import submit
+from tests.agent_kernel.test_worker_process_recovery import wait_for
+from tests.model_configuration.test_host_runtime import KmsSdk, document, write_config
+
+pytestmark = pytest.mark.skipif(
+    os.environ.get("PDOS_WORKER_PROCESS_CHECK") != "verified-local-synthetic",
+    reason="Explicit verified local Temporal/PG process profile required",
+)
+
+URL = "https://maker.example/specs"
+RAW = "HOST_RAW_SENTINEL_stays_inside_read_only_child"
+
+
+class OfflineResearchClient:
+    def __init__(self):
+        self.turns = {"main": 0, "research": 0}
+
+    def turn(self, route, **kwargs):
+        from pdos_agent_runtime.graph import in_registered_agent_graph
+
+        from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+        from pdos_next.providers.types import ProviderUsage
+
+        assert in_registered_agent_graph()
+        assert route.api_key.get_secret_value() == "synthetic-only-key"
+        messages = kwargs["messages"]
+        context = json.loads(messages[0]["content"])["context"]
+        kind = "research" if "research_task" in context else "main"
+        self.turns[kind] += 1
+        number = self.turns[kind]
+        print(json.dumps({"mode": kind, "turn": number}), flush=True)
+        results = [json.loads(row["content"]) for row in messages if row["role"] == "tool"]
+        assert all("error" not in result for result in results), results
+
+        def tool(name, arguments):
+            return ModelTurn(
+                usage=ProviderUsage(20, 10),
+                calls=(ToolCall(id=f"{kind}-{number}", name=name, arguments=arguments),),
+            )
+
+        if kind == "research":
+            if number == 1:
+                return tool("research.search", {"query": "synthetic pump"})
+            if number == 2:
+                assert results[-1]["hits"][0]["url"] == URL
+                return tool("research.read", {"url": URL})
+            assert number == 3
+            page = results[-1]
+            assert RAW in page["markdown"]
+            output = {
+                "rows": [
+                    {
+                        "brand": "Synthetic",
+                        "model": "P1",
+                        "free_key": "pressure",
+                        "value": "20",
+                        "unit": "psi",
+                        "condition": "25 C",
+                        "quote": "Pressure: 20 psi at 25 C.",
+                        "snapshot_id": page["snapshot_id"],
+                        "locator": page["locator"],
+                    }
+                ]
+            }
+        else:
+            assert RAW not in json.dumps(messages)
+            if number == 1:
+                return tool("skill.load", {"name": "public_research"})
+            if number == 2:
+                return tool(
+                    "research.fanout",
+                    {
+                        "tasks": [{"key": "specs", "focus": "synthetic pump"}],
+                    },
+                )
+            if number == 3:
+                ledger = results[-1]
+                assert ledger["status"] == "completed" and len(ledger["ledger"]) == 1
+                assert len(ledger["snapshot_read_refs"]) == 1 and ledger["failures"] == []
+                return tool(
+                    "research.snapshot.register",
+                    {
+                        "snapshot_id": ledger["snapshots"][0]["id"],
+                    },
+                )
+            assert number == 4 and results[-1]["requires_human"] is True
+            output = {"snapshot_confirmation_pending": True}
+        return ModelTurn(
+            usage=ProviderUsage(20, 10),
+            structured={
+                "status": "completed",
+                "summary": "Synthetic verified research",
+                "result": output,
+            },
+        )
+
+    def close(self):
+        pass
+
+
+def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
+    setup, monkeypatch, tmp_path
+):
+    fixtures = [fixture(setup, skill_key=key) for key in ("proposal_drafting", "public_research")]
+    monkeypatch.setattr(AliyunKms, "sdk", lambda _self: KmsSdk())
+    value = document(setup.tenant)
+    value["research"] = {
+        "search_endpoint": "http://127.0.0.1:18888/search",
+        "search_provider": "synthetic-search",
+        "artifact_root": str(tmp_path / "research"),
+    }
+    monkeypatch.setenv(
+        "PDOS_TENANT_RUNTIME_CONFIG", str(write_config(tmp_path / "host.json", value))
+    )
+    checkpoint_input = os.environ["M2_TEST_CHECKPOINT_URL"].replace(
+        "postgresql://", "postgresql+psycopg://", 1
+    )
+    checkpoint_url = verified_checkpoint_url(checkpoint_input)
+    with Session(setup.admin) as session, session.begin():
+        session.add(TenantAdministrator(tenant_id=setup.tenant, principal_id=setup.human))
+        for f in fixtures:
+            session.get(TenantSkillEnablement, f.qualification.id).qualified_model_version = None
+    budget_id = wallet(setup)
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
+        for provider in ("synthetic@1", "synthetic-search", "public-web:maker.example"):
+            register_agreement(
+                session,
+                setup.ctx,
+                AgreementInput(
+                    provider=provider,
+                    expected_revision=0,
+                    data_categories=["internal"],
+                    decision="批准",
+                    idempotency_key=str(uuid4()),
+                    retention_terms="synthetic-only:no-real-contract",
+                    training_terms="fixture-only",
+                    signed_on=now() - timedelta(minutes=1),
+                    expires_at=now() + timedelta(hours=1),
+                ),
+            )
+    process = None
+    with (tmp_path / "research-worker.log").open("wb") as log:
+        try:
+            with TestClient(create_app(setup.engine, setup.auth, workflow_enabled=True)) as api:
+                saved, _ = submit(
+                    setup,
+                    api,
+                    {
+                        "command_id": str(uuid4()),
+                        "idempotency_key": str(uuid4()),
+                        "category_id": str(setup.category),
+                        "operation": "model.configuration.save",
+                        "expected_revision": 1,
+                        "source_read_set": [],
+                        "payload": {
+                            "expected_revision": 0,
+                            "enabled": True,
+                            "metadata": {
+                                "protocol": "openai-compatible",
+                                "base_url": "https://synthetic.invalid/v1",
+                                "model": "synthetic-model",
+                                "model_version": "synthetic@1",
+                            },
+                        },
+                    },
+                )
+                assert saved.status_code == 200, saved.text
+                path = f"/v1/categories/{setup.category}/agent-runs"
+                accepted = api.post(
+                    path,
+                    headers=setup.headers,
+                    json={
+                        "goal": "Synthetic default host public research",
+                        "idempotency_key": str(uuid4()),
+                    },
+                )
+                assert accepted.status_code == 202, accepted.text
+                identity = UUID(accepted.json()["run_id"])
+                env = dict(
+                    os.environ,
+                    PDOS_WORKFLOW_TENANTS=str(setup.tenant),
+                    PDOS_CHECKPOINT_DATABASE_URL=checkpoint_input,
+                    PDOS_OBJECT_ROOT=str(tmp_path / "objects"),
+                    PDOS_OBJECT_LIFECYCLE_PROFILE="local-synthetic-v1",
+                )
+                process = subprocess.Popen(
+                    [sys.executable, "-m", "tests.agent_kernel.test_research_runtime_process"],
+                    env=env,
+                    stdout=log,
+                    stderr=subprocess.STDOUT,
+                )
+
+                def terminal():
+                    result = api.get(path + f"/{identity}", headers=setup.headers).json()
+                    return (
+                        result if result["status"] in {"completed", "partial", "failed"} else None
+                    )
+
+                result = wait_for(terminal, process, seconds=60)
+                assert result["status"] == "completed", result
+                events = api.get(path + f"/{identity}/events", headers=setup.headers)
+                assert RAW not in events.text
+                outbound = [
+                    row["event"]
+                    for row in events.json()["items"]
+                    if row["event"].get("channel") == "research"
+                ]
+                assert {row["provider"] for row in outbound} == {
+                    "synthetic-search",
+                    "public-web:maker.example",
+                }
+                assert len(outbound) == 2 and all(row["agreement_id"] for row in outbound)
+                candidate = next(
+                    row["event"]
+                    for row in events.json()["items"]
+                    if row["event"]["type"] == "snapshot_candidate"
+                )
+                adopted, command = submit(setup, api, candidate["command"])
+                assert adopted.status_code == 200, adopted.text
+                repeated, _ = submit(setup, api, command, preview=False)
+                assert repeated.json()["id"] == adopted.json()["id"]
+                with Session(setup.admin) as session:
+                    run = session.get(AgentRun, identity)
+                    snapshot = session.scalar(
+                        select(PublicWebSnapshot).where(
+                            PublicWebSnapshot.registered_by_run_id == identity
+                        )
+                    )
+                    assert snapshot and snapshot.url == URL and RAW in snapshot.markdown
+                    assert session.get(Receipt, snapshot.receipt_id).agent_run_id == identity
+                    budget = session.get(ValidationBudget, budget_id)
+                    assert budget.calls == 7 and budget.spent_micro_usd == 840
+                    assert budget.held_micro_usd == 0 and run.held_tokens == 0
+                    fanout = session.scalar(
+                        select(AgentToolCall).where(
+                            AgentToolCall.run_id == identity,
+                            AgentToolCall.tool == "research.fanout",
+                        )
+                    )
+                    previous, job_id = fanout.result, fanout.result["job_id"]
+                    session.expunge(run)
+                owner = Bootstrap(setup.engine)
+
+                def no_model(*_args, **_kwargs):
+                    pytest.fail("Completed fanout replay must not make a new model request")
+
+                from pdos_next.agent_kernel import gateway
+
+                monkeypatch.setattr(gateway.AgentProviderClient, "turn", no_model)
+                scope = owner.store.scope(
+                    tenant_id=setup.tenant,
+                    requester_id=setup.human,
+                    writer_id=setup.agent,
+                    category_id=setup.category,
+                    run_id=identity,
+                )
+                restored = owner.adapters().read_restores["research.fanout"](
+                    scope,
+                    {"tasks": [{"key": "specs", "focus": "synthetic pump"}]},
+                    previous,
+                )
+                assert restored == previous and restored["job_id"] == job_id
+                prefix = f"xiaopai:{run.tenant_id}:{run.session_id}:{run.id}"
+                with PostgresSaver.from_conn_string(checkpoint_url) as saver:
+                    with saver.conn.cursor() as cursor:
+                        cursor.execute(
+                            "SELECT DISTINCT thread_id FROM checkpoints WHERE thread_id LIKE %s",
+                            (prefix + "%",),
+                        )
+                        threads = {row["thread_id"] for row in cursor.fetchall()}
+                    assert len(threads) == 2 and prefix in threads
+                    child = saver.get_tuple(
+                        {"configurable": {"thread_id": next(iter(threads - {prefix}))}}
+                    )
+                    assert {
+                        r["tool"] for r in child.checkpoint["channel_values"]["tool_results"]
+                    } == {
+                        "research.search",
+                        "research.read",
+                    }
+                print(
+                    json.dumps(
+                        {
+                            "run_id": str(identity),
+                            "snapshot_id": str(snapshot.id),
+                            "job_id": job_id,
+                            "model_calls": 7,
+                            "cost_micro_usd": 840,
+                            "checkpoint_threads": 2,
+                            "exact_job_replay": True,
+                            "external_model_calls": 0,
+                            "external_search_read_calls": 0,
+                        }
+                    )
+                )
+        finally:
+            if process is not None and process.poll() is None:
+                process.terminate()
+                process.wait(timeout=15)
+
+
+if __name__ == "__main__":
+    import asyncio
+
+    import httpx
+
+    from pdos_next.agent_kernel import gateway
+    from pdos_next.research import search, service
+    from pdos_next.research.web import HTTPResponse
+    from pdos_next.workflows.worker import main
+
+    real_search, real_service = search.SearxSearchAdapter, service.ResearchService
+
+    def offline_search(request):
+        assert request.url.params["q"] == "synthetic pump"
+        return httpx.Response(
+            200, json={"results": [{"url": URL, "title": "Synthetic pump specs"}]}
+        )
+
+    async def public_dns(_host):
+        return ("8.8.8.8",)
+
+    class Web:
+        async def request(self, url, address, _limits):
+            assert url == URL and address == "8.8.8.8"
+            return HTTPResponse(
+                200,
+                (("content-type", "text/html"),),
+                (
+                    f"<title>Synthetic specs</title><p>Pressure: 20 psi at 25 C.</p><p>{RAW}</p>"
+                ).encode(),
+            )
+
+    search.SearxSearchAdapter = lambda *args, **kwargs: real_search(
+        *args, transport=httpx.MockTransport(offline_search), **kwargs
+    )
+    service.ResearchService = lambda *args, **kwargs: real_service(
+        *args, transport=Web(), resolver=public_dns, **kwargs
+    )
+    AliyunKms.sdk = lambda _self: KmsSdk()
+    gateway.AgentProviderClient = OfflineResearchClient
+    asyncio.run(main())
