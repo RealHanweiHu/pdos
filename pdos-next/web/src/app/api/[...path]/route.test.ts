@@ -84,6 +84,29 @@ function harness(configuration: { token?: string | null; api?: string | null; re
 }
 
 const resourceInspect = `${base}/builds/${build}/resources/inspect`;
+test("本人预算读取分页与原回执查询保持实际品类和原正文", async () => {
+  const h = harness();
+  const read = await h.send("v1/agent-budgets", { query: `page_size=20&cursor=${product}` });
+  assert.equal(read.response.status, 200);
+  assert.equal(h.calls[0].url, `http://synthetic-api.invalid/v1/categories/${category}/agent-budgets?page_size=20&cursor=${product}`);
+  const body = JSON.stringify({ operation: "ai.budget.configure", payload: { action: "stop" } });
+  const result = await h.send("v1/agent-budgets/recover", { method: "POST", body });
+  assert.equal(result.response.status, 200); assert.equal(result.reads, 1); assert.equal(h.calls.at(-1)?.init.body, body);
+});
+
+test("预算入口拒绝身份覆盖、错误方法与跨站请求，回执查询失败保持只读", async () => {
+  for (const [path, options, status] of [
+    ["v1/agent-budgets", { unscoped: true }, 404], ["v1/agent-budgets", { query: "requester_id=forged" }, 422],
+    ["v1/agent-budgets", { query: "page_size=20&page_size=30" }, 422], ["v1/agent-budgets", { query: "page_size=201" }, 422],
+    ["v1/agent-budgets", { method: "POST", body: "{}" }, 405], ["v1/agent-budgets/recover", {}, 405],
+    ["v1/agent-budgets/recover", { method: "POST", query: "cursor=forged", body: "{}" }, 422],
+    ["v1/agent-budgets/recover", { method: "POST", origin: "https://other.invalid", body: "{}" }, 403],
+  ] as const) { const h = harness(); assert.equal((await h.send(path, options)).response.status, status); assert.equal(h.calls.length, 0); }
+  const h = harness({ response: async () => { throw new Error("synthetic unavailable"); } });
+  const result = await h.send("v1/agent-budgets/recover", { method: "POST", body: "{}" });
+  assert.equal((await result.response.json()).code, "SOURCE_UNAVAILABLE");
+});
+
 test("技能管理读取与原请求恢复保留品类和完整原正文", async () => {
   const h = harness();
   assert.equal((await h.send("v1/agent-skills")).response.status, 200);

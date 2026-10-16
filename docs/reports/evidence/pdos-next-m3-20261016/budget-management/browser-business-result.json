@@ -1,0 +1,60 @@
+{
+  "target": "verified 64245/pdos_test",
+  "head": "s0_0765",
+  "receipts": [
+    {
+      "id": "3af09493-f70d-4230-bc4c-64e6c17728a6",
+      "wallet_id": "d53c5913-7995-400c-9bf8-54b74f9cb3cb",
+      "action": "allocate",
+      "revision": 1,
+      "counts": {
+        "action_receipts": 1,
+        "audit_entries": 1,
+        "outbox_events": 1
+      }
+    },
+    {
+      "id": "3f1f5d90-bcfc-4cc2-9d57-fa159a3fc83a",
+      "wallet_id": "d53c5913-7995-400c-9bf8-54b74f9cb3cb",
+      "action": "stop",
+      "revision": 2,
+      "counts": {
+        "action_receipts": 1,
+        "audit_entries": 1,
+        "outbox_events": 1
+      }
+    },
+    {
+      "id": "e1aa1f25-54a3-454b-be11-f94b9dcb08fd",
+      "wallet_id": "0dbf2dcc-e341-4359-96c5-cc3bf32e9e48",
+      "action": "allocate",
+      "revision": 3,
+      "counts": {
+        "action_receipts": 1,
+        "audit_entries": 1,
+        "outbox_events": 1
+      }
+    }
+  ],
+  "wallets": [
+    {
+      "id": "d53c5913-7995-400c-9bf8-54b74f9cb3cb",
+      "revision": 2,
+      "active": false,
+      "limit_micro_usd": 1250001,
+      "spent_micro_usd": 0,
+      "held_micro_usd": 0
+    },
+    {
+      "id": "0dbf2dcc-e341-4359-96c5-cc3bf32e9e48",
+      "revision": 3,
+      "active": true,
+      "limit_micro_usd": 1250001,
+      "spent_micro_usd": 0,
+      "held_micro_usd": 0
+    }
+  ],
+  "real_model_calls": 0,
+  "real_money_spent": 0,
+  "cleanup": false
+}

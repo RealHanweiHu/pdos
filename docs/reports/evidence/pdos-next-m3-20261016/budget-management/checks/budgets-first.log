@@ -1,0 +1,19 @@
+....F....................                                                [100%]
+=================================== FAILURES ===================================
+___ test_stale_confirmation_and_changed_payload_cannot_replace_a_new_wallet ____
+
+setup = <isolated synthetic test scope>
+
+    def test_stale_confirmation_and_changed_payload_cannot_replace_a_new_wallet(setup):
+        promote(setup)
+        first = preview(setup, command(setup))
+        stale = preview(setup, command(setup))
+        assert post(setup, first).status_code == 200
+>       assert post(setup, stale).json()["code"] == "VERSION_CONFLICT"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'code'
+
+tests/agent_kernel/test_budget_management.py:178: KeyError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_budget_management.py::test_stale_confirmation_and_changed_payload_cannot_replace_a_new_wallet
+1 failed, 24 passed in 15.52s

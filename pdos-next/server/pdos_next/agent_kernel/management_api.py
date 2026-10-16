@@ -144,6 +144,26 @@ def register_routes(app, engine, auth_dependency):
 
     from pdos_next.contracts import Command
 
+    from .budget_management import BudgetPage
+
+    @app.get("/v1/categories/{category_id}/agent-budgets")
+    def budgets(
+        category_id: UUID, page: Annotated[BudgetPage, Query()], ctx: Context = auth_dependency
+    ):
+        from .budget_management import reading as budget_reading
+
+        with scope(ctx) as session:
+            human(session, ctx)
+            return budget_reading(session, ctx, page)
+
+    @app.post("/v1/categories/{category_id}/agent-budgets/recover")
+    def budget_recover(category_id: UUID, data: Command, ctx: Context = auth_dependency):
+        from .budget_management import recover as budget_receipt
+
+        with scope(ctx) as session:
+            human(session, ctx)
+            return {"receipt": budget_receipt(session, ctx, data)}
+
     @app.post("/v1/categories/{category_id}/agent-skills/recover")
     def skill_recover(category_id: UUID, data: Command, ctx: Context = auth_dependency):
         from .skill_management import recover as skill_receipt

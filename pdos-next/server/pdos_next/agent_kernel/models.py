@@ -8,10 +8,12 @@ from sqlalchemy import (
     CheckConstraint,
     DateTime,
     ForeignKeyConstraint,
+    Index,
     Integer,
     String,
     Text,
     UniqueConstraint,
+    text,
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
@@ -304,9 +306,22 @@ class ValidationBudget(KernelRow, Base):
     used_input_tokens: Mapped[int] = mapped_column(Integer, default=0)
     held_output_tokens: Mapped[int] = mapped_column(Integer, default=0)
     used_output_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    revision: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    receipt_id: Mapped[UUID | None]
     __table_args__ = (
         UniqueConstraint("tenant_id", "id"),
         ForeignKeyConstraint(
             ["tenant_id", "requester_id"], ["principals.tenant_id", "principals.id"]
         ),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"],
+            ["action_receipts.tenant_id", "action_receipts.id"],
+            name="agent_budget_receipt_fk",
+            deferrable=True,
+            initially="DEFERRED",
+            use_alter=True,
+        ),
+        Index("ix_agent_budget_control_revision", "tenant_id", "requester_id", "revision"),
+        Index("ix_agent_budget_active", "tenant_id", "requester_id", "id",
+              postgresql_where=text("active IS TRUE")),
     )

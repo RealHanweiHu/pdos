@@ -292,8 +292,15 @@ class KernelStore:
                     .where(ValidationBudget.id == run.validation_budget_id)
                     .with_for_update()
                 )
-                if not budget or not budget.active or budget.requester_id != run.requester_id:
-                    raise DomainError("SOURCE_UNAVAILABLE", "验证费用预算未登记。")
+                if not budget or budget.requester_id != run.requester_id:
+                    raise DomainError("SOURCE_UNAVAILABLE", "该运行尚未绑定可用的本人预算。")
+                if not budget.active:
+                    raise DomainError(
+                        "SOURCE_UNAVAILABLE",
+                        "该运行的预算已停用。请核对活动预算后以新请求开始工作；"
+                        "已发生用量保留在原预算。",
+                        detail={"reason_key": "budget_inactive"},
+                    )
                 cost, inp, outp, pricing = cost_lease
                 if (
                     budget.calls + 1 > budget.call_limit

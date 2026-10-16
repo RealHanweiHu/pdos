@@ -121,6 +121,10 @@ from pdos_next.agent_kernel.skill_management import EnableSkill  # noqa: E402
 
 PAYLOADS["ai.skill.enable"] = EnableSkill
 
+from pdos_next.agent_kernel.budget_management import ConfigureBudget  # noqa: E402
+
+PAYLOADS["ai.budget.configure"] = ConfigureBudget
+
 
 class ProductInput(StrictModel):
     name: str = Field(min_length=2, max_length=160)

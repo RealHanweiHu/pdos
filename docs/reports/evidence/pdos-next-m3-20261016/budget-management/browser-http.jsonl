@@ -1,0 +1,14 @@
+{"method": "GET", "path": "/v1/categories/9286d5ca-462e-47ba-9097-747d40a8db00/agent-budgets", "action": null, "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/9286d5ca-462e-47ba-9097-747d40a8db00/agent-budgets", "action": null, "actual_status": 200}
+{"method": "POST", "path": "/v1/categories/9286d5ca-462e-47ba-9097-747d40a8db00/commands/preview", "action": "allocate", "actual_status": 200}
+{"method": "POST", "path": "/v1/categories/9286d5ca-462e-47ba-9097-747d40a8db00/commands", "action": "allocate", "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/9286d5ca-462e-47ba-9097-747d40a8db00/agent-budgets", "action": null, "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/9286d5ca-462e-47ba-9097-747d40a8db00/agent-budgets", "action": null, "actual_status": 200}
+{"method": "POST", "path": "/v1/categories/9286d5ca-462e-47ba-9097-747d40a8db00/commands/preview", "action": "stop", "actual_status": 200}
+{"method": "POST", "path": "/v1/categories/9286d5ca-462e-47ba-9097-747d40a8db00/commands", "action": "stop", "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/9286d5ca-462e-47ba-9097-747d40a8db00/agent-budgets", "action": null, "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/9286d5ca-462e-47ba-9097-747d40a8db00/agent-budgets", "action": null, "actual_status": 200}
+{"method": "POST", "path": "/v1/categories/9286d5ca-462e-47ba-9097-747d40a8db00/commands/preview", "action": "allocate", "actual_status": 200}
+{"method": "POST", "path": "/v1/categories/9286d5ca-462e-47ba-9097-747d40a8db00/commands", "action": "allocate", "actual_status": 200}
+{"method": "POST", "path": "/v1/categories/9286d5ca-462e-47ba-9097-747d40a8db00/agent-budgets/recover", "action": "allocate", "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/9286d5ca-462e-47ba-9097-747d40a8db00/agent-budgets", "action": null, "actual_status": 200}

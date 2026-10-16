@@ -91,6 +91,7 @@ EVENTS = {
     "category.parameter.publish": "category.parameter_published",
     "model.configuration.save": "model.configuration_saved",
     "ai.skill.enable": "ai.skill_enabled",
+    "ai.budget.configure": "ai.budget_configured",
     "proposal.create": "proposal.created",
     "proposal.item.patch": "proposal.item_patched",
     "proposal.question.create": "proposal.question_created",

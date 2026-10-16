@@ -1,0 +1,7 @@
+{
+  "target": "verified independent 64245/pdos_test",
+  "head": "s0_0765",
+  "roundtrip": true,
+  "existing_limits_usage_bindings_and_controls_unchanged": true,
+  "orm_differences": []
+}
