@@ -5,11 +5,11 @@ import test from "node:test";
 import { runInNewContext } from "node:vm";
 
 const require = createRequire(import.meta.url), ts = require("typescript");
-const module = { exports: {} };
+const compiledModule = { exports: {} };
 runInNewContext(ts.transpileModule(readFileSync(new URL("./domain-candidate.ts", import.meta.url), "utf8"), {
   compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
-}).outputText, { module, exports: module.exports });
-const { boundCandidateCommand, sameCandidateCommand } = module.exports;
+}).outputText, { module: compiledModule, exports: compiledModule.exports });
+const { boundCandidateCommand, sameCandidateCommand, matchesPendingCandidate } = compiledModule.exports;
 const category = "11111111-1111-4111-8111-111111111111";
 const run = "22222222-2222-4222-8222-222222222222";
 const command = () => ({
@@ -50,4 +50,20 @@ test("nested business fields called confirmation_token are still compared", () =
   original.payload.content = { confirmation_token: "business-source-text" };
   preview.payload.content = { confirmation_token: "changed-source-text" };
   assert.equal(sameCandidateCommand(original, preview), false);
+});
+
+test("snapshot confirmation needs the server event and exact currently listed command", () => {
+  const event = "33333333-3333-4333-8333-333333333333";
+  const original = { ...command(), operation: "research.snapshot.register", product_id: null,
+    payload: { prepared_event_id: event, snapshot_id: category } };
+  assert.equal(boundCandidateCommand(original, category, run), false);
+  assert.equal(boundCandidateCommand(original, category, run, event), true);
+  assert.equal(boundCandidateCommand(original, category, run, category), false);
+  const current = { event_id: event, state: "pending", command: original,
+    command_id: original.command_id, idempotency_key: original.idempotency_key };
+  const confirmed = structuredClone(original); confirmed.payload.confirmation_token = "actual-preview";
+  assert.equal(matchesPendingCandidate(current, confirmed, event, category, run), true);
+  assert.equal(matchesPendingCandidate(undefined, confirmed, event, category, run), false);
+  assert.equal(matchesPendingCandidate({ ...current, state: "unavailable" }, confirmed, event, category, run), false);
+  assert.equal(matchesPendingCandidate({ ...current, command: { ...original, payload: { ...original.payload, snapshot_id: run } } }, confirmed, event, category, run), false);
 });

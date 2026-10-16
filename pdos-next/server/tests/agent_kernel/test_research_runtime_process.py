@@ -130,8 +130,9 @@ class OfflineResearchClient:
         pass
 
 
+@pytest.mark.parametrize("confirmation", ["api", "browser_success", "browser_recovery"])
 def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
-    setup, monkeypatch, tmp_path
+    setup, monkeypatch, tmp_path, confirmation
 ):
     fixtures = [fixture(setup, skill_key=key) for key in ("proposal_drafting", "public_research")]
     monkeypatch.setattr(AliyunKms, "sdk", lambda _self: KmsSdk())
@@ -139,7 +140,7 @@ def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
     value["research"] = {
         "search_endpoint": "http://127.0.0.1:18888/search",
         "search_provider": "synthetic-search",
-        "artifact_root": str(tmp_path / "research"),
+        "artifact_root": str(tmp_path.parent / "shared-research"),
     }
     monkeypatch.setenv(
         "PDOS_TENANT_RUNTIME_CONFIG", str(write_config(tmp_path / "host.json", value))
@@ -261,10 +262,45 @@ def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
                     for row in events.json()["items"]
                     if row["event"]["type"] == "snapshot_candidate"
                 )
+                candidates = api.get(path + f"/{identity}/candidates", headers=setup.headers)
+                assert candidates.status_code == 200, candidates.text
+                item = candidates.json()["items"][0]
+                assert item["state"] == "pending" and item["command"] == candidate["command"]
+                assert item["summary"]["title"] == "Synthetic specs" and RAW not in candidates.text
+                if confirmation != "api":
+                    with Session(setup.admin) as session:
+                        assert (
+                            session.scalar(
+                                select(PublicWebSnapshot).where(
+                                    PublicWebSnapshot.registered_by_run_id == identity
+                                )
+                            )
+                            is None
+                        )
+                        budget = session.get(ValidationBudget, budget_id)
+                        assert budget.calls == 7 and budget.held_micro_usd == 0
+                    print(
+                        json.dumps(
+                            {
+                                "run_id": str(identity),
+                                "event_id": item["event_id"],
+                                "confirmation": confirmation,
+                                "pending_snapshot": True,
+                                "host_config": str(tmp_path / "host.json"),
+                                "external_calls": 0,
+                            }
+                        )
+                    )
+                    return
                 adopted, command = submit(setup, api, candidate["command"])
                 assert adopted.status_code == 200, adopted.text
                 repeated, _ = submit(setup, api, command, preview=False)
                 assert repeated.json()["id"] == adopted.json()["id"]
+                after = api.get(path + f"/{identity}/candidates", headers=setup.headers).json()[
+                    "items"
+                ][0]
+                assert after["state"] == "adopted" and after["command"] is None
+                assert after["receipt"]["id"] == adopted.json()["id"]
                 with Session(setup.admin) as session:
                     run = session.get(AgentRun, identity)
                     snapshot = session.scalar(

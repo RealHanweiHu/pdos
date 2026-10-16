@@ -1,0 +1,20 @@
+✔ actual partial evidence shows source, exact quote, uncovered work and original failure (5.880083ms)
+✔ missing evidence is absent; inconsistent counts and malformed records are visible failures (0.401666ms)
+✔ unavailable work remains visible without fabricated sources (0.325541ms)
+✔ source URL cannot become an executable link and quotes stay escaped (0.559959ms)
+✔ snapshot is listed without a write, then one preview and one confirmation save it (24.316625ms)
+✔ lost success response restores the actual receipt on reopening without a second POST (9.299917ms)
+✔ an uncommitted request remains recoverable with exactly its original command and token (10.449ms)
+✔ only an actual scoped domain candidate can be restored for confirmation (1.128167ms)
+✔ preview comparison tolerates JSON key order and the one server confirmation token (0.280959ms)
+✔ changed scope, material, version or original request is not the same preview (0.20825ms)
+✔ nested business fields called confirmation_token are still compared (0.117167ms)
+✔ snapshot confirmation needs the server event and exact currently listed command (0.2145ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 557.390834

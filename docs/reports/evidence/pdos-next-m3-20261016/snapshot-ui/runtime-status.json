@@ -1,0 +1,29 @@
+{
+  "head": "s0_0762",
+  "shared_temporal_retained": true,
+  "namespace": "pdos-next-m3-worker-20261016-snapshot-ui-first",
+  "workflows": [
+    {
+      "workflow_id": "pdos-next:xiaopai:22b12071-4527-412b-914e-fd905a995ab6:de1e34d3-7d3a-409d-8221-91a56acc42b6",
+      "run_id": "01a14621-39a5-7a73-9d3d-e6ce7f242609",
+      "status": "COMPLETED"
+    },
+    {
+      "workflow_id": "pdos-next:xiaopai:33d3997d-3751-42a2-95be-a36ef6aec1d6:8406d046-2bc7-43dc-ad94-46a8710fa84c",
+      "run_id": "01a14621-0fef-75d4-8944-ce7245a76f4f",
+      "status": "COMPLETED"
+    },
+    {
+      "workflow_id": "pdos-next:xiaopai:61009e64-9d96-4f74-9443-748dd413c847:b3b97b4e-60c5-4f72-90fb-ea5c9a2e16c8",
+      "run_id": "01a14620-e290-7e11-b77c-26d74bb020ca",
+      "status": "COMPLETED"
+    }
+  ],
+  "temporary_preview_login_expired": true,
+  "temporary_preview_ports_closed": [
+    8044,
+    3044,
+    3045
+  ],
+  "external_calls": 0
+}

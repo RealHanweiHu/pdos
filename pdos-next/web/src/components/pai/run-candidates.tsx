@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import type { WorkspaceTransport } from "@/lib/workspace-api";
 import { proofClockCurrent } from "@/lib/proof-clock";
-import { boundCandidateCommand, candidateLabels, sameCandidateCommand, type CandidatePage, type CandidatePreview, type CandidateReceipt, type DomainCandidate, type DomainCommand } from "@/lib/domain-candidate";
+import { boundCandidateCommand, candidateLabels, matchesPendingCandidate, sameCandidateCommand, type CandidatePage, type CandidatePreview, type CandidateReceipt, type DomainCandidate, type DomainCommand } from "@/lib/domain-candidate";
 
 type Props = { api: WorkspaceTransport; categoryId: string; principalId: string; runId: string; eventSequence: number; disabled?: boolean };
 type Pending = { eventId: string; command: DomainCommand };
@@ -32,7 +32,7 @@ const fields: Record<string, string> = {
   answer: "答复", supersedes_item_id: "替代条目", type: "来源类型", id: "记录编号",
 };
 const values: Record<string, string> = { ...candidateLabels, attach: "关联", detach: "解除", unknown: "未知", ai_draft: "AI 草稿", known: "已知", upsert: "新增或修订", remove: "移除", new_product: "自主新品", customer_requirement: "客户需求", derivative: "派生迭代", private: "私有", category: "品类授权成员", section: "说明章节", option: "备选方案", spec: "规格要求", new: "新方案", do_nothing: "保持现状", worth_it: "立项价值", number: "数值", boolean: "是或否", decided: "已作产品决定", open: "待处理", human: "具名人员" };
-const internal = new Set(["confirmation_token", "prepared_by_run_id", "candidate_digest"]);
+const internal = new Set(["confirmation_token", "prepared_by_run_id", "candidate_digest", "prepared_event_id"]);
 const enumerated = new Set(["operation", "action", "availability", "item_status", "origin", "kind", "visibility", "value_type", "nature", "status", "entry_kind", "target_kind", "type"]);
 function display(value: unknown): unknown {
   if (!value || typeof value !== "object" || Array.isArray(value)) return value;
@@ -50,6 +50,9 @@ function detail(value: unknown, field?: string): ReactNode {
 function platformReview(preview: CandidatePreview) {
   const payload = preview.command.payload, review = preview.review;
   return <div className="space-y-2"><p>{String(review.product_name ?? "当前型号")}{typeof review.variant_name === "string" && ` / ${review.variant_name}`}</p>{detail(review.platform)}<p>动作：{payload.action === "detach" ? "解除关联" : "关联平台"}</p><p>兼容范围：{typeof payload.compatibility === "string" && payload.compatibility || "待确认"}</p><p>平台版本：{typeof payload.platform_version === "string" && payload.platform_version || "待确认"}</p><p>原因：{String(payload.reason ?? "未填写")}</p><p className="subtle">{String(review.effect ?? "核对本次保存范围。")}</p></div>;
+}
+function snapshotReview(review: Record<string, unknown>) {
+  return <div className="space-y-2 break-words"><p className="font-medium">{String(review.title ?? "实际读取的来源")}</p><p className="subtle">{String(review.url ?? "")}</p><p>保存范围：{review.visibility === "private" ? "原私有上下文受众" : review.visibility === "category" ? "当前品类授权成员" : "范围待核对"}</p><p>{String(review.effect ?? "登记原研究快照，保留小Pai来源与本人确认。")}</p></div>;
 }
 const failureMessage = (failure: unknown) => {
   const message = (failure as Error)?.message;
@@ -99,7 +102,7 @@ function CandidatePanel({ api, categoryId, principalId, runId, eventSequence, di
       if (!alive.current) return;
       try {
         const saved = JSON.parse(localStorage.getItem(storageKey) ?? "null");
-        if (saved && typeof saved.eventId === "string" && boundCandidateCommand(saved.command, categoryId, runId)) setPending(saved);
+        if (saved && typeof saved.eventId === "string" && boundCandidateCommand(saved.command, categoryId, runId, saved.eventId)) setPending(saved);
       } catch { /* Optional local recovery. */ }
       setReady(true);
     });
@@ -129,22 +132,25 @@ function CandidatePanel({ api, categoryId, principalId, runId, eventSequence, di
   const previewState = preview && items.find(item => item.event_id === preview.eventId)?.state;
   const invalidated = !!previewState && previewState !== "pending";
   async function prepare(item: DomainCandidate, element: HTMLElement) {
-    if (lock.current || pending || !item.command || !boundCandidateCommand(item.command, categoryId, runId)) return;
+    if (lock.current || pending || !item.command || !boundCandidateCommand(item.command, categoryId, runId, item.event_id)) return;
     lock.current = true; setBusy(true); setError(""); trigger.current = element;
     try {
       const result = await api<CandidatePreview>("v1/commands/preview", item.command);
-      if (!boundCandidateCommand(result.command, categoryId, runId) || !sameCandidateCommand(result.command, item.command) || !result.command.payload.confirmation_token || !result.review) throw new Error("预览与原候选不一致，请重新读取核对。");
+      if (!boundCandidateCommand(result.command, categoryId, runId, item.event_id) || !sameCandidateCommand(result.command, item.command) || !result.command.payload.confirmation_token || !result.review) throw new Error("预览与原候选不一致，请重新读取核对。");
       if (alive.current) setPreview({ ...result, eventId: item.event_id });
     } catch (failure) { if (alive.current) setError(failureMessage(failure)); }
     finally { lock.current = false; if (alive.current) setBusy(false); }
   }
   async function confirm(value: Pending) {
     if (lock.current) return;
+    if (!matchesPendingCandidate(items.find(item => item.event_id === value.eventId), value.command, value.eventId, categoryId, runId)) {
+      setError("当前候选尚未核对，请刷新候选后再核对原请求。"); return;
+    }
     lock.current = true; generation.current++; setBusy(true); setError(""); setPending(value); remember(value);
     let committed = false;
     try {
       const result = await api<CandidateReceipt>("v1/commands", value.command);
-      if (!result.id || result.operation !== value.command.operation || !result.subject_id) throw new Error("保存结果尚未确认，请核对原请求。");
+      if (!result.id || result.operation !== value.command.operation || !result.subject_id || value.command.operation === "research.snapshot.register" && result.subject_id !== value.command.payload.snapshot_id) throw new Error("保存结果尚未确认，请核对原请求。");
       if (!alive.current) return;
       committed = true; setPending(null); remember(null); setReceipt(result); close(); await load();
     } catch (failure) {
@@ -163,10 +169,10 @@ function CandidatePanel({ api, categoryId, principalId, runId, eventSequence, di
     {receipt && <div role="status" className="rounded-lg border p-3 space-y-2"><p>{candidateLabels[receipt.operation] ?? "候选"}已保存，回执可查。</p>{receipt.subject_type === "proposal" && <Link className="underline" href={`/categories/${categoryId}/proposals/${receipt.subject_id}`}>打开立项提案</Link>}<details><summary className="cursor-pointer">查看保存回执</summary><p className="subtle break-all mt-2">{receipt.id}</p></details></div>}
     {loading && <p className="subtle" role="status">正在核对候选与已保存回执…</p>}
     {!loading && items.length === 0 && !error && <p className="subtle">当前没有领域候选。</p>}
-    {items.map(item => <article key={item.event_id} className="min-w-0 rounded-lg border p-3 space-y-2"><h4 className="font-medium">{candidateLabels[item.operation ?? ""] ?? "领域候选"}</h4>{item.state === "pending" && item.command ? <><p className="subtle">小Pai起草 · 尚未保存</p>{item.command.operation === "platform.link.create" ? <><p>{item.command.payload.action === "detach" ? "解除平台关联" : item.command.payload.new_platform ? "新建平台并关联" : "关联已有平台"}</p>{item.command.payload.new_platform && detail(item.command.payload.new_platform)}<p>兼容范围：{String(item.command.payload.compatibility ?? "待确认")}</p><p>平台版本：{String(item.command.payload.platform_version ?? "待确认")}</p><p>{String(item.command.payload.reason ?? "")}</p></> : <details><summary className="cursor-pointer">查看候选内容</summary><div className="mt-3">{detail(display(item.command.payload))}</div></details>}<Button variant="outline" disabled={!canAct || loading} onClick={event => void prepare(item, event.currentTarget)}>核对并预览{candidateLabels[item.operation ?? ""] ?? "候选"}</Button></> : item.state === "adopted" && item.receipt ? <><p>已保存，使用实际回执核对。</p>{item.receipt.subject_type === "proposal" && <Link className="underline" href={`/categories/${categoryId}/proposals/${item.receipt.subject_id}`}>打开立项提案</Link>}<details><summary className="cursor-pointer">查看保存回执</summary><p className="subtle mt-2 break-all">{item.receipt.id}</p></details></> : <p className="subtle">{item.state === "cancelled" ? "运行已取消或撤回，此候选不能再采用。" : "对象或依据已变化，请重新核对或重新起草。"}</p>}</article>)}
+    {items.map(item => <article key={item.event_id} className="min-w-0 rounded-lg border p-3 space-y-2"><h4 className="font-medium">{candidateLabels[item.operation ?? ""] ?? "领域候选"}</h4>{item.state === "pending" && item.command ? <><p className="subtle">小Pai起草 · {pending?.eventId === item.event_id ? "保存结果待核对" : "尚未保存"}</p>{item.command.operation === "platform.link.create" ? <><p>{item.command.payload.action === "detach" ? "解除平台关联" : item.command.payload.new_platform ? "新建平台并关联" : "关联已有平台"}</p>{item.command.payload.new_platform && detail(item.command.payload.new_platform)}<p>兼容范围：{String(item.command.payload.compatibility ?? "待确认")}</p><p>平台版本：{String(item.command.payload.platform_version ?? "待确认")}</p><p>{String(item.command.payload.reason ?? "")}</p></> : item.command.operation === "research.snapshot.register" ? snapshotReview({ ...item.summary, effect: "登记本次实际读取的来源，保留原运行与确认回执。" }) : <details><summary className="cursor-pointer">查看候选内容</summary><div className="mt-3">{detail(display(item.command.payload))}</div></details>}<Button variant="outline" disabled={!canAct || loading} onClick={event => void prepare(item, event.currentTarget)}>核对并预览{candidateLabels[item.operation ?? ""] ?? "候选"}</Button></> : item.state === "adopted" && item.receipt ? <><p>已保存，使用实际回执核对。</p>{item.receipt.subject_type === "proposal" && <Link className="underline" href={`/categories/${categoryId}/proposals/${item.receipt.subject_id}`}>打开立项提案</Link>}<details><summary className="cursor-pointer">查看保存回执</summary><p className="subtle mt-2 break-all">{item.receipt.id}</p></details></> : <p className="subtle">{item.state === "cancelled" ? "运行已取消或撤回，此候选不能再采用。" : "对象或依据已变化，请重新核对或重新起草。"}</p>}</article>)}
     {cursor !== null && <Button variant="outline" disabled={!canAct || loading} onClick={() => void load(cursor)}>查看更多候选</Button>}
-    <dialog ref={dialog} className="max-h-[85vh] overflow-auto" aria-label="确认小Pai候选" onCancel={event => { if (busy) event.preventDefault(); else close(); }}>
-      {preview && <><h3 className="mb-4 text-lg font-semibold">确认保存{candidateLabels[preview.command.operation]}</h3>{preview.command.operation === "platform.link.create" ? platformReview(preview) : detail(display(preview.review))}<p className="subtle mt-4">小Pai起草，由本人确认；保存后保留作者和回执。</p>{invalidated && <p role="alert" className="mt-2">此候选状态已变化，不能继续确认，请返回核对。</p>}<p className="subtle mt-2">{expired ? "确认材料已过期，请返回重新核对。" : `确认有效至 ${new Date(preview.expires_at).toLocaleTimeString("zh-CN")}`}</p><div className="mt-5 flex flex-wrap gap-2"><Button disabled={!canAct || expired || invalidated} onClick={() => void confirm({ eventId: preview.eventId, command: preview.command })}>确认保存</Button><Button variant="outline" disabled={busy} onClick={close}>返回核对</Button></div></>}
+    <dialog ref={dialog} className="m-auto w-[min(36rem,calc(100vw-2rem))] max-h-[85vh] overflow-auto" aria-label="确认小Pai候选" onCancel={event => { if (busy) event.preventDefault(); else close(); }}>
+      {preview && <><h3 className="mb-4 text-lg font-semibold">确认保存{candidateLabels[preview.command.operation]}</h3>{preview.command.operation === "platform.link.create" ? platformReview(preview) : preview.command.operation === "research.snapshot.register" ? snapshotReview(preview.review) : detail(display(preview.review))}<p className="subtle mt-4">小Pai起草，由本人确认；保存后保留作者和回执。</p>{invalidated && <p role="alert" className="mt-2">此候选状态已变化，不能继续确认，请返回核对。</p>}<p className="subtle mt-2">{expired ? "确认材料已过期，请返回重新核对。" : `确认有效至 ${new Date(preview.expires_at).toLocaleTimeString("zh-CN")}`}</p><div className="mt-5 flex flex-wrap gap-2"><Button disabled={!canAct || expired || invalidated} onClick={() => void confirm({ eventId: preview.eventId, command: preview.command })}>确认保存</Button><Button variant="outline" disabled={busy} onClick={close}>返回核对</Button></div></>}
     </dialog>
   </section>;
 }

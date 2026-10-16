@@ -1,0 +1,138 @@
+Browser tab: 3, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3044/?category=93b64489-4dc0-4279-b887-8974b6a203b1".
+0 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3044/?category=93b64489-4dc0-4279-b887-8974b6a203b1
+	1 container
+		2 link Description: 跳到工作内容, Value: 127.0.0.1:3044/?category=93b64489-4dc0-4279-b887-8974b6a203b1#workspace-content
+		3 text PDOS
+		4 button 收起侧栏
+			5 image
+		6 container 工作区导航
+			7 link Description: 我的工作, Value: 127.0.0.1:3044/?category=93b64489-4dc0-4279-b887-8974b6a203b1&area=work
+			8 link Description: 项目驾驶舱, Value: 127.0.0.1:3044/?category=93b64489-4dc0-4279-b887-8974b6a203b1&area=cockpit
+			9 link Description: 项目列表, Value: 127.0.0.1:3044/?category=93b64489-4dc0-4279-b887-8974b6a203b1&area=projects
+			10 link Description: 项目集, Value: 127.0.0.1:3044/?category=93b64489-4dc0-4279-b887-8974b6a203b1&area=programs
+			11 link Description: 产品品类工作区, Value: 127.0.0.1:3044/?category=93b64489-4dc0-4279-b887-8974b6a203b1&area=category
+			12 link Description: 知识, Value: 127.0.0.1:3044/?category=93b64489-4dc0-4279-b887-8974b6a203b1&area=knowledge
+			13 text 当前品类
+			14 text 汽车充气泵
+			15 text 项目与专业工作按品类范围授权
+		16 link Description: 计划执行进度, Help: 计划执行进度（唯一清单只读投影）, Value: 127.0.0.1:3044/plan
+		17 checkbox Description: 小Pai 工作栏, Value: 1
+		18 link Description: 设置, Value: 127.0.0.1:3044/?category=93b64489-4dc0-4279-b887-8974b6a203b1&area=settings
+		19 text Synthetic owner
+		20 text 本地合成环境
+		21 text PDOS 产品品类工作区 汽车充气泵
+		22 checkbox Description: 小Pai 工作栏, Value: 1
+			23 image
+		24 button 切换明暗主题
+			25 image
+		26 container workspace-content
+			27 heading 汽车充气泵, Value: 1
+				28 text 汽车充气泵
+			29 text 品类是权限范围根：共享知识、规格字典、型号与立项提案都在这里汇聚，项目经提案 G0 评审后建立。
+			30 button 打开品类工作台
+				31 text 打开品类工作台
+				32 image
+			33 container 标准品匹配
+				34 heading 先核对现有型号, Value: 2
+					35 text 先核对现有型号
+				36 text 只核对所选规格。全部满足且确认没有开发活动时，回到 CRM 办理报价与沟通，无需立项。
+				37 button (collapsed) 核对标准品规格, Secondary Actions: Expand
+					38 text 核对标准品规格
+			39 container 立项提案
+				40 heading 立项提案, Value: 2
+					41 text 立项提案
+				42 text 一案一页 · 唯一关卡是具名 G0 评审
+				43 text 客户需求、自主新品、派生迭代三个入口都落到同一种立项提案；AI 先起草，人做取舍。从对话创建的提案一律私有。
+				44 button 打开品类小Pai，起草立项提案
+					45 image
+					46 text 打开品类小Pai，起草立项提案
+				47 text 尚无立项提案。与品类小Pai 对话起草第一份提案；提案默认私有。
+			48 container 型号列表
+				49 heading 型号, Value: 2
+					50 text 型号
+				51 text 1  个
+				52 text Synthetic product
+				53 text Isolated command verification
+				54 button 打开
+					55 text 打开
+					56 image
+			57 container 共享知识
+				58 heading 共享知识, Value: 2
+					59 text 共享知识
+				60 button 进入知识区
+					61 text 进入知识区
+					62 image
+				63 text 尚无共享知识。品类研究产生的事实经确认后在这里共享。
+			64 container 规格字典
+				65 heading 规格字典, Value: 2
+					66 text 规格字典
+				67 text 0  条参数当前版本
+				68 text 尚无字典参数。规格条目的键、名称、单位与测试条件都来自字典；缺失时按人工映射逐步补齐。
+		69 container 小Pai 工作栏
+			70 text 小Pai
+			71 text 当前品类：汽车充气泵
+			72 button 关闭小Pai 工作栏
+				73 image
+			74 container 小Pai 运行
+				75 heading 小Pai, Value: 2
+					76 text 小Pai
+				77 button 刷新运行
+				78 text 在当前品类委派工作。结果、待答问题和未完成事项会保留，关闭页面后仍可回来查看。
+				79 button (collapsed) 新建委派, Secondary Actions: Expand
+					80 text 新建委派
+				81 heading 已完成, Value: 3
+					82 text 已完成
+				83 button 核对当前状态
+				84 text Synthetic verified research
+				85 container 研究来源与覆盖
+					86 heading 研究来源与覆盖, Value: 4
+						87 text 研究来源与覆盖
+					88 container
+						89 text 1  份实际来源 ·  1  条核对记录
+					90 content list
+						91 container
+							92 link Description: Synthetic specs, Value: maker.example/specs
+							93 text 已读取  · 读取于 
+							94 text 2026-10-16 19:12:20.705840 UTC
+					95 button (collapsed) 查看逐字核对片段, Secondary Actions: Expand
+						96 text 查看逐字核对片段
+					97 container
+						98 text 研究任务  1  ·  已核对
+					99 container
+						100 text specs ： 1  次查询， 1  页读取；采纳  1  条，未采纳  0  条。尚未读取  0  个网址、 0  段原文。
+					101 text 以上来源、片段、覆盖和失败记录由实际研究台账提供。来源登记与后续采用请另行确认。
+				102 button (collapsed) 查看实际结果与回执, Secondary Actions: Expand
+					103 text 查看实际结果与回执
+				104 container 小Pai 待确认动作
+					105 heading 待你确认的动作, Value: 3
+						106 text 待你确认的动作
+					107 button 刷新候选
+					108 text 候选保留小Pai署名。核对实际范围后由你一次确认，打开页面不会执行。
+					109 container
+						110 text 研究来源登记 已保存，回执可查。
+						111 button (collapsed) 查看保存回执, Secondary Actions: Expand
+							112 text 查看保存回执
+					113 container
+						114 heading 研究来源登记, Value: 4
+							115 text 研究来源登记
+						116 text 已保存，使用实际回执核对。
+						117 button (collapsed) 查看保存回执, Secondary Actions: Expand
+							118 text 查看保存回执
+				119 button (collapsed) 整次撤回草稿结果, Secondary Actions: Expand
+					120 text 整次撤回草稿结果
+				121 heading 我的运行历史, Value: 3
+					122 text 我的运行历史
+				123 checkbox Synthetic default host public research 已完成 · 10/16/2026, 12:12:14 PM, Value: 1
+					124 text Synthetic default host public research
+					125 container
+						126 text 已完成  ·  10/16/2026, 12:12:14 PM
+				127 checkbox Synthetic actual common domain adapter 正在执行 · 10/16/2026, 12:12:13 PM, Value: 0
+					128 text Synthetic actual common domain adapter
+					129 container
+						130 text 正在执行  ·  10/16/2026, 12:12:13 PM
+				131 checkbox Synthetic actual common domain adapter 正在执行 · 10/16/2026, 12:12:13 PM, Value: 0
+					132 text Synthetic actual common domain adapter
+					133 container
+						134 text 正在执行  ·  10/16/2026, 12:12:13 PM
+
+The focused UI element is 0 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3044/?category=93b64489-4dc0-4279-b887-8974b6a203b1

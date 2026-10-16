@@ -96,12 +96,52 @@ def _bound(event, candidate, run):
         return None
 
 
-def _pending_visible(session, ctx, run, command):
+def _snapshot_bound(event, run):
+    from .snapshot_command import OPERATION, SnapshotRegister
+
+    try:
+        command = Command.model_validate(event.body["command"])
+        payload = SnapshotRegister.model_validate(command.payload)
+        if (
+            command.operation == OPERATION
+            and event.run_id == run.id
+            and command.category_id == run.category_id
+            and command.product_id == run.product_id
+            and payload.prepared_event_id == event.id
+            and payload.confirmation_token is None
+        ):
+            return command
+    except (ValidationError, KeyError, TypeError, ValueError):
+        pass
+    return None
+
+
+def _pending_visible(session, ctx, run, command, event):
     if run.proposal_id is not None:
         proposal(session, ctx, run.proposal_id)
     for reference in command.source_read_set:
         source_for(session, ctx, run.product_id, reference.artifact_id, reference.expected_revision)
-    if command.operation == "platform.link.create":
+    if command.operation == "research.snapshot.register":
+        from .snapshot_command import _proof, _verify_candidate_source
+
+        if run.state not in {"queued", "running", "waiting_input", "completed", "partial"}:
+            raise DomainError("SOURCE_UNAVAILABLE", "原运行当前不能采用快照候选。")
+        _verify_candidate_source(session, run, event)
+        proof = _proof(
+            session,
+            run,
+            UUID(command.payload["snapshot_id"]),
+            read_call_id=UUID(event.body["read_call_id"]),
+        )
+        if proof.snapshot_digest != event.body["snapshot_digest"]:
+            raise DomainError("SOURCE_UNAVAILABLE", "原研究快照内容已变化。")
+        return {
+            "title": proof.snapshot.title,
+            "url": proof.snapshot.final_url,
+            "visibility": proof.visibility,
+            "retrieved_at": proof.snapshot.retrieved_at.isoformat(),
+        }
+    elif command.operation == "platform.link.create":
         from pdos_next.domain.products.platforms import target
 
         variant = command.payload.get("variant_id")
@@ -126,14 +166,18 @@ def read(session, ctx, run, *, after=0, page_size=50):
                 AgentEvent.tenant_id == ctx.tenant_id,
                 AgentEvent.run_id == run.id,
                 AgentEvent.sequence > after,
-                AgentEvent.body["type"].astext == "domain_candidate",
+                AgentEvent.body["type"].astext.in_(["domain_candidate", "snapshot_candidate"]),
             )
             .order_by(AgentEvent.sequence)
             .limit(page_size + 1)
         )
     )
     page = rows[:page_size]
-    identities = [UUID(event.body["candidate_id"]) for event in page]
+    identities = [
+        UUID(event.body["candidate_id"])
+        for event in page
+        if event.body["type"] == "domain_candidate"
+    ]
     candidates = {
         row.id: row
         for row in session.scalars(
@@ -145,7 +189,11 @@ def read(session, ctx, run, *, after=0, page_size=50):
         )
     }
     commands = {
-        event.id: _bound(event, candidates.get(UUID(event.body["candidate_id"])), run)
+        event.id: (
+            _snapshot_bound(event, run)
+            if event.body["type"] == "snapshot_candidate"
+            else _bound(event, candidates.get(UUID(event.body["candidate_id"])), run)
+        )
         for event in page
     }
     keys = {
@@ -189,6 +237,11 @@ def read(session, ctx, run, *, after=0, page_size=50):
                 and receipt.category_id == run.category_id
                 and receipt.product_id == run.product_id
                 and receipt.operation == command.operation
+                and (
+                    command.operation != "research.snapshot.register"
+                    or receipt.subject_type == "public_web_snapshot"
+                    and str(receipt.subject_id) == command.payload["snapshot_id"]
+                )
             ):
                 item.update(state="adopted", receipt=receipt_view(receipt))
             elif key is not None:
@@ -201,8 +254,10 @@ def read(session, ctx, run, *, after=0, page_size=50):
                 item["state"] = "cancelled"
             else:
                 try:
-                    _pending_visible(session, ctx, run, command)
+                    summary = _pending_visible(session, ctx, run, command, event)
                     item.update(state="pending", command=command.model_dump(mode="json"))
+                    if summary is not None:
+                        item["summary"] = summary
                 except DomainError:
                     pass
         items.append(item)
