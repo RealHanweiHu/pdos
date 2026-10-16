@@ -218,3 +218,7 @@ dialog::backdrop { background: rgb(0 0 0 / .35); }
 .plan-back:hover { color: var(--foreground); }
 .standard-match-product { display: flex; align-items: center; gap: 8px; margin-bottom: 0; }
 .standard-match-product input[type="checkbox"] { width: 16px; height: 16px; margin: 0; padding: 0; accent-color: var(--primary); }
+
+.provider-agreements .agreement-check { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.provider-agreements .agreement-check input[type="checkbox"] { width: 16px; height: 16px; flex-shrink: 0; margin: 0; padding: 0; accent-color: var(--primary); }
+.provider-agreements input[type="datetime-local"] { min-width: 0; max-width: 100%; }

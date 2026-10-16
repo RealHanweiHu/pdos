@@ -75,13 +75,22 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const proposalClaim = proposalClaimPaths.test(pathname);
   const agent = agentPaths.test(pathname) || personalAgent;
   const modelConfiguration = pathname === "v1/model-configuration";
+  const providerAgreement = /^v1\/provider-agreements(?:\/recover)?$/.test(pathname);
   const qualityChange = qualityChangePaths.test(pathname);
   const manufacturingPreparation = manufacturingPreparationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
-  if (projectPlanning) {
+  if (providerAgreement) {
+    const recovering = pathname.endsWith("/recover");
+    if (recovering && request.method !== "POST") return Response.json({ code: "VALIDATION_FAILED", message: "请提交原登记请求以核对回执。" }, { status: 405, headers: { Allow: "POST" } });
+    for (const [key, value] of request.nextUrl.searchParams) {
+      const valid = request.method === "GET" && !recovering && (key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 200 : ["provider", "cursor"].includes(key) && /^[A-Za-z0-9][A-Za-z0-9:_.@/-]{0,159}$/.test(value));
+      if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "请使用明确的服务商与分页条件；登记和回执核对只使用原正文。" }, { status: 422 });
+      query.set(key, value);
+    }
+  } else if (projectPlanning) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "项目直达读取不接受额外条件。" }, { status: 422 });
   } else if (personalView) {
@@ -288,7 +297,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     if (disposition) headers.set("Content-Disposition", disposition);
     return new Response(await response.arrayBuffer(), { status: response.status, headers });
   } catch {
-    if (request.method === "GET" || resourceInspect || standardMatch) return Response.json({ code: "SOURCE_UNAVAILABLE", detail: { reason: "TRANSPORT_UNAVAILABLE" }, message: "暂未读取到当前事实，请刷新核对。本次读取没有发起操作。" }, { status: 503 });
+    if (request.method === "GET" || resourceInspect || standardMatch || providerAgreement && pathname.endsWith("/recover")) return Response.json({ code: "SOURCE_UNAVAILABLE", detail: { reason: "TRANSPORT_UNAVAILABLE" }, message: "暂未读取到当前事实，请刷新核对。本次读取没有发起操作。" }, { status: 503 });
     return Response.json({ code: "EXTERNAL_OUTCOME_UNKNOWN", detail: { reason: "TRANSPORT_OUTCOME_UNKNOWN" }, message: "暂未取得服务回执。请重试原操作以核对结果。" }, { status: 503 });
   }
 }

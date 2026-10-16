@@ -63,7 +63,7 @@ function UnmappedFeatures({ subjects }: { subjects: ViewSubject[] }) {
 }
 
 function ComparisonTable({ groups, subjects, features }: { groups: ViewComparisonGroup[]; subjects: ViewSubject[]; features: boolean }) {
-  if (!groups.length) return <p className="text-sm text-muted-foreground">服务器尚未提供{features ? "功能配置" : "规格对标"}分组。</p>;
+  if (!groups.length) return <p className="text-sm text-muted-foreground">当前提案暂无可展示的{features ? "功能配置" : "规格对标"}分组。请核对条目是否已映射规格字典，并补充参数版本、单位和工况；缺失值仍保留为未知。</p>;
   return <div className="overflow-x-auto rounded-lg border"><table className="w-full min-w-[36rem] text-left text-sm">
     <caption className="p-3 text-left text-muted-foreground">{features ? "明确映射到字典的功能；未提供的值显示未知。" : "按参数版本、单位和工况分别展示，不合并不同口径。"}</caption>
     <thead><tr className="border-b bg-muted/40"><th scope="col" className="p-3">参数与口径</th>{subjects.map(subject => <th key={`${subject.type}:${subject.id}`} scope="col" className={`p-3 ${subject.type === "competitor" ? "text-muted-foreground" : "text-primary"}`}>{subject.label}</th>)}</tr></thead>
@@ -164,7 +164,7 @@ export function ProposalViews({ view, result, document: currentDocument, people 
   else if (error) content = <p role="alert">{error}</p>;
   else if (!result || !current) content = <p role="status">当前提案版本的视图尚不可用，请重新读取。</p>;
   else if (result.view === "definition-maturity") content = <Maturity data={result.data} people={people} />;
-  else if (result.view === "positioning") content = <div className="space-y-4"><p className="text-sm text-muted-foreground">实测实心 · 宣传空心 · 推断虚线 · 其他性质方形 · 我方橙色 · 竞品灰色。未知 {result.data.unknown_count} 条，不绘制坐标。</p>{result.data.groups.length === 0 && <p>服务器尚未提供定位分组。</p>}{result.data.groups.map((group, index) => <PositioningFacet key={`${result.document_digest}:${group.key}:${index}`} group={group} />)}<Unknowns unknowns={[...result.data.unknowns, ...(result.data.unavailable ?? [])]} /><Unmapped observations={result.data.unmapped} /></div>;
+  else if (result.view === "positioning") content = <div className="space-y-4"><p className="text-sm text-muted-foreground">实测实心 · 宣传空心 · 推断虚线 · 其他性质方形 · 我方橙色 · 竞品灰色。未知 {result.data.unknown_count} 条，不绘制坐标。</p>{result.data.groups.length === 0 && <p>当前提案暂无可绘制的定位分组。请核对已映射的参数、数值、单位和工况；未知值不会绘制成坐标。</p>}{result.data.groups.map((group, index) => <PositioningFacet key={`${result.document_digest}:${group.key}:${index}`} group={group} />)}<Unknowns unknowns={[...result.data.unknowns, ...(result.data.unavailable ?? [])]} /><Unmapped observations={result.data.unmapped} /></div>;
   else content = <div className="space-y-4"><ComparisonTable groups={result.data.groups} subjects={result.data.subjects} features={result.view === "feature-config"} /><Unmapped observations={result.data.unmapped} subjects={result.data.subjects} />{result.view === "feature-config" && <UnmappedFeatures subjects={result.data.subjects} />}<Unknowns unknowns={result.data.unavailable ?? []} subjects={result.data.subjects} /></div>;
   return <section className="space-y-4" aria-label="提案视图">
     {onViewChange && <nav aria-label="切换提案视图" className="flex flex-wrap gap-2">{(Object.keys(proposalViewNames) as ProposalViewName[]).map(name => <Button key={name} type="button" variant={view === name ? "secondary" : "ghost"} aria-current={view === name ? "page" : undefined} onClick={() => onViewChange(name)}>{proposalViewNames[name]}</Button>)}</nav>}

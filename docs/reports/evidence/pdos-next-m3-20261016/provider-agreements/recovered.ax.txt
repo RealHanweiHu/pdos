@@ -1,0 +1,142 @@
+Browser tab: 6, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3047/?area=category&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&bench=settings&view=models&product=5ded7f3a-6c62-486d-8bc9-b5faeb19ef3f".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3047/?area=category&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&bench=settings&view=models&product=5ded7f3a-6c62-486d-8bc9-b5faeb19ef3f
+	2 container
+		3 link Description: 跳到工作内容, Value: 127.0.0.1:3047/?area=category&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&bench=settings&view=models&product=5ded7f3a-6c62-486d-8bc9-b5faeb19ef3f#workspace-content
+		4 button 打开导航
+			5 image
+		6 text PDOS
+		7 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			8 image
+		9 checkbox Description: 小Pai 工作栏, Value: 0
+			10 image
+		11 button 切换明暗主题
+			12 image
+		13 container workspace-content
+			14 container 品类工作台区
+				15 link Description: 型号, Value: 127.0.0.1:3047/?area=category&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&bench=products&view=overview&product=5ded7f3a-6c62-486d-8bc9-b5faeb19ef3f
+				16 link Description: 项目, Value: 127.0.0.1:3047/?area=category&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&bench=projects&view=overview&product=5ded7f3a-6c62-486d-8bc9-b5faeb19ef3f
+				17 link Description: 知识, Value: 127.0.0.1:3047/?area=category&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&bench=knowledge&view=sources&product=5ded7f3a-6c62-486d-8bc9-b5faeb19ef3f
+				18 link Description: 设置, Value: 127.0.0.1:3047/?area=category&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&bench=settings&view=preferences&product=5ded7f3a-6c62-486d-8bc9-b5faeb19ef3f
+				19 button Description: 快速查找入口或型号, Help: 当前品类快速查找 · ⌘ / Ctrl Shift K
+				20 pop up button (collapsed, settable) Description: 当前型号, Value: 便携充气泵研发, Secondary Actions: Expand
+					21 menu
+						22 Synthetic product
+						23 (selected) 便携充气泵研发
+			24 container 设置视图
+				25 link Description: 外观, Value: 127.0.0.1:3047/?area=category&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&bench=settings&view=preferences&product=5ded7f3a-6c62-486d-8bc9-b5faeb19ef3f
+				26 link Description: AI 运行与费用, Value: 127.0.0.1:3047/?area=category&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&bench=settings&view=models&product=5ded7f3a-6c62-486d-8bc9-b5faeb19ef3f
+				27 link Description: 原件保留与隔离, Value: 127.0.0.1:3047/?area=category&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&bench=settings&view=originals&product=5ded7f3a-6c62-486d-8bc9-b5faeb19ef3f
+			28 container
+				29 heading AI 运行与费用, Value: 1
+					30 text AI 运行与费用
+				31 text 个人外观与低频运行管理。
+				32 button 读取当前模型设置
+				33 container 租户模型配置
+					34 heading 模型设置, Value: 2
+						35 text 模型设置
+					36 text 配置用于当前租户。保存或启用后，仍须核对用途资格、本次材料授权与预算。
+					37 text 尚未保存模型配置。
+					38 text 尚未配置模型
+					39 container
+						40 container
+							41 text 协议
+							42 pop up button (collapsed, settable) 协议, Value: OpenAI 兼容, Secondary Actions: Expand
+								43 menu
+									44 (selected) OpenAI 兼容
+									45 Anthropic 原生
+						46 container
+							47 text 服务端点（基础 URL）
+							48 text field (settable) 服务端点（基础 URL）
+						49 container
+							50 text 模型
+							51 text field (settable) 模型
+						52 container
+							53 text 模型版本
+							54 text field (settable) 模型版本
+						55 container
+							56 text 最大输出 tokens
+							57 stepper (settable, integer) 最大输出 tokens, Value: 2048
+						58 container
+							59 text OpenAI 输出参数
+							60 pop up button (collapsed, settable) OpenAI 输出参数, Value: max_completion_tokens, Secondary Actions: Expand
+								61 menu
+									62 (selected) max_completion_tokens
+									63 max_tokens
+						64 container
+							65 text 超时（秒）
+							66 stepper (settable, integer) 超时（秒）, Value: 30
+						67 container
+							68 text 响应上限（字节）
+							69 stepper (settable, integer) 响应上限（字节）, Value: 1048576
+						70 checkbox (settable, integer) Description: 启用此配置, Value: 0
+						71 text 密钥由服务端安全绑定，此处仅显示掩码。任何配置或密钥版本变更都需重新核对资格。
+						72 button 核对并预览
+				73 container 服务商数据协议
+					74 heading 服务商数据协议, Value: 2
+						75 text 服务商数据协议
+					76 button 刷新协议登记
+					77 text 按已签约协议登记允许接收的数据和条款，由租户管理员本人批准。服务商标识须与服务端模型、搜索或读取配置一致。
+					78 container
+						79 text 协议登记已完成 · 第  1  版
+						80 text 回执： f27207ab-135f-4293-88d1-cd7e1b492156
+					81 container
+						82 heading synthetic-browser-normal · 第 2 版, Value: 3
+							83 text synthetic-browser-normal  · 第  2  版
+						84 text 已停用 允许数据： 客户原件全文 到期： 2027/10/1 09:00:00  · 登记人： Synthetic owner
+						85 button (collapsed) 查看条款与回执, Secondary Actions: Expand
+							86 text 查看条款与回执
+						87 button 以此协议续版
+					88 container
+						89 heading synthetic-browser-recovery · 第 1 版, Value: 3
+							90 text synthetic-browser-recovery  · 第  1  版
+						91 text 有效 允许数据： 客户原件全文 到期： 2027/10/1 09:00:00  · 登记人： Synthetic owner
+						92 button (collapsed) 查看条款与回执, Secondary Actions: Expand
+							93 text 查看条款与回执
+						94 button 以此协议续版
+					95 container
+						96 heading 登记或变更协议, Value: 3
+							97 text 登记或变更协议
+						98 container
+							99 text 服务商标识
+							100 text field (settable) 服务商标识
+						101 container
+							102 text 签约时间（本地时区）
+							103 date field (settable) 签约时间（本地时区）
+								104 container
+									105 stepper
+									106 stepper
+									107 stepper
+									108 stepper
+									109 stepper
+									110 stepper
+								111 pop up button Show local date and time picker Show local date and time picker
+						112 container
+							113 text 到期时间（本地时区）
+							114 date field (settable) 到期时间（本地时区）
+								115 container
+									116 stepper
+									117 stepper
+									118 stepper
+									119 stepper
+									120 stepper
+									121 stepper
+								122 pop up button Show local date and time picker Show local date and time picker
+						123 text 协议允许的数据类别
+						124 checkbox (settable, integer) Description: 公开资料, Value: 0
+						125 checkbox (settable, integer) Description: 合成资料, Value: 0
+						126 checkbox (settable, integer) Description: 内部资料, Value: 0
+						127 checkbox (settable, integer) Description: 客户身份与资料, Value: 0
+						128 checkbox (settable, integer) Description: 客户原件全文, Value: 0
+						129 container
+							130 text 留存条款
+							131 text entry area (settable) 留存条款
+						132 container
+							133 text 训练条款
+							134 text entry area (settable) 训练条款
+						135 checkbox (settable, integer) Description: 启用此协议登记（取消勾选以停用）, Value: 1
+						136 button 核对协议并预览
+				137 heading 调用与费用核对, Value: 2
+					138 text 调用与费用核对
+				139 text 当前没有已登记的模型调用。可在模型设置中核对配置与权限。
+
+The focused UI element is 1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3047/?area=category&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&bench=settings&view=models&product=5ded7f3a-6c62-486d-8bc9-b5faeb19ef3f

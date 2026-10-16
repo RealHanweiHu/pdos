@@ -29,6 +29,25 @@ class AgreementInput(StrictModel):
     idempotency_key: str = Field(min_length=8, max_length=160)
 
 
+def agreement_receipt(session, ctx, data):
+    """Inspect only this person's exact original request; never register an agreement."""
+    require_context(session, ctx)
+    existing = session.scalar(
+        select(Receipt).where(
+            Receipt.tenant_id == ctx.tenant_id,
+            Receipt.actor_id == ctx.actor_id,
+            Receipt.operation == "provider.agreement.register",
+            Receipt.intent_digest
+            == digest(["provider.agreement.register", ctx.actor_id, data.idempotency_key]),
+        )
+    )
+    if existing:
+        if existing.request_digest != digest(data.model_dump(mode="json")):
+            raise DomainError("DUPLICATE_INTENT_CONFLICT", "请求编号绑定了不同协议。")
+        return receipt_view(existing)
+    return None
+
+
 def register_agreement(session, ctx, data: AgreementInput):
     require_context(session, ctx)
     actor = session.get(Principal, ctx.actor_id)
@@ -44,6 +63,17 @@ def register_agreement(session, ctx, data: AgreementInput):
         or data.decision != "批准"
     ):
         raise DomainError("NAMED_DECISION_REQUIRED", "须当前租户管理员本人批准协议登记。")
+    # Serialize first registrations too, where no head row exists to lock.
+    key = int(digest(["provider-agreement", ctx.tenant_id, data.provider])[:16], 16)
+    session.execute(
+        text("SELECT pg_advisory_xact_lock(:key)"),
+        {
+            "key": key if key < 2**63 else key - 2**64,
+        },
+    )
+    existing = agreement_receipt(session, ctx, data)
+    if existing:
+        return existing
     if (
         not data.signed_on.tzinfo
         or not data.expires_at.tzinfo
@@ -62,17 +92,6 @@ def register_agreement(session, ctx, data: AgreementInput):
         .limit(1)
     )
     semantic = digest(data.model_dump(mode="json"))
-    existing = session.scalar(
-        select(Receipt).where(
-            Receipt.actor_id == ctx.actor_id,
-            Receipt.intent_digest
-            == digest(["provider.agreement.register", ctx.actor_id, data.idempotency_key]),
-        )
-    )
-    if existing:
-        if existing.request_digest != semantic:
-            raise DomainError("DUPLICATE_INTENT_CONFLICT", "请求编号绑定了不同协议。")
-        return receipt_view(existing)
     if (head.revision if head else 0) != data.expected_revision:
         raise DomainError("VERSION_CONFLICT", "服务商协议已更新，请读取当前登记。")
     identity, receipt_id, command_id = uuid4(), uuid4(), uuid4()

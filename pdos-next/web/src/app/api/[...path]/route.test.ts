@@ -84,6 +84,41 @@ function harness(configuration: { token?: string | null; api?: string | null; re
 }
 
 const resourceInspect = `${base}/builds/${build}/resources/inspect`;
+test("协议登记和只读原回执核对沿用同一正文与当前品类", async () => {
+  const h = harness();
+  const body = JSON.stringify({ provider: "synthetic-provider", decision: "批准", idempotency_key: "approved-original" });
+  for (const path of ["v1/provider-agreements", "v1/provider-agreements/recover"]) {
+    const value = await h.send(path, { method: "POST", body });
+    assert.equal(value.response.status, 200); assert.equal(value.reads, 1);
+    assert.equal(h.calls.at(-1)?.init.body, body);
+    assert.equal(h.calls.at(-1)?.url, `http://synthetic-api.invalid/v1/categories/${category}/${path.slice(3)}`);
+  }
+  const read = await h.send("v1/provider-agreements", { query: "provider=synthetic-provider&page_size=50&cursor=a-provider" });
+  assert.equal(read.response.status, 200);
+});
+
+test("协议入口拒绝范围覆盖、重复查询、跨站写入和错误方法", async () => {
+  for (const [path, options, status] of [
+    ["v1/provider-agreements", { unscoped: true }, 404],
+    ["v1/provider-agreements", { query: "tenant_id=forged" }, 422],
+    ["v1/provider-agreements", { query: "provider=a&provider=b" }, 422],
+    ["v1/provider-agreements", { method: "POST", query: "provider=a", body: "{}" }, 422],
+    ["v1/provider-agreements/recover", {}, 405],
+    ["v1/provider-agreements/recover", { method: "POST", origin: "https://other.invalid", body: "{}" }, 403],
+  ] as const) {
+    const h = harness(); const value = await h.send(path, options);
+    assert.equal(value.response.status, status); assert.equal(h.calls.length, 0);
+  }
+});
+
+test("恢复回执传输失败保持只读失败，实际登记失败保留结果未知", async () => {
+  const h = harness({ response: async () => { throw new Error("synthetic transport unavailable"); } });
+  const recovering = await h.send("v1/provider-agreements/recover", { method: "POST", body: "{}" });
+  assert.equal((await recovering.response.json()).code, "SOURCE_UNAVAILABLE");
+  const writing = await h.send("v1/provider-agreements", { method: "POST", body: "{}" });
+  assert.equal((await writing.response.json()).code, "EXTERNAL_OUTCOME_UNKNOWN");
+});
+
 test("小Pai与模型配置要求明确品类、准确方法及各自分页条件", async () => {
   for (const path of ["v1/agent-runs", "v1/model-configuration", `v1/products/${product}/workspace`]) {
     const h = harness();
