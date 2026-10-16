@@ -1,0 +1,62 @@
+{
+  "base_commit": "d01c7bcd00896241b06df322b44d9f0dbe291f3d",
+  "scope": "Run-bound private baseline/diff/platform/BOM analysis; category Run actual product source migration 0761",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/domain_reads.py",
+      "sha256": "34d09c6db954fdb0d754e8917e90dedd532da8a2597d34d9059b4643ee1f5fb9"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/m3_definition_diff.py",
+      "sha256": "03f37aa9423280701896a131a32c789670f9d77aedaa2470f420d58a79fb48bb"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/m3_spec_compare.py",
+      "sha256": "d5ea686bdfd138e83cb2f472067aa44d14570a5c04f90b572e96b6bb23b4abb7"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/platform_reads.py",
+      "sha256": "6c7dc397ef808ccbc434b37f4b85650af23ce77300c7200d7a0ac3b10cbd9221"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/proposal_context.py",
+      "sha256": "a6ab8f3ed59930ef564a4900b843c7ef660feba7ad082036fca6404a97ded813"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/tools.py",
+      "sha256": "ab4caf5af85c1a823a957007cb33d51d11fac193d9299b85a4b8b7dfee629444"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/preproject/baseline.py",
+      "sha256": "ffc7b13d3a1f6e1a8a053a1d1d4ae287b4f22a35264ab29dc2ab29822def807a"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/preproject/service.py",
+      "sha256": "69a2785556bb1569178e152f2ed31e638eb6f88197d128b32746b1f43e495f50"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0761.py",
+      "sha256": "6254fe364356b7c46db2a213a7419e2a303e948eb3de5e53b412de08142fe04f"
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0761_category_run_model_sources.py",
+      "sha256": "d7dc7eeaa54485c8de61dd797be0c8891e84f6b02c30370868b49f292a884404"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_private_analysis_pg.py",
+      "sha256": "835de5ee79b0023b835f80779775ebd23a00dc9c90b5ffc221f15212e51a0bfa"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_m3_definition_diff.py",
+      "sha256": "71d6853e3333d1eeb61b9fa7d2d4816ae00825e39a63eb5a31723e4e4198c10f"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_extracted_match.py",
+      "sha256": "e370b1b6f043c1832a3ad7505065af86b2b36d0bb98c6675a01f7d648ddaec0a"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_private_spec_compare_pg.py",
+      "sha256": "d1768e87c401c6e79c2dd085a454b642240f72c99a1f036b9863f113cc283acb"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-"""Ordinary platform reads; model output includes category-shared links only."""
+"""Ordinary platform reads; private links require an exact Run-bound target."""
 
 from pdos_next.database import tenant_session
 from pdos_next.domain.products import platforms
@@ -38,11 +38,21 @@ class PlatformReads:
             category_id=scope.category_id,
             read_snapshot=True,
         ) as session:
-            check_run_binding(session.get(AgentRun, scope.run_id), scope, for_write=False)
+            run = session.get(AgentRun, scope.run_id)
+            check_run_binding(run, scope, for_write=False)
             self.store.authority(session, scope)
             ctx = self.commands.context(scope)
             require_access(session, ctx, scope.product_id)
-            result = platforms.read(session, ctx, payload, shared_only=True)
+            from .proposal_context import KEY
+
+            shared_only = True
+            if KEY in getattr(run, "versions", {}):
+                from .m3_spec_compare import _objects
+
+                objects = _objects(session, ctx, scope, run)
+                if payload.product_id is not None:
+                    shared_only = not objects.target(payload.product_id, payload.variant_id)
+            result = platforms.read(session, ctx, payload, shared_only=shared_only)
             self.store.authority(session, scope)
             check_run_binding(session.get(AgentRun, scope.run_id), scope, for_write=False)
             return result

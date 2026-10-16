@@ -1,7 +1,7 @@
 """Run-bound definition comparison: ordinary reads, never adoption or Claim proof.
 
-Private material remains fail-closed until the host owns a complete private
-outbound binding. Restore always repeats authorization and current-content reads.
+Private material requires the host's exact source binding. Restore repeats
+authorization and current-content reads, without acquiring adoption authority.
 """
 
 from copy import deepcopy
@@ -22,7 +22,7 @@ from pdos_next.service import digest, require_access
 from .domain_reads import FixedBaseline, ProposedProposal
 from .execution import check_run_binding
 from .m3_object_reads import _references
-from .m3_spec_compare import _head, _PublicObjects, _unavailable
+from .m3_spec_compare import _head, _objects, _RunObjects, _unavailable
 from .models import AgentRun, AgentSession
 
 
@@ -197,32 +197,31 @@ class DefinitionDiffReads:
             ):
                 raise DomainError("FORBIDDEN_SCOPE", "定义比较未绑定实际会话。", 403)
             self.store.authority(session, scope)
-            if (
-                run.private_context
-                or run.customer_identities
-                or {"customer", "customer_original"}.intersection(run.data_categories)
-            ):
-                _unavailable()
             ctx = self.commands.context(scope)
             require_access(session, ctx, scope.product_id)
-            public = _PublicObjects(session, ctx)
+            public = _objects(session, ctx, scope, run)
             public.refs(_references(run.read_sources))
             if isinstance(payload.proposed, ProposedProposal):
                 if run.proposal_id != payload.proposed.proposal_id:
                     raise DomainError("FORBIDDEN_SCOPE", "比较提案不属于当前运行。", 403)
                 public.proposal(payload.proposed.proposal_id)
                 # Preserve the existing proposal contract and result classification.
-                result = self.proposal_reads.call(
-                    scope,
-                    {
-                        "baseline": payload.baseline.model_dump(
-                            mode="json", exclude={"variant_id"}
-                        ),
-                        "proposed": payload.proposed.model_dump(mode="json"),
-                        "areas": payload.areas,
-                    },
-                    name="calc.derivation_diff",
-                )
+                arguments = {
+                    "baseline": payload.baseline.model_dump(mode="json", exclude={"variant_id"}),
+                    "proposed": payload.proposed.model_dump(mode="json"),
+                    "areas": payload.areas,
+                }
+                if isinstance(public, _RunObjects):
+                    from .domain_reads import DerivationDiffInput
+
+                    result = self.proposal_reads._baseline_call(
+                        scope,
+                        DerivationDiffInput.model_validate(arguments),
+                        name="calc.derivation_diff",
+                        session=session,
+                    )
+                else:
+                    result = self.proposal_reads.call(scope, arguments, name="calc.derivation_diff")
                 self.store.authority(session, scope)
                 check_run_binding(session.get(AgentRun, scope.run_id), scope, for_write=False)
                 return result
@@ -248,8 +247,13 @@ class DefinitionDiffReads:
                     raise DomainError("FORBIDDEN_SCOPE", "基线不属于本次型号运行。", 403)
                 if payload.baseline.definition_id is not None:
                     head = _head(
-                        session, ctx, DefinitionRevision, payload.baseline.definition_id,
-                        "product_id", "variant_id", "revision",
+                        session,
+                        ctx,
+                        DefinitionRevision,
+                        payload.baseline.definition_id,
+                        "product_id",
+                        "variant_id",
+                        "revision",
                     )
                     if (
                         head["product_id"] != payload.baseline.product_id
@@ -284,7 +288,7 @@ class DefinitionDiffReads:
                 new = old
                 child = self._read(session, ctx, scope, public, payload.proposed)
             result = calculate(payload, old, new, child)
-            final = _PublicObjects(session, ctx)
+            final = _objects(session, ctx, scope, run)
             for view in (old, new, child):
                 final.refs(_references(view))
                 final.parameters(view)

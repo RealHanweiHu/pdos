@@ -232,7 +232,12 @@ def _watermarks(session, ctx, run, refs):
             "revision",
         ),
         (PublicWebSnapshot, "snapshot", ("status", "visibility"), None),
-        (DefinitionRevision, "definition", ("product_id", "revision", "visibility"), "revision"),
+        (
+            DefinitionRevision,
+            "definition",
+            ("product_id", "variant_id", "revision", "visibility"),
+            "revision",
+        ),
         (KnowledgeEntry, "knowledge", ("version", "action"), "version"),
     ):
         versions = by_type.get(kind, {})

@@ -1,5 +1,6 @@
 from collections import Counter
 from dataclasses import dataclass
+from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 from sqlalchemy import func, select, text
@@ -97,7 +98,13 @@ def _references(s, ctx, refs, *, approved=False):
                     "original_withdrawn",
                     "提交引用的原件已撤回，请退回处理后重新提交。",
                 )
-            source = source_for(s, ctx, None, ref.id, ref.version)
+            if (
+                not source
+                or source.tenant_id != ctx.tenant_id
+                or source.category_id != ctx.category_id
+            ):
+                fail("SOURCE_UNAVAILABLE", "source_unreadable", "来源不在当前可读范围。", 403)
+            source = source_for(s, ctx, source.product_id, ref.id, ref.version)
             lines = source.content.splitlines()
             if (
                 not ref.line
@@ -106,7 +113,11 @@ def _references(s, ctx, refs, *, approved=False):
                 or ref.quote not in lines[ref.line - 1]
             ):
                 fail("VALIDATION_FAILED", "quote_not_in_source", "引用片段不在原件指定行内。")
-            privacy = "shared" if source.visibility == "category" else "private"
+            from .claim_access import source_privacy
+
+            privacy = source_privacy(
+                s, ctx, SimpleNamespace(source_kind="artifact", artifact_id=source.id)
+            )
         elif ref.type == "definition":
             source = s.get(DefinitionRevision, ref.id)
             if (

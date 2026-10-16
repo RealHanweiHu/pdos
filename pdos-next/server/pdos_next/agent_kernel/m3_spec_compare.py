@@ -4,6 +4,7 @@ from uuid import UUID
 
 from pydantic import model_validator
 from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from pdos_next.database import tenant_session
 from pdos_next.domain.preproject import spec_compare, views
@@ -12,6 +13,7 @@ from pdos_next.domain.preproject.category_service import parameter_version
 from pdos_next.domain.preproject.models import Proposal, ProposalSource
 from pdos_next.domain.preproject.schemas import Reference
 from pdos_next.domain.products.models import DefinitionRevision
+from pdos_next.domain.products.variant_models import Variant
 from pdos_next.errors import DomainError
 from pdos_next.models import Artifact, Claim, Product, UploadedOriginal
 from pdos_next.service import digest, require_access
@@ -52,6 +54,14 @@ def _unavailable():
 def _head(s, ctx, model, identity, *fields):
     """Only privacy/identity metadata is selected before an object's body is read."""
     columns = ("id", "tenant_id", "category_id", *fields)
+    proof = None
+    key = ("m3-object-head", model, identity, columns)
+    if isinstance(s, Session) and s.info.get("read_snapshot"):
+        from pdos_next.request_proof import request_proof
+
+        proof = request_proof(s)
+        if key in proof.read_rows:
+            return proof.read_rows[key]
     row = (
         s.execute(
             select(*(getattr(model, field) for field in columns)).where(
@@ -71,6 +81,8 @@ def _head(s, ctx, model, identity, *fields):
         or row["category_id"] != ctx.category_id
     ):
         _unavailable()
+    if proof is not None:
+        proof.read_rows[key] = row
     return row
 
 
@@ -84,6 +96,14 @@ class _PublicObjects:
         if row["visibility"] != "category":
             _unavailable()
         require_access(self.s, self.ctx, identity)
+
+    def target(self, product_id, variant_id=None):
+        self.product(product_id)
+        if variant_id is not None:
+            row = _head(self.s, self.ctx, Variant, variant_id, "product_id", "visibility")
+            if row["product_id"] != product_id or row["visibility"] != "category":
+                _unavailable()
+        return False
 
     def definition(self, identity, version):
         row = _head(
@@ -285,23 +305,76 @@ class _RunObjects(_PublicObjects):
         self.keys = {reference_key(ref) for ref in stored_references(run)[1]} | {
             ("original", raw["artifact_id"], raw["expected_revision"]) for raw in run.read_sources
         }
+        identities = {ref.id for ref in stored_references(run)[1] if ref.type == "definition"}
+        from .proposal_context import _heads
+
+        heads = _heads(
+            session,
+            ctx,
+            DefinitionRevision,
+            identities,
+            ("product_id", "variant_id", "revision", "visibility"),
+        )
+        self.targets = {(row.product_id, row.variant_id) for row in heads.values()}
+
+    def product(self, identity):
+        row = _head(self.s, self.ctx, Product, identity, "visibility")
+        if row["visibility"] != "category" and (
+            not self.run.private_context
+            or not any(target[0] == identity for target in self.targets)
+        ):
+            _unavailable()
+        require_access(self.s, self.ctx, identity)
+
+    def target(self, product_id, variant_id=None):
+        self.product(product_id)
+        row = _head(self.s, self.ctx, Product, product_id, "visibility")
+        private = row["visibility"] != "category"
+        if variant_id is not None:
+            variant = _head(self.s, self.ctx, Variant, variant_id, "product_id", "visibility")
+            if variant["product_id"] != product_id:
+                _unavailable()
+            private |= variant["visibility"] != "category"
+        if private and (
+            not self.run.private_context or (product_id, variant_id) not in self.targets
+        ):
+            _unavailable()
+        return private
+
+    def definition(self, identity, version):
+        if ("definition", str(identity), version) not in self.keys:
+            return super().definition(identity, version)
+        row = _head(self.s, self.ctx, DefinitionRevision, identity, "product_id", "revision")
+        if row["revision"] != version:
+            _unavailable()
+        self.product(row["product_id"])
 
     def refs(self, refs):
         from .proposal_context import reference_key
 
         # Bound sources were checked by the same RR snapshot's metadata watermarks.
         # The domain comparison still owns ordinary quote/value/current checks.
-        super().refs(ref for ref in refs if reference_key(ref) not in self.keys)
+        typed = (
+            ref if isinstance(ref, Reference) else Reference.model_validate(ref) for ref in refs
+        )
+        super().refs(ref for ref in typed if reference_key(ref) not in self.keys)
 
     def proposal(self, identity):
+        from pdos_next.request_proof import request_proof
+
         from .proposal_context import validate
 
         if identity != self.run.proposal_id:
             raise DomainError("FORBIDDEN_SCOPE", "比较提案不属于当前运行。", 403)
         validate(self.s, self.scope, self.run)
-        document = views.read(self.s, self.ctx, identity)
-        validate(self.s, self.scope, self.run, extra_value=document)
-        self.parameters(document)
+        proof = request_proof(self.s)
+        key = ("run-proposal-document", self.run.id, identity)
+        if key not in proof.read_rows:
+            document = views.read(self.s, self.ctx, identity)
+            validate(self.s, self.scope, self.run, extra_value=document)
+            self.parameters(document)
+            proof.read_rows[key] = document
+        return proof.read_rows[key]
 
 
 def _objects(session, ctx, scope, run):

@@ -180,7 +180,7 @@ def test_three_bound_private_entries_compare_shared_models_and_competitors_witho
     assert any(Decimal(row["value"]) == 70 for row in observations if row["value"]), result
     assert any(Decimal(row["value"]) == 65 for row in observations if row["value"]), result
     assert result["execution_ref"]["read_kind"] == "ordinary/v1"
-    assert f.owner.registry.get(TOOL).version == "4"
+    assert f.owner.registry.get(TOOL).version == "5"
     assert invoke(f) == result
     with f.owner.store.transaction(f.scope) as (session, run):
         assert run.private_context
@@ -381,7 +381,7 @@ def test_registered_graph_uses_private_comparison_and_finishes_in_same_run(work,
             {
                 "run_id": str(f.scope.run_id),
                 "registered_graph": "xiaopai",
-                "tool_version": "4",
+                "tool_version": "5",
                 "synthetic_model_turns": client.calls,
                 "outcome": result["output"]["status"],
                 "real_provider_calls": 0,

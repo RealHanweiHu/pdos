@@ -1,0 +1,126 @@
+..F.....{"run_id": "b27c423a-80cb-458a-94b4-ce8674d61e22", "registered_graph": "xiaopai", "synthetic_model_turns": 4, "outcome": "completed", "real_provider_calls": 0}
+.
+=================================== FAILURES ===================================
+__ test_private_three_way_recovery_keeps_actual_item_versions_and_old_result ___
+
+work = <isolated synthetic test scope>
+
+
+
+    def test_private_three_way_recovery_keeps_actual_item_versions_and_old_result(work):
+        chain = three_way(work, visibility="private")
+        data = payload(work)
+        data["source_refs"] = [
+            definition_ref(chain.old),
+            definition_ref(chain.child, 2),
+>           definition_ref(chain.new, 3),
+            ^^^^^^^^^^^^^^^^^
+        ]
+
+tests/agent_kernel/test_private_analysis_pg.py:161:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_private_analysis_pg.py:45: in bound
+    scope, _ = actual_run(work, owner, UUID(identity))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+work = <isolated synthetic test scope>
+owner = <pdos_next.agent_kernel.bootstrap.Bootstrap object at 0x12b4da900>
+proposal_id = UUID('5c7814de-f8dc-4792-b973-6fa8049b0de3')
+
+    def actual_run(work, owner, proposal_id):
+        dispatched = []
+
+        async def start(ref):
+            dispatched.append(ref)
+
+        async def unused(*_):
+            raise AssertionError("No workflow, model or provider is invoked by this fixture")
+
+        ports = ApiPorts(writer_for=owner.writer_for, binding_for=owner.binding_for,
+                         start_workflow=start, signal_workflow=unused, cancel_workflow=unused)
+        with TestClient(create_app(work.engine, work.auth, agent_api_ports=ports)) as client:
+            response = client.post(f"/v1/categories/{work.category}/agent-runs", headers=work.headers,
+                                   json={"goal": "Synthetic original-bound extraction",
+                                         "idempotency_key": str(uuid4()),
+                                         "proposal_id": str(proposal_id)})
+>       assert response.status_code == 202, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 202
+E        +  where 422 = <Response [422 Unprocessable Content]>.status_code
+
+tests/agent_kernel/test_m3_original_binding_pg.py:90: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_private_analysis_pg.py: 10 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_private_analysis_pg.py: 90 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_baseline_proposal_diff_spec_and_platform_are_readable_without_business_writes[product]
+tests/agent_kernel/test_private_analysis_pg.py::test_private_baseline_proposal_diff_spec_and_platform_are_readable_without_business_writes[nested_source]
+tests/agent_kernel/test_private_analysis_pg.py::test_baseline_and_platform_restore_recheck_source_and_link_watermarks
+tests/agent_kernel/test_private_analysis_pg.py::test_bound_variant_platform_reads_only_actual_target_and_not_other_private_links
+tests/agent_kernel/test_private_analysis_pg.py::test_registered_graph_reads_private_baseline_diff_platform_then_completes
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:175: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([platform])
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_baseline_proposal_diff_spec_and_platform_are_readable_without_business_writes[product]
+tests/agent_kernel/test_private_analysis_pg.py::test_private_baseline_proposal_diff_spec_and_platform_are_readable_without_business_writes[nested_source]
+tests/agent_kernel/test_private_analysis_pg.py::test_baseline_and_platform_restore_recheck_source_and_link_watermarks
+tests/agent_kernel/test_private_analysis_pg.py::test_baseline_and_platform_restore_recheck_source_and_link_watermarks
+tests/agent_kernel/test_private_analysis_pg.py::test_bound_variant_platform_reads_only_actual_target_and_not_other_private_links
+tests/agent_kernel/test_private_analysis_pg.py::test_registered_graph_reads_private_baseline_diff_platform_then_completes
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:192: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([link])
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_bound_variant_platform_reads_only_actual_target_and_not_other_private_links
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_items.py:369: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(rows)
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_items.py:409: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(subject.changed_rows)
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_inherit.py:197: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(subject.created_specs)
+
+tests/agent_kernel/test_private_analysis_pg.py::test_bound_variant_platform_reads_only_actual_target_and_not_other_private_links
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:863: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/agent_kernel/test_private_analysis_pg.py::test_bound_variant_platform_reads_only_actual_target_and_not_other_private_links
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:918: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/agent_kernel/test_private_analysis_pg.py::test_bound_variant_platform_reads_only_actual_target_and_not_other_private_links
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/variants.py:1318: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_private_analysis_pg.py::test_bound_variant_platform_reads_only_actual_target_and_not_other_private_links
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/variants.py:1352: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_private_analysis_pg.py::test_bound_variant_platform_reads_only_actual_target_and_not_other_private_links
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+1 failed, 8 passed, 128 warnings in 198.17s (0:03:18)

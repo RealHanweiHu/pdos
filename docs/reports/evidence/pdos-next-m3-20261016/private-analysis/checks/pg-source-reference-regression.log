@@ -1,0 +1,45 @@
+.......
+=============================== warnings summary ===============================
+tests/agent_kernel/test_private_analysis_pg.py::test_proposal_product_source_uses_actual_scope_and_private_parent
+tests/preproject/test_review_fixes.py::test_sources_incremental_no_unchanged_quote_revalidation
+tests/preproject/test_m3_link_citations.py::test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[category]
+tests/preproject/test_m3_link_citations.py::test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[product]
+tests/preproject/test_evidence_commands_pg.py::test_share_rejects_identity_hits_and_private_source_roots[False]
+tests/preproject/test_evidence_commands_pg.py::test_share_rejects_identity_hits_and_private_source_roots[True]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_private_analysis_pg.py: 6 warnings
+tests/preproject/test_review_fixes.py: 6 warnings
+tests/preproject/test_m3_link_citations.py: 12 warnings
+tests/preproject/test_evidence_commands_pg.py: 12 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/preproject/test_m3_link_citations.py::test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[category]
+tests/preproject/test_m3_link_citations.py::test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[product]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/preproject/test_m3_link_citations.py::test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[category]
+tests/preproject/test_m3_link_citations.py::test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[product]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/preproject/test_m3_link_citations.py::test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[category]
+tests/preproject/test_m3_link_citations.py::test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[product]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/preproject/test_m3_link_citations.py::test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[category]
+tests/preproject/test_m3_link_citations.py::test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[product]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/preproject/test_m3_link_citations.py::test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[category]
+tests/preproject/test_m3_link_citations.py::test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[product]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+7 passed, 52 warnings in 13.25s

@@ -221,7 +221,8 @@ def host(monkeypatch):
         definition=lambda *a: events.append("fixed_privacy"),
         definition_head=lambda row: events.append("prebody"),
     )
-    monkeypatch.setattr(module, "_PublicObjects", lambda *a: public)
+    actual_object_factory = module._objects
+    monkeypatch.setattr(module, "_objects", lambda *a: public)
     monkeypatch.setattr(module, "_head", lambda *a: {
         "product_id": UUID(old["product_id"]), "variant_id": None,
         "revision": old["revision"],
@@ -237,7 +238,8 @@ def host(monkeypatch):
 
     monkeypatch.setattr(module.baseline, "read_baseline", read)
     monkeypatch.setattr(module.baseline, "validate_sources", lambda *a: events.append("sources"))
-    return NS(port=port, scope=scope, run=run, owner=owner, events=events, payload=payload)
+    return NS(port=port, scope=scope, run=run, owner=owner, events=events, payload=payload,
+              actual_object_factory=actual_object_factory)
 
 
 def test_host_prebody_guard_and_final_authority(host):
@@ -248,8 +250,9 @@ def test_host_prebody_guard_and_final_authority(host):
 
 
 @pytest.mark.parametrize("private", ["private_context", "customer_identities", "data_categories"])
-def test_host_private_context_fails_before_body(host, private):
+def test_host_private_context_fails_before_body(host, private, monkeypatch):
     setattr(host.run, private, True if private == "private_context" else ["customer"])
+    monkeypatch.setattr(module, "_objects", host.actual_object_factory)
     with pytest.raises(DomainError) as caught:
         host.port.call(host.scope, host.payload.model_dump(mode="json"))
     assert caught.value.code == "SOURCE_UNAVAILABLE"
@@ -270,7 +273,7 @@ def test_proposal_mode_delegates_original_payload_and_preserves_result(host, mon
     host.owner.proposal_id = proposal_id
     calls = []
     public = NS(refs=lambda *a: None, proposal=lambda identity: calls.append(identity))
-    monkeypatch.setattr(module, "_PublicObjects", lambda *a: public)
+    monkeypatch.setattr(module, "_objects", lambda *a: public)
     expected = {"engine": "existing", "request_digest": "existing-proof-category"}
 
     def original(scope, arguments, *, name):

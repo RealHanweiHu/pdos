@@ -180,12 +180,13 @@ def _public_references(session, ctx, refs, seen=None):
             _outbound_unavailable()
 
 
-def _public_baseline_bom(session, ctx, product_id, result):
+def _public_baseline_bom(session, ctx, product_id, result, *, objects=None):
     """Authorize the persisted BOM closure separately from its public definition.
 
     Ordinary RLS grants local reading, not model outbound consent. Resolve actual
     configurations, BOM lines, parts and their source roots in the same snapshot;
     projected visibility labels never supply this authorization.
+    A Run-bound checker may authorize exact private targets and already-bound sources.
     """
     from pdos_next.domain.configurations.models import (
         BomLine,
@@ -196,6 +197,14 @@ def _public_baseline_bom(session, ctx, product_id, result):
     from pdos_next.domain.preproject.claim_access import source_privacy
 
     checked_objects, checked_sources = set(), set()
+    definition = result["definition"]
+    private_objects = bool(
+        objects is not None
+        and objects.run.private_context
+        and definition
+        and (product_id, UUID(definition["variant_id"]) if definition.get("variant_id") else None)
+        in objects.targets
+    )
 
     def sources(value):
         if isinstance(value, list):
@@ -206,9 +215,13 @@ def _public_baseline_bom(session, ctx, product_id, result):
                 identity = UUID(str(value["artifact_id"]))
                 version = value["expected_revision"]
                 if (identity, version) not in checked_sources:
+                    if objects is not None:
+                        from pdos_next.domain.preproject.schemas import Reference
+
+                        objects.refs([Reference(type="artifact", id=identity, version=version)])
                     source_for(session, ctx, product_id, identity, version)
                     root = SimpleNamespace(source_kind="artifact", artifact_id=identity)
-                    if source_privacy(session, ctx, root) != "shared":
+                    if objects is None and source_privacy(session, ctx, root) != "shared":
                         _outbound_unavailable()
                     checked_sources.add((identity, version))
             for nested in value.values():
@@ -222,6 +235,7 @@ def _public_baseline_bom(session, ctx, product_id, result):
             or row.category_id != ctx.category_id
             or row.product_id != product_id
             or row.visibility != "category"
+            and not private_objects
         ):
             _outbound_unavailable()
         if (model, identity) not in checked_objects:
@@ -332,7 +346,9 @@ class DomainReads:
             )
             return located_page(seal, arguments)
 
-    def _baseline_call(self, scope, payload, *, name):
+    def _baseline_call(self, scope, payload, *, name, session=None):
+        from contextlib import nullcontext
+
         from pdos_next.domain.preproject import baseline, derivation
         from pdos_next.domain.preproject.access import fail, proposal
         from pdos_next.domain.preproject.service import _all_refs_from_document
@@ -342,18 +358,30 @@ class DomainReads:
         from .execution import check_run_binding
         from .models import AgentRun
 
-        with tenant_session(
-            self.store.engine,
-            scope.tenant_id,
-            actor_id=scope.writer_id,
-            requester_id=scope.requester_id,
-            category_id=scope.category_id,
-            read_snapshot=True,
-        ) as session:
+        transaction = (
+            nullcontext(session)
+            if session is not None
+            else tenant_session(
+                self.store.engine,
+                scope.tenant_id,
+                actor_id=scope.writer_id,
+                requester_id=scope.requester_id,
+                category_id=scope.category_id,
+                read_snapshot=True,
+            )
+        )
+        with transaction as session:
             run = session.get(AgentRun, scope.run_id)
             check_run_binding(run, scope, for_write=False)
             self.store.authority(session, scope)
             ctx = self.commands.context(scope)
+            from .proposal_context import KEY
+
+            objects = None
+            if KEY in getattr(run, "versions", {}):
+                from .m3_spec_compare import _objects
+
+                objects = _objects(session, ctx, scope, run)
             product_id = (
                 payload.product_id or scope.product_id
                 if name == "product.baseline.read"
@@ -366,7 +394,11 @@ class DomainReads:
             if scope.product_id is not None and product_id != scope.product_id:
                 fail("FORBIDDEN_SCOPE", "product_run_mismatch", "型号选择不属于本次运行。", 403)
             product = require_access(session, ctx, product_id)
-            if product.visibility != "category":
+            if objects is not None:
+                objects.target(
+                    product_id, payload.variant_id if name == "product.baseline.read" else None
+                )
+            elif product.visibility != "category":
                 _outbound_unavailable()
             if name == "product.baseline.read":
                 result = baseline.read_baseline(
@@ -375,11 +407,28 @@ class DomainReads:
                     product_id,
                     variant_id=payload.variant_id,
                     definition_revision=payload.definition_revision,
+                    **(
+                        {
+                            "before_definition_read": objects.definition_head,
+                            "block_areas": payload.areas,
+                        }
+                        if objects
+                        else {}
+                    ),
                 )
                 if result["definition"] is not None:
-                    _public_definition(session, ctx, result["definition"])
+                    if objects is not None:
+                        from .m3_object_reads import _references
+
+                        objects.refs(_references(result))
+                        objects.parameters(result)
+                    else:
+                        _public_definition(session, ctx, result["definition"])
                 if "bom" in payload.areas:
-                    _public_baseline_bom(session, ctx, product_id, result)
+                    if objects is not None:
+                        _public_baseline_bom(session, ctx, product_id, result, objects=objects)
+                    else:
+                        _public_baseline_bom(session, ctx, product_id, result)
                 return {
                     **result,
                     "definition": result["definition"]
@@ -405,7 +454,7 @@ class DomainReads:
                     "proposal_revision_moved",
                     "提案版本已变化，请读取当前版本。",
                 )
-            if (
+            if objects is None and (
                 row.effective_visibility != "category"
                 or row.private_source_count
                 or row.customer_identities
@@ -420,24 +469,25 @@ class DomainReads:
                 )
             ):
                 fail("VERSION_CONFLICT", "baseline_version_changed", "比较须使用提案固定的父版。")
-            doc = document(session, row)
+            doc = objects.proposal(row.id) if objects is not None else document(session, row)
             parent = derivation.validate_baseline(session, ctx, row, doc)
             if parent is None:
                 fail("VALIDATION_FAILED", "not_a_derivative", "本提案没有固定派生基线。", 422)
-            _public_definition(session, ctx, parent)
-            _public_references(
-                session,
-                ctx,
-                [
-                    *_all_refs_from_document(doc),
-                    *(
-                        ref
-                        for item in doc["items"]
-                        if item["kind"] == "difference"
-                        for ref in item["content"].get("sources", [])
-                    ),
-                ],
-            )
+            refs = [
+                *_all_refs_from_document(doc),
+                *(
+                    ref
+                    for item in doc["items"]
+                    if item["kind"] == "difference"
+                    for ref in item["content"].get("sources", [])
+                ),
+            ]
+            if objects is not None:
+                objects.definition(UUID(str(parent["id"])), parent["revision"])
+                objects.refs(refs)
+            else:
+                _public_definition(session, ctx, parent)
+                _public_references(session, ctx, refs)
             result = derivation.calculation(parent, doc, proposal_id=row.id, revision=row.revision)
             selected = "specification" in payload.areas
             return {

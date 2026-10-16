@@ -1,0 +1,198 @@
+{"scope": "one bound private published baseline read", "tool": "product.baseline.read", "elapsed_ms": 1127.99, "sql_count": 78, "real_provider_calls": 0}
+..{"category_run_actual_model_scope_preserved": true, "wrong_source_model_rejected": true, "unsafe_downgrade_rejected": true, "forced_rls_restored": true}
+F.F{"run_id": "d1bd0b5e-90de-42dd-9b41-d98556bc4d23", "registered_graph": "xiaopai", "synthetic_model_turns": 4, "outcome": "completed", "real_provider_calls": 0}
+.
+=================================== FAILURES ===================================
+__ test_private_three_way_recovery_keeps_actual_item_versions_and_old_result ___
+
+work = <isolated synthetic test scope>
+
+    def test_private_three_way_recovery_keeps_actual_item_versions_and_old_result(work):
+        chain = three_way(work, visibility="private")
+        data = payload(work)
+        data["source_refs"] = [
+            definition_ref(chain.old),
+            definition_ref(chain.child, 2),
+            definition_ref(chain.new, 3),
+        ]
+        f = bound(work, data)
+        with f.owner.store.transaction(f.scope) as (_, run):
+            assert run.product_id is None and run.read_sources
+            assert {ref["product_id"] for ref in run.read_sources} == {str(work.product)}
+        with pytest.raises(DBAPIError) as invalid_scope:
+            with human_session(work) as session:
+                original = session.get(AgentRun, f.scope.run_id)
+                candidate = {
+                    column.key: deepcopy(getattr(original, column.key))
+                    for column in AgentRun.__table__.columns
+                }
+                candidate.update(id=uuid4(), intent_key=str(uuid4()))
+                candidate["read_sources"][0]["product_id"] = str(uuid4())
+                session.add(AgentRun(**candidate))
+                session.flush()
+        assert invalid_scope.value.orig.sqlstate == "23514"
+        from migrations.schema_s0_0761 import DOWNGRADE_SQL, GATE
+
+        with pytest.raises(DBAPIError, match="model-source history requires s0_0761"):
+            with work.admin.begin() as connection:
+                connection.exec_driver_sql("SET LOCAL ROLE pdos_next_owner")
+                for statement in DOWNGRADE_SQL:
+                    connection.exec_driver_sql(statement)
+        with work.admin.connect() as connection:
+            assert connection.scalar(
+                text("SELECT relforcerowsecurity FROM pg_class WHERE oid='agent_runs'::regclass")
+            )
+            assert (
+                connection.scalar(
+                    text("SELECT pg_get_functiondef('kernel_source_reference_gate()'::regprocedure)")
+                )
+                == GATE
+            )
+        print(
+            json.dumps(
+                {
+                    "category_run_actual_model_scope_preserved": True,
+                    "wrong_source_model_rejected": True,
+                    "unsafe_downgrade_rejected": True,
+                    "forced_rls_restored": True,
+                }
+            )
+        )
+        before = counts(work)
+        result, replay = call(f, "calc.derivation_diff", chain.arguments)
+        classifications = {row["path"]: row["classification"] for row in result["differences"]}
+        assert classifications["specs/child_only"] == "child_only"
+        assert classifications["specs/parent_only"] == "parent_only"
+        assert classifications["specs/conflict"] == "conflict"
+        assert replay() == result and counts(work) == before
+        current = current_items(work, chain.new)["parent_only"]
+        change = upsert(
+>           current,
+            key="parent_only",
+            value="5",
+            unit="PSI",
+            availability="known",
+            item_status="confirmed",
+            nature="decided",
+            reason="Synthetic fixed-definition check",
+        )
+E       assert (422 == 409)
+E        +  where 422 = <Response [422 Unprocessable Content]>.status_code
+
+tests/agent_kernel/test_private_analysis_pg.py:252: AssertionError
+_ test_private_bom_sources_require_existing_binding_and_unselected_blocks_stay_unread _
+
+work = <isolated synthetic test scope>
+
+                "variant_id": result["variant_id"],
+                "definition_revision": 1,
+                "areas": ["specification", "platform"],
+            },
+        )
+        assert (
+            baseline["definition"]["id"] == result["definition_id"]
+            and baseline["baseline_kind"] == "g0"
+        )
+
+
+    def test_private_bom_sources_require_existing_binding_and_unselected_blocks_stay_unread(work):
+        chain = owner_fixture_chain(work, "source")
+        data = payload(work)
+        data["source_refs"] = [definition_ref(chain.parent.id)]
+        f = bound(work, data)
+        result, _ = call(
+            f,
+            "product.baseline.read",
+            {"product_id": str(work.product), "definition_revision": 1, "areas": ["specification"]},
+        )
+        assert result["definition"]["id"] == str(chain.parent.id) and not result["blocks"]
+        with pytest.raises(DomainError):
+            call(
+                f,
+                "product.baseline.read",
+                {"product_id": str(work.product), "definition_revision": 1, "areas": ["bom"]},
+            )
+        from pdos_next.domain.configurations.models import PartIdentity
+
+>       with human_session(work) as session:
+                   ^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_private_analysis_pg.py:388:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_private_analysis_pg.py:48: in bound
+    identity, _ = create(work, data)
+                  ^^^^^^^^^^^^^^^^^^
+tests/preproject/test_g0.py:132: in create
+    result, req = save(work, request(work, "proposal.create", data or payload(work)))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+work = <isolated synthetic test scope>
+req = {'command_id': '31671fe3-907c-488f-93d6-ab5f350daf8d', 'idempotency_key': 'a6ff238d-f9a4-4a76-9468-2535352ce492', 'category_id': '5dde5006-420a-4c9d-9b08-b41a2d2358c8', 'product_id': None, ...}
+actor = None
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+>       assert checked.status_code == 200, checked.text
+E       AssertionError: {"code":"SOURCE_UNAVAILABLE","message":"来源不在当前授权范围。","detail":{"reason":"SOURCE_UNAVAILABLE"}}
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/preproject/test_g0.py:93: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_private_analysis_pg.py::test_private_baseline_proposal_diff_spec_and_platform_are_readable_without_business_writes[product]
+tests/agent_kernel/test_private_analysis_pg.py::test_private_baseline_proposal_diff_spec_and_platform_are_readable_without_business_writes[nested_source]
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_baseline_and_platform_restore_recheck_source_and_link_watermarks
+tests/agent_kernel/test_private_analysis_pg.py::test_private_bom_sources_require_existing_binding_and_unselected_blocks_stay_unread
+tests/agent_kernel/test_private_analysis_pg.py::test_registered_graph_reads_private_baseline_diff_platform_then_completes
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_private_analysis_pg.py: 60 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_baseline_proposal_diff_spec_and_platform_are_readable_without_business_writes[product]
+tests/agent_kernel/test_private_analysis_pg.py::test_private_baseline_proposal_diff_spec_and_platform_are_readable_without_business_writes[nested_source]
+tests/agent_kernel/test_private_analysis_pg.py::test_baseline_and_platform_restore_recheck_source_and_link_watermarks
+tests/agent_kernel/test_private_analysis_pg.py::test_registered_graph_reads_private_baseline_diff_platform_then_completes
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:175: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([platform])
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_baseline_proposal_diff_spec_and_platform_are_readable_without_business_writes[product]
+tests/agent_kernel/test_private_analysis_pg.py::test_private_baseline_proposal_diff_spec_and_platform_are_readable_without_business_writes[nested_source]
+tests/agent_kernel/test_private_analysis_pg.py::test_baseline_and_platform_restore_recheck_source_and_link_watermarks
+tests/agent_kernel/test_private_analysis_pg.py::test_baseline_and_platform_restore_recheck_source_and_link_watermarks
+tests/agent_kernel/test_private_analysis_pg.py::test_registered_graph_reads_private_baseline_diff_platform_then_completes
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:192: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([link])
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_items.py:369: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(rows)
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_items.py:409: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(subject.changed_rows)
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_inherit.py:197: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(subject.created_specs)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+FAILED tests/agent_kernel/test_private_analysis_pg.py::test_private_bom_sources_require_existing_binding_and_unselected_blocks_stay_unread
+2 failed, 4 passed, 3 deselected, 86 warnings in 115.52s (0:01:55)

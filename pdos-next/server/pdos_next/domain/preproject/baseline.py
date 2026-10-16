@@ -581,6 +581,7 @@ def read_baseline(
     *,
     before_definition_read=None,
     include_blocks=True,
+    block_areas=None,
 ):
     """Present an honest fallback; only a verified publication is derivation eligible."""
     _scope(s, ctx, product_id, variant_id)
@@ -695,8 +696,9 @@ def read_baseline(
             for name in ("certification", "tooling", "platform")
         },
     }
-    if include_blocks:
+    if include_blocks and (block_areas is None or "bom" in block_areas):
         blocks.update(read_blocks(s, ctx, chosen))
+    if include_blocks and (block_areas is None or "platform" in block_areas):
         from pdos_next.domain.products.platforms import read as read_platforms
 
         linked = read_platforms(
