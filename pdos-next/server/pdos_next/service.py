@@ -90,6 +90,7 @@ EVENTS = {
     "category.knowledge.promote": "category.knowledge_promoted",
     "category.parameter.publish": "category.parameter_published",
     "model.configuration.save": "model.configuration_saved",
+    "ai.skill.enable": "ai.skill_enabled",
     "proposal.create": "proposal.created",
     "proposal.item.patch": "proposal.item_patched",
     "proposal.question.create": "proposal.question_created",

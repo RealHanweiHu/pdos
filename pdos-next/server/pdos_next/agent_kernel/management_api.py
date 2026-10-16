@@ -134,6 +134,24 @@ def register_routes(app, engine, auth_dependency):
             read_snapshot=True,
         )
 
+    @app.get("/v1/categories/{category_id}/agent-skills")
+    def skills(category_id: UUID, ctx: Context = auth_dependency):
+        from .skill_management import reading as skill_reading
+
+        with scope(ctx) as session:
+            human(session, ctx)
+            return skill_reading(session, ctx)
+
+    from pdos_next.contracts import Command
+
+    @app.post("/v1/categories/{category_id}/agent-skills/recover")
+    def skill_recover(category_id: UUID, data: Command, ctx: Context = auth_dependency):
+        from .skill_management import recover as skill_receipt
+
+        with scope(ctx) as session:
+            human(session, ctx)
+            return {"receipt": skill_receipt(session, ctx, data)}
+
     @app.get("/v1/categories/{category_id}/provider-agreements")
     def agreements(
         category_id: UUID, page: Annotated[AgreementQuery, Query()], ctx: Context = auth_dependency

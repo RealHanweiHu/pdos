@@ -12,6 +12,7 @@ import { ProductVariants } from "@/components/product/product-variants";
 import { ProductPlatforms } from "@/components/product/product-platforms";
 import { ModelAccounting } from "@/components/product/model-accounting";
 import { ConnectedProviderAgreements } from "@/components/model_configuration/provider-agreements";
+import { ConnectedAgentSkills } from "@/components/model_configuration/agent-skills";
 import { BuildPreparation } from "@/components/builds/build-preparation";
 import { ManufacturingPreparation } from "@/components/manufacturing-preparation/manufacturing-preparation";
 import { BuildExecution } from "@/components/builds/build-execution";
@@ -203,7 +204,7 @@ export function Workspace({ categoryId, projectId = "", onPaiContext }: { catego
         <Button disabled={busy} onClick={async () => { setBusy(true); setError(""); try { await api("local-session", {}); await load(); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } }}>进入本地合成环境</Button>
       </div> : <>
         {newProduct && <form className="panel mb-5" onSubmit={(e) => { e.preventDefault(); void mutate("v1/products", { name, purpose, idempotency_key: crypto.randomUUID() }, "型号范围已建立。"); }}><h2 className="mb-4 font-semibold">建立型号范围</h2><label>型号名称<input required minLength={2} maxLength={160} value={name} onChange={(e) => setName(e.target.value)} /></label><label>真实用途<textarea required minLength={3} maxLength={1000} value={purpose} onChange={(e) => setPurpose(e.target.value)} /></label><div className="flex gap-2"><Button disabled={busy || !!pending}>建立型号</Button><Button type="button" variant="outline" disabled={busy || !!pending} onClick={() => setNewProduct(false)}>取消</Button></div></form>}
-        {session && <WorkspacePanel key={`models:${session.principal_id}:${categoryId}`} name="accounting"><div className="space-y-6"><ConnectedModelSettings api={transport} /><ConnectedProviderAgreements api={transport} principalId={session.principal_id} categoryId={categoryId} /></div></WorkspacePanel>}
+        {session && <WorkspacePanel key={`models:${session.principal_id}:${categoryId}`} name="accounting"><div className="space-y-6"><ConnectedModelSettings api={transport} /><ConnectedProviderAgreements api={transport} principalId={session.principal_id} categoryId={categoryId} /><ConnectedAgentSkills api={transport} principalId={session.principal_id} categoryId={categoryId} /></div></WorkspacePanel>}
         {data && data.product.id === productId && <>
           <WorkspacePanel key={`definition:${session?.principal_id}:${productId}`} name="definition">{session && <ProductDefinition key={`${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} sources={data.sources} api={api} onSaved={refresh} onAccessDenied={() => {
             setData(null); setProducts([]); setProductId(""); setDraft(emptyDraft); setSourceId(""); setQuote(""); setStatement("");

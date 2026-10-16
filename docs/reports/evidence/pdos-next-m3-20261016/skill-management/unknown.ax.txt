@@ -1,0 +1,238 @@
+Browser tab: 7, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3048/?area=category&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5&bench=settings&view=models&product=fde9f5b4-6b3a-4ea5-830c-d53a51af486d".
+0 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3048/?area=category&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5&bench=settings&view=models&product=fde9f5b4-6b3a-4ea5-830c-d53a51af486d
+	1 container
+		2 link Description: 跳到工作内容, Value: 127.0.0.1:3048/?area=category&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5&bench=settings&view=models&product=fde9f5b4-6b3a-4ea5-830c-d53a51af486d#workspace-content
+		3 text PDOS
+		4 button 收起侧栏
+			5 image
+		6 container 工作区导航
+			7 link Description: 我的工作, Value: 127.0.0.1:3048/?area=work&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5
+			8 link Description: 项目驾驶舱, Value: 127.0.0.1:3048/?area=cockpit&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5
+			9 link Description: 项目列表, Value: 127.0.0.1:3048/?area=projects&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5
+			10 link Description: 项目集, Value: 127.0.0.1:3048/?area=programs&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5
+			11 link Description: 产品品类工作区, Value: 127.0.0.1:3048/?area=category&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5&bench=settings&view=models&product=fde9f5b4-6b3a-4ea5-830c-d53a51af486d
+			12 link Description: 知识, Value: 127.0.0.1:3048/?area=knowledge&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5
+			13 text 当前品类
+			14 text 技能登记联验
+			15 text 项目与专业工作按品类范围授权
+		16 link Description: 计划执行进度, Help: 计划执行进度（唯一清单只读投影）, Value: 127.0.0.1:3048/plan
+		17 checkbox Description: 小Pai 工作栏, Value: 0
+		18 link Description: 设置, Value: 127.0.0.1:3048/?area=settings&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5
+		19 text 合成技能管理员
+		20 text 本地合成环境
+		21 text PDOS 产品品类工作区 技能登记联验
+		22 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			23 image
+			24 text 搜索
+		25 checkbox Description: 小Pai 工作栏, Value: 0
+			26 image
+		27 button 切换明暗主题
+			229 image
+		29 container workspace-content
+			30 container 品类工作台区
+				31 link Description: 型号, Value: 127.0.0.1:3048/?area=category&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5&bench=products&view=overview&product=fde9f5b4-6b3a-4ea5-830c-d53a51af486d
+				32 link Description: 项目, Value: 127.0.0.1:3048/?area=category&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5&bench=projects&view=overview&product=fde9f5b4-6b3a-4ea5-830c-d53a51af486d
+				33 link Description: 知识, Value: 127.0.0.1:3048/?area=category&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5&bench=knowledge&view=sources&product=fde9f5b4-6b3a-4ea5-830c-d53a51af486d
+				34 link Description: 设置, Value: 127.0.0.1:3048/?area=category&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5&bench=settings&view=preferences&product=fde9f5b4-6b3a-4ea5-830c-d53a51af486d
+				35 button Description: 快速查找入口或型号, Help: 当前品类快速查找 · ⌘ / Ctrl Shift K
+				36 pop up button (collapsed, settable) Description: 当前型号, Value: 合成运行型号, Secondary Actions: Expand
+					37 menu
+						38 (selected) 合成运行型号
+			39 container 设置视图
+				40 link Description: 外观, Value: 127.0.0.1:3048/?area=category&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5&bench=settings&view=preferences&product=fde9f5b4-6b3a-4ea5-830c-d53a51af486d
+				41 link Description: AI 运行与费用, Value: 127.0.0.1:3048/?area=category&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5&bench=settings&view=models&product=fde9f5b4-6b3a-4ea5-830c-d53a51af486d
+				42 link Description: 原件保留与隔离, Value: 127.0.0.1:3048/?area=category&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5&bench=settings&view=originals&product=fde9f5b4-6b3a-4ea5-830c-d53a51af486d
+			43 container
+				44 heading AI 运行与费用, Value: 1
+					45 text AI 运行与费用
+				46 text 个人外观与低频运行管理。
+				47 button 读取当前模型设置
+				48 container 租户模型配置
+					49 heading 模型设置, Value: 2
+						50 text 模型设置
+					51 text 配置用于当前租户。保存或启用后，仍须核对用途资格、本次材料授权与预算。
+					52 text 尚未保存模型配置。
+					53 text 尚未配置模型
+					54 container
+						55 container
+							56 text 协议
+							57 pop up button (collapsed, settable) 协议, Value: OpenAI 兼容, Secondary Actions: Expand
+								58 menu
+									59 (selected) OpenAI 兼容
+									60 Anthropic 原生
+						61 container
+							62 text 服务端点（基础 URL）
+							63 text field (settable) 服务端点（基础 URL）
+						64 container
+							65 text 模型
+							66 text field (settable) 模型
+						67 container
+							68 text 模型版本
+							69 text field (settable) 模型版本
+						70 container
+							71 text 最大输出 tokens
+							72 stepper (settable, integer) 最大输出 tokens, Value: 2048
+						73 container
+							74 text OpenAI 输出参数
+							75 pop up button (collapsed, settable) OpenAI 输出参数, Value: max_completion_tokens, Secondary Actions: Expand
+								76 menu
+									77 (selected) max_completion_tokens
+									78 max_tokens
+						79 container
+							80 text 超时（秒）
+							81 stepper (settable, integer) 超时（秒）, Value: 30
+						82 container
+							83 text 响应上限（字节）
+							84 stepper (settable, integer) 响应上限（字节）, Value: 1048576
+						85 checkbox (settable, integer) Description: 启用此配置, Value: 0
+						86 text 密钥由服务端安全绑定，此处仅显示掩码。任何配置或密钥版本变更都需重新核对资格。
+						87 button 核对并预览
+				88 container 服务商数据协议
+					89 heading 服务商数据协议, Value: 2
+						90 text 服务商数据协议
+					91 button 刷新协议登记
+					92 text 按已签约协议登记允许接收的数据和条款，由租户管理员本人批准。登记在当前租户的所有品类共用；服务商标识须与服务端模型、搜索或读取配置一致。
+					93 text 当前租户尚无服务商协议登记。未签约服务商仅可接收公开或合成资料。
+					94 container
+						95 heading 登记或变更协议, Value: 3
+							96 text 登记或变更协议
+						97 container
+							98 text 服务商标识
+							99 text field (settable) 服务商标识
+						100 container
+							101 text 签约时间（本地时区）
+							102 date field (settable) 签约时间（本地时区）
+								103 container
+									104 stepper
+									105 stepper
+									106 stepper
+									107 stepper
+									108 stepper
+									109 stepper
+								110 pop up button Show local date and time picker Show local date and time picker
+						111 container
+							112 text 到期时间（本地时区）
+							113 date field (settable) 到期时间（本地时区）
+								114 container
+									115 stepper
+									116 stepper
+									117 stepper
+									118 stepper
+									119 stepper
+									120 stepper
+								121 pop up button Show local date and time picker Show local date and time picker
+						122 text 协议允许的数据类别
+						123 checkbox (settable, integer) Description: 公开资料, Value: 0
+						124 checkbox (settable, integer) Description: 合成资料, Value: 0
+						125 checkbox (settable, integer) Description: 内部资料, Value: 0
+						126 checkbox (settable, integer) Description: 客户身份与资料, Value: 0
+						127 checkbox (settable, integer) Description: 客户原件全文, Value: 0
+						128 container
+							129 text 留存条款
+							130 text entry area (settable) 留存条款
+						131 container
+							132 text 训练条款
+							133 text entry area (settable) 训练条款
+						134 checkbox (settable, integer) Description: 启用此协议登记（取消勾选以停用）, Value: 1
+						135 button 核对协议并预览
+				136 container 租户技能包
+					137 heading 租户技能包, Value: 2
+						138 text 租户技能包
+					139 button 刷新技能状态
+					140 text 技能启用状态在当前租户所有品类共用，由管理员核对后一次确认。启用只开放该能力，不授予自动写入资格；实际调用仍核对当前权限、协议、资格和预算。
+					235 text 合成检查：技能状态已提交，响应丢失，请核对原请求。
+					141 content list
+						142 container
+							143 heading 品类边界澄清, Value: 3
+								144 text 品类边界澄清
+							145 text 未启用 按依赖顺序追问（每次最多三问、推荐答案不预选）确定品类边界，未明确项作为显式假设，起草可一次确认的品类候选。 配置  0.2.1-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							146 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								147 text 查看领域动作与回执
+							148 button (disabled) 启用品类边界澄清
+						149 container
+							150 heading 竞品比较, Value: 3
+								151 text 竞品比较
+							152 text 未启用 按规格字典参数版本做竞品与我方现款/目标的同口径对比，区分实测、宣传、推断、未知，口径不同就分组标注，数值比较交给 calc.spec_compare。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							153 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								154 text 查看领域动作与回执
+							155 button (disabled) 启用竞品比较
+						156 container
+							157 heading 派生差异分析, Value: 3
+								158 text 派生差异分析
+							159 text 未启用 以原型号已发布定义为基线，把改动说明拆成规格、BOM、认证、模具、成本及其他差异，区分直接差异与推断的传导影响，写明沿用范围和待专家项，作为派生提案的立项版定义草稿。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							160 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								161 text 查看领域动作与回执
+							162 button (disabled) 启用派生差异分析
+						163 container
+							164 heading 资料查漏, Value: 3
+								165 text 资料查漏
+							166 text 未启用 检查立项提案或型号定义的缺项、冲突与口径问题（缺单位/工况/方法、未映射参数、来源缺失、方案不足、未知项没有待决问题等），按严重度排序，并把需要人处理的项整理成待决问题候选。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							167 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								168 text 查看领域动作与回执
+							169 button (disabled) 启用资料查漏
+						170 container
+							171 heading 用户任务分析, Value: 3
+								172 text 用户任务分析
+							173 text 未启用 从用户声音、场景与研究证据中整理目标用户要完成的工作（JTBD）、完整使用路径与购买标准，区分有证据的发现和待验证假设。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							174 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								175 text 查看领域动作与回执
+							176 button (disabled) 启用用户任务分析
+						177 container
+							178 heading 机会评估, Value: 3
+								179 text 机会评估
+							180 text 未启用 收集机会评分与市场规模所需的输入并逐项注明来源、区间和性质，调用计算工具得到结果，再解释驱动因素与不确定性；模型不自报任何规模或分数。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							181 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								182 text 查看领域动作与回执
+							183 button (disabled) 启用机会评估
+						184 container
+							185 heading 方案比较, Value: 3
+								186 text 方案比较
+							187 text 未启用 为立项提案起草 2–3 个在决策上真正不同的方案（可含"沿用现款"或"不做"），按同一组维度写定位、关键差异、大致成本与周期和取舍；成本由计算工具给出，选择留给人。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							188 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								189 text 查看领域动作与回执
+							190 button (disabled) 启用方案比较
+						191 container
+							192 heading 价格带分析, Value: 3
+								193 text 价格带分析
+							194 text 未启用 在统一价格口径（币种、日期、地区、渠道、零售或促销、含税运、配置）下整理竞品与我方价格点，用 calc.price_band 得到价格带分布与目标价位置；分组、分档、分位和换汇都交计算工具。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							195 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								196 text 查看领域动作与回执
+							197 button (disabled) 启用价格带分析
+						198 container
+							199 heading 立项提案起草, Value: 3
+								200 text 立项提案起草
+							201 text 未启用 在当前品类内按客户需求、自主新品、派生迭代三个入口起草或修订立项提案，以条目级补丁写入草稿，标明来源、状态与未知，并只提少量关键问题。 配置  0.2.2-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							202 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								203 text 查看领域动作与回执
+							204 button (disabled) 启用立项提案起草
+						205 container
+							206 heading 公开研究, Value: 3
+								207 text 公开研究
+							208 text 未启用 把研究问题拆成并行的公开来源子任务，交回带可核原文片段的台账、发现和未答问题；只研究，不替用户下结论或写提案。 配置  0.2.1-draft  · 状态第  2  版 尚无 T0 审阅记录。
+							209 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								210 text 查看领域动作与回执
+							211 button (disabled) 启用公开研究
+						212 container
+							213 heading 用户痛点归类, Value: 3
+								214 text 用户痛点归类
+							215 text 未启用 把评论、退货原因等用户声音按痛点归类，每类给可核原文片段，样本量与占比由代码计算，并按型号、渠道、时间区分。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							216 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								217 text 查看领域动作与回执
+							218 button (disabled) 启用用户痛点归类
+						219 container
+							220 heading 客户要求抽取, Value: 3
+								221 text 客户要求抽取
+							222 text 未启用 经隔离子任务从客户 RFQ、规格书、图纸说明和邮件中逐条抽取需求，保留原文位置、数值、单位、工况、否定与例外，映射到规格字典并登记为证据，列出冲突、未知、差距和待问客户/专家的问题。 配置  0.4.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							223 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								224 text 查看领域动作与回执
+							225 button (disabled) 启用客户要求抽取
+					230 container 恢复原技能请求
+						231 container
+							232 text 资料查漏 的 启用 结果待核对
+						233 text 重新打开先查询原回执；手动核对仍未取得时，沿用同一份已确认请求重试。确认已过期则重新预览。
+						234 button 核对并重试原技能请求
+				226 heading 调用与费用核对, Value: 2
+					227 text 调用与费用核对
+				228 text 当前没有已登记的模型调用。可在模型设置中核对配置与权限。
+
+The focused UI element is 230 container 恢复原技能请求

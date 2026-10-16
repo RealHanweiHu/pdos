@@ -87,6 +87,10 @@ class SkillCatalog:
     def index(self):
         return [{"key": s.key, "purpose": s.purpose} for _, s in sorted(self._skills.items())]
 
+    def configuration(self, key):
+        """Inspect registered configuration; this does not enable or load a capability."""
+        return self._skills.get(key)
+
     def load(self, name, scope, permitted):
         skill = self._skills.get(name)
         if skill is None or not permitted(scope, skill):

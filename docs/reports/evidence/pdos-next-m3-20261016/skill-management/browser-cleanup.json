@@ -1,0 +1,54 @@
+{
+  "target": "verified 64245/pdos_test",
+  "head": "s0_0763",
+  "receipts": [
+    {
+      "id": "e601fbc8-b5b1-4e04-b4ee-f47bb3322e56",
+      "skill": "public_research",
+      "revision": 1,
+      "enabled": true,
+      "counts": {
+        "action_receipts": 1,
+        "audit_entries": 1,
+        "outbox_events": 1
+      }
+    },
+    {
+      "id": "b3aac4d3-a6af-40fb-b443-3be688f11e37",
+      "skill": "public_research",
+      "revision": 2,
+      "enabled": false,
+      "counts": {
+        "action_receipts": 1,
+        "audit_entries": 1,
+        "outbox_events": 1
+      }
+    },
+    {
+      "id": "15ac9285-d1c4-4f7b-a4ef-2913cd6546e0",
+      "skill": "gap_check",
+      "revision": 1,
+      "enabled": true,
+      "counts": {
+        "action_receipts": 1,
+        "audit_entries": 1,
+        "outbox_events": 1
+      }
+    }
+  ],
+  "states": [
+    {
+      "skill": "public_research",
+      "revision": 2,
+      "enabled": false
+    },
+    {
+      "skill": "gap_check",
+      "revision": 1,
+      "enabled": true
+    }
+  ],
+  "no_qualification_granted": true,
+  "real_model_calls": 0,
+  "cleanup": true
+}

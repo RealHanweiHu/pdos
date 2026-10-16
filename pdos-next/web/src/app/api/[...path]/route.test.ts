@@ -84,6 +84,28 @@ function harness(configuration: { token?: string | null; api?: string | null; re
 }
 
 const resourceInspect = `${base}/builds/${build}/resources/inspect`;
+test("技能管理读取与原请求恢复保留品类和完整原正文", async () => {
+  const h = harness();
+  assert.equal((await h.send("v1/agent-skills")).response.status, 200);
+  const body = JSON.stringify({ operation: "ai.skill.enable", payload: { enabled: true } });
+  const result = await h.send("v1/agent-skills/recover", { method: "POST", body });
+  assert.equal(result.response.status, 200); assert.equal(result.reads, 1);
+  assert.equal(h.calls.at(-1)?.init.body, body);
+  assert.equal(h.calls.at(-1)?.url, `http://synthetic-api.invalid/v1/categories/${category}/agent-skills/recover`);
+});
+
+test("技能管理拒绝伪造范围与方法，回执查询失败保持只读含义", async () => {
+  for (const [path, options, status] of [
+    ["v1/agent-skills", { unscoped: true }, 404], ["v1/agent-skills", { query: "tenant_id=forged" }, 422],
+    ["v1/agent-skills", { method: "POST", body: "{}" }, 405], ["v1/agent-skills/recover", {}, 405],
+    ["v1/agent-skills/recover", { method: "POST", query: "skill=forged", body: "{}" }, 422],
+    ["v1/agent-skills/recover", { method: "POST", origin: "https://other.invalid", body: "{}" }, 403],
+  ] as const) { const h = harness(); assert.equal((await h.send(path, options)).response.status, status); assert.equal(h.calls.length, 0); }
+  const h = harness({ response: async () => { throw new Error("synthetic unavailable"); } });
+  const failed = await h.send("v1/agent-skills/recover", { method: "POST", body: "{}" });
+  assert.equal((await failed.response.json()).code, "SOURCE_UNAVAILABLE");
+});
+
 test("协议登记和只读原回执核对沿用同一正文与当前品类", async () => {
   const h = harness();
   const body = JSON.stringify({ provider: "synthetic-provider", decision: "批准", idempotency_key: "approved-original" });

@@ -1,0 +1,20 @@
+Browser tab: 7, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3048/?area=category&category=cd605cf5-51f6-47da-8e23-b7fae26ef8f5&bench=settings&view=models&product=fde9f5b4-6b3a-4ea5-830c-d53a51af486d".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 231-235
+~					139 button 刷新技能状态
+~					230 container
++						231 text 公开研究已启用 · 第 1 版 · 回执 e601fbc8-b5b1-4e04-b4ee-f47bb3322e56
+~							148 button 启用品类边界澄清
+~							155 button 启用竞品比较
+~							162 button 启用派生差异分析
+~							169 button 启用资料查漏
+~							176 button 启用用户任务分析
+~							183 button 启用机会评估
+~							190 button 启用方案比较
+~							197 button 启用价格带分析
+~							204 button 启用立项提案起草
+~							208 text 已启用 把研究问题拆成并行的公开来源子任务，交回带可核原文片段的台账、发现和未答问题；只研究，不替用户下结论或写提案。 配置  0.2.1-draft  · 状态第  1  版 尚无 T0 审阅记录。
+~							211 button 停用公开研究
+~							218 button 启用用户痛点归类
+~							225 button 启用客户要求抽取
+The focused UI element is 230 container

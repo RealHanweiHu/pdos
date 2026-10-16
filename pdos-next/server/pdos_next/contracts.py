@@ -117,6 +117,10 @@ from pdos_next.model_configuration.commands import SavePayload  # noqa: E402
 
 PAYLOADS["model.configuration.save"] = SavePayload
 
+from pdos_next.agent_kernel.skill_management import EnableSkill  # noqa: E402
+
+PAYLOADS["ai.skill.enable"] = EnableSkill
+
 
 class ProductInput(StrictModel):
     name: str = Field(min_length=2, max_length=160)

@@ -199,7 +199,18 @@ class TenantSkillEnablement(KernelRow, Base):
     reviewed_by: Mapped[UUID | None]
     reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     qualification_revoked: Mapped[bool] = mapped_column(Boolean, default=False)
-    __table_args__ = (UniqueConstraint("tenant_id", "skill_key"),)
+    revision: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    receipt_id: Mapped[UUID | None]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "skill_key"),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"],
+            ["action_receipts.tenant_id", "action_receipts.id"],
+            name="skill_enablement_receipt_fk",
+            deferrable=True,
+            initially="DEFERRED",
+        ),
+    )
 
 
 class McpConnector(KernelRow, Base):
