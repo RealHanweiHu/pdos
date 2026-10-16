@@ -585,3 +585,26 @@ test("审阅入口拒绝伪造人和租户范围以及重复或不明确选择",
     ["v1/agent-skill-qualification", { unscoped: true, query: "skill_key=a" }, 404], ["v1/agent-skill-qualification/recover", {}, 405],
   ] as const) { const h = harness(); assert.equal((await h.send(path, options)).response.status, status); assert.equal(h.calls.length, 0); }
 });
+
+test("MCP 准入、分页和只读原回执按当前品类转发", async () => {
+  const h = harness();
+  assert.equal((await h.send("v1/agent-mcp", { query: `page_size=20&cursor=${product}` })).response.status, 200);
+  assert.equal((await h.send(`v1/agent-mcp/${product}`, { query: `tool_cursor=lookup&grant_cursor=${build}&page_size=10` })).response.status, 200);
+  assert.equal((await h.send(`v1/agent-mcp/${product}/history`, { query: `cursor=${build}` })).response.status, 200);
+  const body = JSON.stringify({ operation: "mcp.connector.allow", payload: { active: false } });
+  assert.equal((await h.send("v1/agent-mcp/recover", { method: "POST", body })).response.status, 200);
+  assert.equal(h.calls.at(-1)?.url, `http://synthetic-api.invalid/v1/categories/${category}/agent-mcp/recover`);
+  assert.equal(h.calls.at(-1)?.init.body, body);
+});
+test("MCP 读取不接受伪造范围、异常游标或写入方法", async () => {
+  for (const [path, options, status] of [
+    ["v1/agent-mcp", { unscoped: true }, 404], ["v1/agent-mcp", { query: "tenant_id=forged" }, 422],
+    ["v1/agent-mcp", { query: "page_size=101" }, 422], ["v1/agent-mcp", { query: "cursor=bad" }, 422],
+    [`v1/agent-mcp/${product}`, { query: "tool_cursor=a&tool_cursor=b" }, 422],
+    [`v1/agent-mcp/${product}/history`, { query: "grant_cursor=bad" }, 422],
+    ["v1/agent-mcp/recover", {}, 405], ["v1/agent-mcp", { method: "POST", body: "{}" }, 405],
+    ["v1/agent-mcp/recover", { method: "POST", origin: "https://other.invalid", body: "{}" }, 403],
+  ] as const) { const h = harness(); assert.equal((await h.send(path, options)).response.status, status); assert.equal(h.calls.length, 0); }
+  const h = harness({ response: async () => { throw new Error("synthetic unavailable"); } });
+  assert.equal((await (await h.send("v1/agent-mcp/recover", { method: "POST", body: "{}" })).response.json()).code, "SOURCE_UNAVAILABLE");
+});

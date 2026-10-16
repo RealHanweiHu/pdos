@@ -2,6 +2,8 @@
 
 CATEGORY_OPERATIONS = frozenset(
     {
+        "mcp.connector.allow",
+        "mcp.tool.grant",
         "model.configuration.save",
         "ai.skill.qualify",
         "ai.skill.enable",
@@ -35,6 +37,7 @@ CATEGORY_OPERATIONS = frozenset(
 T2_OPERATIONS = frozenset(
     {
         "ai.skill.qualify",
+        "mcp.connector.allow",
         "change.order.approve",
         "proposal.g0.decide",
         "change.selection.decide",
@@ -50,6 +53,7 @@ T2_OPERATIONS = frozenset(
 T1_OPERATIONS = frozenset(
     {
         "platform.link.create",
+        "mcp.tool.grant",
         "ai.skill.enable",
         "ai.skill.review.record",
         "ai.budget.configure",
@@ -130,6 +134,10 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation in {"mcp.connector.allow", "mcp.tool.grant"}:
+        from pdos_next.agent_kernel import mcp_management
+
+        return mcp_management
     if operation in {"ai.skill.qualify", "ai.skill.review.record"}:
         from pdos_next.agent_kernel import skill_qualification
 

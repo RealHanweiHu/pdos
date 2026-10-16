@@ -90,6 +90,8 @@ EVENTS = {
     "category.knowledge.promote": "category.knowledge_promoted",
     "category.parameter.publish": "category.parameter_published",
     "model.configuration.save": "model.configuration_saved",
+    "mcp.connector.allow": "mcp.connector_allowed",
+    "mcp.tool.grant": "mcp.tool_granted",
     "ai.skill.enable": "ai.skill_enabled",
     "ai.skill.qualify": "ai.skill_qualified",
     "ai.skill.review.record": "ai.skill_review_recorded",

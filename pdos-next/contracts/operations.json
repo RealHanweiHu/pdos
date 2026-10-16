@@ -779,8 +779,9 @@
       "ai_execution": "仅准备/不可代决定",
       "event": "mcp.connector_allowed",
       "stage": "S1",
-      "implementation": "not_implemented",
-      "v1_1": "added"
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "mcp.tool.grant",
@@ -788,8 +789,9 @@
       "ai_execution": "一次确认后",
       "event": "mcp.tool_granted",
       "stage": "S1",
-      "implementation": "not_implemented",
-      "v1_1": "added"
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
     }
   ]
 }

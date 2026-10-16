@@ -126,12 +126,16 @@ def mcp_admission(
     registered = connector.tools.get(tool)
     if not isinstance(registered, dict):
         raise DomainError("FORBIDDEN_SCOPE", "MCP 工具未登记。")
+    from .mcp_binding import connector_binding
+
     grants = session.scalars(
         select(McpToolGrant).where(
             McpToolGrant.tenant_id == scope.tenant_id,
             McpToolGrant.connector_id == connector.id,
             McpToolGrant.tool == tool,
             McpToolGrant.expires_at > now(),
+            McpToolGrant.active.is_(True),
+            McpToolGrant.connector_binding_digest == connector_binding(connector, tool),
         )
     ).all()
     valid = [

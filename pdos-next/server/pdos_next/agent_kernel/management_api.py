@@ -165,6 +165,59 @@ def register_routes(app, engine, auth_dependency):
             human(session, ctx)
             return {"receipt": qualification_receipt(session, ctx, data)}
 
+    from .mcp_management import ConnectorPage, DetailPage
+
+    @app.get("/v1/categories/{category_id}/agent-mcp")
+    def mcp_index(
+        category_id: UUID, page: Annotated[ConnectorPage, Query()], ctx: Context = auth_dependency
+    ):
+        from .mcp_management import reading as mcp_reading
+
+        with scope(ctx) as session:
+            human(session, ctx)
+            return mcp_reading(session, ctx, page)
+
+    @app.post("/v1/categories/{category_id}/agent-mcp/recover")
+    def mcp_recover(category_id: UUID, data: Command, ctx: Context = auth_dependency):
+        from .mcp_management import recover as mcp_receipt
+
+        with scope(ctx) as session:
+            human(session, ctx)
+            return {"receipt": mcp_receipt(session, ctx, data)}
+
+    @app.get("/v1/categories/{category_id}/agent-mcp/{connector_id}")
+    def mcp_detail(
+        category_id: UUID,
+        connector_id: UUID,
+        page: Annotated[DetailPage, Query()],
+        ctx: Context = auth_dependency,
+    ):
+        from .mcp_management import ToolPage
+        from .mcp_management import detail as mcp_detail_reading
+
+        with scope(ctx) as session:
+            human(session, ctx)
+            return mcp_detail_reading(
+                session,
+                ctx,
+                connector_id,
+                ToolPage(cursor_key=page.tool_cursor, page_size=page.page_size),
+                ConnectorPage(cursor=page.grant_cursor, page_size=page.page_size),
+            )
+
+    @app.get("/v1/categories/{category_id}/agent-mcp/{connector_id}/history")
+    def mcp_history(
+        category_id: UUID,
+        connector_id: UUID,
+        page: Annotated[ConnectorPage, Query()],
+        ctx: Context = auth_dependency,
+    ):
+        from .mcp_management import history as mcp_history_reading
+
+        with scope(ctx) as session:
+            human(session, ctx)
+            return mcp_history_reading(session, ctx, connector_id, page)
+
     from .budget_management import BudgetPage
 
     @app.get("/v1/categories/{category_id}/agent-budgets")

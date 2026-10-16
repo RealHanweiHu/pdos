@@ -247,7 +247,28 @@ class McpConnector(KernelRow, Base):
     active: Mapped[bool] = mapped_column(Boolean, default=False)
     revision: Mapped[int] = mapped_column(Integer, default=1)
     tools: Mapped[dict] = mapped_column(JSONB)
-    __table_args__ = (UniqueConstraint("tenant_id", "key"), UniqueConstraint("tenant_id", "id"))
+    receipt_id: Mapped[UUID | None]
+    control_record_id: Mapped[UUID | None]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "key"),
+        UniqueConstraint("tenant_id", "id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"],
+            ["action_receipts.tenant_id", "action_receipts.id"],
+            name="mcp_connector_receipt_fk",
+            deferrable=True,
+            initially="DEFERRED",
+            use_alter=True,
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "control_record_id"],
+            ["mcp_control_records.tenant_id", "mcp_control_records.id"],
+            name="mcp_connector_control_fk",
+            deferrable=True,
+            initially="DEFERRED",
+            use_alter=True,
+        ),
+    )
 
 
 class McpToolGrant(KernelRow, Base):
@@ -259,9 +280,41 @@ class McpToolGrant(KernelRow, Base):
     explicit_external_write: Mapped[bool] = mapped_column(Boolean, default=False)
     authorized_by: Mapped[UUID]
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    active: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
+    revision: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    connector_binding_digest: Mapped[str | None] = mapped_column(String(64))
+    receipt_id: Mapped[UUID | None]
+    control_record_id: Mapped[UUID | None]
     __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
         ForeignKeyConstraint(
-            ["tenant_id", "connector_id"], ["mcp_connectors.tenant_id", "mcp_connectors.id"]
+            ["tenant_id", "connector_id"],
+            ["mcp_connectors.tenant_id", "mcp_connectors.id"],
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"],
+            ["action_receipts.tenant_id", "action_receipts.id"],
+            name="mcp_grant_receipt_fk",
+            deferrable=True,
+            initially="DEFERRED",
+            use_alter=True,
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "control_record_id"],
+            ["mcp_control_records.tenant_id", "mcp_control_records.id"],
+            name="mcp_grant_control_fk",
+            deferrable=True,
+            initially="DEFERRED",
+            use_alter=True,
+        ),
+        Index("ix_mcp_grants_connector", "tenant_id", "connector_id", "id"),
+        Index(
+            "ix_mcp_grants_current",
+            "tenant_id",
+            "connector_id",
+            "tool",
+            "expires_at",
+            postgresql_where=text("active IS TRUE"),
         ),
     )
 
@@ -429,3 +482,29 @@ class SkillQualification(KernelRow, Base):
     @property
     def status(self):
         return "qualified" if self.decision == "批准" else "revoked"
+
+
+class McpControlRecord(KernelRow, Base):
+    __tablename__ = "mcp_control_records"
+    operation: Mapped[str] = mapped_column(String(80))
+    subject_id: Mapped[UUID]
+    subject_revision: Mapped[int] = mapped_column(Integer)
+    decided_by: Mapped[UUID]
+    after_snapshot: Mapped[dict] = mapped_column(JSONB)
+    reason: Mapped[str] = mapped_column(String(4000))
+    receipt_id: Mapped[UUID]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "decided_by"], ["principals.tenant_id", "principals.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"],
+            ["action_receipts.tenant_id", "action_receipts.id"],
+            name="mcp_control_receipt_fk",
+            deferrable=True,
+            initially="DEFERRED",
+            use_alter=True,
+        ),
+        Index("ix_mcp_control_subject", "tenant_id", "subject_id", "created_at", "id"),
+    )

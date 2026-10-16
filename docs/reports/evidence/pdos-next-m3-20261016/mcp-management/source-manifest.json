@@ -1,0 +1,99 @@
+{
+  "base_commit": "3c91d7bbc7053e56dcb41d717b5b0c88a1ddc9d0",
+  "branch": "pdos-next/design-v1.1",
+  "head": "s0_0770",
+  "files": [
+    {
+      "path": "docs/runbooks/mcp-admission-and-grants.md",
+      "sha256": "cc0fa2e85894fdc9d5bc00c143271200cab94eca2f3106c768fee238ff699caa"
+    },
+    {
+      "path": "pdos-next/contracts/operations.json",
+      "sha256": "aeea46c5e0e2ab0956a33ae5bda8bb536964af01a82ab33e49eb2de6db0a4c07"
+    },
+    {
+      "path": "pdos-next/contracts/payloads.schema.json",
+      "sha256": "a25ca5ec7f2dc91cd5df0bb6ad6cad89d19833bc897e64e3ba4c02ea43a67372"
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0770_mcp_management.py",
+      "sha256": "e781edb1fae6e12a3cff877cf851d14b78644cdb7d0c47b85fa947e6cbbee9ac"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/management_api.py",
+      "sha256": "872dc84b95cd96d92da92b2be2e7e6c92fca4517b14565d3559085087da1589e"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/mcp.py",
+      "sha256": "22c44a069c4a08f3bd43d34bb8c1646c94dff0256818248e6f71461ba31bcb0c"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/mcp_binding.py",
+      "sha256": "dbdcf1dfde0d1e4ed9acebcea1841f820e89af599e3fa82b1ea68541cfac63aa"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/mcp_management.py",
+      "sha256": "5ec2ab0a61c009baa7449d7138aba314e407b0accd86ef5635651b299f3e2313"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/models.py",
+      "sha256": "67c869d4ea1e01349f923492a8901457fdbfe40eaa20df21f92ecef04fb78234"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/policy.py",
+      "sha256": "15237b8c5083b47145bbc57f2a089e1921471bc357f2f2e153d6e82e79021504"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/command_handlers.py",
+      "sha256": "33bb6408251f97f00ff592d4b18b49b0fcb9b2b5560455b79238fff2a812c963"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/contracts.py",
+      "sha256": "0884415c2eec0ed0354270d6c76e1af4ba9c614f94f42b5c2d76d73b834c972d"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "sha256": "30a8db54c1e0b9b57d72d44722de964265f73276f8bf93ce05e65ac2750fc782"
+    },
+    {
+      "path": "pdos-next/server/pyproject.toml",
+      "sha256": "4f31af312049c6d5308d8d3d211107a0a4823e8ec6878e339e2b1d8d2e7347d5"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_mcp.py",
+      "sha256": "cb2f84e801a84d404cf951d35b2fd62c7ae4ab8603cd4d8534e9c97d21eb67aa"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_mcp_management.py",
+      "sha256": "e9787659e54aab6e9710dcf1d23397e3c8d38f7fae57ca3e23a9f6347cbdaf42"
+    },
+    {
+      "path": "pdos-next/server/uv.lock",
+      "sha256": "c9af0520210383c2242d636518962aa6232188c8cdf3a56b4ff23ecb75289fd4"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.test.ts",
+      "sha256": "c537f564d8aa40ad3fab9e0a891dacbf6ea4f78fe7bec83fca8252f2ffcdc27b"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "sha256": "e71277b883fa4f1b191be2a99cd1dcbed07b3fd86a2fb131750b167d2953296b"
+    },
+    {
+      "path": "pdos-next/web/src/components/model_configuration/mcp-management.tsx",
+      "sha256": "935cf144a6a7d69fd6a675195b1f78483e6d95e86322db98c7cfbee8eed9685a"
+    },
+    {
+      "path": "pdos-next/web/src/components/workspace.tsx",
+      "sha256": "e0ee655fc933f73bcca955fea57a99b429938d23a032ad5d2055e7aa4f21149f"
+    },
+    {
+      "path": "pdos-next/web/src/lib/mcp-management.test.ts",
+      "sha256": "02e7c1e621573c732f7c82ab420ae734ca613fb70d668084d6264a314049ba01"
+    },
+    {
+      "path": "pdos-next/web/src/lib/mcp-management.ts",
+      "sha256": "caeaa0b5cd66b3ebcb5721eb07e6bd78b5a0c8685760830a45cfe85f2cecc7ed"
+    }
+  ]
+}

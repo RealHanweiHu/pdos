@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pdos_next.errors import DomainError
 from pdos_next.service import digest
 
+from .mcp_binding import connector_binding, validate_arguments
 from .policy import egress, mcp_admission
 
 
@@ -41,6 +42,7 @@ class McpService:
                 automation_rule_id=automation_rule_id,
                 external_write=explicit_external_write,
             )
+            validate_arguments(spec, arguments)
             decision = egress(session, scope, connector.key, text=str(arguments))
             # Captured only for the bounded network call, never sent to model/event/result.
             endpoint, secret_ref, revision = (
@@ -48,7 +50,9 @@ class McpService:
                 connector.secret_ref,
                 connector.revision,
             )
-            grant_ids = [str(g.id) for g in grants]
+            binding = connector_binding(connector, tool)
+            grant_ids = sorted(str(g.id) for g in grants)
+            grant_versions = {str(g.id): g.revision for g in grants}
             connector_key = connector.key
         call_id, prior = self.store.claim(
             scope,
@@ -56,9 +60,10 @@ class McpService:
             f"mcp.{tool}",
             {
                 "connector_id": str(connector_id),
-                "revision": revision,
+                "connector_binding": binding,
                 "arguments": arguments,
                 "grant_ids": grant_ids,
+                "grant_versions": grant_versions,
                 "egress_agreement": decision.agreement_id,
             },
         )
@@ -80,13 +85,9 @@ class McpService:
                     automation_rule_id=automation_rule_id,
                     external_write=explicit_external_write,
                 )
-                if (latest.revision, latest.endpoint, latest.secret_ref) != (
-                    revision,
-                    endpoint,
-                    secret_ref,
-                ):
+                if connector_binding(latest, tool) != binding:
                     raise DomainError("VERSION_CONFLICT", "连接器配置已变化。")
-                if set(grant_ids) != {str(g.id) for g in current_grants}:
+                if grant_versions != {str(g.id): g.revision for g in current_grants}:
                     raise DomainError("FORBIDDEN_SCOPE", "连接器授权已变化。")
                 egress(session, scope, connector_key, text=str(arguments))
             sent = True
@@ -95,11 +96,13 @@ class McpService:
             rows = self.ports.extract(scope.child("mcp"), raw, spec)
             result = {
                 "connector_id": str(connector_id),
+                "connector_revision": revision,
                 "tool": tool,
                 "rows": rows,
                 "raw_digest": digest(raw),
                 "grant_ids": grant_ids,
                 "call_id": str(call_id),
+                "grant_versions": grant_versions,
             }
             self.store.settle(scope, call_id, result=result)
             return result

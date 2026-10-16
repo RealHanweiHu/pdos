@@ -5,6 +5,7 @@ import pytest
 from sqlalchemy.orm import Session
 
 from pdos_next.agent_kernel.mcp import McpPorts, McpService
+from pdos_next.agent_kernel.mcp_binding import connector_binding
 from pdos_next.agent_kernel.models import McpConnector, McpToolGrant
 from pdos_next.errors import DomainError
 from pdos_next.models import now
@@ -22,16 +23,23 @@ def connector(setup, *, write=False, authorized=False):
                 endpoint="https://synthetic-mcp.test/rpc",
                 secret_ref="private-vault-reference",
                 admitted_by=setup.human,
-                tools={"lookup": {"kind": "write" if write else "read"}},
+                tools={
+                    "lookup": {
+                        "kind": "write" if write else "read",
+                        "input_schema": {"type": "object"},
+                    }
+                },
                 active=True,
                 revision=1,
             )
         )
         s.flush()
+        admitted = s.get(McpConnector, identity)
         s.add(
             McpToolGrant(
                 tenant_id=setup.tenant,
                 connector_id=identity,
+                connector_binding_digest=connector_binding(admitted, "lookup"),
                 tool="lookup",
                 skill_key="proposal_drafting",
                 explicit_external_write=authorized,

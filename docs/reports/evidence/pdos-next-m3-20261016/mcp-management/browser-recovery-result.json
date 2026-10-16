@@ -1,0 +1,26 @@
+{
+  "grant_business_posts": 1,
+  "total_business_posts": 4,
+  "successful_response_replaced_with_503": true,
+  "recovered_receipt": "6472abcf-8855-4005-a1c5-1f9887832825",
+  "observed_browser_receipt_matches_actual": true,
+  "readonly_recovery_http_status": 200,
+  "no_business_post_between_success_and_recovery": true,
+  "initial_server_success_before_injected_response_loss": 200,
+  "desktop": {
+    "width": 1280,
+    "height": 720,
+    "theme": "light"
+  },
+  "mobile": {
+    "width": 320,
+    "height": 900,
+    "theme": "dark"
+  },
+  "screenshots": [
+    "desktop-pending.png",
+    "desktop-light-final.png",
+    "mobile-dark-final.png",
+    "mobile-dark-history.png"
+  ]
+}

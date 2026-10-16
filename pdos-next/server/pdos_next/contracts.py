@@ -121,7 +121,11 @@ from pdos_next.agent_kernel.skill_management import EnableSkill  # noqa: E402
 
 PAYLOADS["ai.skill.enable"] = EnableSkill
 
+from pdos_next.agent_kernel.mcp_management import AllowConnector, GrantTool  # noqa: E402
 from pdos_next.agent_kernel.skill_qualification import QualifySkill, RecordReviews  # noqa: E402
+
+PAYLOADS["mcp.connector.allow"] = AllowConnector
+PAYLOADS["mcp.tool.grant"] = GrantTool
 
 PAYLOADS["ai.skill.qualify"] = QualifySkill
 PAYLOADS["ai.skill.review.record"] = RecordReviews

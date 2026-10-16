@@ -77,15 +77,25 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const modelConfiguration = pathname === "v1/model-configuration";
   const providerAgreement = /^v1\/provider-agreements(?:\/recover)?$/.test(pathname);
   const skillQualification = /^v1\/agent-skill-qualification(?:\/recover)?$/.test(pathname);
+  const mcpManagement = /^v1\/agent-mcp(?:\/(?:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/history)?|recover))?$/i.test(pathname);
   const agentSkill = /^v1\/agent-skills(?:\/recover)?$/.test(pathname);
   const agentBudget = /^v1\/agent-budgets(?:\/recover)?$/.test(pathname);
   const qualityChange = qualityChangePaths.test(pathname);
   const manufacturingPreparation = manufacturingPreparationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
-  if (skillQualification) {
+  if (mcpManagement) {
+    const recovering = pathname.endsWith("/recover"), method = recovering ? "POST" : "GET";
+    if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "请使用 MCP 登记读取或原请求核对入口。" }, { status: 405, headers: { Allow: method } });
+    const detail = pathname !== "v1/agent-mcp" && !recovering && !pathname.endsWith("/history");
+    for (const [key, value] of request.nextUrl.searchParams) {
+      const valid = !recovering && (key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 100 : detail ? key === "grant_cursor" ? uuid.test(value) : key === "tool_cursor" && value.length > 0 && value.length <= 160 : key === "cursor" && uuid.test(value));
+      if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "MCP 只按当前租户、明确连接器和分页条件读取。" }, { status: 422 });
+      query.set(key, value);
+    }
+  } else if (skillQualification) {
     const recovering = pathname.endsWith("/recover"), method = recovering ? "POST" : "GET";
     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "请使用审阅读取或原请求核对入口。" }, { status: 405, headers: { Allow: method } });
     for (const [key, value] of request.nextUrl.searchParams) {
@@ -321,7 +331,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     if (disposition) headers.set("Content-Disposition", disposition);
     return new Response(await response.arrayBuffer(), { status: response.status, headers });
   } catch {
-    if (request.method === "GET" || resourceInspect || standardMatch || (providerAgreement || agentSkill || skillQualification || agentBudget) && pathname.endsWith("/recover")) return Response.json({ code: "SOURCE_UNAVAILABLE", detail: { reason: "TRANSPORT_UNAVAILABLE" }, message: "暂未读取到当前事实，请刷新核对。本次读取没有发起操作。" }, { status: 503 });
+    if (request.method === "GET" || resourceInspect || standardMatch || (providerAgreement || mcpManagement || agentSkill || skillQualification || agentBudget) && pathname.endsWith("/recover")) return Response.json({ code: "SOURCE_UNAVAILABLE", detail: { reason: "TRANSPORT_UNAVAILABLE" }, message: "暂未读取到当前事实，请刷新核对。本次读取没有发起操作。" }, { status: 503 });
     return Response.json({ code: "EXTERNAL_OUTCOME_UNKNOWN", detail: { reason: "TRANSPORT_OUTCOME_UNKNOWN" }, message: "暂未取得服务回执。请重试原操作以核对结果。" }, { status: 503 });
   }
 }

@@ -14413,6 +14413,246 @@
       ],
       "title": "EnableSkill",
       "type": "object"
+    },
+    "mcp.connector.allow": {
+      "$defs": {
+        "ToolRegistration": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.:/-]{0,159}$",
+              "title": "Name",
+              "type": "string"
+            },
+            "description": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Description",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "read",
+                "write"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "input_schema": {
+              "additionalProperties": true,
+              "title": "Input Schema",
+              "type": "object"
+            },
+            "output_schema": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Output Schema"
+            }
+          },
+          "required": [
+            "name",
+            "description",
+            "kind",
+            "input_schema"
+          ],
+          "title": "ToolRegistration",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.@/-]{0,159}$",
+          "title": "Key",
+          "type": "string"
+        },
+        "expected_revision": {
+          "minimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "endpoint": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint"
+        },
+        "secret_ref": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Secret Ref"
+        },
+        "tools": {
+          "items": {
+            "$ref": "#/$defs/ToolRegistration"
+          },
+          "maxItems": 50,
+          "title": "Tools",
+          "type": "array"
+        },
+        "remove_tools": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 50,
+          "title": "Remove Tools",
+          "type": "array"
+        },
+        "active": {
+          "title": "Active",
+          "type": "boolean"
+        },
+        "decision": {
+          "const": "批准",
+          "title": "Decision",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "key",
+        "expected_revision",
+        "active",
+        "decision",
+        "reason"
+      ],
+      "title": "AllowConnector",
+      "type": "object"
+    },
+    "mcp.tool.grant": {
+      "additionalProperties": false,
+      "properties": {
+        "connector_id": {
+          "format": "uuid",
+          "title": "Connector Id",
+          "type": "string"
+        },
+        "grant_id": {
+          "format": "uuid",
+          "title": "Grant Id",
+          "type": "string"
+        },
+        "expected_revision": {
+          "minimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "connector_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Connector Digest"
+        },
+        "tool": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Tool",
+          "type": "string"
+        },
+        "skill_key": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Skill Key",
+          "type": "string"
+        },
+        "active": {
+          "title": "Active",
+          "type": "boolean"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires At"
+        },
+        "allow_external_write": {
+          "default": false,
+          "title": "Allow External Write",
+          "type": "boolean"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "connector_id",
+        "grant_id",
+        "expected_revision",
+        "tool",
+        "skill_key",
+        "active"
+      ],
+      "title": "GrantTool",
+      "type": "object"
     }
   },
   "scope": "implemented local domain slices; real AI qualification and formal exits are separate"

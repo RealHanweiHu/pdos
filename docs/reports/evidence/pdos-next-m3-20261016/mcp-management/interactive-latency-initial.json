@@ -1,0 +1,178 @@
+{
+  "scope": "single synthetic tenant; authenticated execute HTTP, excluding preview and auth-engine SQL; no external MCP/model calls",
+  "samples_per_operation": 20,
+  "operations": {
+    "mcp.connector.allow": {
+      "p95_ms": 896.99,
+      "max_driver_sql": 25,
+      "samples": [
+        {
+          "duration_ms": 896.99,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 965.0,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 825.22,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 138.33,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 101.93,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 105.63,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 97.35,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 185.88,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 108.35,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 101.19,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 113.35,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 112.05,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 80.99,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 178.09,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 95.18,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 115.91,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 94.25,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 77.88,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 88.4,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 173.52,
+          "driver_sql": 25
+        }
+      ]
+    },
+    "mcp.tool.grant": {
+      "p95_ms": 169.21,
+      "max_driver_sql": 25,
+      "samples": [
+        {
+          "duration_ms": 82.63,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 149.15,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 86.31,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 140.31,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 106.02,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 157.45,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 83.94,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 154.2,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 101.82,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 169.21,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 85.22,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 150.2,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 93.81,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 177.69,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 151.25,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 128.58,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 82.62,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 143.25,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 90.15,
+          "driver_sql": 25
+        },
+        {
+          "duration_ms": 126.61,
+          "driver_sql": 25
+        }
+      ]
+    }
+  }
+}
