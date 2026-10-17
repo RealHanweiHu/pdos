@@ -1,0 +1,63 @@
+{
+  "distinct_business_scenarios": 1,
+  "attempts": [
+    {
+      "name": "actual-continuation-01",
+      "outcome": "failed",
+      "cause": "shared root-cause save compared legacy product audience; fixed to actual category audience"
+    },
+    {
+      "name": "actual-continuation-02",
+      "outcome": "failed",
+      "cause": "continuation helper referred to nonexistent atom.receipt_id; fixed by real Receipt.subject_id -> atom.change_version_id, readonly preflight passed"
+    },
+    {
+      "name": "actual-continuation-03",
+      "outcome": "failed",
+      "cause": "completion input SOURCE_STALE; actual atom metadata proves artifact projection was compared with full source_basis wrapper"
+    },
+    {
+      "name": "actual-continuation-04-diagnostic",
+      "outcome": "diagnostic hook setup failed before test body",
+      "cause": "observer used _require for controlled owner; observer corrected and no-connect selfcheck passed"
+    },
+    {
+      "name": "actual-continuation-05-diagnostic",
+      "outcome": "interrupted",
+      "cause": "actual stored atom shape and 53 pure checks established layer mismatch; stopped exact own pytest child; no other process signalled"
+    },
+    {
+      "name": "actual-continuation-06",
+      "outcome": "failed",
+      "cause": "action-intent seal used non-JSON UUID/SelectionProof; local normalization added with seal/refresh tamper regressions",
+      "snapshot": "/private/tmp/pdos-s3-continuation-asyjqpan",
+      "pytest_exit": 1,
+      "source_changed": []
+    },
+    {
+      "name": "actual-continuation-07",
+      "outcome": "failed",
+      "cause": "formal completion returned change-owner native domain references as quality original-line sources; all twelve domain references belong to the actual implementation version, not to saved Issue original sources; retain the full owner proof and project only artifact originals for quality checks",
+      "snapshot": "/private/tmp/pdos-s3-continuation-6ftpnxfh",
+      "pytest_exit": 1,
+      "source_changed": []
+    },
+    {
+      "name": "actual-continuation-08",
+      "outcome": "failed",
+      "cause": "helper incorrectly used T1 preview for the registered qualified T0 verification.request.create; fixed to existing S2 direct command path; actual root/approvals/configurations/implementations/completion/new Build start/configuration/two samples already saved",
+      "snapshot": "/private/tmp/pdos-s3-continuation-xsu9vjxn",
+      "pytest_exit": 1,
+      "source_changed": []
+    },
+    {
+      "name": "actual-continuation-09",
+      "outcome": "passed",
+      "source_changed": [],
+      "distinct_scenarios": 1
+    }
+  ],
+  "current": "actual-continuation-09",
+  "pure_final": "83 passed",
+  "performance_acceptance": "deferred"
+}

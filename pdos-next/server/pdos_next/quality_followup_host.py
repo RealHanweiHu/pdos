@@ -420,7 +420,7 @@ def append_issue(
     expected_audience = (
         f"private:{before_row.owner_id}"
         if before_row.visibility == "private"
-        else f"product:{product.id}"
+        else f"category:{before_row.category_id}"
     )
     if before.audience != (expected_audience,) or (
         before_row.visibility == "private" and before_row.owner_id != ctx.requester_id

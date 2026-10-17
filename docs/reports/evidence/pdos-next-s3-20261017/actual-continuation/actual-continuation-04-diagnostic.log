@@ -1,0 +1,68 @@
+F
+=================================== FAILURES ===================================
+_ test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0] _
+
+item = <Function test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]>
+
+    @pytest.hookimpl(hookwrapper=True)
+    def pytest_runtest_call(item):
+     if 'quality_work' not in item.funcargs:
+      yield
+      return
+     from sqlalchemy import event
+     from pdos_next import change_implementation_owner,change_graph_closure,change_publication_finalization,change_controlled_owner
+     from pdos_next.errors import DomainError
+     work=item.funcargs['quality_work'];records=[]
+     def save():
+      (BASE/'.local/s3-order-database-errors.json').write_text(json.dumps(records,indent=2)+'\n')
+     def observe(error):
+      original=error.original_exception;diagnostic=getattr(original,'diag',None)
+      records.append({'sqlstate':getattr(original,'sqlstate',None),**{key:getattr(diagnostic,key,None) for key in ('message_primary','constraint_name','table_name','context')}});save()
+     def located(original):
+      def forward(*args,**kwargs):
+       try:return original(*args,**kwargs)
+       except DomainError as error:
+        caller=inspect.currentframe().f_back
+        records.append({'guard_module':caller.f_globals.get('__name__'),'guard_function':caller.f_code.co_name,'guard_line':caller.f_lineno,'code':error.code,'reason':error.reason});save();raise
+      return forward
+>    originals=[(module,module._require) for module in (change_implementation_owner,change_graph_closure,change_publication_finalization,change_controlled_owner)]
+                        ^^^^^^^^^^^^^^^
+E    AttributeError: module 'pdos_next.change_controlled_owner' has no attribute '_require'. Did you mean: 'require'?
+
+../.local/s3_implementation_observer.py:28: AttributeError
+=============================== warnings summary ===============================
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-rk2giy_8/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-rk2giy_8/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-rk2giy_8/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-rk2giy_8/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-rk2giy_8/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-rk2giy_8/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-rk2giy_8/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 9 warnings in 75.90s (0:01:15)

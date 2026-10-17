@@ -1,0 +1,6 @@
+{
+  "same_business_candidate": "/private/tmp/pdos-s3-continuation-rk2giy_8",
+  "business_source_changed": false,
+  "instrumentation_only": "record failing controlled.require caller module/function/line; call original guard unchanged; no values/tokens recorded",
+  "observer_sha256": "6fa45083a13eb4e3c3e35f6cf0dd64c4c06ecf68baff55ba625bc7f9456100df"
+}

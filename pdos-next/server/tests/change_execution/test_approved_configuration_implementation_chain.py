@@ -194,12 +194,11 @@ def revisions(work, configuration_source, engineering=None):
                 ],
             }
             operation, family = "npi.process.revise", "process_revision"
-            next_engineering = stored.get(
-                EngineeringConfiguration, UUID(engineering["subject_id"])
-            )
+            next_engineering = stored.get(EngineeringConfiguration, UUID(engineering["subject_id"]))
             assert next_engineering.revision == engineering["subject_revision"]
             inherited_reads = [
-                *previous.required_source_read_set, *next_engineering.required_source_read_set
+                *previous.required_source_read_set,
+                *next_engineering.required_source_read_set,
             ]
         target = {
             **payload,
@@ -345,31 +344,41 @@ def record_one(work, change_id, item, action, output, configuration_source):
     return receipt, command, occurrence
 
 
-def test_real_coverage_independent_approvals_then_two_actual_configuration_implementations(
-    quality_work,
-):
-    work = quality_work
+def run_approved_configuration_implementations(work, *, after_issue=None, continuation=None):
+    """Keep the actual upstream owners alive for a separately scoped continuation."""
     helper.declare_people(work)
     private = post(
         work.quality,
-        cmd(work.quality, "evidence.artifact.register", {
-            "title": "Synthetic private receipt boundary",
-            "content": "Synthetic private input; not shared with the independent approver",
-            "source_label": "Explicit synthetic access-boundary check",
-            "visibility": "private",
-        }),
+        cmd(
+            work.quality,
+            "evidence.artifact.register",
+            {
+                "title": "Synthetic private receipt boundary",
+                "content": "Synthetic private input; not shared with the independent approver",
+                "source_label": "Explicit synthetic access-boundary check",
+                "visibility": "private",
+            },
+        ),
     )
     assert private.status_code == 200, private.text
     private_receipt = UUID(private.json()["id"])
     for caller, visible in ((work.quality, True), (work.engineer, False)):
         with helper.session(work, caller) as stored:
             assert (stored.get(Receipt, private_receipt) is not None) is visible
-            assert stored.scalar(
-                text("SELECT public.change_receipt_key_bound(:tenant,:product,:receipt)"),
-                {"tenant": work.setup.tenant, "product": work.setup.product,
-                 "receipt": private_receipt},
-            ) is visible
+            assert (
+                stored.scalar(
+                    text("SELECT public.change_receipt_key_bound(:tenant,:product,:receipt)"),
+                    {
+                        "tenant": work.setup.tenant,
+                        "product": work.setup.product,
+                        "receipt": private_receipt,
+                    },
+                )
+                is visible
+            )
     basis = helper.issue_and_actions(work)
+    if after_issue is not None:
+        basis = after_issue(work, basis)
     created, create_input = change.command(
         work, "change.request.create", {**change.create_payload(work), "visibility": "category"}
     )
@@ -614,5 +623,22 @@ def test_real_coverage_independent_approvals_then_two_actual_configuration_imple
         assert helper.counts(work) == after
         assert quality.issue_current(work, work.issue_id)["id"] == work.issue_view["id"]
         assert digest(final["request_snapshot"]["assessments"][-1]) == digest(assessment)
+        if continuation is not None:
+            return continuation(
+                work,
+                basis,
+                (
+                    (engineering_record, engineering_occurrence),
+                    (manufacturing_record, manufacturing_occurrence),
+                ),
+                engineering,
+                manufacturing,
+            )
     finally:
         trust.disable(work.setup.engine, scope=scope)
+
+
+def test_real_coverage_independent_approvals_then_two_actual_configuration_implementations(
+    quality_work,
+):
+    run_approved_configuration_implementations(quality_work)

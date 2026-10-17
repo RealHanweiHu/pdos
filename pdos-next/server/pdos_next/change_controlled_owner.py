@@ -11,7 +11,7 @@ from sqlalchemy import select
 
 from pdos_next import change_controlled_store as models
 from pdos_next import change_order_store as outputs
-from pdos_next.change_implementation_owner import _atom_proof, common_group
+from pdos_next.change_implementation_owner import _atom_proof, _json, common_group
 from pdos_next.change_order_service import _one, current_fixed, snapshot
 from pdos_next.clock import deadline_current, earliest_deadline
 from pdos_next.clock import now as server_now
@@ -811,6 +811,10 @@ class ActionIntentRead:
     selection: outputs.SelectionProof
 
 
+def _intent_digest(value):
+    return digest(_json({**vars(value), "selection": value.selection.model_dump(mode="json")}))
+
+
 class ApprovedActionIntentOwner:
     """Only the actual approved order + persistent T2 selection can bind an action."""
 
@@ -873,7 +877,7 @@ class ApprovedActionIntentOwner:
             common_digest(vars(ctx)),
             runtime,
             (change_id, order_id, item_id, action_id),
-            digest(handle.__dict__),
+            _intent_digest(handle),
         )
         return handle
 
@@ -886,7 +890,7 @@ class ApprovedActionIntentOwner:
         )
         _same_uow(s, entry[1], ctx, entry[2])
         require(
-            entry[3] == old._runtime_stamp(s) and entry[5] == digest(previous.__dict__),
+            entry[3] == old._runtime_stamp(s) and entry[5] == _intent_digest(previous),
             "SOURCE_STALE",
         )
         current = self.read(
@@ -898,7 +902,7 @@ class ApprovedActionIntentOwner:
             item_id=entry[4][2],
             action_id=entry[4][3],
         )
-        require(digest(current.__dict__) == entry[5], "SOURCE_STALE")
+        require(_intent_digest(current) == entry[5], "SOURCE_STALE")
         return current
 
 
@@ -976,6 +980,11 @@ def approved_order(s, ctx, pid, request, order):
         require(group["receipt"]["subject_type"] == "change_request", "INTEGRITY_MISMATCH")
         _atom_proof(s, ctx, pid, atom, group)
         deadlines.append(original_authority(s, ctx, pid, atom))
+        # Formal order atoms retain the complete review basis. _source_guard
+        # returns its artifact projection; the other owner/closure proofs remain
+        # separately bound by the immutable order and actual consumed approvals.
+        artifacts = atom.source_basis.get("artifacts") if type(atom.source_basis) is dict else None
+        require(type(artifacts) is dict and bool(artifacts), "SOURCE_STALE")
         require(
             same(
                 _source_guard(
@@ -987,7 +996,7 @@ def approved_order(s, ctx, pid, request, order):
                     atom.required_source_read_set,
                     tuple(SourceRef.model_validate(x) for x in atom.sources),
                 ),
-                atom.source_basis,
+                artifacts,
             ),
             "SOURCE_STALE",
         )

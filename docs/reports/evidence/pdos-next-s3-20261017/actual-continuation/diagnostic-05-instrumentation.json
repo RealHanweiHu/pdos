@@ -1,0 +1,7 @@
+{
+  "same_business_candidate": "/private/tmp/pdos-s3-continuation-rk2giy_8",
+  "business_source_changed": false,
+  "instrumentation_only": "record controlled guard caller and hashes of differing fields; original guard always called; no source content or token values",
+  "observer_sha256": "d6bccacdf3af4d84f3908ba38527f916ceff3b5fa317d389bd59dbae50de5a80",
+  "prior_diagnostic_04": "hook setup AttributeError before test body; not a business result"
+}

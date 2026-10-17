@@ -307,7 +307,11 @@ class FormalChangeCompletionOwner:
             classification="formal_change",
             nature=basis.nature,
             reason_codes=(),
-            sources=[v.model_dump(mode="json") for v in sources],
+            # Quality sources are exact original lines. Native change-owner
+            # references stay bound by the full implementation material in
+            # owner_proofs; all sources above still pass the unchanged owner
+            # refreshes and source guards before this projection.
+            sources=[v.model_dump(mode="json") for v in sources if v.kind == "artifact"],
             owner_proofs=(proof,),
             required_source_read_set=reads,
             valid_until=deadline,

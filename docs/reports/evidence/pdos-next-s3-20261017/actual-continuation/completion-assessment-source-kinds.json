@@ -1,0 +1,122 @@
+{
+  "actual_attempt": "actual-continuation-07",
+  "probe": "readonly saved metadata; not a fresh source authorization",
+  "issue_revision": 5,
+  "issue_source_kinds": {
+    "artifact": 16
+  },
+  "implementations": [
+    {
+      "source_kinds": {
+        "artifact": 22,
+        "domain": 12
+      },
+      "non_artifact_membership": [
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        }
+      ]
+    },
+    {
+      "source_kinds": {
+        "artifact": 22,
+        "domain": 12
+      },
+      "non_artifact_membership": [
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        },
+        {
+          "kind": "domain",
+          "in_saved_issue_sources": false
+        }
+      ]
+    }
+  ]
+}

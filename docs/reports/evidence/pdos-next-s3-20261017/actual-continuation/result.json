@@ -1,0 +1,42 @@
+{
+  "checkpoint_complete": true,
+  "stage_acceptance": {
+    "S1": false,
+    "S2": false,
+    "S3": false
+  },
+  "performance_acceptance": "deferred",
+  "distinct_final_actual_scenarios": 1,
+  "backend_affected_pure_checks": 83,
+  "same_candidate_pure_and_actual": true,
+  "owned_executable_sources": 10,
+  "documentation_files": 1,
+  "production_fixes": [
+    "shared issue category audience",
+    "approved atom artifact source_basis layer",
+    "local action-intent handle JSON normalization; global business digest unchanged; tampered handle and later owner proof still rejected",
+    "quality original-line source projection while native domain references stay bound in the full actual implementation proof"
+  ],
+  "actual_synthetic_results": {
+    "named_root_cause": 1,
+    "professional_change_approvals": 2,
+    "actual_successor_configurations": 2,
+    "implementation_facts": 2,
+    "completed_actions": 2,
+    "completion_batches": 1,
+    "new_builds": 1,
+    "new_actual_samples": 2,
+    "new_requests": 1,
+    "new_runs": 1,
+    "code_computed_result": "pass from explicitly declared synthetic raw values",
+    "followup_links": 2,
+    "original_failed_run_unchanged": true,
+    "issue_status": "awaiting_verification",
+    "effectiveness_or_closure": false
+  },
+  "new_frontend_or_migration": false,
+  "new_browser_or_web_build": false,
+  "real_model_or_KMS_calls": 0,
+  "push_deploy_or_production": false,
+  "actual_candidate": "/private/tmp/pdos-s3-continuation-oy8f4dze"
+}

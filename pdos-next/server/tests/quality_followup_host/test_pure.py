@@ -298,8 +298,10 @@ def test_cross_actor_or_ai_identity_cannot_assert_human_marker(work):
     code("NAMED_DECISION_REQUIRED", lambda: require(work))
 
 
-def prepare_append(work):
+def prepare_append(work, *, visibility="private", audience=None):
     before = work.issue
+    if visibility != "private":
+        before = replace(before, audience=audience or (f"category:{work.ctx.category_id}",))
     raw = before.model_dump(mode="json")
     sources = union_sources(issue_sources(before), (work.ref,))
     reads = merge_reads(
@@ -314,6 +316,7 @@ def prepare_append(work):
     row = QualityIssueVersion(
         id=uuid4(),
         tenant_id=work.ctx.tenant_id,
+        category_id=work.ctx.category_id,
         product_id=work.command.product_id,
         project_id=before.scope.project_id,
         issue_id=before.id,
@@ -321,7 +324,7 @@ def prepare_append(work):
         status=before.status,
         owner_id=work.ctx.requester_id,
         writer_id=work.ctx.requester_id,
-        visibility="private",
+        visibility=visibility,
         purpose="investigation",
         issue_snapshot=raw,
         snapshot_sha256=digest(raw),
@@ -409,6 +412,23 @@ def test_append_preserves_fixed_old_issue_and_continuously_updates_current_once(
     assert work.s.pointer.issue_version_id == new.id and work.s.pointer.epoch == 5
     assert work.s.added == [new] and work.s.flushes == 2
     assert prepared.row.issue_snapshot == original
+
+
+def test_shared_append_preserves_actual_category_audience(work):
+    prepared = prepare_append(work, visibility="category")
+    new = append(work, prepared)
+    assert new.visibility == "category"
+    assert new.issue_snapshot["audience"] == [f"category:{work.ctx.category_id}"]
+    assert prepared.after.audience == (f"category:{work.ctx.category_id}",)
+    assert work.s.pointer.issue_version_id == new.id
+
+
+@pytest.mark.parametrize("audience", ["product", "other_category"])
+def test_shared_append_rejects_stale_product_or_wrong_category_audience(work, audience):
+    fixed = f"product:{work.command.product_id}" if audience == "product" else f"category:{uuid4()}"
+    prepared = prepare_append(work, visibility="category", audience=(fixed,))
+    code("FORBIDDEN_SCOPE", lambda: append(work, prepared))
+    assert work.s.added == [] and work.s.flushes == 0
 
 
 @pytest.mark.parametrize("case", ["pointer", "scope", "intent", "preview", "reads", "proof"])
