@@ -76,6 +76,8 @@
 | [2026-09-30-project-workspace-usage-model.md](2026-09-30-project-workspace-usage-model.md) | 项目工作区使用模型（导航/入口重组） |
 | [2026-10-01-role-scenario-ui.md](2026-10-01-role-scenario-ui.md) | 岗位场景 UI 使用模型（登录即本人工作） |
 | [2026-10-01-product-manager-ai-native-ui-proposal.md](2026-10-01-product-manager-ai-native-ui-proposal.md) | 产品经理空间 AI-native 界面方案（首版已实施） |
+| [2026-10-13-pdos-v1.1-ui-mockup.html](2026-10-13-pdos-v1.1-ui-mockup.html) | v1.1 目标架构 UI 重设计稿（2026-10-13 起多轮，现为 v4.1）：主体为项目管理，品类开发与立项提案为产品经理专属的立项前阶段，经 G0 汇入项目；我的工作按动作类型分诊、项目列表三视图（列表/看板/时间轴）、NPI 阶段条与门禁、四时间时间轴、小Pai 多会话与运行回执；使用逻辑参照 Linear/Asana/Notion，视觉沿用基线 v0.7.1，演示数据。其界面决定的契约化见下一行 |
+| [2026-10-17-pdos-v1.1-ui-contract-addendum.md](2026-10-17-pdos-v1.1-ui-contract-addendum.md) | 界面决定三分法与契约补遗：A 类 24 条（v1.1 已写明）、B 类 19 条（已确认并入 v1.1 §05.3/§05.12，确认稿 P22）、C 类 6 条（已确认，确认稿 P15–P20）；另列仅演示素材不构成约束 |
 
 ### pdos-next 施工合同（wave 冻结版）
 
