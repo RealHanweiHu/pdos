@@ -406,11 +406,9 @@ def _payload_binding(binding, material, payload, at):
         "Actual original payload must bind its exact Run predecessor.",
     )
     if isinstance(f, LaunchFact):
-        clock = (
-            material.request_after.snapshot.timeline.promised_start
-            if f.operation == "verification.schedule.promise"
-            else run.actual_start
-        )
+        clock = f.kernel_event.at
+        before = material.request_before.snapshot.timeline
+        after = material.request_after.snapshot.timeline
         _require(
             payload.expected_plan_sha256 == material.run_after.plan_sha256,
             "PAIR_ORIGINAL_SEMANTIC_MISMATCH",
@@ -425,11 +423,17 @@ def _payload_binding(binding, material, payload, at):
             "PAIR_EVENT_MISMATCH",
             "Saved action clock must match exact original event and named actor.",
         )
-        if f.operation == "test.run.start":
+        if f.operation == "verification.schedule.promise":
             _require(
-                material.request_after.snapshot.timeline.actual_start == clock,
+                after.promised_start == (before.promised_start or clock),
                 "PAIR_EVENT_MISMATCH",
-                "Formal and Run must bind the same Actual start fact.",
+                "Formal preserves its first promise; this Run binds its own actual promise fact.",
+            )
+        else:
+            _require(
+                run.actual_start == clock and after.actual_start == (before.actual_start or clock),
+                "PAIR_EVENT_MISMATCH",
+                "Run binds its own Start while Formal preserves its first actual Start.",
             )
             _require(
                 clock.occurred_at <= clock.received_at,
@@ -492,15 +496,22 @@ def _payload_binding(binding, material, payload, at):
                 "Partial return must preserve exact new coverage and responsibility.",
             )
         _require(
-            material.request_after.snapshot.timeline.preliminary_result == run.preliminary_result,
+            material.request_after.snapshot.timeline.preliminary_result
+            == (
+                material.request_before.snapshot.timeline.preliminary_result
+                or (None if payload.final else clock)
+            ),
             "PAIR_EVENT_MISMATCH",
-            "This one-Run Formal must preserve the same first preliminary clock.",
+            "Formal preserves its first preliminary return across all Runs.",
         )
         _require(
             material.request_after.snapshot.timeline.final_result
-            == (run.final_result if material.request_after.snapshot.status == "reported" else None),
+            == (
+                material.request_before.snapshot.timeline.final_result
+                or (clock if material.request_after.snapshot.status == "reported" else None)
+            ),
             "PAIR_EVENT_MISMATCH",
-            "Formal final clock requires this actual complete final return.",
+            "Only a completed aggregate uses this actual final return as its first final clock.",
         )
     else:
         conclusion = (
@@ -656,6 +667,97 @@ def _run_shape(row):
         )
 
 
+def _request_extension(origin, current):
+    """Check monotonic saved structure; actual commands remain the live owner's proof.
+
+    This does not manufacture handoff authority or recompute sibling Run completion.
+    The immutable owner rows and live gate supply those facts separately.
+    """
+    old, new = origin.snapshot, current.snapshot
+    variable = {
+        "revision",
+        "status",
+        "timeline",
+        "items",
+        "documents",
+        "tentative_start",
+        "acceptances",
+        "returns",
+    }
+    _require(
+        (origin.owner_id, origin.visibility) == (current.owner_id, current.visibility)
+        and old.model_dump(mode="json", exclude=variable)
+        == new.model_dump(mode="json", exclude=variable)
+        and new.acceptances[: len(old.acceptances)] == old.acceptances
+        and new.returns[: len(old.returns)] == old.returns
+        and origin.created_at <= current.created_at
+        and (
+            origin.ref.revision < current.ref.revision
+            or (origin.ref == current.ref and origin == current)
+        ),
+        "PAIR_FIXED_SCOPE_CHANGED",
+        "Formal preserves its fixed offered scope, audience and complete handoff history.",
+    )
+    accepted_items = {c.item_id for c in accepted_coverage(old)}
+    _require(
+        len({i.id for i in new.items}) == len(new.items)
+        and {i.id for i in old.items} == {i.id for i in new.items}
+        and {i.id: i for i in old.items if i.id in accepted_items}
+        == {i.id: i for i in new.items if i.id in accepted_items}
+        and {d.id: d for d in old.documents if set(d.item_ids) & accepted_items}
+        == {d.id: d for d in new.documents if set(d.item_ids) & accepted_items},
+        "PAIR_FIXED_SCOPE_CHANGED",
+        "Already accepted items and applicable documents cannot be rewritten.",
+    )
+    offered, accepted = pairs(old.offered_coverage), set()
+    for acceptance in new.acceptances:
+        scope = pairs(acceptance.coverage)
+        _require(
+            len(scope) == len(acceptance.coverage)
+            and scope <= offered
+            and not scope & accepted
+            and acceptance.actor_id == acceptance.at.actor_id
+            and acceptance.at.occurred_at <= acceptance.at.received_at <= current.created_at,
+            "PAIR_FIXED_SCOPE_CHANGED",
+            "Acceptances append distinct offered pairs with their exact named facts.",
+        )
+        accepted.update(scope)
+    for returned in new.returns[len(old.returns) :]:
+        # Equal server timestamps do not establish the order of distinct saved
+        # handoffs. The live owner proves that order; origin acceptance is fixed.
+        already_accepted = pairs(accepted_coverage(old)) | {
+            pair
+            for acceptance in new.acceptances
+            if acceptance.at.received_at < returned.at.received_at
+            for pair in pairs(acceptance.coverage)
+        }
+        _require(
+            len(pairs(returned.coverage)) == len(returned.coverage)
+            and pairs(returned.coverage) <= offered
+            and not pairs(returned.coverage) & already_accepted
+            and returned.actor_id == returned.at.actor_id
+            and returned.at.occurred_at <= returned.at.received_at <= current.created_at,
+            "PAIR_FIXED_SCOPE_CHANGED",
+            "Returned history can append only then-unaccepted offered scope.",
+        )
+    for name in type(old.timeline).model_fields:
+        if name == "documents_complete":
+            # Method preparation may still update the unaccepted item/document scope.
+            continue
+        value = getattr(old.timeline, name)
+        _require(
+            value is None or value == getattr(new.timeline, name),
+            "PAIR_EVENT_MISMATCH",
+            "A recorded first Formal clock cannot be replaced by a later Run.",
+        )
+    states = ("draft", "offered", "accepted", "scheduled", "executing", "reported", "disposed")
+    _require(
+        states.index(old.status) <= states.index(new.status),
+        "PAIR_TRANSITION_MISMATCH",
+        "Current Formal cannot regress behind its Run's fixed origin.",
+    )
+
+
 def _request_transition(before, after, operation):
     changed = before.ref != after.ref
     expected_change = operation not in {"test.run.plan", "test.run.review"}
@@ -708,8 +810,11 @@ def _request_transition(before, after, operation):
         "Formal cannot rewrite accepted samples/items/configuration or other clocks.",
     )
     states = {
-        "verification.schedule.promise": ({"accepted"}, {"scheduled"}),
-        "test.run.start": ({"scheduled"}, {"executing"}),
+        "verification.schedule.promise": (
+            {"accepted", "scheduled", "executing"},
+            {"executing"} if before.snapshot.status == "executing" else {"scheduled"},
+        ),
+        "test.run.start": ({"scheduled", "executing"}, {"executing"}),
         "test.results.import": ({"executing"}, {"executing", "reported"}),
         "test.disposition.decide": ({"reported"}, {"disposed"}),
     }[operation]
@@ -887,16 +992,7 @@ def verify_paired_material(
         "Run.request_version_id denotes its actual origin row.",
     )
     for row in (m.request_before, m.request_after):
-        _require(
-            row.snapshot.model_dump(mode="json", exclude={"revision", "status", "timeline"})
-            == m.origin_request.snapshot.model_dump(
-                mode="json", exclude={"revision", "status", "timeline"}
-            )
-            and (row.owner_id, row.visibility)
-            == (m.origin_request.owner_id, m.origin_request.visibility),
-            "PAIR_FIXED_SCOPE_CHANGED",
-            "Origin and current Formal must preserve the same fixed accepted scope and audience.",
-        )
+        _request_extension(m.origin_request, row)
     selected = {c.item_id for c in m.run_after.snapshot.coverage}
     sample_ids = {c.sample_id for c in m.run_after.snapshot.coverage}
     _require(
@@ -904,11 +1000,12 @@ def verify_paired_material(
         == tuple(i for i in m.origin_request.snapshot.items if i.id in selected)
         and m.run_after.snapshot.samples
         == tuple(v for v in m.origin_request.snapshot.samples if v.id in sample_ids)
+        and bool(m.run_after.snapshot.coverage)
         and pairs(m.run_after.snapshot.coverage)
-        == pairs(accepted_coverage(m.origin_request.snapshot))
+        <= pairs(accepted_coverage(m.origin_request.snapshot))
         and len(pairs(m.run_after.snapshot.coverage)) == len(m.run_after.snapshot.coverage),
         "PAIR_FIXED_SCOPE_CHANGED",
-        "One-Run version must preserve the complete accepted sample/item/configuration origin.",
+        "Run preserves exact selected samples/items/configurations within accepted origin scope.",
     )
     if m.run_after.snapshot.status != "planned":
         execution = m.run_after.snapshot.execution
@@ -1143,12 +1240,12 @@ def verify_paired_material(
     ]
     reads = _merged_reads(groups)
     direct_material = _json(m)
-    if f.operation != "verification.schedule.promise":
-        # The transition above preserves this historical clock in the exact
-        # immutable Formal versions. Later actions do not consume its original
-        # again; their own event and all other direct sources remain required.
-        for name in ("request_before", "request_after"):
-            direct_material[name]["snapshot"]["timeline"]["promised_start"] = None
+    # Formal retains its original offer and first promise across later Runs.
+    # Those historical clocks are not consumed again; each current LaunchFact event
+    # remains in this material and must carry its own exact original source read.
+    for name in ("origin_request", "request_before", "request_after"):
+        direct_material[name]["snapshot"]["timeline"]["offered"] = None
+        direct_material[name]["snapshot"]["timeline"]["promised_start"] = None
     needed = _merged_reads([_artifact_refs(direct_material)])
     _require(
         set(needed) <= set(reads),

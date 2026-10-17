@@ -1,0 +1,134 @@
+F
+=================================== FAILURES ===================================
+_ test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity _
+
+multi_work = namespace(setup=<isolated synthetic test scope>, config={'source': '93555fe3-77ea-4374-88df-21028eccc719', 'project': ...ject at 0x1185d30e0>)], report_store=<pdos_next.object_storage.adapters.LocalPrivateObjectStore object at 0x11e9bf950>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11e18cbc0>
+
+    def test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity(
+        multi_work,
+        monkeypatch,
+    ):
+        base = multi_work
+        first = deepcopy(base.accepted_request["accepted_coverage"])
+        second = [value for value in base.accepted_request["offered_coverage"] if value not in first]
+        assert len(first) == len(second) == 1
+        assert len({sample["lot_id"] for sample in base.samples}) == 2
+        run_a = prepare_run(base, first, monkeypatch)
+        accepted(base.quality, launch_command(run_a, "test.run.plan"))
+        accepted(base.quality, launch_command(run_a, "verification.schedule.promise"))
+        launch.advance_clock(run_a, monkeypatch)
+        accepted(base.quality, launch_command(run_a, "test.run.start"))
+        run_a.report_rows = measurement_rows(run_a)
+    
+        with ExitStack() as cleanup:
+            # Existing fixture uploads/parses/captures raw 11.0000, imports its actual
+            # final failure and installs the real fixed-result bridge and policy port.
+            quality_fixture = quality.quality_work.__wrapped__(run_a)
+            work = next(quality_fixture)
+            cleanup.callback(quality_fixture.close)
+            failed_a = results.current_rows(run_a)
+            assert failed_a.run.result == "fail" and failed_a.request.status == "executing"
+            assert failed_a.request.request_snapshot["timeline"]["final_result"] is None
+            assert len(failed_a.run.coverage) == 1
+    
+            # This existing fixture creates one exact Issue, triages/contains it and
+            # drafts two investigation actions using real API commands and originals.
+            followup_fixture = followup.followup_work.__wrapped__(work)
+            work = next(followup_fixture)
+            cleanup.callback(followup_fixture.close)
+            first_issue = followup.fixed_issue(work)
+            assert first_issue.issue_snapshot["failures"][0]["run"]["id"] == str(run_a.binding.run_id)
+            assert first_issue.issue_snapshot["failures"][0]["measurement_id"] == str(
+                failed_a.run.measurements[0].id
+            )
+            assert first_issue.issue_snapshot["failures"][0]["sample"]["id"] == first[0]["sample_id"]
+            created_receipt, _ = quality.create_issue(work, title="Same A failure delivered again")
+            assert created_receipt["result"]["issue_id"] == str(work.issue_id)
+            with tenant_session(
+                work.setup.engine,
+                work.setup.tenant,
+                actor_id=work.quality.human,
+                category_id=work.setup.category,
+            ) as session:
+                assert session.scalar(select(func.count()).select_from(QualityFailureMap)) == 1
+    
+            # A's final output is paired while the whole Request is still executing.
+            followup_view(work, failed_a.request)
+            accepted(work.quality, followup.root_command(work))
+            accepted(work.quality, followup.complete_command(work, (0,)))
+            accepted(work.quality, followup.complete_command(work, (1,)))
+            completed = followup.fixed_issue(work)
+            assert completed.status == "awaiting_verification"
+            assert completed.issue_snapshot["root_cause"] is not None
+            assert all(action["completion"] for action in completed.issue_snapshot["capa"]["actions"])
+            assert completed.issue_snapshot["capa"]["effectiveness"] is None
+            assert completed.issue_snapshot["closure"] is None
+            resolve_runs(work, run_a)
+    
+            accepted(
+                work.quality,
+                handoff.handoff(work, operation="verification.handoff.accept", coverage=second),
+            )
+            run_b = prepare_run(work, second, monkeypatch)
+            accepted(work.quality, launch_command(run_b, "test.run.plan"))
+            accepted(work.quality, launch_command(run_b, "verification.schedule.promise"))
+            launch.advance_clock(run_b, monkeypatch)
+>           followup_view(work, results.current_rows(run_b).request)
+
+tests/verification_launch/test_multi_run_quality_chain.py:201: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = namespace(setup=<isolated synthetic test scope>, config={'source': '93555fe3-77ea-4374-88df-21028eccc719', 'project': ...itions='23 C, dry', resource_fact_id=UUID('c9af7305-903c-4585-b622-00e504e469c7'), expected_resource_fact_revision=1)))
+expected_formal = namespace(product_id=UUID('60193bc7-7983-4c2c-b1da-e0dce72d6f77'), project_id=UUID('d4afeb1b-1214-4073-bc21-6dc67a846d...13, 24, 53, 642673, tzinfo=zoneinfo.ZoneInfo(key='Etc/UTC')), category_id=UUID('21356c17-79f8-4402-90a6-3155a03febe7'))
+
+    def followup_view(work, expected_formal=None):
+        """The HTTP view resolves actual output owners, including paired Formal IO."""
+        before = counts(work)
+        response = work.quality.client.get(
+            f"/v1/categories/{work.setup.category}/products/{work.setup.product}/quality-followup",
+            headers=work.quality.headers,
+            params={"issue_id": str(work.issue_id)},
+        )
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"MISSING_REQUIRED_EVIDENCE","message":"All direct Artifact sources and exact versions must be in the complete read set.","detail":{"reason":"MISSING_REQUIRED_EVIDENCE"}}
+E       assert 409 == 200
+E        +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/verification_launch/test_multi_run_quality_chain.py:84: AssertionError
+=============================== warnings summary ===============================
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 9 warnings in 539.03s (0:08:59)

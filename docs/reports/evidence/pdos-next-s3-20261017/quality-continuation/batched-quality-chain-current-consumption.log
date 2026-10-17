@@ -1,0 +1,34 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/verification_launch/test_multi_run_quality_chain.py::test_batched_run_failure_issue_followup_and_paired_outputs_keep_exact_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 9 warnings in 326.06s (0:05:26)

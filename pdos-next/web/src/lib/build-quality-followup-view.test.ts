@@ -117,3 +117,30 @@ test("expiry echo checking never mutates the original prepared request or grants
   const waiting: FollowupPending = { stage: "execute", command: preview().command }, original = structuredClone(waiting), failure = expiryRecovery(waiting.command), echoed = structuredClone(failure);
   followupExpiredRepreview(waiting, failure, true); assert.deepEqual(waiting, original); assert.deepEqual(failure, echoed); assert.equal(followupExpiredRepreview({ ...waiting, command: { ...waiting.command, payload: command().payload } }, failure, true), null);
 });
+
+test("project followup recovery rejects generic and other-project drafts without changing the original unknown command", () => {
+  const pending = { stage: "execute", command: preview().command }, saved = { schema_version: 1, product_id: product.id, principal_id: principal, project_id: uuid(90), ...blankFollowupLocal(), selectedBuildId: uuid(31), selectedIssueId: issueId, work: { ...blankFollowupWork(), rootText: "A项目根因待核对" }, pending };
+  const restored = restoreFollowupLocal(saved, product.id, principal, uuid(90));
+  assert.equal(restored?.work.rootText, "A项目根因待核对"); assert.deepEqual(restored?.pending, pending);
+  assert.equal(restoreFollowupLocal(saved, product.id, principal, uuid(91)), null);
+  assert.equal(restoreFollowupLocal(saved, product.id, principal), null);
+  const generic = { ...saved } as Record<string, unknown>; delete generic.project_id;
+  assert.equal(restoreFollowupLocal(generic, product.id, principal, uuid(90)), null);
+  assert.deepEqual(restoreFollowupLocal(generic, product.id, principal)?.pending, pending);
+});
+test("project followup reads only the returned Build before Issue index and one selected deep read", async () => {
+  const calls: string[] = [], buildId = uuid(31), projectId = uuid(90), local = { ...blankFollowupLocal(), selectedBuildId: buildId, selectedIssueId: issueId };
+  const api: FollowupApi = async <T>(path: string): Promise<T> => { calls.push(path); return (path.includes("/builds?") ? { items: [{ id: uuid(32), revision: 1, name: "另一项目轮次" }] } : { sources: [] }) as T; };
+  const excluded = await readFollowupContext(api, product.id, local, () => true, projectId);
+  assert.equal(excluded?.data, null); assert.deepEqual(excluded?.issues, []);
+  assert.deepEqual(calls, [`v1/products/${product.id}/builds?project_id=${projectId}`, `v1/products/${product.id}/workspace`]); calls.length = 0;
+  const selected: FollowupApi = async <T>(path: string): Promise<T> => { calls.push(path); return (path.includes("/builds?") ? { items: [{ id: buildId, revision: 1, name: "本项目轮次" }] } : path.endsWith("workspace") ? { sources: [] } : path.includes("quality-execution?") ? { issues: [data().issue], current_by_issue: { [issueId]: { issue_version_id: issueVersion, revision: 2 } }, has_more: false } : data()) as T; };
+  assert.equal((await readFollowupContext(selected, product.id, local, () => true, projectId))?.data?.issue.issue_id, issueId);
+  assert.deepEqual(calls.slice(2), [`v1/products/${product.id}/quality-execution?build_id=${buildId}`, `v1/products/${product.id}/quality-followup?issue_id=${issueId}`]);
+});
+test("selected followup cannot bypass the returned Issue index or retain a late old-project read", async () => {
+  const local = { ...blankFollowupLocal(), selectedBuildId: uuid(31), selectedIssueId: issueId }, context = { builds: [{ id: uuid(31), revision: 1, name: "本项目轮次" }], issues: [], current_by_issue: {}, sources: [], data: data(), has_more: false }, calls: string[] = [];
+  const api: FollowupApi = async <T>(path: string): Promise<T> => { calls.push(path); return data() as T; };
+  assert.equal((await readSelectedFollowup(api, product.id, local, context, () => true))?.data, null); assert.deepEqual(calls, []);
+  assert.equal(await readSelectedFollowup(api, product.id, local, { ...context, issues: [data().issue] }, () => false), null); assert.deepEqual(calls, []);
+});

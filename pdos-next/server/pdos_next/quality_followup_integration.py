@@ -13,9 +13,11 @@ from pdos_next.domain.verification_front.models import (
     FormalVerificationRequest,
 )
 from pdos_next.domain.verification_launch.models import (
+    VerificationLaunchFact,
     VerificationRunCurrent,
     VerificationRunVersion,
 )
+from pdos_next.domain.verification_results.models import TestResultActionFact
 from pdos_next.errors import DomainError
 from pdos_next.models import Receipt
 from pdos_next.quality_followup_host import append_issue, require_consumed_proof
@@ -59,6 +61,13 @@ def current_formal_options_query(ctx, product_id, basis):
         )
         .exists()
     )
+    # A Formal is an aggregate. Several exact current Run actions may legitimately
+    # retain that same Formal version; it then cannot identify one paired output.
+    # Enumerate the individual Runs instead. Explicit ambiguous Formal reads still
+    # fail in the paired owner, and every enumerated option is verified there.
+    paired_count = _paired_current_fact_count(VerificationLaunchFact) + _paired_current_fact_count(
+        TestResultActionFact
+    )
     return (
         select(FormalVerificationRequest)
         .join(
@@ -75,9 +84,50 @@ def current_formal_options_query(ctx, product_id, basis):
             FormalVerificationRequest.tenant_id == ctx.tenant_id,
             FormalVerificationRequest.product_id == product_id,
             FormalVerificationRequest.project_id == basis.scope.project_id,
-            or_(direct, FormalVerificationRequest.operation.in_(PAIRED_FORMAL_OPERATIONS)),
+            or_(
+                direct,
+                and_(
+                    FormalVerificationRequest.operation.in_(PAIRED_FORMAL_OPERATIONS),
+                    paired_count == 1,
+                ),
+            ),
         )
         .order_by(FormalVerificationRequest.created_at.desc(), FormalVerificationRequest.id)
+    )
+
+
+def _paired_current_fact_count(model):
+    formal, current = FormalVerificationRequest, VerificationRunCurrent
+    version, revision = (
+        (model.run_version_id, model.run_revision)
+        if model is VerificationLaunchFact
+        else (model.next_run_version_id, model.next_run_revision)
+    )
+    return (
+        select(func.count())
+        .select_from(model)
+        .join(
+            current,
+            and_(
+                current.tenant_id == model.tenant_id,
+                current.product_id == model.product_id,
+                current.request_id == model.request_id,
+                current.run_id == model.run_id,
+                current.run_version_id == version,
+                current.run_revision == revision,
+            ),
+        )
+        .where(
+            model.tenant_id == formal.tenant_id,
+            model.product_id == formal.product_id,
+            model.project_id == formal.project_id,
+            model.build_id == formal.build_id,
+            model.request_id == formal.request_id,
+            model.next_request_version_id == formal.id,
+            model.next_request_revision == formal.revision,
+        )
+        .correlate(formal)
+        .scalar_subquery()
     )
 
 

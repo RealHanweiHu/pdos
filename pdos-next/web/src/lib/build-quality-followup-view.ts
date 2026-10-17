@@ -1,3 +1,4 @@
+import { projectBuildsPath } from "./project-build-scope";
 import { proofClockCurrent } from "./proof-clock";
 import { sourceLines, type DefinitionSource } from "./product-view";
 
@@ -128,8 +129,8 @@ function validCompletionPayload(row: unknown, principalId: string): boolean {
   try { followupZone(at.original_timezone); } catch { return false; }
   return row.evidence.some(ref => followupSourceKey(ref) === followupSourceKey(at.source as FollowupSource));
 }
-export function restoreFollowupLocal(value: unknown, productId: string, principalId: string): FollowupLocal | null {
-  if (!followupRecord(value) || value.schema_version !== 1 || value.product_id !== productId || value.principal_id !== principalId || typeof value.selectedIssueId !== "string" || (value.selectedIssueId && !followupUuid(value.selectedIssueId)) || typeof value.selectedVersionId !== "string" || (value.selectedVersionId && !followupUuid(value.selectedVersionId)) || !validWork(value.work) || !followupRecord(value.drafts) || !Object.values(value.drafts).every(validWork)) return null;
+export function restoreFollowupLocal(value: unknown, productId: string, principalId: string, projectId = ""): FollowupLocal | null {
+  if (!followupRecord(value) || value.schema_version !== 1 || (value.project_id ?? "") !== projectId || value.product_id !== productId || value.principal_id !== principalId || typeof value.selectedIssueId !== "string" || (value.selectedIssueId && !followupUuid(value.selectedIssueId)) || typeof value.selectedVersionId !== "string" || (value.selectedVersionId && !followupUuid(value.selectedVersionId)) || !validWork(value.work) || !followupRecord(value.drafts) || !Object.values(value.drafts).every(validWork)) return null;
   if (value.selectedBuildId !== undefined && (typeof value.selectedBuildId !== "string" || (value.selectedBuildId && !followupUuid(value.selectedBuildId)))) return null;
   if (value.pending !== null && (!followupRecord(value.pending) || !allowedKeys(value.pending, ["stage", "command", "reconfirmation"]) || !["inputs", "preview", "execute"].includes(String(value.pending.stage)) || ("reconfirmation" in value.pending && (value.pending.reconfirmation !== true || value.pending.stage !== "preview")) || !validCommand(value.pending.command, productId, principalId, value.pending.stage as FollowupPending["stage"]))) return null;
   const pending = value.pending as FollowupPending | null, target = pending ? String(pending.command.payload.issue_id) : value.selectedIssueId;
@@ -213,8 +214,8 @@ export function followupPayloadReads(payload: Record<string, unknown>): Followup
   visit(payload); return followupReads(refs);
 }
 export function validFollowupReceipt(value: unknown, command: FollowupCommand): value is { id: string; operation: FollowupOperation; subject_id: string; subject_type: "quality_issue" | "capa_remediation_link" } { return followupRecord(value) && followupUuid(value.id) && value.operation === command.operation && followupUuid(value.subject_id) && value.subject_type === (command.operation === "quality.capa.followup.link" ? "capa_remediation_link" : "quality_issue"); }
-export async function readFollowupContext(api: FollowupApi, productId: string, local: FollowupLocal, current: () => boolean): Promise<FollowupContext | null> {
-  const outcomes = await Promise.allSettled([api<unknown>(`v1/products/${productId}/builds`), api<unknown>(`v1/products/${productId}/workspace`)]);
+export async function readFollowupContext(api: FollowupApi, productId: string, local: FollowupLocal, current: () => boolean, projectId = ""): Promise<FollowupContext | null> {
+  const outcomes = await Promise.allSettled([api<unknown>(projectBuildsPath(productId, projectId)), api<unknown>(`v1/products/${productId}/workspace`)]);
   if (!current()) return null;
   const failures = outcomes.filter((row): row is PromiseRejectedResult => row.status === "rejected");
   if (failures.length) { const real = failures.find(row => !followupCancelled(row.reason)); if (real) throw real.reason; return null; }
@@ -237,7 +238,8 @@ export async function readBuildFollowupIndex(api: FollowupApi, productId: string
   } catch (failure) { if (!current() || followupCancelled(failure)) return null; throw failure; }
 }
 export async function readSelectedFollowup(api: FollowupApi, productId: string, local: FollowupLocal, context: FollowupContext, current: () => boolean): Promise<FollowupContext | null> {
-  if (!local.selectedIssueId) return { ...context, data: null };
+  if (!current()) return null;
+  if (!local.selectedIssueId || !context.issues.some(row => row.issue_id === local.selectedIssueId)) return { ...context, data: null };
   const chosen = local.selectedVersionId ? context.issues.find(row => row.issue_id === local.selectedIssueId && row.id === local.selectedVersionId) : undefined;
   if (local.selectedVersionId && !chosen) throw new Error("所选固定问题版本未在当前可读索引中，请重新选择。");
   try {

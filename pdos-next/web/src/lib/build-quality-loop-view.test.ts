@@ -172,3 +172,30 @@ test("history pagination preserves records and uses only the fresh server Curren
   assert.equal(previous.captures[0].current, true);
   assert.deepEqual(merged.current_by_change, page.current_by_change);
 });
+
+test("project recovery requires the exact saved project and preserves the original unknown command", () => {
+  const pending = { stage: "execute", command: preview().command }, saved = { schema_version: 1, product_id: "product", principal_id: "owner", project_id: "project-a", ...blankQualityLocal(), selectedBuildId: "build", selectedRunId: "run-logical", selectedIssueId: "issue-logical", work: { ...blankQualityWork(), reason: "A项目原草稿" }, pending };
+  const restored = restoreQualityLocal(saved, "product", "owner", "project-a");
+  assert.equal(restored?.work.reason, "A项目原草稿"); assert.deepEqual(restored?.pending, pending);
+  assert.equal(restoreQualityLocal(saved, "product", "owner", "project-b"), null);
+  assert.equal(restoreQualityLocal(saved, "product", "owner"), null);
+  const generic = { ...saved } as Record<string, unknown>; delete generic.project_id;
+  assert.equal(restoreQualityLocal(generic, "product", "owner", "project-a"), null);
+  assert.deepEqual(restoreQualityLocal(generic, "product", "owner")?.pending, pending);
+});
+test("project quality reads first narrow Builds and cannot deep-read an excluded saved Build", async () => {
+  const calls: string[] = [], { local, context } = indexedWork();
+  const api: QualityApi = async <T>(path: string): Promise<T> => { calls.push(path); return (path.includes("/builds?") ? { items: [{ id: "project-a-build" }] } : { sources: [] }) as T; };
+  const result = await readQualityContext(api, "product", local, () => true, "project-a");
+  assert.deepEqual(result?.builds.map(row => row.id), ["project-a-build"]); assert.deepEqual(result?.quality, emptyQuality);
+  assert.deepEqual(calls, ["v1/products/product/builds?project_id=project-a", "v1/products/product/workspace"]);
+  calls.length = 0;
+  const selected: QualityApi = async <T>(path: string): Promise<T> => { calls.push(path); return (path.includes("/builds?") ? { items: context.builds } : path.endsWith("/workspace") ? { sources: [] } : path.includes("verification-results?") ? context.results : path.includes("quality-execution?") ? context.quality : context.changes) as T; };
+  await readQualityContext(selected, "product", local, () => true, "project-a");
+  assert.deepEqual(calls.slice(2), ["v1/products/product/verification-results?build_id=build", "v1/products/product/quality-execution?build_id=build&run_id=run-logical", "v1/products/product/change-execution?issue_id=issue-logical"]);
+});
+test("project changes invalidate a checked display index even for the same product and local selection", () => {
+  const { local, context } = indexedWork(), checked = qualityIndexScope({ ...indexIdentity, projectId: "project-a" }, local);
+  assert.equal(selectQualityIndexed(local, { selectedFailureId: "fixed-failure" }, context, checked, qualityIndexScope({ ...indexIdentity, projectId: "project-b" }, local)), null);
+  assert.equal(selectQualityIndexed(local, { selectedFailureId: "fixed-failure" }, context, checked, qualityIndexScope(indexIdentity, local)), null);
+});
