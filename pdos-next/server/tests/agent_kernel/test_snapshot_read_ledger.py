@@ -17,6 +17,7 @@ from pdos_next.agent_kernel.snapshot_read_ledger import (
     validate_snapshot_read,
 )
 from pdos_next.agent_kernel.types import RunScope
+from pdos_next.domain.preproject.models import Proposal
 from pdos_next.errors import DomainError
 from pdos_next.models import Category, Grant, Principal, Receipt
 from pdos_next.service import digest
@@ -37,6 +38,17 @@ class MemorySession:
     def get(self, model, identity):
         self.reads.append((model, identity))
         return self.rows.get((model, identity))
+
+    def scalar(self, query):
+        if str(query) == "SELECT to_regclass('public.proposals') IS NOT NULL":
+            return True
+        assert query.column_descriptions[0]["entity"] is Proposal
+        params = query.compile().params
+        assert set(params) == {"tenant_id_1", "category_id_1", "id_1"}
+        row = self.get(Proposal, params["id_1"])
+        return row if row and (row.tenant_id, row.category_id) == (
+            params["tenant_id_1"], params["category_id_1"],
+        ) else None
 
 
 @pytest.fixture
@@ -163,6 +175,8 @@ def ledger():
             (PublicWebSnapshot, snapshot),
             (Receipt, receipt),
             (Category, SimpleNamespace(id=scope.category_id)),
+            (Proposal, SimpleNamespace(id=scope.proposal_id, tenant_id=scope.tenant_id,
+                                       category_id=scope.category_id)),
             *[(Principal, SimpleNamespace(id=identity, tenant_id=scope.tenant_id, active=True,
                                           kind="agent" if identity != scope.requester_id
                                           else "human"))
