@@ -1,0 +1,23 @@
+{
+  "head": "s0_0782",
+  "actual_equals_observed_upgrade_definition": true,
+  "validated": true,
+  "all_registered_T2_covered": [
+    "ai.skill.qualify",
+    "build.engineering.authorize",
+    "build.manufacturing.authorize",
+    "change.order.approve",
+    "change.selection.decide",
+    "mcp.connector.allow",
+    "npi.manufacturing_baseline.publish",
+    "proposal.g0.decide",
+    "quality.capa.verification.review",
+    "quality.issue.root_cause.decide",
+    "release.engineering.approve",
+    "release.manufacturing.approve",
+    "test.disposition.decide",
+    "test.run.review"
+  ],
+  "no_T1_null_deadline_added": true,
+  "table_metadata_reused": "metadata-02.json"
+}

@@ -183,6 +183,7 @@ EVENTS = {
     "change.order.approve": "change.approved",
     "change.implementation.record": "change.implementation_recorded",
     "change.policy.import": "change.policy_imported",
+    "release.policy.import": "release.policy_imported",
     "change.coverage.import": "change.coverage_imported",
     "change.selection.decide": "change.selection_decided",
     "quality.capa.observation.record": "CapaObservationRecorded",

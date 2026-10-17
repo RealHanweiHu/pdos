@@ -102,7 +102,7 @@ def reject(call, code="SOURCE_STALE"):
 def test_actual_fixed_physical_inputs_are_read_without_inventing_release_policy(work):
     result = work.read_release()
     assert result.material.policy is None and result.material.checks == ()
-    assert result.gaps == ("RELEASE_POLICY_OWNER_UNCONNECTED",)
+    assert result.gaps == ("RELEASE_POLICY_MISSING",)
     assert result.material.subject_config == work.release_payload.subject_config
     assert {value.ref for value in result.material.objects} == set(
         rules.selected_objects(work.release_payload)

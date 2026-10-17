@@ -64,6 +64,7 @@ from pdos_next.schemas.verification.contracts import Scope, SourceRef, TestRun
 from pdos_next.service import digest, require_access
 
 from . import rules
+from .policy_owner import ActualReleasePolicyOwner
 from .schemas import FixedObject, PackageAssemblePayload, ReleaseMaterial
 
 
@@ -198,6 +199,7 @@ def _query_mark(s, ctx, pid, model, key, ids):
 class ActualReleaseMaterialOwner:
     def __init__(self, engine):
         self.engine = engine
+        self.policy_owner = ActualReleasePolicyOwner(engine)
         self._reads, self._cache = WeakKeyDictionary(), WeakKeyDictionary()
 
     def _runtime(self, s):
@@ -215,6 +217,8 @@ class ActualReleaseMaterialOwner:
             id(changes._snapshot),
             id(evidence._evidence),
             id(operational._fact_hash),
+            id(type(self.policy_owner).read),
+            id(type(self.policy_owner).current),
         )
 
     def _collect(self, s, ctx, pid, payload):
@@ -230,7 +234,8 @@ class ActualReleaseMaterialOwner:
             [],
             [],
         )
-        gaps = ["RELEASE_POLICY_OWNER_UNCONNECTED"]
+        gaps = []
+        policy_facts = []
         cache, builds = {}, set()
 
         def row(model, identity, revision=None, *, project=True):
@@ -385,7 +390,18 @@ class ActualReleaseMaterialOwner:
             503,
         )
 
-        def add(ref_value, actual, snapshot=None, *, project_id=None):
+        def add(ref_value, actual, snapshot=None, *, project_id=None, current=False):
+            policy_facts.append(
+                {
+                    "ref": ref_value,
+                    "value": {
+                        "snapshot": to_jsonable_python(
+                            snapshot if snapshot is not None else _json(actual)
+                        ),
+                        "_release_current": current,
+                    },
+                }
+            )
             objects[ref_value] = FixedObject(
                 ref=ref_value,
                 product_id=pid,
@@ -455,7 +471,7 @@ class ActualReleaseMaterialOwner:
                     reads.append(
                         {"artifact_id": str(actual.id), "expected_revision": actual.revision}
                     )
-                add(value, actual)
+                add(value, actual, current=kind == "artifact" and actual.status == "active")
         if payload.release_scope.quantity is not None and payload.release_scope.lots:
             lots = [cache[BuildLot, value.id] for value in payload.release_scope.lots]
             _require(
@@ -489,7 +505,12 @@ class ActualReleaseMaterialOwner:
             )
             if view["source_status"] != "current":
                 gaps.append("PUBLICATION_RECHECK_REQUIRED")
-            add(value, actual, {"body": actual.body_sha256, "payload": actual.payload_sha256})
+            add(
+                value,
+                actual,
+                {"body": actual.body_sha256, "payload": actual.payload_sha256},
+                current=view["source_status"] == "current",
+            )
         for kind, model, key in (
             ("test_run", VerificationRunVersion, "run_id"),
             ("issue", QualityIssueVersion, "issue_id"),
@@ -642,6 +663,26 @@ class ActualReleaseMaterialOwner:
                     project_id=project.id,
                 )
             gaps.append("RESOURCE_QUALIFICATION_OWNER_UNCONNECTED")
+        policy = self.policy_owner.read(
+            s,
+            ctx,
+            pid,
+            scope=Scope(tenant_id=ctx.tenant_id, product_id=pid, project_id=project.id),
+            purpose=payload.purpose,
+            subject_config=payload.subject_config,
+            release_scope=payload.release_scope,
+            facts=tuple(policy_facts),
+            at=now(),
+        )
+        _require(
+            payload.visibility == "private" or policy.visibility != "private",
+            "私有政策不能借固定包扩大共享。",
+            "FORBIDDEN_SCOPE",
+            403,
+        )
+        gaps.extend(policy.gaps)
+        sources.extend(policy.sources)
+        reads.extend(policy.required_source_read_set)
         all_sources = tuple(dict.fromkeys(sources))
         direct_reads = [
             {"artifact_id": str(value.id), "expected_revision": value.revision}
@@ -694,8 +735,8 @@ class ActualReleaseMaterialOwner:
             subject_config=payload.subject_config,
             release_scope=payload.release_scope,
             objects=tuple(objects[value] for value in selected_refs),
-            policy=None,
-            checks=(),
+            policy=policy.policy,
+            checks=policy.checks,
             exceptions=(),
             sources=all_sources,
             required_source_read_set=merged,
@@ -709,6 +750,7 @@ class ActualReleaseMaterialOwner:
                 "verified_sources": sorted(verified),
                 "signatures": signatures,
                 "line_links": links,
+                "policy": deepcopy(policy.source_basis),
                 "project_definition": {
                     "id": link_rows[0].definition_id,
                     "revision": link_rows[0].definition_revision,
@@ -828,4 +870,11 @@ class ActualReleaseMaterialOwner:
                 ),
                 "已保存签署的当前水位需要重核。",
             )
+        if "policy" in source_basis:
+            _require(
+                self.policy_owner.current(s, ctx, pid, source_basis["policy"]),
+                "受控发布政策或当前签发依据已变化。",
+            )
+        elif material.policy is not None:
+            _require(False, "固定政策缺实际来源水位。")
         return True

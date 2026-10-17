@@ -1,0 +1,6 @@
+{
+  "exit": 127,
+  "result": "No metadata conclusion",
+  "cause": "Absolute helper path containing & was not shell-quoted; corrected to a quoted argument for metadata-02.",
+  "schema_mutation": false
+}

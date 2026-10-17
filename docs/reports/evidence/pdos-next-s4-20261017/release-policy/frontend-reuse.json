@@ -1,0 +1,16 @@
+{
+  "base_commit": "d98f998e36cd6b2e019e3262f03e7b04db98e255",
+  "unchanged_frontend_files": {
+    "pdos-next/web/src/components/manufacturing/release-packages.tsx": "16ac612bb0d70eb95fa478fab562cf1accf787d03c588b6381006226ec36af43",
+    "pdos-next/web/src/components/manufacturing/release-packages.test.mjs": "d898e054a249a8642572098894d66bdf6d42fb3ca26c8afdaf8841df8936a535",
+    "pdos-next/web/src/components/manufacturing/release-packages.module.css": "5974044d8e06436487c813a1c33193a803d51735622ed5199ef0bd3ae172d188",
+    "pdos-next/web/src/lib/releases.ts": "6f8315b4b7f7743b71ef689c74903934b82c924433a7f58ee5d6c5a556ae740b",
+    "pdos-next/web/src/lib/releases.test.ts": "1015ee28dda3067b086ed19579dfa8b359036c0a0ae1eae367bb54240a0059b9",
+    "pdos-next/web/src/app/api/release-route.test.mjs": "96d62f728015c67fd6896df6b26abe6d74c998ea66054f7a917d1fcf89fd02e5"
+  },
+  "previous_browser": "../release-packages/browser-result-final.json",
+  "previous_build": "../release-packages/production-build-02.json",
+  "new_positive_UI_executed": false,
+  "API_contract_readthrough": "policy.version, single-discipline assessment, actual authority, source_read_set, nullable expiry and original key/token restoration match current service fields",
+  "scope": "No new frontend implementation; actual new positive decisions are validated through common HTTP/PG."
+}
