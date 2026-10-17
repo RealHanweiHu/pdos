@@ -1,0 +1,87 @@
+### Result
+15. [GET] http://127.0.0.1:63559/api/v1/session => [401] Unauthorized
+16. [POST] http://127.0.0.1:63559/api/local-session => [200] OK
+17. [GET] http://127.0.0.1:63559/api/v1/session => [200] OK
+18. [GET] http://127.0.0.1:63559/api/v1/categories => [200] OK
+19. [GET] http://127.0.0.1:63559/api/v1/personal/projects?page_size=6 => [200] OK
+20. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/agent-runs?page_size=50 => [200] OK
+21. [GET] http://127.0.0.1:63559/api/v1/session => [200] OK
+22. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products => [200] OK
+23. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/workspace => [200] OK
+24. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/configurations => [200] OK
+25. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/projects/ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+26. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/builds?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+27. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/definitions => [200] OK
+28. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/workspace => [200] OK
+29. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/projects => [200] OK
+30. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-preparations?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+31. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-publications?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+32. [POST] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-publications/inputs => [200] OK
+33. [POST] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-publications/inputs => [200] OK
+48. [GET] http://127.0.0.1:63559/api/v1/session => [200] OK
+49. [GET] http://127.0.0.1:63559/api/v1/categories => [200] OK
+50. [GET] http://127.0.0.1:63559/api/v1/personal/projects?page_size=6 => [200] OK
+51. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/agent-runs?page_size=50 => [200] OK
+52. [GET] http://127.0.0.1:63559/api/v1/session => [200] OK
+53. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products => [200] OK
+54. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/workspace => [200] OK
+55. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/configurations => [200] OK
+56. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/projects/ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+57. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/builds?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+58. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/definitions => [200] OK
+59. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/workspace => [200] OK
+60. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/projects => [200] OK
+61. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-preparations?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+62. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-publications?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+63. [POST] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-publications/inputs => [200] OK
+64. [POST] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/commands/preview => [200] OK
+65. [POST] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/commands => [200] OK
+66. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/projects => [200] OK
+67. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-preparations?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+68. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-publications?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+69. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/workspace => [200] OK
+70. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-publications/eb49dfd2-6825-4d92-bce0-8205230f7d08?revision=1 => [200] OK
+85. [GET] http://127.0.0.1:63559/api/v1/session => [200] OK
+86. [GET] http://127.0.0.1:63559/api/v1/categories => [200] OK
+87. [GET] http://127.0.0.1:63559/api/v1/personal/projects?page_size=6 => [200] OK
+88. [GET] http://127.0.0.1:63559/api/v1/session => [200] OK
+89. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/agent-sessions?page_size=20 => [404] Not Found
+90. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products => [200] OK
+91. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/workspace => [200] OK
+92. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/agent-sessions?page_size=20 => [404] Not Found
+93. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/configurations => [200] OK
+94. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/projects/ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+95. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/builds?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+96. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/definitions => [200] OK
+97. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/workspace => [200] OK
+98. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/projects => [200] OK
+99. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-preparations?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+100. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-publications?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+101. [POST] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-publications/inputs => [200] OK
+102. [POST] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/commands/preview => [200] OK
+103. [POST] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/commands => [200] OK
+104. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/projects => [200] OK
+105. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-preparations?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+106. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-publications?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+107. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/workspace => [200] OK
+108. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-publications/eb49dfd2-6825-4d92-bce0-8205230f7d08?revision=1 => [200] OK
+123. [GET] http://127.0.0.1:63559/api/v1/session => [200] OK
+124. [GET] http://127.0.0.1:63559/api/v1/categories => [200] OK
+125. [GET] http://127.0.0.1:63559/api/v1/personal/projects?page_size=6 => [200] OK
+126. [GET] http://127.0.0.1:63559/api/v1/session => [200] OK
+127. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/agent-sessions?page_size=20 => [404] Not Found
+128. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products => [200] OK
+129. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/workspace => [200] OK
+130. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/agent-sessions?page_size=20 => [404] Not Found
+131. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/configurations => [200] OK
+132. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/projects/ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+133. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/builds?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+134. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/definitions => [200] OK
+135. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/workspace => [200] OK
+136. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/projects => [200] OK
+137. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-preparations?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+138. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-publications?project_id=ce956c9a-5c72-4135-a9e4-d07262d2350d => [200] OK
+139. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-publications/eb49dfd2-6825-4d92-bce0-8205230f7d08?revision=1 => [200] OK
+140. [GET] http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/products/d6f554d2-fb6b-4f38-a0dc-c55b207b31fe/manufacturing-publications/df31304a-dad6-4fb5-9818-6ed5f35f80a8?revision=2 => [200] OK
+
+Note: 56 static requests not shown, run with --static option to see them.

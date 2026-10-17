@@ -1,0 +1,102 @@
+F
+=================================== FAILURES ===================================
+_ test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal _
+
+publication_case = namespace(setup=<isolated synthetic test scope>, config={'source': 'efa099c4-0dfd-4cd5-a508-bb7516c7aee0', 'project': ...465-7269483f1db7', 'manufacturing_release': None, 'qualification': 'unknown', 'negative_enumeration_complete': False}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1253bcc50>
+record_property = <function record_property.<locals>.append_property at 0x1254d67a0>
+
+    def test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal(
+        publication_case, monkeypatch, record_property
+    ):
+        work, setup = publication_case, publication_case.setup
+        record_property(
+            "fixture_nature", "synthetic originals and controlled synthetic professional facts"
+        )
+        record_property("qualification", "unknown; no Pilot or manufacturing release")
+        record_property("project_id", str(work.project_id))
+    
+        helper.import_authority(work, setup.human)
+        baseline = helper.save_drafts(work)
+        original_drafts = helper.snapshots(work, helper.DRAFT_MODELS)
+        assert all(view["status"] == "draft" for view in work.documents.values())
+        assert all(view["qualification"] == "unknown" for view in work.documents.values())
+        assert all(view["manufacturing_release"] is None for view in work.documents.values())
+    
+        # A category grant and readable shared originals confer no manufacturing
+        # signing qualification. No public inputs/preview is forged for this peer.
+        first_payload = helper.publication_payload(work)
+        before_unqualified = helper.snapshots(work)
+        refused = helper.input_response(work, first_payload, setup.peer)
+        assert refused.status_code == 403, refused.text
+        assert refused.json()["code"] == "QUALIFICATION_REQUIRED"
+        assert helper.snapshots(work) == before_unqualified
+    
+        before_inputs = helper.snapshots(work)
+        first_command, first_review = helper.prepare_publication(work, first_payload)
+        assert first_review["before"] is None and first_review["after"]["revision"] == 1
+        assert first_review["after"]["id"] is first_review["after"]["created_at"] is None
+        assert first_review["after"]["status"] == "published"
+        assert first_review["authority"]["qualified"] is True
+        assert first_review["after"]["body"]["qualification"] == "unknown"
+        # Preview creates exactly its unconsumed common Confirmation, no publication.
+        after_preview = helper.snapshots(work)
+        for name, before in before_inputs.items():
+            if name != "confirmations":
+                assert after_preview[name] == before
+        assert after_preview["confirmations"]["count"] == before_inputs["confirmations"]["count"] + 1
+        first_proof = helper.proof(work, first_command)
+        assert first_proof[1:] == (False, None)
+        response = helper.post(setup, first_command)
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = <Response [422 Unprocessable Content]>.status_code
+
+tests/manufacturing_preparation/test_publication_pg.py:66: AssertionError
+=============================== warnings summary ===============================
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-1uo9t71h/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-1uo9t71h/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-1uo9t71h/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-1uo9t71h/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-1uo9t71h/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-1uo9t71h/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-1uo9t71h/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-1uo9t71h/pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py:1036: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # Root's deferred common atom must complete or all rolls back.
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-1uo9t71h/pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_service.py:952: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 13 warnings in 57.66s

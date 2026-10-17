@@ -1,0 +1,20 @@
+{
+  "finished_at": "2026-10-17T20:04:29.507254+00:00",
+  "only_own_preview_ports_closed": [
+    63559,
+    63480
+  ],
+  "own_browser_closed": true,
+  "api_fixture_exit": 0,
+  "private_token_removed": true,
+  "database_target": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0777"
+  },
+  "shared_database_runtime_originals_and_backup_preserved": true,
+  "database_or_business_deletions": false,
+  "restore_executed": false
+}

@@ -1,0 +1,31 @@
+{
+  "started_at": "2026-10-17T19:53:51.299527+00:00",
+  "finished_at": "2026-10-17T19:53:54.859279+00:00",
+  "snapshot": "/private/tmp/pdos-s4-publication-y0rhpu10",
+  "checks": [
+    {
+      "label": "request-flows",
+      "exit": 0,
+      "command": [
+        "node",
+        "../tools/s0_web_checkpoint.cjs",
+        "components/manufacturing-publication/publication-contract",
+        "app/api/[...path]/route"
+      ]
+    },
+    {
+      "label": "component-and-bff",
+      "exit": 0,
+      "command": [
+        "node",
+        "--test",
+        "src/components/manufacturing-publication/manufacturing-publication.test.mjs",
+        "src/app/api/manufacturing-publication-route.test.mjs"
+      ]
+    }
+  ],
+  "source_changed": [],
+  "database_or_http": false,
+  "excluded_old_namespace_assertion": false,
+  "exclusion_reason": null
+}

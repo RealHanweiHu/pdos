@@ -1,0 +1,16 @@
+{
+  "created_at": "2026-10-17T19:18:12.739928+00:00",
+  "target": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0776"
+  },
+  "private_backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/pre-s4-publication-20261017-s0_0776.dump",
+  "bytes": 64217731,
+  "sha256": "1cbd7d85dca0751a323ec9f7378fd6fd3075f5ec204fe690274c4c4e8bc40c7f",
+  "business_writes": 0,
+  "restore_executed": false,
+  "preserve_existing_s3_history": true
+}

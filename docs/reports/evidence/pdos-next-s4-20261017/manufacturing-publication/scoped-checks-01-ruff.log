@@ -1,0 +1,23 @@
+I001 [*] Import block is un-sorted or un-formatted
+   --> pdos_next/contracts.py:435:1
+    |
+433 |   )
+434 |
+435 | / from pdos_next.domain.manufacturing_baseline.publication_schemas import (  # noqa: E402
+436 | |     OPERATION as MANUFACTURING_PUBLICATION_OPERATION,
+437 | |     PublishPayload as ManufacturingPublicationPayload,
+438 | | )
+    | |_^
+439 |
+440 |   PAYLOADS[MANUFACTURING_PUBLICATION_OPERATION] = ManufacturingPublicationPayload
+    |
+help: Organize imports
+    |
+436 |     OPERATION as MANUFACTURING_PUBLICATION_OPERATION,
+437 + )
+438 + from pdos_next.domain.manufacturing_baseline.publication_schemas import (
+439 |     PublishPayload as ManufacturingPublicationPayload,
+    |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

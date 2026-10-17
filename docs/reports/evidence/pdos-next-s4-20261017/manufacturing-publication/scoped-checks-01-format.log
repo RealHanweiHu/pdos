@@ -1,0 +1,20 @@
+unformatted: File would be reformatted
+    --> pdos_next/domain/professional_authority/service.py:546:8
+     |
+545  |         rows = list(s.execute(packed))
+     -     if (
+     -         _current_fact_writer_owner(s, ctx, product_id) != owner
+     -         or request_proof(s) is not proof
+     -     ):
+546  +     if _current_fact_writer_owner(s, ctx, product_id) != owner or request_proof(s) is not proof:
+547  |         raise DomainError("SOURCE_STALE", "专业原始行读取期间事务或范围已变化。")
+--------------------------------------------------------------------------------
+1360 |         if pointers is None:
+     -             pointers = _signature_currents(
+     -                 s, ctx, product_id, project_id, subject, write=write
+     -             )
+1361 +             pointers = _signature_currents(s, ctx, product_id, project_id, subject, write=write)
+1362 |         current = {
+     |
+
+1 file would be reformatted, 26 files already formatted

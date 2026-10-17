@@ -1,0 +1,205 @@
+{
+  "written_at": "2026-10-17T20:03:21.200704+00:00",
+  "git_head_at_finalization": "24fa0d959f40182781f62d5e40f366fcb6225e30",
+  "owned_source_sha256": {
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/rules.py": "c025dac68168be6316a9ab308ceafd908a5eea0b21c49e61d9b1d2e27175cc0a",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py": "8291048d8814908987484113f7ac4988db6b6b6e0f3fb5a62c9a690cec33b5e5",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/consumption.py": "4d44782f637e9f59d8873be8cea0b4fce26460b6a0a8f528dec6557ccc1f51a8",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_schemas.py": "d4f68c8bb7da1ce0ede3ee1d8631315848e5889ef5aea1ac92b7c860a474ad15",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_models.py": "87990a0a9bf1a9367052764f4d377a828d1679f09f71852c0e77cf023a801f2e",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_rules.py": "7503ff011930d7c40b3233d0eb7c5801baadfb33e9ec20b68fb1e7ff3b66a675",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_material_owner.py": "7e1d2d65609b786f453df54048a63d573f084a70a76523b4f9489a2a00c5503f",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_service.py": "72abc097b7b55711afdc6adde35aaa2ed0c3cdf138872a9706127783c346a7e8",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_storage_schema.py": "5829fc5f9c55636e639292b4fc065035f1b6800fdb3352453c6c770ca97e7333",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_api.py": "b1a26d4532045ab4cb1f0c7908743f92d8a02d4560c8326a46247a8c37837cf9",
+    "pdos-next/server/migrations/schema_s0_0777.py": "b5f5d136c826a3a311d76c4fa52a1969c07a96067db728368f57acac73413331",
+    "pdos-next/server/migrations/versions/s0_0777_manufacturing_publication.py": "df4f48927d6693d2ba7597e2da27707633225f89468a9c7627d9b9de0e843dda",
+    "pdos-next/server/tests/manufacturing_preparation/test_preparation.py": "719b995d18205acf0bb19dec568778090628a8c97dd14a64ae935b0748499342",
+    "pdos-next/server/tests/manufacturing_preparation/test_peer_preparation_request_binding.py": "a702cb05cb0bee19afeacf0823b16703453c8c5c0ff74b5833a751a2a037bcf2",
+    "pdos-next/server/tests/manufacturing_preparation/test_publication_rules.py": "caf474c5c861f8b12f9e598f3f4e2bfef820959a9135014235d75c5a5378485d",
+    "pdos-next/server/tests/manufacturing_preparation/test_publication_material_owner.py": "f26c3b037d69071b030a9e4bad9acbcfe4e0b188d6703c972cd0ad4869f98c98",
+    "pdos-next/server/tests/manufacturing_preparation/test_publication_service.py": "a07b7ad2e645813d538b091f75e05377f9ff1878a1d40d42489cc0e2303b3366",
+    "pdos-next/server/tests/manufacturing_preparation/test_publication_consumption.py": "25ac1b0645f39f88f38e4a7925eed1e5c417c65bfb3288cb899fc4d6f5a06f92",
+    "pdos-next/server/tests/manufacturing_preparation/test_publication_storage_schema.py": "364bcc00375e539b488c9b9ad535385e6f836275207abd7f5e358e822457ce58",
+    "pdos-next/server/tests/manufacturing_preparation/test_publication_migration.py": "75b95943abe834727fe2b2bad0bddce49243c8a4faab10a5ccb8416ce8ad3587",
+    "pdos-next/server/tests/manufacturing_preparation/test_publication_pg.py": "914c5850e29de9f3b51c5f0aed3c277d4edacfd5aeca7621c477cc7494cae3a2",
+    "pdos-next/server/tests/manufacturing_preparation/publication_pg_helpers.py": "6d847a67a2d4dc1698606a7020d6d7d1b35b793e53651a14bcb1c4a2f83be8c9",
+    "pdos-next/web/src/components/manufacturing-publication/publication-contract.ts": "956d79777b49df62070be1947b2e89c11523de676433819f2201d98c5fb9e181",
+    "pdos-next/web/src/components/manufacturing-publication/manufacturing-publication.tsx": "206c4294433d3bc8146ddd4e2392d31561ddcb20c2efcea4e41a91093def306f",
+    "pdos-next/web/src/components/manufacturing-publication/publication-contract.test.ts": "4451d4cedafe0415ec508844ce355f6666c1ff05afb1db0bb344eadb05cdb85a",
+    "pdos-next/web/src/components/manufacturing-publication/manufacturing-publication.test.mjs": "a3e72eb83954e95215d0946c2125b6b82f470510375b5ed28aac26f83c093d7d",
+    "pdos-next/web/src/app/api/manufacturing-publication-route.test.mjs": "44aa2a2310f9cdd523bc7d05b1d964b7165bc3096b5338bee8693d3f8de8a283",
+    "docs/design/2026-10-17-pdos-next-s4-manufacturing-delivery-contract.md": "a95e39908a3f80283d9ac5574a170fcdf91e9c31310792fcae490f8513ab45c6"
+  },
+  "partial_staged_sha256": {
+    "pdos-next/server/pdos_next/contracts.py": "ca21ff09ba5ceb55a3a09ea69dfbec6767fab9e191f9760e2f96bb488e69474e",
+    "pdos-next/server/pdos_next/command_handlers.py": "1a79f80d0f905e9ede0545201ac05d9cf57d5cf8db3b118f275bdd4bfda025dd",
+    "pdos-next/server/pdos_next/service.py": "4a62713b42a71f767842584b83ddf6c4ae843213804679f4720b75837b76c540",
+    "pdos-next/server/pdos_next/domain/professional_authority/service.py": "fe53b3f31c755c863beff494360904486b5a861c6731b198567faa483fc0ca54",
+    "pdos-next/server/pdos_next/models.py": "e34dc453fedd6f723d04821abc002b77502e06e76dfc989c5f24bfd11a127126",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "4f2153cf7884149483e5690ecb57c44197d4f967447eb058b2a25090d971400c",
+    "pdos-next/server/pdos_next/api.py": "eabb566ead36f4661008c9d21ddd0a6199d7b9a5b4d0bec3ca26e986cdea7a6c",
+    "pdos-next/web/src/components/workspace.tsx": "999680550992ea51643827be2dc7b2e0ff8b5582f0d9b05eca628ce96e1e64bc",
+    "pdos-next/server/pdos_next/lifecycle_catalog.py": "4237a30afd9bab471a974cd14efc3b476f7bcc4a17dda4084f45ef46ec093f0d",
+    "pdos-next/contracts/auxiliary-operations.json": "7ddee9470712e86b8404463f5a40db7d170aa65a0b216de8360a85396a022267",
+    "pdos-next/contracts/payloads.schema.json": "c9005baa0ed7af2fb82a6d4990a51b156cdb7673f1e1e42c4e848216f4cb2084",
+    "pdos-next/contracts/openapi.json": "f8183c31716c102a6a79e3c80dd6d7289f639e82fec515b7e4342b56aa03ad5a",
+    "tasks/ai-native-integrated-todo.md": "d978d12430b4d78d0eab105a8580ac534b4099bf691cae42a6c20139dd5bfb4a"
+  },
+  "tested_full_source_sha256": {
+    "pdos-next/server/pdos_next/domain/professional_authority/service.py": "fe53b3f31c755c863beff494360904486b5a861c6731b198567faa483fc0ca54",
+    "pdos-next/server/pdos_next/api.py": "d90c44ac32e352fe04f95217a305526af5f8374ac127589d073317e767d7ba20",
+    "pdos-next/server/pdos_next/command_handlers.py": "1f8bcd9bcbb89cc620cc93d68a1592c21d8ff5c39acca6f4872bf285368b2c7d",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "4f2153cf7884149483e5690ecb57c44197d4f967447eb058b2a25090d971400c",
+    "pdos-next/server/pdos_next/contracts.py": "ca21ff09ba5ceb55a3a09ea69dfbec6767fab9e191f9760e2f96bb488e69474e",
+    "pdos-next/server/pdos_next/lifecycle_catalog.py": "4237a30afd9bab471a974cd14efc3b476f7bcc4a17dda4084f45ef46ec093f0d",
+    "pdos-next/server/pdos_next/models.py": "e34dc453fedd6f723d04821abc002b77502e06e76dfc989c5f24bfd11a127126",
+    "pdos-next/web/src/components/workspace.tsx": "999680550992ea51643827be2dc7b2e0ff8b5582f0d9b05eca628ce96e1e64bc",
+    "pdos-next/server/pdos_next/service.py": "50fcf077a09c13ad80c31d57876ca0144c6b9434c2c97f2abdb36c319840f34d"
+  },
+  "partial_ownership_recipe": {
+    "base_commit": "24fa0d959f40182781f62d5e40f366fcb6225e30",
+    "partial_owned_files": [
+      {
+        "path": "pdos-next/server/pdos_next/contracts.py",
+        "replacements": [
+          {
+            "before": "        \"npi.manufacturing_baseline.record\": BaselinePayload,\n    }\n)\n",
+            "after": "        \"npi.manufacturing_baseline.record\": BaselinePayload,\n    }\n)\n\nfrom pdos_next.domain.manufacturing_baseline.publication_schemas import (  # noqa: E402\n    OPERATION as MANUFACTURING_PUBLICATION_OPERATION,\n)\nfrom pdos_next.domain.manufacturing_baseline.publication_schemas import (  # noqa: E402\n    PublishPayload as ManufacturingPublicationPayload,\n)\n\nPAYLOADS[MANUFACTURING_PUBLICATION_OPERATION] = ManufacturingPublicationPayload\n"
+          }
+        ]
+      },
+      {
+        "path": "pdos-next/server/pdos_next/command_handlers.py",
+        "replacements": [
+          {
+            "before": "        \"test.disposition.decide\",\n        \"quality.issue.root_cause.decide\",",
+            "after": "        \"test.disposition.decide\",\n        \"npi.manufacturing_baseline.publish\",\n        \"quality.issue.root_cause.decide\","
+          },
+          {
+            "before": "        \"npi.manufacturing_baseline.record\",\n        \"change.order.prepare\",",
+            "after": "        \"npi.manufacturing_baseline.record\",\n        \"npi.manufacturing_baseline.publish\",\n        \"change.order.prepare\","
+          },
+          {
+            "before": "    if operation in {\n        \"npi.work_instruction.record\",",
+            "after": "    if operation == \"npi.manufacturing_baseline.publish\":\n        from pdos_next.domain.manufacturing_baseline import publication_service\n\n        return publication_service\n    if operation in {\n        \"npi.work_instruction.record\","
+          }
+        ]
+      },
+      {
+        "path": "pdos-next/server/pdos_next/service.py",
+        "replacements": [
+          {
+            "before": "    \"npi.manufacturing_baseline.record\": \"manufacturing_baseline.recorded\",\n",
+            "after": "    \"npi.manufacturing_baseline.record\": \"manufacturing_baseline.recorded\",\n    \"npi.manufacturing_baseline.publish\": \"manufacturing_baseline.published\",\n"
+          }
+        ]
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/professional_authority/service.py",
+        "replacements": [
+          {
+            "before": "    \"npi.manufacturing_baseline.record\": frozenset({\"manufacturing\"}),\n",
+            "after": "    \"npi.manufacturing_baseline.record\": frozenset({\"manufacturing\"}),\n    \"npi.manufacturing_baseline.publish\": frozenset({\"manufacturing\"}),\n"
+          }
+        ]
+      },
+      {
+        "path": "pdos-next/server/pdos_next/models.py",
+        "replacements": [
+          {
+            "before": "import pdos_next.domain.products.platform_models  # noqa: E402,F401\n",
+            "after": "import pdos_next.domain.products.platform_models  # noqa: E402,F401\nimport pdos_next.domain.manufacturing_baseline.publication_models  # noqa: E402,F401\n"
+          }
+        ]
+      },
+      {
+        "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+        "replacements": [
+          {
+            "before": "const manufacturingPreparationCommands = new Set([\"npi.work_instruction.record\", \"npi.control_plan.record\", \"npi.manufacturing_baseline.record\"]);\n",
+            "after": "const manufacturingPreparationCommands = new Set([\"npi.work_instruction.record\", \"npi.control_plan.record\", \"npi.manufacturing_baseline.record\"]);\nconst manufacturingPublicationPaths = /^v1\\/products\\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\/manufacturing-publications(?:\\/inputs|\\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;\nconst manufacturingPublicationCommands = new Set([\"npi.manufacturing_baseline.publish\"]);\n"
+          },
+          {
+            "before": "function validManufacturingCommand(value: unknown, productId: string): boolean {\n",
+            "after": "function validManufacturingCommand(value: unknown, productId: string, publication = false): boolean {\n  const fixed = isRecord(value) && isRecord(value.payload) ? publication ? value.payload.baseline : value.payload.process : null;\n"
+          },
+          {
+            "before": "!manufacturingPreparationCommands.has(value.operation)",
+            "after": "!(publication ? manufacturingPublicationCommands : manufacturingPreparationCommands).has(value.operation)"
+          },
+          {
+            "before": "!isRecord(value.payload.process) || typeof value.payload.process.id !== \"string\" || !uuid.test(value.payload.process.id) || !positiveRevision(value.payload.process.revision)",
+            "after": "!isRecord(fixed) || typeof fixed.id !== \"string\" || !uuid.test(fixed.id) || !positiveRevision(fixed.revision) || (publication && fixed.kind !== \"manufacturing_baseline\")"
+          },
+          {
+            "before": "  ...manufacturingPreparationCommands,\n",
+            "after": "  ...manufacturingPreparationCommands,\n  ...manufacturingPublicationCommands,\n"
+          },
+          {
+            "before": "  const manufacturingPreparation = manufacturingPreparationPaths.test(pathname);\n",
+            "after": "  const manufacturingPreparation = manufacturingPreparationPaths.test(pathname);\n  const manufacturingPublication = manufacturingPublicationPaths.test(pathname);\n"
+          },
+          {
+            "before": "!manufacturingPreparation && !resourceInspect",
+            "after": "!manufacturingPreparation && !manufacturingPublication && !resourceInspect"
+          },
+          {
+            "before": "  } else if (manufacturingPreparation) {\n",
+            "after": "  } else if (manufacturingPublication) {\n    const input = pathname.endsWith(\"/inputs\"), fixed = !input && !pathname.endsWith(\"/manufacturing-publications\");\n    const method = input ? \"POST\" : \"GET\";\n    if (request.method !== method) return Response.json({ code: \"VALIDATION_FAILED\", message: \"此入口不支持这类请求。\" }, { status: 405, headers: { Allow: method } });\n    for (const [key, value] of request.nextUrl.searchParams) {\n      const valid = !input && (fixed ? key === \"revision\" && /^[1-9]\\d*$/.test(value) && positiveRevision(Number(value)) : key === \"project_id\" ? uuid.test(value) : key === \"history_cursor\" && value.length > 0 && value.length <= 2000);\n      if (!valid || query.has(key)) return Response.json({ code: \"VALIDATION_FAILED\", message: \"请选择唯一项目、固定发布版本或原历史游标。\" }, { status: 422 });\n      query.set(key, value);\n    }\n    if (!input && !query.has(fixed ? \"revision\" : \"project_id\")) return Response.json({ code: \"VALIDATION_FAILED\", message: \"请明确选择制造基线发布范围。\" }, { status: 422 });\n  } else if (manufacturingPreparation) {\n"
+          },
+          {
+            "before": "    if (manufacturingPreparation && request.method === \"POST\") {\n",
+            "after": "    if (manufacturingPublication && request.method === \"POST\") {\n      let value: unknown;\n      try { value = JSON.parse(body ?? \"\"); } catch { return Response.json({ code: \"VALIDATION_FAILED\", message: \"请提交完整制造基线发布原请求。\" }, { status: 422 }); }\n      if (!validManufacturingCommand(value, path[2], true)) return Response.json({ code: \"VALIDATION_FAILED\", message: \"本入口只核对本型号、项目与固定制造基线的发布。\" }, { status: 422 });\n    }\n    if (manufacturingPreparation && request.method === \"POST\") {\n"
+          },
+          {
+            "before": "longCommand || qualityChange || qualityFollowup || manufacturingPreparation ||",
+            "after": "longCommand || qualityChange || qualityFollowup || manufacturingPreparation || manufacturingPublication ||"
+          }
+        ]
+      },
+      {
+        "path": "pdos-next/server/pdos_next/api.py",
+        "replacements": [
+          {
+            "before": "    configure_manufacturing(engine)\n",
+            "after": "    configure_manufacturing(engine)\n    from pdos_next.domain.manufacturing_baseline.publication_service import (\n        configure as configure_manufacturing_publication,\n    )\n\n    configure_manufacturing_publication(engine)\n"
+          },
+          {
+            "before": "    register_manufacturing(app, engine, auth_dependency)\n",
+            "after": "    register_manufacturing(app, engine, auth_dependency)\n    from pdos_next.domain.manufacturing_baseline.publication_api import (\n        register_routes as register_manufacturing_publication,\n    )\n\n    register_manufacturing_publication(app, engine, auth_dependency)\n"
+          }
+        ]
+      },
+      {
+        "path": "pdos-next/web/src/components/workspace.tsx",
+        "replacements": [
+          {
+            "before": "import { ManufacturingPreparation } from \"@/components/manufacturing-preparation/manufacturing-preparation\";\n",
+            "after": "import { ManufacturingPreparation } from \"@/components/manufacturing-preparation/manufacturing-preparation\";\nimport { ManufacturingPublication } from \"@/components/manufacturing-publication/manufacturing-publication\";\n"
+          },
+          {
+            "before": "<ManufacturingPreparation key={`manufacturing-preparation:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />",
+            "after": "<ManufacturingPreparation key={`manufacturing-preparation:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} /><ManufacturingPublication categoryId={categoryId} projectId={projectId} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />"
+          }
+        ]
+      }
+    ],
+    "runtime_api_and_migration_still_pending": false,
+    "migration_still_pending": false,
+    "appended_owned_blocks": [
+      {
+        "path": "pdos-next/server/pdos_next/lifecycle_catalog.py",
+        "block": "\n# S4 manufacturing publication fixed content and its exact Current/document links.\nCOVERED_COLUMNS.update(\n    {\n        \"manufacturing_baseline_publications\": (\n            \"product_id\",\n            \"project_id\",\n            \"series_id\",\n            \"revision\",\n            \"previous_id\",\n            \"previous_revision\",\n            \"owner_id\",\n            \"writer_id\",\n            \"actor_id\",\n            \"requester_id\",\n            \"visibility\",\n            \"purpose\",\n            \"baseline_kind\",\n            \"baseline_id\",\n            \"baseline_revision\",\n            \"process_id\",\n            \"process_revision\",\n            \"status\",\n            \"operation\",\n            \"write_tier\",\n            \"body\",\n            \"body_sha256\",\n            \"input_snapshot\",\n            \"payload_sha256\",\n            \"sources\",\n            \"required_source_read_set\",\n            \"source_basis\",\n            \"authority_snapshot\",\n            \"gaps\",\n            \"command_id\",\n            \"receipt_id\",\n            \"shared_proof_id\",\n            \"shared_proof_revision\",\n            \"proof_consumed_at\",\n            \"proof_expires_at\",\n            \"token_sha256\",\n            \"material_sha256\",\n            \"read_set_sha256\",\n            \"intent_digest\",\n            \"request_digest\",\n            \"id\",\n            \"tenant_id\",\n            \"created_at\",\n            \"category_id\",\n        ),\n        \"manufacturing_publication_currents\": (\n            \"product_id\",\n            \"project_id\",\n            \"series_id\",\n            \"owner_id\",\n            \"visibility\",\n            \"version_id\",\n            \"revision\",\n            \"epoch\",\n            \"id\",\n            \"tenant_id\",\n            \"created_at\",\n            \"category_id\",\n        ),\n        \"manufacturing_publication_documents\": (\n            \"product_id\",\n            \"project_id\",\n            \"publication_id\",\n            \"publication_revision\",\n            \"process_id\",\n            \"process_revision\",\n            \"operation_key\",\n            \"document_kind\",\n            \"document_id\",\n            \"document_revision\",\n            \"id\",\n            \"tenant_id\",\n            \"created_at\",\n            \"category_id\",\n        ),\n    }\n)\nGUARDED = (\n    *GUARDED,\n    \"manufacturing_baseline_publications\",\n    \"manufacturing_publication_currents\",\n    \"manufacturing_publication_documents\",\n)\n",
+        "base_commit": "24fa0d9",
+        "base_was_clean": true,
+        "preserved_entire_existing_head_prefix": true
+      }
+    ],
+    "purpose": "Exact partial ownership for S4 manufacturing publication only"
+  },
+  "backend_actual": "/private/tmp/pdos-s4-publication-594m5l8p",
+  "frontend_actual": "/private/tmp/pdos-s4-publication-gb4y6jtn",
+  "independent_native_pilot_material_owner_excluded": true,
+  "all_foreign_context_excluded": true
+}

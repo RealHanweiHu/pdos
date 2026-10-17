@@ -245,6 +245,33 @@ def test_incomplete_baseline_is_explicit_draft_not_false_negative_complete():
     assert sum(v["code"] == "MISSING_OPERATION_DOCUMENT" for v in gaps) == 2
 
 
+@pytest.mark.parametrize("visibility", ["private", "category", "audience"])
+def test_baseline_accepts_exact_documents_in_current_shared_audience(visibility):
+    value = baseline().model_copy(update={"visibility": visibility})
+    gaps = rules.check_material(value, {"operations": [{"key": "assemble"}]}, documents_for(value))
+    assert not any(v["code"] == "MISSING_OPERATION_DOCUMENT" for v in gaps)
+    assert any(v["code"] == "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED" for v in gaps)
+
+
+@pytest.mark.parametrize("visibility", ["category", "audience"])
+def test_shared_baseline_does_not_expand_private_operation_document(visibility):
+    value = baseline().model_copy(update={"visibility": visibility})
+    documents = documents_for(value)
+    documents[("assemble", "work_instruction")]["visibility"] = "private"
+    with pytest.raises(DomainError) as error:
+        rules.check_material(value, {"operations": [{"key": "assemble"}]}, documents)
+    assert error.value.code == "FORBIDDEN_SCOPE"
+
+
+def test_baseline_rejects_retired_product_visibility_in_operation_document():
+    value = baseline().model_copy(update={"visibility": "category"})
+    documents = documents_for(value)
+    documents[("assemble", "work_instruction")]["visibility"] = "product"
+    with pytest.raises(DomainError) as error:
+        rules.check_material(value, {"operations": [{"key": "assemble"}]}, documents)
+    assert error.value.code == "FORBIDDEN_SCOPE"
+
+
 @pytest.mark.parametrize(
     "mutation",
     [

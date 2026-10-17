@@ -1,0 +1,24 @@
+{
+  "executed_candidate": "/private/tmp/pdos-s4-publication-focj048c",
+  "final_candidate": "/private/tmp/pdos-s4-publication-594m5l8p",
+  "unchanged_inputs": {
+    "pdos-next/server/migrations/schema_s0_0777.py": "b5f5d136c826a3a311d76c4fa52a1969c07a96067db728368f57acac73413331",
+    "pdos-next/server/migrations/versions/s0_0777_manufacturing_publication.py": "df4f48927d6693d2ba7597e2da27707633225f89468a9c7627d9b9de0e843dda",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_storage_schema.py": "5829fc5f9c55636e639292b4fc065035f1b6800fdb3352453c6c770ca97e7333",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_models.py": "87990a0a9bf1a9367052764f4d377a828d1679f09f71852c0e77cf023a801f2e",
+    "pdos-next/server/pdos_next/models.py": "e34dc453fedd6f723d04821abc002b77502e06e76dfc989c5f24bfd11a127126",
+    "pdos-next/server/pdos_next/lifecycle_catalog.py": "4237a30afd9bab471a974cd14efc3b476f7bcc4a17dda4084f45ef46ec093f0d",
+    "pdos-next/server/pdos_next/command_handlers.py": "1f8bcd9bcbb89cc620cc93d68a1592c21d8ff5c39acca6f4872bf285368b2c7d"
+  },
+  "records": [
+    "migration-up-02.json",
+    "metadata-alignment-01.json"
+  ],
+  "prior_roundtrip": [
+    "migration-up-01.json",
+    "migration-down-01.json"
+  ],
+  "current_head": "s0_0777",
+  "no_downgrade_after_decision_history": true,
+  "existing_cyclic_metadata_sort_warning_retained": true
+}

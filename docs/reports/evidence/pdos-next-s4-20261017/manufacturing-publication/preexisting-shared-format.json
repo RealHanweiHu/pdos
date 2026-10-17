@@ -1,0 +1,9 @@
+{
+  "path": "pdos-next/server/pdos_next/domain/professional_authority/service.py",
+  "baseline": "24fa0d9",
+  "preexisting_format_delta_identical": true,
+  "unchanged_format_hunks": 2,
+  "owned_matrix_line_in_format_diff": false,
+  "lifecycle_catalog_entire_existing_head_prefix_preserved": true,
+  "api_preexisting_format_reference": "../../pdos-next-s3-20261017/formal-fulfillment/api-preexisting-format.json"
+}

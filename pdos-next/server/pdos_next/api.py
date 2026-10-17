@@ -198,6 +198,11 @@ def create_app(
     from pdos_next.domain.manufacturing_baseline.service import configure as configure_manufacturing
 
     configure_manufacturing(engine)
+    from pdos_next.domain.manufacturing_baseline.publication_service import (
+        configure as configure_manufacturing_publication,
+    )
+
+    configure_manufacturing_publication(engine)
     from pdos_next.quality_followup_integration import configure_integration
 
     configure_integration(
@@ -880,6 +885,11 @@ def create_app(
     )
 
     register_manufacturing(app, engine, auth_dependency)
+    from pdos_next.domain.manufacturing_baseline.publication_api import (
+        register_routes as register_manufacturing_publication,
+    )
+
+    register_manufacturing_publication(app, engine, auth_dependency)
 
     @app.get("/v1/categories/{category_id}/products/{product_id}/configurations")
     def configurations(product_id: UUID, ctx: Context = auth_dependency):

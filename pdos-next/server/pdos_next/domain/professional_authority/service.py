@@ -23,6 +23,7 @@ OPERATION_ROLES = {
     "npi.work_instruction.record": frozenset({"manufacturing"}),
     "npi.control_plan.record": frozenset({"manufacturing"}),
     "npi.manufacturing_baseline.record": frozenset({"manufacturing"}),
+    "npi.manufacturing_baseline.publish": frozenset({"manufacturing"}),
     "build.engineering.authorize": frozenset({"engineering"}),
     "build.manufacturing.authorize": frozenset({"manufacturing"}),
     "build.start": frozenset({"manufacturing"}),

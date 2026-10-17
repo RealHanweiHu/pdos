@@ -1,0 +1,37 @@
+{
+  "publication_functional_checkpoint_complete": true,
+  "S4_stage_complete": false,
+  "stage_acceptance": {
+    "S1": false,
+    "S2": false,
+    "S3": false,
+    "S4": false
+  },
+  "performance_acceptance": "deferred",
+  "distinct_actual_backend_scenarios": 1,
+  "distinct_actual_browser_cohorts": 1,
+  "backend_affected_pure_checks": 295,
+  "frontend_affected_checks": 134,
+  "backend_candidate": "/private/tmp/pdos-s4-publication-594m5l8p",
+  "final_frontend_candidate": "/private/tmp/pdos-s4-publication-gb4y6jtn",
+  "all_owned_backend_sources_unchanged_for_final_web_candidate": true,
+  "actual_named_publication": true,
+  "actual_successor_and_immutable_old_versions": true,
+  "actual_cross_actor_read_and_private_key_RLS": true,
+  "actual_atomic_rollback_and_source_withdrawal": true,
+  "actual_ui_original_request_recovery_and_two_named_versions": true,
+  "migration": "s0_0776 -> s0_0777; prehistory down/up tested; decision history retained",
+  "asset_qualification": "unknown",
+  "manufacturing_release": null,
+  "not_covered": [
+    "native Pilot persistence/public API/UI and full statistics/exception loop",
+    "native asset acceptance and production qualification",
+    "engineering/manufacturing release and external receiver/effect reconciliation",
+    "S3 complete observation, effectiveness and close",
+    "whole model namespace lifecycle catalog completeness",
+    "formal stage/performance/model/qualification acceptance"
+  ],
+  "real_model_or_KMS_calls": 0,
+  "push_deploy_or_production": false,
+  "foreign_M2_M3_UI_changes_excluded": true
+}

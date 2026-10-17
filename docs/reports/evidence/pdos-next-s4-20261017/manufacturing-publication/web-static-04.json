@@ -1,0 +1,34 @@
+{
+  "started_at": "2026-10-17T19:59:12.397828+00:00",
+  "finished_at": "2026-10-17T19:59:27.098730+00:00",
+  "snapshot": "/private/tmp/pdos-s4-publication-gb4y6jtn",
+  "checks": [
+    {
+      "label": "types",
+      "exit": 0,
+      "command": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--pretty",
+        "false"
+      ]
+    },
+    {
+      "label": "eslint",
+      "exit": 0,
+      "command": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "src/components/manufacturing-publication",
+        "src/app/api/manufacturing-publication-route.test.mjs",
+        "src/app/api/[...path]/route.ts",
+        "src/components/workspace.tsx"
+      ]
+    }
+  ],
+  "source_changed": [],
+  "database_or_http": false,
+  "excluded_old_namespace_assertion": false,
+  "exclusion_reason": null
+}

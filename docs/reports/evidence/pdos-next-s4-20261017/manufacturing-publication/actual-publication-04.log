@@ -1,0 +1,46 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-594m5l8p/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-594m5l8p/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-594m5l8p/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-594m5l8p/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-594m5l8p/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-594m5l8p/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-594m5l8p/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-594m5l8p/pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py:1036: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # Root's deferred common atom must complete or all rolls back.
+
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+tests/manufacturing_preparation/test_publication_pg.py::test_actual_named_publication_history_peer_replay_rollback_and_source_withdrawal
+  /private/tmp/pdos-s4-publication-594m5l8p/pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_service.py:955: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 15 warnings in 131.06s (0:02:11)

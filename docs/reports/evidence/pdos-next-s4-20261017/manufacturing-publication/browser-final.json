@@ -1,0 +1,30 @@
+{
+  "first_and_successor_named_publications": true,
+  "old_and_new_fixed_contents_read": true,
+  "same_origin_original_request_recovery": true,
+  "current_revision": 2,
+  "historical_revision": 1,
+  "first_receipt": "e2865b28-37f9-4466-803a-d38d5e5205e9",
+  "successor_receipt": "a07aa646-3c6c-465f-b0ff-9802ce47c61c",
+  "first_ui_candidate": "/private/tmp/pdos-s4-publication-zjbe059o",
+  "successor_ui_candidate": "/private/tmp/pdos-s4-publication-y0rhpu10",
+  "final_success_state_read_candidate": "/private/tmp/pdos-s4-publication-gb4y6jtn",
+  "backend_candidate": "/private/tmp/pdos-s4-publication-594m5l8p",
+  "final_changes": "successful-state wording, repeated-submit guard and duplicate explanation only; shared request and backend sources unchanged",
+  "cumulative_execute_posts": 2,
+  "final_page_first_session_request_index": 123,
+  "actual_execute_request_indices": [
+    65,
+    103
+  ],
+  "final_candidate_new_execute_posts": 0,
+  "initial_confirmation_before_execute_posts": 0,
+  "successor_new_execute_before_confirmation": 0,
+  "final_success_state_hides_pending_warning": true,
+  "repeat_original_submit_disabled": true,
+  "qualification": "unknown",
+  "manufacturing_release": null,
+  "scope": "actual isolated synthetic original/professional test profiles",
+  "console_limitations": "2 independent agent-session 404 reads in latest page from foreign S1/M2 frontend context against older backend snapshot; outside publication routes and excluded from delivery; no whole-page zero-error claim",
+  "formal_acceptance": false
+}

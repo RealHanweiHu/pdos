@@ -45,6 +45,7 @@ T2_OPERATIONS = frozenset(
         "build.manufacturing.authorize",
         "test.run.review",
         "test.disposition.decide",
+        "npi.manufacturing_baseline.publish",
         "quality.issue.root_cause.decide",
         "quality.capa.verification.review",
     }
@@ -120,6 +121,7 @@ PHASED_MATERIAL_OPERATIONS = frozenset(
         "npi.work_instruction.record",
         "npi.control_plan.record",
         "npi.manufacturing_baseline.record",
+        "npi.manufacturing_baseline.publish",
         "change.order.prepare",
         "change.order.approve",
         "change.implementation.record",
@@ -203,6 +205,10 @@ def handler(operation):
         from pdos_next import change_selection_integration
 
         return change_selection_integration
+    if operation == "npi.manufacturing_baseline.publish":
+        from pdos_next.domain.manufacturing_baseline import publication_service
+
+        return publication_service
     if operation in {
         "npi.work_instruction.record",
         "npi.control_plan.record",

@@ -1,0 +1,22 @@
+{
+  "started_at": "2026-10-17T19:24:40.750304+00:00",
+  "finished_at": "2026-10-17T19:24:42.758533+00:00",
+  "snapshot": "/private/tmp/pdos-s4-publication-focj048c",
+  "command": [
+    "-m",
+    "alembic",
+    "check"
+  ],
+  "exit": 0,
+  "target": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "before_head": "s0_0777",
+    "after_head": "s0_0777"
+  },
+  "source_changed": [],
+  "real_model_calls": 0,
+  "real_KMS_calls": 0
+}

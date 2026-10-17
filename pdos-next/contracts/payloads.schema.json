@@ -15404,6 +15404,437 @@
       ],
       "title": "PlatformLinkInput",
       "type": "object"
+    },
+    "npi.manufacturing_baseline.publish": {
+      "$defs": {
+        "Applicability": {
+          "additionalProperties": false,
+          "properties": {
+            "site": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Site"
+            },
+            "lines": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/ResourceRef"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lines"
+            },
+            "conditions": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SourcedText"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "valid_from": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Valid From"
+            },
+            "valid_until": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Valid Until"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/Source"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "sources"
+          ],
+          "title": "Applicability",
+          "type": "object"
+        },
+        "ObjectRef": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "work_instruction",
+                "control_plan",
+                "manufacturing_baseline"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "revision"
+          ],
+          "title": "ObjectRef",
+          "type": "object"
+        },
+        "RequirementGroup": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "tooling",
+                "fixture",
+                "equipment",
+                "line",
+                "person"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "requirements": {
+              "items": {
+                "$ref": "#/$defs/ResourceRequirement"
+              },
+              "title": "Requirements",
+              "type": "array"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/Source"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "kind",
+            "requirements",
+            "sources"
+          ],
+          "title": "RequirementGroup",
+          "type": "object"
+        },
+        "ResourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "enum": [
+                "equipment",
+                "fixture",
+                "person",
+                "line",
+                "tooling"
+              ],
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "kind"
+          ],
+          "title": "ResourceRef",
+          "type": "object"
+        },
+        "ResourceRequirement": {
+          "additionalProperties": false,
+          "properties": {
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/Source"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            },
+            "operation_keys": {
+              "default": [],
+              "items": {
+                "maxLength": 80,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9_-]+$",
+                "type": "string"
+              },
+              "title": "Operation Keys",
+              "type": "array"
+            },
+            "resource": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/ResourceRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "text",
+            "sources"
+          ],
+          "title": "ResourceRequirement",
+          "type": "object"
+        },
+        "Source": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "line": {
+              "minimum": 1,
+              "title": "Line",
+              "type": "integer"
+            },
+            "quote": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Quote",
+              "type": "string"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "line",
+            "quote"
+          ],
+          "title": "Source",
+          "type": "object"
+        },
+        "SourcedText": {
+          "additionalProperties": false,
+          "properties": {
+            "text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/Source"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "text",
+            "sources"
+          ],
+          "title": "SourcedText",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "baseline": {
+          "$ref": "#/$defs/ObjectRef"
+        },
+        "purpose": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "applicability": {
+          "$ref": "#/$defs/Applicability"
+        },
+        "requirements": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/RequirementGroup"
+          },
+          "title": "Requirements",
+          "type": "array"
+        },
+        "risk": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourcedText"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "packaging": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourcedText"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "reaction_plan": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourcedText"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "previous_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Id"
+        },
+        "expected_previous_revision": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Previous Revision"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/Source"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "project_id",
+        "baseline",
+        "purpose",
+        "applicability",
+        "reason",
+        "sources"
+      ],
+      "title": "PublishPayload",
+      "type": "object"
     }
   },
   "scope": "implemented local domain slices; real AI qualification and formal exits are separate"

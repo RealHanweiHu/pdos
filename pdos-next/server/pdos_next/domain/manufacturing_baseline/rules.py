@@ -117,7 +117,10 @@ def check_material(payload, process, documents):
                     "工序资料已不是当前或来源需重核。",
                 )
                 require(
-                    not (payload.visibility == "category" and row.get("visibility") != "product"),
+                    row.get("visibility") in {"private", "category", "audience"}
+                    and not (
+                        payload.visibility != "private" and row.get("visibility") == "private"
+                    ),
                     "FORBIDDEN_SCOPE",
                     "私人工序资料不能被共享基线扩大。",
                     403,

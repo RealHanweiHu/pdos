@@ -225,6 +225,19 @@
       ],
       "payload_schema": "payloads.schema.json",
       "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "npi.manufacturing_baseline.publish",
+      "write_tier": "T2",
+      "executor": "named_qualified_manufacturing",
+      "event": "manufacturing_baseline.published",
+      "purpose": "Named publication of exact fixed manufacturing process, work instructions, control plans, applicability and source-backed declared requirements. Retains unknown asset qualification and separate Pilot readiness/manufacturing release; no external effect.",
+      "canonical_policy_preserved": [
+        "release.engineering.approve:T2",
+        "release.manufacturing.approve:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
     }
   ]
 }

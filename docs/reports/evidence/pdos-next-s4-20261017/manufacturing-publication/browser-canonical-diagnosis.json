@@ -1,0 +1,13 @@
+{
+  "actual_http_status": 200,
+  "original_command_key_preserved": true,
+  "different_paths": [
+    "payload.applicability.lines",
+    "payload.applicability.conditions",
+    "payload.applicability.valid_from",
+    "payload.applicability.valid_until"
+  ],
+  "values_omitted_from_report": true,
+  "additional_read_only_inputs_request": true,
+  "execute_requests": 0
+}

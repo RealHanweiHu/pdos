@@ -1,0 +1,56 @@
+{
+  "started_at": "2026-10-17T19:23:30.607993+00:00",
+  "finished_at": "2026-10-17T19:23:36.127551+00:00",
+  "snapshot": "/private/tmp/pdos-s4-publication-focj048c",
+  "checks": [
+    {
+      "label": "request-flows",
+      "exit": 0,
+      "command": [
+        "node",
+        "../tools/s0_web_checkpoint.cjs",
+        "components/manufacturing-publication/publication-contract",
+        "app/api/[...path]/route"
+      ]
+    },
+    {
+      "label": "component-and-bff",
+      "exit": 0,
+      "command": [
+        "node",
+        "--test",
+        "src/components/manufacturing-publication/manufacturing-publication.test.mjs",
+        "src/app/api/manufacturing-publication-route.test.mjs"
+      ]
+    },
+    {
+      "label": "types",
+      "exit": 1,
+      "command": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "--noEmit",
+        "--pretty",
+        "false"
+      ]
+    },
+    {
+      "label": "eslint",
+      "exit": 1,
+      "command": [
+        "pnpm",
+        "exec",
+        "eslint",
+        "src/components/manufacturing-publication",
+        "src/app/api/manufacturing-publication-route.test.mjs",
+        "src/app/api/[...path]/route.ts",
+        "src/components/workspace.tsx"
+      ]
+    }
+  ],
+  "source_changed": [],
+  "database_or_http": false,
+  "excluded_old_namespace_assertion": false,
+  "exclusion_reason": null
+}

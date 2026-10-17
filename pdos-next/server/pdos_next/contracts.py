@@ -432,6 +432,15 @@ PAYLOADS.update(
     }
 )
 
+from pdos_next.domain.manufacturing_baseline.publication_schemas import (  # noqa: E402
+    OPERATION as MANUFACTURING_PUBLICATION_OPERATION,
+)
+from pdos_next.domain.manufacturing_baseline.publication_schemas import (  # noqa: E402
+    PublishPayload as ManufacturingPublicationPayload,
+)
+
+PAYLOADS[MANUFACTURING_PUBLICATION_OPERATION] = ManufacturingPublicationPayload
+
 from pdos_next.schemas.products.definition_items import DefinitionItemPatch  # noqa: E402
 
 PAYLOADS["product.definition.item.patch"] = DefinitionItemPatch

@@ -17,6 +17,8 @@ const resourceInspectPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA
 const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 const manufacturingPreparationPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/manufacturing-preparations(?:\/inputs|\/(?:work_instruction|control_plan|manufacturing_baseline)\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})?$/;
 const manufacturingPreparationCommands = new Set(["npi.work_instruction.record", "npi.control_plan.record", "npi.manufacturing_baseline.record"]);
+const manufacturingPublicationPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/manufacturing-publications(?:\/inputs|\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
+const manufacturingPublicationCommands = new Set(["npi.manufacturing_baseline.publish"]);
 const qualityChangePaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/(?:quality-execution(?:\/inputs)?|change-execution(?:\/(?:inputs|captures|order-context|selection-material|implementation-captures))?)$/;
 const qualityFollowupPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/quality-followup(?:\/inputs)?$/;
 const capaCandidatePaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/capa-candidates$/;
@@ -44,8 +46,9 @@ function validFollowupCommand(value: unknown, productId: string, operations = qu
   // The host derives and checks completeness/ACL/currentness; never reconstruct this read set.
   return true;
 }
-function validManufacturingCommand(value: unknown, productId: string): boolean {
-  if (!isRecord(value) || Object.keys(value).some(key => !["command_id", "idempotency_key", "operation", "category_id", "product_id", "expected_revision", "payload", "source_read_set"].includes(key)) || typeof value.command_id !== "string" || !uuid.test(value.command_id) || typeof value.idempotency_key !== "string" || !uuid.test(value.idempotency_key) || typeof value.operation !== "string" || !manufacturingPreparationCommands.has(value.operation) || typeof value.product_id !== "string" || !uuid.test(value.product_id) || value.product_id.toLowerCase() !== productId.toLowerCase() || !positiveRevision(value.expected_revision) || !isRecord(value.payload) || typeof value.payload.project_id !== "string" || !uuid.test(value.payload.project_id) || !isRecord(value.payload.process) || typeof value.payload.process.id !== "string" || !uuid.test(value.payload.process.id) || !positiveRevision(value.payload.process.revision) || !Array.isArray(value.source_read_set) || value.source_read_set.length < 1) return false;
+function validManufacturingCommand(value: unknown, productId: string, publication = false): boolean {
+  const fixed = isRecord(value) && isRecord(value.payload) ? publication ? value.payload.baseline : value.payload.process : null;
+  if (!isRecord(value) || Object.keys(value).some(key => !["command_id", "idempotency_key", "operation", "category_id", "product_id", "expected_revision", "payload", "source_read_set"].includes(key)) || typeof value.command_id !== "string" || !uuid.test(value.command_id) || typeof value.idempotency_key !== "string" || !uuid.test(value.idempotency_key) || typeof value.operation !== "string" || !(publication ? manufacturingPublicationCommands : manufacturingPreparationCommands).has(value.operation) || typeof value.product_id !== "string" || !uuid.test(value.product_id) || value.product_id.toLowerCase() !== productId.toLowerCase() || !positiveRevision(value.expected_revision) || !isRecord(value.payload) || typeof value.payload.project_id !== "string" || !uuid.test(value.payload.project_id) || !isRecord(fixed) || typeof fixed.id !== "string" || !uuid.test(fixed.id) || !positiveRevision(fixed.revision) || (publication && fixed.kind !== "manufacturing_baseline") || !Array.isArray(value.source_read_set) || value.source_read_set.length < 1) return false;
   const seen = new Set<string>();
   for (const read of value.source_read_set) {
     if (!isRecord(read) || Object.keys(read).some(key => !["artifact_id", "expected_revision"].includes(key)) || typeof read.artifact_id !== "string" || !uuid.test(read.artifact_id) || !positiveRevision(read.expected_revision) || seen.has(read.artifact_id.toLowerCase())) return false;
@@ -55,6 +58,7 @@ function validManufacturingCommand(value: unknown, productId: string): boolean {
 }
 const longCommands = new Set([
   ...manufacturingPreparationCommands,
+  ...manufacturingPublicationCommands,
   ...qualityFollowupCommands,
   ...capaFactCommands,
   "test.results.import", "test.result.compute", "test.run.review", "test.disposition.decide",
@@ -94,9 +98,10 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const selectionMaterial = qualityChange && pathname.endsWith("/selection-material");
   const implementationCapture = qualityChange && pathname.endsWith("/implementation-captures");
   const manufacturingPreparation = manufacturingPreparationPaths.test(pathname);
+  const manufacturingPublication = manufacturingPublicationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (mcpManagement) {
     const recovering = pathname.endsWith("/recover"), method = recovering ? "POST" : "GET";
@@ -242,6 +247,16 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   } else if (resourceInspect) {
     if (request.method !== "POST") return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: "POST" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "请在正文中固定唯一试制资源范围。" }, { status: 422 });
+  } else if (manufacturingPublication) {
+    const input = pathname.endsWith("/inputs"), fixed = !input && !pathname.endsWith("/manufacturing-publications");
+    const method = input ? "POST" : "GET";
+    if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: method } });
+    for (const [key, value] of request.nextUrl.searchParams) {
+      const valid = !input && (fixed ? key === "revision" && /^[1-9]\d*$/.test(value) && positiveRevision(Number(value)) : key === "project_id" ? uuid.test(value) : key === "history_cursor" && value.length > 0 && value.length <= 2000);
+      if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "请选择唯一项目、固定发布版本或原历史游标。" }, { status: 422 });
+      query.set(key, value);
+    }
+    if (!input && !query.has(fixed ? "revision" : "project_id")) return Response.json({ code: "VALIDATION_FAILED", message: "请明确选择制造基线发布范围。" }, { status: 422 });
   } else if (manufacturingPreparation) {
     const input = pathname.endsWith("/inputs"), fixed = !input && !pathname.endsWith("/manufacturing-preparations");
     const method = input ? "POST" : "GET";
@@ -327,6 +342,11 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整原捕获请求与实际原文行。" }, { status: 422 }); }
       if (!validImplementationCapture(value)) return Response.json({ code: "VALIDATION_FAILED", message: "此入口只捕获明确变更、计划项与精确原文完整行，批准和实际输出由服务器核对。" }, { status: 422 });
     }
+    if (manufacturingPublication && request.method === "POST") {
+      let value: unknown;
+      try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整制造基线发布原请求。" }, { status: 422 }); }
+      if (!validManufacturingCommand(value, path[2], true)) return Response.json({ code: "VALIDATION_FAILED", message: "本入口只核对本型号、项目与固定制造基线的发布。" }, { status: 422 });
+    }
     if (manufacturingPreparation && request.method === "POST") {
       let value: unknown;
       try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整制造准备原请求。" }, { status: 422 }); }
@@ -352,7 +372,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     // the same source locks. Keep their transport budget aligned without retries.
     const deepRead = request.method === "GET" && (qualityChange || qualityFollowup || /\/verification-results$/.test(pathname));
     const extendedTransport = candidateCommand || factCommand || factPath || deepRead;
-    const timeout = extendedTransport ? 600000 : longCommand || qualityChange || qualityFollowup || manufacturingPreparation || /\/verification-results(?:\/|$)/.test(pathname) ? 180000 : 60000;
+    const timeout = extendedTransport ? 600000 : longCommand || qualityChange || qualityFollowup || manufacturingPreparation || manufacturingPublication || /\/verification-results(?:\/|$)/.test(pathname) ? 180000 : 60000;
     const response = await fetch(`${base}/${forwardPath.join("/")}${query.size ? `?${query}` : ""}`, {
       ...candidateTransportOptions(extendedTransport),
       method: request.method, headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },

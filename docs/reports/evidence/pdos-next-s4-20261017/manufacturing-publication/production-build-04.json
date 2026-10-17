@@ -1,0 +1,14 @@
+{
+  "started_at": "2026-10-17T19:59:19.059674+00:00",
+  "finished_at": "2026-10-17T19:59:50.654363+00:00",
+  "snapshot": "/private/tmp/pdos-s4-publication-gb4y6jtn",
+  "command": [
+    "node",
+    "node_modules/next/dist/bin/next",
+    "build",
+    "--webpack"
+  ],
+  "exit": 0,
+  "source_changed": [],
+  "external_network": "public Geist font fetch only; no business material or model/KMS calls"
+}

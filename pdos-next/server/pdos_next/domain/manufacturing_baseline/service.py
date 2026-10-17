@@ -345,8 +345,15 @@ def _retained_group(s, ctx, pid, row):
             )
         )
     )
+    request_bound = len(keys) == 1 and keys[0].digest == row.input_snapshot["request_digest"]
+    if not keys and receipt.actor_id != ctx.actor_id:
+        # A readable peer Receipt does not expose its author's private key row.
+        # The existing database check binds that Receipt under this caller only.
+        from pdos_next.receipt_request_binding import readable_receipt_request_bound
+
+        request_bound = readable_receipt_request_bound(s, ctx, pid, receipt.id)
     require(
-        len(audits) == len(outboxes) == len(keys) == 1
+        len(audits) == len(outboxes) == 1
         and audits[0].actor_id == row.owner_id
         and audits[0].operation == row.operation
         and outboxes[0].type == EVENTS[row.operation]
@@ -354,7 +361,7 @@ def _retained_group(s, ctx, pid, row):
         and outboxes[0].subject_id == row.id
         and outboxes[0].subject_revision == row.revision
         and outboxes[0].correlation_id == command.command_id
-        and keys[0].digest == row.input_snapshot["request_digest"],
+        and request_bound,
         "STORED_ATOM_INCOMPLETE",
         "固定准备缺同一操作的唯一审计、事件或原请求关联。",
         503,

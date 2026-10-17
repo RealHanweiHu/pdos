@@ -132,6 +132,7 @@ EVENTS = {
     "npi.work_instruction.record": "work_instruction.recorded",
     "npi.control_plan.record": "control_plan.recorded",
     "npi.manufacturing_baseline.record": "manufacturing_baseline.recorded",
+    "npi.manufacturing_baseline.publish": "manufacturing_baseline.published",
     "build.create": "build.created",
     "build.readiness.compute": "readiness.computed",
     "build.engineering.authorize": "build.engineering_authorization_decided",
