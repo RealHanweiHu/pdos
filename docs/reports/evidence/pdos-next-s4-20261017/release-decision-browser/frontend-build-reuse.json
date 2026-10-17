@@ -1,0 +1,11 @@
+{
+  "built_snapshot": "/private/tmp/pdos-s4-release-vb2f936l",
+  "previous_build": "../release-packages/production-build-02.json",
+  "release_runtime_files_unchanged": {
+    "pdos-next/web/src/components/manufacturing/release-packages.tsx": "16ac612bb0d70eb95fa478fab562cf1accf787d03c588b6381006226ec36af43",
+    "pdos-next/web/src/components/manufacturing/release-packages.module.css": "5974044d8e06436487c813a1c33193a803d51735622ed5199ef0bd3ae172d188",
+    "pdos-next/web/src/lib/releases.ts": "6f8315b4b7f7743b71ef689c74903934b82c924433a7f58ee5d6c5a556ae740b",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "8795597ee632c8f186b44b97ca92fc205af9938a4f2ec4e962793d3cf6c3f278"
+  },
+  "scope": "Existing production build reused for actual release decision UI; no general UI acceptance claim"
+}

@@ -43,7 +43,7 @@ from .schemas import PolicyBasis, ReleaseCheck, ReleaseScope, SubjectConfigurati
 POLICY_OPERATION = "release.policy.import"
 POLICY_EVENT = "release.policy_imported"
 POLICY_FAMILY = "release_policy_fact"
-_READ_SCHEMA = "pdos-release-policy-read-v1"
+_READ_SCHEMA = "pdos-release-policy-read-v2"
 FACT_FIELDS = (
     "id",
     "tenant_id",

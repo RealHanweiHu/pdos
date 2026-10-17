@@ -124,6 +124,35 @@ def rebuilt(case, **updates):
     )
 
 
+@pytest.mark.parametrize(
+    ("check_state", "expected"),
+    [("satisfied", "READY"), ("unknown", "UNKNOWN"), ("blocked", "BLOCKED")],
+)
+def test_explicit_empty_lots_and_lines_keep_the_actual_professional_checks(
+    case, check_state, expected
+):
+    empty = case.payload.release_scope.model_copy(update={"lots": (), "lines": ()})
+    payload = case.payload.model_copy(update={"release_scope": empty})
+    checks = tuple(
+        check.model_copy(update={"release_scope": empty, "state": check_state})
+        for check in case.material.checks
+    )
+    selected = set(rules.selected_objects(payload))
+    material = case.material.model_copy(
+        update={
+            "release_scope": empty,
+            "checks": checks,
+            "objects": tuple(v for v in case.material.objects if v.ref in selected),
+        }
+    )
+    plan = rules.assemble(payload, material, owner_id=case.actor)
+    for discipline in ("engineering", "manufacturing"):
+        assessment = rules.evaluate(plan, discipline, empty, at=AT)
+        assert assessment.state == expected
+        assert len(assessment.checks) == 1
+        assert assessment.checks[0].state == check_state
+
+
 def assert_reason(call, code="SOURCE_STALE"):
     with pytest.raises(DomainError) as error:
         call()

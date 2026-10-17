@@ -209,7 +209,7 @@ def _overlap(left, right):
         return False
     for key in ("lots", "lines", "regions"):
         a, b = getattr(left, key), getattr(right, key)
-        if a is not None and b is not None and not set(a) & set(b):
+        if a is not None and b is not None and (a or b) and not set(a) & set(b):
             return False
     return True
 

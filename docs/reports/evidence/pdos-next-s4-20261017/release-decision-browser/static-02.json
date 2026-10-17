@@ -1,0 +1,47 @@
+{
+  "owned_files": {
+    "pdos-next/server/tests/release_policy_transactions/test_decisions.py": "0784cec05e0ef9d21f27a14e1ef492d15b717518287db00a23cca75e23439112",
+    "pdos-next/server/tests/release_policy_browser_seed/__init__.py": "df30f4cf544638006fa6a08400e747026230136c2259d1dbb4b4f629979a4a03",
+    "pdos-next/server/tests/release_policy_browser_seed/harness.py": "a1ee773a9b1691e7fcc0eebafec3088e9283ab85b97811e41309958e200c60a0",
+    "pdos-next/server/pdos_next/domain/release/rules.py": "db34572764bc36c71e83db5bcd0b4e6278f7f438fd9a283c5a84c6e3d84246ea",
+    "pdos-next/server/pdos_next/domain/release/policy_rules.py": "368897706d1c0bea15e966b8ddc9faa6865659a1d7f28c1606c1e9ddb8da4d25",
+    "pdos-next/server/pdos_next/domain/release/policy_owner.py": "82d7f029a265f53031c0ccd27dddb7352a27a9bd381433aaa57ed1ff46bff5be",
+    "pdos-next/server/tests/release/test_rules.py": "e156703f07b63fc17d6f5b014565f487ecdc4fcf01b050678ff43b28e2d38379",
+    "pdos-next/server/tests/release/test_policy_rules.py": "076db3f54b59d26760259f8369eca782a9cae2a349d32e874869a6753415b2b1"
+  },
+  "checks": [
+    {
+      "command": [
+        "ruff",
+        "check",
+        "pdos-next/server/tests/release_policy_transactions/test_decisions.py",
+        "pdos-next/server/tests/release_policy_browser_seed/__init__.py",
+        "pdos-next/server/tests/release_policy_browser_seed/harness.py",
+        "pdos-next/server/pdos_next/domain/release/rules.py",
+        "pdos-next/server/pdos_next/domain/release/policy_rules.py",
+        "pdos-next/server/pdos_next/domain/release/policy_owner.py",
+        "pdos-next/server/tests/release/test_rules.py",
+        "pdos-next/server/tests/release/test_policy_rules.py"
+      ],
+      "exit": 0,
+      "output": "All checks passed!\n"
+    },
+    {
+      "command": [
+        "ruff",
+        "format",
+        "--check",
+        "pdos-next/server/tests/release_policy_transactions/test_decisions.py",
+        "pdos-next/server/tests/release_policy_browser_seed/__init__.py",
+        "pdos-next/server/tests/release_policy_browser_seed/harness.py",
+        "pdos-next/server/pdos_next/domain/release/rules.py",
+        "pdos-next/server/pdos_next/domain/release/policy_rules.py",
+        "pdos-next/server/pdos_next/domain/release/policy_owner.py",
+        "pdos-next/server/tests/release/test_rules.py",
+        "pdos-next/server/tests/release/test_policy_rules.py"
+      ],
+      "exit": 0,
+      "output": "8 files already formatted\n"
+    }
+  ]
+}

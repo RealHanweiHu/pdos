@@ -132,6 +132,30 @@ def test_actual_named_predicates_and_separate_professional_candidates(case):
     assert case.policy.valid_until is None
 
 
+@pytest.mark.parametrize("missing", [False, True])
+def test_explicit_empty_dimensions_match_without_omitting_required_evidence(case, missing):
+    selected = case.selected.model_copy(update={"lots": (), "lines": ()})
+    policy = case.policy.model_copy(
+        update={
+            "release_scope": selected,
+            "rules": tuple(
+                rule.model_copy(update={"scope": selected}) for rule in case.policy.rules
+            ),
+        }
+    )
+    _, checks = policy_rules.evaluate(
+        policy,
+        **{
+            **case.kwargs,
+            "release_scope": selected,
+            "facts": case.facts[1:] if missing else case.facts,
+        },
+    )
+    assert len(checks) == 2 and all(check.applicable for check in checks)
+    assert checks[0].state == ("unknown" if missing else "satisfied")
+    assert checks[1].state == "satisfied"
+
+
 def test_explicit_null_policy_boundaries_add_no_ttl_or_unknown(case):
     policy = case.policy.model_copy(update={"valid_from": None, "valid_until": None})
     _, checks = policy_rules.evaluate(policy, **case.kwargs)

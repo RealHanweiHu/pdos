@@ -1,0 +1,29 @@
+{
+  "label": "before-preview",
+  "package": {
+    "id": "ab3b80d2-4940-471c-b9f5-296b9a1ad7ff",
+    "revision": 2,
+    "receipt_id": "9a0dc049-2432-4183-b1e5-00c9105cdfb7"
+  },
+  "applicability": "current",
+  "assessments": {
+    "engineering": {
+      "discipline": "engineering",
+      "state": "READY",
+      "checks": [],
+      "blocked": [],
+      "unknown": [],
+      "conditions": []
+    },
+    "manufacturing": {
+      "discipline": "manufacturing",
+      "state": "READY",
+      "checks": [],
+      "blocked": [],
+      "unknown": [],
+      "conditions": []
+    }
+  },
+  "decisions": [],
+  "proofs": []
+}

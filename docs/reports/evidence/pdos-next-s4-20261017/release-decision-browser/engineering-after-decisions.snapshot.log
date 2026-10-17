@@ -1,0 +1,123 @@
+### Page
+- Page URL: http://127.0.0.1:58703/?area=category&category=c636c6c8-6207-4702-814a-384341ebac8e&bench=projects&view=builds&task=prepare&product=09863b6e-91f1-49a3-be75-4e4211c2d8f3&project=0939bf78-f0f0-454d-a13b-9ba7b95096e9
+- Page Title: PDOS · 研发工作区
+### Snapshot
+```yaml
+- region "固定发布包与分别决定" [ref=f2e277]:
+  - generic [ref=f2e278]:
+    - generic [ref=f2e279]:
+      - heading "固定发布包与分别决定" [level=2] [ref=f2e280]
+      - paragraph [ref=f2e283]: 固定资料与用途，分别办理工程、制造决定；客户承认、外部接收和实际生效继续保留独立事实。
+    - button "刷新发布包" [ref=f2e284]
+  - status [ref=f2e363]: 已保存并取得原回执；工程、制造及外部接收生效仍分别读取。
+  - status [ref=f2e364]: 已保存本次工程具名决定，回执 62b47d29-924b-4231-81a0-6c302ca96521。继续办理须明确选择新草稿。
+  - generic [ref=f2e365]:
+    - button "新建固定包草稿" [ref=f2e366]
+    - generic [ref=f2e367]:
+      - text: 已保存固定包
+      - combobox "已保存固定包" [ref=f2e368]:
+        - option "选择一份固定包按需回读"
+        - option "v2 · Verify preparation · 未核对" [selected]
+        - option "v1 · Verify preparation · 未核对"
+  - region "已保存固定发布包" [ref=f2e369]:
+    - heading "固定发布包 v2" [level=3] [ref=f2e370]
+    - paragraph [ref=f2e371]: 当前包版本 · 当前来源可核
+    - generic [ref=f2e372]:
+      - paragraph [ref=f2e373]: 用途：Verify preparation
+      - generic [ref=f2e374]:
+        - generic [ref=f2e375]:
+          - term [ref=f2e376]: 产品定义
+          - definition [ref=f2e377]: 8004f62f-b895-43ac-b389-5a6bde2a9c3b · v1
+        - generic [ref=f2e378]:
+          - term [ref=f2e379]: 工程配置
+          - definition [ref=f2e380]: 5df18996-1655-453e-967b-b6f456f611fa · v1
+        - generic [ref=f2e381]:
+          - term [ref=f2e382]: 制造配置
+          - definition [ref=f2e383]: bb292075-207d-433f-81d1-c741092b65d0 · v1
+        - generic [ref=f2e384]:
+          - term [ref=f2e385]: 数量
+          - definition [ref=f2e386]: 未知／未覆盖
+        - generic [ref=f2e387]:
+          - term [ref=f2e388]: 单位
+          - definition [ref=f2e389]: 未知／未覆盖
+        - generic [ref=f2e390]:
+          - term [ref=f2e391]: 场地
+          - definition [ref=f2e392]: SYN-INTERNAL-LAB
+        - generic [ref=f2e393]:
+          - term [ref=f2e394]: 批次
+          - definition [ref=f2e395]: 明确为空，不代表全部
+        - generic [ref=f2e396]:
+          - term [ref=f2e397]: 产线
+          - definition [ref=f2e398]: 明确为空，不代表全部
+        - generic [ref=f2e399]:
+          - term [ref=f2e400]: 地区
+          - definition [ref=f2e401]: CN
+      - paragraph [ref=f2e402]: 办理说明：Explicit new package fixes controlled policy without rewriting the first version
+      - group [ref=f2e403]:
+        - generic "固定文档（1）" [ref=f2e404] [cursor=pointer]
+      - group [ref=f2e405]:
+        - generic "固定原件引用及完整内容" [ref=f2e406] [cursor=pointer]
+    - generic [ref=f2e407]:
+      - region "工程范围检查" [ref=f2e408]:
+        - heading "工程：已满足本范围检查" [level=4] [ref=f2e409]
+        - generic [ref=f2e410]:
+          - paragraph [ref=f2e412]: 规则 engineering.fixed_document@1；责任角色：engineering。实际具名谓词满足。
+          - paragraph [ref=f2e413]: 不可豁免
+      - region "制造范围检查" [ref=f2e414]:
+        - heading "制造：已满足本范围检查" [level=4] [ref=f2e415]
+        - generic [ref=f2e416]:
+          - paragraph [ref=f2e418]: 规则 manufacturing.fixed_publication@1；责任角色：manufacturing。实际具名谓词满足。
+          - paragraph [ref=f2e419]: 不可豁免
+    - generic [ref=f2e420]:
+      - heading "工程已记录决定" [level=4] [ref=f2e421]
+      - group [ref=f2e422]:
+        - generic "决定 v1 · 适用依据当前" [ref=f2e423] [cursor=pointer]
+    - generic [ref=f2e424]:
+      - heading "制造已记录决定" [level=4] [ref=f2e425]
+      - paragraph [ref=f2e426]: 尚无具名决定。
+    - paragraph [ref=f2e427]: 工程与制造分别负责其范围。客户承认、外部接收和实际生效须分别记录，固定包与内部决定不代替这些事实。
+  - group "本次明确办理" [ref=f2e428]:
+    - generic [ref=f2e430]:
+      - text: 办理内容
+      - combobox "办理内容" [ref=f2e431]:
+        - option "保存固定包（不作放行决定）"
+        - option "工程具名决定" [selected]
+        - option "制造具名决定"
+    - status [ref=f2e432]: 工程包整体检查：已满足本范围检查；可读取核对本次选定范围，是否可决定仍由实际检查判断。
+    - generic [ref=f2e433]:
+      - text: 高级材料 JSON
+      - textbox "高级材料 JSON" [ref=f2e434]:
+        - /placeholder: 粘贴本项目精确固定版本、范围、用途及真实原件引用
+        - text: "{ \"package\": { \"id\": \"5ed514c4-0b56-473f-86a8-2abcb665bebf\", \"revision\": 2 }, \"release_scope\": { \"quantity\": null, \"unit\": null, \"lots\": [], \"site\": \"SYN-INTERNAL-LAB\", \"lines\": [], \"regions\": [ \"CN\" ] }, \"purpose\": \"Verify preparation\", \"expiry\": null, \"sources\": [ { \"kind\": \"artifact\", \"id\": \"fac3995e-5d62-485b-854e-0e7401b72813\", \"revision\": 1, \"position\": \"line:1;quote_sha256:afb884ba4aeb9cd4cf591a815751d912a5ec310c7eb127395032f9165b4c83b6\" } ], \"reason\": \"Named decision solely for this explicit documentation scope\" }"
+    - group [ref=f2e435]:
+      - generic "材料填写说明" [ref=f2e436] [cursor=pointer]
+  - region "本次声明材料" [ref=f2e437]:
+    - heading "本次声明，待服务器核对" [level=3] [ref=f2e438]
+    - generic [ref=f2e439]:
+      - paragraph [ref=f2e440]: 用途：Verify preparation
+      - paragraph [ref=f2e441]: 基于固定包 5ed514c4-0b56-473f-86a8-2abcb665bebf · v2
+      - generic [ref=f2e442]:
+        - generic [ref=f2e443]:
+          - term [ref=f2e444]: 数量
+          - definition [ref=f2e445]: 未知／未覆盖
+        - generic [ref=f2e446]:
+          - term [ref=f2e447]: 单位
+          - definition [ref=f2e448]: 未知／未覆盖
+        - generic [ref=f2e449]:
+          - term [ref=f2e450]: 场地
+          - definition [ref=f2e451]: SYN-INTERNAL-LAB
+        - generic [ref=f2e452]:
+          - term [ref=f2e453]: 批次
+          - definition [ref=f2e454]: 明确为空，不代表全部
+        - generic [ref=f2e455]:
+          - term [ref=f2e456]: 产线
+          - definition [ref=f2e457]: 明确为空，不代表全部
+        - generic [ref=f2e458]:
+          - term [ref=f2e459]: 地区
+          - definition [ref=f2e460]: CN
+      - paragraph [ref=f2e461]: 办理说明：Named decision solely for this explicit documentation scope
+      - group [ref=f2e462]:
+        - generic "固定原件引用及完整内容" [ref=f2e463] [cursor=pointer]
+  - button "读取并核对本次材料" [disabled]
+```
+

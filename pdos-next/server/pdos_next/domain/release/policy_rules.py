@@ -44,7 +44,7 @@ def _covers(bound, selected):
         if b is None:
             if a is not None:
                 return False
-        elif not b or a is None or not set(b) <= set(a):
+        elif a is None or not set(b) <= set(a):
             return False
     if selected.site != bound.site:
         return False

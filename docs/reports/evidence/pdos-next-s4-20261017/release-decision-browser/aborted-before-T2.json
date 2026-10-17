@@ -1,0 +1,11 @@
+{
+  "cause": "Actual page assessments lost UNKNOWN policy checks because both empty ranges were treated as disjoint",
+  "decisions": 0,
+  "release_proofs": 0,
+  "read_evidence": "read-before-preview.json",
+  "private_bearers_removed": true,
+  "cookie_cleared": true,
+  "own_Next_stopped": true,
+  "fixture_finish_signaled": true,
+  "database_and_backup_retained": true
+}

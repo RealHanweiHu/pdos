@@ -1,0 +1,9 @@
+### Result
+{"reload_command_posts":[],"explicit_replay_visible":true}
+### Ran Playwright code
+```js
+await (async page => { const posts=[]; const target="http://127.0.0.1:58703/api/v1/categories/c636c6c8-6207-4702-814a-384341ebac8e/commands"; const observe=request=>{if(request.method()==="POST"&&request.url()===target)posts.push(request.postDataJSON()?.operation);};page.on("request",observe);await page.reload();const replay=page.getByRole("region",{name:"固定发布包与分别决定",exact:true}).getByRole("button",{name:"重放并核对同一原提交",exact:true});await replay.waitFor({state:"visible"});await page.getByRole("combobox",{name:"已保存固定包",exact:true}).waitFor();page.off("request",observe);if(posts.length)throw new Error("Reload dispatched a command");return {reload_command_posts:posts,explicit_replay_visible:await replay.isVisible()};})(page);
+```
+### Page
+- Page URL: http://127.0.0.1:58703/?area=category&category=c636c6c8-6207-4702-814a-384341ebac8e&bench=projects&view=builds&task=prepare&product=09863b6e-91f1-49a3-be75-4e4211c2d8f3&project=0939bf78-f0f0-454d-a13b-9ba7b95096e9
+- Page Title: PDOS · 研发工作区

@@ -5,6 +5,7 @@ It grants no physical resource qualification, external receipt or production use
 """
 
 import json
+import os
 from copy import deepcopy
 from datetime import timedelta
 from hashlib import sha256
@@ -263,6 +264,13 @@ def test_controlled_policy_and_independent_named_decisions(publication_case, mon
     )
     command, ready = inputs(work, "release.package.assemble", package_payload)
     assert {v["state"] for v in ready["assessments"].values()} == {"READY"}
+    for discipline, key in (
+        ("engineering", "engineering.fixed_document"),
+        ("manufacturing", "manufacturing.fixed_publication"),
+    ):
+        checks = ready["assessments"][discipline]["checks"]
+        assert len(checks) == 1 and checks[0]["key"] == key
+        assert checks[0]["state"] == "satisfied" and checks[0]["applicable"] is True
     result = send(work, command)
     assert result.status_code == 200, result.text
     second = fixed(work, result.json()["subject_id"])
@@ -275,39 +283,55 @@ def test_controlled_policy_and_independent_named_decisions(publication_case, mon
         "sources": [source(policy_artifact, policy_line)],
         "reason": "Named decision solely for this explicit documentation scope",
     }
-    decisions = []
-    for discipline, actor in [("engineering", setup.human), ("manufacturing", setup.peer)]:
-        operation = f"release.{discipline}.approve"
-        command, prepared = inputs(work, operation, decision_payload, actor)
-        assert prepared["candidate"]["assessment"]["state"] == "READY"
-        preview = send(work, command, actor=actor, preview=True)
-        assert preview.status_code == 200, preview.text
-        preview_value = preview.json()
-        assert preview_value["write_tier"] == "T2" and preview_value["expires_at"] is None
-        command = preview_value["command"]
-        if discipline == "manufacturing":
-            before = upstream.snapshots(work, MODELS)
-            real_finalizer = service.finalize_receipt
+    if os.environ.get("PDOS_RELEASE_POLICY_BROWSER_SEED") == "1":
+        from release_policy_browser_seed.harness import run_browser_seed
 
-            def fail_tail(*args, **kwargs):
-                raise DomainError("INTEGRATION_REQUIRED", "One deliberate terminal rollback", 503)
-
-            monkeypatch.setattr(service, "finalize_receipt", fail_tail)
-            failed = send(work, command, actor=actor)
-            assert failed.status_code == 503, failed.text
-            assert upstream.snapshots(work, MODELS) == before
-            monkeypatch.setattr(service, "finalize_receipt", real_finalizer)
-        response = send(work, command, actor=actor)
-        assert response.status_code == 200, response.text
-        receipt = response.json()
-        decisions.append(receipt["subject_id"])
-        replay = send(work, deepcopy(command), actor=actor)
-        assert replay.status_code == 200 and replay.json() == receipt
-        saved = fixed(work, second["id"])
-        assert len(saved["decisions"]) == len(decisions)
-        assert {v["discipline"] for v in saved["decisions"]} == (
-            {"engineering"} if discipline == "engineering" else {"engineering", "manufacturing"}
+        decisions = run_browser_seed(
+            work,
+            package=second,
+            decision_payload=decision_payload,
+            policy_ref={
+                "id": original_receipt["subject_id"],
+                "revision": original_receipt["subject_revision"],
+                "source": policy_input["source"],
+            },
         )
+    else:
+        decisions = []
+        for discipline, actor in [("engineering", setup.human), ("manufacturing", setup.peer)]:
+            operation = f"release.{discipline}.approve"
+            command, prepared = inputs(work, operation, decision_payload, actor)
+            assert prepared["candidate"]["assessment"]["state"] == "READY"
+            preview = send(work, command, actor=actor, preview=True)
+            assert preview.status_code == 200, preview.text
+            preview_value = preview.json()
+            assert preview_value["write_tier"] == "T2" and preview_value["expires_at"] is None
+            command = preview_value["command"]
+            if discipline == "manufacturing":
+                before = upstream.snapshots(work, MODELS)
+                real_finalizer = service.finalize_receipt
+
+                def fail_tail(*args, **kwargs):
+                    raise DomainError(
+                        "INTEGRATION_REQUIRED", "One deliberate terminal rollback", 503
+                    )
+
+                monkeypatch.setattr(service, "finalize_receipt", fail_tail)
+                failed = send(work, command, actor=actor)
+                assert failed.status_code == 503, failed.text
+                assert upstream.snapshots(work, MODELS) == before
+                monkeypatch.setattr(service, "finalize_receipt", real_finalizer)
+            response = send(work, command, actor=actor)
+            assert response.status_code == 200, response.text
+            receipt = response.json()
+            decisions.append(receipt["subject_id"])
+            replay = send(work, deepcopy(command), actor=actor)
+            assert replay.status_code == 200 and replay.json() == receipt
+            saved = fixed(work, second["id"])
+            assert len(saved["decisions"]) == len(decisions)
+            assert {v["discipline"] for v in saved["decisions"]} == (
+                {"engineering"} if discipline == "engineering" else {"engineering", "manufacturing"}
+            )
     with upstream.session(work) as s:
         actual = list(
             s.scalars(
