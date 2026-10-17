@@ -53,7 +53,8 @@ def test_followup_keeps_actual_session_goal_outcome_sources_and_no_old_authority
     with Session(setup.admin) as session:
         old, new = session.get(AgentRun, parent), session.get(AgentRun, child)
         assert old.state == "completed" and new.state == "queued"
-        assert new.continued_from_id == parent and new.versions == {}
+        assert new.continued_from_id == parent
+        assert new.versions == {"checkpoint_layout": "session-run-ns/v1"}
         assert new.session_id == old.session_id and new.requester_id == old.requester_id
         assert new.held_tokens == new.used_tokens == 0
     host = Bootstrap(setup.engine)

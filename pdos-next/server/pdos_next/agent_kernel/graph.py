@@ -113,6 +113,7 @@ def _adoption_index(scope, pending, envelope):
 
 
 class GraphState(TypedDict, total=False):
+    run_id: str
     goal: str
     messages: list[dict]
     loaded: list[dict]
@@ -197,6 +198,7 @@ class AgentKernel:
                 loaded[name] = load_binding(skill)
                 messages.append({"role": "user", "content": skill.content})
             return {
+                "run_id": str(scope.run_id),
                 "messages": messages,
                 "loaded": list(loaded.values()),
                 "model_skills": [],
@@ -580,10 +582,22 @@ class AgentKernel:
 
         trusted = answer if isinstance(answer, VerifiedCategoryAdoption) else None
         envelope = trusted.envelope() if trusted else answer
-        compiled = self.compile(
-            scope, checkpointer=checkpointer, preload=preload, trusted_adoption=trusted,
+        from .session_checkpoints import SESSION_LAYOUT, SessionRunSaver, main_checkpoint_config
+
+        self.ports.current(scope)
+        layout = None
+        layout_for = getattr(self.ports, "checkpoint_layout", None)
+        if scope.isolation == "main" and callable(layout_for):
+            layout = layout_for(scope)
+        address = main_checkpoint_config(scope, layout)["configurable"]
+        thread_id = address["thread_id"]
+        graph_saver = (
+            SessionRunSaver(checkpointer, scope)
+            if checkpointer is not None and layout == SESSION_LAYOUT else checkpointer
         )
-        thread_id = f"xiaopai:{scope.tenant_id}:{scope.session_id}:{scope.run_id}"
+        compiled = self.compile(
+            scope, checkpointer=graph_saver, preload=preload, trusted_adoption=trusted,
+        )
         if scope.isolation != "main":
             from pdos_next.service import digest
 
@@ -594,9 +608,10 @@ class AgentKernel:
             "configurable": {"thread_id": thread_id},
             "recursion_limit": 200,
         }
-        self.ports.current(scope)
         saved = compiled.get_state(config) if checkpointer is not None else None
         if saved and saved.values:
+            if saved.values.get("run_id", str(scope.run_id)) != str(scope.run_id):
+                raise DomainError("FORBIDDEN_SCOPE", "原检查点属于其他运行，不能恢复。", 403)
             restore_checkpoint = getattr(self.ports, "restore_checkpoint", None)
             if callable(restore_checkpoint):
                 restore_checkpoint(scope, saved.values)
@@ -627,7 +642,7 @@ class AgentKernel:
         else:
             if answer is not None:
                 raise DomainError("SOURCE_UNAVAILABLE", "恢复输入缺少原运行的持久检查点。")
-            payload = {"goal": goal}
+            payload = {"goal": goal, "run_id": str(scope.run_id)}
         with registered_graph_context("xiaopai"):
             result = compiled.invoke(payload, config)
             if (payload is None and answer is not None and not duplicate

@@ -1,6 +1,6 @@
 # 小Pai基于原工作继续
 
-适用 v1.1 §05.4、§06.7–8、§06.10–11。个人、品类及提案内运行共用同一续接入口。
+适用 v1.1 §05.4、§06.2、§06.7–8、§06.10–11。个人、品类及提案内运行共用同一续接入口。
 
 ## 页面办理
 
@@ -31,6 +31,8 @@
 - 原 `POST /v1/{personal|categories/{category_id}}/agent-runs` 增加可选 `continue_from_run_id`，续接时只提供该字段、新 `goal` 及 `idempotency_key`。对象、会话、来源和隐私范围由服务器绑定，不与客户端指定的范围字段混用。
 - `GET .../agent-runs/{run_id}/continuation` 返回本人原工作是否可继续及已有后续的原请求编号/目标；运行详情返回前后 Run 关联。GET 不派发执行。
 - 迁移 `s0_0772` 增加不可变 `continued_from_id`、同租户外键与单直接后续约束。追加前锁定原 Run；相同幂等编号串行重放，不因预算或配置更新重新绑定原请求。
-- 记忆和运行历史由原业务库维护，执行仍走既有 Temporal → Activity → LangGraph；每个 Run 的原检查点隔离与恢复方式保留。本轮没有替换既有检查点布局。
+- 记忆和运行历史由原业务库维护，执行仍走既有 Temporal → Activity → LangGraph。新受理 Run 固定 `checkpoint_layout=session-run-ns/v1`：同一会话共用 `xiaopai:{tenant_id}:{session_id}` 线程，底层检查点以 `run:{run_id}` 命名空间隔离。图内仍使用 LangGraph 自己的命名空间，服务器适配器只转换存储地址；等待、父检查点及 pending writes 保持原引用。
+- 布局来自服务器原 Run，模型与答复接口不能选择。每次工作保留自己的结果、工具调用与恢复点；后续追问经领域历史投影读取原目标及核对摘要，不把旧完整模型消息拼入新工作。隔离研究/抽取/MCP 子任务仍保留其既有作业隔离线程。
+- 没有布局记录的旧 Run 继续从原 `xiaopai:{tenant_id}:{session_id}:{run_id}` 线程恢复，不搬动或重放历史；旧记录沿新入口继续时，新 Run 使用会话线程。无法识别的布局返回版本冲突，不静默改用新线程或重新调用模型。现有 `s0_0772` 保持，无新增业务库迁移。
 
-见[本轮验证](../reports/evidence/pdos-next-m3-20261016/run-continuation/result.md)。真实模型资格、完整 S1 出口和长期记忆/正式规则的后续建设保持独立。
+见[续接与短记忆验证](../reports/evidence/pdos-next-m3-20261016/run-continuation/result.md)、[会话线程与实际进程恢复验证](../reports/evidence/pdos-next-m3-20261016/session-thread/result.md)。真实模型资格、完整 S1 出口和长期记忆/正式规则的后续建设保持独立。

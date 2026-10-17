@@ -17,8 +17,10 @@ from sqlalchemy.orm import Session
 from temporalio.client import Client
 
 from pdos_next.agent_kernel.bootstrap import Bootstrap
+from pdos_next.agent_kernel.execution import scope_for_run
 from pdos_next.agent_kernel.management import AgreementInput, register_agreement
 from pdos_next.agent_kernel.models import AgentRun, TenantSkillEnablement
+from pdos_next.agent_kernel.session_checkpoints import LAYOUT_KEY, main_checkpoint_config
 from pdos_next.agent_kernel.temporal_port import workflow_id
 from pdos_next.api import create_app
 from pdos_next.database import tenant_session
@@ -162,12 +164,15 @@ def temporal_state(identity, setup, *, result=False):
 def saved_checkpoint(identity, setup):
     with Session(setup.admin) as session:
         row = session.get(AgentRun, identity)
-        thread = f"xiaopai:{setup.tenant}:{row.session_id}:{identity}"
+        config = main_checkpoint_config(scope_for_run(row), row.versions.get(LAYOUT_KEY))
     url = os.environ["M2_TEST_CHECKPOINT_URL"].replace("postgresql+psycopg://", "postgresql://")
     with PostgresSaver.from_conn_string(url) as saver:
-        checkpoint = saver.get_tuple({"configurable": {"thread_id": thread}})
+        checkpoint = saver.get_tuple(config)
         assert checkpoint is not None
-        return thread, checkpoint.checkpoint["id"], checkpoint.metadata["step"]
+        return (
+            config["configurable"]["thread_id"],
+            checkpoint.checkpoint["id"], checkpoint.metadata["step"],
+        )
 
 
 def test_production_worker_restarts_waiting_run_and_committed_answer_becomes_real_t1_claim(
@@ -271,5 +276,103 @@ def test_cancel_while_production_worker_is_offline_remains_cancelled_after_resta
             print(json.dumps({"run_id": str(identity), "same_temporal_run": True,
                               "worker_processes": 2, "cancelled": True, "actual_claims": 0,
                               "held_tokens": 0, "real_model_calls": 0}))
+    finally:
+        worker.close()
+
+
+def test_continuation_uses_one_pg_thread_and_recovers_its_own_wait_after_worker_restart(
+    setup, monkeypatch, tmp_path
+):
+    ports, arguments, app, payload = prepare(setup, monkeypatch)
+    worker = WorkerProcess(setup, tmp_path, ports, arguments)
+    path = f"/v1/categories/{setup.category}/agent-runs"
+    try:
+        with TestClient(app) as api:
+            root_reply = api.post(path, headers=setup.headers, json=payload)
+            assert root_reply.status_code == 202, root_reply.text
+            root = UUID(root_reply.json()["run_id"])
+            process = worker.start()
+            wait_for(lambda: api.get(path + f"/{root}", headers=setup.headers)
+                     .json()["status"] == "waiting_input", process)
+            answer = api.post(path + f"/{root}/answers", headers=setup.headers, json={
+                "answers": {"region": "US"}, "idempotency_key": str(uuid4()),
+            })
+            assert answer.status_code == 202, answer.text
+            wait_for(lambda: api.get(path + f"/{root}", headers=setup.headers)
+                     .json()["status"] == "completed", process)
+            _, _, root_history = temporal_state(root, setup, result=True)
+            events = api.get(path + f"/{root}/events", headers=setup.headers).json()
+            candidate = next(row["event"] for row in events["items"]
+                             if row["event"]["type"] == "claim_candidate")
+            command_path = f"/v1/categories/{setup.category}/commands"
+            preview = api.post(command_path + "/preview", headers=setup.headers,
+                               json=candidate["command"])
+            assert preview.status_code == 200, preview.text
+            confirmed = api.post(command_path, headers=setup.headers,
+                                 json=preview.json()["command"])
+            assert confirmed.status_code == 200, confirmed.text
+            root_checkpoint = saved_checkpoint(root, setup)
+            worker.stop()
+
+            continuation = {
+                "goal": "Synthetic continued work", "idempotency_key": str(uuid4()),
+                "continue_from_run_id": str(root),
+            }
+            child_reply = api.post(path, headers=setup.headers, json=continuation)
+            assert child_reply.status_code == 202, child_reply.text
+            child = UUID(child_reply.json()["run_id"])
+            assert child_reply.json()["session_id"] == root_reply.json()["session_id"]
+            process = worker.start()
+            wait_for(lambda: api.get(path + f"/{child}", headers=setup.headers)
+                     .json()["status"] == "waiting_input", process)
+            child_temporal, _ = temporal_state(child, setup)
+            child_checkpoint = saved_checkpoint(child, setup)
+            assert child_checkpoint[0] == root_checkpoint[0]
+            assert child_checkpoint[1] != root_checkpoint[1]
+            assert saved_checkpoint(root, setup) == root_checkpoint
+            worker.stop()
+
+            answer = api.post(path + f"/{child}/answers", headers=setup.headers, json={
+                "answers": {"followup_scope": "Keep the original unknowns"},
+                "idempotency_key": str(uuid4()),
+            })
+            assert answer.status_code == 202, answer.text
+            process = worker.start()
+            wait_for(lambda: api.get(path + f"/{child}", headers=setup.headers)
+                     .json()["status"] == "completed", process)
+            temporal_run, result, history = temporal_state(child, setup, result=True)
+            assert temporal_run == child_temporal and result["status"] == "completed"
+            assert saved_checkpoint(root, setup) == root_checkpoint
+            assert saved_checkpoint(child, setup)[2] > child_checkpoint[2]
+            replay = api.post(path, headers=setup.headers, json=continuation)
+            assert replay.status_code == 202 and replay.json()["run_id"] == str(child)
+            with Session(setup.admin) as session:
+                for identity in (root, child):
+                    row = session.get(AgentRun, identity)
+                    assert row.held_tokens == 0 and row.state == "completed"
+                receipts = list(session.scalars(select(Receipt).where(
+                    Receipt.agent_run_id.in_([root, child]),
+                    Receipt.operation == "evidence.claim.record",
+                )))
+                assert len(receipts) == 1 and receipts[0].agent_run_id == root
+                assert session.get(Claim, receipts[0].subject_id) is not None
+            url = os.environ["M2_TEST_CHECKPOINT_URL"].replace(
+                "postgresql+psycopg://", "postgresql://"
+            )
+            with PostgresSaver.from_conn_string(url) as saver:
+                rows = list(saver.list({"configurable": {"thread_id": root_checkpoint[0]}}))
+            assert {row.config["configurable"]["checkpoint_ns"] for row in rows} == {
+                f"run:{root}", f"run:{child}",
+            }
+            assert {row.metadata["pdos_run_id"] for row in rows} == {str(root), str(child)}
+            print(json.dumps({
+                "root_run_id": str(root), "continued_run_id": str(child),
+                "temporal_run_id": temporal_run, "same_temporal_run_after_restart": True,
+                "one_conversation_thread": True, "independent_run_namespaces": 2,
+                "root_checkpoint_unchanged": True, "worker_processes": 3,
+                "history": history, "root_history": root_history,
+                "actual_claims": 1, "child_claims": 0, "held_tokens": 0,
+                "real_model_calls": 0,
+            }))
     finally:
         worker.close()

@@ -1,0 +1,40 @@
+.F.............                                                          [100%]
+=================================== FAILURES ===================================
+____ test_adapter_roundtrip_parent_pending_writes_list_and_nested_namespace ____
+
+    def test_adapter_roundtrip_parent_pending_writes_list_and_nested_namespace():
+        bound = scope()
+        storage = InMemorySaver()
+        adapter = SessionRunSaver(storage, bound)
+        config = {"configurable": {"thread_id": adapter.thread, "checkpoint_ns": "subtask:1"}}
+        first = empty_checkpoint()
+        saved = adapter.put(config, first, {"source": "input", "step": -1}, {})
+        second = empty_checkpoint()
+        later = adapter.put(saved, second, {"source": "loop", "step": 0}, {})
+        adapter.put_writes(later, [("result", {"synthetic": True})], "task-1", "path")
+        found = adapter.get_tuple(later)
+        assert found.config == later and found.parent_config == saved
+        assert found.pending_writes == [("task-1", "result", {"synthetic": True})]
+        assert found.metadata["pdos_run_id"] == str(bound.run_id)
+        assert found.metadata["pdos_session_id"] == str(bound.session_id)
+        assert [v.checkpoint["id"] for v in adapter.list(config)] == [second["id"], first["id"]]
+        assert [v.checkpoint["id"] for v in adapter.list(config, before=later, limit=1)] == [
+            first["id"]
+        ]
+        assert len(list(adapter.list(config, filter={"step": 0}))) == 1
+        assert list(adapter.list(None)) == []  # Bound root namespace; no global enumeration.
+        raw = next(storage.list({"configurable": {"thread_id": adapter.thread}}))
+        assert raw.config["configurable"]["checkpoint_ns"] == adapter.prefix + "|subtask:1"
+        assert adapter.get_next_version(None, None) == storage.get_next_version(None, None) or (
+            isinstance(adapter.get_next_version(None, None), str)
+        )
+>       assert adapter.with_allowlist([]).saver is not storage
+E       assert <langgraph.checkpoint.memory.InMemorySaver object at 0x11261c950> is not <langgraph.checkpoint.memory.InMemorySaver object at 0x11261c950>
+E        +  where <langgraph.checkpoint.memory.InMemorySaver object at 0x11261c950> = <pdos_next.agent_kernel.session_checkpoints.SessionRunSaver object at 0x11261d0d0>.saver
+E        +    where <pdos_next.agent_kernel.session_checkpoints.SessionRunSaver object at 0x11261d0d0> = with_allowlist([])
+E        +      where with_allowlist = <pdos_next.agent_kernel.session_checkpoints.SessionRunSaver object at 0x11261ce00>.with_allowlist
+
+tests/agent_kernel/test_session_checkpoints.py:97: AssertionError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_session_checkpoints.py::test_adapter_roundtrip_parent_pending_writes_list_and_nested_namespace
+1 failed, 14 passed in 3.77s

@@ -237,7 +237,8 @@ class KernelStore:
         fingerprint = digest([tool, payload])
         binding = execution_binding or {"kind": "unbound"}
         resumable_read = (
-            tool in {"research.fanout", "mcp.tools.list", "mcp.read"} and binding.get("kind") == "read"
+            tool in {"research.fanout", "mcp.tools.list", "mcp.read"}
+            and binding.get("kind") == "read"
             and binding.get("read_kind") == "ordinary/v1" and binding.get("isolation") == "main"
             and reservation == 0 and cost_lease is None
         )
@@ -539,6 +540,8 @@ def create_run(
         session.add(conversation)
         session.flush()
     # Taint is supplied by the trusted host source read-set, never by model arguments.
+    from .session_checkpoints import LAYOUT_KEY, SESSION_LAYOUT
+
     run = AgentRun(
         id=uuid4(),
         tenant_id=ctx.tenant_id,
@@ -558,7 +561,9 @@ def create_run(
         customer_identities=list(customer_identities),
         token_limit=token_limit,
         read_sources=list(read_sources),
-        versions={"proposal_context": outbound_context} if outbound_context is not None else {},
+        versions={LAYOUT_KEY: SESSION_LAYOUT, **(
+            {"proposal_context": outbound_context} if outbound_context is not None else {}
+        )},
         validation_budget_id=validation_budget_id,
     )
     session.add(run)

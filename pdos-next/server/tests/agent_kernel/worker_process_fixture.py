@@ -30,7 +30,28 @@ class OfflineClient:
             for row in messages
         )
         tool_returned = any(row.get("role") == "tool" for row in messages)
-        if not answered:
+        context = json.loads(messages[0]["content"])["context"]
+        conversation = context.get("conversation")
+        if conversation:
+            assert conversation["root_goal"] == "Synthetic actual process recovery"
+            assert len(conversation["turns"]) == 1
+            prior = conversation["turns"][0]
+            assert prior["status"] == "completed"
+            assert prior["historical_outcome"]["summary"] == "Synthetic recovered domain candidate"
+            assert not tool_returned  # Old tool messages are not inherited by the follow-up.
+            phase = "followup_final" if answered else "followup_question"
+            result = ModelTurn(
+                usage=ProviderUsage(20, 10),
+                structured={
+                    "status": "completed" if answered else "needs_input",
+                    "summary": "Synthetic continued scope" if answered else "Confirm next scope",
+                    "result": {},
+                    "questions": [] if answered else [
+                        {"id": "followup_scope", "question": "Next scope?", "why": "Continuation"},
+                    ],
+                },
+            )
+        elif not answered:
             phase = "question"
             result = ModelTurn(
                 usage=ProviderUsage(20, 10),
