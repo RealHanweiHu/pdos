@@ -227,35 +227,71 @@ def handoff_work(ready_work):
     planned = {**work.config, "build": {"subject_id": work.build_id}}
     observed_at = now()
     actual, _ = accepted(setup, actual_command(setup, planned, observed_at=observed_at.isoformat()))
-    output, _ = accepted(
-        setup,
-        output_command(
+    if getattr(work, "s2_batched_lots", False) is True:
+        # Only the explicit two-Run chain requests two separately observed Lots.
+        # Both physical output and sample identity use the existing host commands.
+        work.samples, work.s2_batched_lot_ids = [], []
+        for cavity in ("A", "B"):
+            output, _ = accepted(
+                setup,
+                output_command(
+                    setup,
+                    planned,
+                    actual,
+                    units=1,
+                    observation={
+                        "system": "Synthetic batched fixture",
+                        "external_id": str(uuid4()),
+                        "nature": "synthetic",
+                        "occurred_at": now().isoformat(),
+                    },
+                ),
+            )
+            allocated, _ = accepted(
+                setup,
+                allocation_command(
+                    setup,
+                    planned,
+                    output,
+                    samples=[{"label": f"SYN-{uuid4()}", "cavity": cavity}],
+                ),
+            )
+            work.s2_batched_lot_ids.append(output["subject_id"])
+            work.samples.extend(
+                row
+                for row in execution_view(setup)["samples"]
+                if row["allocation_id"] == allocated["subject_id"]
+            )
+    else:
+        output, _ = accepted(
             setup,
-            planned,
-            actual,
-            units=2,
-            observation={
-                "system": "Synthetic fixture",
-                "external_id": str(uuid4()),
-                "nature": "synthetic",
-                "occurred_at": now().isoformat(),
-            },
-        ),
-    )
-    allocated, _ = accepted(
-        setup,
-        allocation_command(
+            output_command(
+                setup,
+                planned,
+                actual,
+                units=2,
+                observation={
+                    "system": "Synthetic fixture",
+                    "external_id": str(uuid4()),
+                    "nature": "synthetic",
+                    "occurred_at": now().isoformat(),
+                },
+            ),
+        )
+        allocated, _ = accepted(
             setup,
-            planned,
-            output,
-            samples=[{"label": f"SYN-{uuid4()}", "cavity": cavity} for cavity in ("A", "B")],
-        ),
-    )
-    work.samples = [
-        row
-        for row in execution_view(setup)["samples"]
-        if row["allocation_id"] == allocated["subject_id"]
-    ]
+            allocation_command(
+                setup,
+                planned,
+                output,
+                samples=[{"label": f"SYN-{uuid4()}", "cavity": cavity} for cavity in ("A", "B")],
+            ),
+        )
+        work.samples = [
+            row
+            for row in execution_view(setup)["samples"]
+            if row["allocation_id"] == allocated["subject_id"]
+        ]
     for sample in work.samples:
         readiness(work, sample)
     source = artifact(
@@ -332,7 +368,8 @@ def handoff_work(ready_work):
 def listing(work, setup=None):
     setup = setup or work.quality
     response = setup.client.get(
-        f"/v1/categories/{setup.category}/products/{setup.product}/verification-handoff", headers=setup.headers
+        f"/v1/categories/{setup.category}/products/{setup.product}/verification-handoff",
+        headers=setup.headers,
     )
     assert response.status_code == 200, response.text
     return response.json()

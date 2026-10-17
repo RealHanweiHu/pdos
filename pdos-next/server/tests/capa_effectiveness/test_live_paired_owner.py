@@ -16,13 +16,16 @@ from uuid import UUID
 
 import pytest
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import operators
 
 from pdos_next import paired_output_bridge as bridge
 from pdos_next.domain.capa_effectiveness import paired, paired_storage
 from pdos_next.domain.verification_launch.models import (
     VerificationLaunchFact,
+    VerificationRunCurrent,
     VerificationRunVersion,
 )
+from pdos_next.domain.verification_results.models import TestResultActionFact as ResultActionORM
 from pdos_next.errors import DomainError
 from pdos_next.models import Grant, Principal
 
@@ -88,6 +91,54 @@ class NumericalRead:
 
 def frame(monkeypatch, operation="test.run.start"):
     work = storage_samples.frame(monkeypatch, operation)
+    memory = work.memory
+    original_select = memory.selected
+
+    def selected(statement):
+        if not statement._setup_joins:
+            return original_select(statement)
+        model = statement.column_descriptions[0]["entity"]
+        assert model in {VerificationLaunchFact, ResultActionORM}
+        assert len(statement._setup_joins) == 1
+        target, onclause, _, _ = statement._setup_joins[0]
+        assert target.name == VerificationRunCurrent.__tablename__
+        assert onclause.operator is operators.and_
+        expected_version = (
+            ("run_version_id", "run_revision")
+            if model is VerificationLaunchFact
+            else ("next_run_version_id", "next_run_revision")
+        )
+        assert {(clause.left.key, clause.right.key) for clause in onclause.clauses} == {
+            ("tenant_id", "tenant_id"),
+            ("product_id", "product_id"),
+            ("request_id", "request_id"),
+            ("run_id", "run_id"),
+            ("run_version_id", expected_version[0]),
+            ("run_revision", expected_version[1]),
+        }
+        memory.queries.append(statement)
+        if memory.hook:
+            memory.hook(model, statement)
+        matches = []
+        for fact in memory.rows[model]:
+            if not all(memory._matches(fact, clause) for clause in statement._where_criteria):
+                continue
+            for pointer in memory.rows[VerificationRunCurrent]:
+                assert all(clause.operator is operators.eq for clause in onclause.clauses)
+                assert all(
+                    clause.left.table.name == VerificationRunCurrent.__tablename__
+                    and clause.right.table.name == model.__tablename__
+                    for clause in onclause.clauses
+                )
+                if all(
+                    getattr(pointer, clause.left.key) == getattr(fact, clause.right.key)
+                    for clause in onclause.clauses
+                ):
+                    matches.append(fact)
+        assert statement._limit_clause.value == 2
+        return matches[:2]
+
+    monkeypatch.setattr(memory, "selected", selected)
     clock = [structural.AT]
     monkeypatch.setattr(bridge, "_now", lambda: clock[0])
     owner = bridge.LivePairedOwner()

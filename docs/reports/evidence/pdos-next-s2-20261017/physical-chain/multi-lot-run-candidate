@@ -1,0 +1,79 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 1 item
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end FAILED [100%]
+
+=================================== FAILURES ===================================
+_ test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end _
+tests/verification_launch/test_multi_run_chain.py:566: in test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+    accepted(work.quality, launch_command(run_b, "verification.schedule.promise"))
+tests/test_project_first_plan.py:86: in accepted
+    assert preview.status_code == 200, preview.text
+E   AssertionError: {"code":"VALIDATION_FAILED","message":"只能对本Run承诺固定窗口的未来开始，已有承诺须保留。","detail":{"reason":"INVALID_STATE"}}
+E   assert 409 == 200
+E    +  where 409 = <Response [409 Conflict]>.status_code
+=============================== warnings summary ===============================
+pdos_next/domain/test_resources/models.py:36
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/models.py:36: PytestCollectionWarning: cannot collect test class 'TestResourceFact' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResourceFact(Row, Base):
+
+pdos_next/domain/test_resources/models.py:185
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/models.py:185: PytestCollectionWarning: cannot collect test class 'TestResourceReservation' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResourceReservation(Row, Base):
+
+pdos_next/domain/test_resources/schemas.py:40
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/schemas.py:40: PytestCollectionWarning: cannot collect test class 'TestPlanBinding' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestPlanBinding(DTO):
+
+pdos_next/domain/test_resources/schemas.py:73
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/schemas.py:73: PytestCollectionWarning: cannot collect test class 'TestResourceFactInput' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResourceFactInput(DTO):
+
+pdos_next/domain/verification_results/models.py:139
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_results/models.py:139: PytestCollectionWarning: cannot collect test class 'TestResultActionFact' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResultActionFact(ResultScope, Row, Base):
+
+pdos_next/domain/verification_results/models.py:116
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_results/models.py:116: PytestCollectionWarning: cannot collect test class 'TestResultProjection' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResultProjection(ResultScope, Row, Base):
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+================== 1 failed, 15 warnings in 120.54s (0:02:00) ==================

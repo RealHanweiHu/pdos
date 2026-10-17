@@ -1,0 +1,13 @@
+{
+  "head": "s0_0774",
+  "clone_port": 65296,
+  "retained_port": 64245,
+  "clone_catalog_downgrade_exact": true,
+  "clone_catalog_reupgrade_exact": true,
+  "changed_catalog_sections": [
+    "functions"
+  ],
+  "backup_bytes": 43622782,
+  "backup_sha256": "dd06a489c13ecebb00ff13f35ceadd100785d3febba00713fe93b47be6632988",
+  "real_model_calls": 0
+}

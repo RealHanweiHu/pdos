@@ -206,13 +206,6 @@ def _snapshot(row):
         or (
             value.status == "executing" and (value.timeline.final_result or value.timeline.disposed)
         )
-        or (
-            row.operation == "test.run.start"
-            and any(
-                getattr(value.timeline, name) is not None
-                for name in ("preliminary_result", "final_result", "disposed")
-            )
-        )
         or (value.status in {"reported", "disposed"} and value.timeline.final_result is None)
         or ((value.timeline.disposed is not None) != (value.status == "disposed"))
         or (
@@ -223,11 +216,22 @@ def _snapshot(row):
             (value.timeline.actual_start is not None)
             != (value.status in {"executing", "reported", "disposed"})
         )
-        or (value.status == "scheduled" and row.operation != "verification.schedule.promise")
+        or (
+            value.status == "scheduled"
+            and row.operation
+            not in {
+                "verification.schedule.promise",
+                "verification.handoff.accept",
+                "verification.handoff.return",
+            }
+        )
         or (
             value.status == "executing"
             and row.operation
             not in {
+                "verification.schedule.promise",
+                "verification.handoff.accept",
+                "verification.handoff.return",
                 "test.run.start",
                 "test.results.import",
                 "test.run.review",

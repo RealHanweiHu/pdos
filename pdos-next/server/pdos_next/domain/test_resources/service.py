@@ -250,17 +250,17 @@ def _parent_locks(s, ctx, product_id, binding, *, write=False):
         or row.project_id != binding.project_id
         or row.build_id != binding.build_id
         or request.purpose != binding.purpose
-        or {(c.sample_id, c.item_id) for c in verification_rules.accepted_coverage(request)}
-        != {(p.sample.id, p.item_id) for p in binding.pairs}
+        or not {(p.sample.id, p.item_id) for p in binding.pairs}
+        <= {(c.sample_id, c.item_id) for c in verification_rules.accepted_coverage(request)}
     ):
-        raise DomainError("TEST_PLAN_SCOPE_MISMATCH", "计划须固定完整已接收范围和精确用途。")
+        raise DomainError("TEST_PLAN_SCOPE_MISMATCH", "计划须固定明确的已接收范围和精确用途。")
     # Mutable parent serialization precedes the global resource/sample sentinels.
     pointer, current = front._current(s, ctx, product_id, binding.request_id, lock=write)
     if pointer is None or current is None:
         raise DomainError("TEST_PLAN_SCOPE_MISMATCH", "正式请求当前版本不可核对。")
     latest = front._snapshot(current)
-    if {(c.sample_id, c.item_id) for c in verification_rules.accepted_coverage(latest)} != {
-        (p.sample.id, p.item_id) for p in binding.pairs
+    if not {(p.sample.id, p.item_id) for p in binding.pairs} <= {
+        (c.sample_id, c.item_id) for c in verification_rules.accepted_coverage(latest)
     }:
         raise DomainError("TEST_PLAN_SCOPE_MISMATCH", "当前已接收范围已经变化。")
     from pdos_next.domain.verification_launch.models import VerificationRunIdentity
@@ -2160,7 +2160,12 @@ def _start_guard(s, ctx, pid, binding, verified_actual_start):
         [{"artifact_id": str(event.source.id), "expected_revision": event.source.revision}],
     )
     request = front._snapshot(front._row(s, ctx, pid, binding.accepted_request_id))
-    last_acceptance = max(a.at.occurred_at for a in request.acceptances)
+    selected = {(p.sample.id, p.item_id) for p in binding.pairs}
+    last_acceptance = max(
+        a.at.occurred_at
+        for a in request.acceptances
+        if selected & verification_rules.pairs(a.coverage)
+    )
     if event.occurred_at < last_acceptance:
         raise DomainError("INVALID_TEST_START", "实际开测不能早于对应实物接收。")
     return event

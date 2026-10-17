@@ -1,0 +1,43 @@
+{
+  "head": "s0_0774",
+  "formal_S1_accepted": false,
+  "formal_S2_accepted": false,
+  "performance_acceptance": "deferred by P13; not sampled",
+  "backend_pure": {
+    "passed": 305,
+    "log": "backend-pure-final.log"
+  },
+  "frontend_pure": {
+    "passed": 83,
+    "log": "frontend-tests.log"
+  },
+  "distinct_pg_scenarios": 7,
+  "full_repository_regression_claimed": false,
+  "pg_full_chain": {
+    "primary": "multi-lot-run-final.json",
+    "isolated": "isolated-multi-lot-run.json",
+    "same_scenario_not_double_counted": true
+  },
+  "supplemental_pg": "affected-transactions.json",
+  "source_delta": "source-delta.json",
+  "web_build_exit_code": 0,
+  "web_build_log": "isolated-web-verified-build.log",
+  "eslint_exit_code": 0,
+  "browser_reading": "browser-observations.json",
+  "browser_business_submissions": 0,
+  "cleanup": {
+    "primary_preview_test_terminal": true,
+    "isolated_preview_test_terminal": true,
+    "owned_web_terminals": [
+      130,
+      130
+    ],
+    "created_tab_closed": true,
+    "temporary_clone_65296_stopped": true,
+    "managed_worktree_archive": "queued, not confirmed"
+  },
+  "real_model_calls": 0,
+  "real_KMS_calls": 0,
+  "production_operations": 0,
+  "git_push": false
+}

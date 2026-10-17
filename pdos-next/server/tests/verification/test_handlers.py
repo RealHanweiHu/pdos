@@ -379,8 +379,13 @@ def test_repeated_acceptance_under_new_intent_cannot_duplicate_business_scope(ho
 
 
 def test_promised_start_can_be_future_and_does_not_start_run(host):
-    current = accepted(host)
-    payload = SchedulePromise(at=event("promise", offset=500))
+    fixed_run = planned(host)
+    current = host.commands.requests[fixed_run.request_id]
+    payload = SchedulePromise(
+        run_id=fixed_run.id,
+        expected_run_revision=fixed_run.revision,
+        at=event("promise", offset=500),
+    )
     perform(
         host,
         "verification.schedule.promise",

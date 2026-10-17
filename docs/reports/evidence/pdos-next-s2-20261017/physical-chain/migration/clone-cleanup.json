@@ -1,0 +1,7 @@
+{
+  "port": 65296,
+  "marker": "13fef232-13f8-42a5-a7da-54d05e34c708",
+  "stopped_after_backup_and_history_guard": true,
+  "container_and_volume_retained": true,
+  "retained_target_64245_untouched": true
+}

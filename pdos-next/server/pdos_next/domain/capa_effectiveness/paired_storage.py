@@ -33,7 +33,7 @@ from pdos_next.domain.verification_results.models import TestResultActionFact, T
 from pdos_next.errors import DomainError
 from pdos_next.models import Audit, Grant, Outbox, Principal, Product, Receipt, RequestKey, now
 from pydantic import ValidationError
-from sqlalchemy import select
+from sqlalchemy import and_, select
 from sqlalchemy.exc import UnboundExecutionError
 from sqlalchemy.orm import Session, SessionTransaction
 
@@ -140,6 +140,52 @@ def _one(rows, code, detail):
     if len(rows) != 1:
         _missing(code, detail)
     return rows[0]
+
+
+def _output_fact(s, ctx, product_id, formal):
+    """Match the selected Formal and each fact's exact current Run before limiting."""
+    filters = dict(
+        tenant_id=ctx.tenant_id,
+        product_id=product_id,
+        project_id=formal.project_id,
+        build_id=formal.build_id,
+        request_id=formal.request_id,
+        next_request_version_id=formal.id,
+        next_request_revision=formal.revision,
+    )
+    matches = []
+    current = VerificationRunCurrent
+    for model in (VerificationLaunchFact, TestResultActionFact):
+        version_id, revision = (
+            (model.run_version_id, model.run_revision)
+            if model is VerificationLaunchFact
+            else (model.next_run_version_id, model.next_run_revision)
+        )
+        query = (
+            select(model)
+            .join(
+                current,
+                and_(
+                    current.tenant_id == model.tenant_id,
+                    current.product_id == model.product_id,
+                    current.request_id == model.request_id,
+                    current.run_id == model.run_id,
+                    current.run_version_id == version_id,
+                    current.run_revision == revision,
+                ),
+            )
+            .where(*(getattr(model, k) == v for k, v in filters.items()))
+            .limit(2)
+            .execution_options(populate_existing=True)
+        )
+        matches.extend(s.scalars(query))
+    if not matches:
+        _missing("PAIR_FACT_MISMATCH", "正式输出没有与当前Run精确匹配的配对事实。")
+    return _one(
+        matches,
+        "PAIR_CURRENT_MISSING_OR_AMBIGUOUS",
+        "正式输出须有唯一精确配对事实以确定Run，不能按时间或列表顺序猜选。",
+    )
 
 
 def _previous(identity, revision):
@@ -335,12 +381,14 @@ def _read_storage_pair(s, ctx, product_id, output_ref, *, at, write=False) -> p.
     if (pointer.request_version_id, pointer.request_revision) != (selected.id, selected.revision):
         raise DomainError("PAIR_CURRENT_MISMATCH", "旧输出或origin不能代替真实Formal Current。")
     formal_current_ref = (pointer.request_version_id, pointer.request_revision)
+    fact_row = _output_fact(s, ctx, product_id, current_formal)
     run_pointer = _query(
         s,
         select(VerificationRunCurrent).where(
             VerificationRunCurrent.tenant_id == ctx.tenant_id,
             VerificationRunCurrent.product_id == product_id,
             VerificationRunCurrent.request_id == current_formal.request_id,
+            VerificationRunCurrent.run_id == fact_row.run_id,
         ),
         lock=write,
     )
@@ -365,35 +413,13 @@ def _read_storage_pair(s, ctx, product_id, output_ref, *, at, write=False) -> p.
     ):
         raise DomainError("PAIR_SCOPE_MISMATCH", "真实Run身份不能跨Build、请求或受众。", 403)
     scope = request.scope
-    filters = dict(
-        tenant_id=ctx.tenant_id,
-        product_id=product_id,
-        project_id=scope.project_id,
-        build_id=request.build.id,
-        request_id=current_formal.request_id,
-        run_id=current_run.run_id,
-        next_request_version_id=current_formal.id,
-        next_request_revision=current_formal.revision,
+    fact_run = (
+        (fact_row.run_version_id, fact_row.run_revision)
+        if isinstance(fact_row, VerificationLaunchFact)
+        else (fact_row.next_run_version_id, fact_row.next_run_revision)
     )
-    launch_facts = _many(
-        s,
-        VerificationLaunchFact,
-        *(getattr(VerificationLaunchFact, k) == v for k, v in filters.items()),
-        VerificationLaunchFact.run_version_id == current_run.id,
-        VerificationLaunchFact.run_revision == current_run.revision,
-    )
-    result_facts = _many(
-        s,
-        TestResultActionFact,
-        *(getattr(TestResultActionFact, k) == v for k, v in filters.items()),
-        TestResultActionFact.next_run_version_id == current_run.id,
-        TestResultActionFact.next_run_revision == current_run.revision,
-    )
-    fact_row = _one(
-        [*launch_facts, *result_facts],
-        "PAIR_FACT_MISSING",
-        "当前Formal/Run必须有唯一真实配对事实，不能按时间猜选。",
-    )
+    if fact_run != (current_run.id, current_run.revision):
+        _missing("PAIR_CURRENT_MISMATCH", "本次正式输出事实所指Run已不是该Run当前版。")
     projection_row = None
     if isinstance(fact_row, TestResultActionFact):
         projection_row = launch._row(
@@ -560,6 +586,7 @@ def _read_storage_pair(s, ctx, product_id, output_ref, *, at, write=False) -> p.
             VerificationRunCurrent.tenant_id == ctx.tenant_id,
             VerificationRunCurrent.product_id == product_id,
             VerificationRunCurrent.request_id == current_formal.request_id,
+            VerificationRunCurrent.run_id == fact_row.run_id,
         ),
         lock=write,
     )

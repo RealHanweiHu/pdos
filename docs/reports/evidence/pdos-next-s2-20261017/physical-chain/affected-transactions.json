@@ -1,0 +1,31 @@
+{
+  "base_commit": "a5537ffbdb9b50600b33d4a101671c127f61aa33",
+  "command": [
+    "-m",
+    "pytest",
+    "tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan",
+    "tests/verification_launch/test_transactions.py::test_complete_accepted_scope_and_fixed_resource_binding_cannot_be_shrunk_or_replaced",
+    "tests/verification_launch/test_transactions.py::test_plan_cas_concurrency_creates_one_identity_and_one_run_receipt",
+    "tests/verification_launch/test_transactions.py::test_end_of_common_audit_outbox_failure_rolls_back_start_occupancy_usage_and_token",
+    "tests/verification_launch/test_transactions.py::test_immutable_run_identity_versions_and_cross_tenant_rls",
+    "tests/test_resources/test_transactions.py::test_destructive_actual_start_consumes_once_and_new_use_remains_blocked",
+    "-v",
+    "--tb=short",
+    "--maxfail=2"
+  ],
+  "source_digest_before": "9c38cec507f17a8ebd2ca13069cd1aae4e8a18a7df0416d826349cfcc845f72b",
+  "target": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0774"
+  },
+  "real_model_calls": 0,
+  "real_kms_calls": 0,
+  "performance_sampling": false,
+  "exit_code": 0,
+  "elapsed_seconds": 479.561,
+  "source_digest_after": "5d7164aa9a294b6d9041520aff0b4c296e87d6693dd016fcfd138a63ea502696",
+  "source_unchanged": false
+}

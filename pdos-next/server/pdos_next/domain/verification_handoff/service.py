@@ -671,20 +671,6 @@ def _new_write(s, ctx, command, product, payload, bound):
     write = not getattr(s, "info", {}).get("read_snapshot", False)
     if command.expected_revision != product.revision:
         raise DomainError("VERSION_CONFLICT", "型号范围版本已变化。")
-    if not isinstance(payload, ActualMethodPreparePayload):
-        from pdos_next.domain.verification_launch.models import VerificationRunIdentity
-
-        if s.scalar(
-            select(VerificationRunIdentity.id).where(
-                VerificationRunIdentity.tenant_id == ctx.tenant_id,
-                VerificationRunIdentity.product_id == product.id,
-                VerificationRunIdentity.request_id == payload.request_id,
-            )
-        ):
-            raise DomainError(
-                "REQUEST_RUN_SCOPE_FIXED",
-                "此请求已固定完整Run范围，新增交接范围须进入独立后续请求。",
-            )
     pointer, latest = front._current(s, ctx, product.id, payload.request_id, lock=write)
     if (
         latest is None
@@ -986,8 +972,11 @@ def _record(s, ctx, command, product, payload, bound, pointer, mutation):
     if (
         mutation.run is not None
         or request is None
-        or request.status not in {"offered", "accepted"}
-        or any(getattr(request.timeline, name) is not None for name in FUTURE_TIMES)
+        or request.status not in {"offered", "accepted", "scheduled", "executing"}
+        or any(
+            getattr(request.timeline, name) != getattr(bound.base.timeline, name)
+            for name in FUTURE_TIMES
+        )
     ):
         raise DomainError("INTEGRITY_MISMATCH", "交接不能写入承诺、开测或结果状态。")
     inherited = deepcopy(bound.previous.input_snapshot)
@@ -1499,7 +1488,7 @@ def list_verification_handoff(s, ctx, product_id, *, build_id=None):
         "reference_samples": [],
         "next_owners": [],
         "capabilities": {key: False for key in OPERATIONS},
-        "blockers": [{"code": "TEST_EXECUTION_UNCONNECTED", "detail": EFFECT}],
+        "blockers": [],
         "runs": [],
         "has_more": False,
         "unavailable_count": 0,
@@ -1695,33 +1684,22 @@ def list_verification_handoff(s, ctx, product_id, *, build_id=None):
                         allowed and executing and request.status == "draft" and bool(inspected)
                     )
                 elif key == "handoff_accept":
-                    from pdos_next.domain.verification_launch.models import VerificationRunIdentity
-
-                    planned = s.scalar(
-                        select(VerificationRunIdentity.id).where(
-                            VerificationRunIdentity.tenant_id == ctx.tenant_id,
-                            VerificationRunIdentity.product_id == product_id,
-                            VerificationRunIdentity.request_id == request.id,
-                        )
-                    )
-                    view["planned_run_id"] = str(planned) if planned else None
                     allowed = (
                         allowed
-                        and planned is None
-                        and request.status in {"offered", "accepted"}
+                        and request.status in {"offered", "accepted", "scheduled", "executing"}
                         and any(p["handoff_accept"] for p in view["pair_capabilities"])
                     )
                 elif key == "handoff_return":
                     allowed = (
                         allowed
-                        and not view.get("planned_run_id")
-                        and request.status in {"offered", "accepted"}
+                        and request.status in {"offered", "accepted", "scheduled", "executing"}
                         and bool(pending)
                     )
                 else:
                     allowed = (
                         allowed
-                        and request.status in {"draft", "offered", "accepted"}
+                        and request.status
+                        in {"draft", "offered", "accepted", "scheduled", "executing"}
                         and bool(inspected)
                     )
                 view["capabilities"][key] = bool(allowed)

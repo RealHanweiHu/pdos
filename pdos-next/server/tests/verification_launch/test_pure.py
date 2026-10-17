@@ -133,9 +133,11 @@ def planned(work):
 def promised(work):
     planned(work)
     value = SchedulePromise(
+        run_id=work.run.id,
+        expected_run_revision=work.run.revision,
         at=EventTime(
             occurred_at=work.plan.window.start, original_timezone="UTC", source=work.source
-        )
+        ),
     )
     launch(work).execute(invocation(work.request, value, "verification.schedule.promise"), value)
     work.request = work.recorded[-1].request
@@ -233,11 +235,14 @@ def test_public_plan_rejects_trusted_field_injection(work, field):
         PlanPayload.model_validate(raw)
 
 
-def test_full_coverage_cannot_hide_accepted_sample(work):
-    with pytest.raises(DomainError) as error:
-        service._full_coverage(work.request, work.request.acceptances[0].coverage[:1])
-    assert error.value.reason == "INVALID_COVERAGE"
+def test_run_selects_nonempty_accepted_subset_without_hiding_request_scope(work):
+    original = work.request.model_dump(mode="json")
+    service._full_coverage(work.request, work.request.acceptances[0].coverage[:1])
     service._full_coverage(work.request, work.request.acceptances[0].coverage)
+    assert work.request.model_dump(mode="json") == original
+    with pytest.raises(DomainError) as error:
+        service._full_coverage(work.request, ())
+    assert error.value.reason == "INVALID_COVERAGE"
 
 
 def test_closed_start_cannot_replace_execution_plan(work):
@@ -275,7 +280,9 @@ def binding(work):
         for c in work.request.acceptances[0].coverage
     }
     row = SimpleNamespace(id=uuid4(), revision=work.request.revision)
-    return service._binding(row, work.request, work.run_id, work.plan, methods)
+    return service._binding(
+        row, work.request, work.run_id, work.plan, methods, work.request.acceptances[0].coverage
+    )
 
 
 def test_http_json_plan_matches_complete_strict_resource_binding_values(work):
@@ -360,6 +367,7 @@ def preview_setup(work, monkeypatch, operation="test.run.plan"):
     monkeypatch.setattr(service, "_load", lambda *_: bound)
     monkeypatch.setattr(service, "_guards", lambda *_: None)
     monkeypatch.setattr(service, "_new_write", lambda *_: None)
+    monkeypatch.setattr(service, "_promise", lambda *_: None)
     monkeypatch.setattr(
         service.physical,
         "_request_view",
@@ -710,3 +718,58 @@ def test_host_current_qualification_guard_precedes_physical_and_effect(work, mon
     with pytest.raises(DomainError) as error:
         service._guards(None, ctx, None, None, public_plan(work), bound)
     assert error.value.reason == "QUALIFICATION_REQUIRED"
+
+
+@pytest.mark.parametrize("borrowed", [False, True])
+def test_first_request_promise_cannot_authorize_a_different_run(work, monkeypatch, borrowed):
+    promised(work)
+    first_run_id = work.run.id
+    second_run_id = uuid4()
+    request_row = SimpleNamespace(id=uuid4(), revision=work.request.revision, status="executing")
+    run_row = SimpleNamespace(id=uuid4(), revision=1, status="planned")
+    bound = SimpleNamespace(
+        physical=SimpleNamespace(previous=request_row, base=work.request),
+        run_row=run_row,
+        plan=work.plan,
+    )
+    payload = StartPayload(
+        request_id=work.request.id,
+        expected_request_revision=request_row.revision,
+        run_id=second_run_id,
+        expected_run_revision=1,
+        expected_plan_sha256=digest(work.plan.model_dump(mode="json")),
+        at=EventTime(
+            occurred_at=work.plan.window.start, original_timezone="UTC", source=work.source
+        ),
+        reason="Synthetic second Run cannot borrow the first promise",
+    )
+    checked = []
+
+    def promise_lookup(session, context, product_id, run_id):
+        checked.append(run_id)
+        return (
+            SimpleNamespace(
+                request_id=work.request.id,
+                run_version_id=uuid4(),
+                input_snapshot={"expected_plan_sha256": payload.expected_plan_sha256},
+            )
+            if borrowed
+            else None
+        )
+
+    monkeypatch.setattr(service.front, "_current", lambda *args, **kw: (object(), request_row))
+    monkeypatch.setattr(service, "_current", lambda *args, **kw: (object(), run_row))
+    monkeypatch.setattr(service, "_promise", promise_lookup)
+    monkeypatch.setattr(service, "now", lambda: work.plan.window.start + timedelta(seconds=1))
+    assert work.request.timeline.promised_start is not None and second_run_id != first_run_id
+    with pytest.raises(DomainError) as error:
+        service._new_write(
+            SimpleNamespace(info={}),
+            SimpleNamespace(),
+            SimpleNamespace(expected_revision=1),
+            SimpleNamespace(id=work.request.scope.product_id, revision=1),
+            payload,
+            bound,
+        )
+    assert error.value.reason == "INVALID_STATE"
+    assert checked == [second_run_id]

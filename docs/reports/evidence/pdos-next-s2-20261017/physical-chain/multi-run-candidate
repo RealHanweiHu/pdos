@@ -1,0 +1,138 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 1 item
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end FAILED [100%]
+
+=================================== FAILURES ===================================
+_ test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end _
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: in execute
+    raise ex.with_traceback(None)
+E   psycopg.errors.RaiseException: Test fact must bind exact accepted request and Run intent
+E   CONTEXT:  PL/pgSQL function protect_test_resource_fact() line 8 at RAISE
+
+The above exception was the direct cause of the following exception:
+tests/verification_launch/test_multi_run_chain.py:546: in test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+    run_b = prepare_run(work, second, monkeypatch)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/verification_launch/test_multi_run_chain.py:269: in prepare_run
+    receipt = import_test_resource_fact(
+pdos_next/test_resource_import.py:69: in import_test_resource_fact
+    imported = trusted_import(s, ctx, product_id, issuer, data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/test_resources/service.py:798: in trusted_import
+    s.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4536: in flush
+    self._flush(objects)
+<sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush>:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4679: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4640: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:643: in execute
+    util.preloaded.orm_persistence._save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:92: in _save_obj
+    _emit_insert_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:1237: in _emit_insert_statements
+    result = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: in execute
+    raise ex.with_traceback(None)
+E   sqlalchemy.exc.ProgrammingError: (psycopg.errors.RaiseException) Test fact must bind exact accepted request and Run intent
+E   CONTEXT:  PL/pgSQL function protect_test_resource_fact() line 8 at RAISE
+E   [SQL: INSERT INTO test_resource_facts (product_id, project_id, build_id, run_id, request_id, accepted_request_id, accepted_request_revision, owner_id, visibility, issuer_key, issuer_version, issuer_epoch, nature, external_id, series_id, revision, previous_id, previous_revision, state, valid_from, valid_until, binding, data, sources, required_source_read_set, source_basis, fact_sha256, reason, id, tenant_id, created_at) VALUES (%(product_id)s::UUID, %(project_id)s::UUID, %(build_id)s::UUID, %(run_id)s::UUID, %(request_id)s::UUID, %(accepted_request_id)s::UUID, %(accepted_request_revision)s::INTEGER, %(owner_id)s::UUID, %(visibility)s::VARCHAR, %(issuer_key)s::VARCHAR, %(issuer_version)s::VARCHAR, %(issuer_epoch)s::INTEGER, %(nature)s::VARCHAR, %(external_id)s::VARCHAR, %(series_id)s::UUID, %(revision)s::INTEGER, %(previous_id)s::UUID, %(previous_revision)s::INTEGER, %(state)s::VARCHAR, %(valid_from)s::TIMESTAMP WITH TIME ZONE, %(valid_until)s::TIMESTAMP WITH TIME ZONE, %(binding)s::JSONB, %(data)s::JSONB, %(sources)s::JSONB, %(required_source_read_set)s::JSONB, %(source_basis)s::JSONB, %(fact_sha256)s::VARCHAR, %(reason)s::VARCHAR, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE) RETURNING test_resource_facts.category_id]
+E   [SQL parameters hidden due to hide_parameters=True]
+E   (Background on this error at: https://sqlalche.me/e/21/f405)
+=============================== warnings summary ===============================
+pdos_next/domain/test_resources/models.py:36
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/models.py:36: PytestCollectionWarning: cannot collect test class 'TestResourceFact' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResourceFact(Row, Base):
+
+pdos_next/domain/test_resources/models.py:185
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/models.py:185: PytestCollectionWarning: cannot collect test class 'TestResourceReservation' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResourceReservation(Row, Base):
+
+pdos_next/domain/test_resources/schemas.py:40
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/schemas.py:40: PytestCollectionWarning: cannot collect test class 'TestPlanBinding' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestPlanBinding(DTO):
+
+pdos_next/domain/test_resources/schemas.py:73
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/schemas.py:73: PytestCollectionWarning: cannot collect test class 'TestResourceFactInput' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResourceFactInput(DTO):
+
+pdos_next/domain/verification_results/models.py:139
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_results/models.py:139: PytestCollectionWarning: cannot collect test class 'TestResultActionFact' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResultActionFact(ResultScope, Row, Base):
+
+pdos_next/domain/verification_results/models.py:116
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_results/models.py:116: PytestCollectionWarning: cannot collect test class 'TestResultProjection' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResultProjection(ResultScope, Row, Base):
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+================== 1 failed, 15 warnings in 82.60s (0:01:22) ===================

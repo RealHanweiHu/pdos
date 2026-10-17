@@ -156,8 +156,9 @@ def _selected_request(s, ctx, pid, basis, selected):
     )
     _require(row.purpose == basis.purpose, "PAIR_SCOPE_MISMATCH", 403)
     _require(row.operation in PAIRED_FORMAL_OPERATIONS, "PAIR_NOT_REQUIRED", 503)
-    # A pointer is not a guessed latest version. Reject an ambiguous/corrupt
-    # ledger even where the normal SQL unique constraints would prohibit it.
+    # The actual selected output fact identifies its Run. Other Runs under the
+    # same request neither substitute for it nor make its identity ambiguous.
+    fact = paired_storage._output_fact(s, ctx, pid, row)
     pointer = _only(
         _many(
             s,
@@ -165,6 +166,7 @@ def _selected_request(s, ctx, pid, basis, selected):
             VerificationRunCurrent.tenant_id == ctx.tenant_id,
             VerificationRunCurrent.product_id == pid,
             VerificationRunCurrent.request_id == row.request_id,
+            VerificationRunCurrent.run_id == fact.run_id,
         ),
         "PAIR_CURRENT_MISSING_OR_AMBIGUOUS",
     )
@@ -175,6 +177,7 @@ def _selected_request(s, ctx, pid, basis, selected):
             VerificationRunIdentity.tenant_id == ctx.tenant_id,
             VerificationRunIdentity.product_id == pid,
             VerificationRunIdentity.request_id == row.request_id,
+            VerificationRunIdentity.id == fact.run_id,
         ),
         "PAIR_RUN_MISSING_OR_AMBIGUOUS",
     )

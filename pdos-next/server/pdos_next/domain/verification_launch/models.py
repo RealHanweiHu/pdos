@@ -7,6 +7,7 @@ from uuid import UUID
 from sqlalchemy import (
     CheckConstraint,
     ForeignKeyConstraint,
+    Index,
     Integer,
     String,
     Text,
@@ -49,7 +50,7 @@ class VerificationRunIdentity(Row, Base):
     visibility: Mapped[str] = mapped_column(String(16))
     __table_args__ = (
         UniqueConstraint("tenant_id", "product_id", "project_id", "build_id", "id"),
-        UniqueConstraint("tenant_id", "product_id", "request_id"),
+        Index("ix_verification_run_identities_request", "tenant_id", "product_id", "request_id"),
         ForeignKeyConstraint(
             ["tenant_id", "product_id", "project_id", "build_id"],
             [f"builds.{name}" for name in ("tenant_id", "product_id", "project_id", "id")],
@@ -126,7 +127,7 @@ class VerificationRunCurrent(Row, Base):
     run_version_id: Mapped[UUID]
     run_revision: Mapped[int] = mapped_column(Integer)
     __table_args__ = (
-        UniqueConstraint("tenant_id", "product_id", "request_id"),
+        Index("ix_verification_current_runs_request", "tenant_id", "product_id", "request_id"),
         UniqueConstraint("tenant_id", "product_id", "run_id"),
         version_fk(),
         CheckConstraint("run_revision > 0"),

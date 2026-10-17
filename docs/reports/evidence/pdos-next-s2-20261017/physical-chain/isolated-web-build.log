@@ -1,0 +1,26 @@
+[ERR_PNPM_META_FETCH_FAIL] GET https://registry.npmjs.org/pnpm: fetch failed
+
+   ╭──────────────────────────────────────────╮
+   │                                          │
+   │   Update available! 11.16.0 → 12.11.2.   │
+   │   Changelog: https://pnpm.io/v/12.11.2   │
+   │     To update, run: pnpm add -g pnpm     │
+   │                                          │
+   ╰──────────────────────────────────────────╯
+
+[ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY] Aborted removal of modules directory due to no TTY
+
+If you are running pnpm in CI, set the CI environment variable to "true", or set "confirmModulesPurge" to "false".
+[ERROR] Command failed with exit code 1: pnpm install
+
+pnpm: Command failed with exit code 1: pnpm install
+    at getFinalError (file:///Users/huhanwei/Library/pnpm/.tools/pnpm/11.16.0/node_modules/pnpm/dist/pnpm.mjs:88120:14)
+    at makeError (file:///Users/huhanwei/Library/pnpm/.tools/pnpm/11.16.0/node_modules/pnpm/dist/pnpm.mjs:90427:21)
+    at getSyncResult (file:///Users/huhanwei/Library/pnpm/.tools/pnpm/11.16.0/node_modules/pnpm/dist/pnpm.mjs:92271:10)
+    at spawnSubprocessSync (file:///Users/huhanwei/Library/pnpm/.tools/pnpm/11.16.0/node_modules/pnpm/dist/pnpm.mjs:92231:14)
+    at execaCoreSync (file:///Users/huhanwei/Library/pnpm/.tools/pnpm/11.16.0/node_modules/pnpm/dist/pnpm.mjs:92161:23)
+    at callBoundExeca (file:///Users/huhanwei/Library/pnpm/.tools/pnpm/11.16.0/node_modules/pnpm/dist/pnpm.mjs:94689:23)
+    at boundExeca (file:///Users/huhanwei/Library/pnpm/.tools/pnpm/11.16.0/node_modules/pnpm/dist/pnpm.mjs:94666:49)
+    at sync2 (file:///Users/huhanwei/Library/pnpm/.tools/pnpm/11.16.0/node_modules/pnpm/dist/pnpm.mjs:94821:14)
+    at runPnpmCli (file:///Users/huhanwei/Library/pnpm/.tools/pnpm/11.16.0/node_modules/pnpm/dist/pnpm.mjs:249399:5)
+    at runDepsStatusCheck (file:///Users/huhanwei/Library/pnpm/.tools/pnpm/11.16.0/node_modules/pnpm/dist/pnpm.mjs:251163:7)

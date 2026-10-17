@@ -110,13 +110,6 @@ class FormalVerificationRequest(Row, Base):
         ),
         CheckConstraint("COALESCE(request_snapshot->>'status' = status, false)"),
         CheckConstraint(
-            "operation <> 'test.run.start' OR COALESCE("
-            "request_snapshot->'timeline'->'preliminary_result'='null'::jsonb AND "
-            "request_snapshot->'timeline'->'final_result'='null'::jsonb AND "
-            "request_snapshot->'timeline'->'disposed'='null'::jsonb, false)",
-            name="ck_test_start_no_result_clocks",
-        ),
-        CheckConstraint(
             "status <> 'draft' OR COALESCE(request_snapshot->'samples' = '[]'::jsonb AND "
             "request_snapshot->'acceptances' = '[]'::jsonb AND "
             "request_snapshot->'returns' = '[]'::jsonb AND "
@@ -161,8 +154,11 @@ class FormalVerificationRequest(Row, Base):
             "request_snapshot->'timeline'->'actual_start'='null'::jsonb END, false)"
         ),
         CheckConstraint(
-            "(status<>'scheduled' OR operation='verification.schedule.promise') AND "
-            "(status<>'executing' OR operation IN ('test.run.start','test.results.import',"
+            "(status<>'scheduled' OR operation IN ('verification.schedule.promise',"
+            "'verification.handoff.accept','verification.handoff.return')) AND "
+            "(status<>'executing' OR operation IN ('verification.schedule.promise',"
+            "'verification.handoff.accept','verification.handoff.return',"
+            "'test.run.start','test.results.import',"
             "'test.run.review','test.disposition.decide')) AND "
             "(status<>'reported' OR operation IN ('test.results.import','test.run.review',"
             "'test.disposition.decide')) AND "

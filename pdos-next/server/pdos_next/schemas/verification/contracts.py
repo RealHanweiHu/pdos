@@ -375,6 +375,8 @@ class HandoffReturn(DTO):
 
 
 class SchedulePromise(DTO):
+    run_id: UUID
+    expected_run_revision: int = Field(ge=1)
     at: EventTime
 
 

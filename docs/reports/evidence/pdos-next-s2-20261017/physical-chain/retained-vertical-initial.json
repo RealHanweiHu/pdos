@@ -1,0 +1,28 @@
+{
+  "base_commit": "c486ad2a83519c789a04d59be5ee2b9c3733732c",
+  "command": [
+    "-m",
+    "pytest",
+    "-v",
+    "tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan",
+    "tests/verification_handoff/test_transactions.py::test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one_request_truth",
+    "tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution",
+    "--tb=short",
+    "--maxfail=3"
+  ],
+  "source_digest_before": "2a9d22f4acfd1d3cbec886f82f593eb7dbeaf2f2b42046481173efacab1d5219",
+  "target": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0772"
+  },
+  "real_model_calls": 0,
+  "real_kms_calls": 0,
+  "performance_sampling": false,
+  "exit_code": 0,
+  "elapsed_seconds": 164.373,
+  "source_digest_after": "2a9d22f4acfd1d3cbec886f82f593eb7dbeaf2f2b42046481173efacab1d5219",
+  "source_unchanged": true
+}

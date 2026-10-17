@@ -592,10 +592,13 @@ def record_work(w, monkeypatch):
             source={"id": uid(30), "revision": 1, "kind": "artifact", "position": "line:1"},
         ),
     )
+    from pdos_next.schemas.verification.contracts import Timeline
+
+    before_timeline = Timeline(request_created=run.actual_start)
     previous = SimpleNamespace(id=uid(74), revision=5)
     w.bound.physical = SimpleNamespace(
         previous=previous,
-        base=SimpleNamespace(id=binding.request_id),
+        base=SimpleNamespace(id=binding.request_id, timeline=before_timeline),
         build=SimpleNamespace(id=binding.build_id, revision=1, project_id=binding.project_id),
         authority={"valid_until": (w.clock[0] + timedelta(hours=1)).isoformat()},
         references=[],
@@ -625,7 +628,7 @@ def record_work(w, monkeypatch):
         request=SimpleNamespace(
             revision=5,
             status="executing",
-            timeline=SimpleNamespace(preliminary_result=None, final_result=None, disposed=None),
+            timeline=before_timeline.model_copy(update={"actual_start": run.actual_start}),
         ),
         run=run,
         events=[SimpleNamespace(model_dump=lambda **kwargs: {"type": "RunStarted"})],

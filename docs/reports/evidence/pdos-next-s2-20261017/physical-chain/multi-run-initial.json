@@ -1,0 +1,26 @@
+{
+  "base_commit": "a5537ffbdb9b50600b33d4a101671c127f61aa33",
+  "command": [
+    "-m",
+    "pytest",
+    "tests/verification_launch/test_multi_run_chain.py",
+    "-v",
+    "--tb=short",
+    "--maxfail=1"
+  ],
+  "source_digest_before": "92591c098d4fbdcc15f0512a369d6fb681cb43a165bb1776e4abd69cafc13bcb",
+  "target": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0773"
+  },
+  "real_model_calls": 0,
+  "real_kms_calls": 0,
+  "performance_sampling": false,
+  "exit_code": 1,
+  "elapsed_seconds": 84.876,
+  "source_digest_after": "92591c098d4fbdcc15f0512a369d6fb681cb43a165bb1776e4abd69cafc13bcb",
+  "source_unchanged": true
+}

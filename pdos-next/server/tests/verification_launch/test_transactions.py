@@ -12,7 +12,7 @@ from sqlalchemy import func, select, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 from test_project_first_plan import accepted, post
-from verification_handoff.fixtures import command as handoff_command
+from verification_handoff.fixtures import handoff as handoff_command
 
 from pdos_next.contracts import Command
 from pdos_next.database import tenant_session
@@ -478,30 +478,24 @@ def test_immutable_run_identity_versions_and_cross_tenant_rls(launch_work):
         assert s.scalar(select(func.count()).select_from(VerificationRunVersion)) == 0
 
 
-def test_acceptance_cannot_expand_fixed_one_run_scope_after_plan(launch_work):
+def test_acceptance_continues_request_without_rewriting_existing_run(launch_work):
     work = launch_work
     planned(work)
-    value = handoff_command(
-        work,
-        "verification.handoff.accept",
-        {
-            "coverage": [{"sample_id": work.samples[1]["id"], "item_id": "dimension"}],
-            "returned_coverage": [],
-            "next_owner_id": str(work.engineer.human),
-            "at": {
-                "occurred_at": work.at.isoformat(),
-                "original_timezone": "UTC",
-                "source": {
-                    "id": work.actual_source["artifact_id"],
-                    "revision": 1,
-                    "kind": "artifact",
-                    "position": "untrusted",
-                },
-            },
-        },
+    before = fixed_run(work)
+    second = next(
+        v
+        for v in work.samples
+        if v["id"] not in {c["sample_id"] for c in before["run_snapshot"]["coverage"]}
     )
-    result = post(work.quality, value, True)
-    assert (
-        result.status_code == 403 and result.json()["detail"]["reason"] == "REQUEST_RUN_SCOPE_FIXED"
+    accepted(
+        work.quality,
+        handoff_command(
+            work,
+            operation="verification.handoff.accept",
+            coverage=[{"sample_id": second["id"], "item_id": "dimension"}],
+        ),
     )
-    assert len(current(work)["accepted_coverage"]) == 1
+    assert len(current(work)["accepted_coverage"]) == 2
+    after = fixed_run(work)
+    assert after["run_snapshot"] == before["run_snapshot"]
+    assert after["execution_plan"] == before["execution_plan"]

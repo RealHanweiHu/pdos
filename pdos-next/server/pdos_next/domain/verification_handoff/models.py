@@ -209,7 +209,7 @@ class VerificationHandoffFact(_Fact, Base):
             ],
         ),
         CheckConstraint("revision = 1 AND next_request_revision = request_revision + 1"),
-        CheckConstraint("status IN ('offered','accepted')"),
+        CheckConstraint("status IN ('offered','accepted','scheduled','executing')"),
         CheckConstraint(
             "operation IN ('verification.handoff.offer','verification.handoff.accept',"
             "'verification.handoff.return')"

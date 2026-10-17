@@ -373,7 +373,7 @@ def command(work, operation, **changes):
             session, work.quality.ctx, work.setup.product, UUID(work.request_id)
         )
         _, run_row = launch._current(
-            session, work.quality.ctx, work.setup.product, request_id=UUID(work.request_id)
+            session, work.quality.ctx, work.setup.product, work.binding.run_id
         )
         request_revision = row.revision
         coverage = [

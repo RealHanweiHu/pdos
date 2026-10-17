@@ -1,0 +1,26 @@
+........................................................................ [ 71%]
+...............FF
+=================================== FAILURES ===================================
+_ test_actual_record_persists_same_proof_after_same_uow_resource_row_before_return _
+pdos-next/server/tests/verification_launch_v2/test_start_versioned_owner.py:646: in test_actual_record_persists_same_proof_after_same_uow_resource_row_before_return
+    returned = launch._record(
+pdos-next/server/pdos_next/domain/verification_launch/service.py:1189: in _record
+    or any(
+pdos-next/server/pdos_next/domain/verification_launch/service.py:1190: in <genexpr>
+    getattr(mutation.request.timeline, key) != getattr(p.base.timeline, key)
+                                                       ^^^^^^^^^^^^^^^
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'timeline'
+_ test_record_full_group_flush_io_registry_change_is_detected_before_owner_return _
+pdos-next/server/tests/verification_launch_v2/test_start_versioned_owner.py:679: in test_record_full_group_flush_io_registry_change_is_detected_before_owner_return
+    launch._record(
+pdos-next/server/pdos_next/domain/verification_launch/service.py:1189: in _record
+    or any(
+pdos-next/server/pdos_next/domain/verification_launch/service.py:1190: in <genexpr>
+    getattr(mutation.request.timeline, key) != getattr(p.base.timeline, key)
+                                                       ^^^^^^^^^^^^^^^
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'timeline'
+=========================== short test summary info ============================
+FAILED pdos-next/server/tests/verification_launch_v2/test_start_versioned_owner.py::test_actual_record_persists_same_proof_after_same_uow_resource_row_before_return
+FAILED pdos-next/server/tests/verification_launch_v2/test_start_versioned_owner.py::test_record_full_group_flush_io_registry_change_is_detected_before_owner_return
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 2 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+2 failed, 87 passed in 0.57s

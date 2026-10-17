@@ -44,6 +44,7 @@ from pdos_next.errors import DomainError
 from pdos_next.models import Principal, Product, now
 from pdos_next.request_proof import batch_read, command_inputs_once, snapshot_get, snapshot_scalar
 from pdos_next.schemas.verification.contracts import (
+    Coverage,
     ExecutionConditions,
     RunPlan,
     RunStart,
@@ -112,19 +113,15 @@ def _row(s, ctx, product_id, model, identity):
     return row
 
 
-def _current(s, ctx, product_id, run_id=None, *, request_id=None, lock=False):
+def _current(s, ctx, product_id, run_id, *, lock=False):
     q = select(VerificationRunCurrent).where(
         VerificationRunCurrent.tenant_id == ctx.tenant_id,
         VerificationRunCurrent.product_id == product_id,
     )
-    q = (
-        q.where(VerificationRunCurrent.run_id == run_id)
-        if run_id
-        else q.where(VerificationRunCurrent.request_id == request_id)
-    )
+    q = q.where(VerificationRunCurrent.run_id == run_id)
     pointer = snapshot_scalar(
         s,
-        (VerificationRunCurrent, product_id, run_id, request_id),
+        (VerificationRunCurrent, product_id, run_id),
         q,
         lock=lock,
         scope_id=product_id,
@@ -139,6 +136,75 @@ def _current(s, ctx, product_id, run_id=None, *, request_id=None, lock=False):
     ):
         raise DomainError("INTEGRITY_MISMATCH", "Run当前指针无法核对。")
     return pointer, row
+
+
+def _currents_for_request(s, ctx, product_id, request_id, *, lock=False):
+    from pdos_next.request_proof import snapshot_rows
+
+    query = (
+        select(VerificationRunCurrent)
+        .where(
+            VerificationRunCurrent.tenant_id == ctx.tenant_id,
+            VerificationRunCurrent.product_id == product_id,
+            VerificationRunCurrent.request_id == request_id,
+        )
+        .order_by(VerificationRunCurrent.run_id)
+    )
+    pointers = snapshot_rows(
+        s,
+        (VerificationRunCurrent, "request", product_id, request_id, lock),
+        query.with_for_update() if lock else query,
+        scope_id=product_id,
+    )
+    result = []
+    for pointer in pointers:
+        row = _row(s, ctx, product_id, VerificationRunVersion, pointer.run_version_id)
+        if (row.run_id, row.request_id, row.revision) != (
+            pointer.run_id,
+            pointer.request_id,
+            pointer.run_revision,
+        ):
+            raise DomainError("INTEGRITY_MISMATCH", "Run当前指针无法核对。")
+        result.append((pointer, row))
+    return result
+
+
+def _promise(s, ctx, product_id, run_id):
+    fact = snapshot_scalar(
+        s,
+        (VerificationLaunchFact, "promise", product_id, run_id),
+        select(VerificationLaunchFact).where(
+            VerificationLaunchFact.tenant_id == ctx.tenant_id,
+            VerificationLaunchFact.product_id == product_id,
+            VerificationLaunchFact.run_id == run_id,
+            VerificationLaunchFact.operation == "verification.schedule.promise",
+        ),
+        scope_id=product_id,
+    )
+    if fact is not None:
+        value = PromisePayload.model_validate(fact.input_snapshot)
+        if (
+            value.run_id != fact.run_id
+            or value.request_id != fact.request_id
+            or value.expected_run_revision != fact.run_revision
+            or digest(fact.kernel_event) != fact.snapshot_sha256
+        ):
+            raise DomainError("INTEGRITY_MISMATCH", "Run具名承诺的固定事实无法核对。")
+    return fact
+
+
+def _promise_view(fact):
+    return (
+        {
+            "id": str(fact.id),
+            "at": fact.input_snapshot["at"],
+            "recorded_at": fact.created_at.isoformat(),
+            "sources": fact.sources,
+            "reason": fact.reason,
+        }
+        if fact
+        else None
+    )
 
 
 def _version(s, ctx, product_id, run_id, revision):
@@ -238,10 +304,8 @@ def _execution(plan):
 
 def _full_coverage(request, coverage):
     check_coverage(request, coverage)
-    if pairs(coverage) != pairs(accepted_coverage(request)):
-        raise DomainError(
-            "INVALID_COVERAGE", "本版一个Run必须精确覆盖全部已接收范围，未接收缺项继续保留。", 422
-        )
+    if not pairs(coverage) <= pairs(accepted_coverage(request)):
+        raise DomainError("INVALID_COVERAGE", "Run须明确选取实际已接收的样件/测试项。", 422)
 
 
 def _fixed_plan(value):
@@ -253,7 +317,7 @@ def _fixed_plan(value):
     )
 
 
-def _binding(row, request, run_id, plan, methods):
+def _binding(row, request, run_id, plan, methods, coverage):
     samples = {sample.id: sample for sample in request.samples}
     items = {item.id: item for item in request.items}
     return TestPlanBinding(
@@ -279,7 +343,7 @@ def _binding(row, request, run_id, plan, methods):
                 method_sha256=methods[(c.sample_id, c.item_id)].snapshot_sha256,
                 destructive=items[c.item_id].destructive,
             )
-            for c in accepted_coverage(request)
+            for c in coverage
         ),
     )
 
@@ -523,7 +587,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True, verify_event
         )
     )
     request = front._snapshot(row)
-    _, current_run = _current(s, ctx, product.id, request_id=payload.request_id, lock=write)
+    _, current_run = _current(s, ctx, product.id, payload.run_id, lock=write)
     identity = select(VerificationRunIdentity).where(
         VerificationRunIdentity.tenant_id == ctx.tenant_id,
         VerificationRunIdentity.product_id == product.id,
@@ -626,9 +690,9 @@ def _load(s, ctx, command, product, payload, *, require_reads=True, verify_event
         binding = TestPlanBinding.model_validate(run_row.input_snapshot["plan_binding"])
         origin = front._row(s, ctx, product.id, binding.accepted_request_id)
         origin_request = front._snapshot(origin)
-        expected = _binding(origin, origin_request, payload.run_id, plan, methods)
+        expected = _binding(origin, origin_request, payload.run_id, plan, methods, coverage)
     else:
-        binding = expected = _binding(row, request, payload.run_id, plan, methods)
+        binding = expected = _binding(row, request, payload.run_id, plan, methods, coverage)
     if binding != expected:
         raise DomainError("SOURCE_CHANGED", "Run原已接收范围、配置或实际方法固定版本已漂移。")
     _prefetch_formal_parents(s, ctx, product.id, request, methods)
@@ -809,8 +873,13 @@ def _guards(s, ctx, command, product, payload, bound, *, verify_event=True):
     if not set(a["roles"]) & expected:
         raise DomainError("FORBIDDEN_OPERATION", "该操作缺少对应专业职责。", 403)
     physical._execution(s, ctx, product.id, p.build)
+    selected_items = {pair.item_id for pair in bound.binding.pairs}
     for doc in p.base.documents:
-        if doc.id.startswith(PROFESSIONAL_PREFIX) and doc.source:
+        if (
+            doc.id.startswith(PROFESSIONAL_PREFIX)
+            and doc.source
+            and set(doc.item_ids) & selected_items
+        ):
             row = snapshot_get(s, MethodApplicability, doc.source.id, scope_id=product.id)
             if row is None or doc.source.kind != "domain" or doc.source.position != METHOD_POSITION:
                 raise DomainError("SOURCE_UNAVAILABLE", "固定计划专业方法不存在。")
@@ -819,12 +888,12 @@ def _guards(s, ctx, command, product, payload, bound, *, verify_event=True):
             else:
                 physical._bound_method_check(s, ctx, product.id, p, row)
     samples = {sample.id: sample for sample in p.base.samples}
-    for c in accepted_coverage(p.base):
-        value = p.samples[c.sample_id]
+    for c in bound.binding.pairs:
+        value = p.samples[c.sample.id]
         if value["availability"] != "ready":
             raise DomainError("SAMPLE_UNAVAILABLE", "暂缓或未知实物不能计划/承诺/开测。")
         physical._bound_actual_check(
-            s, ctx, product.id, p, samples[c.sample_id], value, p.methods[(c.sample_id, c.item_id)]
+            s, ctx, product.id, p, samples[c.sample.id], value, p.methods[(c.sample.id, c.item_id)]
         )
     if bound.resources.report.status != "READY":
         raise DomainError("RESOURCE_NOT_READY", "完整测试资源、资格、窗口或样件使用未就绪。")
@@ -902,19 +971,21 @@ def _new_write(s, ctx, command, product, payload, bound):
         or current.revision != payload.expected_request_revision
     ):
         raise DomainError("VERSION_CONFLICT", "正式请求当前版本已变化。")
-    run_pointer, current_run = _current(
-        s, ctx, product.id, request_id=payload.request_id, lock=write
-    )
+    run_pointer, current_run = _current(s, ctx, product.id, payload.run_id, lock=write)
     if isinstance(payload, PlanPayload):
         identity = s.scalar(
             select(VerificationRunIdentity).where(
                 VerificationRunIdentity.tenant_id == ctx.tenant_id,
                 VerificationRunIdentity.product_id == product.id,
-                VerificationRunIdentity.request_id == payload.request_id,
+                VerificationRunIdentity.id == payload.run_id,
             )
         )
-        if current.status != "accepted" or identity is not None or current_run is not None:
-            raise DomainError("INVALID_STATE", "本版仅已接收请求可首次固定一个Run。")
+        if (
+            current.status not in {"accepted", "scheduled", "executing"}
+            or identity is not None
+            or current_run is not None
+        ):
+            raise DomainError("INVALID_STATE", "已接收范围可计划新的Run；不能覆盖已有Run身份。")
         if bound.plan.window.start < now():
             raise DomainError(
                 "INVALID_EVENT_TIME", "新Run必须完整计划未来窗口，不补造过去计划。", 422
@@ -929,16 +1000,26 @@ def _new_write(s, ctx, command, product, payload, bound):
         if current_run.status != "planned":
             raise DomainError("INVALID_STATE", "仅尚未开测的固定Run可承诺或开始。")
         if isinstance(payload, StartPayload):
-            if current.status != "scheduled" or bound.physical.base.timeline.promised_start is None:
-                raise DomainError("INVALID_STATE", "实际开测须先有本Run完整范围的具名承诺。")
+            promise = _promise(s, ctx, product.id, payload.run_id)
+            if (
+                current.status not in {"scheduled", "executing"}
+                or promise is None
+                or promise.request_id != payload.request_id
+                or promise.run_version_id != bound.run_row.id
+                or promise.input_snapshot["expected_plan_sha256"] != bound.run_row.plan_sha256
+            ):
+                raise DomainError("INVALID_STATE", "实际开测须先有本Run固定计划的具名承诺。")
             if not bound.plan.window.start <= now() < bound.plan.window.finish:
                 raise DomainError("INVALID_EVENT_TIME", "当前时间须在固定执行窗口内。", 422)
         elif (
-            current.status != "accepted"
+            current.status not in {"accepted", "scheduled", "executing"}
+            or _promise(s, ctx, product.id, payload.run_id) is not None
             or payload.at.occurred_at < now()
             or payload.at.occurred_at != bound.plan.window.start
         ):
-            raise DomainError("INVALID_STATE", "只能对完整已接收范围承诺固定窗口的未来开始。")
+            raise DomainError(
+                "INVALID_STATE", "只能对本Run承诺固定窗口的未来开始，已有承诺须保留。"
+            )
     return request_pointer, run_pointer
 
 
@@ -947,7 +1028,9 @@ def _payload_kernel(payload, plan):
         return RunPlan(run_id=payload.run_id, coverage=payload.coverage)
     if isinstance(payload, StartPayload):
         return RunStart(at=payload.at, execution=_execution(plan))
-    return SchedulePromise(at=payload.at)
+    return SchedulePromise(
+        run_id=payload.run_id, expected_run_revision=payload.expected_run_revision, at=payload.at
+    )
 
 
 def _invocation(command, payload, value):
@@ -1032,7 +1115,7 @@ def _kernel(s, ctx, command, product, payload, bound, save, *, accepted=False):
             or not isinstance(payload, StartPayload)
             or scope != p.base.scope
             or run_id != bound.binding.run_id
-            or pairs(coverage) != pairs(accepted_coverage(p.base))
+            or pairs(coverage) != {(v.sample.id, v.item_id) for v in bound.binding.pairs}
             or pairs(destructive) != expected_destructive
             or execution != _execution(bound.plan)
             or {v.id for v in samples} != {v.sample.id for v in bound.binding.pairs}
@@ -1104,7 +1187,7 @@ def _record(s, ctx, command, product, payload, bound, pointers, mutation):
         mutation.request is None
         or mutation.request.status not in {"accepted", "scheduled", "executing"}
         or any(
-            getattr(mutation.request.timeline, key) is not None
+            getattr(mutation.request.timeline, key) != getattr(p.base.timeline, key)
             for key in ("preliminary_result", "final_result", "disposed")
         )
     ):
@@ -1325,6 +1408,7 @@ def _run_view(row, run, *, current=False, prospective=False, resource_report=Non
         "build": run.build.model_dump(mode="json"),
         "status": run.status,
         "result": run.result,
+        "promise": None,
         "run_snapshot": run.model_dump(mode="json"),
         "execution_plan": row.execution_plan,
         "plan_sha256": row.plan_sha256,
@@ -1490,6 +1574,9 @@ def preview_view(s, ctx, command, product, payload):
     p = bound.physical
     before_request = physical._request_view(s, ctx, product.id, p.previous, p.base)
     before_run = _run_view(bound.run_row, bound.run, current=True) if bound.run_row else None
+    if before_run:
+        promise = _promise(s, ctx, product.id, payload.run_id)
+        before_run["promise"] = _promise_view(promise)
     k = _kernel(s, ctx, command, product, payload, bound, lambda _: None)
     value = _payload_kernel(payload, bound.plan)
     preview, mutation = k._prepare(
@@ -1532,6 +1619,7 @@ def preview_view(s, ctx, command, product, payload):
             authority_snapshot=p.authority,
         )
         after_run = _run_view(row, mutation.run, prospective=True)
+        after_run["promise"] = before_run["promise"] if before_run else None
         after_run["run_snapshot"] = physical._preview_receives(
             after_run["run_snapshot"], bound.run.model_dump(mode="json") if bound.run else {}
         )
@@ -1551,6 +1639,13 @@ def preview_view(s, ctx, command, product, payload):
             "request": after_request,
             "run": after_run,
             "resource_report": report,
+            "proposed_promise": {
+                "run_id": str(payload.run_id),
+                "at": payload.at.model_dump(mode="json"),
+                "reason": payload.reason,
+            }
+            if isinstance(payload, PromisePayload) and not isinstance(payload, StartPayload)
+            else None,
             "sample_usage": usage,
             "occupancy_effect": "stage_formal_and_sample_use_in_caller_uow"
             if isinstance(payload, StartPayload)
@@ -1660,16 +1755,11 @@ def list_launch(s, ctx, product_id, *, build_id=None):
         "runs": [],
         "current_by_request": {},
         "current_by_run": {},
-        "run_by_request": {},
+        "runs_by_request": {},
         "resource_facts": resource_views,
         "reference_samples": [],
         "capabilities": {key: False for key in OPERATIONS},
-        "blockers": [
-            {
-                "code": "RESULTS_AND_DISPOSITION_UNCONNECTED",
-                "detail": "本闭环只记录固定计划、承诺和实际开测；结果与专业处置尚未接入。",
-            }
-        ],
+        "blockers": [],
         "has_more": False,
         "unavailable_count": 0,
     }
@@ -1704,15 +1794,16 @@ def list_launch(s, ctx, product_id, *, build_id=None):
                     "request_version_id": str(pointer.request_version_id),
                     "revision": pointer.request_revision,
                 }
-                run_pointer, fixed_run = _current(s, ctx, product_id, request_id=row.request_id)
-                pointers[row.request_id] = (run_pointer, fixed_run)
-                if fixed_run:
-                    result["run_by_request"][str(row.request_id)] = str(fixed_run.run_id)
-                if (
-                    source_status == "current"
-                    and request.status == "accepted"
-                    and fixed_run is None
-                ):
+                current_runs = _currents_for_request(s, ctx, product_id, row.request_id)
+                result["runs_by_request"][str(row.request_id)] = [
+                    str(run.run_id) for _, run in current_runs
+                ]
+                pointers.update({run.run_id: (pointer, run) for pointer, run in current_runs})
+                if source_status == "current" and request.status in {
+                    "accepted",
+                    "scheduled",
+                    "executing",
+                }:
                     view["authority"]["run_plan"] = front._assess(
                         s, ctx, product_id, row.project_id, OPERATIONS["run_plan"], request.purpose
                     )
@@ -1743,7 +1834,10 @@ def list_launch(s, ctx, product_id, *, build_id=None):
                             request_id=row.request_id,
                             expected_request_revision=row.revision,
                             run_id=binding.run_id,
-                            coverage=accepted_coverage(request),
+                            coverage=tuple(
+                                Coverage(sample_id=pair.sample.id, item_id=pair.item_id)
+                                for pair in binding.pairs
+                            ),
                             execution_plan=plan,
                             reason="读取当前固定Run能力",
                         )
@@ -1765,7 +1859,7 @@ def list_launch(s, ctx, product_id, *, build_id=None):
                         view["blockers"].append(
                             {
                                 "code": "RESOURCE_FACT_REQUIRED",
-                                "detail": "尚无精确全范围、当前可信测试资源事实。",
+                                "detail": "尚无所选已接收范围的当前可信测试资源事实。",
                             }
                         )
                 for sample in request.samples:
@@ -1791,9 +1885,16 @@ def list_launch(s, ctx, product_id, *, build_id=None):
         try:
             source_status = _read_evidence(s, ctx, product_id, row)
             run, plan = _snapshot(row)
-            pointer, current = pointers.get(row.request_id, (None, None))
+            pointer, current = pointers.get(row.run_id, (None, None))
             is_current = current is not None and current.id == row.id
             view = _run_view(row, run, current=is_current)
+            promise = _promise(s, ctx, product_id, row.run_id)
+            # A planned historical version must not claim a later promise existed then.
+            view["promise"] = (
+                _promise_view(promise)
+                if promise and (is_current or promise.created_at <= row.created_at)
+                else None
+            )
             if run.status == "running":
                 try:
                     view.update(_saved_effects(s, ctx, product_id, row))
@@ -1811,10 +1912,10 @@ def list_launch(s, ctx, product_id, *, build_id=None):
                 }
                 request_row, request, _ = current_requests[row.request_id]
                 for key, cls in (("schedule_promise", PromisePayload), ("run_start", StartPayload)):
-                    eligible = run.status == "planned" and (
-                        request.status == "accepted"
-                        if key == "schedule_promise"
-                        else request.status == "scheduled"
+                    eligible = (
+                        run.status == "planned"
+                        and request.status in {"accepted", "scheduled", "executing"}
+                        and (promise is None if key == "schedule_promise" else promise is not None)
                     )
                     if not eligible or source_status != "current":
                         continue
@@ -2210,7 +2311,11 @@ def _load_start_direct(
         s, ctx, product.id, request, binding, write=write
     )
     for doc in request.documents:
-        if doc.source and doc.id.startswith(PROFESSIONAL_PREFIX):
+        if (
+            doc.source
+            and doc.id.startswith(PROFESSIONAL_PREFIX)
+            and set(doc.item_ids) & {c.item_id for c in run.coverage}
+        ):
             fixed = _row(s, ctx, product.id, MethodApplicability, doc.source.id)
             if doc.source.kind != "domain" or doc.source.position != METHOD_POSITION:
                 raise DomainError("SOURCE_UNAVAILABLE", "固定专业适用来源不匹配。")
@@ -2459,7 +2564,8 @@ def apply_confirmed(s, ctx, command, product, payload, phase):
     raw = phase.mutation.model_dump(mode="json")
     clock = now().isoformat()
     raw["run"]["actual_start"]["received_at"] = clock
-    raw["request"]["timeline"]["actual_start"]["received_at"] = clock
+    if bound.physical.base.timeline.actual_start is None:
+        raw["request"]["timeline"]["actual_start"]["received_at"] = clock
     for event in raw["events"]:
         event["at"]["received_at"] = clock
     row = _record(

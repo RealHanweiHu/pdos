@@ -553,14 +553,24 @@ class VerificationHandler:
                 "暂定测试时段；不占用资源或改变承诺。",
             )
         elif isinstance(payload, SchedulePromise):
-            if request.status != "accepted":
+            if request.status not in {"accepted", "scheduled", "executing"}:
                 raise DomainError("INVALID_STATE", "正式承诺窗口须先接收明确范围。")
-            coverage = accepted_coverage(request)
+            fixed_run, fixed_request = self._run(
+                authority, payload.run_id, payload.expected_run_revision
+            )
+            if fixed_request.id != request.id or fixed_run.status != "planned":
+                raise DomainError("INVALID_STATE", "承诺须绑定本请求尚未开测的固定Run。")
+            coverage = fixed_run.coverage
+            check_coverage(request, coverage)
+            if not pairs(coverage) <= pairs(accepted_coverage(request)):
+                raise DomainError("INVALID_COVERAGE", "承诺超出实际接收范围。", 422)
             fact = self._fact(authority, payload.at, future=True)
             request = _replace(
                 request,
-                status="scheduled",
-                timeline=_replace(request.timeline, promised_start=fact),
+                status="executing" if request.status == "executing" else "scheduled",
+                timeline=_replace(
+                    request.timeline, promised_start=request.timeline.promised_start or fact
+                ),
             )
             event_name, effect = "verification.start_promised", "品质承诺窗口；实际开始仍为空。"
         elif isinstance(payload, RunPlan):

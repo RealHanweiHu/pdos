@@ -24,6 +24,7 @@ from pdos_next.domain.verification_launch.models import (
     VerificationRunCurrent,
     VerificationRunIdentity,
 )
+from pdos_next.domain.verification_results.models import TestResultActionFact as ResultActionORM
 from pdos_next.errors import DomainError
 from pdos_next.models import Grant, Principal, Receipt
 from pdos_next.schemas.quality_issues.contracts import EffectivenessRequirement
@@ -240,9 +241,9 @@ def test_two_authorized_shared_callers_have_identical_fixed_output_and_separate_
     code(lambda: work.refresh_output(first), "CALLER_UOW_CHANGED")
 
 
-@pytest.mark.parametrize("model", [VerificationRunCurrent, VerificationRunIdentity])
-def test_multiple_actual_run_candidates_or_pointers_are_rejected_not_chosen(monkeypatch, model):
+def test_duplicate_current_pointer_for_exact_fact_is_rejected_not_chosen(monkeypatch):
     work = frame(monkeypatch)
+    model = VerificationRunCurrent
     original = work.memory.first(model)
     duplicate = model(
         **{
@@ -253,13 +254,49 @@ def test_multiple_actual_run_candidates_or_pointers_are_rejected_not_chosen(monk
     )
     duplicate.id = samples.uid("ambiguous-run-row")
     work.memory.add(duplicate)
-    code(
-        work.read_output,
-        "PAIR_CURRENT_MISSING_OR_AMBIGUOUS"
-        if model is VerificationRunCurrent
-        else "PAIR_RUN_MISSING_OR_AMBIGUOUS",
-    )
+    code(work.read_output, "PAIR_CURRENT_MISSING_OR_AMBIGUOUS")
     assert not work.calls
+
+
+def test_other_run_identity_under_same_request_cannot_replace_exact_fact_run(monkeypatch):
+    work = frame(monkeypatch)
+    original = work.memory.first(VerificationRunIdentity)
+    sibling = VerificationRunIdentity(
+        **{
+            column.key: deepcopy(getattr(original, column.key))
+            for column in VerificationRunIdentity.__table__.columns
+            if hasattr(original, column.key)
+        }
+    )
+    sibling.id = samples.uid("other-run-under-request")
+    work.memory.add(sibling)
+    handle = work.read_output()
+    assert handle.pair_read.binding.run_id == original.id
+
+
+def test_unchanged_formal_import_selects_review_fact_by_exact_current_run(monkeypatch):
+    work = frame(monkeypatch, "test.run.review")
+    formal = next(
+        row for row in work.memory.rows[FormalVerificationRequest] if row.id == work.selected.id
+    )
+    current = work.memory.first(VerificationRunCurrent)
+    review = work.memory.first(ResultActionORM)
+    assert formal.operation == "test.results.import" and review.operation == "test.run.review"
+    prior_import = ResultActionORM(
+        **{
+            column.key: deepcopy(getattr(review, column.key))
+            for column in ResultActionORM.__table__.columns
+            if hasattr(review, column.key)
+        }
+    )
+    prior_import.id = samples.uid("prior-import-fact-same-formal")
+    prior_import.operation = formal.operation
+    prior_import.next_run_version_id = review.run_version_id
+    prior_import.next_run_revision = review.run_revision
+    work.memory.add(prior_import)
+    handle = work.read_output()
+    assert handle.pair_read.material.fact.operation == "test.run.review"
+    assert handle.pair_read.material.run_after.ref.id == current.run_version_id
 
 
 def test_advanced_formal_cannot_borrow_old_direct_receipt_when_actual_pair_receipt_missing(

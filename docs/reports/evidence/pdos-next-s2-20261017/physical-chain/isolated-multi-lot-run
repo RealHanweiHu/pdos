@@ -1,0 +1,67 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /private/tmp/pdos-s2-final-20261017054727/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 1 item
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end PASSED [100%]
+
+=============================== warnings summary ===============================
+pdos_next/domain/test_resources/models.py:36
+  /private/tmp/pdos-s2-final-20261017054727/pdos-next/server/pdos_next/domain/test_resources/models.py:36: PytestCollectionWarning: cannot collect test class 'TestResourceFact' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResourceFact(Row, Base):
+
+pdos_next/domain/test_resources/models.py:185
+  /private/tmp/pdos-s2-final-20261017054727/pdos-next/server/pdos_next/domain/test_resources/models.py:185: PytestCollectionWarning: cannot collect test class 'TestResourceReservation' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResourceReservation(Row, Base):
+
+pdos_next/domain/test_resources/schemas.py:40
+  /private/tmp/pdos-s2-final-20261017054727/pdos-next/server/pdos_next/domain/test_resources/schemas.py:40: PytestCollectionWarning: cannot collect test class 'TestPlanBinding' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestPlanBinding(DTO):
+
+pdos_next/domain/test_resources/schemas.py:73
+  /private/tmp/pdos-s2-final-20261017054727/pdos-next/server/pdos_next/domain/test_resources/schemas.py:73: PytestCollectionWarning: cannot collect test class 'TestResourceFactInput' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResourceFactInput(DTO):
+
+pdos_next/domain/verification_results/models.py:139
+  /private/tmp/pdos-s2-final-20261017054727/pdos-next/server/pdos_next/domain/verification_results/models.py:139: PytestCollectionWarning: cannot collect test class 'TestResultActionFact' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResultActionFact(ResultScope, Row, Base):
+
+pdos_next/domain/verification_results/models.py:116
+  /private/tmp/pdos-s2-final-20261017054727/pdos-next/server/pdos_next/domain/verification_results/models.py:116: PytestCollectionWarning: cannot collect test class 'TestResultProjection' because it has a __init__ constructor (from: tests/verification_launch/test_multi_run_chain.py)
+    class TestResultProjection(ResultScope, Row, Base):
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /private/tmp/pdos-s2-final-20261017054727/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /private/tmp/pdos-s2-final-20261017054727/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /private/tmp/pdos-s2-final-20261017054727/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /private/tmp/pdos-s2-final-20261017054727/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /private/tmp/pdos-s2-final-20261017054727/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /private/tmp/pdos-s2-final-20261017054727/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/verification_launch/test_multi_run_chain.py::test_batched_acceptance_two_runs_keep_independent_promises_and_aggregate_only_at_end
+  /private/tmp/pdos-s2-final-20261017054727/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================== 1 passed, 15 warnings in 694.86s (0:11:34) ==================

@@ -160,7 +160,7 @@ def _base(s, ctx, pid, request_id, request_revision, run_id, run_revision, *, wr
     request_row = front._version(s, ctx, pid, request_id, request_revision)
     request = front._snapshot(request_row)
     front._current(s, ctx, pid, request_id, lock=write)
-    launch._current(s, ctx, pid, request_id=request_id, lock=write)
+    launch._current(s, ctx, pid, run_id, lock=write)
     query = select(VerificationRunIdentity).where(
         VerificationRunIdentity.tenant_id == ctx.tenant_id,
         VerificationRunIdentity.product_id == pid,
@@ -944,13 +944,27 @@ def _check_source(s, ctx, pid, bound, scope, source, purpose):
 
 def _kernel(s, ctx, command, product, payload, bound, save, *, accepted=False):
     authority = authority_dto(bound.authority, ctx.requester_id, now())
+    # The request parent is already serialized by _base. Only current immutable
+    # siblings participate; history cannot multiply coverage or mark completion.
+    siblings = tuple(
+        launch._snapshot(row)[0]
+        for _, row in launch._currents_for_request(
+            s,
+            ctx,
+            product.id,
+            bound.request.id,
+            lock=not s.info.get("read_snapshot", False),
+        )
+    )
+    if any(run.scope != bound.run.scope or run.build != bound.run.build for run in siblings):
+        raise DomainError("INTEGRITY_MISMATCH", "同请求Run集合的固定范围无法核对。")
     commands = ResultsCommands(
         authority,
         bound.request,
         save,
         accepted_confirmation=accepted,
         fixed_run=bound.run,
-        fixed_runs=(bound.run,),
+        fixed_runs=siblings,
     )
 
     def original(scope, measurement, run):
