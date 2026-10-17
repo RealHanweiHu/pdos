@@ -19,7 +19,12 @@ from pdos_next.agent_kernel.graph import AgentKernel
 from pdos_next.agent_kernel.host import BoundHost
 from pdos_next.agent_kernel.m3_object_reads import M3ObjectReads
 from pdos_next.agent_kernel.management import register_agreement
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, TenantAdministrator
+from pdos_next.agent_kernel.models import (
+    AgentRun,
+    AgentToolCall,
+    TenantAdministrator,
+    TenantSkillEnablement,
+)
 from pdos_next.agent_kernel.proposal_context import KEY
 from pdos_next.agent_kernel.types import ModelTurn, ToolCall
 from pdos_next.errors import DomainError
@@ -215,6 +220,12 @@ def test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_
     # The intentionally unmetered transport reserves bytes, rather than real model tokens.
     with Session(work.admin) as session, session.begin():
         session.get(AgentRun, scope.run_id).token_limit = 1_000_000
+        if session.scalar(select(TenantSkillEnablement).where(
+            TenantSkillEnablement.tenant_id == work.tenant,
+            TenantSkillEnablement.skill_key == "gap_check",
+        )) is None:
+            session.add(TenantSkillEnablement(tenant_id=work.tenant, skill_key="gap_check",
+                                             enabled=True))
     seen = []
 
     def response(kwargs):
@@ -254,7 +265,7 @@ def test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_
         cost_required=False,
     )
     result = AgentKernel(BoundHost(owner.store, adapters), owner.registry).execute(
-        scope, goal="Synthetic private proposal gap check"
+        scope, goal="Synthetic private proposal gap check", preload=("gap_check",),
     )
     assert result["output"]["status"] == "completed" and client.calls == 2, result["output"]
     with owner.store.transaction(scope) as (session, run):

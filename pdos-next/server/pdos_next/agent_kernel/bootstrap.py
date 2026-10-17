@@ -218,7 +218,7 @@ class Bootstrap:
             ),
         )
 
-    def project_context(self, scope, goal):
+    def project_context(self, scope, goal, fields=None):
         with tenant_session(
             self.engine, scope.tenant_id, actor_id=scope.writer_id,
             requester_id=scope.requester_id, category_id=scope.category_id, read_snapshot=True,
@@ -251,8 +251,13 @@ class Bootstrap:
                 from .proposal_context import bound_head, validate
 
                 bound_head(run, proposal(session, self.commands.context(scope), scope.proposal_id))
-                value["proposal"] = read(session, self.commands.context(scope), scope.proposal_id)
-                validate(session, scope, run, extra_value=value["proposal"])
+                if fields is None or "proposal" in fields:
+                    value["proposal"] = read(
+                        session, self.commands.context(scope), scope.proposal_id,
+                    )
+                    validate(session, scope, run, extra_value=value["proposal"])
+                else:
+                    validate(session, scope, run)
             if run.continued_from_id is not None:
                 from .conversation import memory
                 value["conversation"] = memory(

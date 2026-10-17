@@ -1,6 +1,6 @@
 ---
 key: price_band
-version: 0.2.0-draft
+version: 0.2.1-draft
 purpose: 在统一价格口径（币种、日期、地区、渠道、零售或促销、含税运、配置）下整理竞品与我方价格点，用 calc.price_band 得到价格带分布与目标价位置；分组、分档、分位和换汇都交计算工具。
 input_schema:
   type: object
@@ -21,6 +21,7 @@ output_schema:
     excluded: {type: array, items: {point: string, reason: string}}
     target_position: {type: object, description: "目标价所在档位（calc_ref）；目标价未定则 unknown"}
     observations: {type: array, maxItems: 5, items: {statement: string, basis: "calc_ref|Citation[]"}}
+context_schema: {$ref: "context-schemas.json#/profiles/proposal"}
 context_requirements:
   - 品类：地区、渠道、细分
   - 竞品库价格观察（含口径字段与日期）

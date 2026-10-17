@@ -1,6 +1,6 @@
 ---
 key: review_pain_clustering
-version: 0.2.0-draft
+version: 0.2.1-draft
 purpose: 把评论、退货原因等用户声音按痛点归类，每类给可核原文片段，样本量与占比由代码计算，并按型号、渠道、时间区分。
 input_schema:
   type: object
@@ -20,6 +20,7 @@ output_schema:
     insights: {type: array, maxItems: 5, items: {statement: string, nature: "inferred", basis: "cluster_id[] + Citation[]"}}
     research_questions: {type: array, items: string}
   note: 每类条数、占比、按型号/渠道/时间的分布由 verify 节点代码计算并回填，模型不写数字
+context_schema: {$ref: "context-schemas.json#/profiles/proposal"}
 context_requirements:
   - 用户声音条目：ID、型号、渠道、地区、日期、评分、语言、原文片段（导入文件经 evidence.extract 抽取行，公开评论经 fanout 台账；主循环不读导入文件原文）
   - 导入文件清单：版本 ID、范围（品类可见或挂在哪个私有提案）、类型（不含正文）

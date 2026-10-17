@@ -61,11 +61,22 @@ class BoundHost:
             return run.versions.get(LAYOUT_KEY)
 
     def context(self, scope, goal):
+        return self.skill_context(scope, goal, bindings=())["context"]
+
+    def skill_context(self, scope, goal, *, bindings):
+        from .context_projection import combine_contracts, project, snapshot
+
         self.current(scope)
-        projected = self.adapters.project_context(scope, goal)
-        if not isinstance(projected, dict):
-            raise DomainError("VALIDATION_FAILED", "上下文须按技能要求投影。")
-        return projected
+        skills = [self.catalog.load(binding.key, scope, self.enabled) for binding in bindings]
+        if any(skill.version != binding.version or skill.digest != binding.digest
+               for skill, binding in zip(skills, bindings, strict=True)):
+            raise DomainError("VERSION_CONFLICT", "已加载方法的资料合同已变化。")
+        schema = combine_contracts(self.catalog, skills)
+        raw = self.adapters.project_context(scope, goal, frozenset(schema["properties"]))
+        value, omitted, issues = project(raw, schema)
+        reference = snapshot(self.store, scope, value=value, schema=schema, bindings=bindings,
+                             omitted=omitted, issues=issues)
+        return {"context": value, "context_ref": reference}
 
     def enabled(self, scope, skill):
         with self.store.transaction(scope) as (session, _):
@@ -93,6 +104,10 @@ class BoundHost:
             )
 
     def model(self, scope, **kwargs):
+        if scope.isolation == "main":
+            from .context_projection import check_messages
+
+            check_messages(self.store, scope, kwargs["messages"], kwargs.get("loaded_skills", ()))
         return self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
 
     def read(self, scope, spec, arguments, intent_key, *, source: ReadSource | None = None):

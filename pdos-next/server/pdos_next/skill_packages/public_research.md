@@ -1,6 +1,6 @@
 ---
 key: public_research
-version: 0.2.1-draft
+version: 0.2.2-draft
 purpose: 把研究问题拆成并行的公开来源子任务，交回带可核原文片段的台账、发现和未答问题；只研究，不替用户下结论或写提案。
 input_schema:
   type: object
@@ -115,6 +115,7 @@ output_schema:
   - unfinished
   title: WireAgentOutput
   type: object
+context_schema: {$ref: "context-schemas.json#/profiles/category"}
 context_requirements:
   - 已有品类 Run 的当前品类名称、边界、目标地区、研究问题；个人 Run 使用本会话候选与显式假设，不调用品类范围读取
   - 已有品类知识与竞品清单的摘要（只含 ID、标题、性质、日期），用于避免重复研究

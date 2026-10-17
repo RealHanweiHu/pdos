@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { mergeProcessSteps, processAge, processStepLabel } from "@/lib/run-process";
+import { contextIssueLabel, mergeProcessSteps, processAge, processStepLabel } from "@/lib/run-process";
 import type { ProcessStep, RunProcessData } from "@/lib/run-process";
 
 type Api = <T>(path: string, body?: unknown) => Promise<T>;
@@ -72,7 +72,7 @@ export function RunProcess({ value, api, root }: { value?: RunProcessData; api: 
         {before !== null && <Button size="sm" variant="outline" disabled={busy} onClick={() => void more()}>{busy ? "正在读取…" : "读取更早步骤"}</Button>}
         {!steps.length && <p className="subtle">尚无已登记的处理步骤。</p>}
         {sources.length > 0 && <div className="space-y-2"><p className="font-medium">本次绑定依据</p>{sources.map(source => <p key={source.id} className="break-words">{source.title} · 第 {source.bound_revision} 版{source.current_revision !== source.bound_revision ? "（当前版本已变化）" : ""}</p>)}{sourceCursor && <Button size="sm" variant="outline" disabled={busy} onClick={()=>void moreRecords("sources")}>更多绑定依据</Button>}</div>}
-        <ol className="space-y-3">{steps.map(step => <li key={step.id} className="space-y-1 break-words"><p>{processStepLabel(step)}</p><time className="subtle" dateTime={step.at}>{new Date(step.at).toLocaleString()}</time></li>)}</ol>
+        <ol className="space-y-3">{steps.map(step => <li key={step.id} className="space-y-1 break-words"><p>{processStepLabel(step)}</p>{[...(step.context_omitted ?? []), ...(step.context_issues ?? [])].map((issue, index) => <p key={index} className="subtle">{contextIssueLabel(issue)}</p>)}<time className="subtle" dateTime={step.at}>{new Date(step.at).toLocaleString()}</time></li>)}</ol>
         {receipts.length > 0 && <div className="space-y-2"><p className="font-medium">实际提交记录</p>{receipts.map(receipt => <p key={receipt.id} className="subtle break-all">{receipt.operation} · 第 {receipt.subject_revision} 版<br/>回执 {receipt.id}</p>)}{receiptCursor && <Button size="sm" variant="outline" disabled={busy} onClick={()=>void moreRecords("receipts")}>更多提交记录</Button>}</div>}
         <p className="subtle">运行中按实际记录更新；关闭或刷新页面不启动新的模型调用。</p>
       </div>

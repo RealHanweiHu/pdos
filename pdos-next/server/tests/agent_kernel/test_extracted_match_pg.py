@@ -1,6 +1,7 @@
 """Registered extraction → actual standard match; synthetic provider only."""
 # ruff: noqa: F811 -- pytest uses explicitly imported isolated PG fixtures
 
+import json
 from uuid import UUID, uuid4
 
 import pytest
@@ -9,7 +10,7 @@ from security_fixture import secured_parse
 from sqlalchemy import select
 from test_durable_evidence import upload_input
 
-from pdos_next.agent_kernel.bindings import execution_key
+from pdos_next.agent_kernel.bindings import SkillBinding, execution_key
 from pdos_next.agent_kernel.models import AgentToolCall
 from pdos_next.agent_kernel.read_execution import ReadSource
 from pdos_next.agent_kernel.types import ModelTurn, ToolCall
@@ -123,13 +124,19 @@ def prepare(work, security_work, *, missing=False, kind="spec"):
         )
 
     client.callback = compare_turn
+    with owner.store.transaction(scope) as (_, run):
+        binding = next(SkillBinding.model_validate(skill)
+            for snapshot in run.versions["context_snapshots"].values()
+            for skill in snapshot["skills"] if skill["key"] == "rfq_extraction")
+    context = host.skill_context(scope, "Synthetic extracted comparison", bindings=(binding,))
     with registered_graph_context("xiaopai"):
         turn = host.model(
             scope,
             system="frozen synthetic main prefix",
-            messages=[{"role": "user", "content": "用已核对的抽取行比较标准型号"}],
+            messages=[{"role": "user", "content": json.dumps(context, ensure_ascii=False)}],
             tools=owner.registry.definitions(),
             output_schema={"type": "object"},
+            loaded_skills=(binding,),
         )
     source = ReadSource(model_call_id=turn.ledger_call_id, response_index=0)
     key = execution_key(scope.run_id, source.model_call_id, 0)

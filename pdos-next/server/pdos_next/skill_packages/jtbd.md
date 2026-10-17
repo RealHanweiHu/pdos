@@ -1,6 +1,6 @@
 ---
 key: jtbd
-version: 0.2.0-draft
+version: 0.2.1-draft
 purpose: 从用户声音、场景与研究证据中整理目标用户要完成的工作（JTBD）、完整使用路径与购买标准，区分有证据的发现和待验证假设。
 input_schema:
   type: object
@@ -21,6 +21,7 @@ output_schema:
     buying_criteria: {type: array, items: {criterion: string, nature: "claimed|inferred|unknown", citations: "Citation[]"}}
     switching_forces: {type: [object, "null"], description: "可选：推力/拉力/顾虑/习惯，各条带依据或标假设"}
     hypotheses: {type: array, items: {hypothesis: string, how_to_validate: string, would_falsify: string}}
+context_schema: {$ref: "context-schemas.json#/profiles/proposal"}
 context_requirements:
   - 品类：用户群、场景、地区、渠道
   - 用户声音归类结果（cluster 与代表引文）

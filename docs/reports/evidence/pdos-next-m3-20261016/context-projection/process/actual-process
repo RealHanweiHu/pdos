@@ -1,0 +1,12 @@
+{"run_id": "70dc19e4-6074-4fce-ae45-4eaa208805ce", "temporal_run_id": "01a14749-1f90-7130-aed9-b94e22b5ed69", "same_temporal_run": true, "history_reference_fields": ["actor_id", "category_id", "requester_id", "subject_id", "tenant_id"], "answer_signals": 1, "activities": 2, "same_checkpoint_thread": true, "worker_processes": 2, "actual_claims": 1, "real_model_calls": 0}
+.{"run_id": "457e88c8-8122-49bb-9a52-751901831848", "same_temporal_run": true, "worker_processes": 2, "cancelled": true, "actual_claims": 0, "held_tokens": 0, "real_model_calls": 0}
+.{"root_run_id": "1b16e17a-b4dc-4558-8cc6-64550d547f32", "continued_run_id": "12a816c4-9179-4a40-9557-3c8dd2fc828f", "temporal_run_id": "01a14749-dda5-72f1-8270-b56ed8457b3f", "same_temporal_run_after_restart": true, "one_conversation_thread": true, "independent_run_namespaces": 2, "root_checkpoint_unchanged": true, "worker_processes": 3, "history": {"history_reference_fields": ["actor_id", "category_id", "requester_id", "subject_id", "tenant_id"], "answer_signals": 1, "activities": 2}, "root_history": {"history_reference_fields": ["actor_id", "category_id", "requester_id", "subject_id", "tenant_id"], "answer_signals": 1, "activities": 2}, "actual_claims": 1, "child_claims": 0, "held_tokens": 0, "real_model_calls": 0}
+.{"run_id": "6abebc67-893f-4f34-b7ad-31912343db4a", "actual_proposal": true, "cost_micro_usd": 240, "default_host_ports": true, "external_model_calls": 0, "external_kms_calls": 0}
+.
+=============================== warnings summary ===============================
+tests/agent_kernel/test_host_runtime_process.py::test_default_host_process_prepares_actual_proposal_and_settles_declared_costs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 1 warning in 80.07s (0:01:20)

@@ -1,6 +1,6 @@
 ---
 key: opportunity_scoring
-version: 0.2.0-draft
+version: 0.2.1-draft
 purpose: 收集机会评分与市场规模所需的输入并逐项注明来源、区间和性质，调用计算工具得到结果，再解释驱动因素与不确定性；模型不自报任何规模或分数。
 input_schema:
   type: object
@@ -20,6 +20,7 @@ output_schema:
     drivers: {type: array, maxItems: 4, items: {statement: string, basis: "calc_ref + input name"}}
     uncertainties: {type: array, items: {input: string, why: string, how_to_reduce: string}}
   note: 结果数值只出现在计算工具回执中，由界面按 calc_ref 显示；模型文本引用时原样照抄，不改写或四舍五入
+context_schema: {$ref: "context-schemas.json#/profiles/proposal"}
 context_requirements:
   - 品类：细分、地区、渠道
   - 已有证据与品类知识中的市场数据（来源、日期、口径）

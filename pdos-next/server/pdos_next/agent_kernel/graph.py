@@ -184,19 +184,18 @@ class AgentKernel:
         def prepare(state):
             ports.current(scope)
             loaded = {}
-            messages = [
-                {
-                    "role": "user",
-                    "content": json.dumps(
-                        {"goal": state["goal"], "context": ports.context(scope, state["goal"])},
-                        ensure_ascii=False,
-                    ),
-                }
-            ]
+            skills = []
             for name in preload:
                 skill = catalog.load(name, scope, ports.enabled)
                 loaded[name] = load_binding(skill)
-                messages.append({"role": "user", "content": skill.content})
+                skills.append(skill)
+            project_context = getattr(ports, "skill_context", None)
+            context = project_context(scope, state["goal"], bindings=tuple(
+                SkillBinding.model_validate(binding) for binding in loaded.values()
+            )) if callable(project_context) else {"context": ports.context(scope, state["goal"])}
+            messages = [{"role": "user", "content": json.dumps(
+                {"goal": state["goal"], **context}, ensure_ascii=False,
+            )}, *({"role": "user", "content": skill.content} for skill in skills)]
             return {
                 "run_id": str(scope.run_id),
                 "messages": messages,
@@ -348,7 +347,14 @@ class AgentKernel:
                     skill = catalog.load(call.arguments.get("name"), scope, ports.enabled)
                     loaded[skill.key] = skill
                     bindings[skill.key] = load_binding(skill)
-                    return {"skill": skill.key, "version": skill.version, "content": skill.content}
+                    result = {"skill": skill.key, "version": skill.version,
+                              "content": skill.content}
+                    project_context = getattr(ports, "skill_context", None)
+                    if callable(project_context):
+                        result.update(project_context(scope, state["goal"], bindings=tuple(
+                            SkillBinding.model_validate(binding) for binding in bindings.values()
+                        )))
+                    return result
                 spec = registry.authorize(scope, call.name, call.arguments, loaded, ports.enabled)
                 ports.emit(scope, {"type": "tool_started", "tool": spec.name, "call_id": call.id})
                 if spec.kind != "write":

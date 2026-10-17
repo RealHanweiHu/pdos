@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/../.local/context_projection_preview_20261016.py", line 37, in <module>
+    session.add_all([Grant(tenant_id=tenant,category_id=category,principal_id=person,can_read=True,can_write=True) for person in [human,agent]])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<sqlalchemy generated __init__ for class pdos_next.models.Grant>", line 4, in __init__
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py", line 597, in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 166, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py", line 595, in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py", line 2287, in _declarative_constructor
+    raise TypeError(
+TypeError: 'can_read' is an invalid keyword argument for Grant

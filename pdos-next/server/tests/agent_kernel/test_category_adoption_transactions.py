@@ -81,7 +81,7 @@ def test_category_wait_survives_postgres_checkpoint_and_new_host(setup, tmp_path
     f = personal_fixture(setup, tmp_path)
     adapters = KernelAdapters(
         route_for=lambda *_: f.route,
-        project_context=lambda *_: {},
+        project_context=f.bootstrap.project_context,
         verify_result=lambda _, result, __: result,
         prepare_candidate=f.bootstrap.prepare_candidate,
         execute_command=lambda *_: pytest.fail("No direct write"),

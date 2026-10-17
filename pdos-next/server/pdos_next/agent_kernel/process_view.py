@@ -13,6 +13,7 @@ from .models import AgentEvent, AgentToolCall
 KINDS = (
     "accepted",
     "skill_loaded",
+    "context_projected",
     "model_started",
     "tool_started",
     "tool_finished",
@@ -60,6 +61,9 @@ def read_process(
         AgentEvent.body["key"].astext.label("skill"),
         AgentEvent.body["version"].astext.label("version"),
         AgentEvent.body["status"].astext.label("status"),
+        AgentEvent.body["fields"].label("context_fields"),
+        AgentEvent.body["omitted"].label("context_omitted"),
+        AgentEvent.body["issues"].label("context_issues"),
     ).where(AgentEvent.run_id == run.id, kind.in_(KINDS))
     if before is not None:
         if not session.scalar(
@@ -174,7 +178,12 @@ def read_process(
                 "tool": row.tool if row.kind in {"tool_started", "tool_finished"} else None,
                 "skill": row.skill if row.kind == "skill_loaded" else None,
                 "version": row.version if row.kind == "skill_loaded" else None,
-                "status": row.status if row.kind in {"finished", "run_state"} else None,
+                "status": row.status
+                if row.kind in {"finished", "run_state", "context_projected"} else None,
+                **({"context_fields": row.context_fields or [],
+                    "context_omitted": row.context_omitted or [],
+                    "context_issues": row.context_issues or []}
+                   if row.kind == "context_projected" else {}),
             }
             for row in reversed(visible)
         ],

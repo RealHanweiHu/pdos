@@ -43,6 +43,9 @@ class Skill:
 class SkillCatalog:
     def __init__(self, directory=None):
         directory = directory or Path(__file__).resolve().parents[1] / "skill_packages"
+        from .context_projection import declared_contract, load_contracts
+
+        self.contexts = load_contracts(Path(directory))
         self._skills = {}
         for path in sorted(Path(directory).glob("*.md")):
             text = path.read_text()
@@ -57,6 +60,7 @@ class SkillCatalog:
                 "input_schema",
                 "output_schema",
                 "context_requirements",
+                "context_schema",
                 "allowed_operations",
                 "evidence_policy",
                 "failure_policy",
@@ -67,6 +71,7 @@ class SkillCatalog:
             }
             if not required <= data.keys() or data["key"] in self._skills:
                 raise ValueError("Invalid versioned skill configuration")
+            data["context_schema"] = declared_contract(data["context_schema"], self.contexts)
             operations = frozenset(o["tool"] for o in data["allowed_operations"])
             self._skills[data["key"]] = Skill(
                 data["key"], data["version"], data["purpose"], operations, data, content.strip()

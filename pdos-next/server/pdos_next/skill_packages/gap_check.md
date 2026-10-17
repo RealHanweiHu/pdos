@@ -1,6 +1,6 @@
 ---
 key: gap_check
-version: 0.2.0-draft
+version: 0.2.1-draft
 purpose: 检查立项提案或型号定义的缺项、冲突与口径问题（缺单位/工况/方法、未映射参数、来源缺失、方案不足、未知项没有待决问题等），按严重度排序，并把需要人处理的项整理成待决问题候选。
 input_schema:
   type: object
@@ -28,6 +28,7 @@ output_schema:
     evidence_links: {type: array, items: {evidence_ref: string, item_ref: string}, description: new_evidence 触发时，经 evidence.link.create 把变化证据挂到受影响条目}
     status_updates: {type: array, items: {item_ref: string, availability: "conflicted|null", item_status: "expert_pending|null"}, description: 仅 AI 起草且无人工值的 spec 条目，值不变}
   note: 各严重度的计数由代码根据 findings 生成
+context_schema: {$ref: "context-schemas.json#/profiles/proposal"}
 context_requirements:
   - 目标提案/定义的全部条目：kind、值、unit、condition_note、verification_method、acceptance_criterion、modality、exceptions、source_refs、item_status、availability、负责人、是否人工值、版本
   - 品类当前参数版本（含方向、工况、判据）

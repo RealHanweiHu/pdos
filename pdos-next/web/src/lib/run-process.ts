@@ -1,4 +1,5 @@
-export type ProcessStep = { id: string; sequence: number; at: string; kind: string; tool: string | null; skill: string | null; version: string | null; status: string | null };
+export type ContextIssue = { field: string; reason: string };
+export type ProcessStep = { id: string; sequence: number; at: string; kind: string; tool: string | null; skill: string | null; version: string | null; status: string | null; context_fields?: string[]; context_omitted?: ContextIssue[]; context_issues?: ContextIssue[] };
 export type RunProcessData = {
   run_id: string; status: string; reverted: boolean; error_code: string | null;
   started_at: string; observed_at: string; last_recorded_at: string | null; ended_at: string | null; elapsed_seconds: number | null;
@@ -25,6 +26,7 @@ export function processStepLabel(step: ProcessStep): string {
   switch (step.kind) {
     case "accepted": return "工作已保存，等待执行";
     case "skill_loaded": return `加载${skills[step.skill ?? ""] ?? "本次工作方法"}${step.version ? ` · ${step.version}` : ""}`;
+    case "context_projected": return step.status === "rejected" ? "所需资料合同不匹配，已保留核对原因" : `已按当前方法核对资料范围${step.context_omitted?.length ? ` · 省略 ${step.context_omitted.length} 个字段` : ""}`;
     case "model_started": return "整理已取得的信息并选择下一步";
     case "tool_started": return actionLabel(step.tool);
     case "tool_finished": return `本步处理已返回 · ${actionLabel(step.tool)}`;
@@ -36,6 +38,11 @@ export function processStepLabel(step: ProcessStep): string {
     case "finished": return ({ completed: "本次处理已形成结果", partial: "已形成部分结果，仍有待完成事项", failed: "执行未完成，请核对已保存记录", cancelled: "已停止后续执行，已做结果保留", waiting_input: "等待答复或运行条件恢复" } as Record<string,string>)[step.status ?? ""] ?? "已记录当前执行状态";
     default: return "已登记处理步骤";
   }
+}
+export function contextIssueLabel(issue: ContextIssue): string {
+  const root = issue.field.split("/")[1];
+  const field = ({ goal: "本次目标", sources: "绑定来源", category: "品类资料", product: "型号资料", proposal: "当前提案", conversation: "原工作记忆" } as Record<string,string>)[root] ?? "扩展资料";
+  return `${field}：${issue.reason === "outside_skill_context_schema" ? "当前方法未声明使用这一字段，未提供给模型" : issue.reason === "context_required" ? "必要字段尚未提供" : "字段格式与当前方法的资料合同不符"}`;
 }
 export function processAge(value: RunProcessData, localSeconds = 0): string {
   const terminal = ["completed", "partial", "failed", "cancelled"].includes(value.status);

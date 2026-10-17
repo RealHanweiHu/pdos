@@ -1,0 +1,7 @@
+
+/private/tmp/pdos-context-web-dbvsys0p/src/components/verification/contracts.js
+  132:16  warning  '_a' is defined but never used  @typescript-eslint/no-unused-vars
+  167:12  warning  '_a' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 2 problems (0 errors, 2 warnings)
+

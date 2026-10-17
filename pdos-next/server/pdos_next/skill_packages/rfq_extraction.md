@@ -1,6 +1,6 @@
 ---
 key: rfq_extraction
-version: 0.4.0-draft
+version: 0.4.1-draft
 purpose: 经隔离子任务从客户 RFQ、规格书、图纸说明和邮件中逐条抽取需求，保留原文位置、数值、单位、工况、否定与例外，映射到规格字典并登记为证据，列出冲突、未知、差距和待问客户/专家的问题。
 row_schemas:
   - {kind: rfq_requirement, version: "1"}
@@ -39,6 +39,7 @@ output_schema:
     questions_for_customer: {type: array, items: {question: string, related: "req_key[]"}, description: 仅草稿，发送是 T2}
     questions_for_experts: {type: array, items: {question: string, role: "所需专业角色，写入问题正文", related: "req_key[]"}}
     promotion_suggestions: {type: array, items: {deidentified_text: string, basis: "req_key[]"}, description: 可选；只供人决定是否沉淀}
+context_schema: {$ref: "context-schemas.json#/profiles/proposal"}
 context_requirements:
   - 本提案挂载的客户原件清单：版本 ID、类型、页/章节目录（不含正文；正文只在 evidence.extract 子任务中读取）
   - 提案已有条目（避免重复）、人工值与已登记的 Claim

@@ -1,6 +1,6 @@
 ---
 key: competitor_comparison
-version: 0.2.0-draft
+version: 0.2.1-draft
 purpose: 按规格字典参数版本做竞品与我方现款/目标的同口径对比，区分实测、宣传、推断、未知，口径不同就分组标注，数值比较交给 calc.spec_compare。
 input_schema:
   type: object
@@ -25,6 +25,7 @@ output_schema:
     observations: {type: array, maxItems: 6, items: {statement: string, nature: string, basis: "calc_ref 或 Citation[]"}}
     research_gaps: {type: array, items: string}
     parameter_drafts: {type: array, items: {key: string, name: string, value_type: string, unit: string, direction: "higher|lower|target|neutral", standard_condition: "string|null", method: "string|null", acceptance_criterion: "string|null", change_note: string, basis: "Citation[]（多款竞品的标注，建议 ≥2）"}, description: 字典缺参数时的通用新参数草稿（category.parameter.publish 的字段）；T1 由人确认}
+context_schema: {$ref: "context-schemas.json#/profiles/proposal"}
 context_requirements:
   - 品类竞品库条目：品牌、型号、地区版本、各参数值及性质、来源、日期
   - 参数版本：单位、方向、标准工况

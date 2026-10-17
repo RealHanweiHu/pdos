@@ -66,7 +66,7 @@ def test_activity_restarts_with_committed_answer_and_persistent_graph_checkpoint
     client = Client()
     adapters = KernelAdapters(
         route_for=lambda _: configured_route(),
-        project_context=lambda *_: {"public": "fixture"},
+        project_context=lambda _, goal, __: {"goal": goal, "sources": []},
         verify_result=lambda _, result, tools: result,
         prepare_candidate=lambda *_: None,
         execute_command=lambda *_: None,
@@ -141,7 +141,7 @@ def test_activity_revocation_during_provider_attempt_has_visible_terminal_failur
         setup.engine,
         KernelAdapters(
             route_for=lambda _: configured_route(),
-            project_context=lambda *_: {"public": "fixture"},
+            project_context=lambda _, goal, __: {"goal": goal, "sources": []},
             verify_result=lambda _, output, __: output,
             prepare_candidate=lambda *_: None,
             execute_command=lambda *_: None,

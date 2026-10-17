@@ -350,6 +350,10 @@ def test_continuation_uses_one_pg_thread_and_recovers_its_own_wait_after_worker_
                 for identity in (root, child):
                     row = session.get(AgentRun, identity)
                     assert row.held_tokens == 0 and row.state == "completed"
+                    assert row.versions["context_snapshots"]
+                    for snapshot in row.versions["context_snapshots"].values():
+                        assert snapshot["read_set"] == row.read_sources
+                        assert snapshot["scope"]["requester_id"] == str(row.requester_id)
                 receipts = list(session.scalars(select(Receipt).where(
                     Receipt.agent_run_id.in_([root, child]),
                     Receipt.operation == "evidence.claim.record",

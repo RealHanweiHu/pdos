@@ -1,6 +1,6 @@
 ---
 key: derivative_diff
-version: 0.2.0-draft
+version: 0.2.1-draft
 purpose: 以原型号已发布定义为基线，把改动说明拆成规格、BOM、认证、模具、成本及其他差异，区分直接差异与推断的传导影响，写明沿用范围和待专家项，作为派生提案的立项版定义草稿。
 input_schema:
   type: object
@@ -24,6 +24,7 @@ output_schema:
     platform_fit: {type: array, items: {platform_ref: string, within_compatibility: "within|exceeds|unknown（候选判断，待专家确认）", basis: "platform.read 记录引用"}}
     expert_pending: {type: array, items: {item: string, role: string, question: string}, description: 经 proposal.question.create 起草；角色写在问题正文}
     redirect: {type: [string, "null"], description: "若属于同一型号在项目内的修改，写'应走变更'并停止"}
+context_schema: {$ref: "context-schemas.json#/profiles/proposal"}
 context_requirements:
   - 原型号基线（product.baseline.read）：已发布定义（规格条目及参数版本）、BOM、认证、模具、平台引用
   - 基线引用平台的兼容范围与版本（platform.read）

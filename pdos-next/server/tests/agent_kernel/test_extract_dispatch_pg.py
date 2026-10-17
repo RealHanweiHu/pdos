@@ -3,8 +3,6 @@
 
 import json
 from datetime import timedelta
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-
 from uuid import UUID, uuid4
 
 import pytest
@@ -12,7 +10,7 @@ from pdos_agent_runtime.graph import registered_graph_context
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from pdos_next.agent_kernel.bindings import execution_key
+from pdos_next.agent_kernel.bindings import SkillBinding, execution_key
 from pdos_next.agent_kernel.bootstrap import Bootstrap
 from pdos_next.agent_kernel.domain_reads import DomainReads
 from pdos_next.agent_kernel.extract_adapter import ExtractReadAdapter
@@ -28,6 +26,7 @@ from pdos_next.agent_kernel.models import (
     TenantSkillEnablement,
 )
 from pdos_next.agent_kernel.persistence import cancel_run
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
 from pdos_next.agent_kernel.read_execution import ReadSource
 from pdos_next.agent_kernel.types import ModelTurn, ToolCall
 from pdos_next.database import tenant_session
@@ -169,6 +168,7 @@ def fixture(
                     review_case_refs=[f"synthetic-reviewed-case-{index}" for index in range(10)],
                 )
             )
+        load_event_id = uuid4()
         if skill_event:
             sequence = (
                 session.scalar(
@@ -180,7 +180,7 @@ def fixture(
             ) + 1
             session.add(
                 AgentEvent(
-                    id=uuid4(),
+                    id=load_event_id,
                     tenant_id=work.tenant,
                     run_id=scope.run_id,
                     sequence=sequence,
@@ -238,7 +238,7 @@ def fixture(
     reads = DomainReads(owner.store, owner.commands)
     adapters = KernelAdapters(
         route_for=lambda _: route,
-        project_context=lambda *_: {},
+        project_context=owner.project_context,
         verify_result=lambda *values: values[1],
         prepare_candidate=lambda *_: None,
         execute_command=lambda *_: None,
@@ -266,13 +266,17 @@ def fixture(
         )
 
     client.callback = main_callback
+    bindings = (SkillBinding(key=skill.key, version=skill.version, digest=skill.digest,
+                             load_event_id=load_event_id),) if skill_event else ()
+    context = host.skill_context(scope, "Synthetic extraction", bindings=bindings)
     with registered_graph_context("xiaopai"):
         turn = host.model(
             scope,
             system="frozen synthetic main prefix",
-            messages=[{"role": "user", "content": "抽取需求"}],
+            messages=[{"role": "user", "content": json.dumps(context, ensure_ascii=False)}],
             tools=owner.registry.definitions(),
             output_schema={"type": "object"},
+            loaded_skills=bindings,
         )
     client.callback = callback
     assert turn.ledger_call_id is not None

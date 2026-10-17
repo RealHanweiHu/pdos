@@ -1,6 +1,6 @@
 ---
 key: category_framing
-version: 0.2.1-draft
+version: 0.2.2-draft
 purpose: 按依赖顺序追问（每次最多三问、推荐答案不预选）确定品类边界，未明确项作为显式假设，起草可一次确认的品类候选。
 input_schema:
   type: object
@@ -113,6 +113,7 @@ output_schema:
   - unfinished
   title: WireAgentOutput
   type: object
+context_schema: {$ref: "context-schemas.json#/profiles/category"}
 context_requirements:
   - 查重用的可见品类（经 category.list 按名称/状态取得，不预附）
   - 本会话的问题与回答历史（结构化，不是原话全文）

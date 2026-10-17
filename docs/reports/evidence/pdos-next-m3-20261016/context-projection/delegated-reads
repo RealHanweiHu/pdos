@@ -1,0 +1,19 @@
+......................................................                   [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_extracted_match_pg.py::test_private_extracted_rows_match_actual_published_model_and_replay_without_writes
+tests/agent_kernel/test_extracted_match_pg.py::test_private_extracted_rows_match_actual_published_model_and_replay_without_writes
+tests/agent_kernel/test_extracted_match_pg.py::test_extraction_omissions_remain_unknown_even_when_dictionary_has_defaults
+tests/agent_kernel/test_extracted_match_pg.py::test_non_spec_rows_and_changed_original_never_become_all_requirements_satisfied
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:512: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_extracted_match_pg.py::test_private_extracted_rows_match_actual_published_model_and_replay_without_writes
+tests/agent_kernel/test_extracted_match_pg.py::test_extraction_omissions_remain_unknown_even_when_dictionary_has_defaults
+tests/agent_kernel/test_extracted_match_pg.py::test_non_spec_rows_and_changed_original_never_become_all_requirements_satisfied
+tests/agent_kernel/test_extract_pages_pg.py::test_new_located_page_has_actual_completed_read_and_replays_exactly
+tests/agent_kernel/test_extract_pages_pg.py::test_read_at_eof_keeps_an_empty_page_and_does_not_claim_body_coverage
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+54 passed, 9 warnings in 85.35s (0:01:25)

@@ -1,6 +1,6 @@
 ---
 key: proposal_drafting
-version: 0.2.2-draft
+version: 0.2.3-draft
 purpose: 在当前品类内按客户需求、自主新品、派生迭代三个入口起草或修订立项提案，以条目级补丁写入草稿，标明来源、状态与未知，并只提少量关键问题。
 input_schema:
   type: object
@@ -115,6 +115,7 @@ output_schema:
   - unfinished
   title: WireAgentOutput
   type: object
+context_schema: {$ref: "context-schemas.json#/profiles/proposal"}
 context_requirements:
   - 品类：边界、用户与场景、地区法规摘要、参数版本（键、名称、单位、工况）
   - 提案：当前修订号、状态、各条目版本/值/状态/来源/负责人、是否人工值（origin=human 或 confirmed_by 非空）、有效可见性

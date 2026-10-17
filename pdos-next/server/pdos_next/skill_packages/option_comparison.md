@@ -1,6 +1,6 @@
 ---
 key: option_comparison
-version: 0.2.0-draft
+version: 0.2.1-draft
 purpose: 为立项提案起草 2–3 个在决策上真正不同的方案（可含"沿用现款"或"不做"），按同一组维度写定位、关键差异、大致成本与周期和取舍；成本由计算工具给出，选择留给人。
 input_schema:
   type: object
@@ -30,6 +30,7 @@ output_schema:
     comparison_dimensions: {type: array, items: string}
     fewer_than_two_reason: {type: [string, "null"], description: 方案少于 2 个时必填；作为 G0 提交 no_alternative_reason 的候选材料（只准备），不写条目}
     recommendation: {type: [object, "null"], description: "仅在用户要求时给：{option_id, conditions, reason}；不代表选定，不写 decision_note"}
+context_schema: {$ref: "context-schemas.json#/profiles/proposal"}
 context_requirements:
   - 提案：目标、关键 spec 条目（含 item_status）、commercial_target、已有 option 条目及是否人工值
   - 品类竞品与价格带结果（calc_ref）、用户工作与痛点
