@@ -24,12 +24,14 @@ class AgentGateway:
         rate_card_for=None,
         cost_required=True,
         client=None,
+        context_guard=None,
     ):
         # route_for captures tenant configuration/secrets/capability qualification at the host.
         self.store, self.route_for = store, route_for
         self.provider_for = provider_for or (lambda scope, route: route.version)
         self.rate_card_for, self.cost_required = rate_card_for, cost_required
         self.client = client or AgentProviderClient()
+        self.context_guard = context_guard
 
     def close(self):
         self.client.close()
@@ -41,6 +43,8 @@ class AgentGateway:
         from .proposal_context import check
 
         check(self.store, scope)
+        if self.context_guard is not None:
+            self.context_guard(scope)
         route = self.route_for(scope)
         if route is None:
             raise DomainError("SOURCE_UNAVAILABLE", "当前模型未配置，AI 暂不可用。")
@@ -158,6 +162,8 @@ class AgentGateway:
             ):
                 raise DomainError("VERSION_CONFLICT", "模型配置已变化。")
             check(self.store, scope)
+            if self.context_guard is not None:
+                self.context_guard(scope)
             with self.store.transaction(scope) as (session, _):
                 egress(session, scope, provider_key, text=str(request))
             if pricing:

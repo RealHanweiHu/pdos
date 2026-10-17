@@ -253,6 +253,60 @@ class Bootstrap:
                 bound_head(run, proposal(session, self.commands.context(scope), scope.proposal_id))
                 value["proposal"] = read(session, self.commands.context(scope), scope.proposal_id)
                 validate(session, scope, run, extra_value=value["proposal"])
+            if run.continued_from_id is not None:
+                from .conversation import memory
+                value["conversation"] = memory(
+                    session, run, readers=getattr(self, "_history_readers", {}),
+                )
+        if "conversation" in value:
+            from pdos_next.service import digest
+            fingerprint = digest(value["conversation"])
+            with self.store.transaction(scope, lock=True) as (session, current):
+                previous = current.versions.get("conversation_memory_digest")
+                if previous is not None and previous != fingerprint:
+                    raise DomainError("SOURCE_STALE", "原工作记忆来源已变化，请重新核对后继续。")
+                if previous is None:
+                    current.versions = {
+                        **current.versions, "conversation_memory_digest": fingerprint,
+                    }
+        return value
+
+    def check_conversation(self, scope):
+        from pdos_next.service import digest
+
+        from .conversation import memory
+        with self.store.transaction(scope) as (session, run):
+            if run.continued_from_id is None:
+                return
+            current = memory(session, run, readers=getattr(self, "_history_readers", {}))
+            if digest(current) != run.versions.get("conversation_memory_digest"):
+                raise DomainError("SOURCE_STALE", "原工作来源或权限已变化，不能沿用旧记忆出站。")
+            for page in run.versions.get("conversation_history_pages", {}).values():
+                current = memory(
+                    session, run, readers=getattr(self, "_history_readers", {}),
+                    before=UUID(page["before"]) if page["before"] else None,
+                    page_size=page["page_size"],
+                    include_research_rows=page["include_research_rows"],
+                )
+                if digest(current) != page["digest"]:
+                    raise DomainError("SOURCE_STALE", "已读取的历史工作来源或权限已变化。")
+
+    def conversation_history(self, scope, arguments):
+        from pdos_next.service import digest
+
+        from .conversation import HistoryInput, memory
+        payload = HistoryInput.model_validate(arguments)
+        with self.store.transaction(scope, lock=True) as (session, run):
+            value = memory(session, run, readers=getattr(self, "_history_readers", {}),
+                           before=payload.before, page_size=payload.page_size,
+                           include_research_rows=payload.include_research_rows)
+            key = f"{payload.before or ''}:{payload.page_size}:{payload.include_research_rows}"
+            pages = run.versions.get("conversation_history_pages", {})
+            run.versions = {**run.versions, "conversation_history_pages": {**pages, key: {
+                "before": str(payload.before) if payload.before else None,
+                "page_size": payload.page_size, "digest": digest(value),
+                "include_research_rows": payload.include_research_rows,
+            }}}
             return value
 
     def prepare_candidate(self, scope, spec, arguments, intent_key):
@@ -432,6 +486,11 @@ class Bootstrap:
         definition_diff = DefinitionDiffReads(self.store, self.commands, domain_reads)
         spec_compare = SpecCompareReads(self.store, self.commands, self.catalog)
         platform_reads = PlatformReads(self.store, self.commands)
+        local_reads = {
+            **domain_reads.handlers(), **definition_diff.handlers(),
+            **M3ObjectReads(self.store, self.commands).handlers(), **handlers,
+            **spec_compare.handlers(), **platform_reads.handlers(),
+        }
 
         adapters = KernelAdapters(
             route_for=self.route_for,
@@ -454,6 +513,7 @@ class Bootstrap:
             preload=self.ports.preload or self.default_preload,
             rate_card_for=self.ports.rate_card_for,
             cost_required=True,
+            context_guard=self.check_conversation,
             skill_catalog=self.catalog,
             tool_registry=self.registry,
             compute_engines=ENGINES,
@@ -461,6 +521,16 @@ class Bootstrap:
                 **spec_compare.restores(), **definition_diff.restores(), **platform_reads.restores()
             },
         )
+        self._history_readers = {
+            name: (lambda scope, args, previous, consumer, callback=callback: callback(scope, args))
+            for name, callback in local_reads.items()
+            if name not in self.ports.read_tools  # Custom host callbacks are not proven local.
+        }
+        self._history_readers.update({
+            name: (lambda scope, args, previous, consumer, engine=engine: engine.calculate(args))
+            for name, engine in ENGINES.items()
+        })
+        adapters.read_tools["conversation.history"] = self.conversation_history
         from .extract_adapter import ExtractReadAdapter
         from .extract_graph import ExtractGraph
         from .extract_service import ExtractionService
@@ -517,6 +587,12 @@ class Bootstrap:
                 read_refs=CategoryResearchRefs(self.store, artifacts),
             )
             adapters.read_tools.update(research_adapter.handlers())
+            self._history_readers.update({
+                name: (lambda scope, args, previous, consumer, restore=restore:
+                       restore(scope, args, previous))
+                for name, restore in research_adapter.restores().items()
+            })
+            self._history_readers["research.fanout"] = research_adapter.admit_history
             adapters.read_restores.update(research_adapter.restores())
             if self.ports.research_checkpointer_factory is not None:
                 adapters.read_resumes["research.fanout"] = research_adapter.resume

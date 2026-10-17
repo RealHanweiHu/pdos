@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import type { WorkspaceTransport } from "@/lib/workspace-api";
 import { proofClockCurrent } from "@/lib/proof-clock";
 import { RunFeedback } from "@/components/pai/run-feedback";
+import { RunContinuation } from "@/components/pai/run-continuation";
 import { RunProcess } from "@/components/pai/run-process";
 import type { RunProcessData } from "@/lib/run-process";
 import { RunReconciliation } from "@/components/pai/run-reconciliation";
@@ -16,7 +17,7 @@ import { restoreRunStart } from "@/lib/run-start-intent";
 
 type Source = { id: string; title: string; revision: number; status: string };
 type Question = { id: string; question: string; why: string; options: { value: string; label: string }[]; allow_free_text: boolean };
-type Run = { process?: RunProcessData; reconciliation?: unknown; run_id: string; product_id: string | null; proposal_id?: string | null; cancel_epoch: number; status: string; error_code: string | null; reverted: boolean; result: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
+type Run = { conversation?: {previous_run_id:string|null;next_run_id:string|null}; process?: RunProcessData; reconciliation?: unknown; run_id: string; product_id: string | null; proposal_id?: string | null; cancel_epoch: number; status: string; error_code: string | null; reverted: boolean; result: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
 type History = { items: (Run & { goal: string; created_at: string; product_id: string | null })[]; next_cursor: string | null };
 type Candidate = { command: Record<string, unknown> & { payload: { statement: string; quote: string; prepared_event_id: string } }; event_id: string };
 type Event = { id?: string; sequence: number; event: { type: string; questions?: Question[]; status?: string; command?: Candidate["command"]; prepared_event_id?: string } };
@@ -174,6 +175,7 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
       {run.error_code && <p role="status">执行未完成 · {run.error_code}</p>}
       {run.process && <RunProcess key={`process:${run.run_id}`} value={run.process} api={api} root="v1/agent-runs" />}
       <RunFeedback key={`feedback:${run.run_id}`} api={api} root="v1/agent-runs" runId={run.run_id} />
+      <RunContinuation key={`continue:${run.run_id}`} api={api} root="v1/agent-runs" run={run} onOpen={async id=>{await readRun(id);await refreshHistory();}} />
       <RunReconciliation key={run.run_id} api={api} root="v1/agent-runs" run={run} onSettled={() => readRun(run.run_id)} />
       {!!run.result?.unfinished?.length && <div><h4 className="font-medium">未完成事项</h4><ul className="mt-2 list-disc pl-5">{run.result.unfinished.map((item, i) => <li key={i}>{item}</li>)}</ul></div>}
       {run.result?.result && Object.keys(run.result.result).length > 0 && <details><summary className="cursor-pointer">查看实际结果与回执</summary><pre className="mt-3 max-h-80 overflow-auto whitespace-pre-wrap break-words text-sm">{JSON.stringify(run.result.result, null, 2)}</pre></details>}

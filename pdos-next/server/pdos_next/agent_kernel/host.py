@@ -35,6 +35,7 @@ class KernelAdapters:
     compute_engines: dict = field(default_factory=dict)
     read_restores: dict = field(default_factory=dict)
     read_resumes: dict = field(default_factory=dict)
+    context_guard: object | None = None
 
 
 class BoundHost:
@@ -48,6 +49,7 @@ class BoundHost:
             rate_card_for=adapters.rate_card_for,
             cost_required=adapters.cost_required,
             client=adapters.provider_client,
+            context_guard=adapters.context_guard,
         )
 
     def current(self, scope):

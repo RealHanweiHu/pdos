@@ -45,6 +45,7 @@ def client(setup, *, binding_state=None, cancel_calls=None):
             data_categories=("public",),
             customer_identities=(),
             read_sources=(),
+            token_limit=(binding_state or {}).get("token_limit", 100000),
         )
 
     ports = ApiPorts(

@@ -5,6 +5,7 @@ from .registry import PREPARE_ONLY, ToolRegistry, ToolSpec, command_tools
 READS = frozenset(
     {
         "category.list",
+        "conversation.history",
         "category.read",
         "category.knowledge.list",
         "category.parameters.list",
@@ -49,6 +50,7 @@ M3_TIERS = {
 
 def default_registry():
     from .category_candidate import CategoryCandidateInput
+    from .conversation import HistoryInput
     from .domain_reads import SCHEMAS
     from .m3_calculators import SCHEMAS as COMPUTE_SCHEMAS
     from .m3_definition_diff import SCHEMAS as DEFINITION_SCHEMAS
@@ -58,6 +60,7 @@ def default_registry():
     from .platform_reads import SCHEMAS as PLATFORM_SCHEMAS
 
     schemas = {
+        "conversation.history": HistoryInput,
         **SCHEMAS,
         **COMPUTE_SCHEMAS,
         **OBJECT_SCHEMAS,

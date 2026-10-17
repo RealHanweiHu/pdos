@@ -1,0 +1,12 @@
+[
+  {
+    "generated_duplicate": ".next/types/cache-life.d 2.ts",
+    "canonical": ".next/types/cache-life.d.ts",
+    "sha256": "4f984436b10cfb43ccf7fc3114dcb851cbefa4d58b7d8ae741aaae0f6e330129"
+  },
+  {
+    "generated_duplicate": ".next/types/routes.d 2.ts",
+    "canonical": ".next/types/routes.d.ts",
+    "sha256": "394944786a5d0b1fe96a3bc758f2f61bf000c39442bf4df9312a3b257fddae46"
+  }
+]

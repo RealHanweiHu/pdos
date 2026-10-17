@@ -1,0 +1,12 @@
+✔ 终态显示继续工作与原记录入口，关闭时没有读取、派发或导航 (8.194917ms)
+✔ 未完成或已撤回运行不显示新继续表单，既有后续仍可查看 (0.715125ms)
+✔ restoring a start preserves the exact goal, intent and proposal without executing (0.8995ms)
+✔ local recovery cannot substitute another operation, proposal or policy context (0.214334ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 468.15375

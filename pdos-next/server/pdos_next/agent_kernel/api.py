@@ -8,7 +8,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import Field
-from sqlalchemy import and_, or_, select
+from sqlalchemy import and_, or_, select, text
 from sqlalchemy.orm import load_only
 
 from pdos_next.contracts import SourceRead
@@ -27,6 +27,7 @@ class StartInput(StrictModel):
     goal: str = Field(min_length=3, max_length=8000)
     idempotency_key: str = Field(min_length=8, max_length=160)
     session_id: UUID | None = None
+    continue_from_run_id: UUID | None = None
     product_id: UUID | None = None
     proposal_id: UUID | None = None
     sources: list[SourceRead] = Field(default_factory=list)
@@ -100,6 +101,9 @@ def router(engine, *, context_dependency, ports: ApiPorts):
         )
         # This host callback binds proposal audience/source taint, not a boolean from the client.
         with transaction(ctx) as s:
+            lock_key = f"xiaopai-start:{ctx.tenant_id}:{ctx.requester_id}:{data.idempotency_key}"
+            s.execute(text("SELECT pg_advisory_xact_lock(hashtextextended(:key,0))"),
+                      {"key": lock_key})
             row = s.scalar(
                 select(AgentRun).where(
                     AgentRun.requester_id == ctx.requester_id,
@@ -113,16 +117,19 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                     require_access(s, ctx, row.product_id)
                 visible_run(s, ctx, row)
             else:
-                binding = ports.binding_for(s, ctx, data)
+                from .conversation import merge_binding, prepare
+                effective, parent = prepare(s, ctx, data)
+                binding = merge_binding(ports.binding_for(s, ctx, effective), parent)
                 row = create_run(
                     s,
                     ctx,
                     goal=data.goal,
                     writer_id=ports.writer_for(s, ctx),
                     intent_key=data.idempotency_key,
-                    session_id=data.session_id,
-                    product_id=data.product_id,
-                    proposal_id=data.proposal_id,
+                    session_id=effective.session_id,
+                    product_id=effective.product_id,
+                    proposal_id=effective.proposal_id,
+                    continued_from_id=parent.id if parent else None,
                     private_context=binding.private_context,
                     data_categories=binding.data_categories,
                     customer_identities=binding.customer_identities,
@@ -133,7 +140,9 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                     request_digest=request_digest,
                 )
             ref = reference(row, ctx)
-            value = {"run_id": str(row.id), "session_id": str(row.session_id), "status": row.state}
+            value = {"run_id": str(row.id), "session_id": str(row.session_id), "status": row.state,
+                     "continued_from_id": (
+                         str(row.continued_from_id) if row.continued_from_id else None)}
             if not s.scalar(select(AgentEvent.id).where(AgentEvent.run_id == row.id)):
                 s.add(
                     AgentEvent(
@@ -160,6 +169,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
     @result.get("/v1/categories/{category_id}/agent-runs/{run_id}")
     @result.get("/v1/personal/agent-runs/{run_id}")
     def read(run_id: UUID, ctx=run_dependency):
+        from .conversation import links
         from .process_view import read_process
         from .run_reconciliation import completed_record
         with transaction(ctx, read_snapshot=True) as s:
@@ -168,6 +178,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                 "run_id": str(row.id),
                 "goal": row.goal,
                 "session_id": str(row.session_id),
+                "conversation": links(s, row),
                 "product_id": str(row.product_id) if row.product_id else None,
                 "proposal_id": str(row.proposal_id) if row.proposal_id else None,
                 "status": row.state,
@@ -196,6 +207,24 @@ def router(engine, *, context_dependency, ports: ApiPorts):
             return read_process(session, visible_run(session, ctx, row),
                                 before=before, page_size=page_size,
                                 source_cursor=source_cursor, receipt_cursor=receipt_cursor)
+
+    @result.get("/v1/categories/{category_id}/agent-runs/{run_id}/continuation")
+    @result.get("/v1/personal/agent-runs/{run_id}/continuation")
+    def continuation(run_id: UUID, ctx=run_dependency):
+        from .run_reconciliation import owner
+        with transaction(ctx, read_snapshot=True) as session:
+            row = session.scalar(select(AgentRun).where(AgentRun.id == run_id).options(load_only(
+                AgentRun.id, AgentRun.tenant_id, AgentRun.category_id, AgentRun.proposal_id,
+                AgentRun.requester_id, AgentRun.state, AgentRun.reverted_at, raiseload=True,
+            )))
+            owner(session, ctx, visible_run(session, ctx, row))
+            child = session.execute(select(AgentRun.id, AgentRun.goal, AgentRun.intent_key).where(
+                AgentRun.continued_from_id == row.id)).one_or_none()
+            return {"run_id": str(row.id), "owner_id": str(row.requester_id),
+                    "can_continue": not row.reverted_at and row.state in {
+                        "completed", "partial", "failed", "cancelled"} and child is None,
+                    "existing": {"run_id": str(child.id), "goal": child.goal,
+                                 "idempotency_key": child.intent_key} if child else None}
 
     @result.get("/v1/categories/{category_id}/agent-runs/{run_id}/reconciliation")
     @result.get("/v1/personal/agent-runs/{run_id}/reconciliation")

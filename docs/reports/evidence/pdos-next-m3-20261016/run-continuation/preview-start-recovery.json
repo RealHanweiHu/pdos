@@ -1,0 +1,5 @@
+{
+  "initial_web_start": "terminal: pnpm dependency-status check attempted an install then aborted before modules purge because no TTY",
+  "recovery": "invoke installed Next CLI directly in isolated built candidate; no package install",
+  "source_changed": false
+}

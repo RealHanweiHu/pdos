@@ -118,6 +118,39 @@ def test_fanout_restores_same_job_and_exact_artifacts_without_rerun(tmp_path):
     assert f.checked
 
 
+def test_same_conversation_followup_reuses_verified_source_pool_without_network(tmp_path):
+    f = fixture(tmp_path)
+    prior = result(f)
+    consumer = replace(f.scope, run_id=uuid4())
+    checked = []
+    def current(actual):
+        assert actual.run_id in {f.scope.run_id, consumer.run_id}
+        checked.append(actual.run_id)
+    f.artifacts.current = current
+    adapter, runtime = replay(f)
+    files_before = set(tmp_path.rglob("*.json"))
+    assert adapter.admit_history(f.scope, f.arguments, prior, consumer) is prior
+    page = asyncio.run(runtime.read(consumer.child("research"),
+                                   prior["snapshots"][0]["url"], cursor=17))
+    assert "未读尾部" in page.markdown
+    assert runtime.transport.requests == [] and runtime.search_adapter.queries == []
+    assert set(tmp_path.rglob("*.json")) == files_before
+    assert consumer.run_id in checked
+
+
+@pytest.mark.parametrize("field", ["session_id", "requester_id", "category_id"])
+def test_history_pool_cannot_be_admitted_to_another_conversation_scope(tmp_path, field):
+    f = fixture(tmp_path)
+    prior = result(f)
+    adapter, runtime = replay(f)
+    with pytest.raises(DomainError) as failure:
+        adapter.admit_history(f.scope, f.arguments, prior,
+                              replace(f.scope, run_id=uuid4(), **{field: uuid4()}))
+    assert failure.value.code == "FORBIDDEN_SCOPE"
+    assert not runtime._allowlists and not runtime._snapshots
+    assert runtime.transport.requests == []
+
+
 @pytest.mark.parametrize("missing", ["job", "snapshot"])
 def test_missing_original_artifact_is_unavailable_without_new_job(tmp_path, missing):
     f = fixture(tmp_path)

@@ -665,3 +665,24 @@ test("对账入口拒绝伪造范围、重复游标与跨站提交", async () =>
     [{ method: "POST", origin: "https://other.invalid", body: "{}" }, 403],
   ] as const) { const h = harness(); assert.equal((await h.send(path, options)).response.status, status); assert.equal(h.calls.length, 0); }
 });
+
+
+test("后续工作按当前品类或个人入口只读恢复，原继续请求正文保持不变",async()=>{
+ for(const root of ["v1/agent-runs","v1/personal/agent-runs"]){
+  const h=harness(),value=await h.send(`${root}/${run}/continuation`,{unscoped:root.includes("personal")});
+  assert.equal(value.response.status,200);assert.equal(h.calls.length,1);
+  assert.equal(h.calls[0].init.method,"GET");
+  const body=JSON.stringify({goal:"继续原工作",idempotency_key:issue,continue_from_run_id:run});
+  const saved=await h.send(root,{method:"POST",body,unscoped:root.includes("personal")});
+  assert.equal(saved.response.status,200);assert.equal(h.calls[1].init.body,body);
+ }
+});
+test("后续记录拒绝查询范围伪造及直接写入，读取失败不自动派发",async()=>{
+ for(const request of [{method:"POST" as const},{query:`requester_id=${issue}`},{query:`page_size=2`}]){
+  const h=harness(),value=await h.send(`v1/agent-runs/${run}/continuation`,request);
+  assert.ok([405,422].includes(value.response.status));assert.equal(h.calls.length,0);
+ }
+ const h=harness({response:async()=>{throw new Error("synthetic unavailable");}});
+ assert.equal((await h.send(`v1/agent-runs/${run}/continuation`)).response.status,503);
+ assert.equal(h.calls.length,1);assert.equal(h.calls[0].init.method,"GET");
+});

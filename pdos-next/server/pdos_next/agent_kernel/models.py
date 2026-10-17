@@ -56,6 +56,7 @@ class AgentRun(KernelRow, Base):
     product_id: Mapped[UUID | None]
     proposal_id: Mapped[UUID | None]
     session_id: Mapped[UUID]
+    continued_from_id: Mapped[UUID | None]
     requester_id: Mapped[UUID]
     writer_id: Mapped[UUID]
     trigger: Mapped[str] = mapped_column(String(40))
@@ -82,6 +83,11 @@ class AgentRun(KernelRow, Base):
         UniqueConstraint("tenant_id", "id"),
         UniqueConstraint("tenant_id", "category_id", "id", name="uq_agent_runs_category_identity"),
         UniqueConstraint("tenant_id", "requester_id", "intent_key"),
+        UniqueConstraint("tenant_id", "continued_from_id", name="uq_kernel_continuation"),
+        ForeignKeyConstraint(
+            ["tenant_id", "continued_from_id"], ["agent_runs.tenant_id", "agent_runs.id"],
+            name="kernel_continuation_fk",
+        ),
         ForeignKeyConstraint(
             ["tenant_id", "session_id"], ["agent_sessions.tenant_id", "agent_sessions.id"]
         ),

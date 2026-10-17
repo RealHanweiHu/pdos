@@ -5,8 +5,8 @@ import { candidateTransportOptions } from "@/lib/candidate-transport";
 
 const paths = /^(?:v1\/(?:session|products|commands(?:\/preview)?)|v1\/products\/[a-f0-9-]+\/(?:workspace|definitions|projects|configurations|builds|supply|supply-captures|costs|cost-captures|verification|verification-professional|verification-handoff|verification-launch(?:\/inputs)?|verification-results(?:\/(?:inputs|captures))?|sample-handoff|build-start(?:\/assessment-inputs)?|build-execution(?:\/compare)?|model-calls|variants(?:\/[a-f0-9-]+\/compare)?|original-lifecycle(?:\/[a-f0-9-]+\/candidate|\/intents\/[a-f0-9-]+\/reconcile)?|originals(?:\/[a-f0-9-]+\/(?:download|scan))?|receipts\/[a-f0-9-]+\/revert-preview))$/;
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
-const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|candidates|answers|cancel|reconciliation|process|feedback|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
-const personalAgentPaths = /^v1\/personal\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|cancel|reconciliation|process|feedback|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
+const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|candidates|answers|cancel|reconciliation|process|feedback|continuation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
+const personalAgentPaths = /^v1\/personal\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|cancel|reconciliation|process|feedback|continuation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
 const personalViewPaths = /^v1\/personal\/(?:projects(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|run-activity|search)$/i;
 const preprojectPaths = /^v1\/(?:proposals(?:\/[a-f0-9-]{36}(?:\/(?:items|participants|handoff))?)?|g0-definitions\/[a-f0-9-]{36}|projects\/[a-f0-9-]{36}\/open-items)$/i;
 const proposalViewPaths = /^v1\/views\/(?:positioning|spec-benchmark|feature-config|definition-maturity)$/;

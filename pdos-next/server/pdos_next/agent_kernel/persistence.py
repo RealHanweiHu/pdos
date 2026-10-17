@@ -462,6 +462,7 @@ def create_run(
     outbound_context=None,
     validation_budget_id=None,
     request_digest=None,
+    continued_from_id=None,
 ):
     from pdos_next.database import require_context
 
@@ -545,6 +546,7 @@ def create_run(
         product_id=product_id,
         proposal_id=proposal_id,
         session_id=conversation.id,
+        continued_from_id=continued_from_id,
         requester_id=ctx.requester_id,
         writer_id=writer_id,
         trigger=trigger,

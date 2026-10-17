@@ -1,0 +1,90 @@
+Browser tab: 14, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3051/?area=work".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3051/?area=work
+	2 container
+		3 link Description: 跳到工作内容, Value: 127.0.0.1:3051/?area=work#workspace-content
+		4 button 打开导航
+			5 image
+		6 text PDOS
+		7 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			8 image
+		9 checkbox Description: 小Pai 工作栏, Value: 1
+			10 image
+		11 button 切换明暗主题
+			12 image
+		13 container workspace-content
+			14 heading 我的工作, Value: 1
+				15 text 我的工作
+			16 text 查看本人可见项目中的未决事项，接续需要答复的工作与最近运行。
+			17 button 刷新
+				18 image
+				19 text 刷新
+			20 button 打开小Pai
+				21 image
+				22 text 打开小Pai
+			23 container
+				24 text 项目资料读取于  10/16/2026, 5:07:01 PM
+			25 container 我的未决事项
+				26 container
+					27 heading 未决事项, Value: 2
+						28 text 未决事项
+					29 text 0 项
+				30 text 当前没有指派给你的未决任务或风险。立项 G0 批准后，处置事项会按负责人出现在这里。
+			31 container 我的运行
+				32 container
+					33 heading 最近运行, Value: 2
+						34 text 最近运行
+					35 text 4 次
+				36 text 继续原研究范围，先整理缺少的市场和工况资料；未知规格保持未知。
+				37 container
+					38 text 已保存，等待执行  ·  个人  ·  10/16/2026, 5:05:13 PM
+				39 button 查看
+				40 text 继续核对压力单位和使用工况；保留原事实及回执，不把未知写成已满足。
+				41 container
+					42 text 已保存，等待执行  ·  连续工作联验  ·  10/16/2026, 5:02:57 PM
+				43 button 查看
+				44 text 合成联验：研究便携气泵，未知规格不补造，也不建立虚拟项目。
+				45 container
+					46 text 已形成部分结果  ·  个人  ·  10/16/2026, 4:58:35 PM
+				47 button 查看
+				48 text Synthetic whole-run revert history
+				49 container
+					50 text 已形成部分结果  ·  连续工作联验  ·  10/16/2026, 4:58:33 PM
+				51 button 查看
+			52 container 可见项目
+				53 heading 可见项目, Value: 2
+					54 text 可见项目
+				55 text 没有可见项目。立项提案经具名 G0 批准后建立项目；也可在产品品类工作区先起草提案。
+		56 container 小Pai 工作栏
+			57 text 小Pai
+			58 text 个人工作（跨品类）
+			59 button 关闭小Pai 工作栏
+				60 image
+			61 container 个人小 Pai
+				62 heading 个人小 Pai · 建立新品类, Value: 2
+					63 text 个人小 Pai · 建立新品类
+				64 text 描述品类用途，让小 Pai 准备公开研究与初始材料。执行需要已配置的模型和运行授权；缺少配置时会显示实际错误。建立品类仍需你逐组核对并确认。
+				65 container
+					66 text 要研究和建立什么品类？
+					67 text entry area (settable) 要研究和建立什么品类？
+					68 button (disabled) 保存并启动个人任务
+				69 button (collapsed) 个人任务记录, Secondary Actions: Expand
+					70 text 个人任务记录
+				71 heading 已保存，等待执行, Value: 3
+					72 text 已保存，等待执行
+				73 container 小Pai处理过程
+					74 text 处理过程 从受理起（含等待） 3 分 2 秒
+					75 text 工作已保存，等待执行
+					76 container
+						77 text 已保存  0  次处理 · 已提交  0  条动作
+					78 button (collapsed) 查看步骤、依据与提交记录, Secondary Actions: Expand
+						79 text 查看步骤、依据与提交记录
+				80 button (collapsed) 反馈这次工作, Secondary Actions: Expand
+					81 text 反馈这次工作
+				82 container
+					83 text 本次目标： 继续原研究范围，先整理缺少的市场和工况资料；未知规格保持未知。
+				84 button 查看前一次工作
+				85 button 刷新实际结果
+				86 button 取消后续执行
+				87 text 此运行尚无可采用的品类候选。
+
+The focused UI element is 39 button 查看

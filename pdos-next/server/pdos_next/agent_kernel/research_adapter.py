@@ -335,3 +335,25 @@ class ResearchReadAdapter:
             for snapshot in snapshots.values():
                 service._snapshots[(key, snapshot.url)] = snapshot
         return previous
+
+    def admit_history(self, parent, arguments, previous, consumer):
+        """Reuse only revalidated snapshots in the same actual private conversation."""
+        if any(getattr(parent, key) != getattr(consumer, key) for key in (
+            "tenant_id", "requester_id", "session_id", "category_id", "product_id", "proposal_id",
+        )):
+            raise DomainError("FORBIDDEN_SCOPE", "历史研究来源不属于当前本人会话。", 403)
+        result = self.restore_fanout(parent, arguments, previous)
+        self.artifacts.current(consumer)
+        source_ids = {str(row["id"]) for row in result["snapshots"]}
+        old_key = parent.tenant_id, parent.requester_id, parent.session_id, parent.run_id
+        new_key = consumer.tenant_id, consumer.requester_id, consumer.session_id, consumer.run_id
+        service = self.tool_host.service
+        with service._lock:
+            admitted = [(url, snapshot) for (key, url), snapshot in service._snapshots.items()
+                        if key == old_key and str(snapshot.id) in source_ids]
+            if {str(snapshot.id) for _, snapshot in admitted} != source_ids:
+                raise DomainError("SOURCE_UNAVAILABLE", "历史研究来源不完整，请重新核对原记录。")
+            service._allowlists.setdefault(new_key, set()).update(url for url, _ in admitted)
+            for url, snapshot in admitted:
+                service._snapshots[(new_key, url)] = snapshot
+        return result
