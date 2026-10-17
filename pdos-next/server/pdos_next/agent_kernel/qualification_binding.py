@@ -14,15 +14,19 @@ def fingerprint(value):
 
 
 def model_identity(route):
+    from pdos_next.providers.agent_wire import response_codec
+
     version = getattr(route, "model_version", None) or route.version
-    return fingerprint(
-        {
-            "protocol": route.protocol,
-            "base_url": route.base_url.rstrip("/"),
-            "model": route.model,
-            "version": version,
-        }
-    )
+    value = {
+        "protocol": route.protocol,
+        "base_url": route.base_url.rstrip("/"),
+        "model": route.model,
+        "version": version,
+    }
+    codec = response_codec(route.protocol, route.base_url)
+    if codec != "native-schema/v1":
+        value["agent_response_codec"] = codec
+    return fingerprint(value)
 
 
 def tool_identity(skill, registry):

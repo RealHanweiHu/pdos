@@ -1,0 +1,38 @@
+{
+  "base_commit": "895cf5292036b4e2f1d977dc98b846748503178f",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/providers/agent_wire.py": "b9ebd3213e57ef054cbe457feffd7ddb561c85d9cfb7e426a483902613461408",
+    "pdos-next/server/pdos_next/providers/agent_client.py": "c67e889c4cfee118f371b4acf89a3d3715a9fb098328eed2ad53c72579cd11e3",
+    "pdos-next/server/pdos_next/providers/types.py": "6df74e576dd27ea592b1fcb9881390b8aea197321ffa17697e796d027183e6a4",
+    "pdos-next/server/pdos_next/agent_kernel/gateway.py": "155bf6c2beac5868247d0417a8a6fd8a5f5085de898fc74892f0777fa99373dd",
+    "pdos-next/server/pdos_next/agent_kernel/graph.py": "fa3fed066c4e5709cb03c965864c49a90397d8d07e073ef56a283ca44ced5056",
+    "pdos-next/server/pdos_next/agent_kernel/qualification_binding.py": "e1efdf9eed8b99196ce6b2d6728d819ccce54e74faa09956f3d68cb910f15d47",
+    "pdos-next/server/pdos_next/agent_kernel/types.py": "772e4dc581f42323c9479880c7723c2334fbb24dff1fd427f37986b5bf337aa8",
+    "pdos-next/server/tests/agent_kernel/test_minimax_wire.py": "3946d56bffc7755448a7ec1e69a8c84b88794092d5678a7365deef850781a79d",
+    "pdos-next/server/tests/agent_kernel/test_minimax_process.py": "d1a7b97abeea98ebb7effe3de04022eaeb982ce16d074b00159df9dc1b210e58",
+    "pdos-next/server/tests/agent_kernel/test_gateway.py": "6f4d5a738dc1ae64e0f7f9ae9676c81a75c15450d5f17396b1888a49cbfe4eae",
+    "docs/runbooks/minimax-cn-m3-validation-draft.md": "3efa3ee00aa35cee995fd21faae37992bb8d4081230a84a7d4b70be0e7c062c0",
+    "tasks/ai-native-integrated-todo.md": "9b8cf75d84bd1c428fe11a32abce8acd42b38addfdf49f6e0199246a890bd22d"
+  },
+  "partial_file_scope": {
+    "tasks/ai-native-integrated-todo.md": "Only M3 progress row; independent UI design additions excluded"
+  },
+  "evidence_sha256": {
+    "affected-backend": "1bccf6b5bf213f0f9c250dc97f0da456ca44630901b3d57ea13aff7c8b9acaf2",
+    "affected-corrected": "064db23fec6aa2130d6febbd06c322df90ef96e236110ad272c00bed41e703c7",
+    "cases": "166a2e6649d94227b8fe4038feb31b4d787640fb2d928db24b27f7a3869080d0",
+    "checkpoint.json": "c846a44e11c556708eaf551461ebed4f37d65524e6fed7c62759fb25dee6650b",
+    "close-status": "a9e8a43479f9c0bf869a4a35583371e908a021711e11787d8452890bac2c63e4",
+    "close-status-corrected": "a95740fc082561407d2bdc1a6aa45afa3a8fda171048bf75709d9fa8a8664512",
+    "minimax-pure": "2c374e23772130e946d9fcab758ff6363a525881ca3e36fc9ad6b4fe2877f985",
+    "native-initial": "416992a1c31b4b5b6961840c65b8e77de2f1941fc4c0d51966d8da7e4cbc1638",
+    "process/minimax-process": "fea61f0df1e523bc628daec2d0a05da4c4fd9da11470774465143aac3dc8857c",
+    "process/minimax-worker-0.log": "099ed1ead51006fb06efb01912761e151b6160238f80eec731c16d56a48393f3",
+    "process/minimax-worker-1.log": "534f70f53e42b9a5a516b6339281df430c681837ff6062075fd7bb67a1d02b87",
+    "result.md": "0d05d2d46bf5ab205841a0ebcaf6742f36ff7767413491d12b2417759f505d88",
+    "ruff-complete.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "ruff-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "runtime-status.json": "b3208829a99e6688c231f00e51f099d0c5d951d3acb2b3ab58c17dcff4ac84fe",
+    "saved-call-replay": "129d6bf5db5a76730f76f2745a6a72aa2915246d2366bdcaa01c99a0d9b8cc1b"
+  }
+}

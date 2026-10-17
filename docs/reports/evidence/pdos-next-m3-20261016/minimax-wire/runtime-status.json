@@ -1,0 +1,34 @@
+{
+  "target": "127.0.0.1:64245/pdos_test",
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "migration_head": "s0_0772",
+  "business": {
+    "run_id": "8d5a49a5-980b-4f58-8cad-3183edc785ab",
+    "status": "completed",
+    "proposal_id": "8abb9f8b-a29e-452a-8ec2-f2244904a268",
+    "proposal_status": "draft",
+    "visibility": "private",
+    "ai_author_preserved": true,
+    "human_owner_preserved": true,
+    "named_human_confirmer_preserved": true,
+    "actual_receipts": 1,
+    "model_attempts": 3,
+    "held_tokens": 0,
+    "input_tokens": 90,
+    "output_tokens": 60,
+    "cache_read_tokens": 15,
+    "synthetic_cost_micro_usd": 639,
+    "held_micro_usd": 0,
+    "real_qualification_granted": false
+  },
+  "temporal": {
+    "namespace": "pdos-next-m3-worker-20261016-checkpoint",
+    "running_workflows": 0,
+    "shared_services_retained": true
+  },
+  "real_model_calls": 0,
+  "real_kms_calls": 0,
+  "golden_case_writes": 0,
+  "production_changes": 0,
+  "frontend_changed": false
+}

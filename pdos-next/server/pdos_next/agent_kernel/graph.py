@@ -252,6 +252,8 @@ class AgentKernel:
             if len({c.id for c in turn.calls}) != len(turn.calls):
                 raise DomainError("VALIDATION_FAILED", "模型回复含重复协议调用身份。")
             assistant = {"role": "assistant", "content": turn.text}
+            if turn.continuation is not None:
+                assistant["provider_continuation"] = turn.continuation
             if calls:
                 assistant["tool_calls"] = calls
             return {

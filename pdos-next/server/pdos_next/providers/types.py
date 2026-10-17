@@ -58,6 +58,12 @@ class ProviderRoute:
         return f"{self.base_url.rstrip('/')}/{endpoint}"
 
     @property
+    def agent_response_codec(self):
+        from .agent_wire import response_codec
+
+        return response_codec(self.protocol, self.base_url)
+
+    @property
     def digest(self) -> str:
         """Public route binding excludes credentials; version covers server configuration."""
         body = dict(
@@ -72,6 +78,8 @@ class ProviderRoute:
         )
         if self.configuration_digest is not None:
             body["configuration_digest"] = self.configuration_digest
+        if self.agent_response_codec != "native-schema/v1":
+            body["agent_response_codec"] = self.agent_response_codec
         return hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()
 
     def assert_target_allowed(self, target: str):

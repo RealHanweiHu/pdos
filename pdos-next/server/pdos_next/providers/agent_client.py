@@ -4,27 +4,30 @@ Official protocol references verified 2026-10-08:
 https://developers.openai.com/api/docs/guides/structured-outputs
 https://platform.claude.com/docs/en/build-with-claude/structured-outputs
 https://platform.claude.com/docs/en/build-with-claude/streaming
+MiniMax text/function continuation verified 2026-10-16:
+https://platform.minimax.cn/docs/api-reference/text-openai-api
+https://platform.minimax.cn/docs/api-reference/text-chat-openai
 The host authorizes every attempt; this transport never retries a possibly sent request.
 """
 
 import json
-import re
 
 import httpx
 
 from pdos_next.agent_kernel.types import ModelTurn, ToolCall
 from pdos_next.errors import DomainError
+from pdos_next.providers.agent_wire import (
+    FINISH_TOOL,
+    MINIMAX_CODEC,
+    business_name,
+    finish_tool,
+    private_continuation,
+    public_text,
+    restore_assistant,
+    tool_name,
+)
 from pdos_next.providers.client import _identifier, _usage, json_value
 from pdos_next.providers.types import ProviderError, ProviderRoute
-
-
-def tool_name(name):
-    # OpenAI function names exclude dots. This reversible encoding is stable on both protocols.
-    return name.replace("_", "_1").replace(".", "_0")
-
-
-def business_name(name):
-    return re.sub(r"_([01])", lambda match: "." if match[1] == "0" else "_", name)
 
 
 def request_body(route, system, messages, tools, output_schema, streaming):
@@ -32,7 +35,12 @@ def request_body(route, system, messages, tools, output_schema, streaming):
     if route.protocol == "openai-compatible":
         history = [{"role": "system", "content": system}]
         for message in messages:
+            restored = restore_assistant(route, message)
+            if restored is not None:
+                history.extend(restored)
+                continue
             value = dict(message)
+            value.pop("provider_continuation", None)
             if value.get("tool_calls"):
                 value["tool_calls"] = [
                     {
@@ -46,18 +54,24 @@ def request_body(route, system, messages, tools, output_schema, streaming):
                     for c in value["tool_calls"]
                 ]
             history.append(value)
-        return {
+        body = {
             "model": route.model,
             "messages": history,
             "tools": [{"type": "function", "function": t} for t in definitions],
-            "response_format": {
-                "type": "json_schema",
-                "json_schema": {"name": "agent_output", "schema": output_schema, "strict": True},
-            },
             route.openai_output_parameter: route.max_output_tokens,
             "stream": streaming,
             **({"stream_options": {"include_usage": True}} if streaming else {}),
         }
+        if route.agent_response_codec == MINIMAX_CODEC:
+            body["tools"].append(finish_tool(output_schema))
+            body["reasoning_split"] = True
+        else:
+            body["response_format"] = {"type": "json_schema", "json_schema": {
+                "name": "agent_output", "schema": output_schema, "strict": True,
+            }}
+        return body
+    if any(message.get("provider_continuation") is not None for message in messages):
+        raise DomainError("VERSION_CONFLICT", "原模型协议续接不能用于其他协议。")
     history = []
     for message in messages:
         role, content = message["role"], message.get("content", "")
@@ -111,7 +125,7 @@ def parse_turn(body, route, request_id=None):
     try:
         valid_request_id = _identifier(request_id or body.get("id"))
         usage = _usage(body, route.protocol)
-        calls, text = [], ""
+        calls, text, continuation, native_output = [], "", None, None
         if route.protocol == "openai-compatible":
             if len(body["choices"]) != 1:
                 raise ValueError("One choice required")
@@ -123,11 +137,19 @@ def parse_turn(body, route, request_id=None):
             message = choice["message"]
             if message.get("refusal") or message.get("role") != "assistant":
                 raise ProviderError("PROVIDER_REFUSAL", usage=usage)
-            text = message.get("content") or ""
+            minimax = route.agent_response_codec == MINIMAX_CODEC
+            text = public_text(message.get("content")) if minimax else message.get("content") or ""
             for call in message.get("tool_calls", []):
                 if call["type"] != "function":
                     raise ValueError("Native function required")
                 arguments = json_value(call["function"]["arguments"])
+                if minimax and call["function"]["name"] == FINISH_TOOL:
+                    if len(message["tool_calls"]) != 1 or not isinstance(arguments, dict):
+                        raise ValueError("Output function cannot mix with business calls")
+                    # Validate the protocol identity without exposing an executable tool.
+                    ToolCall(id=call["id"], name=FINISH_TOOL, arguments=arguments)
+                    native_output = arguments
+                    continue
                 calls.append(
                     ToolCall(
                         id=call["id"],
@@ -135,6 +157,8 @@ def parse_turn(body, route, request_id=None):
                         arguments=arguments,
                     )
                 )
+            if minimax or message.get("reasoning_content") is not None:
+                continuation = private_continuation(route, message)
         else:
             if body["stop_reason"] == "max_tokens":
                 raise ProviderError("PROVIDER_OUTPUT_TRUNCATED", usage=usage)
@@ -158,7 +182,9 @@ def parse_turn(body, route, request_id=None):
             or usage.output_tokens > route.max_output_tokens
         ):
             raise ValueError("Duplicate call or output limit")
-        structured = json_value(text) if not calls else None
+        structured = native_output if native_output is not None else (
+            json_value(text) if not calls else None
+        )
         if isinstance(structured, dict) and "result_json" in structured:
             decoded = json_value(structured.pop("result_json"))
             if not isinstance(decoded, dict):
@@ -166,7 +192,8 @@ def parse_turn(body, route, request_id=None):
             structured["result"] = decoded
         if not calls and not isinstance(structured, dict):
             raise ValueError("Structured final object required")
-        return ModelTurn(text, tuple(calls), usage, valid_request_id, structured)
+        return ModelTurn(text, tuple(calls), usage, valid_request_id, structured,
+                         continuation=continuation)
     except ProviderError as error:
         error.request_id = error.request_id or valid_request_id
         raise
@@ -210,6 +237,12 @@ class StreamAccumulator:
                 raise ValueError("One streamed choice required")
             delta = choices[0].get("delta", {})
             message = self.body["choices"][0]["message"]
+            if delta.get("reasoning_content") is not None:
+                if not isinstance(delta["reasoning_content"], str):
+                    raise ValueError("Reasoning stream must be text")
+                message["reasoning_content"] = message.get("reasoning_content", "") + delta[
+                    "reasoning_content"
+                ]
             if delta.get("content"):
                 message["content"] += delta["content"]
                 self.emit({"type": "text_delta", "text": delta["content"]})
@@ -312,7 +345,10 @@ class AgentProviderClient:
                 if response.headers.get("content-encoding", "identity").lower() != "identity":
                     raise ProviderError("PROVIDER_ENCODING_DENIED", unknown=True)
                 raw, size = bytearray(), 0
-                accumulator = StreamAccumulator(route.protocol, emit)
+                minimax = route.agent_response_codec == MINIMAX_CODEC
+                accumulator = StreamAccumulator(
+                    route.protocol, (lambda _: None) if minimax else emit,
+                )
                 for chunk in response.iter_bytes():
                     if cancelled():
                         raise ProviderError("MODEL_CANCELLED", unknown=True)
@@ -340,11 +376,16 @@ class AgentProviderClient:
                     payload = accumulator.body
                 else:
                     payload = json_value(raw)
-                return parse_turn(
+                result = parse_turn(
                     payload,
                     route,
                     request_id,
                 )
+                if minimax and emit is not None and result.text:
+                    # MiniMax can inline thinking tags even on a split request. Only
+                    # publish text after the complete native response is parsed.
+                    emit({"type": "text_delta", "text": result.text})
+                return result
         except ProviderError as error:
             error.request_id = error.request_id or request_id
             raise

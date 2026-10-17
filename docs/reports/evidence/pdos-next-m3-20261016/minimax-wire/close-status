@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/../.local/minimax_wire_close_20261016.py", line 28, in <module>
+    assert receipt.actor_id==row.writer_id and receipt.requester_id==row.requester_id
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

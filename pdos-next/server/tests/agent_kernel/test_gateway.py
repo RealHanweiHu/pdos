@@ -52,8 +52,12 @@ class Client:
 
 def test_provider_call_requires_registered_graph_and_replays_saved_request(setup):
     store, scope = run(setup)
+    continuation = {"protocol": "openai-compatible", "route_digest": configured_route().digest,
+                    "message": {"role": "assistant", "content": "done",
+                                "reasoning_content": "synthetic private replay context"}}
     client = Client(
-        lambda _: ModelTurn("done", usage=ProviderUsage(12, 3), structured={"ok": True})
+        lambda _: ModelTurn("done", usage=ProviderUsage(12, 3), structured={"ok": True},
+                            continuation=continuation)
     )
     gateway = AgentGateway(
         store, cost_required=False, route_for=lambda _: configured_route(), client=client
@@ -61,8 +65,10 @@ def test_provider_call_requires_registered_graph_and_replays_saved_request(setup
     with pytest.raises(DomainError):
         gateway.turn(scope, system="x", messages=[], tools=[], output_schema={})
     assert client.calls == 0
-    assert turn(gateway, scope).structured == {"ok": True}
-    assert turn(gateway, scope).structured == {"ok": True} and client.calls == 1
+    first = turn(gateway, scope)
+    restored = turn(gateway, scope)
+    assert first.structured == restored.structured == {"ok": True} and client.calls == 1
+    assert first.continuation == restored.continuation == continuation
     with store.transaction(scope) as (_, row):
         assert row.held_tokens == 0 and row.used_tokens == 15
     changed = AgentGateway(

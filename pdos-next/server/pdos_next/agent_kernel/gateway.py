@@ -139,6 +139,7 @@ class AgentGateway:
                 request_id=saved["request_id"],
                 structured=saved["structured"],
                 ledger_call_id=call_id,
+                continuation=saved.get("continuation"),
             )
         dispatch_started = False
         try:
@@ -254,6 +255,8 @@ class AgentGateway:
             "usage": asdict(result.usage),
             "request_id": result.request_id,
         }
+        if result.continuation is not None:
+            saved["continuation"] = result.continuation
         usage = result.usage.input_tokens + result.usage.output_tokens
         cost_usage = None
         if pricing:

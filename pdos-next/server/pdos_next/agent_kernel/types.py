@@ -73,6 +73,7 @@ class ModelTurn:
     request_id: str | None = None
     structured: dict | None = None
     ledger_call_id: UUID | None = None  # Set only by the server gateway, never the provider.
+    continuation: dict | None = field(default=None, repr=False)  # Private provider protocol only.
 
 
 class WireRecommendation(StrictModel):
