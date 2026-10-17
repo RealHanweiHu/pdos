@@ -1,0 +1,26 @@
+{
+  "distinct_passed": 162,
+  "groups": [
+    "build-change-approvals-view",
+    "build-change-orders-view",
+    "app/api/[...path]/route",
+    "change-coverage-reading"
+  ],
+  "typecheck": "targeted project extends repository tsconfig, five changed approval/BFF source files and their imports; passed",
+  "lint": "five approval/BFF files passed; coverage reader files passed earlier unchanged",
+  "browser_checked": false,
+  "whole_application_build": false,
+  "intentional_transport_change": "approve and implementation common preview/execute use the existing 180s transport window; no automatic retry/body or token rewrite",
+  "failures_retained": "frontend-approval-final.log contains two outdated timeout expectations; corrected exact operation groups and all 162 then passed",
+  "source_sha256": {
+    "pdos-next/web/src/lib/change-coverage-reading.ts": "c6ce2e2f14b231f87fd60263869ca0a9db6da782bb7e5f1e724bc56c67f95454",
+    "pdos-next/web/src/lib/change-coverage-reading.test.tsx": "9428d98a06c568aedef2d8f524d3551c15486b4bb491f6a5d79497554f172077",
+    "pdos-next/web/src/components/builds/change-coverage-reading.tsx": "c2a527c121058eee75b656b07a8d0c94c1d4aa788617a1dc36ada688fcefe1d1",
+    "pdos-next/web/src/components/builds/build-change-approvals.tsx": "1528fbbbbe1d6f43f511a6aba62f0c2476b9591de0e66952d9e97a1298db7b22",
+    "pdos-next/web/src/lib/build-change-approvals-view.ts": "ed492fec5d21f0d3eb89b0101c6b8a38ecc1b8e6714a1f58406cd292e4a164bd",
+    "pdos-next/web/src/lib/build-change-approvals-view.test.ts": "12385438ed202cad2342d4a3e1a950b8cba473fedc6d676be35b9ce82c8414d6",
+    "pdos-next/web/src/components/builds/build-change-orders.tsx": "d7ffcffe81cff9dca2563b276727f8837f06c82a9258c662c4831b00d009eea3",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "a5f80468902244e464f843af76f24799df7b6b8bf66526a748a683a9aaf0736a",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "ba8570c03a589959f18225cf77c095b2849ee94d8dbcbc4728a2b6886241fbd7"
+  }
+}

@@ -17,15 +17,40 @@ from pdos_next import change_order_integration as integration
 from pdos_next import change_order_service as formal
 from pdos_next import change_publication_finalization as candidate_guard
 from pdos_next import service as actual_common
+from pdos_next.change_coverage_binding import covered_graph
 from pdos_next.change_graph_closure import closure_stamp
 from pdos_next.change_order_consumption import ConsumptionHost
 from pdos_next.domain.change_execution import service as impact
 from pdos_next.errors import DomainError
 from pdos_next.models import Confirmation, Grant, Product
 
-from .helpers import case  # noqa: F401 - shared explicit offline fixture
+from .helpers import case, existing  # noqa: F401 - shared explicit offline fixture
 
 candidate_common = actual_common
+
+
+def test_tail_requires_operation_specific_opaque_coverage(candidate, monkeypatch):
+    from pdos_next.domain.change_coverage_owner import owner
+
+    e = candidate
+    original = e.module.validate
+
+    def wrong_kind(*args):
+        original(*args)
+        current = existing.read(e)
+        e.current = (
+            current if e.command.operation == "change.implementation.record"
+            else owner.read_retained(
+                e.s, e.ctx, e.pid, change_id=e.material.change_id,
+                purpose=e.material.purpose, graph=covered_graph(e.graph, current),
+                saved=current.source_basis,
+            )
+        )
+
+    monkeypatch.setattr(e.module, "validate", wrong_kind)
+    with pytest.raises(DomainError) as caught:
+        candidate_common.execute(e.s, e.ctx, e.command)
+    assert caught.value.reason == "RECHECK_REQUIRED"
 
 
 @pytest.fixture

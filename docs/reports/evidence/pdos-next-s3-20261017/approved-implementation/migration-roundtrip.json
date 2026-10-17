@@ -1,0 +1,67 @@
+{
+  "verified_target": {
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d"
+  },
+  "private_backup_sha256": "3fe9b047e7bf1fc8d7fd6b4561f0496a262a2b372a5defd73954d2fd961bb94c",
+  "before": {
+    "head": "s0_0774",
+    "body_sha256": "ec0145abe0f6e593a6de7240b2ab939e1b6c6939caad91a111a0fe79281f6852",
+    "attributes": [
+      "pdos_next_owner",
+      "{pdos_next_owner=X/pdos_next_owner,pdos_next_app=X/pdos_next_owner}",
+      false,
+      [
+        "search_path=pg_catalog, public"
+      ]
+    ],
+    "coverage_facts": 0
+  },
+  "steps": [
+    {
+      "action": "upgrade",
+      "head": "s0_0775",
+      "body_sha256": "f5626ba4eb9ffe647221e29744057ffc4255e32fc2842d48df03ef0f6496d577",
+      "attributes": [
+        "pdos_next_owner",
+        "{pdos_next_owner=X/pdos_next_owner,pdos_next_app=X/pdos_next_owner}",
+        false,
+        [
+          "search_path=pg_catalog, public"
+        ]
+      ],
+      "coverage_facts": 0
+    },
+    {
+      "action": "downgrade",
+      "head": "s0_0774",
+      "body_sha256": "ec0145abe0f6e593a6de7240b2ab939e1b6c6939caad91a111a0fe79281f6852",
+      "attributes": [
+        "pdos_next_owner",
+        "{pdos_next_owner=X/pdos_next_owner,pdos_next_app=X/pdos_next_owner}",
+        false,
+        [
+          "search_path=pg_catalog, public"
+        ]
+      ],
+      "coverage_facts": 0
+    },
+    {
+      "action": "upgrade",
+      "head": "s0_0775",
+      "body_sha256": "f5626ba4eb9ffe647221e29744057ffc4255e32fc2842d48df03ef0f6496d577",
+      "attributes": [
+        "pdos_next_owner",
+        "{pdos_next_owner=X/pdos_next_owner,pdos_next_app=X/pdos_next_owner}",
+        false,
+        [
+          "search_path=pg_catalog, public"
+        ]
+      ],
+      "coverage_facts": 0
+    }
+  ],
+  "no_v2_history_at_downgrade": true,
+  "finished_at": "2026-10-17T14:52:13.798129+00:00"
+}

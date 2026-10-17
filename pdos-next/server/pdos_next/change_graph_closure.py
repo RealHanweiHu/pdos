@@ -103,7 +103,9 @@ def graph_material(graph):
     """
     _require(type(graph) is GraphSnapshot)
     value = graph.model_dump(mode="json")
-    for field in ("roots", "nodes", "coverage", "sources"):
+    for field in ("roots", "nodes", "coverage", "sources", "path_applicability"):
+        if field not in value:
+            continue
         value[field] = _sorted(value[field])
     edges = [{k: v for k, v in edge.items() if k != "id"} for edge in value["edges"]]
     _require(len({_key(edge) for edge in edges}) == len(edges))
@@ -113,6 +115,73 @@ def graph_material(graph):
 
 def require_same_graph(expected, current):
     _require(graph_material(expected) == graph_material(current))
+
+
+def approved_projection(graph, current, reader, output_refs, original_owner_sha256):
+    """Remove only actual approved configuration outputs from a rebuilt graph.
+
+    The retained coverage digest includes each original owner's complete view,
+    reads and source basis. Topology alone cannot prove that an old owner stayed
+    unchanged. New nodes receive no inherited coverage or approval.
+    """
+    from pdos_next.domain.change_coverage_owner.registry import graph_projection
+
+    original = {n.ref.identity for n in graph.nodes}
+    outputs = {ref.identity for ref in output_refs}
+    _require(not original.intersection(outputs))
+    _require(
+        all(
+            ref.kind in {"engineering_configuration", "manufacturing_configuration"}
+            and ref.key is None
+            for ref in output_refs
+        )
+    )
+    actual = {n.ref.identity: n.ref for n in current.nodes}
+    _require(outputs <= set(actual))
+    configurations = {
+        (r.id, r.revision) for r in output_refs if r.kind == "manufacturing_configuration"
+    }
+    allowed = outputs | {
+        key
+        for key, ref in actual.items()
+        if ref.kind in {"operation", "sop"} and (ref.id, ref.revision) in configurations
+    }
+    _require(set(actual) == original | allowed)
+    kept = GraphSnapshot.model_validate(
+        {
+            **current.model_dump(mode="python"),
+            "nodes": tuple(n for n in current.nodes if n.ref.identity in original),
+            "edges": tuple(
+                e
+                for e in current.edges
+                if e.origin.identity in original and e.target.identity in original
+            ),
+            "coverage": graph.coverage,
+            **(
+                {"path_applicability": graph.path_applicability}
+                if hasattr(graph, "path_applicability")
+                else {}
+            ),
+        }
+    )
+    require_same_graph(graph, kept)
+    owners = []
+    for identity in sorted(original):
+        obj = reader.objects[identity]
+        _require(obj.current)
+        owners.append(
+            {
+                "ref": obj.ref.model_dump(mode="json"),
+                "view": obj.view,
+                "reads": obj.reads,
+                "source_basis": obj.source_basis,
+            }
+        )
+    _require(
+        digest(_json({"projection": graph_projection(kept), "owners": owners}))
+        == original_owner_sha256
+    )
+    return kept
 
 
 def _scope(ctx, scope, audience):
@@ -355,6 +424,96 @@ class ClosureRead:
     authority_attested: bool = False
 
 
+def recheck_implementation_closure(
+    s, ctx, command, *, request, graph, expected_closure, captures, retained_coverage
+):
+    """Rebuild current dependencies after verified, approved output creation.
+
+    A changed watermark is observed, never ignored. The caller holds the DB
+    dependency lock, verifies each actual CaptureRead and retains the original
+    publication proof independently from current graph coverage.
+    """
+    from pdos_next.change_implementation_owner import CaptureRead
+
+    scope, audience = request.scope, request.audience
+    _scope(ctx, scope, audience)
+    _require(
+        type(command) is Command
+        and command.operation == "change.implementation.record"
+        and command.product_id == scope.product_id
+    )
+    _require(
+        type(graph) is GraphSnapshot
+        and graph.scope == scope
+        and graph.audience == audience
+        and graph.roots == request.roots
+    )
+    _require(type(expected_closure) is dict and expected_closure.get("version") == VERSION)
+    _require(bool(captures) and all(type(value) is CaptureRead for value in captures))
+    outputs = tuple(dict.fromkeys(ref for value in captures for ref in value.fact.outputs))
+    _require(retained_coverage is not None)
+    original_hash = retained_coverage.source_basis.get("closure_sha256")
+    _require(type(original_hash) is str and len(original_hash) == 64)
+    uow, caller = _uow(s), caller_digest(vars(ctx))
+    runtime = _runtime(s, None)
+    material = digest(
+        _json(
+            (
+                request,
+                graph,
+                expected_closure,
+                tuple(value.fact for value in captures),
+                original_hash,
+            )
+        )
+    )
+    with _fresh_selects(s):
+        observed = closure_stamp(s, ctx, scope=scope, audience=audience)
+        _require(
+            {k: v for k, v in expected_closure.items() if k != "dependency_epoch"}
+            == {k: v for k, v in observed.items() if k != "dependency_epoch"}
+        )
+        _require(observed["dependency_epoch"] >= expected_closure["dependency_epoch"])
+        reader = _reader(s, ctx, scope, audience)
+        current = graph_owner.capture_graph(
+            reader,
+            identity=graph.id,
+            roots=graph.roots,
+            captured_at=graph.captured_at,
+            expires_at=graph.expires_at,
+            nature=graph.nature,
+            sources=graph.sources,
+        )
+        _same_reader(reader, s, ctx, scope, audience)
+        _require(not reader.hidden_discovered)
+        approved_projection(graph, current, reader, outputs, original_hash)
+        reads = _reads(reader, current)
+        _require(closure_stamp(s, ctx, scope=scope, audience=audience) == observed)
+    _same_uow(s, uow, ctx, caller)
+    _require(_runtime(s, None) == runtime)
+    _require(
+        material
+        == digest(
+            _json(
+                (
+                    request,
+                    graph,
+                    expected_closure,
+                    tuple(value.fact for value in captures),
+                    original_hash,
+                )
+            )
+        )
+    )
+    checked_at = now()
+    _require(
+        graph.captured_at <= checked_at
+        and deadline_current(graph.expires_at, checked_at)
+        and deadline_current(retained_coverage.valid_until, checked_at)
+    )
+    return ClosureRead(graph, observed, reads, checked_at)
+
+
 def recheck_graph_closure(
     s,
     ctx,
@@ -393,7 +552,11 @@ def recheck_graph_closure(
     )
     _require(coverage_refresh is None or callable(coverage_refresh))
     _require(
-        not any(c.status == "complete" for c in graph.coverage) or coverage_refresh is not None
+        not (
+            any(c.status != "unknown" for c in graph.coverage)
+            or any(p.status != "unknown" for p in graph.path_applicability)
+        )
+        or coverage_refresh is not None
     )
     uow, caller = _uow(s), caller_digest(vars(ctx))
     original = (digest(command), digest(graph), digest(expected_closure), digest(scope), audience)
@@ -439,7 +602,11 @@ def recheck_graph_closure(
             )
             _require(type(coverage) is tuple and all(type(c) is Coverage for c in coverage))
             current = GraphSnapshot.model_validate(
-                {**current.model_dump(mode="python"), "coverage": coverage}
+                {
+                    **current.model_dump(mode="python"),
+                    "coverage": coverage,
+                    "path_applicability": graph.path_applicability,
+                }
             )
         _same_reader(reader, s, ctx, scope, audience)
         require_same_graph(graph, current)

@@ -29,7 +29,7 @@ from pdos_next.domain.quality_followup.evidence import _constant, _pairs
 from pdos_next.errors import DomainError
 from pdos_next.models import Grant, Principal, Product, Receipt, RequestKey
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
-from pdos_next.service import Context, append_receipt, receipt_view, source_for
+from pdos_next.service import append_receipt, receipt_view, source_for
 from pdos_next.service import digest as common_digest
 
 
@@ -139,9 +139,11 @@ def authority(s, ctx, pid, scope, operation, purpose, *, write=True):
 
 
 def original_authority(s, ctx, pid, row):
-    signer = Context(ctx.tenant_id, row.actor_id, row.actor_id, category_id=ctx.category_id)
+    require(row.authority_snapshot.get("subject_id") == str(row.actor_id), "INTEGRITY_MISMATCH")
+    # recheck_snapshot reads the original subject from its fixed snapshot. The
+    # current reader keeps their own transaction/ACL; never impersonate a signer.
     check = professional.recheck_snapshot(
-        s, signer, pid, row.project_id, row.authority_snapshot, clock(), write=False, retained=True
+        s, ctx, pid, row.project_id, row.authority_snapshot, clock(), write=False, retained=True
     )
     require(check.get("current") is True, "RECHECK_REQUIRED")
     return None

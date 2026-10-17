@@ -1,0 +1,14 @@
+{
+  "passed": 58,
+  "scope": "Coverage reader/component; new NA and exact path original reasons, existing shape/source/unknown cases",
+  "typecheck": "Explicit tsc of change-coverage-reading.test.tsx and its actual lib/component imports passed",
+  "lint": "ESLint of those three owned files passed",
+  "browser_checked": false,
+  "build_repeated": false,
+  "first_harness_failure": "CJS Phosphor package import failed before tests; use actual ESM package namespace in isolated CJS loader, following existing test harness",
+  "sources": {
+    "pdos-next/web/src/lib/change-coverage-reading.ts": "c6ce2e2f14b231f87fd60263869ca0a9db6da782bb7e5f1e724bc56c67f95454",
+    "pdos-next/web/src/lib/change-coverage-reading.test.tsx": "9428d98a06c568aedef2d8f524d3551c15486b4bb491f6a5d79497554f172077",
+    "pdos-next/web/src/components/builds/change-coverage-reading.tsx": "c2a527c121058eee75b656b07a8d0c94c1d4aa788617a1dc36ada688fcefe1d1"
+  }
+}

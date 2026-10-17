@@ -2,13 +2,14 @@
 
 import hashlib
 import json
+from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID, uuid4
 from weakref import WeakKeyDictionary
 
 from pydantic import AwareDatetime, ConfigDict, Field, field_validator, model_validator
-from sqlalchemy import select
+from sqlalchemy import select, text
 
 from pdos_next import change_order_store as store
 from pdos_next.clock import deadline_current, earliest_deadline, proof_deadline_current
@@ -35,8 +36,8 @@ from pdos_next.models import (
 )
 from pdos_next.schemas.change_control.contracts import ImplementationFact, Ref
 from pdos_next.schemas.verification.contracts import DTO, EventTime, Scope, SourceRef, Text
-from pdos_next.service import Context, source_for
 from pdos_next.service import digest as common_digest
+from pdos_next.service import source_for
 
 
 def clock():
@@ -171,8 +172,20 @@ def common_group(s, ctx, pid, row, *, operation, event, actor=None):
             .execution_options(autoflush=False, populate_existing=True)
         )
     )
+    keys_bound = bool(keys)
+    if not keys_bound and receipt.actor_id != ctx.actor_id:
+        # RequestKey remains private to its actor. A peer may verify only the
+        # existence of the exact key/receipt binding for a currently readable
+        # receipt; the scoped DB function returns no key, digest or identity.
+        keys_bound = (
+            s.scalar(
+                text("SELECT public.change_receipt_key_bound(:tenant,:product,:receipt)"),
+                {"tenant": ctx.tenant_id, "product": pid, "receipt": receipt.id},
+            )
+            is True
+        )
     _require(
-        bool(keys)
+        keys_bound
         and audit.actor_id == receipt.actor_id
         and audit.operation == operation
         and (
@@ -275,9 +288,16 @@ def verify_outputs(s, ctx, pid, request, order, fact):
     from pdos_next.change_order_service import _one
 
     reader = OwnerReader(s, ctx, pid, request.scope, request.audience, old._issue_loader(s))
+    item = next((value for value in order.plan.items if value.id == fact.item_id), None)
+    _require(item is not None and item.intent.id == fact.intent_id)
+    expected_kind = {
+        "new_engineering_configuration": "engineering_configuration",
+        "new_manufacturing_configuration": "manufacturing_configuration",
+    }.get(item.intent.kind)
     basis = {}
     for ref in fact.outputs:
         _require(ref.kind in OUTPUTS, "IMPLEMENTATION_OUTPUT_OWNER_REQUIRED", 503)
+        _require(ref.kind == expected_kind, "IMPLEMENTATION_OWNER_MISMATCH")
         obj = reader.resolve(ref)
         _require(obj.current, "RECHECK_REQUIRED")
         operation, family, event = OUTPUTS[ref.kind]
@@ -302,8 +322,20 @@ def verify_outputs(s, ctx, pid, request, order, fact):
         _require(
             group["receipt"]["subject_type"] == family
             and row.owner_id == fact.executor_id
+            and bool(order.approvals)
+            and max(value.at for value in order.approvals) <= group["receipt"]["created_at"]
             and group["receipt"]["created_at"] <= fact.occurred_at,
             "IMPLEMENTATION_WRITER_MISMATCH",
+        )
+        _require(
+            any(
+                previous.kind == ref.kind
+                and previous.key is None
+                and previous.id == row.previous_id
+                and previous.revision == row.expected_previous_revision
+                for previous in item.intent.basis
+            ),
+            "IMPLEMENTATION_OWNER_MISMATCH",
         )
         basis[str(ref.id)] = {
             "ref": ref.model_dump(mode="json"),
@@ -585,6 +617,23 @@ def prepare_capture(s, ctx, pid, input):
     return result
 
 
+def capture_view(row):
+    """Materialize the public capture before commit expires the ORM instance."""
+    return {
+        "id": str(row.id),
+        "revision": row.revision,
+        "change_id": str(row.change_id),
+        "change_revision": row.change_revision,
+        "order_id": str(row.order_id),
+        "item_id": str(row.item_id),
+        "fact_id": str(row.fact_id),
+        "fact": deepcopy(row.fact_snapshot),
+        "required_source_read_set": deepcopy(row.required_source_read_set),
+        "created_at": row.created_at.isoformat(),
+        "expires_at": row.expires_at.isoformat() if row.expires_at else None,
+    }
+
+
 @dataclass(frozen=True, eq=False)
 class ApprovedImplementationRead:
     version: object
@@ -689,11 +738,14 @@ class ApprovedImplementationOwner:
             actor=original.actor_id,
         )
         _atom_proof(s, ctx, pid, original, original_group)
-        original_signer = Context(ctx.tenant_id, original.actor_id, original.actor_id)
+        _require(
+            original.authority_snapshot.get("subject_id") == str(original.actor_id),
+            "INTEGRITY_MISMATCH",
+        )
         _require(
             professional.recheck_snapshot(
                 s,
-                original_signer,
+                ctx,
                 pid,
                 version.project_id,
                 original.authority_snapshot,
@@ -758,11 +810,14 @@ class ApprovedImplementationOwner:
                 and proof_deadline_current("T2", proof.expires_at, approved.created_at),
                 "IMPLEMENTATION_GROUP_MISMATCH",
             )
-            signer = Context(ctx.tenant_id, approval.actor_id, approval.actor_id)
+            _require(
+                approved.authority_snapshot.get("subject_id") == str(approval.actor_id),
+                "INTEGRITY_MISMATCH",
+            )
             _require(
                 professional.recheck_snapshot(
                     s,
-                    signer,
+                    ctx,
                     pid,
                     version.project_id,
                     approved.authority_snapshot,

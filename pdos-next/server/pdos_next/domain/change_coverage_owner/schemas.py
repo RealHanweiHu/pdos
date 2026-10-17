@@ -6,7 +6,7 @@ from uuid import UUID
 from pydantic import AwareDatetime, Field, model_validator
 
 from pdos_next.change_controlled_schemas import Exact, UnitBinding
-from pdos_next.schemas.change_control.contracts import Facet, Ref
+from pdos_next.schemas.change_control.contracts import Facet, Kind, Ref
 from pdos_next.schemas.verification.contracts import Scope, SourceRef, Text
 
 OPERATION = "change.coverage.import"
@@ -22,8 +22,24 @@ class FacetClosure(Exact):
     statement: Text
 
 
+class FacetState(Exact):
+    node: Ref
+    facet: Facet
+    status: Literal["complete", "unknown", "not_applicable"]
+    reason: Text
+
+
+class PathDeclaration(Exact):
+    node: Ref
+    targets: tuple[Kind, ...] = Field(min_length=1)
+    status: Literal["applicable", "not_applicable", "unknown"]
+    reason: Text
+
+
 class CoverageMaterial(Exact):
-    schema_version: Literal["pdos-controlled-change-coverage-v1"]
+    schema_version: Literal[
+        "pdos-controlled-change-coverage-v1", "pdos-controlled-change-coverage-v2"
+    ]
     scope: Scope
     purpose: Text
     change_id: UUID
@@ -36,10 +52,22 @@ class CoverageMaterial(Exact):
     nodes: tuple[Ref, ...] = Field(min_length=1)
     units: tuple[UnitBinding, ...] = Field(min_length=1)
     facets: tuple[FacetClosure, ...] = Field(min_length=8, max_length=8)
+    facet_states: tuple[FacetState, ...] = Field(default=(), exclude_if=lambda value: not value)
+    paths: tuple[PathDeclaration, ...] = Field(default=(), exclude_if=lambda value: not value)
     closure_sha256: str = Field(pattern="^[0-9a-f]{64}$")
     valid_from: AwareDatetime
     valid_until: AwareDatetime
     nature: Literal["real", "synthetic"]
+
+    @model_validator(mode="before")
+    @classmethod
+    def legacy_shape(cls, value):
+        if isinstance(value, dict) and value.get("schema_version") == (
+            "pdos-controlled-change-coverage-v1"
+        ):
+            if "facet_states" in value or "paths" in value:
+                raise ValueError("Version 1 originals cannot declare new applicability fields")
+        return value
 
     @model_validator(mode="after")
     def closed(self):
@@ -55,6 +83,21 @@ class CoverageMaterial(Exact):
             values = [v.identity for v in facet.nodes]
             if len(values) != len(set(values)) or set(values) != nodes:
                 raise ValueError("Every facet must explicitly enumerate the exact bounded nodes")
+        states = {(v.node.identity, v.facet) for v in self.facet_states}
+        if len(states) != len(self.facet_states) or any(
+            v.node.identity not in nodes for v in self.facet_states
+        ):
+            raise ValueError("Facet states must bind unique fixed nodes and facets")
+        from pdos_next.domain.change_control.rules import NEXT
+
+        paths = {(v.node.identity, frozenset(v.targets)) for v in self.paths}
+        if len(paths) != len(self.paths) or any(
+            v.node.identity not in nodes
+            or len(set(v.targets)) != len(v.targets)
+            or set(v.targets) != NEXT.get(v.node.kind)
+            for v in self.paths
+        ):
+            raise ValueError("Path declarations must name exact fixed continuation groups")
         units = [v.unit for v in self.units]
         if len(set(units)) != len(units) or any(
             v.object_identity not in nodes or v.unit != f"object:{v.object_identity}"

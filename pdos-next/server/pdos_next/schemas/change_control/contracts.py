@@ -80,16 +80,34 @@ class Edge(DTO):
 class Coverage(DTO):
     node: Ref
     facet: Facet
-    status: Literal["complete", "unknown"]
+    status: Literal["complete", "unknown", "not_applicable"]
     source: SourceRef | None = None
     reason: Text | None = None
 
     @model_validator(mode="after")
     def supported(self):
-        if self.status == "complete" and self.source is None:
-            raise ValueError("完整范围声明须有固定来源")
-        if self.status == "unknown" and self.reason is None:
-            raise ValueError("未知范围须有具体原因")
+        if self.status != "unknown" and self.source is None:
+            raise ValueError("完整或不适用范围声明须有固定来源")
+        if self.status != "complete" and self.reason is None:
+            raise ValueError("未知或不适用范围须有具体原因")
+        return self
+
+
+class PathApplicability(DTO):
+    """One fixed continuation, never permission to remove actual dependencies."""
+
+    node: Ref
+    targets: tuple[Kind, ...] = Field(min_length=1)
+    status: Literal["applicable", "not_applicable", "unknown"]
+    reason: Text
+    source: SourceRef | None = None
+
+    @model_validator(mode="after")
+    def supported(self):
+        if len(set(self.targets)) != len(self.targets):
+            raise ValueError("后续目标种类不可重复")
+        if self.status != "unknown" and self.source is None:
+            raise ValueError("路径适用性判断须有固定来源")
         return self
 
 
@@ -107,6 +125,10 @@ class GraphSnapshot(DTO):
     nodes: tuple[Node, ...] = Field(min_length=1)
     edges: tuple[Edge, ...] = Field()
     coverage: tuple[Coverage, ...] = Field()
+    # Empty on legacy snapshots: do not change their canonical saved digest.
+    path_applicability: tuple[PathApplicability, ...] = Field(
+        default=(), exclude_if=lambda value: not value
+    )
     sources: tuple[SourceRef, ...] = Field(min_length=1)
     captured_at: AwareDatetime
     expires_at: AwareDatetime | None = None
@@ -131,6 +153,11 @@ class GraphSnapshot(DTO):
             c.node.identity not in identities for c in self.coverage
         ):
             raise ValueError("范围覆盖须引用唯一固定节点/切片")
+        paths = {(p.node.identity, frozenset(p.targets)) for p in self.path_applicability}
+        if len(paths) != len(self.path_applicability) or any(
+            p.node.identity not in identities for p in self.path_applicability
+        ):
+            raise ValueError("路径适用性须引用唯一固定节点/后续目标")
         if self.expires_at is not None and self.expires_at <= self.captured_at:
             raise ValueError("快照有效期必须晚于固定时点")
         return self

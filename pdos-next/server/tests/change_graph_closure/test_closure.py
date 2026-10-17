@@ -46,6 +46,12 @@ def case(monkeypatch):
         "status": "draft",
         "visibility": "category",
         "owner_id": ctx.requester_id,
+        "parent_product_id": None,
+        "target_price": None,
+        "target_price_currency": None,
+        "target_price_basis": None,
+        "target_price_includes_tax": None,
+        "target_price_as_of": None,
     }
     state = SimpleNamespace(
         epoch=1,

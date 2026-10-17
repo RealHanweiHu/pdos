@@ -151,7 +151,7 @@ def register_routes(app: FastAPI, engine, auth_dependency):
     def implementation_capture(
         product_id: UUID, data: CaptureInput, ctx: Context = auth_dependency
     ):
-        from pdos_next.change_implementation_owner import prepare_capture
+        from pdos_next.change_implementation_owner import capture_view, prepare_capture
 
         with tenant_session(
             engine,
@@ -160,4 +160,4 @@ def register_routes(app: FastAPI, engine, auth_dependency):
             requester_id=ctx.requester_id,
             category_id=ctx.category_id,
         ) as session:
-            return prepare_capture(session, ctx, product_id, data)
+            return capture_view(prepare_capture(session, ctx, product_id, data))

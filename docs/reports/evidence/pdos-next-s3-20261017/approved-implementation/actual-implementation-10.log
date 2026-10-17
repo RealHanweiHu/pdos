@@ -1,0 +1,60 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-nz9mb58i/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-nz9mb58i/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-nz9mb58i/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-nz9mb58i/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-nz9mb58i/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-nz9mb58i/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-nz9mb58i/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-nz9mb58i/pdos-next/server/pdos_next/change_controlled_owner.py:770: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # BEFORE Current target guard, never a commit/second Receipt.
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-nz9mb58i/pdos-next/server/pdos_next/domain/change_coverage_owner/importer.py:368: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([fact])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-nz9mb58i/pdos-next/server/pdos_next/service.py:1164: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-nz9mb58i/pdos-next/server/pdos_next/change_order_service.py:1012: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # Actual candidate trigger validates parent before pointer flush.
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-nz9mb58i/pdos-next/server/pdos_next/change_implementation_owner.py:616: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([result])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 20 warnings in 619.55s (0:10:19)

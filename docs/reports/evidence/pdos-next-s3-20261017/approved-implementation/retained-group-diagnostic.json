@@ -1,0 +1,90 @@
+[
+  {
+    "viewer": "publisher",
+    "operation": "change.coverage.import",
+    "passed": true
+  },
+  {
+    "viewer": "publisher",
+    "operation": "change.policy.import",
+    "passed": true
+  },
+  {
+    "viewer": "publisher",
+    "operation": "change.selection.decide",
+    "passed": true
+  },
+  {
+    "viewer": "publisher",
+    "operation": "change.selection.decide",
+    "passed": true
+  },
+  {
+    "function": "common_group",
+    "line": 174,
+    "reason": "IMPLEMENTATION_GROUP_MISMATCH",
+    "keys_visible": 0,
+    "receipt_matches": {
+      "visibility": true,
+      "id": true,
+      "revision": true
+    }
+  },
+  {
+    "viewer": "peer",
+    "operation": "change.coverage.import",
+    "passed": false,
+    "reason": "IMPLEMENTATION_GROUP_MISMATCH"
+  },
+  {
+    "function": "common_group",
+    "line": 174,
+    "reason": "IMPLEMENTATION_GROUP_MISMATCH",
+    "keys_visible": 0,
+    "receipt_matches": {
+      "visibility": true,
+      "id": true,
+      "revision": true
+    }
+  },
+  {
+    "viewer": "peer",
+    "operation": "change.policy.import",
+    "passed": false,
+    "reason": "IMPLEMENTATION_GROUP_MISMATCH"
+  },
+  {
+    "function": "common_group",
+    "line": 174,
+    "reason": "IMPLEMENTATION_GROUP_MISMATCH",
+    "keys_visible": 0,
+    "receipt_matches": {
+      "visibility": true,
+      "id": true,
+      "revision": true
+    }
+  },
+  {
+    "viewer": "peer",
+    "operation": "change.selection.decide",
+    "passed": false,
+    "reason": "IMPLEMENTATION_GROUP_MISMATCH"
+  },
+  {
+    "function": "common_group",
+    "line": 174,
+    "reason": "IMPLEMENTATION_GROUP_MISMATCH",
+    "keys_visible": 0,
+    "receipt_matches": {
+      "visibility": true,
+      "id": true,
+      "revision": true
+    }
+  },
+  {
+    "viewer": "peer",
+    "operation": "change.selection.decide",
+    "passed": false,
+    "reason": "IMPLEMENTATION_GROUP_MISMATCH"
+  }
+]

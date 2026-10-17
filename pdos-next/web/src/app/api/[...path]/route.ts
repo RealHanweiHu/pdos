@@ -17,7 +17,7 @@ const resourceInspectPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA
 const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 const manufacturingPreparationPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/manufacturing-preparations(?:\/inputs|\/(?:work_instruction|control_plan|manufacturing_baseline)\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})?$/;
 const manufacturingPreparationCommands = new Set(["npi.work_instruction.record", "npi.control_plan.record", "npi.manufacturing_baseline.record"]);
-const qualityChangePaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/(?:quality-execution(?:\/inputs)?|change-execution(?:\/(?:inputs|captures|order-context|selection-material))?)$/;
+const qualityChangePaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/(?:quality-execution(?:\/inputs)?|change-execution(?:\/(?:inputs|captures|order-context|selection-material|implementation-captures))?)$/;
 const qualityFollowupPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/quality-followup(?:\/inputs)?$/;
 const capaCandidatePaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/capa-candidates$/;
 const capaFactPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/capa-facts(?:\/inputs)?$/;
@@ -29,6 +29,10 @@ function validSelectionMaterial(value: unknown): boolean {
   if (!isRecord(value) || Object.keys(value).some(key => !["change_id", "expected_change_revision", "source"].includes(key)) || typeof value.change_id !== "string" || !uuid.test(value.change_id) || !positiveRevision(value.expected_change_revision) || !isRecord(value.source)) return false;
   const source = value.source;
   return Object.keys(source).every(key => ["id", "revision", "kind", "position"].includes(key)) && typeof source.id === "string" && uuid.test(source.id) && positiveRevision(source.revision) && source.kind === "artifact" && typeof source.position === "string" && /^line:[1-9]\d*;quote_sha256:[0-9a-f]{64}$/.test(source.position);
+}
+function validImplementationCapture(value: unknown): boolean {
+  if (!isRecord(value) || Object.keys(value).some(key => !["capture_key", "change_id", "expected_change_revision", "visibility", "order_id", "item_id", "source"].includes(key)) || typeof value.capture_key !== "string" || [...value.capture_key].length < 8 || [...value.capture_key].length > 160 || typeof value.order_id !== "string" || !uuid.test(value.order_id) || typeof value.item_id !== "string" || !uuid.test(value.item_id) || (value.visibility !== undefined && !["private", "category", "audience"].includes(String(value.visibility)))) return false;
+  return validSelectionMaterial({ change_id: value.change_id, expected_change_revision: value.expected_change_revision, source: value.source });
 }
 function validFollowupCommand(value: unknown, productId: string, operations = qualityFollowupCommands): boolean {
   if (!isRecord(value) || Object.keys(value).some(key => !["command_id", "idempotency_key", "operation", "category_id", "product_id", "expected_revision", "payload", "source_read_set"].includes(key)) || typeof value.command_id !== "string" || !uuid.test(value.command_id) || typeof value.idempotency_key !== "string" || value.idempotency_key.length < 8 || value.idempotency_key.length > 160 || typeof value.operation !== "string" || !operations.has(value.operation) || typeof value.product_id !== "string" || !uuid.test(value.product_id) || value.product_id.toLowerCase() !== productId.toLowerCase() || !positiveRevision(value.expected_revision) || !isRecord(value.payload) || typeof value.payload.issue_id !== "string" || !uuid.test(value.payload.issue_id) || !positiveRevision(value.payload.expected_issue_revision) || !Array.isArray(value.source_read_set) || value.source_read_set.length < 1) return false;
@@ -56,7 +60,7 @@ const longCommands = new Set([
   "test.results.import", "test.result.compute", "test.run.review", "test.disposition.decide",
   "quality.issue.create", "quality.issue.merge", "quality.issue.triage",
   "quality.issue.containment.record", "quality.capa.draft", "change.request.create", "change.impact.compute",
-  "change.selection.decide", "change.order.prepare",
+  "change.selection.decide", "change.order.prepare", "change.order.approve", "change.implementation.record",
 ]);
 
 async function forward(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
@@ -88,6 +92,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const agentBudget = /^v1\/agent-budgets(?:\/recover)?$/.test(pathname);
   const qualityChange = qualityChangePaths.test(pathname);
   const selectionMaterial = qualityChange && pathname.endsWith("/selection-material");
+  const implementationCapture = qualityChange && pathname.endsWith("/implementation-captures");
   const manufacturingPreparation = manufacturingPreparationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
@@ -259,7 +264,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     }
     if (method === "GET" && !query.has("issue_id")) return Response.json({ code: "VALIDATION_FAILED", message: "请明确选择一个问题。" }, { status: 422 });
   } else if (qualityChange) {
-    const method = /\/(?:inputs|captures|selection-material)$/.test(pathname) ? "POST" : "GET";
+    const method = /\/(?:inputs|captures|selection-material|implementation-captures)$/.test(pathname) ? "POST" : "GET";
     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: method } });
     const orderContext = pathname.endsWith("/order-context");
     const allowed = method === "POST" ? [] : pathname.endsWith("/quality-execution") ? ["build_id", "run_id", "issue_id"] : orderContext ? ["change_id"] : ["issue_id", "change_id", "project_id"];
@@ -316,6 +321,11 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       let value: unknown;
       try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交所选变更与精确原文完整行。" }, { status: 422 }); }
       if (!validSelectionMaterial(value)) return Response.json({ code: "VALIDATION_FAILED", message: "此入口只读取明确变更版本与原文完整行中的实际材料。" }, { status: 422 });
+    }
+    if (implementationCapture) {
+      let value: unknown;
+      try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整原捕获请求与实际原文行。" }, { status: 422 }); }
+      if (!validImplementationCapture(value)) return Response.json({ code: "VALIDATION_FAILED", message: "此入口只捕获明确变更、计划项与精确原文完整行，批准和实际输出由服务器核对。" }, { status: 422 });
     }
     if (manufacturingPreparation && request.method === "POST") {
       let value: unknown;

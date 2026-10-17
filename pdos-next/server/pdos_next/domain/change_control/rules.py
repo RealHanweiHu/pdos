@@ -38,7 +38,8 @@ MANUFACTURING = {
     "manufacturing_release",
     "manufacturing_configuration",
 }
-# Missing paths remain UNKNOWN even if a manifest incorrectly says complete.
+# Canonical continuations are checked against actual edges or a separately
+# sourced, exact non-applicability declaration. Completeness alone cannot waive one.
 NEXT = {
     "spec": {"part", "bom"},
     "part": {"bom", "engineering_configuration", "operation"},
@@ -106,6 +107,7 @@ def graph_sources(graph):
     values += [n.source for n in graph.nodes]
     values += [e.source for e in graph.edges]
     values += [c.source for c in graph.coverage if c.source is not None]
+    values += [p.source for p in graph.path_applicability if p.source is not None]
     return tuple({digest(s): s for s in values}.values())
 
 
@@ -125,6 +127,14 @@ def compute_impact(graph: GraphSnapshot, request_revision, hypotheses=()):
                 queue.append(target)
     rows, unknown = [], []
     coverage = {(c.node.identity, c.facet): c for c in graph.coverage}
+    applicability = {(p.node.identity, frozenset(p.targets)): p for p in graph.path_applicability}
+    for declaration in graph.path_applicability:
+        if set(declaration.targets) != NEXT.get(declaration.node.kind):
+            unknown.append(
+                Unknown(
+                    node=declaration.node, facet="manufacturing", reason="后续路径声明范围不匹配。"
+                )
+            )
     for key in sorted(paths):
         node = nodes[key]
         lanes = []
@@ -137,7 +147,7 @@ def compute_impact(graph: GraphSnapshot, request_revision, hypotheses=()):
         rows.append(ImpactRow(node=node, path=paths[key], lanes=tuple(lanes)))
         for facet in get_args(Facet):
             entry = coverage.get((key, facet))
-            if entry is None or entry.status != "complete":
+            if entry is None or entry.status == "unknown":
                 unknown.append(
                     Unknown(
                         node=node.ref,
@@ -150,13 +160,34 @@ def compute_impact(graph: GraphSnapshot, request_revision, hypotheses=()):
         if node.ref.kind in NEXT:
             targets = {e.target.kind for e in outgoing.get(key, ())}
             expected = NEXT[node.ref.kind]
-            if not targets & expected:
+            # A definition's real engineering configuration names its BOM. This
+            # sourced path is sufficient; a fabricated direct Spec->BOM is not.
+            if node.ref.kind == "spec":
+                for edge in outgoing.get(key, ()):
+                    if edge.target.kind == "engineering_configuration":
+                        targets.update(
+                            e.target.kind for e in outgoing.get(edge.target.identity, ())
+                        )
+            declaration = applicability.get((key, frozenset(expected)))
+            present = bool(targets & expected)
+            not_applicable = declaration is not None and declaration.status == "not_applicable"
+            if present and not_applicable:
+                unknown.append(
+                    Unknown(
+                        node=node.ref,
+                        facet="manufacturing" if node.ref.kind in MANUFACTURING else "engineering",
+                        reason=f"{node.label}的不适用声明与实际后续关系冲突。",
+                    )
+                )
+            elif not present and not not_applicable:
                 facet = "manufacturing" if node.ref.kind in MANUFACTURING else "engineering"
                 unknown.append(
                     Unknown(
                         node=node.ref,
                         facet=facet,
-                        reason=f"{node.label}缺少通往{'/'.join(sorted(expected))}的有出处边。",
+                        reason=declaration.reason
+                        if declaration is not None and declaration.status == "unknown"
+                        else f"{node.label}缺少通往{'/'.join(sorted(expected))}的有出处边。",
                     )
                 )
         if node.ref.kind in {"part", "interface"} and not any(

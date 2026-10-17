@@ -1,0 +1,14 @@
+{
+  "target_port": 64245,
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "reader": "actual synthetic executor through normal app tenant_session and own-key RLS",
+  "replayed_config_and_implementation_receipts": 4,
+  "own_key_counts_after_all_replays": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "unrelated_or_other_actor_keys_not_read": true,
+  "business_writes": 0
+}

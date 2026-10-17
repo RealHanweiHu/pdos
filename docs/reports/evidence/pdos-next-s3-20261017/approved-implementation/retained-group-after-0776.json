@@ -1,0 +1,61 @@
+{
+  "groups": [
+    {
+      "viewer": "publisher",
+      "operation": "change.coverage.import",
+      "group_and_proof_passed": true,
+      "other_actor_keys_visible": 35,
+      "wrong_tenant_product_receipt_rejected": true
+    },
+    {
+      "viewer": "publisher",
+      "operation": "change.policy.import",
+      "group_and_proof_passed": true,
+      "other_actor_keys_visible": 35,
+      "wrong_tenant_product_receipt_rejected": true
+    },
+    {
+      "viewer": "publisher",
+      "operation": "change.selection.decide",
+      "group_and_proof_passed": true,
+      "other_actor_keys_visible": 35,
+      "wrong_tenant_product_receipt_rejected": true
+    },
+    {
+      "viewer": "publisher",
+      "operation": "change.selection.decide",
+      "group_and_proof_passed": true,
+      "other_actor_keys_visible": 35,
+      "wrong_tenant_product_receipt_rejected": true
+    },
+    {
+      "viewer": "peer",
+      "operation": "change.coverage.import",
+      "group_and_proof_passed": true,
+      "other_actor_keys_visible": 0,
+      "wrong_tenant_product_receipt_rejected": true
+    },
+    {
+      "viewer": "peer",
+      "operation": "change.policy.import",
+      "group_and_proof_passed": true,
+      "other_actor_keys_visible": 0,
+      "wrong_tenant_product_receipt_rejected": true
+    },
+    {
+      "viewer": "peer",
+      "operation": "change.selection.decide",
+      "group_and_proof_passed": true,
+      "other_actor_keys_visible": 0,
+      "wrong_tenant_product_receipt_rejected": true
+    },
+    {
+      "viewer": "peer",
+      "operation": "change.selection.decide",
+      "group_and_proof_passed": true,
+      "other_actor_keys_visible": 0,
+      "wrong_tenant_product_receipt_rejected": true
+    }
+  ],
+  "private_receipt_available_and_rejected": false
+}

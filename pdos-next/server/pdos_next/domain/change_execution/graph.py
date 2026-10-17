@@ -429,11 +429,43 @@ class OwnerReader:
             ):
                 add("engineering_configuration", row.id, row.revision, "工程版固定BOM")
         elif ref.kind == "part":
-            for line in self._query(BomLine, BomLine.part_id == ref.id):
+            boms, line_keys = {}, {}
+            for line in self._query(
+                BomLine, BomLine.part_id == ref.id, BomLine.part_revision == ref.revision
+            ):
                 from pdos_next.domain.configurations.models import BomRevision
 
-                bom = _row(self.s, self.ctx, self.pid, BomRevision, line.bom_id)
+                if line.bom_id not in boms:
+                    boms[line.bom_id] = _row(
+                        self.s, self.ctx, self.pid, BomRevision, line.bom_id
+                    )
+                bom = boms[line.bom_id]
+                line_keys.setdefault(bom.id, set()).add(line.key)
                 add("bom", bom.id, bom.revision, "固定BOM行引用物料", line.key)
+            # Line keys are local to a fixed BOM, not global Part/Operation names.
+            # Preserve immutable historical bindings rather than choosing a newer
+            # configuration. Capturing each discovered target still uses its real
+            # owner/currentness/ACL and original source checks in resolve().
+            for bom_id, keys in line_keys.items():
+                for engineering in self._query(
+                    EngineeringConfiguration,
+                    EngineeringConfiguration.bom_id == bom_id,
+                    EngineeringConfiguration.bom_revision == boms[bom_id].revision,
+                ):
+                    for process in self._query(
+                        ProcessRevision,
+                        ProcessRevision.engineering_configuration_id == engineering.id,
+                        ProcessRevision.engineering_revision == engineering.revision,
+                    ):
+                        for operation in process.operations:
+                            if keys.intersection(operation["bom_line_keys"]):
+                                add(
+                                    "operation",
+                                    process.id,
+                                    process.revision,
+                                    "工序明确使用固定BOM物料行",
+                                    operation["key"],
+                                )
         elif ref.kind == "manufacturing_configuration":
             add(
                 "engineering_configuration",

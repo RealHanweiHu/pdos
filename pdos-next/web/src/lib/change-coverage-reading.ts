@@ -19,12 +19,14 @@ export type CoverageReadingInput = {
 export type CoverageFacetReading = {
   facet: ChangeCoverageFacet; label: string; listed: number | null;
   unknown: number | null; needsReview: number | null; impactUnknown: number | null;
+  notApplicable: number | null;
 };
 export type ChangeCoverageReadingView = {
   needsReview: boolean; issues: string[]; nodeCount: number | null; edgeCount: number | null;
   snapshot: { id: string | null; revision: number | null; capturedAt: string | null;
     expiresAt: string | null; hash: string | null; synthetic: boolean; current: boolean; expired: boolean };
   facets: CoverageFacetReading[];
+  applicability: { objectLabel: string; targets: string[]; status: string; reason: string; source: string }[];
   impact: { status: "not_assessed" | "readable" | "needs_review";
     unknowns: { facet: ChangeCoverageFacet; label: string; objectLabel: string | null; reason: string }[] };
 };
@@ -75,11 +77,12 @@ export function readChangeCoverage(input: CoverageReadingInput, now = Date.now()
       hash: typeof capture.graph_sha256 === "string" && /^[0-9a-f]{64}$/.test(capture.graph_sha256) ? capture.graph_sha256 : null,
       synthetic: graph.nature === "synthetic", current: capture.current === true && capture.source_status === "current",
       expired: !Number.isFinite(now) || !(graph.expires_at === null || time(graph.expires_at) && Date.parse(graph.expires_at) > now) },
-    facets: changeCoverageFacets.map(({ key, label }) => ({ facet: key, label, listed: null, unknown: null, needsReview: null, impactUnknown: null })),
+    facets: changeCoverageFacets.map(({ key, label }) => ({ facet: key, label, listed: null, unknown: null, needsReview: null, impactUnknown: null, notApplicable: null })),
+    applicability: [],
     impact: { status: "not_assessed", unknowns: [] },
   };
   const finish = () => { result.issues = [...issues]; result.needsReview = issues.size > 0; return result; };
-  const headerValid = fields(graph, ["id", "revision", "scope", "audience", "roots", "nodes", "edges", "coverage", "sources", "captured_at", "expires_at", "nature"]) && uuid(graph.id) && revision(graph.revision)
+  const headerValid = fields(graph, ["id", "revision", "scope", "audience", "roots", "nodes", "edges", "coverage", "sources", "captured_at", "expires_at", "nature", "path_applicability"]) && uuid(graph.id) && revision(graph.revision)
     && capture.id === graph.id && capture.revision === graph.revision && capture.change_id === input.expectedChangeId && uuid(input.expectedChangeId) && revision(capture.change_revision)
     && scope(input.expectedScope) && scope(graph.scope) && sameScope(graph.scope, input.expectedScope) && input.expectedScope.product_id === input.expectedProductId
     && audience(graph.audience) && audience(input.expectedAudience) && sameAudience(graph.audience, input.expectedAudience)
@@ -127,15 +130,35 @@ export function readChangeCoverage(input: CoverageReadingInput, now = Date.now()
     entries.push(entry); pairs.set(key, entries);
   }
   for (const facet of result.facets) {
-    facet.listed = 0; facet.unknown = 0; facet.needsReview = 0;
+    facet.listed = 0; facet.unknown = 0; facet.needsReview = 0; facet.notApplicable = 0;
     for (const node of nodeLabels.keys()) {
       const entries = pairs.get(JSON.stringify([node, facet.facet])) ?? [], entry = entries[0];
       if (entries.length !== 1 || !row(entry) || !fields(entry, ["node", "facet", "status", "source", "reason"])) { facet.needsReview++; continue; }
       if (entry.status === "complete" && supportedSource(entry.source) && (entry.source as JsonRow).kind === "artifact" && (entry.reason === null || entry.reason === undefined || text(entry.reason))) facet.listed++;
+      else if (entry.status === "not_applicable" && supportedSource(entry.source) && (entry.source as JsonRow).kind === "artifact" && text(entry.reason)) {
+        facet.notApplicable++;
+        const original = entry.source as JsonRow;
+        result.applicability.push({ objectLabel: nodeLabels.get(node)!, targets: [facet.label], status: "not_applicable", reason: entry.reason, source: `${original.id} · v${original.revision} · ${original.position}` });
+      }
       else if (entry.status === "unknown" && text(entry.reason) && (entry.source === null || entry.source === undefined || supportedSource(entry.source))) facet.unknown++;
       else facet.needsReview++;
     }
     if (facet.needsReview > 0) issues.add("存在缺失、重复或来源不完整的节点范围，须逐项核对。");
+  }
+  const paths = graph.path_applicability ?? [], pathKeys = new Set<string>();
+  if (!Array.isArray(paths)) issues.add("后续路径适用性结构待核对。");
+  else for (const path of paths) {
+    if (!row(path) || !fields(path, ["node", "targets", "status", "reason", "source"]) || !fixedRef(path.node) || !nodeLabels.has(refKey(path.node))
+      || !Array.isArray(path.targets) || !path.targets.length || path.targets.some(kind => typeof kind !== "string" || !kinds.has(kind)) || new Set(path.targets).size !== path.targets.length
+      || !["applicable", "not_applicable", "unknown"].includes(String(path.status)) || !text(path.reason)
+      || (path.status === "unknown" ? path.source !== null && path.source !== undefined && !supportedSource(path.source) : !supportedSource(path.source) || (path.source as JsonRow).kind !== "artifact")) {
+      issues.add("后续路径适用性的对象、理由或原文来源待核对。"); continue;
+    }
+    const key = JSON.stringify([refKey(path.node), [...path.targets].sort()]);
+    if (pathKeys.has(key)) { issues.add("后续路径适用性声明重复，须核对原文。"); continue; }
+    pathKeys.add(key);
+    result.applicability.push({ objectLabel: nodeLabels.get(refKey(path.node))!, targets: path.targets as string[], status: String(path.status), reason: path.reason,
+      source: row(path.source) ? `${path.source.id} · v${path.source.revision} · ${path.source.position}` : "尚无固定原文" });
   }
   if (!Array.isArray(input.assessments)) { issues.add("固定影响核对记录结构待核对。"); result.impact.status = "needs_review"; return finish(); }
   if (input.assessments.some(value => !row(value) || !row(value.graph) || !uuid(value.graph.id) || !revision(value.graph.revision))) { issues.add("固定影响核对记录缺少图身份，须核对原记录。"); result.impact.status = "needs_review"; return finish(); }

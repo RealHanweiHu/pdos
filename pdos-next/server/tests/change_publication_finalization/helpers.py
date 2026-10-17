@@ -15,6 +15,7 @@ from change_execution import kernel_helpers
 
 import pdos_next.models  # noqa: F401 - register before runtime imports
 from pdos_next import service as common
+from pdos_next.change_coverage_binding import covered_graph
 from pdos_next.contracts import Command
 from pdos_next.domain.change_coverage_owner import owner
 from pdos_next.domain.change_execution import service as impact
@@ -153,6 +154,12 @@ def case(request, monkeypatch):
 
             def validate(self, *args):
                 e.current = existing.read(e)
+                if operation == "change.implementation.record":
+                    e.current = owner.read_retained(
+                        e.s, e.ctx, e.pid, change_id=e.material.change_id,
+                        purpose=e.material.purpose, graph=covered_graph(e.graph, e.current),
+                        saved=e.current.source_basis,
+                    )
                 e.domain_runtime = impact._runtime_stamp(e.s)
                 guard()
 

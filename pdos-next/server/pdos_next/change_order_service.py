@@ -364,7 +364,22 @@ def read_phase(
 
     coverage = None
     coverage_refresh = None
-    if any(v.status == "complete" for v in graph.coverage):
+    implementing = type(payload) is store.ImplementationPayload
+    if implementing:
+        from pdos_next.change_coverage_binding import read_retained_graph, refresh_retained_graph
+
+        coverage = read_retained_graph(
+            s,
+            ctx,
+            command.product_id,
+            request=request,
+            purpose=purpose,
+            graph=graph,
+            saved=row.source_basis.get("coverage"),
+        )
+    elif any(v.status != "unknown" for v in graph.coverage) or any(
+        value.status != "unknown" for value in graph.path_applicability
+    ):
         from pdos_next.change_coverage_binding import read_graph, refresh_graph
 
         def coverage_refresh(session, caller, pid, *, graph, current_graph, reader):
@@ -398,18 +413,22 @@ def read_phase(
 
     # The persisted server stamp fences invisible/new reverse dependencies and
     # ABA. A legacy graph remains readable but cannot attest a new named order.
-    closure = recheck_graph_closure(
-        s,
-        ctx,
-        command,
-        graph=graph,
-        scope=scope,
-        audience=request.audience,
-        roots=request.roots,
-        expected_closure=row.source_basis.get("closure"),
-        valid_until=graph.expires_at,
-        coverage_refresh=coverage_refresh,
-        complete_recheck=complete_recheck,
+    closure = (
+        None
+        if implementing
+        else recheck_graph_closure(
+            s,
+            ctx,
+            command,
+            graph=graph,
+            scope=scope,
+            audience=request.audience,
+            roots=request.roots,
+            expected_closure=row.source_basis.get("closure"),
+            valid_until=graph.expires_at,
+            coverage_refresh=coverage_refresh,
+            complete_recheck=complete_recheck,
+        )
     )
     if coverage is not None:
         sources.extend(coverage.sources)
@@ -458,7 +477,7 @@ def read_phase(
         sources.extend(disposition.sources)
     for ref in refs:
         require(reader.resolve(ref).current, "RECHECK_REQUIRED")
-    facts, capture, outputs = {}, None, {}
+    facts, capture, outputs, captures = {}, None, {}, []
     originals = []
     original_deadlines = []
     saved_reads = [row.required_source_read_set]
@@ -500,6 +519,7 @@ def read_phase(
                 s, ctx, command.product_id, request, order, fact.id, new_write=False
             )
             facts[fact.id] = saved.fact
+            captures.append(saved)
             sources.extend(saved.fact.sources)
             outputs[str(fact.id)] = saved.output_basis
             for ref in saved.fact.outputs:
@@ -518,10 +538,23 @@ def read_phase(
             new_write=current_cas,
         )
         facts[capture.fact.id] = capture.fact
+        captures.append(capture)
         sources.extend(capture.fact.sources)
         outputs[str(capture.fact.id)] = capture.output_basis
         for ref in capture.fact.outputs:
             require(reader.resolve(ref).current, "RECHECK_REQUIRED")
+        from pdos_next.change_graph_closure import recheck_implementation_closure
+
+        closure = recheck_implementation_closure(
+            s,
+            ctx,
+            command,
+            request=request,
+            graph=graph,
+            expected_closure=row.source_basis.get("closure"),
+            captures=tuple(captures),
+            retained_coverage=coverage,
+        )
     sources = tuple(dict.fromkeys(sources))
     authority, authority_until = _authority(
         s, ctx, command.product_id, scope, command.operation, purpose
@@ -549,7 +582,7 @@ def read_phase(
     basis, private, verified = old._evidence(s, ctx, command.product_id, reads, sources)
     require(not private or row.visibility == "private", "AUDIENCE_USE_FORBIDDEN", 403)
     if coverage is not None:
-        coverage = refresh_graph(
+        coverage = (refresh_retained_graph if implementing else refresh_graph)(
             s,
             ctx,
             command.product_id,

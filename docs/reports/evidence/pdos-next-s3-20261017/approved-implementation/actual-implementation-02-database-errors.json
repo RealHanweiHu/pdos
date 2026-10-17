@@ -1,0 +1,9 @@
+[
+  {
+    "sqlstate": "P0001",
+    "message_primary": "coverage material/header mismatch",
+    "constraint_name": null,
+    "table_name": null,
+    "context": "PL/pgSQL function assert_change_coverage_atom(uuid,uuid) line 36 at RAISE\nSQL statement \"SELECT public.assert_change_coverage_atom((payload->>'tenant_id')::uuid,target)\"\nPL/pgSQL function require_change_coverage_atom() line 18 at PERFORM"
+  }
+]

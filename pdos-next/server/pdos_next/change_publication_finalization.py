@@ -101,7 +101,11 @@ def _attach(
         _require("coverage" not in subject.source_basis)
         return
     _require(type(subject) is ChangeRequestVersion and not hasattr(subject, _ATTRIBUTE))
-    _require(type(coverage) is owner.CoverageRead and coverage._token is owner._READ_TOKEN)
+    retained = command.operation == "change.implementation.record"
+    _require(
+        type(coverage) is (owner.RetainedCoverageRead if retained else owner.CoverageRead)
+        and coverage._token is (owner._RETAINED_TOKEN if retained else owner._READ_TOKEN)
+    )
     _require(coverage._session is s and coverage._proof_sha256 == _digest(coverage.source_basis))
     caller = _digest(vars(ctx))
     _same_uow(s, coverage._uow, ctx, coverage._caller_hash)

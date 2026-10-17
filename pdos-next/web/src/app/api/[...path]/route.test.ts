@@ -377,7 +377,7 @@ test("旧结果四命令及写路径保留180秒，深读600秒，其余旧入�
     assert.deepEqual(h.timeouts, [path.includes("/") ? 180000 : 600000]);
     assert.equal((h.calls[0].init as RequestInit & { dispatcher?: unknown }).dispatcher, path.includes("/") ? undefined : h.dispatcher);
   }
-  for (const operation of ["quality.policy.import", "change.order.approve", "quality.issue.close", "quality.issue.create.unregistered"]) {
+  for (const operation of ["quality.policy.import", "quality.issue.close", "quality.issue.create.unregistered"]) {
     const h = harness(); await h.send("v1/commands", { method: "POST", body: JSON.stringify({ operation }) });
     assert.deepEqual(h.timeouts, [60000]);
   }
@@ -751,12 +751,115 @@ test("适用性材料只读传输失败与真实共同提交未知分别报告�
   const crossOrigin = harness(), rejected = await crossOrigin.send(`${base}/change-execution/selection-material`, { method: "POST", body: materialBody(), origin: "https://other.invalid" });
   assert.equal(rejected.response.status, 403); assert.equal(rejected.reads, 0); assert.equal(crossOrigin.calls.length, 0);
 });
-test("仅适用性决定与变更令准备增加共同长命令等待，原正文令牌不改写", async () => {
-  for (const operation of ["change.selection.decide", "change.order.prepare"]) for (const path of ["v1/commands/preview", "v1/commands"]) {
+test("变更适用性、准备、批准与实施使用共同长命令等待，原正文令牌不改写", async () => {
+  for (const operation of ["change.selection.decide", "change.order.prepare", "change.order.approve", "change.implementation.record"]) for (const path of ["v1/commands/preview", "v1/commands"]) {
     const h = harness(), body = ` {"operation":"${operation}","command_id":"original-command","idempotency_key":"original-key","payload":{"approval_token":"original-approval","confirmation_token":"original-confirmation","unknown":null}}\n`;
     assert.equal((await h.send(path, { method: "POST", body })).response.status, 200); assert.equal(h.calls[0].init.body, body); assert.deepEqual(h.timeouts, [180000]);
   }
-  for (const operation of ["change.policy.import", "change.order.approve", "change.implementation.record", "change.selection.decide.unregistered"]) {
+  for (const operation of ["change.policy.import", "change.selection.decide.unregistered"]) {
     const h = harness(); await h.send("v1/commands", { method: "POST", body: JSON.stringify({ operation }) }); assert.deepEqual(h.timeouts, [60000]);
+  }
+});
+
+const implementationCapturePath = `${base}/change-execution/implementation-captures`;
+const implementationCaptureInput = () => ({ capture_key: "original-capture-key", change_id: change, expected_change_revision: 6, visibility: "private", order_id: build, item_id: run, source: { id: issue, revision: 2, kind: "artifact", position: `line:3;quote_sha256:${"a".repeat(64)}` } });
+
+test("实施捕获只转发一次精确原正文，保留品类会话、180秒等待和真实捕获响应", async () => {
+  const returned = ` {"id":"${build}","fact_id":"${run}","fact":{"outcome":"unknown","note":"原件仍记载未知"},"expires_at":null}\n`;
+  const h = harness({ response: async () => new Response(returned, { status: 201, headers: { "Content-Type": "application/json; charset=utf-8" } }) });
+  const body = ` \n${JSON.stringify(implementationCaptureInput())}\n`, result = await h.send(implementationCapturePath, { method: "POST", body });
+  assert.equal(result.response.status, 201); assert.equal(result.reads, 1); assert.equal(h.calls.length, 1);
+  assert.equal(h.calls[0].url, `http://synthetic-api.invalid/${implementationCapturePath}`); assert.equal(h.calls[0].init.method, "POST"); assert.equal(h.calls[0].init.body, body);
+  assert.equal(new Headers(h.calls[0].init.headers).get("authorization"), "Bearer synthetic-test-session");
+  assert.equal(new Headers(h.calls[0].init.headers).get("content-type"), "application/json");
+  assert.equal(h.calls[0].init.cache, "no-store"); assert.equal(h.calls[0].init.redirect, "error"); assert.deepEqual(h.timeouts, [180000]);
+  assert.equal(Object.hasOwn(h.calls[0].init, "dispatcher"), false);
+  assert.equal(result.response.headers.get("cache-control"), "no-store"); assert.equal(result.response.headers.get("x-content-type-options"), "nosniff");
+  assert.equal(result.response.headers.get("content-type"), "application/json; charset=utf-8"); assert.equal(await result.response.text(), returned);
+});
+
+test("实施捕获沿用DTO的8至160字符原key和可省略private，不加严为UUID或改写正文", async () => {
+  const omitted = { ...implementationCaptureInput() } as Omit<ReturnType<typeof implementationCaptureInput>, "visibility"> & { visibility?: string }; delete omitted.visibility;
+  for (const value of [omitted, ...["private", "category", "audience"].map(visibility => ({ ...implementationCaptureInput(), visibility })), ...["same-key", "x".repeat(160), "🔧".repeat(160)].map(capture_key => ({ ...implementationCaptureInput(), capture_key })), { ...implementationCaptureInput(), expected_change_revision: 2147483647, source: { ...implementationCaptureInput().source, revision: 2147483647 } }]) {
+    const body = JSON.stringify(value), h = harness(), result = await h.send(implementationCapturePath, { method: "POST", body });
+    assert.equal(result.response.status, 200); assert.equal(result.reads, 1); assert.equal(h.calls.length, 1); assert.equal(h.calls[0].init.body, body);
+  }
+});
+
+test("实施捕获GET、任何query和相似路径都在读取正文前拒绝", async () => {
+  const h = harness(), get = await h.send(implementationCapturePath);
+  assert.equal(get.response.status, 405); assert.equal(get.response.headers.get("allow"), "POST"); assert.equal(get.reads, 0); assert.equal(h.calls.length, 0);
+  for (const query of [`change_id=${change}`, `project_id=${issue}`, "capture_key=original-capture-key", "authorized=true", "x=1&x=2"]) {
+    const queried = harness(), result = await queried.send(implementationCapturePath, { method: "POST", query, body: JSON.stringify(implementationCaptureInput()) });
+    assert.equal(result.response.status, 422, query); assert.equal(result.reads, 0); assert.equal(queried.calls.length, 0);
+  }
+  for (const path of [implementationCapturePath + "/extra", implementationCapturePath + "/recover", implementationCapturePath.replace("implementation-captures", "implementation-capture"), implementationCapturePath.replace("change-execution", "quality-execution"), implementationCapturePath.replace(product, "-".repeat(36))]) {
+    const denied = harness(), result = await denied.send(path, { method: "POST", body: JSON.stringify(implementationCaptureInput()) });
+    assert.equal(result.response.status, 404, path); assert.equal(result.reads, 0); assert.equal(denied.calls.length, 0);
+  }
+  const unscoped = harness(), result = await unscoped.send(`v1/products/${product}/change-execution/implementation-captures`, { method: "POST", unscoped: true, body: JSON.stringify(implementationCaptureInput()) });
+  assert.equal(result.response.status, 404); assert.equal(result.reads, 0); assert.equal(unscoped.calls.length, 0);
+});
+
+test("实施捕获拒绝缺项、额外scope或身份权限以及不合DTO的key、标识和版本", async () => {
+  const valid = implementationCaptureInput();
+  const invalid: unknown[] = [null, [], {}, { ...valid, capture_key: "1234567" }, { ...valid, capture_key: "x".repeat(161) }, { ...valid, capture_key: 12345678 }, { ...valid, capture_key: null }, { ...valid, visibility: "product" }, { ...valid, visibility: null }];
+  for (const key of ["capture_key", "change_id", "expected_change_revision", "order_id", "item_id", "source"]) invalid.push(Object.fromEntries(Object.entries(valid).filter(([name]) => name !== key)));
+  for (const key of ["change_id", "order_id", "item_id"]) invalid.push({ ...valid, [key]: "invalid" });
+  for (const expected_change_revision of [0, -1, 1.5, "6", true, null, 2147483648]) invalid.push({ ...valid, expected_change_revision });
+  for (const extra of [{ scope: { product_id: product, project_id: issue } }, { tenant_id: issue }, { category_id: category }, { product_id: product }, { project_id: issue }, { actor_id: issue }, { requester_id: issue }, { authorized: true }, { qualified: true }, { fact: { outcome: "succeeded" } }, { source_read_set: [] }]) invalid.push({ ...valid, ...extra });
+  for (const value of invalid) {
+    const h = harness(), result = await h.send(implementationCapturePath, { method: "POST", body: JSON.stringify(value) });
+    assert.equal(result.response.status, 422, JSON.stringify(value)); assert.equal(result.reads, 1); assert.equal(h.calls.length, 0);
+  }
+  const malformed = harness(), result = await malformed.send(implementationCapturePath, { method: "POST", body: "not-json" });
+  assert.equal(result.response.status, 422); assert.equal(result.reads, 1); assert.equal(malformed.calls.length, 0);
+});
+
+test("实施捕获source仅接受四字段精确artifact整行，拒绝版本错型和伪造来源权限", async () => {
+  const valid = implementationCaptureInput(), actual = valid.source;
+  for (const source of [null, {}, { ...actual, id: "invalid" }, { ...actual, revision: 0 }, { ...actual, revision: -1 }, { ...actual, revision: 1.5 }, { ...actual, revision: "2" }, { ...actual, revision: true }, { ...actual, revision: 2147483648 }, { ...actual, kind: "domain" }, { ...actual, kind: "command" }, { ...actual, position: "line:0;quote_sha256:" + "a".repeat(64) }, { ...actual, position: "line:3;quote_sha256:short" }, { ...actual, position: "line:3;quote_sha256:" + "A".repeat(64) }, { ...actual, position: "line:3;quote_sha256:" + "a".repeat(64) + ";authorized:true" }, { ...actual, original_id: null }, { ...actual, authorized: true }]) {
+    const h = harness(), result = await h.send(implementationCapturePath, { method: "POST", body: JSON.stringify({ ...valid, source }) });
+    assert.equal(result.response.status, 422, JSON.stringify(source)); assert.equal(result.reads, 1); assert.equal(h.calls.length, 0);
+  }
+});
+
+test("实施捕获保留同源与cookie会话守卫，未配置或无法读body时不调用后端", async () => {
+  const body = JSON.stringify(implementationCaptureInput());
+  for (const origin of [null, "https://localhost:3000", "http://other.invalid"]) {
+    const h = harness(), result = await h.send(implementationCapturePath, { method: "POST", body, origin });
+    assert.equal(result.response.status, 403); assert.equal(result.reads, 0); assert.equal(h.calls.length, 0);
+  }
+  for (const [configuration, status] of [[{ token: null }, 401], [{ api: null }, 503]] as const) {
+    const h = harness(configuration), result = await h.send(implementationCapturePath, { method: "POST", body });
+    assert.equal(result.response.status, status); assert.equal(result.reads, 0); assert.equal(h.calls.length, 0);
+  }
+  const aliased = harness(), allowed = await aliased.send(implementationCapturePath, { method: "POST", body, host: "127.0.0.1:3000", origin: "http://127.0.0.1:3000" });
+  assert.equal(allowed.response.status, 200); assert.equal(aliased.calls.length, 1);
+  const unread = harness(), failed = await unread.send(implementationCapturePath, { method: "POST", body, textFailure: true });
+  assert.equal(failed.response.status, 503); assert.equal(failed.reads, 1); assert.equal(unread.calls.length, 0);
+});
+
+test("实施捕获传输或响应流丢失报告结果未知，仅显式同key请求原样重放一次", async () => {
+  const body = ` \n${JSON.stringify(implementationCaptureInput())}\n`;
+  for (const response of [async (): Promise<Response> => { throw new Error("synthetic private capture transport detail"); }, async () => new Response(new ReadableStream({ start(controller) { controller.error(new Error("synthetic private response detail")); } }))]) {
+    const h = harness({ response }), result = await h.send(implementationCapturePath, { method: "POST", body });
+    assert.equal(result.response.status, 503); assert.equal(result.reads, 1); assert.equal(h.calls.length, 1); assert.equal(h.calls[0].init.body, body); assert.deepEqual(h.timeouts, [180000]);
+    const value = await result.response.json(); assert.equal(value.code, "EXTERNAL_OUTCOME_UNKNOWN"); assert.equal(JSON.stringify(value).includes("private"), false);
+  }
+  let responses = 0;
+  const replay = harness({ response: async () => { responses += 1; if (responses === 1) throw new Error("synthetic unknown outcome"); return Response.json({ id: build, fact_id: run }); } });
+  assert.equal((await replay.send(implementationCapturePath, { method: "POST", body })).response.status, 503); assert.equal(replay.calls.length, 1);
+  const resolved = await replay.send(implementationCapturePath, { method: "POST", body });
+  assert.equal(resolved.response.status, 200); assert.equal(resolved.reads, 1); assert.equal(replay.calls.length, 2); assert.deepEqual(await resolved.response.json(), { id: build, fact_id: run });
+  assert.deepEqual(replay.calls.map(call => call.init.body), [body, body]); assert.deepEqual(replay.timeouts, [180000, 180000]);
+});
+
+test("实施捕获的实际领域失败保留原状态和逐字正文，不伪造捕获或改写为结果未知", async () => {
+  for (const status of [401, 403, 409, 422, 500, 503]) {
+    const body = ` {"code":"IMPLEMENTATION_OWNER_MISMATCH","status":${status},"untouched":9007199254740993}\n`;
+    const h = harness({ response: async () => new Response(body, { status, headers: { "Content-Type": "application/json" } }) });
+    const result = await h.send(implementationCapturePath, { method: "POST", body: JSON.stringify(implementationCaptureInput()) });
+    assert.equal(result.response.status, status); assert.equal(await result.response.text(), body); assert.equal(h.calls.length, 1);
   }
 });

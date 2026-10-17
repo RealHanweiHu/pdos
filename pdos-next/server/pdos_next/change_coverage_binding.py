@@ -54,8 +54,10 @@ def read_graph(s, ctx, pid, *, request, purpose, graph, saved=None, optional=Fal
     from pdos_next.domain.change_coverage_owner import owner
 
     require(type(graph) is GraphSnapshot)
-    complete = any(value.status == "complete" for value in graph.coverage)
-    require(not complete or saved is not None)
+    positive = any(value.status != "unknown" for value in graph.coverage) or any(
+        value.status != "unknown" for value in graph.path_applicability
+    )
+    require(not positive or saved is not None)
     if optional and saved is None:
         with owner._fresh_selects(s), owner._people_fence(s):
             owner.quiet(s)
@@ -67,14 +69,22 @@ def read_graph(s, ctx, pid, *, request, purpose, graph, saved=None, optional=Fal
     if saved is not None:
         require_saved(saved, current)
         require(current.coverage == graph.coverage)
+        require(current.path_applicability == graph.path_applicability)
     return current
 
 
 def covered_graph(graph, current):
     if current is None:
         return graph
+    from pdos_next.domain.change_coverage_owner.owner import CoverageRead
+
+    require(type(current) is CoverageRead)
     return GraphSnapshot.model_validate(
-        {**graph.model_dump(mode="python"), "coverage": current.coverage}
+        {
+            **graph.model_dump(mode="python"),
+            "coverage": current.coverage,
+            "path_applicability": current.path_applicability,
+        }
     )
 
 
@@ -83,4 +93,23 @@ def refresh_graph(s, ctx, pid, current, *, request, purpose, graph):
 
     value = owner.refresh(s, ctx, pid, current, change_id=request.id, purpose=purpose, graph=graph)
     require(value.coverage == graph.coverage)
+    require(value.path_applicability == graph.path_applicability)
     return value
+
+
+def read_retained_graph(s, ctx, pid, *, request, purpose, graph, saved):
+    from pdos_next.domain.change_coverage_owner import owner
+
+    value = owner.read_retained(
+        s, ctx, pid, change_id=request.id, purpose=purpose, graph=graph, saved=saved
+    )
+    require_saved(saved, value)
+    return value
+
+
+def refresh_retained_graph(s, ctx, pid, previous, *, request, purpose, graph):
+    from pdos_next.domain.change_coverage_owner import owner
+
+    return owner.refresh_retained(
+        s, ctx, pid, previous, change_id=request.id, purpose=purpose, graph=graph
+    )

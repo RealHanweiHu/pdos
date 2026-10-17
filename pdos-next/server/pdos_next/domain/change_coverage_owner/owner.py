@@ -21,13 +21,13 @@ from pdos_next.clock import deadline_current, earliest_deadline
 from pdos_next.clock import now as server_now
 from pdos_next.database import category_for_product
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
-from pdos_next.domain.change_control.rules import digest
+from pdos_next.domain.change_control.rules import digest, graph_sources
 from pdos_next.domain.change_execution import service as old
 from pdos_next.domain.change_execution.models import ChangeRequestVersion
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.professional_authority.models import ProfessionalCurrent
 from pdos_next.models import Grant, Principal, Product
-from pdos_next.schemas.change_control.contracts import Coverage, GraphSnapshot
+from pdos_next.schemas.change_control.contracts import Coverage, GraphSnapshot, PathApplicability
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
 from pdos_next.service import digest as common_digest
 
@@ -36,6 +36,7 @@ from .schemas import EVENT, FACETS, FAMILY, OPERATION, CoverageMaterial
 from .trust import require
 
 _READ_TOKEN = object()
+_RETAINED_TOKEN = object()
 
 
 def clock():
@@ -447,9 +448,51 @@ class CoverageRead:
     _uow: object
     _caller_hash: str
     _proof_sha256: str
+    path_applicability: tuple[PathApplicability, ...] = ()
 
 
-def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
+@dataclass(frozen=True, eq=False)
+class RetainedCoverageRead:
+    """Original publication proof only; cannot project coverage onto any graph.
+
+    The implementation owner must separately compare the actual old-owner
+    closure and authorize every new output/source delta against its approved plan.
+    """
+
+    sources: tuple[SourceRef, ...]
+    required_source_read_set: tuple[dict, ...]
+    source_basis: dict
+    valid_until: datetime
+    observed_dependency_epoch: int
+    _token: object
+    _session: object
+    _uow: object
+    _caller_hash: str
+    _proof_sha256: str
+
+
+def _material_projection(value, graph, source):
+    states = {(v.node.identity, v.facet): v for v in value.facet_states}
+    coverage = tuple(
+        Coverage(
+            node=node.ref,
+            facet=facet,
+            status=state.status
+            if (state := states.get((node.ref.identity, facet)))
+            else "complete",
+            reason=state.reason if state else None,
+            source=source,
+        )
+        for node in graph.nodes
+        for facet in FACETS
+    )
+    paths = tuple(
+        PathApplicability(**path.model_dump(mode="python"), source=source) for path in value.paths
+    )
+    return coverage, paths
+
+
+def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None, retained=None):
     """Read actual Current + original + actual closure. Input graph alone is not trusted."""
     require(type(graph) is GraphSnapshot, "COVERAGE_GRAPH_REQUIRED", 503)
     uow, caller_hash = _uow(s), common_digest(vars(ctx))
@@ -524,21 +567,41 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
         and group["receipt"]["request_digest"] == row.intent_digest,
         "INTEGRITY_MISMATCH",
     )
-    epoch = dependency_epoch(s, ctx, pid)
-    require(epoch == row.dependency_epoch)
+    observed_epoch = dependency_epoch(s, ctx, pid)
+    epoch = row.dependency_epoch
+    if retained is None:
+        require(observed_epoch == epoch)
     temporal_stamp, temporal_until = temporal(s, ctx, pid, scope)
-    owned = registry.read_registry(s, ctx, pid, request)
-    require(
-        controlled.same(owned.projection, registry.graph_projection(graph))
-        and owned.closure_sha256 == value.closure_sha256
-    )
+    owned = None
+    if retained is None:
+        owned = registry.read_registry(s, ctx, pid, request)
+        require(
+            controlled.same(owned.projection, registry.graph_projection(graph))
+            and owned.closure_sha256 == value.closure_sha256
+        )
     refs = {n.ref.identity for n in graph.nodes}
     require(refs == {r.identity for r in value.nodes} and graph.nature == value.nature)
-    sources = tuple(dict.fromkeys((source, *owned.sources, *request.sources)))
-    reads = controlled._reads(
-        old._source_reads(sources),
-        owned.reads,
-        row.authority_snapshot["required_source_read_set"],
+    sources = (
+        tuple(dict.fromkeys((source, *owned.sources, *request.sources)))
+        if owned is not None
+        else tuple(SourceRef.model_validate(v) for v in row.sources)
+    )
+    reads = (
+        controlled._reads(
+            old._source_reads(sources),
+            owned.reads,
+            row.authority_snapshot["required_source_read_set"],
+        )
+        if owned is not None
+        else controlled._reads(row.required_source_read_set)
+    )
+    require(
+        source in sources
+        and set(request.sources) <= set(sources)
+        and controlled._reads(
+            reads, old._source_reads(sources), row.authority_snapshot["required_source_read_set"]
+        )
+        == reads
     )
     require(bool(reads), "MISSING_REQUIRED_EVIDENCE", 422)
     artifact_basis = controlled._source_guard(
@@ -546,14 +609,7 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
     )
     # Saved original publication evidence is exact; Root retains action authority.
     require(row.sources == [v.model_dump(mode="json") for v in sources])
-    require(
-        row.required_source_read_set
-        == controlled._reads(
-            old._source_reads(tuple(SourceRef.model_validate(v) for v in row.sources)),
-            owned.reads,
-            row.authority_snapshot["required_source_read_set"],
-        )
-    )
+    require(row.required_source_read_set == reads)
     require(
         row.source_basis
         == {
@@ -567,13 +623,14 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
                 tuple(SourceRef.model_validate(v) for v in row.sources),
                 io=False,
             ),
-            "closure_sha256": owned.closure_sha256,
+            "closure_sha256": value.closure_sha256,
             "dependency_epoch": epoch,
             "temporal_sha256": temporal_stamp,
         }
     )
     # After source IO: refresh all concrete sources/owners, then final identity/TTL.
-    require(registry.read_registry(s, ctx, pid, request).closure_sha256 == owned.closure_sha256)
+    if owned is not None:
+        require(registry.read_registry(s, ctx, pid, request).closure_sha256 == owned.closure_sha256)
     require(controlled.original(s, ctx, pid, source, CoverageMaterial)[0] == value)
     require(
         controlled._source_guard(
@@ -583,7 +640,8 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
     )
     signer_until = earliest_deadline(signer_until, controlled.original_authority(s, ctx, pid, row))
     require(
-        temporal(s, ctx, pid, scope)[0] == temporal_stamp and dependency_epoch(s, ctx, pid) == epoch
+        temporal(s, ctx, pid, scope)[0] == temporal_stamp
+        and dependency_epoch(s, ctx, pid) == observed_epoch
     )
     fresh_p, fresh_row = pointer(s, ctx, pid, scope, change_id, purpose)
     require(
@@ -604,7 +662,7 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
         and old._runtime_stamp(s) == runtime
         and trust.current(s.get_bind(), scope) is issuer
     )
-    require(dependency_epoch(s, ctx, pid) == epoch)
+    require(dependency_epoch(s, ctx, pid) == observed_epoch)
     fresh_people, fresh_people_until = lock_people(s, ctx, pid, row.actor_id)
     require(fresh_people == people, status=403)
     _same_uow(s, uow, ctx, caller_hash)
@@ -616,7 +674,7 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
         people_until,
         fresh_people_until,
         temporal_until or value.valid_until,
-        owned.valid_until or value.valid_until,
+        (owned.valid_until if owned is not None else None) or value.valid_until,
     )
     at = clock()
     require(value.valid_from <= at < until and graph.captured_at <= at)
@@ -636,7 +694,7 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
         "issuer": issuer_stamp,
         "publisher_access_sha256": common_digest(publisher_stamp),
         "dependency_epoch": epoch,
-        "closure_sha256": owned.closure_sha256,
+        "closure_sha256": value.closure_sha256,
         "artifact_basis": artifact_basis,
         "temporal_sha256": temporal_stamp,
         "publication_group_sha256": common_digest(group),
@@ -644,11 +702,28 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
         "reads": reads,
         "nature": value.nature,
     }
-    coverage = tuple(
-        Coverage(node=node.ref, facet=facet, status="complete", source=source)
-        for node in graph.nodes
-        for facet in FACETS
-    )
+    coverage, paths = _material_projection(value, graph, source)
+    if retained is not None:
+        from pdos_next.change_coverage_binding import stable_basis
+
+        require(
+            stable_basis(retained) == stable_basis(proof)
+            and graph.coverage == coverage
+            and graph.path_applicability == paths
+            and set(graph_sources(graph)) <= set(sources)
+        )
+        return RetainedCoverageRead(
+            sources,
+            tuple(deepcopy(reads)),
+            deepcopy(proof),
+            until,
+            observed_epoch,
+            _RETAINED_TOKEN,
+            s,
+            uow,
+            caller_hash,
+            common_digest(proof),
+        )
     return CoverageRead(
         coverage,
         sources,
@@ -660,6 +735,7 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
         uow,
         caller_hash,
         common_digest(proof),
+        paths,
     )
 
 
@@ -682,6 +758,57 @@ def read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None):
         )
 
 
+def read_retained(s, ctx, pid, *, change_id, purpose, graph, saved, origin_version=None):
+    """Reprove an approved publication, not current graph completeness.
+
+    ``saved`` and ``graph`` must come from the host's immutable approved capture.
+    No dependency-clock equality with the original publication is claimed. The
+    current clock is still fenced across this read, and old source/authority,
+    exact Current/Fact, original, origin and publication group stay checked.
+    """
+    require(type(saved) is dict)
+    _uow(s)
+    with _fresh_selects(s), _people_fence(s):
+        return _read(
+            s,
+            ctx,
+            pid,
+            change_id=change_id,
+            purpose=purpose,
+            graph=graph,
+            origin_version=origin_version,
+            retained=saved,
+        )
+
+
+def refresh_retained(s, ctx, pid, previous, *, change_id, purpose, graph, origin_version=None):
+    require(
+        type(previous) is RetainedCoverageRead
+        and previous._token is _RETAINED_TOKEN
+        and previous._session is s
+        and previous._proof_sha256 == common_digest(previous.source_basis)
+    )
+    _same_uow(s, previous._uow, ctx, previous._caller_hash)
+    current = read_retained(
+        s,
+        ctx,
+        pid,
+        change_id=change_id,
+        purpose=purpose,
+        graph=graph,
+        saved=previous.source_basis,
+        origin_version=origin_version,
+    )
+    require(
+        current._proof_sha256 == previous._proof_sha256
+        and current.sources == previous.sources
+        and current.required_source_read_set == previous.required_source_read_set
+        and current.observed_dependency_epoch == previous.observed_dependency_epoch
+    )
+    require(clock() < min(current.valid_until, previous.valid_until))
+    return current
+
+
 def _refresh(s, ctx, pid, previous, *, change_id, purpose, graph, origin_version=None):
     require(
         type(previous) is CoverageRead
@@ -702,6 +829,7 @@ def _refresh(s, ctx, pid, previous, *, change_id, purpose, graph, origin_version
     require(
         current._proof_sha256 == previous._proof_sha256
         and current.coverage == previous.coverage
+        and current.path_applicability == previous.path_applicability
         and current.required_source_read_set == previous.required_source_read_set
         and current.sources == previous.sources
     )
@@ -734,8 +862,9 @@ def recheck_access(s, ctx, pid, previous, *, request, purpose):
     _uow(s)
     with _fresh_selects(s), _people_fence(s):
         require(
-            type(previous) is CoverageRead
-            and previous._token is _READ_TOKEN
+            type(previous) in {CoverageRead, RetainedCoverageRead}
+            and previous._token
+            is (_RETAINED_TOKEN if type(previous) is RetainedCoverageRead else _READ_TOKEN)
             and previous._session is s
             and previous._proof_sha256 == common_digest(previous.source_basis)
         )
@@ -752,7 +881,14 @@ def recheck_access(s, ctx, pid, previous, *, request, purpose):
         require(trust.stamp(issuer) == proof["issuer"] and row.issuer_stamp == proof["issuer"])
         signer_until = controlled.original_authority(s, ctx, pid, row)
         require(temporal(s, ctx, pid, request.scope)[0] == proof["temporal_sha256"])
-        require(dependency_epoch(s, ctx, pid) == proof["dependency_epoch"])
+        require(
+            dependency_epoch(s, ctx, pid)
+            == (
+                previous.observed_dependency_epoch
+                if type(previous) is RetainedCoverageRead
+                else proof["dependency_epoch"]
+            )
+        )
         people, until = lock_people(s, ctx, pid, row.actor_id)
         publisher = next(v for v in people if v[0] == row.actor_id)
         require(common_digest(publisher) == proof["publisher_access_sha256"], status=403)

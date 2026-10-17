@@ -1,0 +1,15 @@
+{
+  "snapshot": "/private/tmp/pdos-s3-implementation-gf_3o0w_",
+  "exit": 0,
+  "tests": [
+    "tests/change_graph_closure",
+    "tests/change_coverage_owner",
+    "tests/change_execution/test_pure.py",
+    "tests/change_execution/test_part_operation_edges.py",
+    "tests/change_execution/test_output_owner_binding.py",
+    "tests/change_execution/test_change_order.py",
+    "tests/change_execution/test_order_review_shape.py",
+    "tests/change_execution/test_retained_named_proof.py"
+  ],
+  "source_candidate": "2026-10-17T14:52:35.627575+00:00"
+}

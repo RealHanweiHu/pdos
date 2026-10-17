@@ -24,6 +24,27 @@ function addAssessment(input: ReturnType<typeof fixture>, unknowns: Row[] = []) 
 }
 const record = (value: unknown) => value as Row;
 
+test("source-backed non-applicability retains its reason separately from listed coverage", () => {
+  const input = fixture(), entry = input.capture.graph.coverage[0];
+  entry.status = "not_applicable"; entry.reason = "本次不涉及该固定对象的工程改版，详见原文";
+  const view = readChangeCoverage(input, now);
+  assert.equal(view.needsReview, false); assert.equal(view.facets[0].notApplicable, 1);
+  assert.equal(view.facets[0].listed, 1); assert.equal(view.applicability[0].reason, entry.reason);
+  entry.source = null;
+  assert.equal(readChangeCoverage(input, now).facets[0].needsReview, 1);
+});
+
+test("exact path applicability is readable only with its node, reason and fixed original", () => {
+  const input = fixture(), graph = record(input.capture.graph);
+  graph.path_applicability = [{ node: { ...input.capture.graph.nodes[0].ref }, targets: ["pilot_run"], status: "not_applicable", reason: "仅内部改版复验，无试产切换", source: { ...input.capture.graph.sources[0] } }];
+  const view = readChangeCoverage(input, now);
+  assert.equal(view.needsReview, false); assert.deepEqual(view.applicability[0].targets, ["pilot_run"]);
+  const path = (graph.path_applicability as Row[])[0]; path.reason = "";
+  assert.equal(readChangeCoverage(input, now).needsReview, true);
+  path.reason = "仅内部改版复验，无试产切换"; path.source = null;
+  assert.equal(readChangeCoverage(input, now).needsReview, true);
+});
+
 test("reads all eight canonical facets and never returns capabilities or changes supplied material", () => {
   const input = fixture(), before = structuredClone(input), view = readChangeCoverage(input, now);
   assert.deepEqual(view.facets.map(row => row.facet), changeCoverageFacets.map(row => row.key));

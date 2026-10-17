@@ -1,0 +1,151 @@
+F
+=================================== FAILURES ===================================
+_ test_real_coverage_independent_approvals_then_two_actual_configuration_implementations _
+
+quality_work = namespace(setup=<isolated synthetic test scope>, config={'source': 'a60ff88e-354a-4ff3-b17d-ef36a672233a', 'project': ...-80c8-3b0e3839a74a', 'issue_revision': 4, 'capa_id': 'f1cb45a0-e9d7-4149-b078-9674247fe40b', 'created_output': None}]})
+
+    def test_real_coverage_independent_approvals_then_two_actual_configuration_implementations(
+        quality_work,
+    ):
+        work = quality_work
+        helper.declare_people(work)
+        basis = helper.issue_and_actions(work)
+        created, create_input = change.command(
+            work, "change.request.create", {**change.create_payload(work), "visibility": "category"}
+        )
+        response = post(work.quality, created)
+        assert response.status_code == 200, response.text
+        change_id = create_input["change_id"]
+        until = now() + timedelta(minutes=20)
+        scope, policy_source, selections = helper.policy_and_items(work, change_id, basis, until)
+        items = tuple(material.item for material, _ in selections)
+        config_source = helper.original(
+            work.setup,
+            {
+                "purpose": basis.purpose,
+                "issue_id": str(basis.issue_id),
+                "capa_id": str(basis.capa_id),
+                "executor_id": str(work.setup.human),
+                "engineering_action_id": str(basis.actions[0].action_id),
+                "manufacturing_action_id": str(basis.actions[1].action_id),
+                "instruction": (
+                    "After both independent approvals, save a mechanical mount design revision and "
+                    "then a manufacturing revision bound to that exact new engineering configuration. "
+                    "Preserve the motor BOM and retain all existing sample/Run evidence."
+                ),
+                "manufacturing": (
+                    "Manual assembly, motor BOM line; cycle time 1.5 minutes with a named alignment "
+                    "check. No production switch, new fixture or tooling is specified."
+                ),
+            },
+            "Synthetic proposed configuration revision instructions",
+        )
+        unknown, _ = change.capture(work, change_id)
+        graph = GraphSnapshot.model_validate(unknown["capture"]["graph"])
+        assert all(value.status == "unknown" for value in graph.coverage)
+        assert any(
+            edge.origin.kind == "part" and edge.target.kind == "operation" for edge in graph.edges
+        )
+        disposition_rows = []
+        for node in graph.nodes:
+            linked = tuple(
+                item.id
+                for item in items
+                if node.ref in item.selection.objects
+                or (node.ref.kind == "operation" and item.discipline == "manufacturing")
+            )
+            disposition_rows.append(
+                {
+                    "object": node.ref.model_dump(mode="json"),
+                    "handling": "covered_by_plan" if linked else "reviewed_no_change",
+                    "item_ids": [str(identity) for identity in linked],
+                    "rationale": (
+                        "Revise this fixed configuration/assembly through the named plan item"
+                        if linked
+                        else "Retain this exact existing prototype, failure or design reference; "
+                        "this bounded internal revision preserves its history and disposition"
+                    ),
+                }
+            )
+        reviewed = helper.original(
+            work.quality,
+            {
+                "change_id": change_id,
+                "purpose": basis.purpose,
+                "dispositions": disposition_rows,
+                "scope": (
+                    "Synthetic internal prototype configuration revision only; no PilotRun, "
+                    "production switching, customer delivery, ERP effectivity or release"
+                ),
+            },
+            "Synthetic named exact per-object dispositions",
+        )
+>       paths, facet_states = coverage_declarations(graph)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/change_execution/test_approved_configuration_implementation_chain.py:395: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+graph = GraphSnapshot(id=UUID('e37f0bb0-b4f1-4ad7-931b-0c9f4ba76815'), revision=1, scope=Scope(tenant_id=UUID('ef1dab61-8be1-4...captured_at=datetime.datetime(2026, 10, 17, 14, 46, 29, 386805, tzinfo=TzInfo(0)), expires_at=None, nature='synthetic')
+
+    def coverage_declarations(graph):
+        """Only real missing prototype paths have explicit bounded original exceptions."""
+        paths = []
+        for node in graph.nodes:
+            expected = NEXT.get(node.ref.kind)
+            present = {edge.target.kind for edge in graph.edges if edge.origin == node.ref}
+            if not expected or present.intersection(expected):
+                continue
+>           assert node.ref.kind in {
+                "operation",
+                "sop",
+                "work_instruction",
+                "control_plan",
+                "manufacturing_baseline",
+            }, node.ref
+E           AssertionError: Ref(id=UUID('4295794b-8ea7-4926-b016-89ac2946cfde'), revision=1, kind='spec', key=None)
+E           assert 'spec' in {'control_plan', 'manufacturing_baseline', 'operation', 'sop', 'work_instruction'}
+E            +  where 'spec' = Ref(id=UUID('4295794b-8ea7-4926-b016-89ac2946cfde'), revision=1, kind='spec', key=None).kind
+E            +    where Ref(id=UUID('4295794b-8ea7-4926-b016-89ac2946cfde'), revision=1, kind='spec', key=None) = Node(ref=Ref(id=UUID('4295794b-8ea7-4926-b016-89ac2946cfde'), revision=1, kind='spec', key=None), scope=Scope(tenant_i...4926-b016-89ac2946cfde'), revision=1, kind='domain', position='change-owner:spec:'), label='Approved revision fixture').ref
+
+tests/change_execution/test_approved_configuration_implementation_chain.py:87: AssertionError
+=============================== warnings summary ===============================
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-adh4uttk/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-adh4uttk/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-adh4uttk/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-adh4uttk/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-adh4uttk/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-adh4uttk/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-adh4uttk/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-adh4uttk/pdos-next/server/pdos_next/change_controlled_owner.py:768: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # BEFORE Current target guard, never a commit/second Receipt.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 10 warnings in 132.12s (0:02:12)

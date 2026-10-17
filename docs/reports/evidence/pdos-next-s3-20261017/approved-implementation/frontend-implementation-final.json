@@ -1,0 +1,13 @@
+{
+  "snapshot": "/private/tmp/pdos-s3-implementation-nz9mb58i",
+  "exit": 0,
+  "args": [
+    "node",
+    "../tools/s0_web_checkpoint.cjs",
+    "build-change-implementations-view",
+    "build-change-approvals-view",
+    "build-change-orders-view",
+    "app/api/[...path]/route",
+    "change-coverage-reading"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "snapshot": "/private/tmp/pdos-s3-implementation-nz9mb58i",
+  "distinct_passed": 189,
+  "groups": [
+    "build-change-implementations-view",
+    "build-change-approvals-view",
+    "build-change-orders-view",
+    "app/api/[...path]/route",
+    "change-coverage-reading"
+  ],
+  "lint": "all twelve owned web files passed",
+  "typecheck": "whole production build validates final candidate; agent also checked six integration files locally",
+  "browser_checked": false,
+  "source_sha256": {
+    "pdos-next/web/src/lib/change-coverage-reading.ts": "c6ce2e2f14b231f87fd60263869ca0a9db6da782bb7e5f1e724bc56c67f95454",
+    "pdos-next/web/src/lib/change-coverage-reading.test.tsx": "9428d98a06c568aedef2d8f524d3551c15486b4bb491f6a5d79497554f172077",
+    "pdos-next/web/src/components/builds/change-coverage-reading.tsx": "c2a527c121058eee75b656b07a8d0c94c1d4aa788617a1dc36ada688fcefe1d1",
+    "pdos-next/web/src/components/builds/build-change-approvals.tsx": "1528fbbbbe1d6f43f511a6aba62f0c2476b9591de0e66952d9e97a1298db7b22",
+    "pdos-next/web/src/lib/build-change-approvals-view.ts": "ed492fec5d21f0d3eb89b0101c6b8a38ecc1b8e6714a1f58406cd292e4a164bd",
+    "pdos-next/web/src/lib/build-change-approvals-view.test.ts": "12385438ed202cad2342d4a3e1a950b8cba473fedc6d676be35b9ce82c8414d6",
+    "pdos-next/web/src/components/builds/build-change-orders.tsx": "e4d420b15fc2f9bf7f1190858550e1ad9d2285dccb8d3f22b766fbd61b54df66",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "801e9915d3008c89d215d8df827e4fab71198c09988eb9afa264d7e52c8540e1",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "0b4ea83afa8e5821e8b564b26b4dfebe3f29b5dc8e97def53d5c49195582d302",
+    "pdos-next/web/src/components/builds/build-change-implementations.tsx": "aa04336a0cea070c310a9fff1b65d35a59e5444984debe126cbdf7a43c08f415",
+    "pdos-next/web/src/lib/build-change-implementations-view.ts": "5c444475703052a3ebedfbe9e25ec0ae7fdaef5b5aaa966a57a113e466bd281e",
+    "pdos-next/web/src/lib/build-change-implementations-view.test.ts": "11952e2327b2553c16aaa5ad50a6c9a8e5b2294dc93290947fc5512cd211ac18"
+  }
+}

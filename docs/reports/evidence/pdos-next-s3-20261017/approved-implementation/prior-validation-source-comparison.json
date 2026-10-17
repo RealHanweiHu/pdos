@@ -1,0 +1,17 @@
+{
+  "from_snapshot": "/private/tmp/pdos-s3-implementation-no6leehq",
+  "to_snapshot": "/private/tmp/pdos-s3-implementation-1d7wmiqj",
+  "changed": [
+    "docs/design/2026-10-17-pdos-next-s3-quality-continuation-contract.md",
+    "pdos-next/server/pdos_next/change_action_fulfillment_owner.py",
+    "pdos-next/server/pdos_next/change_implementation_owner.py",
+    "pdos-next/server/pdos_next/domain/change_execution/api.py",
+    "pdos-next/server/tests/change_execution/approved_configuration_continuation_helpers.py",
+    "pdos-next/server/tests/change_execution/test_action_fulfillment_owner.py",
+    "pdos-next/server/tests/change_execution/test_approved_configuration_implementation_chain.py",
+    "pdos-next/server/tests/change_execution/test_capture_http_response.py"
+  ],
+  "web_source_changed": false,
+  "backend_runtime_changed": true,
+  "backend_runtime_note": "Capture HTTP response serialization added after this earlier build/pure check; final backend pure and actual chain use the new current candidate. Earlier backend checks are not claimed as final."
+}

@@ -1,0 +1,7 @@
+{
+  "file": "backend-initial-fixture-errors.log",
+  "redacted_connection_string_occurrences": 71,
+  "origin": "source snippets repeated by initial pure-test fixture setup failures; no connection attempted in that run",
+  "other_bearer_or_confirmation_value_matches": 0,
+  "private_original_preserved": true
+}
