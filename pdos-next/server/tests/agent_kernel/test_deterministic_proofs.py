@@ -13,6 +13,7 @@ from pdos_next.agent_kernel.deterministic_proofs import (
 )
 from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
 from pdos_next.agent_kernel.read_execution import ReadBinding
+from pdos_next.domain.preproject.models import Proposal
 from pdos_next.errors import DomainError
 from pdos_next.models import Category, Grant, Principal
 from pdos_next.service import digest
@@ -24,6 +25,17 @@ class MemorySession:
 
     def get(self, model, identity):
         return self.rows.get((model, identity))
+
+    def scalar(self, query):
+        if str(query) == "SELECT to_regclass('public.proposals') IS NOT NULL":
+            return True
+        assert query.column_descriptions[0]["entity"] is Proposal
+        params = query.compile().params
+        assert set(params) == {"tenant_id_1", "category_id_1", "id_1"}
+        row = self.get(Proposal, params["id_1"])
+        return row if row and (row.tenant_id, row.category_id) == (
+            params["tenant_id_1"], params["category_id_1"],
+        ) else None
 
     def scalars(self, query):
         from pdos_next.clock import now
@@ -105,7 +117,9 @@ def fixture():
         )},
     ).model_dump(mode="json")
     rows = [(AgentRun, run), (AgentToolCall, model), (AgentToolCall, call),
-            (Category, NS(id=run.category_id))]
+            (Category, NS(id=run.category_id)),
+            (Proposal, NS(id=run.proposal_id, tenant_id=run.tenant_id,
+                          category_id=run.category_id))]
     for identity in (run.writer_id, run.requester_id):
         rows.append((Principal, NS(id=identity, tenant_id=run.tenant_id, active=True)))
         rows.append((Grant, NS(id=UUID(int=identity.int + 100), principal_id=identity,

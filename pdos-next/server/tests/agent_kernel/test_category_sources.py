@@ -5,7 +5,7 @@ from uuid import uuid4
 
 import pytest
 from security_fixture import ensure_scanned, secured_runtime  # noqa: F401
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from pdos_next.agent_kernel.models import AgentRun
@@ -157,4 +157,9 @@ def test_null_product_reference_does_not_widen_to_a_product_source(setup):
                 {"artifact_id": str(identity), "product_id": None, "expected_revision": 1}
             ],
         )
-    assert exc.value.code == "SOURCE_UNAVAILABLE"
+    assert exc.value.code == "FORBIDDEN_SCOPE"
+    with Session(setup.admin) as session:
+        assert session.scalar(
+            select(func.count()).select_from(AgentRun).where(AgentRun.tenant_id == setup.tenant)
+        ) == 0
+        assert session.get(Artifact, identity).product_id == setup.product

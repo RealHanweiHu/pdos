@@ -279,7 +279,13 @@ def test_actual_graph_passes_server_model_provenance_into_bound_host(monkeypatch
         ),
         ModelTurn(structured=final),
     ])
-    monkeypatch.setattr(f.host, "context", lambda *_: {})
+    context_ref = str(uuid4())
+    f.run.versions["context_snapshots"] = {"synthetic-read-host": {
+        "event_id": context_ref, "content_digest": digest({}), "skills": [],
+    }}
+    monkeypatch.setattr(f.host, "skill_context", lambda *_, **__: {
+        "context": {}, "context_ref": context_ref,
+    })
     monkeypatch.setattr(f.host.gateway, "turn", lambda *_, **__: next(turns))
     monkeypatch.setattr(f.host, "emit", lambda *_: uuid4())
     monkeypatch.setattr(f.host, "finish", lambda *_: None)

@@ -74,6 +74,9 @@ class MemorySession:
             if isinstance(row, AgentEvent):
                 self.adopted.append(row)
 
+    def add(self, row):
+        self.add_all([row])
+
     @contextmanager
     def bound(self, engine, tenant_id, *, actor_id=None, requester_id=None, category_id=None):
         self.info = {"scope": (tenant_id, actor_id, requester_id, category_id)}
@@ -350,6 +353,9 @@ def test_activity_delivers_proof_and_never_reopens_terminal_run(ledger, monkeypa
     assert failed["status"] == "failed" and failed["error_code"] == "FORBIDDEN_SCOPE"
     assert len(captured) == 1 and f.run.state == "failed"
     assert f.run.error_code == "FORBIDDEN_SCOPE"
+    assert [row.body for row in f.s.adopted if row.body.get("type") == "run_state"] == [{
+        "type": "run_state", "status": "failed", "error_code": "FORBIDDEN_SCOPE",
+    }]
 
 
 def test_dispatch_reference_queries_only_metadata_using_actual_event_uuid(ledger, monkeypatch):

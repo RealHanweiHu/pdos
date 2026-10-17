@@ -1,0 +1,257 @@
+........................................................................ [  0%]
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+........................................F............................... [  5%]
+........................................................................ [  5%]
+..................F......................F..FF......................FF.. [  6%]
+........................................................................ [  7%]
+..................................
+=================================== FAILURES ===================================
+________ test_null_product_reference_does_not_widen_to_a_product_source ________
+tests/agent_kernel/test_category_sources.py:160: in test_null_product_reference_does_not_widen_to_a_product_source
+    assert exc.value.code == "SOURCE_UNAVAILABLE"
+E   AssertionError: assert 'FORBIDDEN_SCOPE' == 'SOURCE_UNAVAILABLE'
+E     
+E     - SOURCE_UNAVAILABLE
+E     + FORBIDDEN_SCOPE
+________________ test_actual_calculation_with_matching_content _________________
+pdos_next/agent_kernel/deterministic_proofs.py:192: in resolve_compute_proof
+    actual, call, binding, arguments = _historical_read(
+pdos_next/agent_kernel/deterministic_proofs.py:84: in _historical_read
+    KernelStore(None).authority(session, replace(scope, product_id=None))
+pdos_next/agent_kernel/persistence.py:147: in authority
+    proposal(session, Context(scope.tenant_id, scope.writer_id, scope.requester_id,
+pdos_next/domain/preproject/access.py:68: in proposal
+    installed(s)
+pdos_next/domain/preproject/access.py:17: in installed
+    if not snapshot_scalar(
+pdos_next/request_proof.py:190: in snapshot_scalar
+    return session.scalar(query.with_for_update() if lock else query)
+           ^^^^^^^^^^^^^^
+E   AttributeError: 'MemorySession' object has no attribute 'scalar'. Did you mean: 'scalars'?
+
+During handling of the above exception, another exception occurred:
+tests/agent_kernel/test_deterministic_proofs.py:147: in test_actual_calculation_with_matching_content
+    proof = verify(f)
+            ^^^^^^^^^
+tests/agent_kernel/test_deterministic_proofs.py:140: in verify
+    return resolve_compute_proof(
+pdos_next/agent_kernel/deterministic_proofs.py:228: in resolve_compute_proof
+    _deny()
+pdos_next/agent_kernel/deterministic_proofs.py:34: in _deny
+    raise error
+E   pdos_next.errors.DomainError: 计算事实缺少可核对的实际计算证明。
+____________ test_model_cannot_forge_result_even_with_updated_hash _____________
+tests/agent_kernel/test_deterministic_proofs.py:211: in test_model_cannot_forge_result_even_with_updated_hash
+    assert error.value.detail["reason"] == "compute_output_mismatch"
+E   AssertionError: assert 'deterministic_proof_required' == 'compute_output_mismatch'
+E     
+E     - compute_output_mismatch
+E     + deterministic_proof_required
+_ test_completed_run_remains_consumable_by_human_without_reopening[completed] __
+pdos_next/agent_kernel/deterministic_proofs.py:192: in resolve_compute_proof
+    actual, call, binding, arguments = _historical_read(
+pdos_next/agent_kernel/deterministic_proofs.py:84: in _historical_read
+    KernelStore(None).authority(session, replace(scope, product_id=None))
+pdos_next/agent_kernel/persistence.py:147: in authority
+    proposal(session, Context(scope.tenant_id, scope.writer_id, scope.requester_id,
+pdos_next/domain/preproject/access.py:68: in proposal
+    installed(s)
+pdos_next/domain/preproject/access.py:17: in installed
+    if not snapshot_scalar(
+pdos_next/request_proof.py:190: in snapshot_scalar
+    return session.scalar(query.with_for_update() if lock else query)
+           ^^^^^^^^^^^^^^
+E   AttributeError: 'MemorySession' object has no attribute 'scalar'. Did you mean: 'scalars'?
+
+During handling of the above exception, another exception occurred:
+tests/agent_kernel/test_deterministic_proofs.py:239: in test_completed_run_remains_consumable_by_human_without_reopening
+    assert verify(f)["run_id"] == str(f.run.id)
+           ^^^^^^^^^
+tests/agent_kernel/test_deterministic_proofs.py:140: in verify
+    return resolve_compute_proof(
+pdos_next/agent_kernel/deterministic_proofs.py:228: in resolve_compute_proof
+    _deny()
+pdos_next/agent_kernel/deterministic_proofs.py:34: in _deny
+    raise error
+E   pdos_next.errors.DomainError: 计算事实缺少可核对的实际计算证明。
+__ test_completed_run_remains_consumable_by_human_without_reopening[partial] ___
+pdos_next/agent_kernel/deterministic_proofs.py:192: in resolve_compute_proof
+    actual, call, binding, arguments = _historical_read(
+pdos_next/agent_kernel/deterministic_proofs.py:84: in _historical_read
+    KernelStore(None).authority(session, replace(scope, product_id=None))
+pdos_next/agent_kernel/persistence.py:147: in authority
+    proposal(session, Context(scope.tenant_id, scope.writer_id, scope.requester_id,
+pdos_next/domain/preproject/access.py:68: in proposal
+    installed(s)
+pdos_next/domain/preproject/access.py:17: in installed
+    if not snapshot_scalar(
+pdos_next/request_proof.py:190: in snapshot_scalar
+    return session.scalar(query.with_for_update() if lock else query)
+           ^^^^^^^^^^^^^^
+E   AttributeError: 'MemorySession' object has no attribute 'scalar'. Did you mean: 'scalars'?
+
+During handling of the above exception, another exception occurred:
+tests/agent_kernel/test_deterministic_proofs.py:239: in test_completed_run_remains_consumable_by_human_without_reopening
+    assert verify(f)["run_id"] == str(f.run.id)
+           ^^^^^^^^^
+tests/agent_kernel/test_deterministic_proofs.py:140: in verify
+    return resolve_compute_proof(
+pdos_next/agent_kernel/deterministic_proofs.py:228: in resolve_compute_proof
+    _deny()
+pdos_next/agent_kernel/deterministic_proofs.py:34: in _deny
+    raise error
+E   pdos_next.errors.DomainError: 计算事实缺少可核对的实际计算证明。
+_________ test_entire_claim_content_is_compared_including_extra_fields _________
+tests/agent_kernel/test_deterministic_proofs.py:296: in test_entire_claim_content_is_compared_including_extra_fields
+    assert error.value.detail["reason"] == "compute_content_mismatch"
+E   AssertionError: assert 'deterministic_proof_required' == 'compute_content_mismatch'
+E     
+E     - compute_content_mismatch
+E     + deterministic_proof_required
+__ test_plain_completed_result_with_forged_hash_still_requires_actual_engine ___
+tests/agent_kernel/test_deterministic_proofs.py:306: in test_plain_completed_result_with_forged_hash_still_requires_actual_engine
+    assert error.value.detail["reason"] == "compute_binding_invalid"
+E   AssertionError: assert 'deterministic_proof_required' == 'compute_binding_invalid'
+E     
+E     - compute_binding_invalid
+E     + deterministic_proof_required
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:885
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:885: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; quality_followup_transactions.fixtures
+    self.import_plugin(import_spec)
+
+pdos_next/domain/verification_results/models.py:116
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_results/models.py:116: PytestCollectionWarning: cannot collect test class 'TestResultProjection' because it has a __init__ constructor (from: tests/quality_execution/test_transactions.py)
+    class TestResultProjection(ResultScope, Row, Base):
+
+pdos_next/domain/test_resources/models.py:185
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/models.py:185: PytestCollectionWarning: cannot collect test class 'TestResourceReservation' because it has a __init__ constructor (from: tests/quality_execution_transactions/test_direct_confirmation_storage.py)
+    class TestResourceReservation(Row, Base):
+
+pdos_next/domain/test_resources/models.py:185
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/models.py:185: PytestCollectionWarning: cannot collect test class 'TestResourceReservation' because it has a __init__ constructor (from: tests/test_launch_storage.py)
+    class TestResourceReservation(Row, Base):
+
+pdos_next/domain/test_resources/models.py:185
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/models.py:185: PytestCollectionWarning: cannot collect test class 'TestResourceReservation' because it has a __init__ constructor (from: tests/verification_launch/test_transactions.py)
+    class TestResourceReservation(Row, Base):
+
+pdos_next/domain/verification_results/models.py:139
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_results/models.py:139: PytestCollectionWarning: cannot collect test class 'TestResultActionFact' because it has a __init__ constructor (from: tests/verification_results/test_guards.py)
+    class TestResultActionFact(ResultScope, Row, Base):
+
+pdos_next/domain/verification_results/models.py:116
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_results/models.py:116: PytestCollectionWarning: cannot collect test class 'TestResultProjection' because it has a __init__ constructor (from: tests/verification_results/test_guards.py)
+    class TestResultProjection(ResultScope, Row, Base):
+
+pdos_next/domain/test_resources/models.py:185
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/models.py:185: PytestCollectionWarning: cannot collect test class 'TestResourceReservation' because it has a __init__ constructor (from: tests/verification_results/test_transactions.py)
+    class TestResourceReservation(Row, Base):
+
+pdos_next/domain/verification_results/models.py:139
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_results/models.py:139: PytestCollectionWarning: cannot collect test class 'TestResultActionFact' because it has a __init__ constructor (from: tests/verification_results/test_transactions.py)
+    class TestResultActionFact(ResultScope, Row, Base):
+
+pdos_next/domain/verification_results/models.py:116
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_results/models.py:116: PytestCollectionWarning: cannot collect test class 'TestResultProjection' because it has a __init__ constructor (from: tests/verification_results/test_transactions.py)
+    class TestResultProjection(ResultScope, Row, Base):
+
+tests/agent_kernel/test_baseline_watermarks_pg.py: 6 warnings
+tests/agent_kernel/test_category_source_writeback_pg.py: 10 warnings
+tests/agent_kernel/test_context_projection_entries.py: 3 warnings
+tests/agent_kernel/test_context_projection_pg.py: 5 warnings
+tests/agent_kernel/test_domain_candidates_pg.py: 3 warnings
+tests/agent_kernel/test_extract_dispatch_pg.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_baseline_watermarks_pg.py: 66 warnings
+tests/agent_kernel/test_category_source_writeback_pg.py: 63 warnings
+tests/agent_kernel/test_context_projection_entries.py: 24 warnings
+tests/agent_kernel/test_domain_candidates_pg.py: 19 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_items.py:369: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(rows)
+
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_items.py:409: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(subject.changed_rows)
+
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_inherit.py:197: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(subject.created_specs)
+
+tests/agent_kernel/test_category_adoption_transactions.py: 5 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 7 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:515: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([category])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 5 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 7 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:524: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([grant])
+
+tests/agent_kernel/test_category_adoption_transactions.py::test_adoption_resolves_without_agent_grant_and_dispatches_same_reference
+tests/agent_kernel/test_category_adoption_transactions.py::test_category_wait_survives_postgres_checkpoint_and_new_host
+tests/agent_kernel/test_category_adoption_transactions.py::test_terminal_candidate_not_signalled_and_receipt_authority_loss_rejects_recovery
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_actual_t1_sources_signature_and_replay
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_whole_groups_may_be_omitted[omit0]
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_whole_groups_may_be_omitted[omit1]
+tests/agent_kernel/test_category_candidate_transactions.py::test_category_transaction_failure_rolls_back_every_fact_and_confirmation
+tests/agent_kernel/test_category_candidate_transactions.py::test_category_transaction_failure_rolls_back_every_fact_and_confirmation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:552: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([snapshot])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 5 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 5 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:575: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 5 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 5 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:602: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 5 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 7 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:661: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([receipt])
+
+tests/agent_kernel/test_domain_candidates_pg.py::test_confirmation_receipt_resolves_candidate_even_after_run_completion
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:175: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([platform])
+
+tests/agent_kernel/test_domain_candidates_pg.py::test_confirmation_receipt_resolves_candidate_even_after_run_completion
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:192: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([link])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_category_sources.py::test_null_product_reference_does_not_widen_to_a_product_source
+FAILED tests/agent_kernel/test_deterministic_proofs.py::test_actual_calculation_with_matching_content
+FAILED tests/agent_kernel/test_deterministic_proofs.py::test_model_cannot_forge_result_even_with_updated_hash
+FAILED tests/agent_kernel/test_deterministic_proofs.py::test_completed_run_remains_consumable_by_human_without_reopening[completed]
+FAILED tests/agent_kernel/test_deterministic_proofs.py::test_completed_run_remains_consumable_by_human_without_reopening[partial]
+FAILED tests/agent_kernel/test_deterministic_proofs.py::test_entire_claim_content_is_compared_including_extra_fields
+FAILED tests/agent_kernel/test_deterministic_proofs.py::test_plain_completed_result_with_forged_hash_still_requires_actual_engine
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! KeyboardInterrupt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/threading.py:355: KeyboardInterrupt
+(to show a full traceback on KeyboardInterrupt use --full-trace)
+7 failed, 675 passed, 288 warnings in 325.89s (0:05:25)

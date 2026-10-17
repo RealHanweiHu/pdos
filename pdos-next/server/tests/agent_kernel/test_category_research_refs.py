@@ -15,6 +15,7 @@ from pdos_next.agent_kernel.execution import check_run_binding, scope_for_run
 from pdos_next.agent_kernel.models import AgentToolCall, PublicWebSnapshot
 from pdos_next.agent_kernel.persistence import KernelStore
 from pdos_next.agent_kernel.research_read_ledger import page_result as ordinary_page
+from pdos_next.domain.preproject.models import Proposal
 from pdos_next.errors import DomainError
 from pdos_next.models import Grant, Principal
 from pdos_next.research.types import ReadPage, Snapshot
@@ -29,6 +30,17 @@ class ReadSession:
 
     def get(self, cls, identity):
         return self.rows.get((cls, identity))
+
+    def scalar(self, query):
+        if str(query) == "SELECT to_regclass('public.proposals') IS NOT NULL":
+            return True
+        assert query.column_descriptions[0]["entity"] is Proposal
+        params = query.compile().params
+        assert set(params) == {"tenant_id_1", "category_id_1", "id_1"}
+        row = self.get(Proposal, params["id_1"])
+        return row if row and (row.tenant_id, row.category_id) == (
+            params["tenant_id_1"], params["category_id_1"],
+        ) else None
 
     def scalars(self, query):
         cls = query.column_descriptions[0]["entity"]
@@ -64,6 +76,10 @@ class ReadStore:
 def wrap(f, snapshot):
     scope = scope_for_run(f.run)
     session = ReadSession(f.session, scope)
+    if scope.proposal_id is not None:
+        session.rows[Proposal, scope.proposal_id] = NS(
+            id=scope.proposal_id, tenant_id=scope.tenant_id, category_id=scope.category_id,
+        )
     store = ReadStore(session, f.run)
     retained = {snapshot.id: snapshot}
     artifacts = NS(snapshot=lambda actual, identity: retained[identity])
