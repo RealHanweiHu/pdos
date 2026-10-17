@@ -885,7 +885,7 @@ def create_app(
             return list_configurations(s, ctx, product_id)
 
     @app.get("/v1/categories/{category_id}/products/{product_id}/builds")
-    def builds(product_id: UUID, ctx: Context = auth_dependency):
+    def builds(product_id: UUID, project_id: UUID | None = None, ctx: Context = auth_dependency):
         from pdos_next.domain.builds.service import list_builds
 
         with tenant_session(
@@ -896,7 +896,7 @@ def create_app(
             category_id=ctx.category_id,
             read_snapshot=True,
         ) as s:
-            return list_builds(s, ctx, product_id)
+            return list_builds(s, ctx, product_id, project_id=project_id)
 
     @app.get("/v1/categories/{category_id}/products/{product_id}/build-execution")
     def build_execution(product_id: UUID, ctx: Context = auth_dependency):

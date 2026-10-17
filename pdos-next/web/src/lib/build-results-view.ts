@@ -1,4 +1,5 @@
 import { proofClockCurrent } from "./proof-clock";
+import { projectBuildsPath } from "./project-build-scope";
 import { sourceLines, type DefinitionReference, type DefinitionSource } from "./product-view";
 import type { SourceRead } from "./project-plan-view";
 import type { Build } from "./build-preparation-view";
@@ -114,8 +115,8 @@ export async function readResultsBuild(api: ResultsApi, productId: string, build
   return isCurrent() ? normalizeResults(value, buildId) : null;
 }
 export type ResultsContext = { builds: Build[]; sources: DefinitionSource[]; data: ResultsList };
-export async function readResultsContext(api: ResultsApi, productId: string, buildId: string, isCurrent: () => boolean): Promise<ResultsContext | null> {
-  const outcomes = await Promise.allSettled([api<{ items: Build[] }>(`v1/products/${productId}/builds`), api<{ sources: DefinitionSource[] }>(`v1/products/${productId}/workspace`)]);
+export async function readResultsContext(api: ResultsApi, productId: string, buildId: string, isCurrent: () => boolean, projectId = ""): Promise<ResultsContext | null> {
+  const outcomes = await Promise.allSettled([api<{ items: Build[] }>(projectBuildsPath(productId, projectId)), api<{ sources: DefinitionSource[] }>(`v1/products/${productId}/workspace`)]);
   if (!isCurrent()) return null;
   // A POST explicitly supersedes old page reads. Only that exact cancellation
   // is silent; a simultaneous genuine read failure must still be reported.

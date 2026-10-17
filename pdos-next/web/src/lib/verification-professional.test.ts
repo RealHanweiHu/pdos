@@ -11,6 +11,26 @@ const request = { id: "version-1", request_id: "logical-1", revision: 1, previou
 const prepInput = { request_id: "preparation-logical-1", expected_request_revision: 2, build_id: "build-1", expected_build_revision: 1, title: "压力准备", purpose: "候选方法核对", return_form: "具名核对记录", items: [item], documents: [], expected_at: null, expected_timezone: null, tentative_at: null, tentative_timezone: null, sources: [ref], reason: "固定准备保存" };
 const prep: ProfessionalPreparation = { ...prepInput, id: "prep-1", revision: 3, sha256: "a".repeat(64), build_revision: 1, project_id: "project-1", owner_id: "person-1", visibility: "category", status: "prepared", request_state: "draft", previous_preparation_id: "prep-previous", previous_revision: 2, input_snapshot: prepInput, document_gaps: [], coverage_gaps: [], source_status: "current", is_current: true, freshness: "current", first_prepared_at: "2026-10-02T10:00:00Z", created_at: "2026-10-02T11:00:00Z", required_source_read_set: request.required_source_read_set, request_snapshot: {}, time_policy: "server_recorded", capabilities: { request_create: true } };
 const now = Date.parse("2026-10-02T12:00:00Z");
+
+test("项目专业办理只列本项目固定准备与请求，型号总览保留原范围", () => {
+  const otherRequest = { ...request, id: "other-version", request_id: "other-request", project_id: "project-2" };
+  const otherPrep = { ...prep, id: "other-prep", project_id: "project-2" };
+  const response = { requests: [request, otherRequest], preparations: [prep, otherPrep], current_by_request: {} };
+  assert.equal(normalizeProfessional(response).requests.length, 2);
+  assert.deepEqual(normalizeProfessional(response, "project-1").requests, [request]);
+  assert.deepEqual(normalizeProfessional(response, "project-1").preparations, [prep]);
+  assert.deepEqual(normalizeProfessional(response, "project-2").requests, [otherRequest]);
+  assert.deepEqual(normalizeProfessional(response, "missing").preparations, []);
+  assert.equal(response.requests.length, 2);
+});
+
+test("缺失项目归属的旧专业投影不进入指定项目，也不因筛选跳过完整性核对", () => {
+  const unbound = { ...request, project_id: undefined };
+  const response = { requests: [unbound], preparations: [{ ...prep, project_id: undefined }], current_by_request: {} };
+  assert.deepEqual(normalizeProfessional(response, "project-1").requests, []);
+  assert.deepEqual(normalizeProfessional(response, "project-1").preparations, []);
+  assert.throws(() => normalizeProfessional({ ...response, requests: [{ ...unbound, items: null }] }, "project-1"));
+});
 function method() { return professionalMethods(request, [{ itemId: item.id, status: "applicable", conditions: "明确条件\n第二条件", reason: "具名确认候选方法适用", references: [ref] }], "逐项复核实际范围"); }
 function command() { return professionalCommand({ id: "product-1", revision: 4 }, "verification.method.prepare", method(), request.required_source_read_set, "command-1", "key-1"); }
 function preview() { const original = command(); return { original, response: { command: { ...original, payload: { ...original.payload, confirmation_token: "token".repeat(8) } }, expires_at: "2026-10-02T13:00:00Z", review: { operation: original.operation, effect: "保存逐项专业事实，未交样或开测", authority: {}, before: request, after: { ...request, revision: 2, method_assessments: [{ item_id: item.id, status: "applicable" }] } } } }; }

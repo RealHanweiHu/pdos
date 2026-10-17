@@ -732,8 +732,9 @@
       "ai_execution": "一次确认后",
       "event": "platform.linked",
       "stage": "S1",
-      "implementation": "not_implemented",
-      "v1_1": "added"
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "product.definition.item.patch",
@@ -741,8 +742,9 @@
       "ai_execution": "需资格与授权；署 AI 名、可撤回",
       "event": "definition.item_patched",
       "stage": "S1",
-      "implementation": "not_implemented",
-      "v1_1": "added"
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "ai.skill.enable",

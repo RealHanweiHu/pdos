@@ -1,0 +1,71 @@
+{
+  "base_commit": "e1c0d617502f07d116323fbc7c203734a76616fb",
+  "scope": "S2 project workbench reads, routing and private browser draft separation",
+  "source_sha256": {
+    "pdos-next/contracts/openapi.json": "e047ac9cbfadc29930e5075fbb9f3e85c94e1cd2dc00b2b79445428b46ac745f",
+    "pdos-next/contracts/operations.json": "d9739d88778332c73fa862530ed3a73c47d2f537ca9faf5c9b55c33a1a62ebb3",
+    "pdos-next/contracts/payloads.schema.json": "b11be5164d2542e92330babfdd0f55b3ce9e1b476a7f8e6c9f6373f2df721e10",
+    "pdos-next/server/pdos_next/api.py": "968f3140ac8b4a85eea14eea2e64e14eca22a1e035228d72a3a2a3f8666d59a4",
+    "pdos-next/server/pdos_next/domain/builds/service.py": "64832dfcb442958612de07cd7d13f62e97bb6d5cc98a4101e3e59de369f4d66b",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "10e39a1554cbf4622a5a60c4f8ef4e502394443d630676874c80f4fe4f26b1f3",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "8a0c25f2610746b69bf1e6e3f14bbf1fcc8e58707e82cefffd01f52bcacffdc7",
+    "pdos-next/web/src/components/builds/build-execution.tsx": "d8fd0e734ca5e05b8cb92c08698e65f57879975ec5a4ec57b82810e3e93c5491",
+    "pdos-next/web/src/components/builds/build-handoff.tsx": "f86b21293a73eabd7f14715325e93d665bbf799a8c9a42653bf7ef94e7199cac",
+    "pdos-next/web/src/components/builds/build-launch.tsx": "b12d0f14be8e66483b6b80c0194ca628ccbbb7437f488d3aa1af7e0039a66158",
+    "pdos-next/web/src/components/builds/build-preparation.tsx": "2d19fc744ab0a18e2dbbd05e4bfff3b1342b85b455efbcb9895d7b2b1cc46429",
+    "pdos-next/web/src/components/builds/build-results.tsx": "a00f8c6d4f25da2b618549f196c885d5bd7c608533307727a513f982a3f1149c",
+    "pdos-next/web/src/components/builds/build-start.tsx": "fdf39a5611ec4f697dcdab94043d697364c7685c4654ef48ae3b48509563dae6",
+    "pdos-next/web/src/components/builds/build-verification.tsx": "ab0609436aecaee07aa6207d35abd0beaa31e21255ff1457016e01299b0f4498",
+    "pdos-next/web/src/components/product/verification-professional.tsx": "439b1927907211262301d3e1facf8ca9d0dd4bb435c4bd82dea7a9a8bee962cb",
+    "pdos-next/web/src/components/workspace.tsx": "9e8b5ea578b517d981732a92cbb73d8092e85233ff6d35729517591062704c43",
+    "pdos-next/web/src/lib/build-results-view.test.ts": "efcd12fdc37eaf09b18bc0dcea022909a919ca570e60aebaae09048e7e8dcc6c",
+    "pdos-next/web/src/lib/build-results-view.ts": "5dc5932f49ef7e5b1469fcd97a3b56fbac2ce7baf4021430decbdc7a8aadaf0b",
+    "pdos-next/web/src/lib/verification-professional.test.ts": "02f61f0f634173e9e420545be1bca6ee776e5317cd72c6f39a592a6f6b705e1b",
+    "pdos-next/web/src/lib/verification-professional.ts": "6bc50092ee1dc49d1e1e7fc538a133e73e2d142ebe0005a42ac8fbabbf9d680f",
+    "pdos-next/server/tests/test_build_project_scope.py": "d6c2161093d629fcc072d0499f2b537d2c5c9d136db554ab537630b438e596a4",
+    "pdos-next/web/src/lib/project-build-scope.ts": "9a800dc150bd35811e354c468f298d71d33abe31ad65a6f591034b1a22864f32"
+  },
+  "database": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "name": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0772"
+  },
+  "validation": {
+    "backend_partial_passed": 50,
+    "backend_exit": 2,
+    "backend_complete": false,
+    "backend_stop_reason": "Narrow the broad run to changed project-read scope; no failure was reported before the owned interrupt",
+    "frontend_unique_passed": 186,
+    "frontend_first_group_passed": 184,
+    "professional_final_passed": 22,
+    "professional_overlap": 20,
+    "typecheck": "passed",
+    "final_production_build": "passed",
+    "ruff": "passed",
+    "whole_lint_errors": 0,
+    "whole_lint_existing_warnings": 2,
+    "professional_changed_lint": "passed_without_warnings",
+    "catalog_definition_only": {
+      "operations": 86,
+      "events": 85,
+      "acceptance_ids": 63
+    }
+  },
+  "owned_preview": {
+    "api_final_pid": 29431,
+    "web_pid": 28483,
+    "api_exit": 0,
+    "web_exit": 130,
+    "planned_sigint": true,
+    "closed": true,
+    "shared_services_stopped": false
+  },
+  "migrations": 0,
+  "real_model_calls": 0,
+  "real_kms_calls": 0,
+  "performance_sampling": "deferred_by_user",
+  "s1_accepted": false,
+  "s2_accepted": false
+}

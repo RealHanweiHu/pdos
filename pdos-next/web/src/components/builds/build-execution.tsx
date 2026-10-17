@@ -9,7 +9,9 @@ import { utcText, type SourceRead } from "@/lib/project-plan-view";
 import { buildTypeNames, type Build, type BuildList, type ConfigurationList } from "@/lib/build-preparation-view";
 import { actualPayload, availabilityNames, blankExecution, blankSample, differenceLabel, executionNames, executionReads, executionReceiptTypes, outputPayload, restoreExecution, samplePayload, supportedDiscreteUnits, type ActualComparison, type ActualConfiguration, type ExecutionApi, type ExecutionCommand, type ExecutionDraft, type ExecutionList, type ExecutionOperation, type ExecutionPreview, type LocalExecution, type SampleDraft, type WaitingExecution } from "@/lib/build-execution-view";
 
-type Props = { product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: ExecutionApi; onSaved: () => void | Promise<void> };
+import { projectBuildsPath } from "@/lib/project-build-scope";
+
+type Props = { projectId?: string; product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: ExecutionApi; onSaved: () => void | Promise<void> };
 type Receipt = { id: string; subject_id: string; subject_type: string };
 const emptyList: ExecutionList = { actual_configurations: [], lots: [], allocations: [], samples: [], unavailable_count: 0, has_more: false };
 const emptyConfigurations: ConfigurationList = { boms: [], engineering: [], processes: [], unavailable_count: 0, has_more: false };
@@ -39,10 +41,10 @@ function Value({ value, sources, identities, field }: { value: unknown; sources:
 }
 function Configurations({ value }: { value: ActualConfiguration["actual"] }) { return <dl className="min-w-0 space-y-2 text-sm"><div><dt className="subtle">工程配置</dt><dd className="[overflow-wrap:anywhere]">{value.engineering_configuration.name} · v{value.engineering_configuration.revision}</dd></div><div><dt className="subtle">制造配置</dt><dd className="[overflow-wrap:anywhere]">{value.manufacturing_configuration.name} · v{value.manufacturing_configuration.revision}</dd></div></dl>; }
 
-export function BuildExecution(props: Props) { return <ExecutionPanel key={`${props.principalId}:${props.product.id}`} {...props}/>; }
+export function BuildExecution(props: Props) { return <ExecutionPanel key={`${props.principalId}:${props.product.id}:${props.projectId ?? ""}`} {...props}/>; }
 
-function ExecutionPanel({ product, principalId, api, onSaved }: Props) {
-  const storageKey = `pdos-next:build-execution:${principalId}:${product.id}`;
+function ExecutionPanel({ product, principalId, api, onSaved, projectId = "" }: Props) {
+  const storageKey = `pdos-next:build-execution:${principalId}:${product.id}${projectId ? `:project:${projectId}` : ""}`;
   const [local, setLocal] = useState<LocalExecution>({ selectedBuildId: "", drafts: {}, pending: null });
   const [builds, setBuilds] = useState<Build[]>([]);
   const [configurations, setConfigurations] = useState<ConfigurationList>(emptyConfigurations);
@@ -65,7 +67,7 @@ function ExecutionPanel({ product, principalId, api, onSaved }: Props) {
   const identities = new Map<string, string>([[principalId, "当前本人"], ...data.actual_configurations.map(actual => [actual.id, `${actual.actual.engineering_configuration.name} / ${actual.actual.manufacturing_configuration.name} · ${utcText(actual.observed_at)}`] as [string, string]), ...data.lots.map(lot => [lot.id, lot.lot_label] as [string, string]), ...builds.map(build => [build.id, build.name] as [string, string]), ...builds.map(build => [build.project_id, build.project_name] as [string, string]), ...configurations.boms.map(bom => [bom.id, `${bom.name} · v${bom.revision}`] as [string, string]), ...configurations.engineering.map(configuration => [configuration.id, `${configuration.name} · v${configuration.revision}`] as [string, string]), ...configurations.processes.map(configuration => [configuration.id, `${configuration.name} · v${configuration.revision}`] as [string, string]), ...configurations.boms.flatMap(bom => bom.lines.map(line => [line.part.id, `${line.part.name} · v${line.part.revision}`] as [string, string]))]);
   for (const configuration of configurations.engineering) { const definition = configuration.definition; if (object(definition) && typeof definition.id === "string" && typeof definition.title === "string") identities.set(definition.id, `${definition.title} · v${definition.revision}`); }
   const refresh = useCallback(async () => {
-    const results = await Promise.allSettled([api<BuildList>(`v1/products/${product.id}/builds`), api<ConfigurationList>(`v1/products/${product.id}/configurations`), api<ExecutionList>(`v1/products/${product.id}/build-execution`), api<{ sources: DefinitionSource[] }>(`v1/products/${product.id}/workspace`)]);
+    const results = await Promise.allSettled([api<BuildList>(projectBuildsPath(product.id, projectId)), api<ConfigurationList>(`v1/products/${product.id}/configurations`), api<ExecutionList>(`v1/products/${product.id}/build-execution`), api<{ sources: DefinitionSource[] }>(`v1/products/${product.id}/workspace`)]);
     if (!alive.current) return;
     const failures: string[] = []; let unavailable = 0, more = false;
     const built = results[0]; if (built.status === "fulfilled") { setBuilds(built.value.items); unavailable += built.value.unavailable_count; more ||= built.value.has_more; } else { setBuilds([]); failures.push(built.reason?.message ?? "Build 暂时无法读取。"); }
@@ -73,7 +75,7 @@ function ExecutionPanel({ product, principalId, api, onSaved }: Props) {
     const executed = results[2]; if (executed.status === "fulfilled") { setData(executed.value); unavailable += executed.value.unavailable_count; more ||= executed.value.has_more; } else { setData(emptyList); failures.push(executed.reason?.message ?? "产出与样件暂时无法读取。"); }
     const workspace = results[3]; if (workspace.status === "fulfilled") setSources(workspace.value.sources); else { setSources([]); failures.push(workspace.reason?.message ?? "原文依据暂时无法读取。"); }
     setHidden(unavailable); setHasMore(more); setLoading(false); if (failures.length) throw new Error(failures.join(" "));
-  }, [api, product.id]);
+  }, [api, product.id, projectId]);
   useEffect(() => {
     alive.current = true;
     void Promise.resolve().then(() => { if (alive.current) return refresh(); }).catch(failure => { if (alive.current) setError(failure.message); });

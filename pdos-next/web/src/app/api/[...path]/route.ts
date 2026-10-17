@@ -277,6 +277,12 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       if (!/^[a-f0-9-]{36}$/.test(build)) return Response.json({ code: "VALIDATION_FAILED", message: "请选择有效的试制轮次。" }, { status: 422 });
       query.set("build_id", build);
     }
+  } else if (pathname.endsWith("/builds")) {
+    if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405 });
+    for (const [key, value] of request.nextUrl.searchParams) {
+      if (key !== "project_id" || !uuid.test(value) || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "请指定唯一有效项目。" }, { status: 422 });
+      query.set(key, value);
+    }
   } else if (pathname.endsWith("/build-execution/compare")) {
     for (const key of ["build_id", "engineering_configuration_id", "manufacturing_configuration_id"]) {
       const value = request.nextUrl.searchParams.get(key);

@@ -686,3 +686,23 @@ test("后续记录拒绝查询范围伪造及直接写入，读取失败不自�
  assert.equal((await h.send(`v1/agent-runs/${run}/continuation`)).response.status,503);
  assert.equal(h.calls.length,1);assert.equal(h.calls[0].init.method,"GET");
 });
+
+test("项目试制列表原样转发单一项目筛选，产品总览仍可读取", async () => {
+  const h = harness();
+  for (const query of ["", `project_id=${issue}`]) {
+    const result = await h.send(`${base}/builds`, { query });
+    assert.equal(result.response.status, 200);
+    assert.equal(h.calls.at(-1)?.url, `http://synthetic-api.invalid/${base}/builds${query ? `?${query}` : ""}`);
+    assert.equal(h.calls.at(-1)?.init.method, "GET");
+    assert.equal(result.response.headers.get("Cache-Control"), "no-store");
+  }
+});
+
+test("项目试制列表拒绝重复、无效或额外筛选，不将读取变成写入", async () => {
+  const h = harness();
+  for (const query of [`project_id=`, "project_id=bad", `project_id=${issue}&project_id=${change}`, `tenant_id=${issue}`, `project_id=${issue}&build_id=${build}`]) {
+    assert.equal((await h.send(`${base}/builds`, { query })).response.status, 422, query);
+  }
+  assert.equal((await h.send(`${base}/builds`, { method: "POST", body: "{}" })).response.status, 405);
+  assert.equal(h.calls.length, 0);
+});

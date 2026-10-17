@@ -279,17 +279,15 @@ def readiness_snapshot(build, engineering, manufacturing):
     }
 
 
-def list_builds(s, ctx, product_id):
+def list_builds(s, ctx, product_id, *, project_id=None):
     from pdos_next.service import require_access
 
     require_access(s, ctx, product_id)
-    rows = s.scalars(
-        select(Build)
-        .where(
-            Build.product_id == product_id,
-        )
-        .order_by(Build.created_at.desc(), Build.id)
-    ).all()
+    query = select(Build).where(Build.product_id == product_id)
+    if project_id is not None:
+        _project(s, ctx, product_id, project_id)
+        query = query.where(Build.project_id == project_id)
+    rows = s.scalars(query.order_by(Build.created_at.desc(), Build.id)).all()
     items, unavailable = [], 0
     for row in rows:
         try:

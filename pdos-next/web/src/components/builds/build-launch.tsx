@@ -52,14 +52,16 @@ function EventFields({ label, value, references, sources, onChange }: { label: s
 }
 
 
-type Props = { product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: LaunchApi; onSaved: () => void | Promise<void> };
-export function BuildLaunch(props: Props) { return <LaunchPanel key={`${props.principalId}:${props.product.id}`} {...props}/>; }
-function LaunchPanel({ product, principalId, api, onSaved }: Props) {
+import { projectBuildsPath } from "@/lib/project-build-scope";
+
+type Props = { projectId?: string; product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: LaunchApi; onSaved: () => void | Promise<void> };
+export function BuildLaunch(props: Props) { return <LaunchPanel key={`${props.principalId}:${props.product.id}:${props.projectId ?? ""}`} {...props}/>; }
+function LaunchPanel({ product, principalId, api, onSaved, projectId = "" }: Props) {
   const [data, setData] = useState<LaunchList>(emptyLaunch), [builds, setBuilds] = useState<Build[]>([]), [sources, setSources] = useState<DefinitionSource[]>([]), [local, setLocal] = useState<LocalLaunch>(blankLocalLaunch);
   const [loading, setLoading] = useState(true), [readFailed, setReadFailed] = useState(false), [busy, setBusy] = useState(false), [error, setError] = useState(""), [notice, setNotice] = useState(""), [inputs, setInputs] = useState<Record<string, unknown> | null>(null), [preview, setPreview] = useState<LaunchPreview | null>(null), [previewScope, setPreviewScope] = useState("");
   const [sourceId, setSourceId] = useState(""), [line, setLine] = useState(1), [quote, setQuote] = useState("");
   const localRef = useRef(local), alive = useRef(true), lock = useRef(false), restored = useRef(false), readSequence = useRef(0), scopeRef = useRef(""), dialog = useRef<HTMLDialogElement>(null), trigger = useRef<HTMLElement | null>(null);
-  const storageKey = `pdos-next:build-launch:${principalId}:${product.id}`, pending = local.pending;
+  const storageKey = `pdos-next:build-launch:${principalId}:${product.id}${projectId ? `:project:${projectId}` : ""}`, pending = local.pending;
   const build = builds.find(row => row.id === local.selectedBuildId), requestVersions = data.requests.filter(row => row.request_id === local.selectedRequestId), request = requestVersions.find(row => row.id === data.current_by_request[local.selectedRequestId]?.request_version_id), readingRequest = requestVersions.find(row => row.id === local.selectedRequestVersionId) ?? request;
   const runId = local.selectedRunId || data.run_by_request[local.selectedRequestId] || "", runVersions = data.runs.filter(row => row.run_id === runId && row.request_id === local.selectedRequestId), run = runVersions.find(row => row.id === data.current_by_run[runId]?.run_version_id), readingRun = runVersions.find(row => row.id === local.selectedRunVersionId) ?? run;
   const work = local.drafts[local.selectedRequestId] ?? blankLaunchWork(), refs = work.references, source = sources.find(row => row.id === sourceId);
@@ -81,14 +83,14 @@ function LaunchPanel({ product, principalId, api, onSaved }: Props) {
   function edit(patch: Partial<LaunchWork>) { if (!editing) return; change({ drafts: { ...localRef.current.drafts, [local.selectedRequestId]: { ...(localRef.current.drafts[local.selectedRequestId] ?? blankLaunchWork()), ...patch } } }); }
   const refresh = useCallback(async () => {
     const sequence = ++readSequence.current, buildId = localRef.current.selectedBuildId, isCurrent = () => alive.current && sequence === readSequence.current && buildId === localRef.current.selectedBuildId;
-    const results = await Promise.allSettled([api<BuildList>(`v1/products/${product.id}/builds`), api<{ sources: DefinitionSource[] }>(`v1/products/${product.id}/workspace`)]);
+    const results = await Promise.allSettled([api<BuildList>(projectBuildsPath(product.id, projectId)), api<{ sources: DefinitionSource[] }>(`v1/products/${product.id}/workspace`)]);
     if (!isCurrent()) return; let failed = false;
     const freshBuilds = results[0].status === "fulfilled" && Array.isArray(results[0].value.items) ? results[0].value.items : [];
     setBuilds(freshBuilds); if (results[0].status !== "fulfilled" || !Array.isArray(results[0].value.items)) failed = true;
     if (results[1].status === "fulfilled" && Array.isArray(results[1].value.sources)) setSources(results[1].value.sources); else { setSources([]); failed = true; }
     try { const result = await readLaunchBuild(api, product.id, buildId, freshBuilds, isCurrent); if (!result || !isCurrent()) return; setData(result); } catch { if (!isCurrent()) return; setData(emptyLaunch); failed = true; }
     if (!isCurrent()) return; setLoading(false); setReadFailed(failed); if (failed) throw new Error(launchError(null, true).message);
-  }, [api, product.id]);
+  }, [api, product.id, projectId]);
   useEffect(() => { alive.current = true; void Promise.resolve().then(() => { if (!alive.current) return; if (!restored.current) { try { const saved = restoreLaunch(JSON.parse(localStorage.getItem(storageKey) ?? "null"), product.id, principalId); if (saved) { localRef.current = saved; setLocal(saved); } } catch { /* Only restore this person's fixed product scope. */ } restored.current = true; } return refresh(); }).catch(failure => { if (alive.current) setError(failure instanceof Error ? failure.message : launchError(failure, true).message); }); return () => { alive.current = false; }; }, [refresh, storageKey, product.id, principalId]);
   useEffect(() => { if (activePreview) { if (!dialog.current?.open) dialog.current?.showModal(); } else { dialog.current?.close(); if (preview) void Promise.resolve().then(() => { if (alive.current) { setPreview(null); setNotice("当前请求、运行计划、资源、来源或专业事实已变化，旧预览已废弃，请刷新核对。"); } }); } }, [activePreview, preview]);
   function reread() { if (lock.current) return; setLoading(true); setError(""); void refresh().catch(failure => { if (alive.current) setError(failure instanceof Error ? failure.message : launchError(failure, true).message); }); }

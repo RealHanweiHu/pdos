@@ -8,7 +8,7 @@ import type { Build } from "@/lib/build-preparation-view";
 import type { DefinitionReference, DefinitionSource } from "@/lib/product-view";
 import { blankLocalResults, blankResultsWork, captureResultsInput, checkPreparedResults, computeResultsPayload, emptyResults, importResultsPayload, makeResultsCommand, professionalResultsPayload, readResultsContext, restoreResults, resultsAuthority, resultsCapability, resultsCapabilityKeys, resultsError, resultsNames, resultsLines, resultsPairKey, resultsPairs, resultsRaw, resultsReads, resultsRecord, resultsReference, resultsRefKey, resultsRefReads, resultsStable, resultsSynthetic, resultsTier, resultsVerdict, validResultsInputs, validResultsPreview, validResultsReceipt, type LocalResults, type ResultsApi, type ResultsEventDraft, type ResultsList, type ResultsOperation, type ResultsPending, type ResultsPreview, type ResultsWork } from "@/lib/build-results-view";
 
-type Props = { product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: ResultsApi; onSaved: () => Promise<void> };
+type Props = { projectId?: string; product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: ResultsApi; onSaved: () => Promise<void> };
 const time = (value: unknown): string => typeof value === "string" && Number.isFinite(Date.parse(value)) ? new Date(value).toLocaleString("zh-CN", { hour12: false }) : "尚未记录";
 const syntheticWarning = "本地合成演练：报告原值、结果和具名结论用于核对流程，不代表真实仪器资格、生产测试或正式放行。";
 const stateNames: Record<string, string> = { planned: "已有固定计划，尚未开测", running: "已实际开测，等待结果完成", reported: "请求已有最终结果返回，范围缺项仍独立保留", results_pending: "结果已最终返回，等待专业复核", reviewed: "已保存独立专业复核", disposed: "已保存独立具名处置", pending: "尚未形成判定", pass: "固定范围数值判定通过", fail: "固定范围数值判定未通过", indeterminate: "缺项，不能确定", invalid: "已明确记录为无效", current: "固定依据当前有效", needs_recheck: "当前依据需重核", historical: "历史固定版本", synthetic: "本地合成演练", real: "可信实际事实", known: "原报告已提供", unknown: "原报告缺项或待核对", non_numeric: "原值不是数值，等待专业判断", non_finite: "原值不是有限数值，不能确定", missing: "原报告没有此字段", null: "原报告明确留空", value: "原报告已提供", server_on_save: "保存时由服务器记录", not_evaluated_historical: "历史固定版本，当前资格未评估", saved_committed_effects_current_qualification_not_evaluated: "只读已保存占用；当前可用性与资格未重新评估", exact_source_values: "已按固定原件逐字段核对", applied: "已保存正式原值", unapplied: "尚为候选，未导入运行", none: "不产生新的占用或样件消费", reserved: "原运行已预约使用", consumed: "原运行已破坏性消耗", formal: "原开测已保存正式占用", server_revalidates_on_execute: "提交时重新核对" };
@@ -63,13 +63,13 @@ function EventFields({ label, value, refs, sources, onChange }: { label: string;
   return <fieldset className="min-w-0 space-y-3 rounded-lg border border-border p-3"><legend className="px-1 text-sm font-medium">{label} · 独立真实发生事实</legend><label>发生时间（含 UTC 或时区偏移）<input required value={value.occurredAt} maxLength={80} placeholder="例如 2026-10-03T10:30:00-07:00" onChange={event => onChange({ ...value, occurredAt: event.target.value })}/></label><label>原 IANA 时区<input required value={value.timezone} maxLength={120} placeholder="例如 America/Los_Angeles" onChange={event => onChange({ ...value, timezone: event.target.value })}/></label><label>精确事件出处<select required value={value.reference ? resultsRefKey(value.reference) : ""} onChange={event => onChange({ ...value, reference: refs.find(ref => resultsRefKey(ref) === event.target.value) ?? null })}><option value="">明确选择发生事件的原文，不默认当前时间</option>{refs.map(ref => <option key={resultsRefKey(ref)} value={resultsRefKey(ref)}>{sources.find(row => row.id === ref.artifact_id)?.title ?? "固定原文"} · v{ref.expected_revision} · 第 {ref.line} 行</option>)}</select></label>{value.reference && <References refs={[value.reference]} sources={sources}/>}<p className="subtle">服务器保存接收时间。发生时间取本人核对的事件原文；上传时间、计划窗口和现在都不能代替。</p></fieldset>;
 }
 
-export function BuildResults(props: Props) { return <ResultsPanel key={`${props.principalId}:${props.product.id}`} {...props}/>; }
-function ResultsPanel({ product, principalId, api, onSaved }: Props) {
+export function BuildResults(props: Props) { return <ResultsPanel key={`${props.principalId}:${props.product.id}:${props.projectId ?? ""}`} {...props}/>; }
+function ResultsPanel({ product, principalId, api, onSaved, projectId = "" }: Props) {
   const [local, setLocal] = useState<LocalResults>(blankLocalResults), [data, setData] = useState<ResultsList>(emptyResults), [builds, setBuilds] = useState<Build[]>([]), [sources, setSources] = useState<DefinitionSource[]>([]);
   const [loading, setLoading] = useState(true), [readFailed, setReadFailed] = useState(false), [busy, setBusy] = useState(false), [error, setError] = useState(""), [notice, setNotice] = useState(""), [inputs, setInputs] = useState<Record<string, unknown> | null>(null), [preview, setPreview] = useState<ResultsPreview | null>(null), [previewScope, setPreviewScope] = useState("");
   const [sourceId, setSourceId] = useState(""), [line, setLine] = useState(1), [quote, setQuote] = useState("");
   const localRef = useRef(local), alive = useRef(true), lock = useRef(false), restored = useRef(false), sequence = useRef(0), scopeRef = useRef(""), dialog = useRef<HTMLDialogElement>(null), trigger = useRef<HTMLElement | null>(null);
-  const storageKey = `pdos-next:build-results:${principalId}:${product.id}`, pending = local.pending;
+  const storageKey = `pdos-next:build-results:${principalId}:${product.id}${projectId ? `:project:${projectId}` : ""}`, pending = local.pending;
   const runVersions = data.runs.filter(row => row.run_id === local.selectedRunId), run = runVersions.find(row => row.id === data.current_by_run[local.selectedRunId]?.run_version_id), readingRun = runVersions.find(row => row.id === local.selectedRunVersionId) ?? run;
   const request = run && data.requests.find(row => row.request_id === run.request_id && row.id === data.current_by_request[run.request_id]?.request_version_id), work = local.drafts[local.selectedRunId] ?? blankResultsWork();
   const refs = work.references, source = sources.find(row => row.id === sourceId), report = data.report_sources.find(row => row.artifact_id === work.reportId), captures = data.captures.filter(row => row.run_id === local.selectedRunId), capture = captures.find(row => row.id === work.captureId);
@@ -92,7 +92,7 @@ function ResultsPanel({ product, principalId, api, onSaved }: Props) {
   const refresh = useCallback(async () => {
     const read = ++sequence.current, buildId = localRef.current.selectedBuildId, isCurrent = () => alive.current && read === sequence.current && buildId === localRef.current.selectedBuildId;
     try {
-      const value = await readResultsContext(api, product.id, buildId, isCurrent);
+      const value = await readResultsContext(api, product.id, buildId, isCurrent, projectId);
       if (!isCurrent()) return;
       setLoading(false);
       if (!value) { setReadFailed(true); if (!lock.current) setNotice("当前读取已由新的操作取代，请刷新运行与资格。旧结果不能用于新的办理。"); return; }
@@ -101,7 +101,7 @@ function ResultsPanel({ product, principalId, api, onSaved }: Props) {
       if (!isCurrent()) return;
       setBuilds([]); setSources([]); setData(emptyResults); setLoading(false); setReadFailed(true); throw failure;
     }
-  }, [api, product.id]);
+  }, [api, product.id, projectId]);
   useEffect(() => { alive.current = true; void Promise.resolve().then(() => { if (!alive.current) return; if (!restored.current) { try { const saved = restoreResults(JSON.parse(localStorage.getItem(storageKey) ?? "null"), product.id, principalId); if (saved) { localRef.current = saved; setLocal(saved); } } catch { /* Restore only this named person's product scope. */ } restored.current = true; } return refresh(); }).catch(failure => { if (alive.current) setError(failure instanceof Error ? failure.message : resultsError(failure, true).message); }); return () => { alive.current = false; }; }, [refresh, storageKey, product.id, principalId]);
   useEffect(() => { if (activePreview) { if (!dialog.current?.open) dialog.current?.showModal(); } else { dialog.current?.close(); if (preview) void Promise.resolve().then(() => { if (alive.current) { setPreview(null); setNotice("当前运行、报告、结果依据或专业事实已变化，旧确认已废弃，请刷新重核。"); } }); } }, [activePreview, preview]);
   function reread() { if (lock.current) return; setLoading(true); setError(""); void refresh().catch(failure => { if (alive.current) setError(failure instanceof Error ? failure.message : resultsError(failure, true).message); }); }

@@ -70,3 +70,35 @@ test("scoped Run旧读取消不清空成功事实，当前真实网络或格式�
   const malformed: ResultsApi = async () => null as never;
   await assert.rejects(readResultsContext(malformed, "product", "build", () => true), /读取失败/);
 });
+
+test("项目结果页先核对本项目轮次，其他项目的旧选择不会读取详情", async () => {
+  const calls: string[] = [];
+  const api: ResultsApi = async path => {
+    calls.push(path);
+    if (path.includes("/builds?")) return { items: [{ id: "current-build" }] } as never;
+    if (path.endsWith("/workspace")) return { sources: [] } as never;
+    assert.fail(`不应读取其他项目的详情：${path}`);
+  };
+  const value = await readResultsContext(api, "product", "other-build", () => true, "project-a");
+  assert.deepEqual(calls, ["v1/products/product/builds?project_id=project-a", "v1/products/product/workspace"]);
+  assert.deepEqual(value?.data, emptyResults);
+  assert.deepEqual(value?.builds, [{ id: "current-build" }]);
+});
+
+test("本项目结果读取保留范围，筛选读取失败不退回全部轮次", async () => {
+  const calls: string[] = [];
+  const api: ResultsApi = async path => {
+    calls.push(path);
+    if (path.includes("/builds?")) return { items: [{ id: "build" }] } as never;
+    if (path.endsWith("/workspace")) return { sources: [] } as never;
+    assert.equal(path, "v1/products/product/verification-results?build_id=build");
+    return emptyResults as never;
+  };
+  assert.deepEqual((await readResultsContext(api, "product", "build", () => true, "project-a"))?.data, emptyResults);
+  assert.equal(calls.length, 3);
+  calls.length = 0;
+  const failed: ResultsApi = async path => { calls.push(path); throw { status: 503 }; };
+  await assert.rejects(readResultsContext(failed, "product", "build", () => true, "project-a"), /读取失败/);
+  assert.equal(calls.length, 2);
+  assert.equal(calls.some(path => path.endsWith("/builds")), false);
+});
