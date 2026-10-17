@@ -706,3 +706,57 @@ test("项目试制列表拒绝重复、无效或额外筛选，不将读取变�
   assert.equal((await h.send(`${base}/builds`, { method: "POST", body: "{}" })).response.status, 405);
   assert.equal(h.calls.length, 0);
 });
+
+const materialBody = () => JSON.stringify({ change_id: change, expected_change_revision: 2, source: { id: issue, revision: 1, kind: "artifact", position: `line:3;quote_sha256:${"a".repeat(64)}` } });
+test("正式变更读取只放行当前项目列表与唯一指定变更上下文", async () => {
+  for (const [path, query] of [["change-execution", `project_id=${issue}`], ["change-execution", `project_id=${issue}&change_id=${change}`], ["change-execution/order-context", `change_id=${change}`]]) {
+    const h = harness(), result = await h.send(`${base}/${path}`, { query });
+    assert.equal(result.response.status, 200); assert.equal(result.reads, 0); assert.equal(h.calls.length, 1);
+    assert.equal(h.calls[0].url, `http://synthetic-api.invalid/${base}/${path}?${query}`); assert.equal(h.calls[0].init.method, "GET"); assert.deepEqual(h.timeouts, [600000]);
+  }
+});
+test("正式变更上下文拒绝缺失重复或混用范围，未开放的相似路径仍不转发", async () => {
+  for (const [path, query] of [["change-execution/order-context", ""], ["change-execution/order-context", `change_id=${change}&change_id=${change}`], ["change-execution/order-context", `change_id=${change}&project_id=${issue}`], ["change-execution/order-context", `issue_id=${issue}`], ["change-execution", `project_id=${issue}&project_id=${change}`], ["change-execution", "project_id=invalid"], ["quality-execution", `project_id=${issue}`]]) {
+    const h = harness(), result = await h.send(`${base}/${path}`, { query }); assert.equal(result.response.status, 422, `${path}?${query}`); assert.equal(result.reads, 0); assert.equal(h.calls.length, 0);
+  }
+  for (const path of ["change-execution/order-context/extra", "change-execution/selection-material/extra", "change-execution/policy", "quality-execution/order-context", "quality-execution/selection-material"]) {
+    const h = harness(); assert.equal((await h.send(`${base}/${path}`)).response.status, 404, path); assert.equal(h.calls.length, 0);
+  }
+  const h = harness(), wrongMethod = await h.send(`${base}/change-execution/order-context`, { method: "POST", body: materialBody() });
+  assert.equal(wrongMethod.response.status, 405); assert.equal(wrongMethod.response.headers.get("allow"), "GET"); assert.equal(wrongMethod.reads, 0); assert.equal(h.calls.length, 0);
+});
+test("适用性材料读取保持精确原正文与一次同源POST，不保存或重写候选", async () => {
+  const h = harness(), body = ` \n${materialBody()}\n`, result = await h.send(`${base}/change-execution/selection-material`, { method: "POST", body });
+  assert.equal(result.response.status, 200); assert.equal(result.reads, 1); assert.equal(h.calls.length, 1); assert.equal(h.calls[0].init.body, body);
+  assert.equal(h.calls[0].url, `http://synthetic-api.invalid/${base}/change-execution/selection-material`); assert.equal(h.calls[0].init.method, "POST"); assert.deepEqual(h.timeouts, [180000]);
+  const get = harness(); assert.equal((await get.send(`${base}/change-execution/selection-material`)).response.status, 405); assert.equal(get.calls.length, 0);
+  const queried = harness(), queryResult = await queried.send(`${base}/change-execution/selection-material`, { method: "POST", query: `change_id=${change}`, body });
+  assert.equal(queryResult.response.status, 422); assert.equal(queryResult.reads, 0); assert.equal(queried.calls.length, 0);
+});
+test("适用性材料入口拒绝非精确变更版本、非整行来源与客户端权限标记", async () => {
+  const valid = JSON.parse(materialBody());
+  for (const value of [null, {}, { ...valid, expected_change_revision: "2" }, { ...valid, expected_change_revision: true }, { ...valid, expected_change_revision: 0 }, { ...valid, expected_change_revision: 2147483648 }, { ...valid, change_id: "invalid" }, { ...valid, project_id: issue }, { ...valid, qualified: true }, { ...valid, source: { ...valid.source, kind: "domain" } }, { ...valid, source: { ...valid.source, position: "line:0;quote_sha256:" + "a".repeat(64) } }, { ...valid, source: { ...valid.source, position: "line:3;quote_sha256:short" } }, { ...valid, source: { ...valid.source, revision: "1" } }, { ...valid, source: { ...valid.source, authorized: true } }]) {
+    const h = harness(), result = await h.send(`${base}/change-execution/selection-material`, { method: "POST", body: JSON.stringify(value) });
+    assert.equal(result.response.status, 422, JSON.stringify(value)); assert.equal(result.reads, 1); assert.equal(h.calls.length, 0);
+  }
+  const invalid = harness(); assert.equal((await invalid.send(`${base}/change-execution/selection-material`, { method: "POST", body: "not-json" })).response.status, 422); assert.equal(invalid.calls.length, 0);
+});
+test("适用性材料只读传输失败与真实共同提交未知分别报告，读取不冒充待保存", async () => {
+  const reading = harness({ response: async () => { throw new Error("synthetic unavailable"); } });
+  const result = await reading.send(`${base}/change-execution/selection-material`, { method: "POST", body: materialBody() });
+  assert.equal(result.response.status, 503); assert.equal((await result.response.json()).code, "SOURCE_UNAVAILABLE"); assert.equal(reading.calls.length, 1);
+  const write = harness({ response: async () => { throw new Error("synthetic unavailable"); } });
+  const committed = await write.send("v1/commands", { method: "POST", body: JSON.stringify({ operation: "change.selection.decide" }) });
+  assert.equal(committed.response.status, 503); assert.equal((await committed.response.json()).code, "EXTERNAL_OUTCOME_UNKNOWN"); assert.equal(write.calls.length, 1);
+  const crossOrigin = harness(), rejected = await crossOrigin.send(`${base}/change-execution/selection-material`, { method: "POST", body: materialBody(), origin: "https://other.invalid" });
+  assert.equal(rejected.response.status, 403); assert.equal(rejected.reads, 0); assert.equal(crossOrigin.calls.length, 0);
+});
+test("仅适用性决定与变更令准备增加共同长命令等待，原正文令牌不改写", async () => {
+  for (const operation of ["change.selection.decide", "change.order.prepare"]) for (const path of ["v1/commands/preview", "v1/commands"]) {
+    const h = harness(), body = ` {"operation":"${operation}","command_id":"original-command","idempotency_key":"original-key","payload":{"approval_token":"original-approval","confirmation_token":"original-confirmation","unknown":null}}\n`;
+    assert.equal((await h.send(path, { method: "POST", body })).response.status, 200); assert.equal(h.calls[0].init.body, body); assert.deepEqual(h.timeouts, [180000]);
+  }
+  for (const operation of ["change.policy.import", "change.order.approve", "change.implementation.record", "change.selection.decide.unregistered"]) {
+    const h = harness(); await h.send("v1/commands", { method: "POST", body: JSON.stringify({ operation }) }); assert.deepEqual(h.timeouts, [60000]);
+  }
+});

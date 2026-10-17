@@ -1,0 +1,7 @@
+{
+  "path": "pdos-next/web/src/components/builds/build-change-orders.tsx",
+  "before": "5dde549fe749f42f4467b1481ac800f31bfac5eae4d3f44b703288849059e5cd",
+  "after": "91f929d0514f297b9d9288bbd5a13308d4a5ce2c35c54e32aeccb14bafd26b5b",
+  "reason": "Four visible labels use named decision or one confirmation, without internal T1/T2 tier terms. No state/command/guard changes.",
+  "backend_source_changed": false
+}

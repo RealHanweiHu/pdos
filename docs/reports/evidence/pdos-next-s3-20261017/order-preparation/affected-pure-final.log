@@ -1,0 +1,140 @@
+........................................................................ [ 34%]
+........................................................................ [ 69%]
+......................................................F
+=================================== FAILURES ===================================
+_____ test_preview_uses_no_new_occupancy_and_masks_only_new_server_clocks ______
+
+work = namespace(actor=UUID('4055ab9e-763d-425e-8de4-48bb1a876961'), source=SourceRef(id=UUID('123e21e1-192b-4442-85c8-15de01...UUID('963c6e1a-dea5-4e7f-827a-3b65b8c132f1')], now=datetime.datetime(2026, 10, 2, 18, 4, tzinfo=datetime.timezone.utc))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1207721e0>
+
+    def test_preview_uses_no_new_occupancy_and_masks_only_new_server_clocks(work, monkeypatch):
+        content, binding, candidates, measurements = report(work)
+        work.proved = [m.id for m in measurements]
+        raw = ImportPayload(
+            request_id=work.request.id,
+            expected_request_revision=work.request.revision,
+            run_id=work.run.id,
+            expected_run_revision=work.run.revision,
+            capture_id=uuid4(),
+            expected_capture_revision=1,
+            final=True,
+            actual_end=event(work),
+            at=event(work),
+            reason="new result reason",
+        )
+        ctx = Context(work.run.scope.tenant_id, work.actor, work.actor)
+        command = SimpleNamespace(
+            operation="test.results.import",
+            product_id=work.run.scope.product_id,
+            command_id=uuid4(),
+            expected_revision=1,
+        )
+        product = SimpleNamespace(id=command.product_id)
+        authority = {
+            "scope": work.run.scope.model_dump(mode="json"),
+            "authorized": True,
+            "qualified": True,
+            "roles": ["quality"],
+        }
+        row = SimpleNamespace(
+            id=uuid4(),
+            authority_snapshot=authority,
+            input_snapshot={"original_start_intent": "a" * 64},
+            operation="test.run.start",
+            intent_digest="a" * 64,
+            execution_plan=work.plan.model_dump(mode="json"),
+            plan_sha256=digest(work.plan.model_dump(mode="json")),
+            sources=[],
+            required_source_read_set=[],
+            created_at=work.run.actual_start.received_at,
+        )
+        bound = service.Bound(
+            SimpleNamespace(id=uuid4()),
+            work.request,
+            row,
+            work.run,
+            work.plan,
+            authority,
+            {"current": True},
+            [],
+            [],
+            {},
+            {uuid4(): (content, binding)},
+            measurements,
+            {m.id: verify_measurement(content, binding, m, work.run) for m in measurements},
+            SimpleNamespace(observations=[c.model_dump(mode="json") for c in candidates]),
+        )
+        monkeypatch.setattr(service, "_load", lambda *_: bound)
+        monkeypatch.setattr(service, "_guards", lambda *_: None)
+        monkeypatch.setattr(service, "_new_write", lambda *_: None)
+        original_created_at = work.now.isoformat()
+        monkeypatch.setattr(
+            service,
+            "_request_view",
+            lambda *_: {
+                "id": str(bound.request_row.id),
+                "revision": work.request.revision,
+                "status": work.request.status,
+                "reason": "old reason",
+                "created_at": original_created_at,
+                "zero_occupancy": False,
+                "request_snapshot": work.request.model_dump(mode="json"),
+            },
+        )
+        monkeypatch.setattr(service, "_check_source", lambda *_: None)
+        monkeypatch.setattr(service, "now", lambda: work.now)
+        session = SimpleNamespace(scalar=lambda _: None)
+>       first = service.preview_view(session, ctx, command, product, raw)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/verification_results/test_pure.py:714: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/domain/verification_results/service.py:1327: in preview_view
+    mutation = _prospective(s, ctx, command, product, payload, bound)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/verification_results/service.py:1297: in _prospective
+    preview, mutation = _kernel(s, ctx, command, product, payload, bound, lambda _: None)._prepare(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = namespace(scalar=<function test_preview_uses_no_new_occupancy_and_masks_only_new_server_clocks.<locals>.<lambda> at 0x120775a80>)
+ctx = Context(tenant_id=UUID('fbe59f39-8385-49d1-a13d-552836f40be2'), actor_id=UUID('4055ab9e-763d-425e-8de4-48bb1a876961'),...763d-425e-8de4-48bb1a876961'), run_id=None, cancel_epoch=None, category_id=None, agent_run_id=None, agent_call_id=None)
+command = namespace(operation='test.results.import', product_id=UUID('70be9c70-7ea4-4f9d-8f2b-50f58c9167e5'), command_id=UUID('bcc67d59-70d3-4526-9ce7-82a86265f878'), expected_revision=1)
+product = namespace(id=UUID('70be9c70-7ea4-4f9d-8f2b-50f58c9167e5'))
+payload = ImportPayload(request_id=UUID('3d505141-f312-4a4e-a7f0-dbd96f435474'), expected_request_revision=5, run_id=UUID('6cc55...ic exact source'), effective_at=None), incomplete_reason=None, next_owner_id=None, sources=(), confirmation_token=None)
+bound = Bound(request_row=namespace(id=UUID('0a0fd89f-083e-4a64-81fb-e94fefdb493a')), request=VerificationRequest(id=UUID('3d5...byte_end': 1365}], 'missing': [], 'metadata_mismatches': [], 'value_state': 'known'}]), projection=None, original=None)
+save = <function _prospective.<locals>.<lambda> at 0x120775c60>
+accepted = False
+
+    def _kernel(s, ctx, command, product, payload, bound, save, *, accepted=False):
+        authority = authority_dto(bound.authority, ctx.requester_id, now())
+        # The request parent is already serialized by _base. Only current immutable
+        # siblings participate; history cannot multiply coverage or mark completion.
+        siblings = tuple(
+            launch._snapshot(row)[0]
+            for _, row in launch._currents_for_request(
+                s,
+                ctx,
+                product.id,
+                bound.request.id,
+>               lock=not s.info.get("read_snapshot", False),
+                         ^^^^^^
+            )
+        )
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'info'
+
+pdos_next/domain/verification_results/service.py:960: AttributeError
+=============================== warnings summary ===============================
+pdos_next/domain/verification_results/models.py:139
+  /private/tmp/pdos-s3-orders-6zhae2id/pdos-next/server/pdos_next/domain/verification_results/models.py:139: PytestCollectionWarning: cannot collect test class 'TestResultActionFact' because it has a __init__ constructor (from: tests/verification_results/test_guards.py)
+    class TestResultActionFact(ResultScope, Row, Base):
+
+pdos_next/domain/verification_results/models.py:116
+  /private/tmp/pdos-s3-orders-6zhae2id/pdos-next/server/pdos_next/domain/verification_results/models.py:116: PytestCollectionWarning: cannot collect test class 'TestResultProjection' because it has a __init__ constructor (from: tests/verification_results/test_guards.py)
+    class TestResultProjection(ResultScope, Row, Base):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/verification_results/test_pure.py::test_preview_uses_no_new_occupancy_and_masks_only_new_server_clocks
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 198 passed, 2 warnings in 1.96s

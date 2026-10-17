@@ -103,7 +103,7 @@ def _snapshot(row):
         != (
             f"private:{row.owner_id}"
             if row.visibility == "private"
-            else f"product:{row.product_id}",
+            else f"category:{row.category_id}",
         )
     ):
         raise DomainError("INTEGRITY_MISMATCH", "固定问题范围与版本不一致。")

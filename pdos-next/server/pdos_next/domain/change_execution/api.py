@@ -26,6 +26,7 @@ def register_routes(app: FastAPI, engine, auth_dependency):
     def change_execution(
         request: Request,
         product_id: UUID,
+        project_id: UUID | None = None,
         issue_id: UUID | None = None,
         change_id: UUID | None = None,
         history_cursor: str | None = None,
@@ -34,7 +35,7 @@ def register_routes(app: FastAPI, engine, auth_dependency):
     ):
         from .service import list_changes
 
-        _query(request, {"issue_id", "change_id", "history_cursor", "capture_cursor"})
+        _query(request, {"project_id", "issue_id", "change_id", "history_cursor", "capture_cursor"})
         with tenant_session(
             engine,
             ctx.tenant_id,
@@ -47,11 +48,54 @@ def register_routes(app: FastAPI, engine, auth_dependency):
                 session,
                 ctx,
                 product_id,
+                project_id=project_id,
                 issue_id=issue_id,
                 change_id=change_id,
                 history_cursor=history_cursor,
                 capture_cursor=capture_cursor,
             )
+
+    @app.get("/v1/categories/{category_id}/products/{product_id}/change-execution/order-context")
+    def change_order_context(
+        request: Request, product_id: UUID, change_id: UUID, ctx: Context = auth_dependency
+    ):
+        from pdos_next.change_preparation_view import order_context
+
+        _query(request, {"change_id"})
+        with tenant_session(
+            engine,
+            ctx.tenant_id,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=ctx.category_id,
+            read_snapshot=True,
+        ) as session:
+            return order_context(session, ctx, product_id, change_id)
+
+    from pdos_next.change_preparation_view import SelectionMaterialInput
+
+    @app.post(
+        "/v1/categories/{category_id}/products/{product_id}/change-execution/selection-material"
+    )
+    def change_selection_material(
+        request: Request,
+        product_id: UUID,
+        data: SelectionMaterialInput,
+        ctx: Context = auth_dependency,
+    ):
+        from pdos_next.change_preparation_view import selection_material
+
+        _query(request, set())
+        # Candidate preparation performs no business writes or T2 consumption.
+        # Existing selection.inputs uses FOR UPDATE, requiring an ordinary UOW.
+        with tenant_session(
+            engine,
+            ctx.tenant_id,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=ctx.category_id,
+        ) as session:
+            return selection_material(session, ctx, product_id, data)
 
     @app.post("/v1/categories/{category_id}/products/{product_id}/change-execution/inputs")
     def change_execution_inputs(

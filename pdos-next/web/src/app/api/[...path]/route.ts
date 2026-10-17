@@ -17,7 +17,7 @@ const resourceInspectPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA
 const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 const manufacturingPreparationPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/manufacturing-preparations(?:\/inputs|\/(?:work_instruction|control_plan|manufacturing_baseline)\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})?$/;
 const manufacturingPreparationCommands = new Set(["npi.work_instruction.record", "npi.control_plan.record", "npi.manufacturing_baseline.record"]);
-const qualityChangePaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/(?:quality-execution(?:\/inputs)?|change-execution(?:\/(?:inputs|captures))?)$/;
+const qualityChangePaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/(?:quality-execution(?:\/inputs)?|change-execution(?:\/(?:inputs|captures|order-context|selection-material))?)$/;
 const qualityFollowupPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/quality-followup(?:\/inputs)?$/;
 const capaCandidatePaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/capa-candidates$/;
 const capaFactPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/capa-facts(?:\/inputs)?$/;
@@ -25,6 +25,11 @@ const capaFactCommands = new Set(["quality.capa.observation.record", "quality.ca
 const qualityFollowupCommands = new Set(["quality.issue.root_cause.decide", "quality.capa.actions.complete", "quality.capa.followup.link", "quality.capa.verification.candidate.record"]);
 const isRecord = (value: unknown): value is Record<string, unknown> => !!value && typeof value === "object" && !Array.isArray(value);
 const positiveRevision = (value: unknown): value is number => typeof value === "number" && Number.isSafeInteger(value) && value > 0 && value <= 2147483647;
+function validSelectionMaterial(value: unknown): boolean {
+  if (!isRecord(value) || Object.keys(value).some(key => !["change_id", "expected_change_revision", "source"].includes(key)) || typeof value.change_id !== "string" || !uuid.test(value.change_id) || !positiveRevision(value.expected_change_revision) || !isRecord(value.source)) return false;
+  const source = value.source;
+  return Object.keys(source).every(key => ["id", "revision", "kind", "position"].includes(key)) && typeof source.id === "string" && uuid.test(source.id) && positiveRevision(source.revision) && source.kind === "artifact" && typeof source.position === "string" && /^line:[1-9]\d*;quote_sha256:[0-9a-f]{64}$/.test(source.position);
+}
 function validFollowupCommand(value: unknown, productId: string, operations = qualityFollowupCommands): boolean {
   if (!isRecord(value) || Object.keys(value).some(key => !["command_id", "idempotency_key", "operation", "category_id", "product_id", "expected_revision", "payload", "source_read_set"].includes(key)) || typeof value.command_id !== "string" || !uuid.test(value.command_id) || typeof value.idempotency_key !== "string" || value.idempotency_key.length < 8 || value.idempotency_key.length > 160 || typeof value.operation !== "string" || !operations.has(value.operation) || typeof value.product_id !== "string" || !uuid.test(value.product_id) || value.product_id.toLowerCase() !== productId.toLowerCase() || !positiveRevision(value.expected_revision) || !isRecord(value.payload) || typeof value.payload.issue_id !== "string" || !uuid.test(value.payload.issue_id) || !positiveRevision(value.payload.expected_issue_revision) || !Array.isArray(value.source_read_set) || value.source_read_set.length < 1) return false;
   const seen = new Set<string>();
@@ -51,6 +56,7 @@ const longCommands = new Set([
   "test.results.import", "test.result.compute", "test.run.review", "test.disposition.decide",
   "quality.issue.create", "quality.issue.merge", "quality.issue.triage",
   "quality.issue.containment.record", "quality.capa.draft", "change.request.create", "change.impact.compute",
+  "change.selection.decide", "change.order.prepare",
 ]);
 
 async function forward(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
@@ -81,6 +87,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const agentSkill = /^v1\/agent-skills(?:\/recover)?$/.test(pathname);
   const agentBudget = /^v1\/agent-budgets(?:\/recover)?$/.test(pathname);
   const qualityChange = qualityChangePaths.test(pathname);
+  const selectionMaterial = qualityChange && pathname.endsWith("/selection-material");
   const manufacturingPreparation = manufacturingPreparationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
@@ -252,15 +259,17 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     }
     if (method === "GET" && !query.has("issue_id")) return Response.json({ code: "VALIDATION_FAILED", message: "请明确选择一个问题。" }, { status: 422 });
   } else if (qualityChange) {
-    const method = /\/(?:inputs|captures)$/.test(pathname) ? "POST" : "GET";
+    const method = /\/(?:inputs|captures|selection-material)$/.test(pathname) ? "POST" : "GET";
     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: method } });
-    const allowed = method === "POST" ? [] : pathname.endsWith("/quality-execution") ? ["build_id", "run_id", "issue_id"] : ["issue_id", "change_id"];
+    const orderContext = pathname.endsWith("/order-context");
+    const allowed = method === "POST" ? [] : pathname.endsWith("/quality-execution") ? ["build_id", "run_id", "issue_id"] : orderContext ? ["change_id"] : ["issue_id", "change_id", "project_id"];
     for (const [key, value] of request.nextUrl.searchParams) {
       if (!allowed.includes(key) || query.has(key) || !uuid.test(value)) {
         return Response.json({ code: "VALIDATION_FAILED", message: "请使用有效且明确的查询范围。" }, { status: 422 });
       }
       query.set(key, value);
     }
+    if (orderContext && !query.has("change_id")) return Response.json({ code: "VALIDATION_FAILED", message: "请明确选择一个固定变更。" }, { status: 422 });
   } else if (pathname.endsWith("/sample-handoff") || pathname.endsWith("/verification-handoff") || pathname.endsWith("/verification-launch") || pathname.endsWith("/verification-results")) {
     const purpose = pathname.endsWith("/sample-handoff") ? request.nextUrl.searchParams.get("purpose") : null;
     const build = request.nextUrl.searchParams.get("build_id");
@@ -303,6 +312,11 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   if (!base) return Response.json({ code: "SOURCE_UNAVAILABLE", message: "服务尚未配置。" }, { status: 503 });
   try {
     const body = request.method === "GET" ? undefined : await request.text();
+    if (selectionMaterial) {
+      let value: unknown;
+      try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交所选变更与精确原文完整行。" }, { status: 422 }); }
+      if (!validSelectionMaterial(value)) return Response.json({ code: "VALIDATION_FAILED", message: "此入口只读取明确变更版本与原文完整行中的实际材料。" }, { status: 422 });
+    }
     if (manufacturingPreparation && request.method === "POST") {
       let value: unknown;
       try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整制造准备原请求。" }, { status: 422 }); }
@@ -340,7 +354,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     if (disposition) headers.set("Content-Disposition", disposition);
     return new Response(await response.arrayBuffer(), { status: response.status, headers });
   } catch {
-    if (request.method === "GET" || resourceInspect || standardMatch || (providerAgreement || mcpManagement || agentSkill || skillQualification || agentBudget) && pathname.endsWith("/recover")) return Response.json({ code: "SOURCE_UNAVAILABLE", detail: { reason: "TRANSPORT_UNAVAILABLE" }, message: "暂未读取到当前事实，请刷新核对。本次读取没有发起操作。" }, { status: 503 });
+    if (request.method === "GET" || resourceInspect || standardMatch || selectionMaterial || (providerAgreement || mcpManagement || agentSkill || skillQualification || agentBudget) && pathname.endsWith("/recover")) return Response.json({ code: "SOURCE_UNAVAILABLE", detail: { reason: "TRANSPORT_UNAVAILABLE" }, message: "暂未读取到当前事实，请刷新核对。本次读取没有发起操作。" }, { status: 503 });
     return Response.json({ code: "EXTERNAL_OUTCOME_UNKNOWN", detail: { reason: "TRANSPORT_OUTCOME_UNKNOWN" }, message: "暂未取得服务回执。请重试原操作以核对结果。" }, { status: 503 });
   }
 }

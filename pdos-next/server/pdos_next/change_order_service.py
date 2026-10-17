@@ -16,7 +16,7 @@ from pdos_next.database import category_for_product
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.change_control.handlers import ChangeControlHandler
 from pdos_next.domain.change_control.ports import Invocation, Outcome, Policy, Ports
-from pdos_next.domain.change_control.rules import digest, graph_sources
+from pdos_next.domain.change_control.rules import digest, graph_sources, replace
 from pdos_next.domain.change_execution import adapters
 from pdos_next.domain.change_execution import service as old
 from pdos_next.domain.change_execution.graph import OwnerReader
@@ -28,6 +28,7 @@ from pdos_next.models import Grant, Principal, Product
 from pdos_next.request_proof import snapshot_rows
 from pdos_next.schemas.change_control.contracts import (
     ChangeRequest,
+    History,
     ImplementationRecord,
     OrderApprove,
     OrderPrepare,
@@ -680,8 +681,9 @@ def read_phase(
     )
     require(clock() < until)
     if require_reads:
+        supplied = [reference.model_dump(mode="json") for reference in command.source_read_set]
         require(
-            _merge_reads(command.source_read_set, reads) == _merge_reads(command.source_read_set),
+            _merge_reads(supplied, reads) == _merge_reads(supplied),
             "MISSING_REQUIRED_EVIDENCE",
         )
     return PreparedChange(
@@ -728,7 +730,7 @@ def _review(ctx, command, payload, phase):
     parsed = parsed_payload(payload)
     # Core preview is a proposal, not an actual decision/proof. Its provisional UUID
     # and appended server evaluation clock are labelled; real source clocks stay exact.
-    preview, (after, _, _, _) = kernel(ctx, phase, clock())._prepare(
+    preview, (after, _, _, event) = kernel(ctx, phase, clock())._prepare(
         None,
         adapters.authority_dto(phase.authority, ctx, phase.scope, phase.request.audience, clock()),
         command.operation,
@@ -737,6 +739,23 @@ def _review(ctx, command, payload, phase):
         parsed,
         phase.request.id,
     )
+    if event is not None:
+        after = replace(
+            after,
+            revision=phase.request.revision + 1,
+            history=(
+                *after.history,
+                History(
+                    command_id=command.command_id,
+                    operation=command.operation,
+                    actor_id=ctx.actor_id,
+                    at=clock(),
+                    from_state=phase.request.status,
+                    to_state=after.status,
+                    note=preview.effect,
+                ),
+            ),
+        )
     proposed = _proposed_snapshot(after, phase.request, command.operation)
     return {
         "operation": command.operation,

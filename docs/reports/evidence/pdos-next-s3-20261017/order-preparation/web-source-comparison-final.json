@@ -1,0 +1,9 @@
+{
+  "built_snapshot": "/private/tmp/pdos-s3-orders-ar3xvnjk",
+  "backend_snapshot": "/private/tmp/pdos-s3-orders-pjg4_zii",
+  "web_source_changed": [
+    "pdos-next/web/design-qa.md"
+  ],
+  "only_non_runtime_qa_document_changed": true,
+  "build_log": "web-build-offline.log"
+}

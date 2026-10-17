@@ -1,0 +1,315 @@
+F
+=================================== FAILURES ===================================
+_ test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact _
+
+quality_work = namespace(setup=<isolated synthetic test scope>, config={'source': 'f193e3b8-1ce7-47c0-b2b6-8ca131c63046', 'project': ...-877c-4f6c7825fd11', 'issue_revision': 4, 'capa_id': '3fbf6805-01dc-4aab-843b-218d9f7963d3', 'created_output': None}]})
+
+    def test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact(
+        quality_work,
+    ):
+        work = quality_work
+        # Declare all separate synthetic series before the Issue's signer snapshots
+        # as well as before capture; never update a saved professional basis in place.
+        for role, operations in (
+            (
+                "quality",
+                [
+                    "change.request.create",
+                    "change.impact.compute",
+                    "change.policy.import",
+                    "change.order.prepare",
+                ],
+            ),
+            ("engineering", ["change.selection.decide"]),
+            ("manufacturing", ["change.selection.decide"]),
+        ):
+            for kind in ("duty", "qualification"):
+                import_authority(
+                    work,
+                    role,
+                    kind,
+                    subject_id=str(work.quality.human),
+                    operations=operations,
+                    external_id=f"synthetic-shared-order-{work.build_id}-{role}-{kind}",
+                )
+        # The saved report capture inherits the real Run audience. Its exact source
+        # remains in the direct-source RLS read set; sharing never substitutes bytes.
+        with session(work) as stored:
+            run_pointer = stored.scalar(
+                select(VerificationRunCurrent).where(
+                    VerificationRunCurrent.tenant_id == work.setup.tenant,
+                    VerificationRunCurrent.product_id == work.setup.product,
+                    VerificationRunCurrent.run_id == work.failure_run.id,
+                )
+            )
+            assert run_pointer is not None
+            run_row = stored.get(VerificationRunVersion, run_pointer.run_version_id)
+            measurement = stored.get(MeasurementRecord, work.failure_run.measurements[0].id)
+            assert run_row is not None and measurement is not None
+            captured = stored.get(MeasurementImportCapture, measurement.capture_id)
+            assert captured is not None
+            assert captured.visibility == run_row.visibility == measurement.visibility == "category"
+            assert captured.owner_id == work.quality.human
+            assert captured.run_id == measurement.run_id == run_row.run_id == work.failure_run.id
+            assert {
+                "artifact_id": str(work.failure_report),
+                "expected_revision": 1,
+            } in captured.required_source_read_set
+            shared_ids = run_row.id, measurement.id, captured.id
+        with session(work, caller=work.engineer) as stored:
+            peer_run = stored.get(VerificationRunVersion, shared_ids[0])
+            peer_measurement = stored.get(MeasurementRecord, shared_ids[1])
+            peer_capture = stored.get(MeasurementImportCapture, shared_ids[2])
+            assert peer_run is not None and peer_measurement is not None and peer_capture is not None
+            assert peer_capture.run_id == peer_measurement.run_id == peer_run.run_id
+            assert peer_capture.visibility == peer_run.visibility == "category"
+            assert peer_capture.owner_id == work.quality.human != work.engineer.human
+        shared_capa(work)
+        with session(work) as stored:
+            basis = followup_owner.load_followup_basis(
+                stored, work.quality.ctx, work.setup.product, work.issue_id, work.issue_view["revision"]
+            )
+            project = stored.get(Project, UUID(work.config["project"]))
+            assert project.visibility == "category"
+            project_owner = project.owner_id
+        assert basis.root_cause_sha256 is None
+        assert all(action.completion_sha256 is None for action in basis.actions)
+        with session(work, caller=work.engineer) as stored:
+            peer_basis = followup_owner.load_followup_basis(
+                stored,
+                work.engineer.ctx,
+                work.setup.product,
+                work.issue_id,
+                work.issue_view["revision"],
+            )
+            assert peer_basis == basis
+            assert peer_basis.owner_id == work.quality.human != work.engineer.human
+        quality_results = results.listing(work)
+        peer_results = results.listing(work, caller=work.engineer)
+        assert str(shared_ids[2]) in {value["id"] for value in quality_results["captures"]}
+        assert str(shared_ids[2]) not in {value["id"] for value in peer_results["captures"]}
+        assert str(shared_ids[1]) in {value["id"] for value in peer_results["measurements"]}
+    
+        # The request itself is shared from creation; the old private fixture stays intact.
+        created_value, create_inputs = change.command(
+            work, "change.request.create", {**change.create_payload(work), "visibility": "category"}
+        )
+        created = post(work.quality, created_value)
+        assert created.status_code == 200, created.text
+        change_id = create_inputs["change_id"]
+        initial, _ = change.current(work, change_id)
+        assert initial["visibility"] == "category"
+        scope = Scope(
+            tenant_id=work.setup.tenant,
+            product_id=work.setup.product,
+            project_id=UUID(work.config["project"]),
+        )
+        at, until = now(), now() + timedelta(minutes=15)
+        policy_material = PolicyMaterial(
+            schema_version="pdos-controlled-change-policy-v1",
+            scope=scope,
+            purpose=basis.purpose,
+            owner_id=project_owner,
+            visibility="category",
+            publisher_id=work.quality.human,
+            required_disciplines=("engineering", "manufacturing"),
+            valid_from=at - timedelta(minutes=1),
+            valid_until=until,
+            nature="synthetic",
+        )
+        policy_source = native_original(work, policy_material, "Shared synthetic dual-lane policy")
+        policy_payload = PolicyImport(
+            project_id=scope.project_id,
+            purpose=basis.purpose,
+            source=policy_source,
+            reason="Synthetic scoped publisher fact; no approval or real qualification",
+        )
+        with session(work) as stored:
+            policy_receipt = controlled.import_policy(
+                stored,
+                work.quality.ctx,
+                work.setup.product,
+                policy_payload,
+                command_id=uuid4(),
+                request_key=str(uuid4()),
+            )
+        assert policy_receipt["subject_type"] == "change_policy_fact"
+    
+        items, selection_sources = [], []
+        for index, (discipline, kind, configuration, intent_kind) in enumerate(
+            (
+                (
+                    "engineering",
+                    "engineering_configuration",
+                    work.config["engineering"],
+                    "new_engineering_configuration",
+                ),
+                (
+                    "manufacturing",
+                    "manufacturing_configuration",
+                    work.config["process"],
+                    "new_manufacturing_configuration",
+                ),
+            )
+        ):
+            reference = Ref(kind=kind, id=UUID(configuration["subject_id"]), revision=1)
+            item = PlanItem(
+                id=uuid4(),
+                discipline=discipline,
+                selection=Selection(
+                    objects=(reference,),
+                    units=(f"object:{reference.identity}",),
+                    conditions=("Fixed shared configuration and the exact CAPA action only",),
+                    sources=(policy_source,),
+                ),
+                intent=ControlledIntent(
+                    id=uuid4(),
+                    kind=intent_kind,
+                    basis=(reference,),
+                    description=f"Plan new {discipline} configuration; execution pending",
+                ),
+                verification_requirement="New exact configuration/Run plus independent review",
+            )
+            action = basis.actions[index]
+            reason = f"Named synthetic {discipline} applicability of the fixed action and object"
+            material = SelectionMaterial(
+                schema_version="pdos-controlled-change-selection-v1",
+                scope=scope,
+                purpose=basis.purpose,
+                change_id=UUID(change_id),
+                item=item,
+                issue_id=work.issue_id,
+                capa_id=work.capa_id,
+                action_id=action.action_id,
+                action_sha256=action.action_sha256,
+                executor_id=action.executor_id,
+                decider_id=work.quality.human,
+                status="applicable",
+                valid_until=until,
+                reason=reason,
+                nature="synthetic",
+            )
+            items.append(item)
+            selection_sources.append(
+                (material, native_original(work, material, f"Shared {discipline} applicability"))
+            )
+    
+        # Sources are complete before the real dependency watermark is captured.
+        captured, _ = change.capture(work, change_id)
+        impact, _ = change.command(work, "change.impact.compute", captured["impact_payload"])
+        saved_impact = post(work.quality, impact)
+        assert saved_impact.status_code == 200, saved_impact.text
+        analysis, _ = change.current(work, change_id)
+        fixed_assessment = deepcopy(analysis["request_snapshot"]["assessments"][-1])
+        assessment = ImpactAssessment.model_validate(fixed_assessment)
+        assert assessment.unknown and analysis["request_snapshot"]["orders"] == []
+        known = {row.node.ref.identity for row in assessment.known}
+        assert all(item.selection.objects[0].identity in known for item in items)
+    
+        empty_context = order_context(work, change_id)
+        assert empty_context["change"]["id"] == str(analysis["id"])
+        assert empty_context["change"]["change_id"] == change_id
+        assert empty_context["change"]["visibility"] == "category"
+        assert empty_context["policy"]["current"] is True
+        assert set(empty_context["policy"]["required_disciplines"]) == {
+            "engineering",
+            "manufacturing",
+        }
+        assert empty_context["policy"]["nature"] == "synthetic"
+        assert empty_context["selections"] == [] and empty_context["missing"]
+        assert {value["action_id"] for value in empty_context["actions"]} == {
+            str(action.action_id) for action in basis.actions
+        }
+        object_options = [value["ref"] for value in empty_context["object_options"]]
+        assert all(
+            item.selection.objects[0].model_dump(mode="json") in object_options for item in items
+        )
+        selection_receipts = []
+        for material, source in selection_sources:
+            before_source, fixed = counts(work), change.current(work, change_id)
+            candidate = work.quality.client.post(
+                f"/v1/categories/{work.setup.category}/products/{work.setup.product}/change-execution/selection-material",
+                headers=work.quality.headers,
+                json={
+                    "change_id": change_id,
+                    "expected_change_revision": analysis["revision"],
+                    "source": source.model_dump(mode="json"),
+                },
+            )
+            assert candidate.status_code == 200, candidate.text
+            assert counts(work) == before_source and change.current(work, change_id) == fixed
+            assert candidate.json()["material"] == material.model_dump(mode="json")
+            value = candidate.json()["command"]
+            assert value["operation"] == "change.selection.decide" and value["source_read_set"]
+            assert value["payload"]["visibility"] == "category"
+            assert value["payload"]["item"] == material.item.model_dump(mode="json")
+            assert value["payload"]["action"]["action_id"] == str(material.action_id)
+            assert value["payload"]["action"]["expected_issue_revision"] == basis.issue_revision
+            assert value["payload"].get("approval_token") is None
+            receipt, _ = accepted(work.quality, value)
+            assert receipt["subject_type"] == "change_selection_fact"
+            selection_receipts.append(receipt)
+        assert change.current(work, change_id)[0]["id"] == analysis["id"]
+        selected_context = order_context(work, change_id)
+        assert selected_context["change"] == empty_context["change"]
+        assert {value["id"] for value in selected_context["selections"]} == {
+            receipt["subject_id"] for receipt in selection_receipts
+        }
+>       assert {value["receipt_id"] for value in selected_context["selections"]} == {
+            receipt["id"] for receipt in selection_receipts
+        }
+E       AssertionError: assert {None} == {'7672ff04-1f...bb0f3d410e1e'}
+E         
+E         Extra items in the left set:
+E         None
+E         Extra items in the right set:
+E         'f4395dc6-dfbf-4f7b-a0cb-bb0f3d410e1e'
+E         '7672ff04-1f84-4b79-9683-6fb3d494327d'
+E         Use -v to get more diff
+
+tests/change_execution/test_order_preparation_chain.py:484: AssertionError
+=============================== warnings summary ===============================
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-x1kreu_p/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-x1kreu_p/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-x1kreu_p/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-x1kreu_p/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-x1kreu_p/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-x1kreu_p/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-x1kreu_p/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-x1kreu_p/pdos-next/server/pdos_next/change_controlled_owner.py:768: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # BEFORE Current target guard, never a commit/second Receipt.
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-x1kreu_p/pdos-next/server/pdos_next/service.py:1164: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 12 warnings in 137.77s (0:02:17)

@@ -21,6 +21,10 @@ from pdos_next.domain.measurement_evidence.verifier import (
 from pdos_next.domain.verification.handlers import semantic_digest
 from pdos_next.domain.verification.ports import Invocation
 from pdos_next.domain.verification_front.adapters import authority_dto
+from pdos_next.domain.verification_launch.models import (
+    VerificationRunCurrent,
+    VerificationRunVersion,
+)
 from pdos_next.domain.verification_results import service
 from pdos_next.domain.verification_results.adapters import ResultsCommands, RetainedSamples, kernel
 from pdos_next.domain.verification_results.schemas import (
@@ -663,8 +667,20 @@ def test_preview_uses_no_new_occupancy_and_masks_only_new_server_clocks(work, mo
         "qualified": True,
         "roles": ["quality"],
     }
-    row = SimpleNamespace(
+    row = VerificationRunVersion(
         id=uuid4(),
+        tenant_id=work.run.scope.tenant_id,
+        product_id=work.run.scope.product_id,
+        project_id=work.run.scope.project_id,
+        build_id=work.run.build.id,
+        build_revision=work.run.build.revision,
+        request_id=work.run.request_id,
+        request_revision=work.run.request_revision,
+        run_id=work.run.id,
+        revision=work.run.revision,
+        status=work.run.status,
+        run_snapshot=work.run.model_dump(mode="json"),
+        snapshot_sha256=digest(work.run.model_dump(mode="json")),
         authority_snapshot=authority,
         input_snapshot={"original_start_intent": "a" * 64},
         operation="test.run.start",
@@ -710,7 +726,28 @@ def test_preview_uses_no_new_occupancy_and_masks_only_new_server_clocks(work, mo
     )
     monkeypatch.setattr(service, "_check_source", lambda *_: None)
     monkeypatch.setattr(service, "now", lambda: work.now)
-    session = SimpleNamespace(scalar=lambda _: None)
+    pointer = VerificationRunCurrent(
+        id=uuid4(),
+        tenant_id=work.run.scope.tenant_id,
+        product_id=work.run.scope.product_id,
+        request_id=work.run.request_id,
+        run_id=work.run.id,
+        run_version_id=row.id,
+        run_revision=row.revision,
+    )
+
+    # This preview contract owns clocks and zero new effects. The SQL owner is
+    # covered by the real chain; its exact current set still uses real snapshots.
+    session = SimpleNamespace(info={"read_snapshot": True}, scalar=lambda _: None)
+    current_reads = []
+
+    def current_runs(s, context, product_id, request_id, *, lock=False):
+        assert s is session and context is ctx and not lock
+        assert (product_id, request_id) == (work.run.scope.product_id, work.run.request_id)
+        current_reads.append((pointer, row))
+        return ((pointer, row),)
+
+    monkeypatch.setattr(service.launch, "_currents_for_request", current_runs)
     first = service.preview_view(session, ctx, command, product, raw)
     work.now += timedelta(minutes=1)
     second = service.preview_view(session, ctx, command, product, raw)
@@ -723,4 +760,5 @@ def test_preview_uses_no_new_occupancy_and_masks_only_new_server_clocks(work, mo
         "actual_start"
     ] == work.run.actual_start.model_dump(mode="json")
     assert first["after"]["occupancy_effect"] == "none_retain_original_start_and_consumption"
+    assert current_reads == [(pointer, row), (pointer, row)]
     assert not work.recorded

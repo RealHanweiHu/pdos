@@ -38,7 +38,7 @@ def route(monkeypatch):
         yield client, product, opened
 
 
-@pytest.mark.parametrize("key", ["unknown", "project_id"])
+@pytest.mark.parametrize("key", ["unknown", "scope"])
 def test_unknown_get_query_is_rejected_before_uow(route, key):
     client, product, opened = route
     response = client.get(
@@ -49,7 +49,9 @@ def test_unknown_get_query_is_rejected_before_uow(route, key):
     assert opened == []
 
 
-@pytest.mark.parametrize("key", ["issue_id", "change_id", "history_cursor", "capture_cursor"])
+@pytest.mark.parametrize(
+    "key", ["project_id", "issue_id", "change_id", "history_cursor", "capture_cursor"]
+)
 def test_duplicate_get_selection_is_rejected_before_uow(route, key):
     client, product, opened = route
     value = str(uuid4())
@@ -85,7 +87,7 @@ def test_inputs_query_is_rejected_before_handler_or_uow(route):
     assert opened == []
 
 
-@pytest.mark.parametrize("key", ["issue_id", "change_id"])
+@pytest.mark.parametrize("key", ["project_id", "issue_id", "change_id"])
 def test_single_explicit_selection_reaches_original_reader(route, key):
     client, product, opened = route
     selection = str(uuid4())

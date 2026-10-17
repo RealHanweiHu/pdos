@@ -379,7 +379,10 @@ def prepare_capture(s, ctx, pid, input: CaptureInput, prepared: PreparedCapture)
         request_id=input.request_id,
         run_id=input.run_id,
         owner_id=ctx.requester_id,
-        visibility="private",
+        # Retained measurements keep this immutable proof in their upstream
+        # audience. Shared Runs already reject private reports and read sets.
+        # Candidate listing and import remain bound to the capturing person.
+        visibility=run_row.visibility,
         status="prepared",
         revision=1,
         capture_key=input.capture_key,
@@ -557,9 +560,9 @@ def _measurement_records(s, ctx, pid, run):
 def _measurement_capture(s, ctx, pid, measurement):
     """A readable retained measurement delegates proof access, not candidate ownership.
 
-    The private draft cannot be listed or submitted by a different person. Its
-    immutable original-byte binding may be rechecked for a readable formal result;
-    original Artifact/Original ACL is still checked independently on every read.
+    The candidate cannot be listed or submitted by a different person. Its
+    immutable proof follows the fixed Run audience so a readable formal result
+    can recheck it; original Artifact/Original ACL is checked on every read.
     """
     query = select(MeasurementImportCapture).where(
         MeasurementImportCapture.tenant_id == ctx.tenant_id,
@@ -653,7 +656,8 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
     if isinstance(payload, ImportPayload) and payload.capture_id:
         captured = _row(s, ctx, product.id, MeasurementImportCapture, payload.capture_id)
         if (
-            captured.run_id != run.id
+            captured.owner_id != ctx.requester_id
+            or captured.run_id != run.id
             or captured.request_id != request.id
             or captured.revision != payload.expected_capture_revision
             or captured.run_revision != payload.expected_run_revision
@@ -1741,7 +1745,10 @@ def list_results(s, ctx, product_id, *, build_id=None, run_id=None):
         (TestResultProjection, "projections"),
         (TestResultActionFact, "actions"),
     ):
-        rows = s.scalars(scoped(model).order_by(model.created_at.desc(), model.id)).all()
+        query = scoped(model)
+        if model is MeasurementImportCapture:
+            query = query.where(MeasurementImportCapture.owner_id == ctx.requester_id)
+        rows = s.scalars(query.order_by(model.created_at.desc(), model.id)).all()
         for row in rows:
             if row.run_id not in run_views:
                 continue

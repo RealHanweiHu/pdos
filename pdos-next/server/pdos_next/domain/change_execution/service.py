@@ -1271,7 +1271,15 @@ def _capture_is_current(s, ctx, pid, capture, request, purpose, authority):
 
 
 def list_changes(
-    s, ctx, product_id, *, issue_id=None, change_id=None, history_cursor=None, capture_cursor=None
+    s,
+    ctx,
+    product_id,
+    *,
+    project_id=None,
+    issue_id=None,
+    change_id=None,
+    history_cursor=None,
+    capture_cursor=None,
 ):
     from pdos_next.capa_history import page_query, page_rows
     from pdos_next.service import require_access
@@ -1288,6 +1296,8 @@ def list_changes(
         (ChangeRequestVersion.visibility != "private")
         | (ChangeRequestVersion.owner_id == ctx.requester_id),
     )
+    if project_id is not None:
+        q = q.where(ChangeRequestVersion.project_id == project_id)
     if change_id is not None:
         q = q.where(ChangeRequestVersion.change_id == change_id)
     if issue_id is not None:
@@ -1327,6 +1337,8 @@ def list_changes(
     if issue_id is not None:
         try:
             issue_row, typed = _issue_loader(s)(s, ctx, product_id, issue_id)
+            if project_id is not None and issue_row.project_id != project_id:
+                raise DomainError("FORBIDDEN_SCOPE", "问题不属于筛选的项目范围。", 403)
             issue = typed.model_dump(mode="json") if hasattr(typed, "model_dump") else typed
             issue_ref = Ref(id=issue_id, revision=issue_row.revision, kind="issue")
             options[issue_ref.identity] = {

@@ -549,7 +549,7 @@ def _current_issue_revision(s, ctx, pid, scope, issue_id):
         QualityIssueCurrent.project_id == scope.project_id,
         QualityIssueCurrent.issue_id == issue_id,
     )
-    return p.revision
+    return p.issue_revision
 
 
 def import_policy(s, ctx, pid, payload, *, command_id, request_key):

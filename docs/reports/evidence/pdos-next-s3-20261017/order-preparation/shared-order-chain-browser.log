@@ -1,0 +1,116 @@
+F
+=================================== FAILURES ===================================
+_ test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact _
+
+quality_work = namespace(setup=<isolated synthetic test scope>, config={'source': 'c1020095-3c49-4934-8ab5-b93626f45b52', 'project': ...-b650-fbc8069958e4', 'issue_revision': 4, 'capa_id': '1c1026c1-a5f3-4c4a-8ab1-961cb70ee9f6', 'created_output': None}]})
+
+    def test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact(
+        quality_work,
+    ):
+        work = quality_work
+        # Declare all separate synthetic series before the Issue's signer snapshots
+        # as well as before capture; never update a saved professional basis in place.
+        for role, operations in (
+            (
+                "quality",
+                [
+                    "change.request.create",
+                    "change.impact.compute",
+                    "change.policy.import",
+                    "change.order.prepare",
+                ],
+            ),
+            ("engineering", ["change.selection.decide"]),
+            ("manufacturing", ["change.selection.decide"]),
+        ):
+            for kind in ("duty", "qualification"):
+                import_authority(
+                    work,
+                    role,
+                    kind,
+                    subject_id=str(work.quality.human),
+                    operations=operations,
+                    external_id=f"synthetic-shared-order-{work.build_id}-{role}-{kind}",
+                )
+        shared_capa(work)
+        with session(work) as stored:
+            basis = followup_owner.load_followup_basis(
+                stored, work.quality.ctx, work.setup.product, work.issue_id, work.issue_view["revision"]
+            )
+            project = stored.get(Project, UUID(work.config["project"]))
+            assert project.visibility == "category"
+            project_owner = project.owner_id
+        assert basis.root_cause_sha256 is None
+        assert all(action.completion_sha256 is None for action in basis.actions)
+        with session(work, caller=work.engineer) as stored:
+>           peer_basis = followup_owner.load_followup_basis(
+                stored,
+                work.engineer.ctx,
+                work.setup.product,
+                work.issue_id,
+                work.issue_view["revision"],
+            )
+
+tests/change_execution/test_order_preparation_chain.py:266: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = <sqlalchemy.orm.session.Session object at 0x13b2582f0>
+ctx = Context(tenant_id=UUID('4ac891d9-4832-45cb-a2cc-0b9d631bc2f0'), actor_id=UUID('1f47d5f0-d0aa-426b-a477-b0f99fc3c071'),...ne, cancel_epoch=None, category_id=UUID('f0c150e7-defd-4eb5-8bce-e5248ace9da9'), agent_run_id=None, agent_call_id=None)
+product_id = UUID('ca1b2dfe-750b-4400-9070-86ff1b721c46')
+issue_id = UUID('cb2d0f2f-884d-5a2b-b650-fbc8069958e4')
+expected_issue_revision = 4, write = False
+
+    def load_followup_basis(s, ctx, product_id, issue_id, expected_issue_revision, *, write=False):
+        """Return a current server-derived anchor; old replay uses the exact loader instead."""
+        from pdos_next.domain.quality_execution.models import QualityIssueCurrent
+    
+        revision = FixedRef(id=issue_id, revision=expected_issue_revision).revision
+        quality._human(s, ctx, product_id, write=write)
+        pointer = s.scalar(
+            select(QualityIssueCurrent).where(
+                QualityIssueCurrent.tenant_id == ctx.tenant_id,
+                QualityIssueCurrent.product_id == product_id,
+                QualityIssueCurrent.issue_id == issue_id,
+            )
+        )
+        if pointer is None or pointer.issue_revision != revision:
+>           raise DomainError("VERSION_CONFLICT", "当前Issue聚合版已推进，请重新核对整改范围。")
+E           pdos_next.errors.DomainError: 当前Issue聚合版已推进，请重新核对整改范围。
+
+pdos_next/domain/capa_verification/service.py:211: DomainError
+=============================== warnings summary ===============================
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-qeiqwwm1/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-qeiqwwm1/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-qeiqwwm1/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-qeiqwwm1/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-qeiqwwm1/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-qeiqwwm1/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-qeiqwwm1/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 9 warnings in 88.50s (0:01:28)

@@ -246,7 +246,7 @@ def _atom_proof(s, ctx, pid, atom, group):
         and proof.snapshot == atom.input_snapshot["review"]
         and proof.created_at <= atom.proof_consumed_at <= atom.created_at
         and proof_deadline_current(
-            "T2" if atom.operation == "change.order.approve" else "T1",
+            "T2" if atom.operation in {"change.order.approve", "change.selection.decide"} else "T1",
             proof.expires_at,
             atom.created_at,
         )
