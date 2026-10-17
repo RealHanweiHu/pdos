@@ -1,0 +1,3 @@
+tests/native_pilot_transactions/test_transactions.py::test_actual_pilot_partial_correction_yields_issue_history_peer_replay_and_rollback[launch_work0]
+
+1 test collected in 0.05s

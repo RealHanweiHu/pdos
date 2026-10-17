@@ -1,0 +1,309 @@
+{
+  "base_commit": "555aa1ae56eaefbd3d3bcfa526c6d65b893a1227",
+  "snapshot": "/private/tmp/pdos-native-pilot-delivery-x1t_ybcy",
+  "started_at": "2026-10-17T21:11:23.610369+00:00",
+  "finished_at": "2026-10-17T21:11:27.336311+00:00",
+  "owned_files": [
+    {
+      "path": "pdos-next/contracts/openapi.json",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "2d9a724c714a03e205c173ce3eb4e1016022adad8710875a8e2e6513c8b4ad96",
+      "before_worktree_sha256": "f8183c31716c102a6a79e3c80dd6d7289f639e82fec515b7e4342b56aa03ad5a",
+      "sha256": "2d9a724c714a03e205c173ce3eb4e1016022adad8710875a8e2e6513c8b4ad96",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/contracts/operations.json",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "0b564a440eb6e97d4db8c3cc07e92c401fad657c82a53d94669fc8a9eb6446ad",
+      "before_worktree_sha256": "9234539fbd965ab37e32338eb83f39891546670c1523c91fcd0dcd2047f43d8b",
+      "sha256": "0d9dfeddaffaab06e3e5c932c4de7f08ba1bfdd49df2863a05df3e0dbb767a39",
+      "foreign_context_removed": true
+    },
+    {
+      "path": "pdos-next/contracts/payloads.schema.json",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "32d1e6cacba5103fe588e790c8fea56daaad0e147388b9a59b548082340f1378",
+      "before_worktree_sha256": "c9005baa0ed7af2fb82a6d4990a51b156cdb7673f1e1e42c4e848216f4cb2084",
+      "sha256": "32d1e6cacba5103fe588e790c8fea56daaad0e147388b9a59b548082340f1378",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0778.py",
+      "mode": "full",
+      "sha256": "9be66555f24dc3eb74979b6f9b6eea9e12ff08694f187fc0d461b10bee1caea4"
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0778_native_pilot.py",
+      "mode": "full",
+      "sha256": "534e7cfe689c431f0d4cc4fe62c3ce53d0da2b6c13f91dd5d686de8f37610306"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/api.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "6e69f15fea7421f4e4acc80914313d4ff4caf00e108f0d805d92b3b7af3ed8d3",
+      "before_worktree_sha256": "d90c44ac32e352fe04f95217a305526af5f8374ac127589d073317e767d7ba20",
+      "sha256": "a87ecadf320d5a6dae94e0cc0364761ba58f78194de11440b12f81ffe7b05830",
+      "foreign_context_removed": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/command_handlers.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "de778ea1b43b00ac84c705fbc8d7c84eaa77fcf069b98c207368c2918e463d6a",
+      "before_worktree_sha256": "1f8bcd9bcbb89cc620cc93d68a1592c21d8ff5c39acca6f4872bf285368b2c7d",
+      "sha256": "6b7c4bc2289e87b2914e83ba559181858056005730e7430c3bcc77b914b7811e",
+      "foreign_context_removed": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/contracts.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "539fad5bf0dedc2734a8e7418fd3886f85f6b3aa0964064ef4e148fd1c856e07",
+      "before_worktree_sha256": "ca21ff09ba5ceb55a3a09ea69dfbec6767fab9e191f9760e2f96bb488e69474e",
+      "sha256": "539fad5bf0dedc2734a8e7418fd3886f85f6b3aa0964064ef4e148fd1c856e07",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/build_operational_facts/execution_scope.py",
+      "mode": "full",
+      "sha256": "6a707752092d687dbb8ba20220fb2256233a8389e6bf8cdeb08421b138efe449"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/build_operational_facts/schemas.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "2a647a3509401ddd3796cf33c14026c6341bdfaf3120b6f7aaf18b95d254e75b",
+      "before_worktree_sha256": "91d1027e4fd2489eb8af334d909f99acba6bd872e45a5cf33afe30ca9075188b",
+      "sha256": "2a647a3509401ddd3796cf33c14026c6341bdfaf3120b6f7aaf18b95d254e75b",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/manufacturing_baseline/consumption.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "a7d0da17e462513e46164d0aba0a500dd838dd9ec8e362e4adf9bb5e00aa3379",
+      "before_worktree_sha256": "4d44782f637e9f59d8873be8cea0b4fce26460b6a0a8f528dec6557ccc1f51a8",
+      "sha256": "a7d0da17e462513e46164d0aba0a500dd838dd9ec8e362e4adf9bb5e00aa3379",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_service.py",
+      "mode": "full",
+      "sha256": "ad1b5257a4a44eada0a16f382994dd9ad907abaeeb8557abf86c5164a22508fe"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/manufacturing_trials/native_api.py",
+      "mode": "full",
+      "sha256": "5d51c23d3ef77e29d80e5a9e9d836c476028543e14afdd577c6944a2683d41e3"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/manufacturing_trials/native_material_owner.py",
+      "mode": "full",
+      "sha256": "19963368278c07370fd027f876a128d61022e87ad14f32a6e3ebe460a063b24f"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/manufacturing_trials/native_models.py",
+      "mode": "full",
+      "sha256": "be4ebc7e7ea6b58fa608af1e02c5a0add0eb7df7d517994cdcefb27e74c6107a"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/manufacturing_trials/native_schemas.py",
+      "mode": "full",
+      "sha256": "e79841f16f9550ac31bad3118bf4dd1e0e9aabd334b9e37f2b20608bb6752214"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/manufacturing_trials/native_service.py",
+      "mode": "full",
+      "sha256": "ed27e6902b46b0d64458bd37c2d1423ec5a71c0bab8b9f38f94f5cb9a5571ea1"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/manufacturing_trials/native_statistics_owner.py",
+      "mode": "full",
+      "sha256": "8c784847e9a5566435b39eefabae039c6d9ef9c63ff408a88aee63bb108f7401"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/manufacturing_trials/native_storage_schema.py",
+      "mode": "full",
+      "sha256": "78681cf9b7662d7fbacea58e17cf02a7f596a18e7fda63093525f7728f73a249"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/professional_authority/service.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "892e4796735ce5d5a276a3e94cb349bc4ab48541a59dfc220d3473cea7ebfac7",
+      "before_worktree_sha256": "fe53b3f31c755c863beff494360904486b5a861c6731b198567faa483fc0ca54",
+      "sha256": "892e4796735ce5d5a276a3e94cb349bc4ab48541a59dfc220d3473cea7ebfac7",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/professional_authority/signature_watermarks.py",
+      "mode": "full",
+      "sha256": "fc624613d51481a7ac4e9e85220f512278411717fe4717dbcc389579ee0f3859"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/models.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "ffc4fcfd35b1862ab13f7a3fda20233a07381759cf09825e4e9d903646cf997b",
+      "before_worktree_sha256": "e34dc453fedd6f723d04821abc002b77502e06e76dfc989c5f24bfd11a127126",
+      "sha256": "ffc4fcfd35b1862ab13f7a3fda20233a07381759cf09825e4e9d903646cf997b",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "8f186ab9968af25e786d54fd0baff8a01d32b88603b0f8671c26a69def50c50a",
+      "before_worktree_sha256": "50fcf077a09c13ad80c31d57876ca0144c6b9434c2c97f2abdb36c319840f34d",
+      "sha256": "e1135669f8751a366b48476fd776077fca7eddf71118a21aa2d2d508948532c4",
+      "foreign_context_removed": true
+    },
+    {
+      "path": "pdos-next/server/tests/manufacturing_preparation/test_publication_service.py",
+      "mode": "full",
+      "sha256": "d2ec710c83ff9e47122bfc65d138701dae09416df6c561b4b7450f3a4a39094b"
+    },
+    {
+      "path": "pdos-next/server/tests/manufacturing_trials/test_native_material_owner.py",
+      "mode": "full",
+      "sha256": "55bca64f3edf0139d29309f759fd92446e032a6199b195f0ac19c8d544b80553"
+    },
+    {
+      "path": "pdos-next/server/tests/manufacturing_trials/test_native_migration.py",
+      "mode": "full",
+      "sha256": "4438f3f725b7a82a7de87f7d587242328e574125cb59485198e328db11a5f8f6"
+    },
+    {
+      "path": "pdos-next/server/tests/manufacturing_trials/test_native_models.py",
+      "mode": "full",
+      "sha256": "9669d5c78dc7e7048e1d8ef22fb569c727b78ac376cf1e3574d580aaa7e726f6"
+    },
+    {
+      "path": "pdos-next/server/tests/manufacturing_trials/test_native_request_proof.py",
+      "mode": "full",
+      "sha256": "e81d9035faebd3bdaff1dfc307a1be343bd00a1400b8f8b726e9f923e0b1e09b"
+    },
+    {
+      "path": "pdos-next/server/tests/manufacturing_trials/test_native_schemas.py",
+      "mode": "full",
+      "sha256": "b4ca7a3e64718457c2ca76252885e0f489c6290311ea64069ea7665a049d4623"
+    },
+    {
+      "path": "pdos-next/server/tests/manufacturing_trials/test_native_service.py",
+      "mode": "full",
+      "sha256": "7039d9e4f53010c0c4571643a84b9289f53bb05961bfd83c2b182e231d5f068b"
+    },
+    {
+      "path": "pdos-next/server/tests/manufacturing_trials/test_native_statistics_owner.py",
+      "mode": "full",
+      "sha256": "68b21472cb6f10c342eef5c9610d2b15a388d8b06f33ce35fb39955d014eb44a"
+    },
+    {
+      "path": "pdos-next/server/tests/manufacturing_trials/test_native_storage_schema.py",
+      "mode": "full",
+      "sha256": "d100927c1f55dd3ee9ec1599c290f02a28e57b0baa85896d80d8eab67fc55784"
+    },
+    {
+      "path": "pdos-next/server/tests/native_pilot_browser_seed/__init__.py",
+      "mode": "full",
+      "sha256": "54442f6f09fbccb6a8b63e18cb50f20362304d771334cda39cebe3d458316576"
+    },
+    {
+      "path": "pdos-next/server/tests/native_pilot_browser_seed/conftest.py",
+      "mode": "full",
+      "sha256": "649dc49332ae5d8b57c0703044ce93c29315e0dada960236b9ac9c9b0f3d8b61"
+    },
+    {
+      "path": "pdos-next/server/tests/native_pilot_browser_seed/test_browser_seed.py",
+      "mode": "full",
+      "sha256": "743f0b387f13d18b29f30c33022380d4228afd2f9301ffc76140d13904c1c2fd"
+    },
+    {
+      "path": "pdos-next/server/tests/native_pilot_transactions/__init__.py",
+      "mode": "full",
+      "sha256": "48416e1b800a8dcdd42afdd35c18f5761b66889f29196fd0eebe89a45d09e84d"
+    },
+    {
+      "path": "pdos-next/server/tests/native_pilot_transactions/conftest.py",
+      "mode": "full",
+      "sha256": "a91ff2c2d22aeec4413c0291c452df5d362dd4be9c0b74f903c7e1413792a80a"
+    },
+    {
+      "path": "pdos-next/server/tests/native_pilot_transactions/fixtures.py",
+      "mode": "full",
+      "sha256": "e66f49f54b2b63820a70f9cc0f4202ccd421fe54b2e744a128792433ae197b94"
+    },
+    {
+      "path": "pdos-next/server/tests/native_pilot_transactions/test_transactions.py",
+      "mode": "full",
+      "sha256": "2c548d9b5106bca7c2debc801120b4438ce330728d75792ddff997f2e3a60c86"
+    },
+    {
+      "path": "pdos-next/server/tests/professional_authority/test_signature_watermarks.py",
+      "mode": "full",
+      "sha256": "d7f70a5b3ef86b6b7de9afd05e9e1a628ee71fa17dabf2b1e833a62e8f0e7072"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "3d65c69a023bc82756fab8205f6623f7041808e6a1ba5d5b7566338cb59d18c0",
+      "before_worktree_sha256": "4f2153cf7884149483e5690ecb57c44197d4f967447eb058b2a25090d971400c",
+      "sha256": "3d65c69a023bc82756fab8205f6623f7041808e6a1ba5d5b7566338cb59d18c0",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/app/api/native-pilot-route.test.mjs",
+      "mode": "full",
+      "sha256": "32147c9614f62bfb465da1bf7275256e86660841e642ac946410b1ee8a8d0a74"
+    },
+    {
+      "path": "pdos-next/web/src/components/manufacturing/native-pilots.module.css",
+      "mode": "full",
+      "sha256": "89c9e89f4453a7f5908177a7fa40b219c87d2fd2295a287df88f21f02bab47ac"
+    },
+    {
+      "path": "pdos-next/web/src/components/manufacturing/native-pilots.test.mjs",
+      "mode": "full",
+      "sha256": "fc0de51dabd8b3e64bed7d788496b8706e23b7acd844499f437734bbb7b59202"
+    },
+    {
+      "path": "pdos-next/web/src/components/manufacturing/native-pilots.tsx",
+      "mode": "full",
+      "sha256": "166f0e6ac9ada1a300dcb6c55c24856133bf6815f85f3be748b7918ac8dfeb2d"
+    },
+    {
+      "path": "pdos-next/web/src/components/workspace.tsx",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "81c1b9a0fab03790a5d1c499cf20e6a09deefbe1b9b4a3ce1f670c3f0e17d214",
+      "before_worktree_sha256": "999680550992ea51643827be2dc7b2e0ff8b5582f0d9b05eca628ce96e1e64bc",
+      "sha256": "81c1b9a0fab03790a5d1c499cf20e6a09deefbe1b9b4a3ce1f670c3f0e17d214",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/lib/native-pilots.test.ts",
+      "mode": "full",
+      "sha256": "a2e6720b1f268130d983caa79ae7a516c4a4a8f2cb39e44d03ca8c7a3d83fbfb"
+    },
+    {
+      "path": "pdos-next/web/src/lib/native-pilots.ts",
+      "mode": "full",
+      "sha256": "7f7199c0f39ef5e70b4a5cd83f375e381b3b8f09377164bc1befc6326af48160"
+    }
+  ],
+  "unrelated_worktree_context_excluded": true,
+  "command": [
+    "-B",
+    "-m",
+    "pytest",
+    "--confcutdir=tests/manufacturing_trials",
+    "tests/manufacturing_trials",
+    "tests/build_operational_facts/test_pure.py",
+    "tests/manufacturing_preparation/test_preparation.py",
+    "tests/manufacturing_preparation/test_publication_consumption.py",
+    "tests/manufacturing_preparation/test_publication_service.py",
+    "tests/manufacturing_preparation/test_publication_material_owner.py",
+    "tests/manufacturing_preparation/test_publication_rules.py",
+    "tests/manufacturing_preparation/test_publication_storage_schema.py",
+    "tests/professional_authority/test_signature_watermarks.py",
+    "-q",
+    "--tb=short",
+    "-p",
+    "no:cacheprovider"
+  ],
+  "exit": 2,
+  "database_or_http": false
+}

@@ -1,0 +1,54 @@
+{
+  "calls": [
+    {
+      "method": "POST",
+      "path": "/v1/categories/:id/products/:id/pilots/inputs",
+      "operation": "npi.pilot.create",
+      "status": 200,
+      "seconds": 6.359961,
+      "sql_count": 174
+    },
+    {
+      "method": "POST",
+      "path": "/v1/categories/:id/commands/preview",
+      "operation": "npi.pilot.create",
+      "status": 200,
+      "seconds": 1.091947,
+      "sql_count": 88
+    },
+    {
+      "method": "POST",
+      "path": "/v1/categories/:id/commands",
+      "operation": "npi.pilot.create",
+      "status": 200,
+      "seconds": 0.934181,
+      "sql_count": 62
+    },
+    {
+      "method": "GET",
+      "path": "/v1/categories/:id/products/:id/pilots/:id",
+      "operation": null,
+      "status": 200,
+      "seconds": 0.800207,
+      "sql_count": 42
+    },
+    {
+      "method": "POST",
+      "path": "/v1/categories/:id/products/:id/originals",
+      "operation": null,
+      "status": 200,
+      "seconds": 0.099259,
+      "sql_count": 16
+    },
+    {
+      "method": "POST",
+      "path": "/v1/categories/:id/products/:id/pilots/inputs",
+      "operation": "npi.pilot.result.record",
+      "status": "raised",
+      "seconds": 7.066878,
+      "sql_count": 181
+    }
+  ],
+  "formal_performance_acceptance": false,
+  "scope": "one synthetic candidate; native loop only; setup excluded"
+}

@@ -375,7 +375,8 @@
       "ai_execution": "一次确认后",
       "event": "pilot.created",
       "stage": "S4",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "npi.pilot.result.record",
@@ -383,7 +384,8 @@
       "ai_execution": "一次确认后",
       "event": "pilot.results_recorded",
       "stage": "S4",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "change.request.create",

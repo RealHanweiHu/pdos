@@ -1,0 +1,14 @@
+{
+  "browser_closed": true,
+  "cookie_cleared": true,
+  "private_seed_credential_removed": true,
+  "API_finish_requested": true,
+  "own_web_termination_requested": true,
+  "api_port": 61739,
+  "web_port": 61740,
+  "unrelated_preview_processes_touched": false,
+  "test_database_and_backups_retained": true,
+  "API_process_finished": true,
+  "own_web_process_finished": true,
+  "own_web_exit_code": 143
+}

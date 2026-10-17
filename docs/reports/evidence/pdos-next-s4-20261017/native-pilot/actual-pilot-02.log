@@ -1,0 +1,48 @@
+E
+==================================== ERRORS ====================================
+_ ERROR at setup of test_actual_pilot_partial_correction_yields_issue_history_peer_replay_and_rollback[launch_work0] _
+tests/native_pilot_transactions/fixtures.py:578: in native_case
+    new_physical_build(work)
+tests/native_pilot_transactions/fixtures.py:209: in new_physical_build
+    actual, _ = accepted(
+tests/test_project_first_plan.py:86: in accepted
+    assert preview.status_code == 200, preview.text
+E   AssertionError: {"code":"VALIDATION_FAILED","message":"内容不符合此操作的专用格式。","detail":{"reason":"INVALID_PAYLOAD"}}
+E   assert 422 == 200
+E    +  where 422 = <Response [422 Unprocessable Content]>.status_code
+=============================== warnings summary ===============================
+tests/native_pilot_transactions/test_transactions.py::test_actual_pilot_partial_correction_yields_issue_history_peer_replay_and_rollback[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-u_u2_mfd/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/native_pilot_transactions/test_transactions.py::test_actual_pilot_partial_correction_yields_issue_history_peer_replay_and_rollback[launch_work0]
+tests/native_pilot_transactions/test_transactions.py::test_actual_pilot_partial_correction_yields_issue_history_peer_replay_and_rollback[launch_work0]
+tests/native_pilot_transactions/test_transactions.py::test_actual_pilot_partial_correction_yields_issue_history_peer_replay_and_rollback[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-u_u2_mfd/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/native_pilot_transactions/test_transactions.py::test_actual_pilot_partial_correction_yields_issue_history_peer_replay_and_rollback[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-u_u2_mfd/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/native_pilot_transactions/test_transactions.py::test_actual_pilot_partial_correction_yields_issue_history_peer_replay_and_rollback[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-u_u2_mfd/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/native_pilot_transactions/test_transactions.py::test_actual_pilot_partial_correction_yields_issue_history_peer_replay_and_rollback[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-u_u2_mfd/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/native_pilot_transactions/test_transactions.py::test_actual_pilot_partial_correction_yields_issue_history_peer_replay_and_rollback[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-u_u2_mfd/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/native_pilot_transactions/test_transactions.py::test_actual_pilot_partial_correction_yields_issue_history_peer_replay_and_rollback[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-u_u2_mfd/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/native_pilot_transactions/test_transactions.py::test_actual_pilot_partial_correction_yields_issue_history_peer_replay_and_rollback[launch_work0]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+9 warnings, 1 error in 82.65s (0:01:22)

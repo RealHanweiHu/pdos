@@ -1,0 +1,32 @@
+{
+  "started_at": "2026-10-17T20:38:21.237309+00:00",
+  "finished_at": "2026-10-17T20:38:25.229053+00:00",
+  "snapshot": "/private/tmp/pdos-s4-native-pilot-u_u2_mfd",
+  "checks": [
+    {
+      "label": "request-flows",
+      "exit": 0,
+      "command": [
+        "node",
+        "../tools/s0_web_checkpoint.cjs",
+        "native-pilots",
+        "app/api/[...path]/route"
+      ]
+    },
+    {
+      "label": "component-and-bff",
+      "exit": 0,
+      "command": [
+        "node",
+        "--test",
+        "src/components/manufacturing/native-pilots.test.mjs",
+        "src/app/api/native-pilot-route.test.mjs",
+        "src/app/api/manufacturing-publication-route.test.mjs"
+      ]
+    }
+  ],
+  "source_changed": [],
+  "database_or_http": false,
+  "excluded_old_namespace_assertion": false,
+  "exclusion_reason": null
+}

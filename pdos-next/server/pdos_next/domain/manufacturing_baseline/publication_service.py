@@ -23,6 +23,7 @@ from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uo
 from pdos_next.domain.capa_effectiveness.facts import canonical_reads, json_value
 from pdos_next.domain.change_execution import service as evidence
 from pdos_next.domain.configurations import service as configurations
+from pdos_next.domain.professional_authority.signature_watermarks import signature_current
 from pdos_next.domain.projects import service as projects
 from pdos_next.domain.verification_front.service import _recheck
 from pdos_next.errors import DomainError
@@ -519,59 +520,78 @@ def _source_basis(s, ctx, pid, reads, plan, material_read):
     )
 
 
-def get_publication(s, ctx, pid, publication_id, revision=None):
-    captured, caller = _uow(s), digest(vars(ctx))
-    stamp = _stamp(s)
-    with preparation._fresh_selects(s):
-        require_access(s, ctx, pid)
-        row = _row(s, ctx, pid, publication_id, revision)
-        record = _read_record(s, ctx, pid, row)
-        pointer = _pointer(s, ctx, pid, row)
-        pointer_state = (
-            None if pointer is None else (pointer.version_id, pointer.revision, pointer.epoch)
+def get_publication_fact(s, ctx, pid, publication_id, revision=None):
+    """Read a signed immutable publication through its direct Current/watermarks.
+
+    The T2 transaction established the reciprocal decision and fixed document
+    links. A downstream T1 consumer keeps that signature and compares direct
+    source metadata; it does not re-run publication preparation or requalify the
+    original signer. The caller holds a model gate or a read snapshot.
+    """
+    from pdos_next.request_proof import snapshot_get, snapshot_scalar
+
+    require_access(s, ctx, pid)
+    row = snapshot_get(s, Publication, publication_id, scope_id=pid)
+    require(
+        row is not None
+        and (row.tenant_id, row.category_id, row.product_id)
+        == (ctx.tenant_id, ctx.category_id, pid)
+        and (row.visibility != "private" or row.owner_id == ctx.requester_id),
+        "FORBIDDEN_SCOPE",
+        "所选固定发布版本不可读取。",
+        403,
+    )
+    require(
+        revision is None or row.revision == revision, "VERSION_CONFLICT", "所选发布版本不匹配。"
+    )
+    _, _, plan, _ = _saved_input(row)
+    pointer = snapshot_scalar(
+        s,
+        (Current, row.series_id),
+        select(Current).where(
+            Current.tenant_id == ctx.tenant_id,
+            Current.category_id == ctx.category_id,
+            Current.product_id == pid,
+            Current.project_id == row.project_id,
+            Current.series_id == row.series_id,
+        ),
+        scope_id=pid,
+    )
+    from pdos_next.domain.projects.models import Project
+
+    project = snapshot_get(s, Project, row.project_id, scope_id=pid)
+    require(
+        project is not None
+        and (project.tenant_id, project.product_id) == (ctx.tenant_id, pid)
+        and (project.visibility != "private" or project.owner_id == ctx.requester_id),
+        "FORBIDDEN_SCOPE",
+        "所选发布的实际项目不可读取。",
+        403,
+    )
+    status = (
+        "current"
+        if (
+            project.purpose == row.purpose
+            and signature_current(s, ctx, pid, row.project_id, row.authority_snapshot)
         )
-        project, _, _ = projects._project(s, ctx, pid, row.project_id)
-        status = configurations._source_state(s, ctx, pid, row.required_source_read_set)
-        retained = _recheck(s, ctx, pid, row.project_id, row.authority_snapshot, at=row.created_at)
-        if project.purpose != row.purpose or retained.get("current") is not True:
+        else "needs_recheck"
+    )
+    try:
+        raw, _, _ = evidence._evidence(
+            s, ctx, pid, row.required_source_read_set, rules.source_refs(plan), io=False
+        )
+        actual = [{"id": key, "status": "active", **raw[key]} for key in sorted(raw)]
+        if actual != row.source_basis.get("artifact_sources"):
             status = "needs_recheck"
-        if status == "current":
-            raw, _, _ = evidence._evidence(
-                s, ctx, pid, row.required_source_read_set, rules.source_refs(record.plan)
-            )
-            actual = [{"id": key, "status": "active", **raw[key]} for key in sorted(raw)]
-            if actual != row.source_basis.get("artifact_sources"):
-                status = "needs_recheck"
-            else:
-                _, payload, _, saved_current = _saved_input(row)
-                material_read = _runtime(s).owner.read(s, ctx, pid, payload)
-                previous = None
-                if row.previous_id is not None:
-                    previous_row = _row(s, ctx, pid, row.previous_id, row.previous_revision)
-                    previous = _read_record(s, ctx, pid, previous_row)
-                material = material_read.material.model_copy(
-                    update={"required_source_read_set": record.plan.required_source_read_set}
-                )
-                actual_plan = rules.prepare_publication(
-                    payload, material, previous=previous, current=saved_current
-                )
-                require(
-                    actual_plan.body_sha256 == row.body_sha256,
-                    "STORED_ATOM_MISMATCH",
-                    "固定发布的原工艺、基线或资料正文不能核对。",
-                    503,
-                )
-        require_access(s, ctx, pid)
-        latest = _pointer(s, ctx, pid, row)
-        require(
-            pointer_state
-            == (None if latest is None else (latest.version_id, latest.revision, latest.epoch))
-            and stamp == _stamp(s),
-            "RECHECK_REQUIRED",
-            "读取期间发布Current或实际owner已变化。",
-        )
-        _same_uow(s, captured, ctx, caller)
-        return row, _view(row, record.plan, row.receipt_id, latest, status)
+    except DomainError as error:
+        if error.status in {401, 403} or error.code not in {"SOURCE_STALE", "SOURCE_UNAVAILABLE"}:
+            raise
+        status = "needs_recheck"
+    return row, _view(row, plan, row.receipt_id, pointer, status)
+
+
+def get_publication(s, ctx, pid, publication_id, revision=None):
+    return get_publication_fact(s, ctx, pid, publication_id, revision)
 
 
 @dataclass(frozen=True)

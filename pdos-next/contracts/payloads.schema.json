@@ -15835,6 +15835,1213 @@
       ],
       "title": "PublishPayload",
       "type": "object"
+    },
+    "npi.pilot.create": {
+      "$defs": {
+        "ExecutionWindow": {
+          "additionalProperties": false,
+          "description": "UTC [start, finish); never an Actual fact or forecast promise.",
+          "properties": {
+            "start": {
+              "format": "date-time",
+              "title": "Start",
+              "type": "string"
+            },
+            "finish": {
+              "format": "date-time",
+              "title": "Finish",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 160,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            }
+          },
+          "required": [
+            "start",
+            "finish",
+            "original_timezone"
+          ],
+          "title": "ExecutionWindow",
+          "type": "object"
+        },
+        "LotBasis": {
+          "additionalProperties": false,
+          "properties": {
+            "build": {
+              "$ref": "#/$defs/Ref"
+            },
+            "lot": {
+              "$ref": "#/$defs/Ref"
+            },
+            "actual_configuration": {
+              "$ref": "#/$defs/Ref"
+            },
+            "engineering_configuration": {
+              "$ref": "#/$defs/Ref"
+            },
+            "process_revision": {
+              "$ref": "#/$defs/Ref"
+            },
+            "unit": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Unit",
+              "type": "string"
+            }
+          },
+          "required": [
+            "build",
+            "lot",
+            "actual_configuration",
+            "engineering_configuration",
+            "process_revision",
+            "unit"
+          ],
+          "title": "LotBasis",
+          "type": "object"
+        },
+        "OperationalScope": {
+          "additionalProperties": false,
+          "properties": {
+            "purpose": {
+              "maxLength": 160,
+              "minLength": 1,
+              "title": "Purpose",
+              "type": "string"
+            },
+            "quantity": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                }
+              ],
+              "decimal_places": 8,
+              "gt": 0,
+              "max_digits": 24,
+              "title": "Quantity"
+            },
+            "unit": {
+              "maxLength": 160,
+              "minLength": 1,
+              "title": "Unit",
+              "type": "string"
+            },
+            "site": {
+              "maxLength": 160,
+              "minLength": 1,
+              "title": "Site",
+              "type": "string"
+            },
+            "window": {
+              "$ref": "#/$defs/ExecutionWindow"
+            }
+          },
+          "required": [
+            "purpose",
+            "quantity",
+            "unit",
+            "site",
+            "window"
+          ],
+          "title": "OperationalScope",
+          "type": "object"
+        },
+        "Parameter": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Key",
+              "type": "string"
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Value"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Unit"
+            },
+            "source": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SourceRef"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "key",
+            "value",
+            "unit",
+            "source"
+          ],
+          "title": "Parameter",
+          "type": "object"
+        },
+        "PilotCreate": {
+          "additionalProperties": false,
+          "properties": {
+            "pilot_id": {
+              "format": "uuid",
+              "title": "Pilot Id",
+              "type": "string"
+            },
+            "basis": {
+              "$ref": "#/$defs/LotBasis"
+            },
+            "purpose": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Purpose",
+              "type": "string"
+            },
+            "manufacturing_baseline": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Ref"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "line": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Ref"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "people": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/Ref"
+              },
+              "title": "People",
+              "type": "array"
+            },
+            "material_lots": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/Ref"
+              },
+              "title": "Material Lots",
+              "type": "array"
+            },
+            "fixtures": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/Ref"
+              },
+              "title": "Fixtures",
+              "type": "array"
+            },
+            "equipment": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/Ref"
+              },
+              "title": "Equipment",
+              "type": "array"
+            },
+            "instructions": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/Ref"
+              },
+              "title": "Instructions",
+              "type": "array"
+            },
+            "control_plan": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Ref"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "risk": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Ref"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "reservation": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Ref"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "first_article": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Ref"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "parameters": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/Parameter"
+              },
+              "title": "Parameters",
+              "type": "array"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            }
+          },
+          "required": [
+            "pilot_id",
+            "basis",
+            "purpose",
+            "source"
+          ],
+          "title": "PilotCreate",
+          "type": "object"
+        },
+        "Ref": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "build",
+                "build_lot",
+                "actual_configuration",
+                "engineering_configuration",
+                "process_revision",
+                "manufacturing_baseline",
+                "tooling",
+                "fixture",
+                "equipment",
+                "line",
+                "person",
+                "material_lot",
+                "work_instruction",
+                "control_plan",
+                "risk",
+                "first_article",
+                "issue",
+                "corrective_action",
+                "named_acceptance",
+                "sample",
+                "criterion",
+                "reservation",
+                "qualification"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "revision"
+          ],
+          "title": "Ref",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        },
+        "StatisticsBasis": {
+          "additionalProperties": false,
+          "properties": {
+            "site": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Site",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "window_start": {
+              "format": "date-time",
+              "title": "Window Start",
+              "type": "string"
+            },
+            "window_end": {
+              "format": "date-time",
+              "title": "Window End",
+              "type": "string"
+            },
+            "cohort_mode": {
+              "enum": [
+                "entire_lot",
+                "fixed_sampled_subset"
+              ],
+              "title": "Cohort Mode",
+              "type": "string"
+            },
+            "samples": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/Ref"
+              },
+              "title": "Samples",
+              "type": "array"
+            },
+            "statistics_basis_key": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Statistics Basis Key",
+              "type": "string"
+            },
+            "criterion_id": {
+              "format": "uuid",
+              "title": "Criterion Id",
+              "type": "string"
+            },
+            "criterion_revision": {
+              "default": 1,
+              "maximum": 1,
+              "minimum": 1,
+              "title": "Criterion Revision",
+              "type": "integer"
+            },
+            "criterion_text": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Criterion Text",
+              "type": "string"
+            },
+            "minimum_sample": {
+              "minimum": 1,
+              "title": "Minimum Sample",
+              "type": "integer"
+            },
+            "operation_key": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Operation Key",
+              "type": "string"
+            },
+            "operational_scope": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/OperationalScope"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            }
+          },
+          "required": [
+            "site",
+            "original_timezone",
+            "window_start",
+            "window_end",
+            "cohort_mode",
+            "statistics_basis_key",
+            "criterion_id",
+            "criterion_text",
+            "minimum_sample",
+            "operation_key",
+            "source"
+          ],
+          "title": "StatisticsBasis",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "details": {
+          "$ref": "#/$defs/PilotCreate"
+        },
+        "statistics": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StatisticsBasis"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "project_id",
+        "details"
+      ],
+      "title": "PilotCreatePayload",
+      "type": "object"
+    },
+    "npi.pilot.result.record": {
+      "$defs": {
+        "Counts": {
+          "additionalProperties": false,
+          "description": "Cumulative unique units, not events. Output excludes unprocessed inputs only.",
+          "properties": {
+            "input_count": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Input Count"
+            },
+            "output_count": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Output Count"
+            },
+            "first_pass": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "First Pass"
+            },
+            "first_failed": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "First Failed"
+            },
+            "first_unknown": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "First Unknown"
+            },
+            "final_good": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Final Good"
+            },
+            "reworked_good": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Reworked Good"
+            },
+            "scrap": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Scrap"
+            },
+            "rework_pending": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Rework Pending"
+            },
+            "undecided": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Undecided"
+            },
+            "unprocessed": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Unprocessed"
+            },
+            "rework_cycles": {
+              "anyOf": [
+                {
+                  "maximum": 1000000000000,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Rework Cycles"
+            }
+          },
+          "required": [
+            "input_count",
+            "output_count",
+            "first_pass",
+            "first_failed",
+            "first_unknown",
+            "final_good",
+            "reworked_good",
+            "scrap",
+            "rework_pending",
+            "undecided",
+            "unprocessed",
+            "rework_cycles"
+          ],
+          "title": "Counts",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "ExceptionFact": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Key",
+              "type": "string"
+            },
+            "description": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Description",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "issue": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Ref"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "disposition": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SourceRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "key",
+            "description",
+            "source"
+          ],
+          "title": "ExceptionFact",
+          "type": "object"
+        },
+        "LotBasis": {
+          "additionalProperties": false,
+          "properties": {
+            "build": {
+              "$ref": "#/$defs/Ref"
+            },
+            "lot": {
+              "$ref": "#/$defs/Ref"
+            },
+            "actual_configuration": {
+              "$ref": "#/$defs/Ref"
+            },
+            "engineering_configuration": {
+              "$ref": "#/$defs/Ref"
+            },
+            "process_revision": {
+              "$ref": "#/$defs/Ref"
+            },
+            "unit": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Unit",
+              "type": "string"
+            }
+          },
+          "required": [
+            "build",
+            "lot",
+            "actual_configuration",
+            "engineering_configuration",
+            "process_revision",
+            "unit"
+          ],
+          "title": "LotBasis",
+          "type": "object"
+        },
+        "Ref": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "build",
+                "build_lot",
+                "actual_configuration",
+                "engineering_configuration",
+                "process_revision",
+                "manufacturing_baseline",
+                "tooling",
+                "fixture",
+                "equipment",
+                "line",
+                "person",
+                "material_lot",
+                "work_instruction",
+                "control_plan",
+                "risk",
+                "first_article",
+                "issue",
+                "corrective_action",
+                "named_acceptance",
+                "sample",
+                "criterion",
+                "reservation",
+                "qualification"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "revision"
+          ],
+          "title": "Ref",
+          "type": "object"
+        },
+        "ResultRecord": {
+          "additionalProperties": false,
+          "properties": {
+            "observation_id": {
+              "format": "uuid",
+              "title": "Observation Id",
+              "type": "string"
+            },
+            "expected_pilot_revision": {
+              "minimum": 1,
+              "title": "Expected Pilot Revision",
+              "type": "integer"
+            },
+            "previous_observation_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Previous Observation Id"
+            },
+            "correction_reason": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Correction Reason"
+            },
+            "scope": {
+              "$ref": "#/$defs/YieldScope"
+            },
+            "counts": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Counts"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "units": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/UnitOutcome"
+              },
+              "title": "Units",
+              "type": "array"
+            },
+            "exceptions": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/ExceptionFact"
+              },
+              "title": "Exceptions",
+              "type": "array"
+            },
+            "observed": {
+              "$ref": "#/$defs/EventTime"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            }
+          },
+          "required": [
+            "observation_id",
+            "expected_pilot_revision",
+            "scope",
+            "observed",
+            "source"
+          ],
+          "title": "ResultRecord",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        },
+        "UnitOutcome": {
+          "additionalProperties": false,
+          "properties": {
+            "sample": {
+              "$ref": "#/$defs/Ref"
+            },
+            "first_result": {
+              "enum": [
+                "pass",
+                "fail",
+                "unknown",
+                "unprocessed"
+              ],
+              "title": "First Result",
+              "type": "string"
+            },
+            "final_state": {
+              "enum": [
+                "good",
+                "scrap",
+                "rework_pending",
+                "undecided",
+                "unprocessed"
+              ],
+              "title": "Final State",
+              "type": "string"
+            },
+            "rework_cycles": {
+              "maximum": 1000000000000,
+              "minimum": 0,
+              "title": "Rework Cycles",
+              "type": "integer"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            }
+          },
+          "required": [
+            "sample",
+            "first_result",
+            "final_state",
+            "rework_cycles",
+            "source"
+          ],
+          "title": "UnitOutcome",
+          "type": "object"
+        },
+        "YieldScope": {
+          "additionalProperties": false,
+          "properties": {
+            "basis": {
+              "$ref": "#/$defs/LotBasis"
+            },
+            "manufacturing_baseline": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Ref"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "line": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Ref"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "cohort_key": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Cohort Key",
+              "type": "string"
+            },
+            "window_start": {
+              "format": "date-time",
+              "title": "Window Start",
+              "type": "string"
+            },
+            "window_end": {
+              "format": "date-time",
+              "title": "Window End",
+              "type": "string"
+            },
+            "criterion": {
+              "$ref": "#/$defs/Ref"
+            },
+            "nature": {
+              "enum": [
+                "real",
+                "synthetic"
+              ],
+              "title": "Nature",
+              "type": "string"
+            },
+            "minimum_sample": {
+              "minimum": 1,
+              "title": "Minimum Sample",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "basis",
+            "manufacturing_baseline",
+            "line",
+            "cohort_key",
+            "window_start",
+            "window_end",
+            "criterion",
+            "nature",
+            "minimum_sample"
+          ],
+          "title": "YieldScope",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "pilot_id": {
+          "format": "uuid",
+          "title": "Pilot Id",
+          "type": "string"
+        },
+        "expected_pilot_revision": {
+          "minimum": 1,
+          "title": "Expected Pilot Revision",
+          "type": "integer"
+        },
+        "record": {
+          "$ref": "#/$defs/ResultRecord"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "pilot_id",
+        "expected_pilot_revision",
+        "record"
+      ],
+      "title": "PilotResultPayload",
+      "type": "object"
     }
   },
   "scope": "implemented local domain slices; real AI qualification and formal exits are separate"

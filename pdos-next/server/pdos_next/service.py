@@ -133,6 +133,8 @@ EVENTS = {
     "npi.control_plan.record": "control_plan.recorded",
     "npi.manufacturing_baseline.record": "manufacturing_baseline.recorded",
     "npi.manufacturing_baseline.publish": "manufacturing_baseline.published",
+    "npi.pilot.create": "pilot.created",
+    "npi.pilot.result.record": "pilot.results_recorded",
     "build.create": "build.created",
     "build.readiness.compute": "readiness.computed",
     "build.engineering.authorize": "build.engineering_authorization_decided",
@@ -822,9 +824,7 @@ def consume_direct_confirmation(s, ctx, command, product, payload, module):
     return phase
 
 
-def consume_material_confirmation(
-    s, ctx, command, product, payload, module, *, prepared_review=None, write_phase=None
-):
+def material_confirmation_for(s, ctx, command, product, payload, module):
     named_decision = command.operation in T2_OPERATIONS
     token = getattr(payload, "approval_token" if named_decision else "confirmation_token", None)
     if not token:
@@ -855,6 +855,24 @@ def consume_material_confirmation(
                     recovery=recovery,
                 ) from failure
         raise
+    return confirmation
+
+
+def consume_material_confirmation(
+    s,
+    ctx,
+    command,
+    product,
+    payload,
+    module,
+    *,
+    prepared_review=None,
+    write_phase=None,
+    prepared_confirmation=None,
+):
+    confirmation = prepared_confirmation
+    if confirmation is None:
+        confirmation = material_confirmation_for(s, ctx, command, product, payload, module)
     if prepared_review is not None and command.operation not in PHASED_MATERIAL_OPERATIONS:
         raise DomainError("INTEGRATION_REQUIRED", "此操作未接入本调用内实质准备。", 503)
     if confirmation.payload_digest != material_digest(ctx, command, payload, module) or digest(
@@ -1048,13 +1066,22 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
     if module:
         write_phase, prepared_review, consumption = None, None, None
         material_confirmation = None
+        prepared_confirmation = None
         direct_confirmation = command.operation in MINIMAL_CURRENT_OPERATIONS
         if direct_confirmation:
             write_phase = consume_direct_confirmation(s, ctx, command, product, payload, module)
         elif command.operation in PHASED_MATERIAL_OPERATIONS:
-            write_phase, prepared_review = module.prepare_write_review(
-                s, ctx, command, product, payload
-            )
+            if getattr(module, "confirmation_watermarks", False):
+                prepared_confirmation = material_confirmation_for(
+                    s, ctx, command, product, payload, module
+                )
+                write_phase, prepared_review = module.prepare_write_review(
+                    s, ctx, command, product, payload, proof=prepared_confirmation
+                )
+            else:
+                write_phase, prepared_review = module.prepare_write_review(
+                    s, ctx, command, product, payload
+                )
         if not direct_confirmation and (
             command.operation in T1_OPERATIONS | T2_OPERATIONS
             or (hasattr(module, "needs_confirmation") and module.needs_confirmation(payload))
@@ -1069,6 +1096,7 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
                     module,
                     prepared_review=prepared_review,
                     write_phase=write_phase,
+                    prepared_confirmation=prepared_confirmation,
                 )
             else:
                 material_confirmation = consume_material_confirmation(

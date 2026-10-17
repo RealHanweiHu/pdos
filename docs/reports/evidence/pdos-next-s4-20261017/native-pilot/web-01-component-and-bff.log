@@ -1,0 +1,44 @@
+✔ publication history forwards exact project and opaque cursor as a read (31.602708ms)
+✔ ambiguous or missing publication scope cannot reach host: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/manufacturing-publications?project_id=00000000-0000-4000-8000-000000000005&project_id=00000000-0000-4000-8000-000000000006 (2.66425ms)
+✔ ambiguous or missing publication scope cannot reach host: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/manufacturing-publications (1.3185ms)
+✔ ambiguous or missing publication scope cannot reach host: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/manufacturing-publications/00000000-0000-4000-8000-000000000009?revision=0 (1.220875ms)
+✔ ambiguous or missing publication scope cannot reach host: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/manufacturing-publications/inputs?project_id=00000000-0000-4000-8000-000000000005 (1.217541ms)
+✔ inputs preserve the actual original command and key (2.988792ms)
+✔ publication inputs reject product substitution (1.654709ms)
+✔ publication inputs reject baseline substitution (1.455459ms)
+✔ publication inputs reject operation substitution (1.618792ms)
+✔ publication input retains same-origin and session guards (3.059042ms)
+✔ uncertain POST and unavailable GET are distinguished without a transport retry (1.812958ms)
+✔ Pilot project history and a fixed root are read-only exact routes (33.213792ms)
+✔ ambiguous or invented Pilot scope is rejected: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/pilots (2.055667ms)
+✔ ambiguous or invented Pilot scope is rejected: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/pilots?project_id=00000000-0000-4000-8000-000000000005&project_id=00000000-0000-4000-8000-000000000006 (1.371666ms)
+✔ ambiguous or invented Pilot scope is rejected: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/pilots/00000000-0000-4000-8000-000000000006?revision=1 (1.223333ms)
+✔ ambiguous or invented Pilot scope is rejected: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/pilots/inputs?project_id=00000000-0000-4000-8000-000000000005 (1.164333ms)
+✔ npi.pilot.create inputs preserve original key and unresolved reads for the actual owner (2.749417ms)
+✔ npi.pilot.result.record inputs preserve original key and unresolved reads for the actual owner (1.567458ms)
+✔ Pilot inputs reject product before forwarding (1.388875ms)
+✔ Pilot inputs reject operation before forwarding (1.246125ms)
+✔ Pilot inputs reject reads before forwarding (1.298ms)
+✔ Pilot inputs reject revision before forwarding (1.572292ms)
+✔ Pilot inputs reject malformed before forwarding (1.352458ms)
+✔ Pilot inputs retain same-origin and authenticated session (2.268833ms)
+✔ Pilot transport failure preserves the original request without automatic retry (1.41475ms)
+✔ failed project reading remains a visible failure and never becomes a successful empty Pilot list (15.824583ms)
+✔ actual lot selection keeps EVT Build and exact actual references; preview waits for explicit confirmation (20.100458ms)
+✔ UNKNOWN survives remount and replays the identical original command/key/token without automatic POST (26.2275ms)
+✔ a known creation success adopts only the returned receipt, refreshes and permits fixed readonly reread (38.013292ms)
+✔ changing projects disposes an in-flight inputs response and cannot preview or save in the next scope (21.250542ms)
+✔ actual original result imports counts and Issue backlink, then obtains a result preview without executing (23.514125ms)
+✔ an actual correction retains the saved observation, exact current revision, predecessor and reason (24.084209ms)
+✔ saved reading shows actual two rates and Issue linkage, while unknown projection never becomes a rate (3.137792ms)
+✔ unavailable local persistence prevents a command before any inputs or execution (13.175166ms)
+✔ actual 401 response clears private material and blocks new actions (24.510042ms)
+✔ actual 403 response clears private material and blocks new actions (20.299125ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 853.889292

@@ -441,6 +441,20 @@ from pdos_next.domain.manufacturing_baseline.publication_schemas import (  # noq
 
 PAYLOADS[MANUFACTURING_PUBLICATION_OPERATION] = ManufacturingPublicationPayload
 
+from pdos_next.domain.manufacturing_trials.native_schemas import (  # noqa: E402
+    PilotCreatePayload as NativePilotCreatePayload,
+)
+from pdos_next.domain.manufacturing_trials.native_schemas import (  # noqa: E402
+    PilotResultPayload as NativePilotResultPayload,
+)
+
+PAYLOADS.update(
+    {
+        "npi.pilot.create": NativePilotCreatePayload,
+        "npi.pilot.result.record": NativePilotResultPayload,
+    }
+)
+
 from pdos_next.schemas.products.definition_items import DefinitionItemPatch  # noqa: E402
 
 PAYLOADS["product.definition.item.patch"] = DefinitionItemPatch

@@ -9,7 +9,6 @@ from pydantic import (
     AwareDatetime,
     BeforeValidator,
     Field,
-    field_serializer,
     field_validator,
     model_validator,
 )
@@ -27,6 +26,8 @@ from pdos_next.schemas.resource_readiness.contracts import (
 )
 from pdos_next.schemas.supply_cost.dto import BoundDemand
 
+from .execution_scope import OperationalScope
+
 
 class DTO(FrozenDTO):
     pass
@@ -43,21 +44,6 @@ Positive = Annotated[
 Hash = Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
 Revision = Annotated[int, Field(ge=1, strict=True)]
 Refs = Annotated[tuple[DefinitionReference, ...], Field(min_length=1)]
-
-
-class OperationalScope(DTO):
-    purpose: Key
-    quantity: Positive
-    unit: Key
-    site: Key
-    window: ExecutionWindow
-
-    @field_serializer("quantity")
-    def decimal_quantity(self, value: Decimal) -> str:
-        # Exact canonical representation: formatting removes exponent notation;
-        # removing fractional trailing zeros never changes the numeric value.
-        text = format(value, "f")
-        return text.rstrip("0").rstrip(".") if "." in text else text
 
 
 class ExternalMaterialHold(DTO):

@@ -34,6 +34,7 @@ from pdos_next.domain.manufacturing_baseline.publication_models import (
 from pdos_next.domain.manufacturing_baseline.publication_models import (
     ManufacturingPublicationDocument as Document,
 )
+from pdos_next.domain.projects.models import Project
 from pdos_next.errors import DomainError
 from pdos_next.models import (
     Confirmation,
@@ -226,7 +227,17 @@ def work(monkeypatch):
         source_read_set=[v.model_dump(mode="json") for v in case.material.required_source_read_set],
         payload=case.payload.model_dump(mode="json"),
     )
-    project = SimpleNamespace(id=case.scope.project_id, purpose=case.payload.purpose)
+    project = s.seed(
+        Project(
+            id=case.scope.project_id,
+            tenant_id=ctx.tenant_id,
+            category_id=ctx.category_id,
+            product_id=product.id,
+            owner_id=ctx.actor_id,
+            visibility="category",
+            purpose=case.payload.purpose,
+        )
+    )
     f = SimpleNamespace(
         s=s,
         engine=engine,
@@ -295,6 +306,7 @@ def work(monkeypatch):
         }
         return raw, f.private_sources, set()
 
+    monkeypatch.setattr(service, "signature_current", lambda *args: f.retained)
     monkeypatch.setattr(service.projects, "_project", project_io)
     monkeypatch.setattr(preparation.professional, "assess", authority_io)
     monkeypatch.setitem(
@@ -689,9 +701,7 @@ def shared_publication(work):
 @pytest.mark.parametrize(
     "bound", [True, False, None, 1], ids=["true", "false", "none", "integer-one"]
 )
-def test_peer_reads_only_real_receipt_boolean_not_private_key_or_original_actor_context(
-    work, bound
-):
+def test_peer_reads_frozen_signature_without_private_key_or_original_actor_context(work, bound):
     row = shared_publication(work)
     peer = uuid4()
     work.ctx = replace(work.ctx, actor_id=peer, requester_id=peer)
@@ -717,25 +727,26 @@ def test_peer_reads_only_real_receipt_boolean_not_private_key_or_original_actor_
         )
     )
     work.s.hide_keys, work.s.peer_bound = True, bound
-    if bound is True:
-        _, view = service.get_publication(work.s, work.ctx, work.pid, row.id)
-        assert view["qualification"] == "unknown"
-        assert work.command.idempotency_key not in str(view)
-    else:
-        with pytest.raises(DomainError):
-            service.get_publication(work.s, work.ctx, work.pid, row.id)
-    assert work.s.binding_calls == [(work.tenant, work.pid, row.receipt_id)]
+    # The installed immutable reciprocal storage guard established the common
+    # group once. GET must not impersonate the writer or re-read its private key.
+    _, view = service.get_publication(work.s, work.ctx, work.pid, row.id)
+    assert view["qualification"] == "unknown"
+    assert work.command.idempotency_key not in str(view)
+    assert work.s.binding_calls == []
     assert work.s.info["scope"][1] == work.ctx.actor_id == peer != row.actor_id
 
 
-def test_read_saved_publication_rechecks_group_and_actual_original_body(work):
+def test_fixed_read_preserves_signature_and_explicit_proof_check_still_detects_corruption(work):
     row, _ = finish(work, write(work))
     _, view = service.get_publication(work.s, work.ctx, work.pid, row.id)
     assert view["is_current"] and view["source_status"] == "current"
     assert view["qualification"] == "unknown" and view["manufacturing_release"] is None
     work.s.rows[Outbox][0].correlation_id = uuid4()
+    # This in-memory corruption is prevented by the actual immutable DB guard.
+    # A fixed read does not rescan the original common closure; T2 reproof does.
+    assert service.get_publication(work.s, work.ctx, work.pid, row.id)[1] == view
     with pytest.raises(DomainError):
-        service.get_publication(work.s, work.ctx, work.pid, row.id)
+        service._read_record(work.s, work.ctx, work.pid, row)
 
 
 def test_replay_uses_same_category_bound_common_intent_and_reads_actual_old_group(work):
@@ -743,3 +754,23 @@ def test_replay_uses_same_category_bound_common_intent_and_reads_actual_old_grou
     assert service.replay_subject(work.s, work.ctx, work.command, work.product, work.payload) is row
     changed = work.command.model_copy(update={"category_id": uuid4()})
     assert service.replay_subject(work.s, work.ctx, changed, work.product, work.payload) is None
+
+
+@pytest.mark.parametrize("status", [403, 409])
+def test_fixed_read_hides_inaccessible_sources_but_retains_readable_withdrawn_history(
+    work, monkeypatch, status
+):
+    row, _ = finish(work, write(work))
+
+    def unavailable(*args, **kwargs):
+        raise DomainError("SOURCE_UNAVAILABLE", "Explicit source visibility boundary", status)
+
+    monkeypatch.setattr(service.evidence, "_evidence", unavailable)
+    if status == 403:
+        with pytest.raises(DomainError) as caught:
+            service.get_publication(work.s, work.ctx, work.pid, row.id)
+        assert caught.value.status == 403
+    else:
+        _, view = service.get_publication(work.s, work.ctx, work.pid, row.id)
+        assert view["source_status"] == "needs_recheck"
+        assert view["body"] == row.body

@@ -1,0 +1,16 @@
+
+==================================== ERRORS ====================================
+______ ERROR collecting tests/manufacturing_trials/test_native_service.py ______
+ImportError while importing test module '/private/tmp/pdos-native-pilot-delivery-x1t_ybcy/pdos-next/server/tests/manufacturing_trials/test_native_service.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/manufacturing_trials/test_native_service.py:11: in <module>
+    from pdos_next.command_handlers import PHASED_MATERIAL_OPERATIONS, handler, tier_of
+E   ImportError: cannot import name 'tier_of' from 'pdos_next.command_handlers' (/private/tmp/pdos-native-pilot-delivery-x1t_ybcy/pdos-next/server/pdos_next/command_handlers.py)
+=========================== short test summary info ============================
+ERROR tests/manufacturing_trials/test_native_service.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 2.63s

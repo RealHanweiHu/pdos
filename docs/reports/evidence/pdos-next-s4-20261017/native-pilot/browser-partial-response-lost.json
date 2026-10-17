@@ -1,0 +1,358 @@
+{
+  "candidate": "/private/tmp/pdos-s4-native-pilot-yht8hdv0",
+  "label": "partial-response-lost",
+  "items": [
+    {
+      "id": "3a768034-052e-40bf-8622-83a1b3d02132",
+      "root_revision": 1,
+      "current": {
+        "revision": 2,
+        "epoch": 2,
+        "latest_observation_id": "23a96c94-7503-425a-8b6a-005cf3ad47d7"
+      },
+      "receipt_id": "6a78e426-1945-4b0c-bd2a-336cea3178d7",
+      "qualification": "unknown",
+      "start_authorized": false,
+      "manufacturing_release": null,
+      "observations": [
+        {
+          "id": "23a96c94-7503-425a-8b6a-005cf3ad47d7",
+          "revision": 2,
+          "previous": null,
+          "record": {
+            "scope": {
+              "line": {
+                "id": "00a9c97b-008e-4ecf-90c2-2397257f089b",
+                "kind": "line",
+                "revision": 1
+              },
+              "basis": {
+                "lot": {
+                  "id": "506f1c96-f104-4650-8e8f-6a04aabd898f",
+                  "kind": "build_lot",
+                  "revision": 1
+                },
+                "unit": "ea",
+                "build": {
+                  "id": "61ed95d9-9472-4e15-965f-65f9d1a62395",
+                  "kind": "build",
+                  "revision": 1
+                },
+                "process_revision": {
+                  "id": "b3a6f6fb-fbee-4186-88b0-0db55a4308f5",
+                  "kind": "process_revision",
+                  "revision": 1
+                },
+                "actual_configuration": {
+                  "id": "b649c179-b4c9-4a51-b3a1-fc13ea6ca5e6",
+                  "kind": "actual_configuration",
+                  "revision": 1
+                },
+                "engineering_configuration": {
+                  "id": "bfe60e60-b0d9-4537-bb92-9f30cac72cc2",
+                  "kind": "engineering_configuration",
+                  "revision": 1
+                }
+              },
+              "nature": "synthetic",
+              "criterion": {
+                "id": "456cc274-ef12-4be0-a095-5e87159adea5",
+                "kind": "criterion",
+                "revision": 1
+              },
+              "cohort_key": "native-lot-506f1c96-f104-4650-8e8f-6a04aabd898f",
+              "window_end": "2026-10-17T21:19:31.499716Z",
+              "window_start": "2026-10-17T21:16:57.831137Z",
+              "minimum_sample": 1,
+              "manufacturing_baseline": {
+                "id": "4aab9deb-4860-40a1-9d29-2a9839b79fb4",
+                "kind": "manufacturing_baseline",
+                "revision": 1
+              }
+            },
+            "units": [],
+            "counts": {
+              "scrap": 0,
+              "undecided": 0,
+              "final_good": 1,
+              "first_pass": 1,
+              "input_count": 2,
+              "unprocessed": 0,
+              "first_failed": 1,
+              "output_count": 2,
+              "first_unknown": 0,
+              "rework_cycles": 0,
+              "reworked_good": 0,
+              "rework_pending": 1
+            },
+            "source": {
+              "id": "31851f88-255c-4a23-8bd1-eb81eaec37ee",
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:0ff162b8567cfa15bbcd277a095837962fe86e590aee1e5a14124a6a078d3607",
+              "revision": 1
+            },
+            "observed": {
+              "source": {
+                "id": "31851f88-255c-4a23-8bd1-eb81eaec37ee",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:0ff162b8567cfa15bbcd277a095837962fe86e590aee1e5a14124a6a078d3607",
+                "revision": 1
+              },
+              "occurred_at": "2026-10-17T21:17:08.831137Z",
+              "effective_at": null,
+              "original_timezone": "UTC"
+            },
+            "exceptions": [
+              {
+                "key": "real-current-issue",
+                "issue": {
+                  "id": "f9e2eb26-2de2-5d08-8bf5-b11471dad7ff",
+                  "kind": "issue",
+                  "revision": 1
+                },
+                "source": {
+                  "id": "31851f88-255c-4a23-8bd1-eb81eaec37ee",
+                  "kind": "artifact",
+                  "position": "line:1;quote_sha256:0ff162b8567cfa15bbcd277a095837962fe86e590aee1e5a14124a6a078d3607",
+                  "revision": 1
+                },
+                "description": "Retain the actual same-project failure Issue",
+                "disposition": null
+              }
+            ],
+            "observation_id": "23a96c94-7503-425a-8b6a-005cf3ad47d7",
+            "correction_reason": null,
+            "expected_pilot_revision": 1,
+            "previous_observation_id": null
+          },
+          "fixed_scope": {
+            "site": "SYN-INTERNAL-LAB",
+            "scope": {
+              "tenant_id": "3b767995-8879-483a-b55b-befbdcfe324c",
+              "product_id": "ac902601-dffe-47a6-a875-5572675c31de",
+              "project_id": "096c8f49-5136-47fc-8d60-a773c70ad9f4"
+            },
+            "cohort": {
+              "mode": "entire_lot",
+              "source": {
+                "id": "53ff4a5c-ed29-453a-b58e-43757b348932",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:a23c68838370942bb26578ceea42bea309fed2bf459eff362c68ffb9ed540f8a",
+                "revision": 1
+              },
+              "unit_refs": [
+                {
+                  "id": "01db5eb6-bae1-4ada-acf2-3df1165fda2c",
+                  "kind": "sample",
+                  "revision": 1
+                },
+                {
+                  "id": "16932f44-8d35-4785-8e4a-658faadf13cd",
+                  "kind": "sample",
+                  "revision": 1
+                }
+              ],
+              "population_count": 2,
+              "fixed_input_count": 2,
+              "denominator_policy": "all_fixed_input_units",
+              "statistics_basis_key": "native-lot-506f1c96-f104-4650-8e8f-6a04aabd898f"
+            },
+            "purpose": "Verify preparation",
+            "pilot_id": "3a768034-052e-40bf-8622-83a1b3d02132",
+            "yield_scope": {
+              "line": {
+                "id": "00a9c97b-008e-4ecf-90c2-2397257f089b",
+                "kind": "line",
+                "revision": 1
+              },
+              "basis": {
+                "lot": {
+                  "id": "506f1c96-f104-4650-8e8f-6a04aabd898f",
+                  "kind": "build_lot",
+                  "revision": 1
+                },
+                "unit": "ea",
+                "build": {
+                  "id": "61ed95d9-9472-4e15-965f-65f9d1a62395",
+                  "kind": "build",
+                  "revision": 1
+                },
+                "process_revision": {
+                  "id": "b3a6f6fb-fbee-4186-88b0-0db55a4308f5",
+                  "kind": "process_revision",
+                  "revision": 1
+                },
+                "actual_configuration": {
+                  "id": "b649c179-b4c9-4a51-b3a1-fc13ea6ca5e6",
+                  "kind": "actual_configuration",
+                  "revision": 1
+                },
+                "engineering_configuration": {
+                  "id": "bfe60e60-b0d9-4537-bb92-9f30cac72cc2",
+                  "kind": "engineering_configuration",
+                  "revision": 1
+                }
+              },
+              "nature": "synthetic",
+              "criterion": {
+                "id": "456cc274-ef12-4be0-a095-5e87159adea5",
+                "kind": "criterion",
+                "revision": 1
+              },
+              "cohort_key": "native-lot-506f1c96-f104-4650-8e8f-6a04aabd898f",
+              "window_end": "2026-10-17T21:19:31.499716Z",
+              "window_start": "2026-10-17T21:16:57.831137Z",
+              "minimum_sample": 1,
+              "manufacturing_baseline": {
+                "id": "4aab9deb-4860-40a1-9d29-2a9839b79fb4",
+                "kind": "manufacturing_baseline",
+                "revision": 1
+              }
+            },
+            "pilot_revision": 1,
+            "schema_version": "pdos-pilot-result-scope-v1",
+            "original_timezone": "UTC"
+          },
+          "projection": {
+            "fixed": {
+              "site": "SYN-INTERNAL-LAB",
+              "scope": {
+                "tenant_id": "3b767995-8879-483a-b55b-befbdcfe324c",
+                "product_id": "ac902601-dffe-47a6-a875-5572675c31de",
+                "project_id": "096c8f49-5136-47fc-8d60-a773c70ad9f4"
+              },
+              "cohort": {
+                "mode": "entire_lot",
+                "source": {
+                  "id": "53ff4a5c-ed29-453a-b58e-43757b348932",
+                  "kind": "artifact",
+                  "position": "line:1;quote_sha256:a23c68838370942bb26578ceea42bea309fed2bf459eff362c68ffb9ed540f8a",
+                  "revision": 1
+                },
+                "unit_refs": [
+                  {
+                    "id": "01db5eb6-bae1-4ada-acf2-3df1165fda2c",
+                    "kind": "sample",
+                    "revision": 1
+                  },
+                  {
+                    "id": "16932f44-8d35-4785-8e4a-658faadf13cd",
+                    "kind": "sample",
+                    "revision": 1
+                  }
+                ],
+                "population_count": 2,
+                "fixed_input_count": 2,
+                "denominator_policy": "all_fixed_input_units",
+                "statistics_basis_key": "native-lot-506f1c96-f104-4650-8e8f-6a04aabd898f"
+              },
+              "purpose": "Verify preparation",
+              "pilot_id": "3a768034-052e-40bf-8622-83a1b3d02132",
+              "yield_scope": {
+                "line": {
+                  "id": "00a9c97b-008e-4ecf-90c2-2397257f089b",
+                  "kind": "line",
+                  "revision": 1
+                },
+                "basis": {
+                  "lot": {
+                    "id": "506f1c96-f104-4650-8e8f-6a04aabd898f",
+                    "kind": "build_lot",
+                    "revision": 1
+                  },
+                  "unit": "ea",
+                  "build": {
+                    "id": "61ed95d9-9472-4e15-965f-65f9d1a62395",
+                    "kind": "build",
+                    "revision": 1
+                  },
+                  "process_revision": {
+                    "id": "b3a6f6fb-fbee-4186-88b0-0db55a4308f5",
+                    "kind": "process_revision",
+                    "revision": 1
+                  },
+                  "actual_configuration": {
+                    "id": "b649c179-b4c9-4a51-b3a1-fc13ea6ca5e6",
+                    "kind": "actual_configuration",
+                    "revision": 1
+                  },
+                  "engineering_configuration": {
+                    "id": "bfe60e60-b0d9-4537-bb92-9f30cac72cc2",
+                    "kind": "engineering_configuration",
+                    "revision": 1
+                  }
+                },
+                "nature": "synthetic",
+                "criterion": {
+                  "id": "456cc274-ef12-4be0-a095-5e87159adea5",
+                  "kind": "criterion",
+                  "revision": 1
+                },
+                "cohort_key": "native-lot-506f1c96-f104-4650-8e8f-6a04aabd898f",
+                "window_end": "2026-10-17T21:19:31.499716Z",
+                "window_start": "2026-10-17T21:16:57.831137Z",
+                "minimum_sample": 1,
+                "manufacturing_baseline": {
+                  "id": "4aab9deb-4860-40a1-9d29-2a9839b79fb4",
+                  "kind": "manufacturing_baseline",
+                  "revision": 1
+                }
+              },
+              "pilot_revision": 1,
+              "schema_version": "pdos-pilot-result-scope-v1",
+              "original_timezone": "UTC"
+            },
+            "counts": {
+              "scrap": 0,
+              "undecided": 0,
+              "final_good": 1,
+              "first_pass": 1,
+              "input_count": 2,
+              "unprocessed": 0,
+              "first_failed": 1,
+              "output_count": 2,
+              "first_unknown": 0,
+              "rework_cycles": 0,
+              "reworked_good": 0,
+              "rework_pending": 1
+            },
+            "metrics": {
+              "warnings": [
+                "INCOMPLETE_FINAL_RESULTS",
+                "FINAL_GOOD_PARTITION_NOT_FINAL"
+              ],
+              "final_good_yield": {
+                "state": "partial",
+                "value": null,
+                "numerator": 1,
+                "denominator": 2,
+                "recorded_fraction": "0.5",
+                "partition_complete": false
+              },
+              "first_pass_yield": {
+                "state": "known",
+                "value": "0.5",
+                "numerator": 1,
+                "denominator": 2,
+                "recorded_fraction": "0.5",
+                "partition_complete": true
+              },
+              "start_authorized": false,
+              "process_capability": "NOT_ASSESSED",
+              "factory_qualification": "NOT_ASSESSED",
+              "manufacturing_release": null,
+              "external_delivery_authorized": false
+            },
+            "received_at": null,
+            "observation_id": "23a96c94-7503-425a-8b6a-005cf3ad47d7",
+            "schema_version": "pdos-pilot-result-projection-v1"
+          },
+          "receipt_id": "b32f8252-55ed-4b7c-9e4b-867b6cba2548",
+          "source_status": "current"
+        }
+      ]
+    }
+  ],
+  "count": 1,
+  "synthetic": true
+}

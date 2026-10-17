@@ -1,0 +1,50 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-yht8hdv0/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-yht8hdv0/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-yht8hdv0/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-yht8hdv0/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-yht8hdv0/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-yht8hdv0/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-yht8hdv0/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-yht8hdv0/pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py:1036: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # Root's deferred common atom must complete or all rolls back.
+
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-yht8hdv0/pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_service.py:975: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+tests/native_pilot_browser_seed/test_browser_seed.py::test_prepare_finite_actual_native_pilot_browser_seed[launch_work0]
+  /private/tmp/pdos-s4-native-pilot-yht8hdv0/pdos-next/server/pdos_next/domain/manufacturing_trials/native_service.py:1069: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 16 warnings in 1166.65s (0:19:26)

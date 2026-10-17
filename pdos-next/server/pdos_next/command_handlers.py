@@ -86,6 +86,8 @@ T1_OPERATIONS = frozenset(
         "npi.work_instruction.record",
         "npi.control_plan.record",
         "npi.manufacturing_baseline.record",
+        "npi.pilot.create",
+        "npi.pilot.result.record",
         "build.create",
         "build.configuration.actual.record",
         "build.output.record",
@@ -123,6 +125,8 @@ PHASED_MATERIAL_OPERATIONS = frozenset(
         "npi.manufacturing_baseline.record",
         "npi.manufacturing_baseline.publish",
         "change.order.prepare",
+        "npi.pilot.create",
+        "npi.pilot.result.record",
         "change.order.approve",
         "change.implementation.record",
         "change.selection.decide",
@@ -136,6 +140,10 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation in {"npi.pilot.create", "npi.pilot.result.record"}:
+        from pdos_next.domain.manufacturing_trials import native_service
+
+        return native_service
     if operation in {"mcp.connector.allow", "mcp.tool.grant"}:
         from pdos_next.agent_kernel import mcp_management
 

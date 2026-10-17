@@ -28,6 +28,8 @@ TIERS = MappingProxyType(
         "npi.control_plan.record": "T1",
         "npi.manufacturing_baseline.record": "T1",
         "npi.manufacturing_baseline.publish": "T2",
+        "npi.pilot.create": "T1",
+        "npi.pilot.result.record": "T1",
     }
 )
 

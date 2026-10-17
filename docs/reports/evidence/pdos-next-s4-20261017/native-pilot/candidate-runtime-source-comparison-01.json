@@ -1,0 +1,26 @@
+{
+  "reference_snapshot": "/private/tmp/pdos-s4-native-pilot-2xag5zdn",
+  "comparisons": {
+    "pure-backend-01": {
+      "snapshot": "/private/tmp/pdos-s4-native-pilot-ldw36ith",
+      "backend_runtime_inputs_compared": 766,
+      "backend_runtime_changes": [],
+      "web_inputs_compared": 346,
+      "web_changes": []
+    },
+    "web-01": {
+      "snapshot": "/private/tmp/pdos-s4-native-pilot-u_u2_mfd",
+      "backend_runtime_inputs_compared": 766,
+      "backend_runtime_changes": [],
+      "web_inputs_compared": 346,
+      "web_changes": []
+    },
+    "production-build-01": {
+      "snapshot": "/private/tmp/pdos-s4-native-pilot-u_u2_mfd",
+      "backend_runtime_inputs_compared": 766,
+      "backend_runtime_changes": [],
+      "web_inputs_compared": 346,
+      "web_changes": []
+    }
+  }
+}

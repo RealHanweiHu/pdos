@@ -1,0 +1,22 @@
+{
+  "candidate": "/private/tmp/pdos-s4-native-pilot-yht8hdv0",
+  "label": "unknown-submit",
+  "items": [
+    {
+      "id": "3a768034-052e-40bf-8622-83a1b3d02132",
+      "root_revision": 1,
+      "current": {
+        "revision": 1,
+        "epoch": 1,
+        "latest_observation_id": null
+      },
+      "receipt_id": "6a78e426-1945-4b0c-bd2a-336cea3178d7",
+      "qualification": "unknown",
+      "start_authorized": false,
+      "manufacturing_release": null,
+      "observations": []
+    }
+  ],
+  "count": 1,
+  "synthetic": true
+}
