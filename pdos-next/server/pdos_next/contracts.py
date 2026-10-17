@@ -462,3 +462,7 @@ PAYLOADS["product.definition.item.patch"] = DefinitionItemPatch
 from pdos_next.domain.products.platform_schemas import PlatformLinkInput  # noqa: E402
 
 PAYLOADS["platform.link.create"] = PlatformLinkInput
+
+from pdos_next.domain.release.schemas import PAYLOADS as RELEASE_PAYLOADS  # noqa: E402
+
+PAYLOADS.update(RELEASE_PAYLOADS)

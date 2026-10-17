@@ -1,0 +1,30 @@
+✔ manual assembly reads actual UNKNOWN candidate then stops before any save (4.515583ms)
+✔ assembly sends the same T0 command only after the caller's explicit save (0.236375ms)
+✔ ready discipline goes through actual common preview without execute (0.846167ms)
+✔ unknown policy cannot advance an approval to common preview or execute (0.287709ms)
+✔ an unqualified named actor keeps actual diagnostics and never advances to preview (0.328917ms)
+✔ typed defaults compare canonically but actual source and scope changes remain different (0.379042ms)
+✔ T2 preview rejects actual signer mismatch (0.288791ms)
+✔ T2 preview rejects actual project mismatch (0.242959ms)
+✔ T2 preview rejects actual source mismatch (0.262125ms)
+✔ T2 preview rejects actual policy mismatch (0.288709ms)
+✔ T2 preview rejects actual unknown mismatch (0.254167ms)
+✔ T2 preview rejects actual scope mismatch (0.161209ms)
+✔ T2 preview rejects actual token mismatch (0.11375ms)
+✔ T2 preview rejects actual expired mismatch (0.182334ms)
+✔ UNKNOWN keeps the exact original command, key and token across explicit replay (0.552417ms)
+✔ local recovery requires exact principal/project/package and matching draft (0.482334ms)
+✔ scope disposal after inputs never opens a preview or dispatches a write (0.123709ms)
+✔ list accepts a header and detail requires the actual fixed scope (0.499291ms)
+✔ actual mapped assessments and an unchecked header retain unknown without a full read (0.377666ms)
+✔ selected scope can be ready while the whole package remains unknown (0.496666ms)
+✔ server retains actual package and exception limits in addition to this declaration (0.429375ms)
+✔ explicit expiry preserves sub-millisecond precision and exact original declaration (0.851ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23.054959

@@ -1,0 +1,25 @@
+{
+  "current_snapshot": "/private/tmp/pdos-s4-release-8vr7p80f",
+  "built_snapshot": "/private/tmp/pdos-s4-release-n9vogeqk",
+  "web_own_files_byte_identical": {
+    "pdos-next/web/src/app/api/[...path]/route.ts": true,
+    "pdos-next/web/src/app/api/release-route.test.mjs": true,
+    "pdos-next/web/src/components/manufacturing/release-packages.module.css": true,
+    "pdos-next/web/src/components/manufacturing/release-packages.test.mjs": true,
+    "pdos-next/web/src/components/manufacturing/release-packages.tsx": true,
+    "pdos-next/web/src/components/workspace.tsx": true,
+    "pdos-next/web/src/lib/releases.test.ts": true,
+    "pdos-next/web/src/lib/releases.ts": true
+  },
+  "reuse": [
+    "static-01.json",
+    "production-build-01.json"
+  ],
+  "metadata_inputs_byte_identical": [
+    "pdos-next/server/pdos_next/domain/release/models.py",
+    "pdos-next/server/migrations/schema_s0_0779.py"
+  ],
+  "metadata_reused": "metadata-01.json",
+  "correction_scope": "0780 changes only grouping in assert_release_common, retaining tables and table permissions",
+  "formal_performance_acceptance": false
+}

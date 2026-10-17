@@ -429,7 +429,9 @@
       "ai_execution": "需资格与授权",
       "event": "release.package_assembled",
       "stage": "S4",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json",
+      "note": "Fixed preparation preserves unknowns; actual release policy owner is unconnected, so no positive engineering/manufacturing decision is enabled by default."
     },
     {
       "operation": "release.engineering.approve",
@@ -437,7 +439,9 @@
       "ai_execution": "仅准备/不可代决定",
       "event": "release.engineering_approved",
       "stage": "S4",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json",
+      "note": "Fixed preparation preserves unknowns; actual release policy owner is unconnected, so no positive engineering/manufacturing decision is enabled by default."
     },
     {
       "operation": "release.manufacturing.approve",
@@ -445,7 +449,9 @@
       "ai_execution": "仅准备/不可代决定",
       "event": "release.manufacturing_approved",
       "stage": "S4",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json",
+      "note": "Fixed preparation preserves unknowns; actual release policy owner is unconnected, so no positive engineering/manufacturing decision is enabled by default."
     },
     {
       "operation": "customer.sample.send",

@@ -1,0 +1,14 @@
+{
+  "snapshot": "/private/tmp/pdos-s4-release-n9vogeqk",
+  "command": [
+    "node",
+    "node_modules/next/dist/bin/next",
+    "build",
+    "--webpack"
+  ],
+  "started_at": "2026-10-17T22:01:08.648157+00:00",
+  "finished_at": "2026-10-17T22:01:42.990666+00:00",
+  "exit": 0,
+  "source_changed": [],
+  "external_network": "public font fetch only; no business data/model/KMS"
+}

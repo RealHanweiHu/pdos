@@ -1,0 +1,32 @@
+✔ fixed release history and detail use scoped reads (46.916625ms)
+✔ ambiguous release range is rejected: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/release-packages (2.866209ms)
+✔ ambiguous release range is rejected: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/release-packages?project_id=00000000-0000-4000-8000-000000000005&project_id=00000000-0000-4000-8000-000000000006 (1.326125ms)
+✔ ambiguous release range is rejected: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/release-packages/00000000-0000-4000-8000-000000000006?revision=1 (1.231916ms)
+✔ ambiguous release range is rejected: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/release/inputs?project_id=00000000-0000-4000-8000-000000000005 (1.159625ms)
+✔ release.package.assemble forwards the original unresolved owner request once (2.608709ms)
+✔ release.engineering.approve forwards the original unresolved owner request once (1.483458ms)
+✔ release.manufacturing.approve forwards the original unresolved owner request once (2.485333ms)
+✔ release rejects product before forwarding (2.947958ms)
+✔ release rejects operation before forwarding (2.85675ms)
+✔ release rejects reads before forwarding (1.637792ms)
+✔ release rejects revision before forwarding (1.215375ms)
+✔ release rejects malformed before forwarding (1.123542ms)
+✔ release keeps authenticated same-origin scope and one attempt on transport failure (7.132916ms)
+✔ list reads headers only, selected package then reads actual fixed content (19.637708ms)
+✔ UNKNOWN policy assembly saves only on explicit manual button without a T1 token (23.32975ms)
+✔ UNKNOWN submission remount never dispatches and explicit replay retains command/key (9.633083ms)
+✔ unknown policy blocks engineering and manufacturing approvals after fixed read (12.073917ms)
+✔ ready engineering uses common named preview and waits for the one explicit decision (10.791208ms)
+✔ existing policy permits actual selected-scope preparation despite whole-package unknown (5.505459ms)
+✔ project switch invalidates in-flight inputs and keeps the original project recovery slot (8.232375ms)
+✔ read failure is visible and never becomes an empty successful package list (1.950708ms)
+✔ access loss hides private content while retaining the exact UNKNOWN recovery slot (8.313542ms)
+✔ fixed reading keeps disciplines, unknown scope and external receipt facts separate (1.6815ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 853.420125

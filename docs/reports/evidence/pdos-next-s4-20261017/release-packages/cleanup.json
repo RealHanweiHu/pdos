@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-17T22:26:51.301138+00:00",
+  "browser_session": "pdos-release-20261017",
+  "cookies_cleared": true,
+  "own_browser_closed": true,
+  "private_seed_bearer_removed": true,
+  "finite_API_exit": 0,
+  "own_Next_exit": 143,
+  "own_ports": [
+    52248,
+    52249
+  ],
+  "database_retained": true,
+  "backup_retained": true,
+  "unrelated_previews_untouched": true
+}

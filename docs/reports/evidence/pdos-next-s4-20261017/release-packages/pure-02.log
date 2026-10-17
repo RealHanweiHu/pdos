@@ -1,0 +1,8 @@
+............................................................             [100%]
+=============================== warnings summary ===============================
+tests/release/test_migration.py::test_single_monotonic_successor_keeps_actual_predecessor_definitions
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py:604: DeprecationWarning: No path_separator found in configuration; falling back to legacy splitting on spaces, commas, and colons for prepend_sys_path.  Consider adding path_separator=os to Alembic config.
+    util.warn_deprecated(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+60 passed, 1 warning in 1.74s

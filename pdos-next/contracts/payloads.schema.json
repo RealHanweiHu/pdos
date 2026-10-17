@@ -17042,6 +17042,873 @@
       ],
       "title": "PilotResultPayload",
       "type": "object"
+    },
+    "release.package.assemble": {
+      "$defs": {
+        "ObjectRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "enum": [
+                "definition",
+                "engineering_configuration",
+                "process_revision",
+                "manufacturing_publication",
+                "test_run",
+                "pilot_run",
+                "issue",
+                "change",
+                "exception",
+                "artifact",
+                "work_instruction",
+                "control_plan",
+                "build_lot",
+                "line"
+              ],
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "kind"
+          ],
+          "title": "ObjectRef",
+          "type": "object"
+        },
+        "OriginalRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "const": "artifact",
+              "default": "artifact",
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "OriginalRef",
+          "type": "object"
+        },
+        "ReleaseScope": {
+          "additionalProperties": false,
+          "description": "None is unknown/uncovered; an empty set never means all objects.",
+          "properties": {
+            "quantity": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quantity"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "lots": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/VersionRef"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lots"
+            },
+            "site": {
+              "anyOf": [
+                {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Site"
+            },
+            "lines": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/VersionRef"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lines"
+            },
+            "regions": {
+              "anyOf": [
+                {
+                  "items": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Regions"
+            }
+          },
+          "title": "ReleaseScope",
+          "type": "object"
+        },
+        "SourcedText": {
+          "additionalProperties": false,
+          "properties": {
+            "text": {
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/OriginalRef"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "text",
+            "sources"
+          ],
+          "title": "SourcedText",
+          "type": "object"
+        },
+        "SubjectConfiguration": {
+          "additionalProperties": false,
+          "properties": {
+            "definition": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "engineering_configuration": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "manufacturing_configuration": {
+              "$ref": "#/$defs/VersionRef"
+            }
+          },
+          "required": [
+            "definition",
+            "engineering_configuration",
+            "manufacturing_configuration"
+          ],
+          "title": "SubjectConfiguration",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "subject_config": {
+          "$ref": "#/$defs/SubjectConfiguration"
+        },
+        "release_scope": {
+          "$ref": "#/$defs/ReleaseScope"
+        },
+        "purpose": {
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "manufacturing_publication": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "verifications": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "title": "Verifications",
+          "type": "array"
+        },
+        "pilots": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "title": "Pilots",
+          "type": "array"
+        },
+        "residuals": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ObjectRef"
+          },
+          "title": "Residuals",
+          "type": "array"
+        },
+        "exceptions": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "title": "Exceptions",
+          "type": "array"
+        },
+        "documents": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ObjectRef"
+          },
+          "title": "Documents",
+          "type": "array"
+        },
+        "limits": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourcedText"
+          },
+          "title": "Limits",
+          "type": "array"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/OriginalRef"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "previous": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "subject_config",
+        "release_scope",
+        "purpose",
+        "sources",
+        "reason"
+      ],
+      "title": "PackageAssemblePayload",
+      "type": "object"
+    },
+    "release.engineering.approve": {
+      "$defs": {
+        "OriginalRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "const": "artifact",
+              "default": "artifact",
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "OriginalRef",
+          "type": "object"
+        },
+        "ReleaseScope": {
+          "additionalProperties": false,
+          "description": "None is unknown/uncovered; an empty set never means all objects.",
+          "properties": {
+            "quantity": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quantity"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "lots": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/VersionRef"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lots"
+            },
+            "site": {
+              "anyOf": [
+                {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Site"
+            },
+            "lines": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/VersionRef"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lines"
+            },
+            "regions": {
+              "anyOf": [
+                {
+                  "items": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Regions"
+            }
+          },
+          "title": "ReleaseScope",
+          "type": "object"
+        },
+        "SourcedText": {
+          "additionalProperties": false,
+          "properties": {
+            "text": {
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/OriginalRef"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "text",
+            "sources"
+          ],
+          "title": "SourcedText",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "package": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "release_scope": {
+          "$ref": "#/$defs/ReleaseScope"
+        },
+        "purpose": {
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "limits": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourcedText"
+          },
+          "title": "Limits",
+          "type": "array"
+        },
+        "expiry": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expiry"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/OriginalRef"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "package",
+        "release_scope",
+        "purpose",
+        "sources",
+        "reason"
+      ],
+      "title": "EngineeringApprovePayload",
+      "type": "object"
+    },
+    "release.manufacturing.approve": {
+      "$defs": {
+        "OriginalRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "const": "artifact",
+              "default": "artifact",
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "OriginalRef",
+          "type": "object"
+        },
+        "ReleaseScope": {
+          "additionalProperties": false,
+          "description": "None is unknown/uncovered; an empty set never means all objects.",
+          "properties": {
+            "quantity": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quantity"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "lots": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/VersionRef"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lots"
+            },
+            "site": {
+              "anyOf": [
+                {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Site"
+            },
+            "lines": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/VersionRef"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lines"
+            },
+            "regions": {
+              "anyOf": [
+                {
+                  "items": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Regions"
+            }
+          },
+          "title": "ReleaseScope",
+          "type": "object"
+        },
+        "SourcedText": {
+          "additionalProperties": false,
+          "properties": {
+            "text": {
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/OriginalRef"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "text",
+            "sources"
+          ],
+          "title": "SourcedText",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "package": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "release_scope": {
+          "$ref": "#/$defs/ReleaseScope"
+        },
+        "purpose": {
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "limits": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourcedText"
+          },
+          "title": "Limits",
+          "type": "array"
+        },
+        "expiry": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expiry"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/OriginalRef"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "package",
+        "release_scope",
+        "purpose",
+        "sources",
+        "reason"
+      ],
+      "title": "ManufacturingApprovePayload",
+      "type": "object"
     }
   },
   "scope": "implemented local domain slices; real AI qualification and formal exits are separate"

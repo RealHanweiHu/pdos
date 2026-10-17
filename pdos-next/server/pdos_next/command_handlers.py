@@ -36,6 +36,8 @@ CATEGORY_OPERATIONS = frozenset(
 
 T2_OPERATIONS = frozenset(
     {
+        "release.engineering.approve",
+        "release.manufacturing.approve",
         "ai.skill.qualify",
         "mcp.connector.allow",
         "change.order.approve",
@@ -125,6 +127,8 @@ PHASED_MATERIAL_OPERATIONS = frozenset(
         "npi.manufacturing_baseline.record",
         "npi.manufacturing_baseline.publish",
         "change.order.prepare",
+        "release.engineering.approve",
+        "release.manufacturing.approve",
         "npi.pilot.create",
         "npi.pilot.result.record",
         "change.order.approve",
@@ -140,6 +144,14 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation in {
+        "release.package.assemble",
+        "release.engineering.approve",
+        "release.manufacturing.approve",
+    }:
+        from pdos_next.domain.release import service as release_service
+
+        return release_service
     if operation in {"npi.pilot.create", "npi.pilot.result.record"}:
         from pdos_next.domain.manufacturing_trials import native_service
 

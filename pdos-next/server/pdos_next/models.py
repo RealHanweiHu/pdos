@@ -1136,3 +1136,4 @@ import pdos_next.domain.products.platform_models  # noqa: E402,F401
 import pdos_next.domain.manufacturing_baseline.publication_models  # noqa: E402,F401
 
 import pdos_next.domain.manufacturing_trials.native_models  # noqa: E402,F401
+import pdos_next.domain.release.models  # noqa: E402,F401
