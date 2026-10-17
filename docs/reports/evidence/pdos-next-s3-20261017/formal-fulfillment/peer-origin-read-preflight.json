@@ -1,0 +1,22 @@
+{
+  "target": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0776"
+  },
+  "previous_actual_attempt": "actual-fulfillment-02",
+  "same_failed_synthetic_scope": true,
+  "actual_peer_context_unchanged": true,
+  "private_request_keys_visible": 0,
+  "existing_scoped_boolean_binding": true,
+  "actual_origin_descriptor_read": true,
+  "actual_current_and_common_group_checked_twice": true,
+  "business_writes": 0,
+  "full_fulfillment_or_stage_pass": false,
+  "owned_source_sha256": {
+    "pdos-next/server/pdos_next/receipt_request_binding.py": "c0e73ead18f99de839f8509e16bc0f907501b9f885a80d8685306c70ddd1abf7",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py": "568bbd87c5ad4c28661b3d1a87c792abffee3ed6ad51b598705987f21f064099"
+  }
+}

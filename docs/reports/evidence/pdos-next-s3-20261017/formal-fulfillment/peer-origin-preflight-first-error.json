@@ -1,0 +1,1 @@
+{"outcome":"diagnostic assertion field error after actual origin read returned", "cause":"StoredOriginRead uses completion_group, not group", "business_writes":0, "snapshot_modified":false, "not_a_business_scenario":true}

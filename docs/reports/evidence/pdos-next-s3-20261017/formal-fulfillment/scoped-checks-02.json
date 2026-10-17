@@ -1,0 +1,61 @@
+{
+  "started_at": "2026-10-17T18:11:33.012148+00:00",
+  "finished_at": "2026-10-17T18:11:35.956291+00:00",
+  "snapshot": "/private/tmp/pdos-s3-fulfillment-48kbc5ra",
+  "checks": [
+    {
+      "check": "lint",
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "../../pdos-next/server/pdos_next/change_action_fulfillment_owner.py",
+        "../../pdos-next/server/pdos_next/capa_applicability_owner.py",
+        "../../pdos-next/server/pdos_next/api.py",
+        "../../pdos-next/server/pdos_next/domain/capa_effectiveness/lineage.py",
+        "../../pdos-next/server/tests/change_execution/test_action_fulfillment_owner.py",
+        "../../pdos-next/server/tests/change_execution/test_formal_action_fulfillment_composition.py",
+        "../../pdos-next/server/tests/change_execution/test_default_action_fulfillment_wiring.py",
+        "../../pdos-next/staging/wave17/test_anchor_lineage.py",
+        "../../pdos-next/server/tests/change_execution/test_completed_formal_fulfillment_chain.py",
+        "../../pdos-next/server/tests/change_execution/formal_fulfillment_chain_helpers.py"
+      ],
+      "exit": 1
+    },
+    {
+      "check": "format",
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "ruff",
+        "format",
+        "--check",
+        "../../pdos-next/server/pdos_next/change_action_fulfillment_owner.py",
+        "../../pdos-next/server/pdos_next/capa_applicability_owner.py",
+        "../../pdos-next/server/pdos_next/domain/capa_effectiveness/lineage.py",
+        "../../pdos-next/server/tests/change_execution/test_action_fulfillment_owner.py",
+        "../../pdos-next/server/tests/change_execution/test_formal_action_fulfillment_composition.py",
+        "../../pdos-next/server/tests/change_execution/test_default_action_fulfillment_wiring.py",
+        "../../pdos-next/staging/wave17/test_anchor_lineage.py",
+        "../../pdos-next/server/tests/change_execution/test_completed_formal_fulfillment_chain.py",
+        "../../pdos-next/server/tests/change_execution/formal_fulfillment_chain_helpers.py"
+      ],
+      "exit": 0
+    },
+    {
+      "check": "collect",
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "--collect-only",
+        "tests/change_execution/test_completed_formal_fulfillment_chain.py"
+      ],
+      "exit": 0
+    }
+  ],
+  "source_changed": [],
+  "database_or_http_permitted": false
+}

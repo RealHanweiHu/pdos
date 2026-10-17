@@ -8,7 +8,7 @@ from copy import deepcopy
 from datetime import timedelta
 
 import pytest
-from anchor import (
+from pdos_next.domain.capa_effectiveness.anchor import (
     CurrentAuthorizationClosure,
     IssueVersionEvidence,
     OriginalFailureProof,
@@ -22,7 +22,7 @@ from anchor import (
     json_value,
     stable_failure_material,
 )
-from lineage import (
+from pdos_next.domain.capa_effectiveness.lineage import (
     CLOSE,
     EFFECT,
     AuditEvidence,
@@ -65,6 +65,7 @@ from quality_issues.helpers import NOW, fixed_run, source, uid
 
 PURPOSE = "Synthetic shared investigation; not production qualification"
 ACTOR = uid("independent-reviewer")
+CATEGORY = uid("category")
 AT = NOW + timedelta(hours=1)
 
 
@@ -75,7 +76,7 @@ def safety(ref):
         hash=digest(str(ref.id)),
         status="active",
         owner_id=uid("owner"),
-        visibility="product",
+        visibility="category",
         source_kind="registered_native_text",
         registration={
             "receipt_id": uid(str(ref.id) + "-receipt"),
@@ -95,7 +96,7 @@ def origin_fixture():
         id=uid("issue"),
         revision=9,
         scope=run.scope,
-        audience=(f"product:{run.scope.product_id}",),
+        audience=(f"category:{CATEGORY}",),
         title="Synthetic actual fixed failure",
         status="awaiting_verification",
         risk="high",
@@ -159,11 +160,12 @@ def origin_fixture():
         ref=VersionRef(id=uid("issue-v9"), revision=9, snapshot_sha256=digest(json_value(issue))),
         previous_ref=None,
         scope=issue.scope,
+        category_id=CATEGORY,
         issue_id=issue.id,
         purpose=PURPOSE,
         owner_id=uid("owner"),
         writer_id=uid("owner"),
-        visibility="product",
+        visibility="category",
         nature="synthetic",
         operation="quality.capa.actions.complete",
         domain_intent_sha256=digest("original-domain-intent"),
@@ -193,7 +195,7 @@ def origin_fixture():
         rules_version="fixed-original-rules",
         rules_sha256=digest("fixed-rules"),
         verified=VerifiedRun(run=run, nature="synthetic"),
-        visibility="product",
+        visibility="category",
         owner_id=uid("tester"),
         sources=sources,
         required_source_read_set=reads,
@@ -521,6 +523,23 @@ def reseal(proof):
     return proof.model_copy(update={"proof_sha256": digest(raw)})
 
 
+def reseal_approval(after, proof, **changes):
+    approval = ConsumedApproval.model_validate(
+        json_value(proof.approval.model_copy(update=changes))
+    )
+    proof = proof.model_copy(update={"approval": approval})
+    proof = proof.model_copy(
+        update={
+            "approval": approval.model_copy(
+                update={
+                    "transaction_proof_sha256": digest(consumption_group_material(after, proof))
+                }
+            )
+        }
+    )
+    return reseal(proof)
+
+
 def chain():
     anchor = origin_fixture()
     effect, first = make_step(anchor, anchor.origin)
@@ -537,6 +556,65 @@ def test_complete_origin_is_not_hardcoded_v6_and_finite_two_t2_chain_preserves_a
     assert steps[0].domain_intent_sha256 != steps[0].common_intent_sha256
     assert steps[0].approval.id != steps[1].approval.id
     assert set(anchor.origin_sources) < set(closure.sources)
+
+
+def test_effect_and_close_accept_consumed_t2_without_a_separate_expiry():
+    anchor, versions, steps, closure = chain()
+    unbounded = tuple(
+        reseal_approval(after, step, expires_at=None)
+        for after, step in zip(versions[1:], steps, strict=True)
+    )
+    assert all(json_value(step)["approval"]["expires_at"] is None for step in unbounded)
+    result = validate_lineage(anchor, versions, unbounded, closure, at=AT)
+    assert result.current_ref == versions[-1].ref
+    assert result.anchor_sha256 == anchor.anchor_sha256
+
+
+@pytest.mark.parametrize("offset", [-1, 0])
+def test_real_approval_expiry_is_enforced_at_the_named_decision(offset):
+    anchor, versions, steps, closure = chain()
+    step = reseal_approval(
+        versions[1],
+        steps[0],
+        expires_at=steps[0].authority.now + timedelta(microseconds=offset),
+    )
+    with pytest.raises(DomainError, match="real approval is valid"):
+        validate_lineage(anchor, versions[:2], (step,), closure, at=AT)
+
+
+def test_unbounded_approval_still_binds_the_actual_named_decision_time():
+    anchor, versions, steps, closure = chain()
+    step = reseal_approval(
+        versions[1],
+        steps[0],
+        expires_at=None,
+        evaluated_at=steps[0].authority.now + timedelta(microseconds=1),
+    )
+    with pytest.raises(DomainError, match="real approval is valid"):
+        validate_lineage(anchor, versions[:2], (step,), closure, at=AT)
+
+
+@pytest.mark.parametrize("bad", ["scope", "actor", "unconsumed", "signer", "source"])
+def test_unbounded_approval_preserves_binding_and_current_material_checks(bad):
+    anchor, versions, steps, closure = chain()
+    changes = {"expires_at": None}
+    if bad == "scope":
+        changes["product_id"] = uid("another-product")
+    elif bad == "actor":
+        changes["actor_id"] = uid("another-signer")
+    elif bad == "unconsumed":
+        changes["consumed"] = False
+    step = reseal_approval(versions[1], steps[0], **changes)
+    if bad == "signer":
+        step = reseal(
+            step.model_copy(update={"signer_recheck": {**step.signer_recheck, "current": False}})
+        )
+    elif bad == "source":
+        raw = json_value(closure)
+        raw["source_basis"][0]["hash"] = digest("source withdrawn and restored")
+        closure = CurrentAuthorizationClosure.model_validate(raw)
+    with pytest.raises(DomainError):
+        validate_lineage(anchor, versions[:2], (step,), closure, at=AT)
 
 
 @pytest.mark.parametrize(
@@ -780,7 +858,7 @@ def test_missing_host_is_503_and_mid_read_runtime_drift_refuses_proof():
     anchor, versions, steps, closure = chain()
     with pytest.raises(DomainError) as error:
         verify_from_host(None, anchor, versions[-1].ref, clock=lambda: AT)
-    assert error.value.code == "INTEGRATION_REQUIRED" and error.value.status == 503
+    assert error.value.reason == "INTEGRATION_REQUIRED" and error.value.status == 503
 
     class Host:
         closure_calls = 0
@@ -955,7 +1033,7 @@ def test_distinct_t2_receipts_with_resealed_same_command_cannot_form_effect_clos
     _check_step(versions[1], close, proof, closure)
     with pytest.raises(DomainError, match="distinct actual commands") as error:
         validate_lineage(anchor, (*versions[:2], close), (steps[0], proof), closure, at=AT)
-    assert error.value.code == "RECHECK_REQUIRED"
+    assert error.value.reason == "RECHECK_REQUIRED"
 
 
 def test_source_set_reordering_preserves_anchor_but_nested_issuer_data_stays_fixed():

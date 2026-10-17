@@ -233,7 +233,11 @@ def create_app(
 
     paired_owner = LivePairedOwner()
     if type(fact_owner) is ActualFactOwner and fact_owner.review_owner is None:
-        from pdos_next.capa_applicability_owner import ActualApplicabilityOwner
+        from pdos_next.capa_applicability_owner import (
+            ActualActionFulfillmentOwner,
+            ActualApplicabilityOwner,
+        )
+        from pdos_next.change_action_fulfillment_owner import ApprovedChangeActionFulfillmentOwner
         from pdos_next.domain.capa_effectiveness.candidate_commands import semantic_owner
         from pdos_next.domain.capa_effectiveness.named_review_owner import ActualNamedReviewOwner
 
@@ -241,7 +245,13 @@ def create_app(
             fact_owner,
             candidate_semantic_owner=semantic_owner(),
             paired_owner=paired_owner,
-            applicability_owner=ActualApplicabilityOwner(fact_owner, paired_owner=paired_owner),
+            applicability_owner=ActualApplicabilityOwner(
+                fact_owner,
+                paired_owner=paired_owner,
+                action_owner=ActualActionFulfillmentOwner(
+                    implementation_owner=ApprovedChangeActionFulfillmentOwner(engine)
+                ),
+            ),
         )
     configure_capa_facts(engine, fact_owner)
     configure_paired_followup(engine, paired_owner)

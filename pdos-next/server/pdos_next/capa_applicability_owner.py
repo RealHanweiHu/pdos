@@ -400,6 +400,11 @@ class ActualActionFulfillmentOwner:
                     409,
                 )
                 kind, conclusion = proof.classification, proof.conclusion
+                if kind == "formal_change":
+                    # Current formal classification comes from the configured
+                    # live owner after both exact proof checks and full refresh
+                    # equality. The saved completion label alone cannot clear it.
+                    missing.discard("CURRENT_ACTION_CLASSIFICATION_OWNER_REQUIRED")
                 material["fulfillment"] = proof.owner_material
                 sources.extend(proof.owner_refs)
                 reads.extend(proof.reads)

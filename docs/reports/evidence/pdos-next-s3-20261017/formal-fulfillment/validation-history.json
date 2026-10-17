@@ -1,0 +1,34 @@
+{
+  "actual_attempts": [
+    {
+      "name": "actual-fulfillment-01",
+      "snapshot": "/private/tmp/pdos-s3-fulfillment-kb30m_z4",
+      "pytest_exit": 2,
+      "source_changed": [],
+      "final": false,
+      "outcome": "interrupted"
+    },
+    {
+      "name": "actual-fulfillment-02",
+      "snapshot": "/private/tmp/pdos-s3-fulfillment-zad8bjwl",
+      "pytest_exit": 1,
+      "source_changed": [],
+      "final": false,
+      "outcome": "failed"
+    },
+    {
+      "name": "actual-fulfillment-03",
+      "snapshot": "/private/tmp/pdos-s3-fulfillment-xd5tjg0y",
+      "pytest_exit": 0,
+      "source_changed": [],
+      "final": true,
+      "outcome": "passed"
+    }
+  ],
+  "final": "actual-fulfillment-03",
+  "distinct_final_scenarios": 1,
+  "static_setup": "Initial mixed server/staging Ruff invocation used differing discovery roots; split per actual configuration and restored lineage import ordering. Failed outputs remain; not counted as business scenarios.",
+  "actual_failure_recovery": "01 interrupted only after confirmed helper DTO bug; 02 failed on private RequestKey visibility after full upstream chain; 03 reruns the full fixed candidate with controlled boolean receipt association. Prior attempts are retained and are not passes.",
+  "pure_final": "affected-pure-05",
+  "checks_final": "scoped-checks-06"
+}

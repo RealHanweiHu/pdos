@@ -29,6 +29,7 @@ from pdos_next.domain.capa_verification.schemas import CandidateBinding, Candida
 from pdos_next.domain.capa_verification.service import basis_from_issue
 from pdos_next.errors import DomainError
 from pdos_next.models import Audit, Confirmation, Outbox, Principal, Receipt, RequestKey
+from pdos_next.receipt_request_binding import readable_receipt_request_bound
 from pdos_next.schemas.verification.contracts import DTO
 from pydantic import AwareDatetime, BaseModel, JsonValue, ValidationError
 from sqlalchemy import select
@@ -375,7 +376,10 @@ def _group(s, ctx, pid, row, body, payload, owner):
             .execution_options(populate_existing=True, autoflush=False)
         )
     )
-    _require(bool(keys), "CANDIDATE_ORIGINAL_REQUEST_KEY_MISSING")
+    key_bound = bool(keys)
+    if not key_bound and receipt.actor_id != ctx.actor_id:
+        key_bound = readable_receipt_request_bound(s, ctx, pid, receipt.id)
+    _require(key_bound, "CANDIDATE_ORIGINAL_REQUEST_KEY_MISSING")
     audit = guards._one(s, Audit, Audit.tenant_id == ctx.tenant_id, Audit.receipt_id == receipt.id)
     outbox = guards._one(
         s, Outbox, Outbox.tenant_id == ctx.tenant_id, Outbox.receipt_id == receipt.id

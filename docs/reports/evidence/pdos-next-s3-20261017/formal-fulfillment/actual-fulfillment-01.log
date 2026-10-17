@@ -1,0 +1,54 @@
+
+=============================== warnings summary ===============================
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-kb30m_z4/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-kb30m_z4/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-kb30m_z4/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-kb30m_z4/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-kb30m_z4/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-kb30m_z4/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-kb30m_z4/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-kb30m_z4/pdos-next/server/pdos_next/change_controlled_owner.py:770: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # BEFORE Current target guard, never a commit/second Receipt.
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-kb30m_z4/pdos-next/server/pdos_next/domain/change_coverage_owner/importer.py:368: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([fact])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-kb30m_z4/pdos-next/server/pdos_next/service.py:1164: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-kb30m_z4/pdos-next/server/pdos_next/change_order_service.py:1012: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # Actual candidate trigger validates parent before pointer flush.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! KeyboardInterrupt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/threading.py:355: KeyboardInterrupt
+(to show a full traceback on KeyboardInterrupt use --full-trace)
+14 warnings in 277.32s (0:04:37)

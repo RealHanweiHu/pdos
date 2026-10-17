@@ -25,6 +25,7 @@ from pdos_next.domain.quality_followup import service as followup
 from pdos_next.domain.quality_followup.schemas import ActionsCompletePayload
 from pdos_next.errors import DomainError
 from pdos_next.models import Audit, Confirmation, Grant, Outbox, Principal, Receipt, RequestKey
+from pdos_next.receipt_request_binding import readable_receipt_request_bound
 from pdos_next.schemas.quality_issues.contracts import Issue
 from pdos_next.schemas.verification.contracts import DTO
 from pydantic import AwareDatetime, ValidationError
@@ -436,7 +437,10 @@ def _group(s, ctx, pid, row, issue, before, previous, payload):
             .execution_options(populate_existing=True, autoflush=False)
         )
     )
-    _require(bool(key), "ORIGIN_REQUEST_KEY_MISSING", "原共同摘要缺真实原RequestKey关联。", 503)
+    key_bound = bool(key)
+    if not key_bound and receipt.actor_id != ctx.actor_id:
+        key_bound = readable_receipt_request_bound(s, ctx, pid, receipt.id)
+    _require(key_bound, "ORIGIN_REQUEST_KEY_MISSING", "原共同摘要缺真实原RequestKey关联。", 503)
     audit = _one(s, Audit, Audit.tenant_id == ctx.tenant_id, Audit.receipt_id == receipt.id)
     outbox = _one(s, Outbox, Outbox.tenant_id == ctx.tenant_id, Outbox.receipt_id == receipt.id)
     _require(

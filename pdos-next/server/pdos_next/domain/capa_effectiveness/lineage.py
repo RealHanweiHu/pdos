@@ -75,7 +75,7 @@ class ConsumedApproval(DTO):
     product_revision: Revision
     consumed: Annotated[bool, Field(strict=True)]
     evaluated_at: AwareDatetime
-    expires_at: AwareDatetime
+    expires_at: AwareDatetime | None
     material_sha256: Sha256  # actual common Confirmation material_digest
     read_set_sha256: Sha256
     approved_delta_sha256: Sha256
@@ -329,7 +329,9 @@ def _check_provenance(before, after, proof):
         reject(
             "Reciprocal persisted group must bind the actual consumed UUID and full saved group."
         )
-    if not approval.evaluated_at < approval.expires_at or authority.now != approval.evaluated_at:
+    if authority.now != approval.evaluated_at or (
+        approval.expires_at is not None and approval.evaluated_at >= approval.expires_at
+    ):
         reject("Named transition decision must occur while its real approval is valid.")
     if approval.read_set_sha256 != digest(
         [json_value(r) for r in canonical_reads(after.required_source_read_set)]

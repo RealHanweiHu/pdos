@@ -31,6 +31,7 @@ from pdos_next.domain.verification_launch.models import (
 from pdos_next.domain.verification_results import service as results
 from pdos_next.domain.verification_results.models import TestResultActionFact, TestResultProjection
 from pdos_next.errors import DomainError
+from pdos_next.receipt_request_binding import readable_receipt_request_bound
 from pdos_next.models import Audit, Grant, Outbox, Principal, Product, Receipt, RequestKey, now
 from pydantic import ValidationError
 from sqlalchemy import and_, select
@@ -467,14 +468,20 @@ def _read_storage_pair(s, ctx, product_id, output_ref, *, at, write=False) -> p.
         "PAIR_RECEIPT_MISSING",
         "配对动作缺唯一精确共同保存回执。",
     )
-    if not _many(
-        s,
-        RequestKey,
-        RequestKey.tenant_id == ctx.tenant_id,
-        RequestKey.actor_id == receipt.actor_id,
-        RequestKey.receipt_id == receipt.id,
-        RequestKey.digest == receipt.request_digest,
-    ):
+    request_bound = bool(
+        _many(
+            s,
+            RequestKey,
+            RequestKey.tenant_id == ctx.tenant_id,
+            RequestKey.actor_id == receipt.actor_id,
+            RequestKey.receipt_id == receipt.id,
+            RequestKey.digest == receipt.request_digest,
+        )
+    )
+    # The Receipt is readable above; the peer's RequestKey body remains private.
+    if not request_bound and receipt.actor_id != ctx.actor_id:
+        request_bound = readable_receipt_request_bound(s, ctx, product_id, receipt.id)
+    if not request_bound:
         _missing(
             "PAIR_REQUEST_PROVENANCE_MISSING", "原回执缺原writer与原摘要的真实RequestKey关联。"
         )

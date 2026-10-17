@@ -1,0 +1,9 @@
+{
+  "outcome": "interrupted before known invalid helper access",
+  "reason": "The captured helper read samples directly from FormalVerificationRequest column namespace; current_rows exposes request_snapshot, which must be parsed as VerificationRequest first.",
+  "owned_pytest_children_signalled": 1,
+  "other_processes_signalled": 0,
+  "parent_runner_saved_result": true,
+  "snapshot_modified": false,
+  "required_followup": "new immutable candidate and a complete actual run; interrupted attempt is not acceptance or pass"
+}

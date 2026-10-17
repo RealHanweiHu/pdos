@@ -1,0 +1,58 @@
+{
+  "written_at": "2026-10-17T19:11:23.446544+00:00",
+  "base_commit": "745323ef49959903a99806981fb94fad0378ef75",
+  "git_head_at_finalization": "745323ef49959903a99806981fb94fad0378ef75",
+  "actual_candidate": "/private/tmp/pdos-s3-fulfillment-xd5tjg0y",
+  "owned_source_sha256": {
+    "pdos-next/server/pdos_next/change_action_fulfillment_owner.py": "19ed7f0f662c94219af5ea07e28a8aa3895586126e4fb090024fdedf22a3b2e7",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py": "ca4b4f979361590d0c1282554df94440d68db128762af519705b7ff4080220c6",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/lineage.py": "e597a9d8b7ab6a9844747f57ac200744c9b097c59443d418dbbd3cc208f17915",
+    "pdos-next/server/tests/change_execution/test_action_fulfillment_owner.py": "99c87ad647dbb5675ff5043825126eb4350acef8011632b088c3c1d0385d39ed",
+    "pdos-next/server/tests/change_execution/test_formal_action_fulfillment_composition.py": "4691f6697127fe86a7dc774a68b391521078d2e78d989033a6010f164b152975",
+    "pdos-next/server/tests/change_execution/test_default_action_fulfillment_wiring.py": "0a07f74bdb23e8a0f891291342a45f616a239e21cdd7d883d2e1ee45c007c666",
+    "pdos-next/staging/wave17/test_anchor_lineage.py": "6355e9c4ac8418f8875e95a82f0ed2d9128b0c548067f6bd96b25ee553511310",
+    "pdos-next/server/tests/change_execution/test_completed_formal_fulfillment_chain.py": "37841ed38b045cc49da9e78d4c14ae5911ec3d360f6ee820a23d70e97b372d9b",
+    "pdos-next/server/tests/change_execution/formal_fulfillment_chain_helpers.py": "7cf47fe0cede294d66d8dd3bef851cd1f06868c4a5e611c23a0c66b269cb4b21",
+    "pdos-next/server/pdos_next/receipt_request_binding.py": "c0e73ead18f99de839f8509e16bc0f907501b9f885a80d8685306c70ddd1abf7",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py": "568bbd87c5ad4c28661b3d1a87c792abffee3ed6ad51b598705987f21f064099",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py": "9ce7167702dc6b33d129fad8e14d5e76d3470c9ee29e6bcdedc4a5eecc6001c4",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py": "313f1354d973ad5a253851590561af5a09e50cc59c5f20c5140a544791fd5c8c",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired_storage.py": "f8608fac5171a2cd4211fff53d3d00865407e27daf14fa4b471d39547b4ffa30",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py": "1783f24f390fdf3bf3279015a63a0764ac1cac196918c34724a960c480cc0a2a",
+    "pdos-next/server/tests/capa_effectiveness/test_peer_fact_pair_request_binding.py": "5767ea799f0a818b9885095895affb0245ffd92e59ad95227b537d9f138fe171",
+    "pdos-next/server/tests/capa_effectiveness/test_peer_participant_request_binding.py": "03b52a6682f8e862f2aa5c2271b13f38a4a2414352b7e9031b1e3729e1e4f7b5",
+    "pdos-next/server/tests/capa_effectiveness/test_peer_candidate_request_binding.py": "380c69066c9c7b20bf48bebffbde3eeb626b82205afdbb3c7237aab117b30cdb",
+    "docs/design/2026-10-17-pdos-next-s3-quality-continuation-contract.md": "6b0de45e2448baccc05d09623afe15e102df0b8c350f771c5d10e906627b8e5d"
+  },
+  "partial_owned_files": [
+    {
+      "path": "pdos-next/server/pdos_next/api.py",
+      "tested_full_source_sha256": "c0252295f337beca873bc379ce9f893e81c37031dcbed684286fe9cdf0b4ca41",
+      "exact_replacements": [
+        {
+          "before": "        from pdos_next.capa_applicability_owner import ActualApplicabilityOwner\n",
+          "after": "        from pdos_next.capa_applicability_owner import (\n            ActualActionFulfillmentOwner,\n            ActualApplicabilityOwner,\n        )\n        from pdos_next.change_action_fulfillment_owner import ApprovedChangeActionFulfillmentOwner\n"
+        },
+        {
+          "before": "            applicability_owner=ActualApplicabilityOwner(fact_owner, paired_owner=paired_owner),\n",
+          "after": "            applicability_owner=ActualApplicabilityOwner(\n                fact_owner,\n                paired_owner=paired_owner,\n                action_owner=ActualActionFulfillmentOwner(\n                    implementation_owner=ApprovedChangeActionFulfillmentOwner(engine)\n                ),\n            ),\n"
+        }
+      ],
+      "all_other_worktree_changes_excluded": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/error_catalog.py",
+      "tested_full_source_sha256": "f5f98ad8a5a6ef9ae8a5b69a2a21d6311620b842feeffc1fd9b13c0c9ba39837",
+      "exact_replacements": [
+        {
+          "before": "        \"PAIR_RECEIPT_MISMATCH\": \"VALIDATION_FAILED\",\n",
+          "after": "        \"PAIR_RECEIPT_MISMATCH\": \"VALIDATION_FAILED\",\n        \"PAIR_REQUEST_PROVENANCE_MISSING\": \"MISSING_REQUIRED_EVIDENCE\",\n"
+        }
+      ],
+      "all_other_worktree_changes_excluded": true
+    }
+  ],
+  "source_manifest_context_only": "Other captured M2/M3/UI changes are test context and are excluded from delivery.",
+  "all_twenty_owned_executable_inputs_matched_actual_candidate": true,
+  "documentation_matched_candidate_before_execution": true
+}

@@ -1,0 +1,43 @@
+{
+  "functional_checkpoint_complete": true,
+  "stage_acceptance": {
+    "S1": false,
+    "S2": false,
+    "S3": false
+  },
+  "performance_acceptance": "deferred",
+  "distinct_final_actual_scenarios": 1,
+  "backend_affected_pure_checks": 333,
+  "same_candidate_pure_and_actual": true,
+  "owned_executable_files": 20,
+  "partial_api_hunks": 2,
+  "partial_error_catalog_hunks": 1,
+  "cross_actor_request_key_privacy_retained": true,
+  "actual_peer_origin_preflight": "peer-origin-read-preflight.json",
+  "documentation_files": 1,
+  "actual_synthetic_results": {
+    "completed_formal_actions_read_as_applicable": 2,
+    "real_rule_published": true,
+    "real_candidate_recorded": true,
+    "exact_implementation_proof_and_receipt_verified": true,
+    "live_read_refresh_same_material": true,
+    "issue_pointer_and_nine_observed_record_counts_unchanged_by_reads": true,
+    "day_long_observation_requirement_retained": true,
+    "observation_records_created": 0,
+    "effectiveness_or_closure": false
+  },
+  "not_covered": [
+    "full method or paired-output applicability",
+    "named review independence workflow",
+    "complete observation",
+    "effectiveness and close",
+    "new browser or Web build",
+    "new migration",
+    "formal stage acceptance"
+  ],
+  "lint": "all 20 owned executable files passed in their actual configuration roots",
+  "format": "19 files passed; shared api.py has one documented preexisting blank line, unchanged by owned hunks",
+  "real_model_or_KMS_calls": 0,
+  "push_deploy_or_production": false,
+  "actual_candidate": "/private/tmp/pdos-s3-fulfillment-xd5tjg0y"
+}

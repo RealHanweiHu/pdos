@@ -1,0 +1,60 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos_next/domain/capa_effectiveness/lineage.py:8:1
+   |
+ 6 |   """
+ 7 |
+ 8 | / from collections.abc import Callable
+ 9 | | from datetime import datetime
+10 | | from typing import Annotated, Literal, Protocol
+11 | | from uuid import UUID
+12 | |
+13 | | from pdos_next.domain.quality_issues.handlers import QualityIssueHandler
+14 | | from pdos_next.domain.quality_issues.ports import (
+15 | |     Authority,
+16 | |     Currentness,
+17 | |     Ports,
+18 | |     QualityPolicy,
+19 | |     VerificationEvidence,
+20 | | )
+21 | | from pdos_next.domain.quality_issues.rules import digest, semantic_digest
+22 | | from pdos_next.errors import DomainError
+23 | | from pdos_next.schemas.quality_issues.contracts import EffectivenessDecide, History, IssueClose
+24 | | from pdos_next.schemas.verification.contracts import DTO, SourceRef
+25 | | from pydantic import AwareDatetime, Field, JsonValue
+26 | |
+27 | | from .anchor import (
+28 | |     CurrentAuthorizationClosure,
+29 | |     IssueVersionEvidence,
+30 | |     OriginalFailureProof,
+31 | |     Revision,
+32 | |     Sha256,
+33 | |     SourceRead,
+34 | |     StableCapaAnchor,
+35 | |     VersionRef,
+36 | |     canonical_basis,
+37 | |     canonical_reads,
+38 | |     canonical_sources,
+39 | |     closure_material,
+40 | |     json_value,
+41 | |     reject,
+42 | |     stable_failure_material,
+43 | |     verify_closure,
+44 | | )
+   | |_^
+45 |
+46 |   EFFECT = "quality.capa.effectiveness.decide"
+   |
+help: Organize imports
+   |
+12 |
+13 + from pydantic import AwareDatetime, Field, JsonValue
+14 +
+15 | from pdos_next.domain.quality_issues.handlers import QualityIssueHandler
+--------------------------------------------------------------------------------
+26 | from pdos_next.schemas.verification.contracts import DTO, SourceRef
+   - from pydantic import AwareDatetime, Field, JsonValue
+27 |
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

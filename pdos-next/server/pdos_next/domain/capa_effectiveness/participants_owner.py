@@ -86,6 +86,7 @@ class _Read:
         self.s, self.ctx, self.pid, self.origin = s, ctx, pid, origin
         self.uow, self.caller = guards._uow(s), digest(vars(ctx))
         self.rows, self.tracked, self.people, self.refs, self.reads = [], [], {}, [], []
+        self._request_binding_statements = set()
         self.missing = set()
 
     def source_refs(self, sources):
@@ -192,9 +193,26 @@ class _Read:
         from pdos_next.request_proof import snapshot_mappings
 
         matches = snapshot_mappings(self.s, key, scope_id=self.pid)
-        _require(len(matches) == 1, "PARTICIPANT_REQUEST_ASSOCIATION_MISSING")
-        self.tracked.append((key, deepcopy(dict(matches[0]))))
-        self.rows.append({"table": RequestKey.__tablename__, "value": deepcopy(dict(matches[0]))})
+        if not matches and receipt["actor_id"] != self.ctx.actor_id:
+            from pdos_next.receipt_request_binding import receipt_request_binding_statement
+
+            binding = receipt_request_binding_statement(self.ctx.tenant_id, self.pid, receipt["id"])
+            checked = snapshot_mappings(self.s, binding, scope_id=self.pid)
+            _require(
+                len(checked) == 1 and set(checked[0]) == {"bound"} and checked[0]["bound"] is True,
+                "PARTICIPANT_REQUEST_ASSOCIATION_MISSING",
+            )
+            self.tracked.append((binding, {"bound": True}))
+            self._request_binding_statements.add(binding)
+            self.rows.append(
+                {"receipt_request_binding": {"receipt_id": receipt["id"], "bound": True}}
+            )
+        else:
+            _require(len(matches) == 1, "PARTICIPANT_REQUEST_ASSOCIATION_MISSING")
+            self.tracked.append((key, deepcopy(dict(matches[0]))))
+            self.rows.append(
+                {"table": RequestKey.__tablename__, "value": deepcopy(dict(matches[0]))}
+            )
         self.atomic_companions(receipt, event)
 
     def atomic_companions(self, receipt, event):
@@ -592,6 +610,8 @@ class _Read:
 
             rows = snapshot_mappings(self.s, statement, scope_id=self.pid)
             _require(len(rows) == 1 and dict(rows[0]) == old, "PARTICIPANT_OWNER_CHANGED")
+            if statement in self._request_binding_statements:
+                _require(rows[0].get("bound") is True, "PARTICIPANT_OWNER_CHANGED")
         guards._acl(self.s, self.ctx, self.pid)
         guards._same_uow(self.s, self.uow, self.ctx, self.caller)
         return datetime.now(UTC)

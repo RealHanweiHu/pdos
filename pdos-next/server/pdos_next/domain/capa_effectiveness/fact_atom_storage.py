@@ -36,6 +36,7 @@ from pdos_next.models import (
     RequestKey,
 )
 from pdos_next.request_proof import snapshot_rows
+from pdos_next.receipt_request_binding import readable_receipt_request_bound
 from pdos_next.schemas.verification.contracts import Scope
 from sqlalchemy import select
 from sqlalchemy.orm import Session, SessionTransaction
@@ -333,7 +334,12 @@ def read_fact_atom(s, ctx, product_id, *, kind: Kind, fact_id: UUID, revision: i
             .execution_options(autoflush=False)
         )
     )
-    _require(bool(key), "FACT_ORIGINAL_REQUEST_KEY_MISSING")
+    # A peer can read this Receipt while the writer's RequestKey remains private.
+    # Verify only its existing association under this caller; never read as writer.
+    request_bound = bool(key)
+    if not request_bound and receipt.actor_id != ctx.actor_id:
+        request_bound = readable_receipt_request_bound(s, ctx, product_id, receipt.id)
+    _require(request_bound, "FACT_ORIGINAL_REQUEST_KEY_MISSING")
     audit = _one(s, Audit, Audit.tenant_id == ctx.tenant_id, Audit.receipt_id == receipt.id)
     outbox = _one(s, Outbox, Outbox.tenant_id == ctx.tenant_id, Outbox.receipt_id == receipt.id)
     _require(
