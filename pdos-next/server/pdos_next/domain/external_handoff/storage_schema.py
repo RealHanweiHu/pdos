@@ -1,0 +1,682 @@
+"""Uninstalled storage proposal for authorized packets and external receipts.
+
+Only the migration host selects roles and installs this SQL. An intent and a
+false network flag establish no sent fact. The actual receipt owner must bind a
+trusted issuer and real original; a JSON issuer or matching hash is no grant.
+No connector, worker or network dispatch is enabled by these declarations.
+"""
+
+# ruff: noqa: E501 -- Keep PostgreSQL predicates readable.
+
+import json
+
+from sqlalchemy.dialects import postgresql
+from sqlalchemy.schema import CreateIndex, CreateTable
+
+from .models import (
+    ExternalDeliveryIntent,
+    ExternalHandoffAuthorization,
+    ExternalHandoffCurrent,
+    ExternalReceipt,
+    initial_projection,
+)
+
+TABLES = (
+    ExternalHandoffAuthorization.__table__,
+    ExternalDeliveryIntent.__table__,
+    ExternalReceipt.__table__,
+    ExternalHandoffCurrent.__table__,
+)
+OPERATIONS = "('integration.handoff.authorize','integration.receipt.record')"
+SUBJECTS = "('external_handoff','external_receipt')"
+
+
+def table_sql():
+    dialect = postgresql.dialect()
+    return tuple(
+        str(statement.compile(dialect=dialect))
+        for table in TABLES
+        for statement in (
+            CreateTable(table),
+            *(CreateIndex(i) for i in sorted(table.indexes, key=lambda value: value.name)),
+        )
+    )
+
+
+def _function(name, arguments, body, *, returns="trigger"):
+    return (
+        f"CREATE FUNCTION public.{name}({arguments}) RETURNS {returns}\n"
+        "LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog,public,pg_temp "
+        f"AS $external_handoff$\n{body.rstrip()};\n$external_handoff$"
+    )
+
+
+# Later key aliases validate the immutable original group, without requiring
+# its old Current, source availability or the old signer's present authority.
+MEMBERS = r"""
+DECLARE v record; r public.action_receipts; c public.confirmations;
+ proof uuid; expected_status text; event_name text;
+BEGIN
+ IF kind='external_handoff' THEN
+  SELECT * INTO STRICT v FROM public.external_handoff_authorizations WHERE tenant_id=t AND id=target;
+  proof=v.shared_proof_id; expected_status='authorized'; event_name='external_handoff.authorized';
+  SELECT * INTO STRICT c FROM public.confirmations WHERE tenant_id=t AND id=proof;
+  IF ROW(c.category_id,c.product_id,c.actor_id,c.subject_type,c.subject_id,c.operation,c.revision)
+   IS DISTINCT FROM ROW(v.category_id,v.product_id,v.actor_id,'product'::varchar,v.product_id,v.operation,v.shared_proof_revision)
+   OR c.consumed IS DISTINCT FROM true OR c.token_hash IS DISTINCT FROM v.token_sha256
+   OR c.payload_digest IS DISTINCT FROM v.material_sha256 OR c.snapshot IS DISTINCT FROM v.input_snapshot->'review'
+   OR c.expires_at IS DISTINCT FROM v.proof_expires_at
+   OR NOT(c.created_at<=v.proof_consumed_at AND v.proof_consumed_at<=v.created_at
+    AND (c.expires_at IS NULL OR v.created_at<c.expires_at)) THEN
+   RAISE EXCEPTION 'External handoff requires its original consumed T2 proof' USING ERRCODE='23514'; END IF;
+ ELSIF kind='external_receipt' THEN
+  SELECT * INTO STRICT v FROM public.external_receipts WHERE tenant_id=t AND id=target;
+  proof=NULL; expected_status='recorded'; event_name='external_receipt.recorded';
+ ELSE RAISE EXCEPTION 'Unknown external handoff subject' USING ERRCODE='23514'; END IF;
+ SELECT * INTO STRICT r FROM public.action_receipts WHERE tenant_id=t AND id=v.receipt_id;
+ IF ROW(r.category_id,r.product_id,r.command_id,r.confirmation_id,r.actor_id,r.requester_id,r.operation,
+   r.subject_type,r.subject_id,r.subject_revision,r.visibility,r.request_digest,r.intent_digest)
+  IS DISTINCT FROM ROW(v.category_id,v.product_id,v.command_id,proof,v.actor_id,v.requester_id,v.operation,
+   kind::varchar,v.id,v.revision,v.visibility,v.request_digest,v.intent_digest)
+  OR r.result IS DISTINCT FROM jsonb_build_object('id',v.id,'revision',v.revision,'status',expected_status)
+  OR r.created_at<v.created_at
+  OR (kind='external_handoff' AND (r.run_id IS NOT NULL OR r.agent_run_id IS NOT NULL
+    OR (c.expires_at IS NOT NULL AND r.created_at>=c.expires_at)))
+  OR (SELECT count(*) FROM public.action_receipts x WHERE x.tenant_id=t AND x.operation=v.operation
+    AND x.subject_type=kind AND x.subject_id=v.id AND x.subject_revision=v.revision)<>1
+  OR (SELECT count(*) FROM public.audit_entries a WHERE a.tenant_id=t AND a.receipt_id=r.id)<>1
+  OR NOT EXISTS(SELECT 1 FROM public.audit_entries a WHERE a.tenant_id=t AND a.receipt_id=r.id
+    AND a.category_id=v.category_id AND a.actor_id=v.actor_id AND a.operation=v.operation AND a.created_at>=v.created_at)
+  OR (SELECT count(*) FROM public.outbox_events e WHERE e.tenant_id=t AND e.receipt_id=r.id)<>1
+  OR NOT EXISTS(SELECT 1 FROM public.outbox_events e WHERE e.tenant_id=t AND e.receipt_id=r.id
+    AND e.category_id=v.category_id AND e.actor_id=v.actor_id AND e.type=event_name
+    AND e.subject_id=v.id AND e.subject_revision=v.revision AND e.schema_version=1
+    AND e.correlation_id=coalesce(r.agent_run_id,r.run_id,v.command_id) AND e.created_at>=v.created_at)
+  OR v.input_snapshot->>'original_key_sha256' IS NULL
+  OR v.input_snapshot->>'original_key_sha256' !~ '^[a-f0-9]{64}$'
+  OR (v.input_snapshot->'command') ? 'idempotency_key'
+  OR (v.input_snapshot->'command'->'payload') ? 'approval_token'
+  OR (v.input_snapshot->'semantic') ? 'approval_token'
+  OR NOT EXISTS(SELECT 1 FROM public.request_keys k WHERE k.tenant_id=t AND k.category_id=v.category_id
+    AND k.receipt_id=r.id AND k.actor_id=v.actor_id AND k.digest=v.request_digest
+    AND encode(sha256(convert_to(k.key,'UTF8')),'hex')=v.input_snapshot->>'original_key_sha256') THEN
+  RAISE EXCEPTION 'External handoff original common group mismatch' USING ERRCODE='23514'; END IF;
+END
+"""
+
+WRITE_ATOM = r"""
+DECLARE v record; r public.action_receipts; command jsonb; review jsonb; ref jsonb; basis jsonb;
+ vx xid; rx xid;
+BEGIN
+ IF kind='external_handoff' THEN
+  SELECT x.*,x.xmin AS tx INTO STRICT v FROM public.external_handoff_authorizations x WHERE x.tenant_id=t AND x.id=target;
+ ELSIF kind='external_receipt' THEN
+  SELECT x.*,x.xmin AS tx INTO STRICT v FROM public.external_receipts x WHERE x.tenant_id=t AND x.id=target;
+ ELSE RAISE EXCEPTION 'Unknown external handoff subject' USING ERRCODE='23514'; END IF;
+ vx=v.tx;
+ SELECT * INTO STRICT r FROM public.action_receipts WHERE tenant_id=t AND id=v.receipt_id;
+ SELECT xmin INTO rx FROM public.action_receipts WHERE tenant_id=t AND id=v.receipt_id;
+ PERFORM public.assert_external_handoff_members(t,target,kind);
+ command=v.input_snapshot->'command'; review=v.input_snapshot->'review';
+ IF v.actor_id IS DISTINCT FROM public.scope_actor() OR v.requester_id IS DISTINCT FROM public.scope_requester()
+  OR v.writer_id<>v.actor_id OR NOT public.category_access(t,v.category_id,true)
+  OR NOT EXISTS(SELECT 1 FROM public.principals p WHERE p.tenant_id=t AND p.id=v.actor_id AND p.active)
+  OR NOT EXISTS(SELECT 1 FROM public.principals p WHERE p.tenant_id=t AND p.id=v.requester_id AND p.kind='human' AND p.active)
+  OR (v.actor_id<>v.requester_id AND r.run_id IS NULL AND r.agent_run_id IS NULL)
+  OR vx IS DISTINCT FROM rx
+  OR (SELECT array_agg(key ORDER BY key) FROM jsonb_object_keys(v.input_snapshot) key)
+    IS DISTINCT FROM ARRAY['command','original_key_sha256','review','semantic']
+  OR command->>'operation' IS DISTINCT FROM v.operation OR command->>'command_id' IS DISTINCT FROM v.command_id::text
+  OR command->>'category_id' IS DISTINCT FROM v.category_id::text OR command->>'product_id' IS DISTINCT FROM v.product_id::text
+  OR command->'payload' IS DISTINCT FROM v.input_snapshot->'semantic'
+  OR NOT COALESCE((command->'source_read_set') @> v.required_source_read_set,false)
+  OR NOT COALESCE(v.required_source_read_set @> (command->'source_read_set'),false)
+  OR jsonb_array_length(command->'source_read_set')<>jsonb_array_length(v.required_source_read_set)
+  OR review->>'operation' IS DISTINCT FROM v.operation
+  OR review->'required_source_read_set' IS DISTINCT FROM v.required_source_read_set
+  OR review->'read_basis' IS DISTINCT FROM v.source_basis
+  OR v.body->'scope' IS DISTINCT FROM jsonb_build_object('tenant_id',t,'product_id',v.product_id,'project_id',v.project_id)
+  OR v.body->>'category_id' IS DISTINCT FROM v.category_id::text
+  OR v.material_snapshot->'scope' IS DISTINCT FROM v.body->'scope'
+  OR v.material_snapshot->>'category_id' IS DISTINCT FROM v.category_id::text
+  OR v.body->'sources' IS DISTINCT FROM v.sources
+  OR v.body->'required_source_read_set' IS DISTINCT FROM v.required_source_read_set
+  OR NOT EXISTS(SELECT 1 FROM public.products p WHERE p.tenant_id=t AND p.category_id=v.category_id
+    AND p.id=v.product_id AND p.revision::text=command->>'expected_revision')
+  OR NOT EXISTS(SELECT 1 FROM public.projects p WHERE p.tenant_id=t AND p.category_id=v.category_id
+    AND p.product_id=v.product_id AND p.id=v.project_id)
+  OR NOT public.direct_source_set_visible(t,v.category_id,v.product_id,v.required_source_read_set)
+  OR (SELECT count(DISTINCT x->>'artifact_id') FROM jsonb_array_elements(v.required_source_read_set) x)
+    <>jsonb_array_length(v.required_source_read_set)
+  OR EXISTS(SELECT 1 FROM public.audit_entries x WHERE x.tenant_id=t AND x.receipt_id=v.receipt_id AND x.xmin IS DISTINCT FROM vx)
+  OR EXISTS(SELECT 1 FROM public.outbox_events x WHERE x.tenant_id=t AND x.receipt_id=v.receipt_id AND x.xmin IS DISTINCT FROM vx)
+  OR NOT EXISTS(SELECT 1 FROM public.request_keys k WHERE k.tenant_id=t AND k.receipt_id=v.receipt_id
+    AND k.actor_id=v.actor_id AND k.digest=v.request_digest AND k.xmin=vx
+    AND encode(sha256(convert_to(k.key,'UTF8')),'hex')=v.input_snapshot->>'original_key_sha256') THEN
+  RAISE EXCEPTION 'External handoff requires actual scope and one common transaction' USING ERRCODE='23514'; END IF;
+ IF jsonb_typeof(v.source_basis->'artifact_sources') IS DISTINCT FROM 'object'
+  OR (SELECT count(*) FROM jsonb_object_keys(v.source_basis->'artifact_sources'))<>jsonb_array_length(v.required_source_read_set) THEN
+  RAISE EXCEPTION 'External handoff complete direct source basis required' USING ERRCODE='23514'; END IF;
+ FOR ref IN SELECT value FROM jsonb_array_elements(v.required_source_read_set) LOOP
+  basis=v.source_basis->'artifact_sources'->(ref->>'artifact_id');
+  IF basis IS NULL OR jsonb_typeof(ref->'expected_revision') IS DISTINCT FROM 'number'
+   OR NOT EXISTS(SELECT 1 FROM public.artifact_versions a WHERE a.tenant_id=t AND a.category_id=v.category_id
+    AND a.id::text=ref->>'artifact_id' AND a.revision::text=ref->>'expected_revision' AND a.status='active'
+    AND a.revision::text=basis->>'revision' AND a.content_hash=basis->>'sha256'
+    AND a.owner_id::text=basis->>'owner_id' AND a.visibility=basis->>'visibility'
+    AND (v.visibility='private' OR a.visibility<>'private')
+    AND (a.original_id IS NULL OR EXISTS(SELECT 1 FROM public.uploaded_originals o
+     JOIN public.original_security sec ON sec.tenant_id=o.tenant_id AND sec.original_id=o.id
+     WHERE o.tenant_id=t AND o.category_id=v.category_id AND o.id=a.original_id AND o.status='parsed'
+      AND o.id::text=basis->>'original_id' AND o.revision::text=basis->>'original_revision'
+      AND o.content_hash=basis->>'original_sha256' AND o.owner_id::text=basis->>'original_owner_id'
+      AND o.visibility=basis->>'original_visibility' AND sec.epoch::text=basis->>'security_epoch'
+      AND sec.source_state='active' AND sec.disposition='active' AND (v.visibility='private' OR o.visibility<>'private')))) THEN
+   RAISE EXCEPTION 'External handoff direct source version security or audience changed' USING ERRCODE='23514'; END IF;
+ END LOOP;
+ IF EXISTS(SELECT 1 FROM jsonb_array_elements(v.sources) src WHERE src->>'kind'='artifact' AND NOT EXISTS(
+   SELECT 1 FROM jsonb_array_elements(v.required_source_read_set) rd
+   WHERE rd->>'artifact_id'=src->>'id' AND rd->'expected_revision'=src->'revision')) THEN
+  RAISE EXCEPTION 'External handoff source omitted from direct read set' USING ERRCODE='23514'; END IF;
+END
+"""
+
+AUTHORIZATION_ATOM = r"""
+DECLARE v public.external_handoff_authorizations; p public.release_packages; d public.release_decisions;
+ i public.external_delivery_intents; c public.confirmations; auth jsonb; ref jsonb; vx xid; cx xid; ix xid;
+BEGIN
+ SELECT * INTO STRICT v FROM public.external_handoff_authorizations WHERE tenant_id=t AND id=target;
+ SELECT xmin INTO vx FROM public.external_handoff_authorizations WHERE tenant_id=t AND id=target;
+ SELECT * INTO STRICT c FROM public.confirmations WHERE tenant_id=t AND id=v.shared_proof_id;
+ SELECT xmin INTO cx FROM public.confirmations WHERE tenant_id=t AND id=v.shared_proof_id;
+ SELECT * INTO STRICT p FROM public.release_packages WHERE tenant_id=t AND id=v.package_id;
+ SELECT * INTO STRICT i FROM public.external_delivery_intents WHERE tenant_id=t AND handoff_id=v.id AND handoff_revision=v.revision;
+ SELECT xmin INTO ix FROM public.external_delivery_intents WHERE tenant_id=t AND id=i.id;
+ PERFORM public.assert_external_handoff_write(t,target,'external_handoff');
+ auth=v.authority_snapshot;
+ IF v.actor_id<>v.requester_id OR vx IS DISTINCT FROM cx OR vx IS DISTINCT FROM ix
+  OR NOT EXISTS(SELECT 1 FROM public.principals a WHERE a.tenant_id=t AND a.id=v.actor_id AND a.kind='human' AND a.active)
+  OR ROW(p.category_id,p.product_id,p.project_id,p.revision) IS DISTINCT FROM ROW(v.category_id,v.product_id,v.project_id,v.package_revision)
+  OR NOT EXISTS(SELECT 1 FROM public.release_package_currents cur WHERE cur.tenant_id=t AND cur.product_id=p.product_id
+    AND cur.project_id=p.project_id AND cur.series_id=p.series_id AND cur.version_id=p.id AND cur.revision=p.revision)
+  OR NOT EXISTS(SELECT 1 FROM public.external_handoff_currents cur WHERE cur.tenant_id=t AND cur.handoff_id=v.id
+    AND cur.handoff_revision=v.revision AND cur.intent_id=i.id AND cur.intent_revision=i.revision
+    AND cur.receipt_count=0 AND cur.epoch=1 AND cur.xmin=vx)
+  OR v.shared_proof_revision::text IS DISTINCT FROM v.input_snapshot->'command'->>'expected_revision'
+  OR (v.body||jsonb_build_object('prepared_at',null)) IS DISTINCT FROM v.input_snapshot->'review'->'after'
+  OR ((v.body->'declaration')-'approval_token') IS DISTINCT FROM v.input_snapshot->'semantic'
+  OR COALESCE(v.body->'declaration'->'approval_token'<>'null'::jsonb,false)
+  OR v.body->'signers' IS DISTINCT FROM jsonb_build_array(v.actor_id)
+  OR v.body->>'state' IS DISTINCT FROM 'READY' OR v.body->'unknown' IS DISTINCT FROM '[]'::jsonb
+  OR v.body->'blocked' IS DISTINCT FROM '[]'::jsonb
+  OR v.body->'network_send' IS DISTINCT FROM 'false'::jsonb
+  OR v.body->'external_received' IS DISTINCT FROM 'false'::jsonb
+  OR v.body->'external_effective' IS DISTINCT FROM 'false'::jsonb
+  OR v.body->>'manifest_sha256' IS DISTINCT FROM v.manifest_sha256
+  OR v.body->>'mappings_sha256' IS DISTINCT FROM v.mappings_sha256
+  OR v.body->>'content_sha256' IS DISTINCT FROM v.content_sha256
+  OR v.body->>'package_sha256' IS DISTINCT FROM p.body->>'body_sha256'
+  OR v.body->'declaration'->'package' IS DISTINCT FROM jsonb_build_object('id',p.id,'revision',p.revision)
+  OR v.body->'declaration'->>'project_id' IS DISTINCT FROM v.project_id::text
+  OR v.body->'declaration'->>'purpose' IS DISTINCT FROM v.purpose
+  OR v.body->'declaration'->>'visibility' IS DISTINCT FROM v.visibility
+  OR v.material_snapshot->'package' IS DISTINCT FROM p.body
+  OR v.material_snapshot->'package_ref' IS DISTINCT FROM v.body->'declaration'->'package'
+  OR (p.visibility='private' AND v.visibility<>'private')
+  OR v.input_snapshot->'review'->'authority' IS DISTINCT FROM auth
+  OR auth->'scope' IS DISTINCT FROM v.body->'scope' OR auth->>'subject_id' IS DISTINCT FROM v.actor_id::text
+  OR auth->>'operation' IS DISTINCT FROM v.operation OR auth->>'purpose' IS DISTINCT FROM v.purpose
+  OR auth->'authorized' IS DISTINCT FROM 'true'::jsonb OR auth->'qualified' IS DISTINCT FROM 'true'::jsonb
+  OR NOT public.capture_authority_time_current(auth,v.created_at)
+  OR NOT EXISTS(SELECT 1 FROM jsonb_array_elements(auth->'fact_refs')) THEN
+  RAISE EXCEPTION 'External authorization requires the actual package current named T2 and intent' USING ERRCODE='23514'; END IF;
+ FOR d IN SELECT * FROM public.release_decisions WHERE tenant_id=t AND id IN(v.engineering_decision_id,v.manufacturing_decision_id) LOOP
+  IF ROW(d.category_id,d.product_id,d.project_id,d.package_id,d.package_revision)
+    IS DISTINCT FROM ROW(v.category_id,v.product_id,v.project_id,p.id,p.revision)
+   OR (d.id=v.engineering_decision_id AND (d.discipline<>'engineering' OR d.revision<>v.engineering_decision_revision))
+   OR (d.id=v.manufacturing_decision_id AND (d.discipline<>'manufacturing' OR d.revision<>v.manufacturing_decision_revision))
+   OR NOT EXISTS(SELECT 1 FROM jsonb_array_elements(v.material_snapshot->'decisions') actual
+    WHERE actual->'ref'=jsonb_build_object('id',d.id,'revision',d.revision) AND actual->'plan'=d.body) THEN
+   RAISE EXCEPTION 'External handoff requires both actual independent decisions' USING ERRCODE='23514'; END IF;
+ END LOOP;
+ FOR ref IN SELECT value FROM jsonb_array_elements(auth->'fact_refs') LOOP
+  IF NOT EXISTS(SELECT 1 FROM public.professional_authority_facts f JOIN public.professional_authority_current cur
+   ON cur.tenant_id=f.tenant_id AND cur.category_id=f.category_id AND cur.product_id=f.product_id AND cur.project_id=f.project_id
+    AND cur.subject_id=f.subject_id AND cur.kind=f.kind AND cur.series_id=f.series_id AND cur.fact_id=f.id AND cur.fact_revision=f.revision
+   WHERE f.tenant_id=t AND f.category_id=v.category_id AND f.product_id=v.product_id AND f.project_id=v.project_id
+    AND f.subject_id=v.actor_id AND f.id::text=ref->>'id' AND f.revision::text=ref->>'revision'
+    AND cur.epoch::text=ref->>'epoch' AND f.fact_sha256=ref->>'fact_sha256' AND f.state=ref->>'state'
+    AND f.role=ref->>'role' AND f.kind=ref->>'kind' AND f.series_id::text=ref->>'series_id'
+    AND f.issuer_key=ref->>'issuer_key' AND f.issuer_version=ref->>'issuer_version' AND f.nature=ref->>'nature'
+    AND f.operations=ref->'operations' AND f.purposes=ref->'purposes'
+    AND f.valid_from IS NOT DISTINCT FROM (ref->>'valid_from')::timestamptz
+    AND f.valid_until IS NOT DISTINCT FROM (ref->>'valid_until')::timestamptz) THEN
+   RAISE EXCEPTION 'External authorization professional fact or Current changed' USING ERRCODE='23514'; END IF;
+ END LOOP;
+ IF NOT EXISTS(SELECT 1 FROM jsonb_array_elements_text(auth->'roles') AS roles(role_name)
+   WHERE role_name IN ('engineering','manufacturing','quality') AND NOT EXISTS(
+    SELECT kind FROM unnest(ARRAY['duty','qualification']) kind WHERE NOT EXISTS(
+     SELECT 1 FROM jsonb_array_elements(auth->'fact_refs') f WHERE f->>'kind'=kind AND f->>'role'=role_name
+      AND f->>'state'='active' AND (f->'operations') @> jsonb_build_array(v.operation)
+      AND (f->'purposes') @> jsonb_build_array(v.purpose)
+      AND (f->>'valid_from')::timestamptz<=v.created_at AND v.created_at<(f->>'valid_until')::timestamptz))) THEN
+  RAISE EXCEPTION 'External authorization needs its actual applicable duty and qualification' USING ERRCODE='23514'; END IF;
+END
+"""
+
+INTENT_ATOM = r"""
+DECLARE v public.external_delivery_intents; a public.external_handoff_authorizations; expected jsonb; vx xid; ax xid;
+BEGIN
+ SELECT * INTO STRICT v FROM public.external_delivery_intents WHERE tenant_id=t AND id=target;
+ SELECT xmin INTO vx FROM public.external_delivery_intents WHERE tenant_id=t AND id=target;
+ SELECT * INTO STRICT a FROM public.external_handoff_authorizations WHERE tenant_id=t AND id=v.handoff_id;
+ SELECT xmin INTO ax FROM public.external_handoff_authorizations WHERE tenant_id=t AND id=v.handoff_id;
+ expected=jsonb_build_object('handoff',jsonb_build_object('id',a.id,'revision',a.revision),
+  'manifest_sha256',a.manifest_sha256,'mappings_sha256',a.mappings_sha256,'content_sha256',a.content_sha256,'network_send',false);
+ expected=expected||(SELECT jsonb_object_agg(key,value) FROM jsonb_each(a.body->'declaration')
+  WHERE key IN ('package','engineering_decision','manufacturing_decision','subject_config','release_scope','purpose',
+   'destination','external_id','manifest','mappings'));
+ IF vx IS DISTINCT FROM ax OR v.body IS DISTINCT FROM expected
+  OR v.authorization_sha256 IS DISTINCT FROM a.body_sha256
+  OR ROW(v.category_id,v.product_id,v.project_id,v.owner_id,v.visibility,v.handoff_revision,v.command_id,v.receipt_id,
+    v.manifest_sha256,v.mappings_sha256,v.content_sha256)
+   IS DISTINCT FROM ROW(a.category_id,a.product_id,a.project_id,a.owner_id,a.visibility,a.revision,a.command_id,a.receipt_id,
+    a.manifest_sha256,a.mappings_sha256,a.content_sha256)
+  OR v.destination IS DISTINCT FROM a.body->'declaration'->'destination'
+  OR v.external_id IS DISTINCT FROM a.body->'declaration'->>'external_id' THEN
+  RAISE EXCEPTION 'Delivery intent must fix its original authorization in the same transaction' USING ERRCODE='23514'; END IF;
+END
+"""
+
+RECEIPT_ATOM = r"""
+DECLARE v public.external_receipts; a public.external_handoff_authorizations; i public.external_delivery_intents;
+ prior public.external_receipts; art public.artifact_versions; cur public.external_handoff_currents;
+ position text[]; line text; vx xid; cx xid;
+BEGIN
+ SELECT * INTO STRICT v FROM public.external_receipts WHERE tenant_id=t AND id=target;
+ SELECT xmin INTO vx FROM public.external_receipts WHERE tenant_id=t AND id=target;
+ SELECT * INTO STRICT a FROM public.external_handoff_authorizations WHERE tenant_id=t AND id=v.handoff_id;
+ SELECT * INTO STRICT i FROM public.external_delivery_intents WHERE tenant_id=t AND id=v.intent_id;
+ SELECT * INTO STRICT cur FROM public.external_handoff_currents WHERE tenant_id=t AND handoff_id=v.handoff_id;
+ SELECT xmin INTO cx FROM public.external_handoff_currents WHERE tenant_id=t AND id=cur.id;
+ PERFORM public.assert_external_handoff_write(t,target,'external_receipt');
+ IF vx IS DISTINCT FROM cx OR cur.latest_receipt_id<>v.id OR cur.latest_receipt_revision<>v.revision
+  OR cur.receipt_count<>v.sequence OR cur.epoch<>v.sequence+1
+  OR cur.projection IS DISTINCT FROM v.projection_after OR cur.projection_sha256 IS DISTINCT FROM v.projection_sha256
+  OR (v.body||jsonb_build_object('received_at',null)) IS DISTINCT FROM v.input_snapshot->'review'->'after'
+  OR v.input_snapshot->'semantic'->'handoff' IS DISTINCT FROM jsonb_build_object('id',a.id,'revision',a.revision)
+  OR v.input_snapshot->'semantic'->'intent' IS DISTINCT FROM jsonb_build_object('id',i.id,'revision',i.revision)
+  OR v.input_snapshot->'semantic'->'source' IS DISTINCT FROM v.source
+  OR v.body->'original' IS DISTINCT FROM v.original OR v.body->'source' IS DISTINCT FROM v.source
+  OR NOT(v.sources @> jsonb_build_array(v.source))
+  OR v.body->'issuer' IS DISTINCT FROM v.issuer_snapshot
+  OR v.body->>'state' IS DISTINCT FROM 'READY' OR v.body->'unknown' IS DISTINCT FROM '[]'::jsonb
+  OR v.body->'network_send' IS DISTINCT FROM 'false'::jsonb
+  OR (v.body->>'received_at')::timestamptz IS DISTINCT FROM v.received_at
+  OR v.material_snapshot->'handoff' IS DISTINCT FROM jsonb_build_object('id',a.id,'revision',a.revision)
+  OR v.material_snapshot->'intent' IS DISTINCT FROM jsonb_build_object('id',i.id,'revision',i.revision)
+  OR v.material_snapshot->'authorization' IS DISTINCT FROM a.body
+  OR v.material_snapshot->'source' IS DISTINCT FROM v.source OR v.material_snapshot->'original' IS DISTINCT FROM v.original
+  OR v.material_snapshot->'issuer' IS DISTINCT FROM v.issuer_snapshot
+  OR v.original->'handoff' IS DISTINCT FROM jsonb_build_object('id',a.id,'revision',a.revision)
+  OR v.original->'intent' IS DISTINCT FROM jsonb_build_object('id',i.id,'revision',i.revision)
+  OR v.original->'destination' IS DISTINCT FROM v.destination OR v.original->>'external_id' IS DISTINCT FROM v.external_id
+  OR v.original->>'external_receipt_id' IS DISTINCT FROM v.external_receipt_id
+  OR v.original->>'manifest_sha256' IS DISTINCT FROM v.manifest_sha256
+  OR v.original->'release_scope' IS DISTINCT FROM v.release_scope
+  OR v.original->>'stage' IS DISTINCT FROM v.stage OR v.original->>'outcome' IS DISTINCT FROM v.outcome
+  OR (v.original->>'occurred_at')::timestamptz IS DISTINCT FROM v.occurred_at
+  OR v.original->'reconciles' IS DISTINCT FROM (CASE WHEN v.reconciles_id IS NULL THEN 'null'::jsonb
+    ELSE jsonb_build_object('id',v.reconciles_id,'revision',v.reconciles_revision) END)
+  OR v.issuer_snapshot->>'system' IS DISTINCT FROM v.destination->>'system'
+  OR NOT COALESCE(length(v.issuer_snapshot->>'key')>0 AND length(v.issuer_snapshot->>'version')>0
+    AND length(v.issuer_snapshot->>'subject_id')>0 AND (v.issuer_snapshot->>'epoch')::integer>0
+    AND (v.issuer_snapshot->>'proof_sha256') ~ '^[a-f0-9]{64}$',false) THEN
+  RAISE EXCEPTION 'External receipt must retain its actual original issuer and Current atom' USING ERRCODE='23514'; END IF;
+ position=regexp_match(v.source->>'position','^line:([1-9][0-9]*);quote_sha256:([a-f0-9]{64})$');
+ IF v.source->>'kind' IS DISTINCT FROM 'artifact' OR position IS NULL THEN
+  RAISE EXCEPTION 'External receipt needs its exact original artifact line' USING ERRCODE='23514'; END IF;
+ SELECT * INTO STRICT art FROM public.artifact_versions WHERE tenant_id=t AND category_id=v.category_id
+  AND id::text=v.source->>'id' AND revision::text=v.source->>'revision' AND status='active';
+ line=(regexp_split_to_array(art.content,E'\r\n|[\n\r\013\014\034-\036\u0085\u2028\u2029]'))[position[1]::integer];
+ IF line IS NULL OR encode(sha256(convert_to(line,'UTF8')),'hex')<>position[2] OR line::jsonb IS DISTINCT FROM v.original THEN
+  RAISE EXCEPTION 'External receipt original line or hash changed' USING ERRCODE='23514'; END IF;
+ IF v.reconciles_id IS NOT NULL THEN
+  SELECT * INTO STRICT prior FROM public.external_receipts WHERE tenant_id=t AND id=v.reconciles_id;
+  IF prior.sequence>=v.sequence OR prior.outcome NOT IN ('unknown','rejected','failed') OR v.outcome='unknown'
+   OR ROW(prior.stage,prior.external_id,prior.manifest_sha256) IS DISTINCT FROM ROW(v.stage,v.external_id,v.manifest_sha256)
+   OR prior.destination IS DISTINCT FROM v.destination OR prior.release_scope IS DISTINCT FROM v.release_scope THEN
+   RAISE EXCEPTION 'External reconciliation must append to its exact unresolved occurrence' USING ERRCODE='23514'; END IF;
+ ELSIF v.stage='sent' AND EXISTS(SELECT 1 FROM public.external_receipts old
+   WHERE old.tenant_id=t AND old.handoff_id=v.handoff_id AND old.intent_id=v.intent_id AND old.sequence<v.sequence
+    AND old.stage='sent' AND old.outcome='unknown' AND NOT EXISTS(SELECT 1 FROM public.external_receipts resolved
+     WHERE resolved.tenant_id=t AND resolved.reconciles_id=old.id AND resolved.reconciles_revision=old.revision)) THEN
+  RAISE EXCEPTION 'Unknown delivery requires reconciliation of its original intent before another send record' USING ERRCODE='23514';
+ END IF;
+END
+"""
+
+CURRENT_GUARD = r"""
+BEGIN
+ IF TG_OP='INSERT' THEN
+  IF NEW.receipt_count=0 AND NEW.epoch=1 AND NEW.latest_receipt_id IS NULL AND NEW.latest_receipt_revision IS NULL THEN RETURN NEW; END IF;
+ ELSIF TG_OP='UPDATE' THEN
+  IF (to_jsonb(NEW)-ARRAY['receipt_count','latest_receipt_id','latest_receipt_revision','epoch','projection','projection_sha256'])
+    IS NOT DISTINCT FROM (to_jsonb(OLD)-ARRAY['receipt_count','latest_receipt_id','latest_receipt_revision','epoch','projection','projection_sha256'])
+   AND NEW.receipt_count=OLD.receipt_count+1 AND NEW.epoch=OLD.epoch+1
+   AND EXISTS(SELECT 1 FROM public.external_receipts r WHERE r.tenant_id=NEW.tenant_id AND r.id=NEW.latest_receipt_id
+    AND r.handoff_id=NEW.handoff_id AND r.intent_id=NEW.intent_id AND r.revision=NEW.latest_receipt_revision
+    AND r.sequence=NEW.receipt_count AND r.previous_sequence IS NOT DISTINCT FROM NULLIF(OLD.receipt_count,0)
+    AND r.previous_receipt_id IS NOT DISTINCT FROM OLD.latest_receipt_id
+    AND r.previous_receipt_revision IS NOT DISTINCT FROM OLD.latest_receipt_revision
+    AND r.projection_after=NEW.projection AND r.projection_sha256=NEW.projection_sha256) THEN RETURN NEW; END IF;
+ END IF;
+ RAISE EXCEPTION 'External handoff Current advances one exact receipt and epoch' USING ERRCODE='23514';
+END
+"""
+
+
+def current_atom():
+    """Use the same initial projection shape exported to the actual owner."""
+    initial = json.dumps(initial_projection(), ensure_ascii=False, separators=(",", ": "))
+    literal = "'" + initial.replace("'", "''") + "'::jsonb"
+    return r"""
+DECLARE cur public.external_handoff_currents; a public.external_handoff_authorizations;
+ i public.external_delivery_intents; cx xid; ax xid; ix xid;
+BEGIN
+ SELECT * INTO STRICT cur FROM public.external_handoff_currents WHERE tenant_id=NEW.tenant_id AND id=NEW.id;
+ SELECT xmin INTO cx FROM public.external_handoff_currents WHERE tenant_id=NEW.tenant_id AND id=NEW.id;
+ SELECT * INTO STRICT a FROM public.external_handoff_authorizations WHERE tenant_id=NEW.tenant_id AND id=cur.handoff_id;
+ SELECT xmin INTO ax FROM public.external_handoff_authorizations WHERE tenant_id=NEW.tenant_id AND id=cur.handoff_id;
+ SELECT * INTO STRICT i FROM public.external_delivery_intents WHERE tenant_id=NEW.tenant_id AND id=cur.intent_id;
+ SELECT xmin INTO ix FROM public.external_delivery_intents WHERE tenant_id=NEW.tenant_id AND id=cur.intent_id;
+ IF cur.receipt_count=0 THEN
+  IF cx IS DISTINCT FROM ax OR cx IS DISTINCT FROM ix OR cur.projection IS DISTINCT FROM __INITIAL__ THEN
+   RAISE EXCEPTION 'Initial handoff Current records authorization without an external stage' USING ERRCODE='23514'; END IF;
+ ELSE
+  IF NOT EXISTS(SELECT 1 FROM public.external_receipts r WHERE r.tenant_id=cur.tenant_id
+    AND r.id=cur.latest_receipt_id AND r.revision=cur.latest_receipt_revision AND r.sequence=cur.receipt_count
+    AND r.handoff_id=cur.handoff_id AND r.intent_id=cur.intent_id AND r.xmin=cx
+    AND r.projection_after=cur.projection AND r.projection_sha256=cur.projection_sha256) THEN
+   RAISE EXCEPTION 'Handoff Current needs its latest immutable receipt projection' USING ERRCODE='23514'; END IF;
+ END IF;
+ RETURN NULL;
+END
+""".replace("__INITIAL__", literal)
+
+
+PROOF = r"""
+DECLARE old_scoped boolean=false; new_scoped boolean=false;
+BEGIN
+ IF TG_OP<>'INSERT' THEN old_scoped=OLD.operation='integration.handoff.authorize'; END IF;
+ IF TG_OP<>'DELETE' THEN new_scoped=NEW.operation='integration.handoff.authorize'; END IF;
+ IF old_scoped OR new_scoped THEN
+  IF TG_OP='DELETE' THEN RAISE EXCEPTION 'External authorization proof history retained' USING ERRCODE='23514';
+  ELSIF TG_OP='INSERT' THEN
+   IF NEW.consumed IS DISTINCT FROM false THEN RAISE EXCEPTION 'External authorization proof starts unconsumed' USING ERRCODE='23514'; END IF;
+  ELSIF NOT(old_scoped AND new_scoped) OR OLD.consumed IS DISTINCT FROM false OR NEW.consumed IS DISTINCT FROM true
+   OR (to_jsonb(NEW)-'consumed') IS DISTINCT FROM (to_jsonb(OLD)-'consumed') THEN
+   RAISE EXCEPTION 'External authorization proof permits only original false to true' USING ERRCODE='23514'; END IF;
+ END IF;
+ IF TG_OP='DELETE' THEN RETURN OLD; END IF; RETURN NEW;
+END
+"""
+
+TRANSITION = r"""
+BEGIN
+ IF NEW.operation='integration.handoff.authorize' THEN
+  IF OLD.consumed IS DISTINCT FROM false OR NEW.consumed IS DISTINCT FROM true
+   OR (SELECT count(*) FROM public.external_handoff_authorizations a WHERE a.tenant_id=NEW.tenant_id
+    AND a.shared_proof_id=NEW.id AND a.operation=NEW.operation)<>1 THEN
+   RAISE EXCEPTION 'Consumed external T2 requires one actual authorization' USING ERRCODE='23514'; END IF;
+ END IF;
+ RETURN NULL;
+END
+"""
+
+RECEIPT_GUARD = f"""
+DECLARE scoped boolean=false;
+BEGIN
+ IF TG_OP<>'INSERT' THEN scoped=OLD.operation IN {OPERATIONS} OR OLD.subject_type IN {SUBJECTS}; END IF;
+ IF TG_OP<>'DELETE' THEN scoped=scoped OR NEW.operation IN {OPERATIONS} OR NEW.subject_type IN {SUBJECTS}; END IF;
+ IF scoped AND TG_OP<>'INSERT' THEN RAISE EXCEPTION 'External common receipt is immutable' USING ERRCODE='23514'; END IF;
+ IF TG_OP='DELETE' THEN RETURN OLD; END IF; RETURN NEW;
+END
+"""
+
+MEMBER_GUARD = f"""
+DECLARE scoped boolean=false; old_scoped boolean=false;
+BEGIN
+ IF TG_OP<>'DELETE' THEN
+  SELECT EXISTS(SELECT 1 FROM public.action_receipts r WHERE r.tenant_id=NEW.tenant_id AND r.id=NEW.receipt_id
+   AND (r.operation IN {OPERATIONS} OR r.subject_type IN {SUBJECTS})) INTO scoped;
+ END IF;
+ IF TG_OP<>'INSERT' THEN
+  SELECT EXISTS(SELECT 1 FROM public.action_receipts r WHERE r.tenant_id=OLD.tenant_id AND r.id=OLD.receipt_id
+   AND (r.operation IN {OPERATIONS} OR r.subject_type IN {SUBJECTS})) INTO old_scoped;
+ END IF;
+ IF TG_OP<>'INSERT' AND (scoped OR old_scoped) THEN
+  IF TG_OP='UPDATE' AND TG_TABLE_NAME='outbox_events'
+   AND (to_jsonb(NEW)-ARRAY['delivered_at','lease_id','lease_until','attempts','last_error']) IS NOT DISTINCT FROM
+    (to_jsonb(OLD)-ARRAY['delivered_at','lease_id','lease_until','attempts','last_error']) THEN RETURN NEW; END IF;
+  RAISE EXCEPTION 'External original audit event or key is immutable' USING ERRCODE='23514'; END IF;
+ IF TG_OP='DELETE' THEN RETURN OLD; END IF; RETURN NEW;
+END
+"""
+
+MEMBER_TARGET = f"""
+DECLARE r public.action_receipts;
+BEGIN
+ IF TG_TABLE_NAME='action_receipts' THEN r=NEW;
+ ELSE SELECT * INTO r FROM public.action_receipts WHERE tenant_id=NEW.tenant_id AND id=NEW.receipt_id; END IF;
+ IF r.operation IN {OPERATIONS} OR r.subject_type IN {SUBJECTS} THEN
+  PERFORM public.assert_external_handoff_members(r.tenant_id,r.subject_id,r.subject_type::text);
+ END IF;
+ RETURN NULL;
+END
+"""
+
+
+def function_sql():
+    return (
+        _function(
+            "assert_external_handoff_members",
+            "t uuid,target uuid,kind text",
+            MEMBERS,
+            returns="void",
+        ),
+        _function(
+            "assert_external_handoff_write",
+            "t uuid,target uuid,kind text",
+            WRITE_ATOM,
+            returns="void",
+        ),
+        _function(
+            "assert_external_handoff_authorization",
+            "t uuid,target uuid",
+            AUTHORIZATION_ATOM,
+            returns="void",
+        ),
+        _function(
+            "assert_external_delivery_intent", "t uuid,target uuid", INTENT_ATOM, returns="void"
+        ),
+        _function("assert_external_receipt", "t uuid,target uuid", RECEIPT_ATOM, returns="void"),
+        _function("protect_external_handoff_current", "", CURRENT_GUARD),
+        _function("require_external_handoff_current", "", current_atom()),
+        _function("protect_external_handoff_proof", "", PROOF),
+        _function("require_external_handoff_transition", "", TRANSITION),
+        _function("protect_external_handoff_receipt", "", RECEIPT_GUARD),
+        _function("protect_external_handoff_member", "", MEMBER_GUARD),
+        _function("require_external_handoff_member", "", MEMBER_TARGET),
+        _function(
+            "require_external_handoff_authorization",
+            "",
+            "BEGIN PERFORM public.assert_external_handoff_authorization(NEW.tenant_id,NEW.id); RETURN NULL; END",
+        ),
+        _function(
+            "require_external_delivery_intent",
+            "",
+            "BEGIN PERFORM public.assert_external_delivery_intent(NEW.tenant_id,NEW.id); RETURN NULL; END",
+        ),
+        _function(
+            "require_external_receipt",
+            "",
+            "BEGIN PERFORM public.assert_external_receipt(NEW.tenant_id,NEW.id); RETURN NULL; END",
+        ),
+        _function(
+            "reject_external_handoff_mutation",
+            "",
+            "BEGIN RAISE EXCEPTION 'External authorization intent and receipt history is immutable' USING ERRCODE='23514'; END",
+        ),
+    )
+
+
+FUNCTION_SIGNATURES = (
+    "assert_external_handoff_members(uuid,uuid,text)",
+    "assert_external_handoff_write(uuid,uuid,text)",
+    "assert_external_handoff_authorization(uuid,uuid)",
+    "assert_external_delivery_intent(uuid,uuid)",
+    "assert_external_receipt(uuid,uuid)",
+    "protect_external_handoff_current()",
+    "require_external_handoff_current()",
+    "protect_external_handoff_proof()",
+    "require_external_handoff_transition()",
+    "protect_external_handoff_receipt()",
+    "protect_external_handoff_member()",
+    "require_external_handoff_member()",
+    "require_external_handoff_authorization()",
+    "require_external_delivery_intent()",
+    "require_external_receipt()",
+    "reject_external_handoff_mutation()",
+)
+
+
+def policy_sql():
+    statements = []
+    write = "public.category_access(tenant_id,category_id,true)"
+    human = (
+        write + " AND public.scope_actor()=public.scope_requester() "
+        "AND EXISTS(SELECT 1 FROM public.principals p WHERE p.tenant_id=nullif(current_setting('pdos.tenant_id',true),'')::uuid "
+        "AND p.id=public.scope_actor() AND p.kind='human' AND p.active)"
+    )
+    for table in TABLES:
+        name = table.name
+        if table is TABLES[0]:
+            read = (
+                "public.category_access(tenant_id,category_id) "
+                f"AND ({name}.visibility='category' OR {name}.owner_id=public.scope_requester() OR EXISTS(SELECT 1 FROM public.object_audiences a "
+                f"WHERE a.tenant_id={name}.tenant_id AND a.category_id={name}.category_id AND a.object_type='{name}' "
+                f"AND a.subject_id={name}.id AND a.owner_id={name}.owner_id AND a.principal_id=public.scope_requester())) "
+                f"AND EXISTS(SELECT 1 FROM public.products p WHERE p.tenant_id={name}.tenant_id AND p.category_id={name}.category_id AND p.id={name}.product_id) "
+                f"AND EXISTS(SELECT 1 FROM public.projects p WHERE p.tenant_id={name}.tenant_id AND p.category_id={name}.category_id AND p.product_id={name}.product_id AND p.id={name}.project_id) "
+                f"AND EXISTS(SELECT 1 FROM public.release_packages p WHERE p.tenant_id={name}.tenant_id AND p.id={name}.package_id AND p.revision={name}.package_revision) "
+                f"AND EXISTS(SELECT 1 FROM public.release_decisions d WHERE d.tenant_id={name}.tenant_id AND d.id={name}.engineering_decision_id AND d.revision={name}.engineering_decision_revision) "
+                f"AND EXISTS(SELECT 1 FROM public.release_decisions d WHERE d.tenant_id={name}.tenant_id AND d.id={name}.manufacturing_decision_id AND d.revision={name}.manufacturing_decision_revision) "
+                f"AND public.direct_source_set_visible(tenant_id,category_id,product_id,{name}.required_source_read_set)"
+            )
+        else:
+            read = (
+                "public.category_access(tenant_id,category_id) AND EXISTS(SELECT 1 FROM public.external_handoff_authorizations a "
+                f"WHERE a.tenant_id={name}.tenant_id AND a.category_id={name}.category_id AND a.product_id={name}.product_id "
+                f"AND a.project_id={name}.project_id AND a.owner_id={name}.owner_id AND a.visibility={name}.visibility "
+                f"AND a.id={name}.handoff_id AND a.revision={name}.handoff_revision)"
+            )
+            if table is TABLES[2]:
+                read += f" AND public.direct_source_set_visible(tenant_id,category_id,product_id,{name}.required_source_read_set)"
+        insert = human if table in (TABLES[0], TABLES[1]) else write
+        statements.extend(
+            (
+                f'ALTER TABLE public."{name}" ENABLE ROW LEVEL SECURITY',
+                f'ALTER TABLE public."{name}" FORCE ROW LEVEL SECURITY',
+                f'CREATE POLICY owner_internal ON public."{name}" TO pdos_next_owner USING (true) WITH CHECK (true)',
+                f'CREATE POLICY external_handoff_read ON public."{name}" FOR SELECT TO pdos_next_app USING ({read})',
+                f'CREATE POLICY external_handoff_insert ON public."{name}" FOR INSERT TO pdos_next_app WITH CHECK ({insert} AND {read})',
+                f'REVOKE ALL ON public."{name}" FROM PUBLIC,pdos_next_app,pdos_agent,pdos_next_auth,pdos_next_dispatch',
+                f'GRANT SELECT,INSERT ON public."{name}" TO pdos_next_app',
+            )
+        )
+        if table is TABLES[3]:
+            statements.extend(
+                (
+                    f'CREATE POLICY external_handoff_advance ON public."{name}" FOR UPDATE TO pdos_next_app USING ({write} AND {read}) WITH CHECK ({write} AND {read})',
+                    f'GRANT UPDATE(receipt_count,latest_receipt_id,latest_receipt_revision,epoch,projection,projection_sha256) ON public."{name}" TO pdos_next_app',
+                )
+            )
+    return tuple(statements)
+
+
+def trigger_sql():
+    statements = []
+    for table in TABLES:
+        statements.extend(
+            (
+                f"CREATE TRIGGER external_handoff_category BEFORE INSERT ON public.{table.name} FOR EACH ROW EXECUTE FUNCTION public.bind_model_category()",
+                f"CREATE TRIGGER external_handoff_category_immutable BEFORE UPDATE ON public.{table.name} FOR EACH ROW EXECUTE FUNCTION public.protect_category_binding()",
+                f"CREATE TRIGGER lifecycle_reference BEFORE INSERT OR UPDATE OR DELETE ON public.{table.name} FOR EACH ROW EXECUTE FUNCTION public.lifecycle_reference_gate()",
+                f"CREATE TRIGGER category_lifecycle_clock AFTER INSERT OR UPDATE OR DELETE ON public.{table.name} FOR EACH ROW EXECUTE FUNCTION public.category_lifecycle_clock()",
+            )
+        )
+    for table in TABLES[:3]:
+        statements.append(
+            f"CREATE TRIGGER external_handoff_immutable BEFORE UPDATE OR DELETE ON public.{table.name} FOR EACH ROW EXECUTE FUNCTION public.reject_external_handoff_mutation()"
+        )
+    statements.extend(
+        (
+            "CREATE CONSTRAINT TRIGGER external_handoff_authorization_atom AFTER INSERT ON public.external_handoff_authorizations DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION public.require_external_handoff_authorization()",
+            "CREATE CONSTRAINT TRIGGER external_delivery_intent_atom AFTER INSERT ON public.external_delivery_intents DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION public.require_external_delivery_intent()",
+            "CREATE CONSTRAINT TRIGGER external_receipt_atom AFTER INSERT ON public.external_receipts DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION public.require_external_receipt()",
+            "CREATE TRIGGER external_handoff_current_guard BEFORE INSERT OR UPDATE OR DELETE ON public.external_handoff_currents FOR EACH ROW EXECUTE FUNCTION public.protect_external_handoff_current()",
+            "CREATE CONSTRAINT TRIGGER external_handoff_current_atom AFTER INSERT OR UPDATE ON public.external_handoff_currents DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION public.require_external_handoff_current()",
+            "CREATE TRIGGER external_handoff_proof_guard BEFORE INSERT OR UPDATE OR DELETE ON public.confirmations FOR EACH ROW EXECUTE FUNCTION public.protect_external_handoff_proof()",
+            "CREATE CONSTRAINT TRIGGER external_handoff_proof_target AFTER UPDATE ON public.confirmations DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION public.require_external_handoff_transition()",
+            "CREATE TRIGGER external_handoff_receipt_guard BEFORE INSERT OR UPDATE OR DELETE ON public.action_receipts FOR EACH ROW EXECUTE FUNCTION public.protect_external_handoff_receipt()",
+        )
+    )
+    for name in ("action_receipts", "audit_entries", "outbox_events", "request_keys"):
+        statements.append(
+            f"CREATE CONSTRAINT TRIGGER external_handoff_member_atom AFTER INSERT ON public.{name} DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION public.require_external_handoff_member()"
+        )
+        if name != "action_receipts":
+            statements.append(
+                f"CREATE TRIGGER external_handoff_member_guard BEFORE INSERT OR UPDATE OR DELETE ON public.{name} FOR EACH ROW EXECUTE FUNCTION public.protect_external_handoff_member()"
+            )
+    return tuple(statements)
+
+
+def upgrade_sql():
+    return (
+        *table_sql(),
+        *function_sql(),
+        *(
+            f"REVOKE ALL ON FUNCTION public.{signature} FROM PUBLIC,pdos_next_app,pdos_agent,pdos_next_auth,pdos_next_dispatch"
+            for signature in FUNCTION_SIGNATURES
+        ),
+        *policy_sql(),
+        *trigger_sql(),
+    )
+
+
+def downgrade_sql():
+    return (
+        "LOCK TABLE public.external_handoff_authorizations,public.external_delivery_intents,public.external_receipts,public.external_handoff_currents,public.confirmations,public.action_receipts IN ACCESS EXCLUSIVE MODE",
+        f"""DO $external_handoff$ BEGIN
+ IF EXISTS(SELECT 1 FROM public.external_handoff_authorizations) OR EXISTS(SELECT 1 FROM public.external_delivery_intents)
+  OR EXISTS(SELECT 1 FROM public.external_receipts) OR EXISTS(SELECT 1 FROM public.external_handoff_currents)
+  OR EXISTS(SELECT 1 FROM public.confirmations WHERE operation='integration.handoff.authorize')
+  OR EXISTS(SELECT 1 FROM public.action_receipts WHERE operation IN {OPERATIONS} OR subject_type IN {SUBJECTS}) THEN
+  RAISE EXCEPTION 'External handoff business history retained; downgrade refused' USING ERRCODE='23514'; END IF;
+END; $external_handoff$""",
+        "DROP TRIGGER external_handoff_proof_guard ON public.confirmations",
+        "DROP TRIGGER external_handoff_proof_target ON public.confirmations",
+        "DROP TRIGGER external_handoff_receipt_guard ON public.action_receipts",
+        *(
+            f"DROP TRIGGER external_handoff_member_atom ON public.{name}"
+            for name in ("action_receipts", "audit_entries", "outbox_events", "request_keys")
+        ),
+        *(
+            f"DROP TRIGGER external_handoff_member_guard ON public.{name}"
+            for name in ("audit_entries", "outbox_events", "request_keys")
+        ),
+        *(f"DROP TABLE public.{table.name}" for table in reversed(TABLES)),
+        *(f"DROP FUNCTION public.{signature}" for signature in reversed(FUNCTION_SIGNATURES)),
+    )

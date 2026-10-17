@@ -1,0 +1,23 @@
+{
+  "started_at": "2026-10-17T23:26:19.888845+00:00",
+  "finished_at": "2026-10-17T23:27:31.729221+00:00",
+  "snapshot": "/private/tmp/pdos-external-handoff-o49cu6f6",
+  "command": [
+    "-B",
+    "-c",
+    "import os,pytest; os.environ[\"PDOS_EXTERNAL_HANDOFF_LINK\"]=\"1\"; raise SystemExit(pytest.main([\"-x\",\"-q\",\"--tb=short\",\"-p\",\"no:cacheprovider\",\"tests/release_policy_transactions\"]))"
+  ],
+  "exit": 1,
+  "target": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "before_head": "s0_0783",
+    "after_head": "s0_0783"
+  },
+  "source_changed": [],
+  "real_model_calls": 0,
+  "real_KMS_calls": 0,
+  "performance_acceptance": false
+}

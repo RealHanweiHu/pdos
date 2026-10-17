@@ -466,3 +466,17 @@ PAYLOADS["platform.link.create"] = PlatformLinkInput
 from pdos_next.domain.release.schemas import PAYLOADS as RELEASE_PAYLOADS  # noqa: E402
 
 PAYLOADS.update(RELEASE_PAYLOADS)
+
+from pdos_next.domain.external_handoff.schemas import (  # noqa: E402
+    AuthorizePayload as ExternalHandoffAuthorizePayload,
+)
+from pdos_next.domain.external_handoff.schemas import (  # noqa: E402
+    ReceiptRecordPayload as ExternalReceiptRecordPayload,
+)
+
+PAYLOADS.update(
+    {
+        "integration.handoff.authorize": ExternalHandoffAuthorizePayload,
+        "integration.receipt.record": ExternalReceiptRecordPayload,
+    }
+)

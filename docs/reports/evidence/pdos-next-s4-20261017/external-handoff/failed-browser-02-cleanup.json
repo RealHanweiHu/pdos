@@ -1,0 +1,9 @@
+{
+  "api_terminal_exit": 1,
+  "before_browser_seed": true,
+  "exported_bearers": 0,
+  "browser_started": false,
+  "own_web_pid_stopped": 64973,
+  "database_and_business_history_retained": true,
+  "failure": "Receipt candidate rejected; actual authorization and its atomic intent/current were already committed; preserve them."
+}

@@ -1,0 +1,937 @@
+{
+  "fixture": "synthetic internal source originals, actual ordinary-role HTTP GET",
+  "read_only": true,
+  "statuses": [
+    200,
+    200
+  ],
+  "detail": {
+    "id": "89e3390c-874a-4aa2-ace8-f91d50d2ffa9",
+    "revision": 1,
+    "project_id": "9aad18de-4d55-49cc-92ea-5cd4fde5a767",
+    "purpose": "Verify preparation",
+    "package": {
+      "id": "ab1fa2d8-ce9c-4a50-98aa-5b1ce61a7852",
+      "revision": 2
+    },
+    "visibility": "category",
+    "created_at": "2026-10-17T23:39:06.503624+00:00",
+    "receipt_id": "9002be19-97f9-49c9-b24a-14c15ffda157",
+    "as_of": {
+      "id": "e4372dd1-429c-498a-b4ad-978be9069c0a",
+      "handoff": {
+        "id": "89e3390c-874a-4aa2-ace8-f91d50d2ffa9",
+        "revision": 1
+      },
+      "intent": {
+        "id": "e4f2080a-f862-4e68-b550-9c4e0b5f5423",
+        "revision": 1
+      },
+      "receipt_count": 6,
+      "latest_receipt": {
+        "id": "9cd0d653-56cb-41e0-8478-f9b0800a26e4",
+        "revision": 1
+      },
+      "epoch": 7,
+      "projection_sha256": "f766ec3a09f72b115e75dd549928d40b79a7522ef5157c6e66fc2de7761a48e2"
+    },
+    "reading": {
+      "sent": {
+        "stage": "sent",
+        "state": "succeeded",
+        "active": [
+          {
+            "id": "a750f5e3-a56c-46af-908d-f353c03225a8",
+            "revision": 1
+          }
+        ],
+        "mismatches": [],
+        "covered_scopes": [
+          {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          }
+        ]
+      },
+      "failed": false,
+      "status": "acknowledged",
+      "accepted": {
+        "stage": "accepted",
+        "state": "succeeded",
+        "active": [
+          {
+            "id": "156aaca9-01a0-46e3-a789-1bbb82f652d4",
+            "revision": 1
+          },
+          {
+            "id": "11a82c5d-7070-435f-9092-3bc132a172d4",
+            "revision": 1
+          }
+        ],
+        "mismatches": [],
+        "covered_scopes": [
+          {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN"
+            ],
+            "quantity": null
+          },
+          {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          }
+        ]
+      },
+      "conflict": true,
+      "rejected": false,
+      "effective": {
+        "stage": "effective",
+        "state": "conflict",
+        "active": [
+          {
+            "id": "e2ed607f-501a-4b91-a1eb-a2bc1c15b4a3",
+            "revision": 1
+          },
+          {
+            "id": "9cd0d653-56cb-41e0-8478-f9b0800a26e4",
+            "revision": 1
+          }
+        ],
+        "mismatches": [
+          "MANIFEST_MISMATCH"
+        ],
+        "covered_scopes": [
+          {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          }
+        ]
+      },
+      "network_send": false,
+      "delivery_unknown": false
+    },
+    "network_send": false,
+    "authorization": {
+      "structural_only": true,
+      "status": "unexecuted_candidate",
+      "operation": "integration.handoff.authorize",
+      "scope": {
+        "tenant_id": "1f563a85-246f-4216-945c-480a6ced4082",
+        "product_id": "6020d2aa-acc4-49b8-b2ee-9083e5a93b53",
+        "project_id": "9aad18de-4d55-49cc-92ea-5cd4fde5a767"
+      },
+      "category_id": "1de6257a-8521-4110-8f51-e7c2bb24ebe0",
+      "declaration": {
+        "project_id": "9aad18de-4d55-49cc-92ea-5cd4fde5a767",
+        "package": {
+          "id": "ab1fa2d8-ce9c-4a50-98aa-5b1ce61a7852",
+          "revision": 2
+        },
+        "engineering_decision": {
+          "id": "5ff3a902-1560-402c-b277-62736949293d",
+          "revision": 1
+        },
+        "manufacturing_decision": {
+          "id": "615af65a-6309-441b-8848-b26ba76c54f9",
+          "revision": 1
+        },
+        "subject_config": {
+          "definition": {
+            "id": "0bf35939-1d14-41af-ac5e-6b873ea06392",
+            "revision": 1
+          },
+          "engineering_configuration": {
+            "id": "4b753574-15d5-4a01-b6c6-76765c42aa7d",
+            "revision": 1
+          },
+          "manufacturing_configuration": {
+            "id": "f3703bf6-2ab9-4b2d-a7f9-92e5ff76ada0",
+            "revision": 1
+          }
+        },
+        "release_scope": {
+          "quantity": null,
+          "unit": null,
+          "lots": [],
+          "site": "SYN-INTERNAL-LAB",
+          "lines": [],
+          "regions": [
+            "CN",
+            "DE"
+          ]
+        },
+        "purpose": "Verify preparation",
+        "visibility": "category",
+        "destination": {
+          "system": "synthetic-local-erp",
+          "recipient_id": "synthetic-receiver-9aad18de-4d55-49cc-92ea-5cd4fde5a767"
+        },
+        "external_id": "synthetic-handoff-c662ee09-6253-4747-bbf2-89191cab5267",
+        "mappings": [
+          {
+            "ref": {
+              "id": "4b753574-15d5-4a01-b6c6-76765c42aa7d",
+              "revision": 1,
+              "kind": "engineering_configuration"
+            },
+            "external_number": "SYN-ENG-001",
+            "external_version": "SYN-V1",
+            "sources": [
+              {
+                "id": "15976f58-5dc8-48f9-bded-1e25478197ad",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:4e55474c369ec48a45af0082daf4a1afa87c614398bf36af380b2d518476e7b0"
+              }
+            ]
+          }
+        ],
+        "manifest": [
+          {
+            "artifact": {
+              "id": "d50d157e-cfbf-40d7-9453-8e0e22228bed",
+              "revision": 1
+            },
+            "logical_name": "controlled-package.json",
+            "content_sha256": "c7d861555cef443d15a9829f0703ed32f82aa09dd2a0e5fa5bf4c35b7df8a259",
+            "external_number": "SYN-DOC-001",
+            "external_version": "SYN-V1",
+            "sources": [
+              {
+                "id": "d50d157e-cfbf-40d7-9453-8e0e22228bed",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:c7d861555cef443d15a9829f0703ed32f82aa09dd2a0e5fa5bf4c35b7df8a259"
+              }
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "id": "adb9b1ac-c5b9-427c-b83b-ed7cd917527a",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:352a9b4828a98bbc83677d68197e4f5bba856aa6cf0331c5e81ee32567a8aead"
+          }
+        ],
+        "reason": "Named authorization for exact internal synthetic packet; no real network action",
+        "approval_token": null
+      },
+      "package_sha256": "f412fd4f9d294ac668e09a8bd5d8c2fef5640943ad5c735843cc5e38a1b3619c",
+      "manifest_sha256": "5e63abd41a3376cb7352950392dc6a1c9651f3df3522b9469d594ef277fbc491",
+      "mappings_sha256": "7030850a97890fb758821a0c4266f874fc696fc611c40763e97d924afff1f314",
+      "content_sha256": "da82c3a72f7d12cc711400b3868c8c8ad973e5774080b05055006ae79c42a2a5",
+      "limits": [],
+      "signers": [
+        "edc59823-db7d-4ba7-b9da-313938f57e12"
+      ],
+      "state": "READY",
+      "unknown": [],
+      "blocked": [],
+      "sources": [
+        {
+          "id": "15976f58-5dc8-48f9-bded-1e25478197ad",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:4e55474c369ec48a45af0082daf4a1afa87c614398bf36af380b2d518476e7b0"
+        },
+        {
+          "id": "d50d157e-cfbf-40d7-9453-8e0e22228bed",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:c7d861555cef443d15a9829f0703ed32f82aa09dd2a0e5fa5bf4c35b7df8a259"
+        },
+        {
+          "id": "adb9b1ac-c5b9-427c-b83b-ed7cd917527a",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:352a9b4828a98bbc83677d68197e4f5bba856aa6cf0331c5e81ee32567a8aead"
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "15976f58-5dc8-48f9-bded-1e25478197ad",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "7e784b17-70b2-4cb3-a8f1-4d282e45158a",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "adb9b1ac-c5b9-427c-b83b-ed7cd917527a",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "bf8c4d70-0034-447d-836d-32e7f2fb4bf6",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "d50d157e-cfbf-40d7-9453-8e0e22228bed",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "e41290af-ca11-4a99-a021-603f8e353027",
+          "expected_revision": 1
+        }
+      ],
+      "prepared_at": "2026-10-17T23:39:05.888742Z",
+      "network_send": false,
+      "external_received": false,
+      "external_effective": false
+    },
+    "authority": {
+      "roles": [
+        "engineering"
+      ],
+      "scope": {
+        "tenant_id": "1f563a85-246f-4216-945c-480a6ced4082",
+        "product_id": "6020d2aa-acc4-49b8-b2ee-9083e5a93b53",
+        "project_id": "9aad18de-4d55-49cc-92ea-5cd4fde5a767"
+      },
+      "purpose": "Verify preparation",
+      "fact_refs": [
+        {
+          "id": "ad3393c6-811a-44ff-a386-6bbc5312201b",
+          "kind": "qualification",
+          "role": "manufacturing",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "ad3393c6-811a-44ff-a386-6bbc5312201b",
+          "issuer_key": "synthetic-publication:6020d2aa-acc4-49b8-b2ee-9083e5a93b53",
+          "operations": [
+            "npi.control_plan.record",
+            "npi.manufacturing_baseline.publish",
+            "npi.manufacturing_baseline.record",
+            "npi.work_instruction.record"
+          ],
+          "valid_from": "2026-10-17T23:37:06.906306+00:00",
+          "fact_sha256": "094d05d1a73b236eec5128135591d74ed1c1bee2dd67f9e5273b2afc4d1160bb",
+          "valid_until": "2026-10-18T00:23:06.906306+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        },
+        {
+          "id": "964b4933-8e5d-4f67-9e08-18fd6f22890c",
+          "kind": "duty",
+          "role": "engineering",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "964b4933-8e5d-4f67-9e08-18fd6f22890c",
+          "issuer_key": "synthetic-publication:6020d2aa-acc4-49b8-b2ee-9083e5a93b53",
+          "operations": [
+            "integration.handoff.authorize"
+          ],
+          "valid_from": "2026-10-17T23:38:03.714906+00:00",
+          "fact_sha256": "2becf7e4cf54243b3d571ba5b5192cb43b58f00af3943c3bdf4edc0b6e5bd944",
+          "valid_until": "2026-10-18T00:19:03.714906+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        },
+        {
+          "id": "cf1f6331-ab32-496d-a3da-0265d59f2c46",
+          "kind": "qualification",
+          "role": "engineering",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "cf1f6331-ab32-496d-a3da-0265d59f2c46",
+          "issuer_key": "synthetic-publication:6020d2aa-acc4-49b8-b2ee-9083e5a93b53",
+          "operations": [
+            "integration.handoff.authorize"
+          ],
+          "valid_from": "2026-10-17T23:38:03.714906+00:00",
+          "fact_sha256": "038c0b93ced16ce2233dfde7d90d3ad857bbdef61ef586b310a6b718a03c6393",
+          "valid_until": "2026-10-18T00:19:03.714906+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        },
+        {
+          "id": "69d494d6-15c9-4e1f-a58e-c3fb769b9415",
+          "kind": "duty",
+          "role": "engineering",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "69d494d6-15c9-4e1f-a58e-c3fb769b9415",
+          "issuer_key": "synthetic-publication:6020d2aa-acc4-49b8-b2ee-9083e5a93b53",
+          "operations": [
+            "release.engineering.approve",
+            "release.policy.import"
+          ],
+          "valid_from": "2026-10-17T23:37:54.410625+00:00",
+          "fact_sha256": "9349af08a487b5f81190d103e92c38aed781847a0ba589a0cfdeb69faa4f81aa",
+          "valid_until": "2026-10-18T00:23:54.410625+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        },
+        {
+          "id": "3e0b9ff0-eea9-441c-a866-eca67f66b15e",
+          "kind": "duty",
+          "role": "manufacturing",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "3e0b9ff0-eea9-441c-a866-eca67f66b15e",
+          "issuer_key": "synthetic-publication:6020d2aa-acc4-49b8-b2ee-9083e5a93b53",
+          "operations": [
+            "npi.control_plan.record",
+            "npi.manufacturing_baseline.publish",
+            "npi.manufacturing_baseline.record",
+            "npi.work_instruction.record"
+          ],
+          "valid_from": "2026-10-17T23:37:06.906306+00:00",
+          "fact_sha256": "3596c1deb550eb5fd30185fe439d444230dc38d85127a9d8e5de54f5953833cb",
+          "valid_until": "2026-10-18T00:23:06.906306+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        },
+        {
+          "id": "5377631e-4ce4-492e-a258-87698b1a71d3",
+          "kind": "qualification",
+          "role": "engineering",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "5377631e-4ce4-492e-a258-87698b1a71d3",
+          "issuer_key": "synthetic-publication:6020d2aa-acc4-49b8-b2ee-9083e5a93b53",
+          "operations": [
+            "release.engineering.approve",
+            "release.policy.import"
+          ],
+          "valid_from": "2026-10-17T23:37:54.410625+00:00",
+          "fact_sha256": "413f4f4b0d085032d74747e29e8fc6a43b176b0d9decd98b2efb867750fb4b2b",
+          "valid_until": "2026-10-18T00:23:54.410625+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        }
+      ],
+      "operation": "integration.handoff.authorize",
+      "qualified": true,
+      "synthetic": true,
+      "authorized": true,
+      "subject_id": "edc59823-db7d-4ba7-b9da-313938f57e12",
+      "valid_until": null,
+      "reason_codes": [],
+      "facts_revision": "e6fd1d60f89bf9393286193c8ea746a373669fb95e661e0f7d00015ffa31b06b",
+      "required_source_read_set": [
+        {
+          "artifact_id": "7e784b17-70b2-4cb3-a8f1-4d282e45158a",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "bf8c4d70-0034-447d-836d-32e7f2fb4bf6",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "e41290af-ca11-4a99-a021-603f8e353027",
+          "expected_revision": 1
+        }
+      ]
+    },
+    "intent": {
+      "id": "e4f2080a-f862-4e68-b550-9c4e0b5f5423",
+      "revision": 1,
+      "packet": {
+        "handoff": {
+          "id": "89e3390c-874a-4aa2-ace8-f91d50d2ffa9",
+          "revision": 1
+        },
+        "package": {
+          "id": "ab1fa2d8-ce9c-4a50-98aa-5b1ce61a7852",
+          "revision": 2
+        },
+        "purpose": "Verify preparation",
+        "manifest": [
+          {
+            "sources": [
+              {
+                "id": "d50d157e-cfbf-40d7-9453-8e0e22228bed",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:c7d861555cef443d15a9829f0703ed32f82aa09dd2a0e5fa5bf4c35b7df8a259",
+                "revision": 1
+              }
+            ],
+            "artifact": {
+              "id": "d50d157e-cfbf-40d7-9453-8e0e22228bed",
+              "revision": 1
+            },
+            "logical_name": "controlled-package.json",
+            "content_sha256": "c7d861555cef443d15a9829f0703ed32f82aa09dd2a0e5fa5bf4c35b7df8a259",
+            "external_number": "SYN-DOC-001",
+            "external_version": "SYN-V1"
+          }
+        ],
+        "mappings": [
+          {
+            "ref": {
+              "id": "4b753574-15d5-4a01-b6c6-76765c42aa7d",
+              "kind": "engineering_configuration",
+              "revision": 1
+            },
+            "sources": [
+              {
+                "id": "15976f58-5dc8-48f9-bded-1e25478197ad",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:4e55474c369ec48a45af0082daf4a1afa87c614398bf36af380b2d518476e7b0",
+                "revision": 1
+              }
+            ],
+            "external_number": "SYN-ENG-001",
+            "external_version": "SYN-V1"
+          }
+        ],
+        "destination": {
+          "system": "synthetic-local-erp",
+          "recipient_id": "synthetic-receiver-9aad18de-4d55-49cc-92ea-5cd4fde5a767"
+        },
+        "external_id": "synthetic-handoff-c662ee09-6253-4747-bbf2-89191cab5267",
+        "network_send": false,
+        "release_scope": {
+          "lots": [],
+          "site": "SYN-INTERNAL-LAB",
+          "unit": null,
+          "lines": [],
+          "regions": [
+            "CN",
+            "DE"
+          ],
+          "quantity": null
+        },
+        "content_sha256": "da82c3a72f7d12cc711400b3868c8c8ad973e5774080b05055006ae79c42a2a5",
+        "subject_config": {
+          "definition": {
+            "id": "0bf35939-1d14-41af-ac5e-6b873ea06392",
+            "revision": 1
+          },
+          "engineering_configuration": {
+            "id": "4b753574-15d5-4a01-b6c6-76765c42aa7d",
+            "revision": 1
+          },
+          "manufacturing_configuration": {
+            "id": "f3703bf6-2ab9-4b2d-a7f9-92e5ff76ada0",
+            "revision": 1
+          }
+        },
+        "manifest_sha256": "5e63abd41a3376cb7352950392dc6a1c9651f3df3522b9469d594ef277fbc491",
+        "mappings_sha256": "7030850a97890fb758821a0c4266f874fc696fc611c40763e97d924afff1f314",
+        "engineering_decision": {
+          "id": "5ff3a902-1560-402c-b277-62736949293d",
+          "revision": 1
+        },
+        "manufacturing_decision": {
+          "id": "615af65a-6309-441b-8848-b26ba76c54f9",
+          "revision": 1
+        }
+      }
+    },
+    "applicability": "current"
+  },
+  "receipts": {
+    "as_of": {
+      "id": "e4372dd1-429c-498a-b4ad-978be9069c0a",
+      "handoff": {
+        "id": "89e3390c-874a-4aa2-ace8-f91d50d2ffa9",
+        "revision": 1
+      },
+      "intent": {
+        "id": "e4f2080a-f862-4e68-b550-9c4e0b5f5423",
+        "revision": 1
+      },
+      "receipt_count": 6,
+      "latest_receipt": {
+        "id": "9cd0d653-56cb-41e0-8478-f9b0800a26e4",
+        "revision": 1
+      },
+      "epoch": 7,
+      "projection_sha256": "f766ec3a09f72b115e75dd549928d40b79a7522ef5157c6e66fc2de7761a48e2"
+    },
+    "items": [
+      {
+        "id": "9cd0d653-56cb-41e0-8478-f9b0800a26e4",
+        "revision": 1,
+        "sequence": 6,
+        "original": {
+          "stage": "effective",
+          "intent": {
+            "id": "e4f2080a-f862-4e68-b550-9c4e0b5f5423",
+            "revision": 1
+          },
+          "handoff": {
+            "id": "89e3390c-874a-4aa2-ace8-f91d50d2ffa9",
+            "revision": 1
+          },
+          "outcome": "succeeded",
+          "reconciles": null,
+          "destination": {
+            "system": "synthetic-local-erp",
+            "recipient_id": "synthetic-receiver-9aad18de-4d55-49cc-92ea-5cd4fde5a767"
+          },
+          "external_id": "synthetic-handoff-c662ee09-6253-4747-bbf2-89191cab5267",
+          "occurred_at": "2026-10-17T23:39:21.700900Z",
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "schema_version": "pdos-external-receipt-v1",
+          "manifest_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "external_receipt_id": "synthetic-receipt-9df180d8-1c9b-4bcf-aecd-755030eef1fb"
+        },
+        "source": {
+          "id": "517b8975-3956-41e8-98e7-3e89c411323c",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:92ac79df974ccfeb76c14484fa051109352576eed9b775a590d63d71f490c1ff",
+          "revision": 1
+        },
+        "issuer": {
+          "key": "synthetic-handoff-9aad18de-4d55-49cc-92ea-5cd4fde5a767",
+          "epoch": 1,
+          "system": "synthetic-local-erp",
+          "version": "v1",
+          "subject_id": "synthetic-receiver-9aad18de-4d55-49cc-92ea-5cd4fde5a767",
+          "proof_sha256": "33e910c6fe1b42f02513a1e38227cfc70e9f2efa6494d61d951b99519b5e46b6"
+        },
+        "mismatches": [
+          "MANIFEST_MISMATCH"
+        ],
+        "receipt_id": "b2b5e873-ccba-4655-8855-3f2ec88396a2",
+        "received_at": "2026-10-17T23:39:22.665885+00:00"
+      },
+      {
+        "id": "e2ed607f-501a-4b91-a1eb-a2bc1c15b4a3",
+        "revision": 1,
+        "sequence": 5,
+        "original": {
+          "stage": "effective",
+          "intent": {
+            "id": "e4f2080a-f862-4e68-b550-9c4e0b5f5423",
+            "revision": 1
+          },
+          "handoff": {
+            "id": "89e3390c-874a-4aa2-ace8-f91d50d2ffa9",
+            "revision": 1
+          },
+          "outcome": "succeeded",
+          "reconciles": null,
+          "destination": {
+            "system": "synthetic-local-erp",
+            "recipient_id": "synthetic-receiver-9aad18de-4d55-49cc-92ea-5cd4fde5a767"
+          },
+          "external_id": "synthetic-handoff-c662ee09-6253-4747-bbf2-89191cab5267",
+          "occurred_at": "2026-10-17T23:39:19.280361Z",
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "schema_version": "pdos-external-receipt-v1",
+          "manifest_sha256": "5e63abd41a3376cb7352950392dc6a1c9651f3df3522b9469d594ef277fbc491",
+          "external_receipt_id": "synthetic-receipt-2f622728-26cd-413b-aaee-8c94d6964cbc"
+        },
+        "source": {
+          "id": "e3b94966-fbbe-4159-9665-93bf7d9b19bc",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:4aa3385322ac0e399068016d4244b91aa338e623f3b6f14948fb1d482acb0425",
+          "revision": 1
+        },
+        "issuer": {
+          "key": "synthetic-handoff-9aad18de-4d55-49cc-92ea-5cd4fde5a767",
+          "epoch": 1,
+          "system": "synthetic-local-erp",
+          "version": "v1",
+          "subject_id": "synthetic-receiver-9aad18de-4d55-49cc-92ea-5cd4fde5a767",
+          "proof_sha256": "3e66b45452f91cbd299b3233031d7397a75f9a8a52370487b88b75afab10c040"
+        },
+        "mismatches": [],
+        "receipt_id": "dd95f990-4da6-4309-88a5-a97d791263ad",
+        "received_at": "2026-10-17T23:39:20.385399+00:00"
+      },
+      {
+        "id": "11a82c5d-7070-435f-9092-3bc132a172d4",
+        "revision": 1,
+        "sequence": 4,
+        "original": {
+          "stage": "accepted",
+          "intent": {
+            "id": "e4f2080a-f862-4e68-b550-9c4e0b5f5423",
+            "revision": 1
+          },
+          "handoff": {
+            "id": "89e3390c-874a-4aa2-ace8-f91d50d2ffa9",
+            "revision": 1
+          },
+          "outcome": "succeeded",
+          "reconciles": null,
+          "destination": {
+            "system": "synthetic-local-erp",
+            "recipient_id": "synthetic-receiver-9aad18de-4d55-49cc-92ea-5cd4fde5a767"
+          },
+          "external_id": "synthetic-handoff-c662ee09-6253-4747-bbf2-89191cab5267",
+          "occurred_at": "2026-10-17T23:39:16.911230Z",
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "schema_version": "pdos-external-receipt-v1",
+          "manifest_sha256": "5e63abd41a3376cb7352950392dc6a1c9651f3df3522b9469d594ef277fbc491",
+          "external_receipt_id": "synthetic-receipt-7c7c32f3-74eb-41e7-bf45-a1ee16fce191"
+        },
+        "source": {
+          "id": "9dc1215c-fef6-4037-a9ec-37aa0bd4c52f",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:235f843ce9a08f50edc5a2965ba779675e4f7e1699f09259562f8c871ed2bd4b",
+          "revision": 1
+        },
+        "issuer": {
+          "key": "synthetic-handoff-9aad18de-4d55-49cc-92ea-5cd4fde5a767",
+          "epoch": 1,
+          "system": "synthetic-local-erp",
+          "version": "v1",
+          "subject_id": "synthetic-receiver-9aad18de-4d55-49cc-92ea-5cd4fde5a767",
+          "proof_sha256": "05f5086c77e2ee3cdec29ae22abe5f0713b6107565286504892015987b23e0ee"
+        },
+        "mismatches": [],
+        "receipt_id": "0f3187eb-2ba5-4211-8c11-1654b54f185b",
+        "received_at": "2026-10-17T23:39:17.853494+00:00"
+      },
+      {
+        "id": "156aaca9-01a0-46e3-a789-1bbb82f652d4",
+        "revision": 1,
+        "sequence": 3,
+        "original": {
+          "stage": "accepted",
+          "intent": {
+            "id": "e4f2080a-f862-4e68-b550-9c4e0b5f5423",
+            "revision": 1
+          },
+          "handoff": {
+            "id": "89e3390c-874a-4aa2-ace8-f91d50d2ffa9",
+            "revision": 1
+          },
+          "outcome": "succeeded",
+          "reconciles": null,
+          "destination": {
+            "system": "synthetic-local-erp",
+            "recipient_id": "synthetic-receiver-9aad18de-4d55-49cc-92ea-5cd4fde5a767"
+          },
+          "external_id": "synthetic-handoff-c662ee09-6253-4747-bbf2-89191cab5267",
+          "occurred_at": "2026-10-17T23:39:14.237789Z",
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN"
+            ],
+            "quantity": null
+          },
+          "schema_version": "pdos-external-receipt-v1",
+          "manifest_sha256": "5e63abd41a3376cb7352950392dc6a1c9651f3df3522b9469d594ef277fbc491",
+          "external_receipt_id": "synthetic-receipt-0a2ace17-7e34-4282-b6af-573ece31d967"
+        },
+        "source": {
+          "id": "fbc93979-a67b-4ebc-bb4e-5e57891d4d25",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:2366b3372b0ed383457be7406551f2cd8c9ea795b4eef3076a51406e6c5af0ae",
+          "revision": 1
+        },
+        "issuer": {
+          "key": "synthetic-handoff-9aad18de-4d55-49cc-92ea-5cd4fde5a767",
+          "epoch": 1,
+          "system": "synthetic-local-erp",
+          "version": "v1",
+          "subject_id": "synthetic-receiver-9aad18de-4d55-49cc-92ea-5cd4fde5a767",
+          "proof_sha256": "adcb64b148759c55b04a1522ad37505727fea5f6aa0a084b18e0138cafb1c9c4"
+        },
+        "mismatches": [],
+        "receipt_id": "ff9b5fe3-98b3-48d4-875a-2f68f5cd7317",
+        "received_at": "2026-10-17T23:39:15.232937+00:00"
+      },
+      {
+        "id": "a750f5e3-a56c-46af-908d-f353c03225a8",
+        "revision": 1,
+        "sequence": 2,
+        "original": {
+          "stage": "sent",
+          "intent": {
+            "id": "e4f2080a-f862-4e68-b550-9c4e0b5f5423",
+            "revision": 1
+          },
+          "handoff": {
+            "id": "89e3390c-874a-4aa2-ace8-f91d50d2ffa9",
+            "revision": 1
+          },
+          "outcome": "succeeded",
+          "reconciles": {
+            "id": "1aea1632-4ea4-49e0-86bd-885e2fc7eca9",
+            "revision": 1
+          },
+          "destination": {
+            "system": "synthetic-local-erp",
+            "recipient_id": "synthetic-receiver-9aad18de-4d55-49cc-92ea-5cd4fde5a767"
+          },
+          "external_id": "synthetic-handoff-c662ee09-6253-4747-bbf2-89191cab5267",
+          "occurred_at": "2026-10-17T23:39:11.549290Z",
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "schema_version": "pdos-external-receipt-v1",
+          "manifest_sha256": "5e63abd41a3376cb7352950392dc6a1c9651f3df3522b9469d594ef277fbc491",
+          "external_receipt_id": "synthetic-receipt-b156307b-7f78-43fb-a3d8-f671657df001"
+        },
+        "source": {
+          "id": "64e606de-8b5b-46cb-8c79-4abcaebcf6f9",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:d3aa7fd5a153890e45d76e27ee338f5c399a4f0b6a7dc3f2ca4408d6c0ae9925",
+          "revision": 1
+        },
+        "issuer": {
+          "key": "synthetic-handoff-9aad18de-4d55-49cc-92ea-5cd4fde5a767",
+          "epoch": 1,
+          "system": "synthetic-local-erp",
+          "version": "v1",
+          "subject_id": "synthetic-receiver-9aad18de-4d55-49cc-92ea-5cd4fde5a767",
+          "proof_sha256": "340880db44fb519b9fb3996cf12eb2cacb550d2175f0e40276a457dcc0c79ab0"
+        },
+        "mismatches": [],
+        "receipt_id": "30a0e5ec-e648-4d1c-86d2-05353936b5eb",
+        "received_at": "2026-10-17T23:39:12.669072+00:00"
+      },
+      {
+        "id": "1aea1632-4ea4-49e0-86bd-885e2fc7eca9",
+        "revision": 1,
+        "sequence": 1,
+        "original": {
+          "stage": "sent",
+          "intent": {
+            "id": "e4f2080a-f862-4e68-b550-9c4e0b5f5423",
+            "revision": 1
+          },
+          "handoff": {
+            "id": "89e3390c-874a-4aa2-ace8-f91d50d2ffa9",
+            "revision": 1
+          },
+          "outcome": "unknown",
+          "reconciles": null,
+          "destination": {
+            "system": "synthetic-local-erp",
+            "recipient_id": "synthetic-receiver-9aad18de-4d55-49cc-92ea-5cd4fde5a767"
+          },
+          "external_id": "synthetic-handoff-c662ee09-6253-4747-bbf2-89191cab5267",
+          "occurred_at": "2026-10-17T23:39:07.963898Z",
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "schema_version": "pdos-external-receipt-v1",
+          "manifest_sha256": "5e63abd41a3376cb7352950392dc6a1c9651f3df3522b9469d594ef277fbc491",
+          "external_receipt_id": "synthetic-receipt-89ddeb7f-8a6c-44a3-9f18-856369d2b565"
+        },
+        "source": {
+          "id": "8972d43b-4e8f-4cf6-a818-e3e10219d98b",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:bd30216d26f3978347c41866193cee3b75e11c8fb8cf45415c61f93ee79d24ad",
+          "revision": 1
+        },
+        "issuer": {
+          "key": "synthetic-handoff-9aad18de-4d55-49cc-92ea-5cd4fde5a767",
+          "epoch": 1,
+          "system": "synthetic-local-erp",
+          "version": "v1",
+          "subject_id": "synthetic-receiver-9aad18de-4d55-49cc-92ea-5cd4fde5a767",
+          "proof_sha256": "8d307535a507f784b62ecc3980971ac0845c1e02311a72358f5eae2a3fbf6001"
+        },
+        "mismatches": [],
+        "receipt_id": "9a686748-711b-4d34-ae7b-2ec97ad99f8c",
+        "received_at": "2026-10-17T23:39:09.024031+00:00"
+      }
+    ],
+    "before_sequence": null
+  }
+}

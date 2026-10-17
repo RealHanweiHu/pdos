@@ -23,6 +23,8 @@ const nativePilotPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-
 const nativePilotCommands = new Set(["npi.pilot.create", "npi.pilot.result.record"]);
 const releasePaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:release\/inputs|release-packages(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?)$/i;
 const releaseCommands = new Set(["release.package.assemble", "release.engineering.approve", "release.manufacturing.approve"]);
+const externalHandoffPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:external-handoff\/inputs|external-handoffs(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/receipts)?)?)$/i;
+const externalHandoffCommands = new Set(["integration.handoff.authorize", "integration.receipt.record"]);
 const qualityChangePaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/(?:quality-execution(?:\/inputs)?|change-execution(?:\/(?:inputs|captures|order-context|selection-material|implementation-captures))?)$/;
 const qualityFollowupPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/quality-followup(?:\/inputs)?$/;
 const capaCandidatePaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/capa-candidates$/;
@@ -84,11 +86,27 @@ function validReleaseCommand(value: unknown, productId: string): boolean {
   }
   return true; // Fixed content, authority and actual scope belong to the domain owner.
 }
+function validExternalHandoffCommand(value: unknown, productId: string): boolean {
+  if (!isRecord(value) || Object.keys(value).some(key => !["command_id", "idempotency_key", "operation", "category_id", "product_id", "expected_revision", "payload", "source_read_set"].includes(key)) || typeof value.command_id !== "string" || !uuid.test(value.command_id) || typeof value.idempotency_key !== "string" || value.idempotency_key.length < 8 || value.idempotency_key.length > 160 || typeof value.operation !== "string" || !externalHandoffCommands.has(value.operation) || value.product_id !== productId || !positiveRevision(value.expected_revision) || !isRecord(value.payload) || !Array.isArray(value.source_read_set)) return false;
+  const authorize = value.operation === "integration.handoff.authorize";
+  if (authorize && (typeof value.payload.project_id !== "string" || !uuid.test(value.payload.project_id))) return false;
+  const refs = authorize ? [value.payload.package, value.payload.engineering_decision, value.payload.manufacturing_decision] : [value.payload.handoff, value.payload.intent];
+  if (refs.some(ref => !isRecord(ref) || typeof ref.id !== "string" || !uuid.test(ref.id) || !positiveRevision(ref.revision))) return false;
+  if ("issuer" in value.payload || "issuer_current" in value.payload) return false;
+  if (!authorize && (!isRecord(value.payload.source) || value.payload.source.kind !== "artifact" || typeof value.payload.source.id !== "string" || !uuid.test(value.payload.source.id) || !positiveRevision(value.payload.source.revision))) return false;
+  const seen = new Set<string>();
+  for (const read of value.source_read_set) {
+    if (!isRecord(read) || Object.keys(read).some(key => !["artifact_id", "expected_revision"].includes(key)) || typeof read.artifact_id !== "string" || !uuid.test(read.artifact_id) || !positiveRevision(read.expected_revision) || seen.has(read.artifact_id.toLowerCase())) return false;
+    seen.add(read.artifact_id.toLowerCase());
+  }
+  return true; // Fixed content, authority and actual scope belong to the domain owner.
+}
 const longCommands = new Set([
   ...manufacturingPreparationCommands,
   ...manufacturingPublicationCommands,
   ...nativePilotCommands,
   ...releaseCommands,
+  ...externalHandoffCommands,
   ...qualityFollowupCommands,
   ...capaFactCommands,
   "test.results.import", "test.result.compute", "test.run.review", "test.disposition.decide",
@@ -131,9 +149,10 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const manufacturingPublication = manufacturingPublicationPaths.test(pathname);
   const nativePilot = nativePilotPaths.test(pathname);
   const release = releasePaths.test(pathname);
+  const externalHandoff = externalHandoffPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (mcpManagement) {
     const recovering = pathname.endsWith("/recover"), method = recovering ? "POST" : "GET";
@@ -279,6 +298,16 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   } else if (resourceInspect) {
     if (request.method !== "POST") return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: "POST" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "请在正文中固定唯一试制资源范围。" }, { status: 422 });
+  } else if (externalHandoff) {
+    const input = pathname.endsWith("/inputs"), history = pathname.endsWith("/external-handoffs"), receipts = pathname.endsWith("/receipts");
+    const method = input ? "POST" : "GET";
+    if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: method } });
+    for (const [key, value] of request.nextUrl.searchParams) {
+      const valid = history ? ["project_id", "history_cursor"].includes(key) && uuid.test(value) : receipts && key === "before_sequence" && /^[1-9]\d*$/.test(value) && positiveRevision(Number(value));
+      if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "请选择唯一移交项目与原回执序列。" }, { status: 422 });
+      query.set(key, value);
+    }
+    if (history && !query.has("project_id")) return Response.json({ code: "VALIDATION_FAILED", message: "请选择移交所属项目。" }, { status: 422 });
   } else if (release) {
     const input = pathname.endsWith("/inputs"), history = pathname.endsWith("/release-packages");
     const method = input ? "POST" : "GET";
@@ -399,6 +428,11 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整制造基线发布原请求。" }, { status: 422 }); }
       if (!validManufacturingCommand(value, path[2], true)) return Response.json({ code: "VALIDATION_FAILED", message: "本入口只核对本型号、项目与固定制造基线的发布。" }, { status: 422 });
     }
+    if (externalHandoff && request.method === "POST") {
+      let value: unknown;
+      try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整移交原请求。" }, { status: 422 }); }
+      if (!validExternalHandoffCommand(value, path[2])) return Response.json({ code: "VALIDATION_FAILED", message: "请选择本型号真实移交版本及原件。" }, { status: 422 });
+    }
     if (release && request.method === "POST") {
       let value: unknown;
       try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整发布包原请求。" }, { status: 422 }); }
@@ -434,7 +468,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     // the same source locks. Keep their transport budget aligned without retries.
     const deepRead = request.method === "GET" && (qualityChange || qualityFollowup || /\/verification-results$/.test(pathname));
     const extendedTransport = candidateCommand || factCommand || factPath || deepRead;
-    const timeout = extendedTransport ? 600000 : longCommand || qualityChange || qualityFollowup || manufacturingPreparation || manufacturingPublication || nativePilot || release || /\/verification-results(?:\/|$)/.test(pathname) ? 180000 : 60000;
+    const timeout = extendedTransport ? 600000 : longCommand || qualityChange || qualityFollowup || manufacturingPreparation || manufacturingPublication || nativePilot || release || externalHandoff || /\/verification-results(?:\/|$)/.test(pathname) ? 180000 : 60000;
     const response = await fetch(`${base}/${forwardPath.join("/")}${query.size ? `?${query}` : ""}`, {
       ...candidateTransportOptions(extendedTransport),
       method: request.method, headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },

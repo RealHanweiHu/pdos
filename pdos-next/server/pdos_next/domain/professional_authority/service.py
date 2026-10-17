@@ -20,6 +20,7 @@ from .models import ProfessionalCurrent, ProfessionalFact
 from .schemas import FactInput
 
 OPERATION_ROLES = {
+    "integration.handoff.authorize": frozenset({"engineering", "manufacturing", "quality"}),
     "release.policy.import": frozenset({"engineering", "manufacturing", "quality"}),
     "npi.work_instruction.record": frozenset({"manufacturing"}),
     "npi.control_plan.record": frozenset({"manufacturing"}),

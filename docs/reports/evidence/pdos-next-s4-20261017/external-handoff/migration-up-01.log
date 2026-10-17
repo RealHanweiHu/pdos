@@ -1,0 +1,136 @@
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1925, in _exec_single_context
+    self.dialect.do_execute_no_params(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 1195, in do_execute_no_params
+    cursor.execute(statement)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.SyntaxError: syntax error at end of input
+LINE 41: ...IS DISTINCT FROM CASE WHEN v.reconciles_id IS NULL THEN 'nul...
+                                                              ^
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/__main__.py", line 4, in <module>
+    main(prog="alembic")
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 1039, in main
+    CommandLine(prog=prog).main(argv=argv)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 1029, in main
+    self.run_cmd(cfg, options)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 963, in run_cmd
+    fn(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/command.py", line 487, in upgrade
+    script.run_env()
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/script/base.py", line 550, in run_env
+    util.load_python_file(self.dir, "env.py")
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/util/pyfiles.py", line 114, in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/util/pyfiles.py", line 132, in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/private/tmp/pdos-external-handoff-e9jqujau/pdos-next/server/migrations/env.py", line 19, in <module>
+    context.run_migrations()
+  File "<string>", line 8, in run_migrations
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/runtime/environment.py", line 970, in run_migrations
+    self.get_context().run_migrations(**kw)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/runtime/migration.py", line 616, in run_migrations
+    step.migration_fn(**kw)
+  File "/private/tmp/pdos-external-handoff-e9jqujau/pdos-next/server/migrations/versions/s0_0783_external_handoff.py", line 42, in upgrade
+    _apply(PREVIOUS_FUNCTIONS, PREVIOUS_DEADLINE, SCHEMA_SQL)
+  File "/private/tmp/pdos-external-handoff-e9jqujau/pdos-next/server/migrations/versions/s0_0783_external_handoff.py", line 37, in _apply
+    connection.exec_driver_sql(statement, execution_options={"no_parameters": True})
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1755, in exec_driver_sql
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1822, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1962, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2332, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1925, in _exec_single_context
+    self.dialect.do_execute_no_params(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 1195, in do_execute_no_params
+    cursor.execute(statement)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+sqlalchemy.exc.ProgrammingError: (psycopg.errors.SyntaxError) syntax error at end of input
+LINE 41: ...IS DISTINCT FROM CASE WHEN v.reconciles_id IS NULL THEN 'nul...
+                                                              ^
+[SQL: CREATE FUNCTION public.assert_external_receipt(t uuid,target uuid) RETURNS void
+LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog,public,pg_temp AS $external_handoff$
+
+DECLARE v public.external_receipts; a public.external_handoff_authorizations; i public.external_delivery_intents;
+ prior public.external_receipts; art public.artifact_versions; cur public.external_handoff_currents;
+ position text[]; line text; vx xid; cx xid;
+BEGIN
+ SELECT * INTO STRICT v FROM public.external_receipts WHERE tenant_id=t AND id=target;
+ SELECT xmin INTO vx FROM public.external_receipts WHERE tenant_id=t AND id=target;
+ SELECT * INTO STRICT a FROM public.external_handoff_authorizations WHERE tenant_id=t AND id=v.handoff_id;
+ SELECT * INTO STRICT i FROM public.external_delivery_intents WHERE tenant_id=t AND id=v.intent_id;
+ SELECT * INTO STRICT cur FROM public.external_handoff_currents WHERE tenant_id=t AND handoff_id=v.handoff_id;
+ SELECT xmin INTO cx FROM public.external_handoff_currents WHERE tenant_id=t AND id=cur.id;
+ PERFORM public.assert_external_handoff_write(t,target,'external_receipt');
+ IF vx IS DISTINCT FROM cx OR cur.latest_receipt_id<>v.id OR cur.latest_receipt_revision<>v.revision
+  OR cur.receipt_count<>v.sequence OR cur.epoch<>v.sequence+1
+  OR cur.projection IS DISTINCT FROM v.projection_after OR cur.projection_sha256 IS DISTINCT FROM v.projection_sha256
+  OR (v.body||jsonb_build_object('received_at',null)) IS DISTINCT FROM v.input_snapshot->'review'->'after'
+  OR v.input_snapshot->'semantic'->'handoff' IS DISTINCT FROM jsonb_build_object('id',a.id,'revision',a.revision)
+  OR v.input_snapshot->'semantic'->'intent' IS DISTINCT FROM jsonb_build_object('id',i.id,'revision',i.revision)
+  OR v.input_snapshot->'semantic'->'source' IS DISTINCT FROM v.source
+  OR v.body->'original' IS DISTINCT FROM v.original OR v.body->'source' IS DISTINCT FROM v.source
+  OR NOT(v.sources @> jsonb_build_array(v.source))
+  OR v.body->'issuer' IS DISTINCT FROM v.issuer_snapshot
+  OR v.body->>'state' IS DISTINCT FROM 'READY' OR v.body->'unknown' IS DISTINCT FROM '[]'::jsonb
+  OR v.body->'network_send' IS DISTINCT FROM 'false'::jsonb
+  OR (v.body->>'received_at')::timestamptz IS DISTINCT FROM v.received_at
+  OR v.material_snapshot->'handoff' IS DISTINCT FROM jsonb_build_object('id',a.id,'revision',a.revision)
+  OR v.material_snapshot->'intent' IS DISTINCT FROM jsonb_build_object('id',i.id,'revision',i.revision)
+  OR v.material_snapshot->'authorization' IS DISTINCT FROM a.body
+  OR v.material_snapshot->'source' IS DISTINCT FROM v.source OR v.material_snapshot->'original' IS DISTINCT FROM v.original
+  OR v.material_snapshot->'issuer' IS DISTINCT FROM v.issuer_snapshot
+  OR v.original->'handoff' IS DISTINCT FROM jsonb_build_object('id',a.id,'revision',a.revision)
+  OR v.original->'intent' IS DISTINCT FROM jsonb_build_object('id',i.id,'revision',i.revision)
+  OR v.original->'destination' IS DISTINCT FROM v.destination OR v.original->>'external_id' IS DISTINCT FROM v.external_id
+  OR v.original->>'external_receipt_id' IS DISTINCT FROM v.external_receipt_id
+  OR v.original->>'manifest_sha256' IS DISTINCT FROM v.manifest_sha256
+  OR v.original->'release_scope' IS DISTINCT FROM v.release_scope
+  OR v.original->>'stage' IS DISTINCT FROM v.stage OR v.original->>'outcome' IS DISTINCT FROM v.outcome
+  OR (v.original->>'occurred_at')::timestamptz IS DISTINCT FROM v.occurred_at
+  OR v.original->'reconciles' IS DISTINCT FROM CASE WHEN v.reconciles_id IS NULL THEN 'null'::jsonb
+    ELSE jsonb_build_object('id',v.reconciles_id,'revision',v.reconciles_revision) END
+  OR v.issuer_snapshot->>'system' IS DISTINCT FROM v.destination->>'system'
+  OR NOT COALESCE(length(v.issuer_snapshot->>'key')>0 AND length(v.issuer_snapshot->>'version')>0
+    AND length(v.issuer_snapshot->>'subject_id')>0 AND (v.issuer_snapshot->>'epoch')::integer>0
+    AND (v.issuer_snapshot->>'proof_sha256') ~ '^[a-f0-9]{64}$',false) THEN
+  RAISE EXCEPTION 'External receipt must retain its actual original issuer and Current atom' USING ERRCODE='23514'; END IF;
+ position=regexp_match(v.source->>'position','^line:([1-9][0-9]*);quote_sha256:([a-f0-9]{64})$');
+ IF v.source->>'kind' IS DISTINCT FROM 'artifact' OR position IS NULL THEN
+  RAISE EXCEPTION 'External receipt needs its exact original artifact line' USING ERRCODE='23514'; END IF;
+ SELECT * INTO STRICT art FROM public.artifact_versions WHERE tenant_id=t AND category_id=v.category_id
+  AND id::text=v.source->>'id' AND revision::text=v.source->>'revision' AND status='active';
+ line=(regexp_split_to_array(art.content,E'\r\n|[\n\r\013\014\034-\036\u0085\u2028\u2029]'))[position[1]::integer];
+ IF line IS NULL OR encode(sha256(convert_to(line,'UTF8')),'hex')<>position[2] OR line::jsonb IS DISTINCT FROM v.original THEN
+  RAISE EXCEPTION 'External receipt original line or hash changed' USING ERRCODE='23514'; END IF;
+ IF v.reconciles_id IS NOT NULL THEN
+  SELECT * INTO STRICT prior FROM public.external_receipts WHERE tenant_id=t AND id=v.reconciles_id;
+  IF prior.sequence>=v.sequence OR prior.outcome NOT IN ('unknown','rejected','failed') OR v.outcome='unknown'
+   OR ROW(prior.stage,prior.external_id,prior.manifest_sha256) IS DISTINCT FROM ROW(v.stage,v.external_id,v.manifest_sha256)
+   OR prior.destination IS DISTINCT FROM v.destination OR prior.release_scope IS DISTINCT FROM v.release_scope THEN
+   RAISE EXCEPTION 'External reconciliation must append to its exact unresolved occurrence' USING ERRCODE='23514'; END IF;
+ ELSIF v.stage='sent' AND EXISTS(SELECT 1 FROM public.external_receipts old
+   WHERE old.tenant_id=t AND old.handoff_id=v.handoff_id AND old.intent_id=v.intent_id AND old.sequence<v.sequence
+    AND old.stage='sent' AND old.outcome='unknown' AND NOT EXISTS(SELECT 1 FROM public.external_receipts resolved
+     WHERE resolved.tenant_id=t AND resolved.reconciles_id=old.id AND resolved.reconciles_revision=old.revision)) THEN
+  RAISE EXCEPTION 'Unknown delivery requires reconciliation of its original intent before another send record' USING ERRCODE='23514';
+ END IF;
+END;
+$external_handoff$]
+(Background on this error at: https://sqlalche.me/e/21/f405)

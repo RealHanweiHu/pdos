@@ -152,7 +152,7 @@ def test_controlled_policy_and_independent_named_decisions(publication_case, mon
         "lots": [],
         "site": "SYN-INTERNAL-LAB",
         "lines": [],
-        "regions": ["CN"],
+        "regions": ["CN", "DE"] if os.environ.get("PDOS_EXTERNAL_HANDOFF_LINK") == "1" else ["CN"],
     }
     document = {"kind": "artifact", "id": work.document_source, "revision": 1}
     publication_ref = {
@@ -225,6 +225,12 @@ def test_controlled_policy_and_independent_named_decisions(publication_case, mon
             ]
         ],
     }
+    if os.environ.get("PDOS_EXTERNAL_HANDOFF_LINK") == "1":
+        from external_handoff_transactions.harness import prepare_authority
+
+        # Establish this operation's authority before the initial policy fact
+        # fixes its professional-source set; later replay must use that same set.
+        prepare_authority(work)
     owner = ActualReleasePolicyOwner(setup.engine)
     policy_line = json.dumps(policy, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     policy_artifact = upstream.register_text(
@@ -332,6 +338,11 @@ def test_controlled_policy_and_independent_named_decisions(publication_case, mon
             assert {v["discipline"] for v in saved["decisions"]} == (
                 {"engineering"} if discipline == "engineering" else {"engineering", "manufacturing"}
             )
+    if os.environ.get("PDOS_EXTERNAL_HANDOFF_LINK") == "1":
+        from external_handoff_transactions.harness import run as run_external_handoff
+
+        run_external_handoff(work, second, decisions)
+
     with upstream.session(work) as s:
         actual = list(
             s.scalars(

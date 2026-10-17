@@ -1,0 +1,8 @@
+{
+  "snapshot": "/private/tmp/pdos-external-handoff-wjnafma7",
+  "exit": 1,
+  "source_changed": [],
+  "fixture_nature": "synthetic internal documentation; read-only browser after actual API chain",
+  "real_external_calls": 0,
+  "performance_acceptance": false
+}

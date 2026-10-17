@@ -1,0 +1,19 @@
+{
+  "snapshot": "/private/tmp/pdos-external-handoff-web-oi9bdfk4",
+  "base_commit": "f0cb3529aa24d6dbc9ce88be51ae70f5064e33f6",
+  "frontend_overlay": {
+    "pdos-next/web/src/lib/external-handoffs.ts": "823c33c939e77a2085abc940eec749d5faf952ad3d3307425e9c18096b0c17ce",
+    "pdos-next/web/src/lib/external-handoffs.test.ts": "a274762ee86e4e8d4067ae5fff017f4767586ced5ed4867399640ffe6c3d7d38",
+    "pdos-next/web/src/components/manufacturing/external-handoffs.tsx": "9eaf3833f41789f4cd7fe920cd88024f7b890d57d80ef0ebc2b0ee4faca650cf",
+    "pdos-next/web/src/components/manufacturing/external-handoffs.module.css": "97d35fdcfc88761f12d3b3f3950dc23dd21d0177cad824be6616a1321b89ec8b",
+    "pdos-next/web/src/components/manufacturing/external-handoffs.test.mjs": "80e012beb9e5bed44a6f12c9cee626bc4be7b61983cf4b23ac5d418699dbca6b",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "74e4f63a80f4fa024cfd5a0f28373c6a94d26f7eecd84877047cde2b88463b28",
+    "pdos-next/web/src/app/api/external-handoff-route.test.mjs": "2e9fb2805258aa44b0d80c6a062f0e305363db5786faa6c526a4b091b9516fb4",
+    "pdos-next/web/src/components/workspace.tsx": "0548348d5afa1d4c99295080d36bc5bfbc34c413d45982a4f794652eac4196e7"
+  },
+  "foreign_pending_frontend_removed": true,
+  "started_at": "2026-10-17T23:30:00.401131+00:00",
+  "finished_at": "2026-10-17T23:30:30.585328+00:00",
+  "exit": 0,
+  "real_model_calls": 0
+}

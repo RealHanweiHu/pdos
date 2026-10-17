@@ -36,6 +36,7 @@ CATEGORY_OPERATIONS = frozenset(
 
 T2_OPERATIONS = frozenset(
     {
+        "integration.handoff.authorize",
         "release.engineering.approve",
         "release.manufacturing.approve",
         "ai.skill.qualify",
@@ -122,6 +123,7 @@ T1_OPERATIONS = frozenset(
 # No handler/client can opt itself into these hooks through a payload flag.
 PHASED_MATERIAL_OPERATIONS = frozenset(
     {
+        "integration.handoff.authorize",
         "npi.work_instruction.record",
         "npi.control_plan.record",
         "npi.manufacturing_baseline.record",
@@ -144,6 +146,10 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation in {"integration.handoff.authorize", "integration.receipt.record"}:
+        from pdos_next.domain.external_handoff import service as external_handoff_service
+
+        return external_handoff_service
     if operation in {
         "release.package.assemble",
         "release.engineering.approve",

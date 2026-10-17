@@ -1,0 +1,238 @@
+{
+  "base_commit": "f0cb3529aa24d6dbc9ce88be51ae70f5064e33f6",
+  "delivery_files": [
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0783.py",
+      "mode": "full",
+      "sha256": "346d4726e05da6224d4e121d09a8b2925717fee64d3a1f67d9ef1461c682a751"
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0783_external_handoff.py",
+      "mode": "full",
+      "sha256": "084bbd1ad4bea744a66cc35f15f05f752f1b282a6a5c2744884546911a9b89e2"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/api.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "30d317857d90541c67f184d5645fe59c355b832af5825eec85c49c6056952715",
+      "sha256": "a4c947a23d2410ecfa7390ff4e8114e608dc7d44a5b934481ee09630d515a0e2",
+      "foreign_context_removed": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/command_handlers.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "8697ac71e0892f09973d63016d45ab447f154a29b36e06c05b87a63aeed80600",
+      "sha256": "14aa81cb8f4954205047bb7b8d66b792ca745fdacc30a0353a345026676470ed",
+      "foreign_context_removed": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/contracts.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "1ccebe3de924aa163bed663c1d214746a0b13969dd7e070ec7b23e5738f4ed9a",
+      "sha256": "1ccebe3de924aa163bed663c1d214746a0b13969dd7e070ec7b23e5738f4ed9a",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/external_handoff/__init__.py",
+      "mode": "full",
+      "sha256": "1cf893035cc9d9b5664f0220009c4ae963f489a8c872cbaaa763e4a2a272df57"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/external_handoff/api.py",
+      "mode": "full",
+      "sha256": "ac22a37c8d63e9cb4cf4e1e37a57137d9c07f8225c857f6eb250a32c7e8395cf"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/external_handoff/constants.py",
+      "mode": "full",
+      "sha256": "4d362f610f2a88a3603e4bd5994efab40ef60ac0353e9e2411b3f0f6941e0e74"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/external_handoff/evidence_owner.py",
+      "mode": "full",
+      "sha256": "71c66227bf27943cea7ddc58a01513304a8bf3fb493a73e24354847ff893201a"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/external_handoff/evidence_schemas.py",
+      "mode": "full",
+      "sha256": "954b3df1398fa2a6701c1cc3333467dcfcfc98a277c9ccfaaa8500e4bf6e3fe8"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/external_handoff/material_owner.py",
+      "mode": "full",
+      "sha256": "339fb744591aef07849d7da6fd48831c2a4c34244ecf36828d45d59d31b6145d"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/external_handoff/models.py",
+      "mode": "full",
+      "sha256": "2f76c34a381e90c1fd07d23c4a11ad2eb2ec79413b803b0a96a7c82748329f1d"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/external_handoff/rules.py",
+      "mode": "full",
+      "sha256": "2c292ed24d7c3ba1f68b3ec1026c40975962f6b8cb24ef6156d70bbc9c06b781"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/external_handoff/schemas.py",
+      "mode": "full",
+      "sha256": "ad69a13cb345c963f7cb5e50964569d5e464ae14fb0836c4651de67711f8f482"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/external_handoff/service.py",
+      "mode": "full",
+      "sha256": "540d8745037ab0fac4e35984969aff6f532f3bba7d26d86546d7716f2a3c9303"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/external_handoff/storage_schema.py",
+      "mode": "full",
+      "sha256": "0f5fa97d79895fc8007858ac2504cd007cedf4c70e1d6974ca62273c3c8d00a0"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/manufacturing_baseline/consumption.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "dc2f7fbd3742c34062e621baa97d7da4edc7a37458e43ad0ced5cb5a36bd7b03",
+      "sha256": "dc2f7fbd3742c34062e621baa97d7da4edc7a37458e43ad0ced5cb5a36bd7b03",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/professional_authority/service.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "c03bdb27844d6b3f64c9057db73f9c6edd96f0c1b1cb49608b92559bb006cf9e",
+      "sha256": "c03bdb27844d6b3f64c9057db73f9c6edd96f0c1b1cb49608b92559bb006cf9e",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/lifecycle_catalog.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "1417ab919f07c6e20cc90bb42f396068a03faa9d84273f2c018829a38fa808c5",
+      "sha256": "1417ab919f07c6e20cc90bb42f396068a03faa9d84273f2c018829a38fa808c5",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/models.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "ca62d52c685618585ad4e604291c19bb0a408fa429f35a0ae22f945667c77471",
+      "sha256": "ca62d52c685618585ad4e604291c19bb0a408fa429f35a0ae22f945667c77471",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "9b8c41c896dfc20c63f0c4f3d3c32457bf848da4caecd20f8a8c70e00b41d4f0",
+      "sha256": "38a80bf67113738eea969126f2dc1078e6016e76b692345201fe289df7d134ad",
+      "foreign_context_removed": true
+    },
+    {
+      "path": "pdos-next/server/tests/external_handoff/__init__.py",
+      "mode": "full",
+      "sha256": "04179a58afc7fbd82934931407aef9f7de4d1d0348ddc597c5d6e78a0b6c8247"
+    },
+    {
+      "path": "pdos-next/server/tests/external_handoff/test_evidence_owner.py",
+      "mode": "full",
+      "sha256": "5183515e36cdfe9d927b7f5db28d6ac759e62ca1d56ae6a0a92895ec88baf211"
+    },
+    {
+      "path": "pdos-next/server/tests/external_handoff/test_material_owner.py",
+      "mode": "full",
+      "sha256": "e51e98e7af8f0dbd8eaf52b096e924c4a02aabec3b6dfad00266c44645ec8fa7"
+    },
+    {
+      "path": "pdos-next/server/tests/external_handoff/test_rules.py",
+      "mode": "full",
+      "sha256": "0a9c55cdbef661fbf4c757dc0c4faf8348846794991f006dab92aef3a3481912"
+    },
+    {
+      "path": "pdos-next/server/tests/external_handoff/test_service.py",
+      "mode": "full",
+      "sha256": "a8a842f433b004b8288ff733257e716ddf4165e2f12ff2e543405b2b203a0948"
+    },
+    {
+      "path": "pdos-next/server/tests/external_handoff_transactions/__init__.py",
+      "mode": "full",
+      "sha256": "a95be531c3d4d8bde0d537992682eeb3465ab964e5754eaebd81ae799948a65a"
+    },
+    {
+      "path": "pdos-next/server/tests/external_handoff_transactions/browser_seed.py",
+      "mode": "full",
+      "sha256": "1275dec66427b2c48e981ddf7790d962e8ba7d9e3a65993faf19fce0293ab7a4"
+    },
+    {
+      "path": "pdos-next/server/tests/external_handoff_transactions/harness.py",
+      "mode": "full",
+      "sha256": "b6548c3ce089abab89688102814a31b06265ea22ec4cc60041eb4f2e11b96ddb"
+    },
+    {
+      "path": "pdos-next/server/tests/release_policy_transactions/test_decisions.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "753acee48bbd5747f6822dcc8ef20cae3d0259de988e0fc696f04e318948e9d4",
+      "sha256": "753acee48bbd5747f6822dcc8ef20cae3d0259de988e0fc696f04e318948e9d4",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "74e4f63a80f4fa024cfd5a0f28373c6a94d26f7eecd84877047cde2b88463b28",
+      "sha256": "74e4f63a80f4fa024cfd5a0f28373c6a94d26f7eecd84877047cde2b88463b28",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/app/api/external-handoff-route.test.mjs",
+      "mode": "full",
+      "sha256": "2e9fb2805258aa44b0d80c6a062f0e305363db5786faa6c526a4b091b9516fb4"
+    },
+    {
+      "path": "pdos-next/web/src/components/manufacturing/external-handoffs.module.css",
+      "mode": "full",
+      "sha256": "97d35fdcfc88761f12d3b3f3950dc23dd21d0177cad824be6616a1321b89ec8b"
+    },
+    {
+      "path": "pdos-next/web/src/components/manufacturing/external-handoffs.test.mjs",
+      "mode": "full",
+      "sha256": "80e012beb9e5bed44a6f12c9cee626bc4be7b61983cf4b23ac5d418699dbca6b"
+    },
+    {
+      "path": "pdos-next/web/src/components/manufacturing/external-handoffs.tsx",
+      "mode": "full",
+      "sha256": "9eaf3833f41789f4cd7fe920cd88024f7b890d57d80ef0ebc2b0ee4faca650cf"
+    },
+    {
+      "path": "pdos-next/web/src/components/workspace.tsx",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "0548348d5afa1d4c99295080d36bc5bfbc34c413d45982a4f794652eac4196e7",
+      "sha256": "0548348d5afa1d4c99295080d36bc5bfbc34c413d45982a4f794652eac4196e7",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/lib/external-handoffs.test.ts",
+      "mode": "full",
+      "sha256": "a274762ee86e4e8d4067ae5fff017f4767586ced5ed4867399640ffe6c3d7d38"
+    },
+    {
+      "path": "pdos-next/web/src/lib/external-handoffs.ts",
+      "mode": "full",
+      "sha256": "823c33c939e77a2085abc940eec749d5faf952ad3d3307425e9c18096b0c17ce"
+    }
+  ],
+  "actual_chain_candidate": "/private/tmp/pdos-external-handoff-s209ag5r",
+  "differences_from_actual_candidate": {
+    "foreign_pending_context_removed": [
+      "pdos-next/server/pdos_next/api.py",
+      "pdos-next/server/pdos_next/command_handlers.py",
+      "pdos-next/server/pdos_next/service.py"
+    ],
+    "contracts_import_format_only": "same two payload bindings, split aliases and noqa E402; no schema/validation change"
+  },
+  "all_eight_frontend_inputs_match_independent_build": {
+    "pdos-next/web/src/lib/external-handoffs.ts": true,
+    "pdos-next/web/src/lib/external-handoffs.test.ts": true,
+    "pdos-next/web/src/components/manufacturing/external-handoffs.tsx": true,
+    "pdos-next/web/src/components/manufacturing/external-handoffs.module.css": true,
+    "pdos-next/web/src/components/manufacturing/external-handoffs.test.mjs": true,
+    "pdos-next/web/src/app/api/[...path]/route.ts": true,
+    "pdos-next/web/src/app/api/external-handoff-route.test.mjs": true,
+    "pdos-next/web/src/components/workspace.tsx": true
+  },
+  "standalone_precise_delivery": "standalone-delivery-final-03.json",
+  "no_worktree_reset": true
+}

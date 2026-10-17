@@ -134,6 +134,8 @@ EVENTS = {
     "npi.manufacturing_baseline.record": "manufacturing_baseline.recorded",
     "npi.manufacturing_baseline.publish": "manufacturing_baseline.published",
     "release.package.assemble": "release.package_assembled",
+    "integration.handoff.authorize": "external_handoff.authorized",
+    "integration.receipt.record": "external_receipt.recorded",
     "release.engineering.approve": "release.engineering_approved",
     "release.manufacturing.approve": "release.manufacturing_approved",
     "npi.pilot.create": "pilot.created",
