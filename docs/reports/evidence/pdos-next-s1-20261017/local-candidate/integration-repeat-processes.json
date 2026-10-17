@@ -1,0 +1,32 @@
+{
+  "max_attempts": 5,
+  "distinct_cases": 3,
+  "attempts": [
+    {
+      "attempt": 1,
+      "exit_code": 0,
+      "log": "integration-repeat-process-01"
+    },
+    {
+      "attempt": 2,
+      "exit_code": 0,
+      "log": "integration-repeat-process-02"
+    },
+    {
+      "attempt": 3,
+      "exit_code": 0,
+      "log": "integration-repeat-process-03"
+    },
+    {
+      "attempt": 4,
+      "exit_code": 0,
+      "log": "integration-repeat-process-04"
+    },
+    {
+      "attempt": 5,
+      "exit_code": 0,
+      "log": "integration-repeat-process-05"
+    }
+  ],
+  "stop_after_first_failure": true
+}
