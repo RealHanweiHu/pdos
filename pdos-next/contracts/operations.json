@@ -2,7 +2,7 @@
   "provenance": {
     "kind": "derived_from_consolidated_markdown",
     "source": "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md",
-    "sha256": "2820b72159622c2131774b9b0a0b548d63b44fa948af882aa795c26e231246f4",
+    "sha256": "eb9f156e46cc77a4653e4b823aca92e41bb58831a03731817002c08415ccb64d",
     "original_contract_package_received": false,
     "revision": "v1.1 (approved 2026-10-08)",
     "previous_source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
@@ -168,6 +168,16 @@
       "event": "external_wait.recorded",
       "stage": "S1",
       "implementation": "not_implemented"
+    },
+    {
+      "operation": "work.status_update.create",
+      "write_tier": "T1",
+      "ai_execution": "AI 可起草，一次确认后由具名人发布；不自动发布",
+      "event": "project.status_updated",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added (确认稿 P18)",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "engineering.configuration.create",
@@ -810,16 +820,6 @@
       "stage": "S1",
       "implementation": "implemented_local_slice",
       "v1_1": "added",
-      "payload_schema": "payloads.schema.json"
-    },
-    {
-      "operation": "work.status_update.create",
-      "write_tier": "T1",
-      "ai_execution": "AI 可起草，一次确认后由具名人发布；不自动发布",
-      "event": "project.status_updated",
-      "stage": "S1",
-      "implementation": "implemented_local_slice",
-      "v1_1": "added (确认稿 P18)",
       "payload_schema": "payloads.schema.json"
     }
   ]

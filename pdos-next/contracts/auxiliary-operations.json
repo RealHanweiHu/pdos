@@ -1,6 +1,16 @@
 {
   "schema_version": "pdos-next.auxiliary-operations.v1",
   "scope": "Implemented host orchestration helpers; canonical source catalog and AI qualification unchanged",
+  "event_naming_exception": {
+    "decision": "设计确认稿 P25（用户 2026-10-17）",
+    "names": [
+      "CapaObservationRecorded",
+      "CapaVerificationCandidateRecorded",
+      "CapaVerificationReviewed",
+      "CapaVerificationRulePublished"
+    ],
+    "reason": "These four event types use PascalCase instead of the dotted lower-case convention. The names are already written into migrations/schema_s0_0001.py constraints and more than ten consumers, so renaming needs a migration that touches stored event types. Kept as a registered exception until S3 CAPA construction reaches these files; every new event uses the dotted lower-case form."
+  },
   "items": [
     {
       "operation": "supply.snapshot.record",
@@ -218,6 +228,257 @@
       "executor": "named_qualified_quality",
       "event": "test.run_started",
       "purpose": "Save the named actual start of a fixed Run and, in the same caller transaction, its exact formal resource occupancy and physical sample use. Does not import measurement results, decide professional conclusions, release manufacturing or dispose samples.",
+      "canonical_policy_preserved": [
+        "test.results.import:T1",
+        "test.result.compute:T0",
+        "test.disposition.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "model.configuration.save",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "model.configuration_saved",
+      "purpose": "Confirm tenant model configuration metadata and enablement against the expected revision. Credentials are never returned or exposed; model whitelisting still requires golden-case passage, and this grants no domain write authority.",
+      "canonical_policy_preserved": [
+        "ai.skill.enable:T1",
+        "ai.skill.qualify:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "ai.budget.configure",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "ai.budget_configured",
+      "purpose": "Confirm the tenant's prepared model budget limits against the expected active digest. Does not enable a skill package, grant T0 qualification or authorize any domain write.",
+      "canonical_policy_preserved": [
+        "ai.skill.enable:T1",
+        "ai.skill.qualify:T2",
+        "ai.work.start:T0"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "ai.skill.review.record",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "ai.skill_review_recorded",
+      "purpose": "Record the named human's own review of concrete cases for one skill package at fixed skill/tool/model digests, as the evidence base for pilot T0 qualification (v1.1 §06.12). Recording a review does not itself grant qualification.",
+      "canonical_policy_preserved": [
+        "ai.skill.qualify:T2",
+        "ai.skill.enable:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "ai.model_call.reconcile",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "ai.model_call_reconciled",
+      "purpose": "Confirm the resolution of one model call whose remote outcome was unknown, with its usage, request id, reason code and evidence reference. Does not create domain facts from the call and does not rewrite the original run receipt.",
+      "canonical_policy_preserved": [
+        "ai.work.start:T0",
+        "ai.run.cancel:T1",
+        "ai.run.revert:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "product.variant.rebase",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "variant.rebased",
+      "purpose": "Confirm explicit three-way choices when rebasing one variant onto a newer parent definition revision. Does not publish a definition, freeze specifications or create a new variant identity.",
+      "canonical_policy_preserved": [
+        "product.variant.derive:T1",
+        "product.definition.publish:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "npi.manufacturing_baseline.record",
+      "write_tier": "T1",
+      "executor": "named_qualified_manufacturing",
+      "event": "manufacturing_baseline.recorded",
+      "purpose": "Confirm an immutable manufacturing baseline revision for one process, with its operations, risk notes, packaging/label basis and exact sources. Records baseline content only; manufacturing release stays a separate named decision.",
+      "canonical_policy_preserved": [
+        "npi.process.revise:T1",
+        "release.manufacturing.approve:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "npi.control_plan.record",
+      "write_tier": "T1",
+      "executor": "named_qualified_manufacturing",
+      "event": "control_plan.recorded",
+      "purpose": "Confirm an immutable control plan revision for one operation of a process, with its checks and exact sources. Does not accept fixtures or equipment, and does not release manufacturing.",
+      "canonical_policy_preserved": [
+        "npi.process.revise:T1",
+        "npi.fixture.accept:T2",
+        "release.manufacturing.approve:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "npi.work_instruction.record",
+      "write_tier": "T1",
+      "executor": "named_qualified_manufacturing",
+      "event": "work_instruction.recorded",
+      "purpose": "Confirm an immutable work instruction revision for one operation, with its conditions and steps. Does not qualify personnel, equipment or a production line.",
+      "canonical_policy_preserved": [
+        "npi.process.revise:T1",
+        "release.manufacturing.approve:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "change.order.prepare",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "change.order_prepared",
+      "purpose": "Confirm a prepared change order plan bound to one impact assessment and change revision. Does not approve the change, set effectivity or record implementation.",
+      "canonical_policy_preserved": [
+        "change.request.create:T0",
+        "change.impact.compute:T0",
+        "change.order.approve:T2",
+        "change.implementation.record:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "change.selection.decide",
+      "write_tier": "T2",
+      "executor": "named_qualified_item_discipline",
+      "event": "change.selection_decided",
+      "purpose": "A named selection decision on one controlled change item; the actor must currently hold the item's own professional discipline. Actual applicability is established only by later T2 consumption, and this never replaces change order approval.",
+      "canonical_policy_preserved": [
+        "change.order.approve:T2",
+        "change.implementation.record:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "quality.issue.triage",
+      "write_tier": "T1",
+      "executor": "named_qualified_professional",
+      "event": "issue.triaged",
+      "purpose": "Confirm triage of one issue revision with its reason; requires a current quality, engineering or test role. Does not decide root cause, containment or disposition.",
+      "canonical_policy_preserved": [
+        "quality.issue.create:T0",
+        "quality.issue.merge:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "quality.issue.containment.record",
+      "write_tier": "T1",
+      "executor": "named_qualified_professional",
+      "event": "issue.contained",
+      "purpose": "Confirm a containment action on one issue revision; requires a current quality, engineering or test role. Containment is not root cause, correction, verification or closure.",
+      "canonical_policy_preserved": [
+        "quality.issue.create:T0",
+        "quality.issue.merge:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "quality.issue.root_cause.decide",
+      "write_tier": "T2",
+      "executor": "named_qualified_quality",
+      "event": "issue.root_cause_decided",
+      "purpose": "A named root-cause decision on one issue revision with its exact sources; requires a current quality role and a human actor. Does not approve a change, complete CAPA actions or close the issue.",
+      "canonical_policy_preserved": [
+        "quality.issue.create:T0",
+        "change.order.approve:T2",
+        "quality.capa.effectiveness.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "quality.capa.actions.complete",
+      "write_tier": "T1",
+      "executor": "named_qualified_professional",
+      "event": "capa.actions_completed",
+      "purpose": "Confirm completion of named CAPA actions on one issue revision. Completion of actions is not an effectiveness conclusion and does not close the issue.",
+      "canonical_policy_preserved": [
+        "quality.capa.draft:T0",
+        "quality.capa.effectiveness.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "quality.capa.followup.link",
+      "write_tier": "T1",
+      "executor": "named_qualified_professional",
+      "event": "capa.followup_linked",
+      "purpose": "Confirm the link between one CAPA action and its actual follow-up outputs with exact sources. Does not establish verification results, applicability or effectiveness.",
+      "canonical_policy_preserved": [
+        "quality.capa.draft:T0",
+        "quality.capa.effectiveness.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "quality.capa.observation.record",
+      "write_tier": "T1",
+      "executor": "named_qualified_quality",
+      "event": "CapaObservationRecorded",
+      "purpose": "Confirm an immutable paired observation window for one CAPA (rule version, target keys, observation period, records and coverage sources); requires a current quality role. Observations are inputs, never an effectiveness conclusion.",
+      "canonical_policy_preserved": [
+        "quality.capa.effectiveness.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "quality.capa.verification.candidate.record",
+      "write_tier": "T1",
+      "executor": "named_qualified_quality",
+      "event": "CapaVerificationCandidateRecorded",
+      "purpose": "Confirm the business selections of a CAPA verification candidate (remediation links and mappings); scope, anchor, proof and inspection remain host facts. Not a review and not an effectiveness conclusion.",
+      "canonical_policy_preserved": [
+        "quality.capa.effectiveness.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "quality.capa.verification.review",
+      "write_tier": "T2",
+      "executor": "named_qualified_quality",
+      "event": "CapaVerificationReviewed",
+      "purpose": "A named quality review of one CAPA verification candidate against its fixed rule and observations, with pair applicability, action fulfillment and conclusion. Does not substitute for the canonical effectiveness decision.",
+      "canonical_policy_preserved": [
+        "quality.capa.effectiveness.decide:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "test.run.review",
+      "write_tier": "T2",
+      "executor": "named_qualified_quality",
+      "event": "test.run_reviewed",
+      "purpose": "A named professional review of one TestRun against a fixed result projection and basis digest; requires a current quality role. pass/fail stays a result dimension, and disposition remains a separate named decision.",
       "canonical_policy_preserved": [
         "test.results.import:T1",
         "test.result.compute:T0",
