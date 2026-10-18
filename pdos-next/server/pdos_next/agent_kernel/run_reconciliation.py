@@ -80,6 +80,9 @@ def owner(session, ctx, run):
         or actor.kind != "human"
     ):
         raise DomainError("FORBIDDEN_SCOPE", "只能核对当前有权读取的本人运行。", 403)
+    from .project_scope import require_run_project
+
+    require_run_project(session, ctx, run)
     if run.proposal_id:
         from pdos_next.domain.preproject.access import proposal
 

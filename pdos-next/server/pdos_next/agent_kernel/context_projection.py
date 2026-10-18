@@ -135,6 +135,8 @@ def snapshot(store, scope, *, value, schema, bindings, omitted, issues):
                     "read_set": deepcopy(run.read_sources),
                     "scope": {"category_id": str(scope.category_id) if scope.category_id else None,
                         "product_id": str(scope.product_id) if scope.product_id else None,
+                        **({"project_id": str(scope.project_id)}
+                           if getattr(scope, "project_id", None) else {}),
                         "proposal_id": str(scope.proposal_id) if scope.proposal_id else None,
                         "requester_id": str(scope.requester_id),
                         "data_categories": sorted(run.data_categories)},

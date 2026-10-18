@@ -93,6 +93,7 @@ class KernelStore:
                 or run.category_id != scope.category_id
                 or run.product_id != scope.product_id
                 or run.proposal_id != scope.proposal_id
+                or getattr(run, "project_id", None) != getattr(scope, "project_id", None)
                 or run.session_id != scope.session_id
                 or run.trigger != scope.trigger
                 or run.private_context != scope.private_context
@@ -159,6 +160,20 @@ class KernelStore:
                 ),
                 scope.proposal_id,
             )
+        if getattr(scope, "project_id", None) is not None:
+            from .project_scope import require_project
+
+            require_project(
+                session,
+                Context(
+                    scope.tenant_id,
+                    scope.writer_id,
+                    scope.requester_id,
+                    category_id=scope.category_id,
+                ),
+                scope.project_id,
+                scope.product_id,
+            )
 
     def scope(self, *, tenant_id, requester_id, writer_id, category_id, run_id):
         with tenant_session(
@@ -187,6 +202,7 @@ class KernelStore:
                 frozenset(run.data_categories),
                 tuple(run.customer_identities),
                 trigger=run.trigger,
+                project_id=getattr(run, "project_id", None),
             )
             self.authority(session, scope)
             return scope
@@ -505,6 +521,7 @@ def create_run(
     session_id=None,
     product_id=None,
     proposal_id=None,
+    project_id=None,
     trigger="conversation",
     private_context=False,
     data_categories=("public",),
@@ -533,6 +550,11 @@ def create_run(
         or not writer.active
     ):
         raise DomainError("FORBIDDEN_SCOPE", "发起人与独立 AI 身份须由服务器绑定。")
+    if project_id is not None:
+        from .project_scope import require_project
+
+        actual_project = require_project(session, ctx, project_id, product_id, lock=True)
+        private_context = private_context or actual_project.visibility != "category"
     fingerprint = request_digest or digest(
         [
             goal,
@@ -543,6 +565,7 @@ def create_run(
             trigger,
             validation_budget_id,
             sorted(read_sources, key=lambda r: str(r["artifact_id"])),
+            *([{"project_id": project_id}] if project_id is not None else []),
         ]
     )
     if (
@@ -593,6 +616,7 @@ def create_run(
             or conversation.category_id != ctx.category_id
             or conversation.product_id != product_id
             or conversation.proposal_id != proposal_id
+            or getattr(conversation, "project_id", None) != project_id
         ):
             raise DomainError("FORBIDDEN_SCOPE", "会话范围不一致。")
     else:
@@ -601,6 +625,7 @@ def create_run(
             category_id=ctx.category_id,
             product_id=product_id,
             proposal_id=proposal_id,
+            project_id=project_id,
             owner_id=ctx.requester_id,
         )
         session.add(conversation)
@@ -614,6 +639,7 @@ def create_run(
         category_id=ctx.category_id,
         product_id=product_id,
         proposal_id=proposal_id,
+        project_id=project_id,
         session_id=conversation.id,
         continued_from_id=continued_from_id,
         requester_id=ctx.requester_id,

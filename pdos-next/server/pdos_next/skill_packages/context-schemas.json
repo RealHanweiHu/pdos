@@ -444,6 +444,30 @@
         "maturity"
       ],
       "additionalProperties": false
+    },
+    "project": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "integer"
+        },
+        "visibility": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "revision",
+        "visibility"
+      ],
+      "additionalProperties": false
     }
   },
   "profiles": {
@@ -467,6 +491,9 @@
         },
         "conversation": {
           "$ref": "#/$defs/conversation"
+        },
+        "project": {
+          "$ref": "#/$defs/project"
         }
       },
       "required": [
@@ -495,6 +522,9 @@
         },
         "conversation": {
           "$ref": "#/$defs/conversation"
+        },
+        "project": {
+          "$ref": "#/$defs/project"
         }
       },
       "required": [
@@ -526,6 +556,9 @@
         },
         "proposal": {
           "$ref": "#/$defs/proposal"
+        },
+        "project": {
+          "$ref": "#/$defs/project"
         }
       },
       "required": [

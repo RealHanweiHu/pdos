@@ -30,6 +30,7 @@ class StartInput(StrictModel):
     continue_from_run_id: UUID | None = None
     product_id: UUID | None = None
     proposal_id: UUID | None = None
+    project_id: UUID | None = None
     sources: list[SourceRead] = Field(default_factory=list)
 
 
@@ -88,6 +89,9 @@ def router(engine, *, context_dependency, ports: ApiPorts):
             from pdos_next.domain.preproject.access import proposal
 
             proposal(session, ctx, row.proposal_id)
+        from .project_scope import require_project
+
+        require_project(session, ctx, row.project_id, row.product_id)
         return row
 
     @result.post("/v1/categories/{category_id}/agent-runs", status_code=202)
@@ -96,7 +100,9 @@ def router(engine, *, context_dependency, ports: ApiPorts):
         request_digest = digest(
             {
                 "category_id": ctx.category_id,
-                "request": data.model_dump(exclude={"idempotency_key"}),
+                "request": data.model_dump(exclude={"idempotency_key"} | (
+                    {"project_id"} if data.project_id is None else set()
+                )),
             }
         )
         # This host callback binds proposal audience/source taint, not a boolean from the client.
@@ -129,6 +135,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                     session_id=effective.session_id,
                     product_id=effective.product_id,
                     proposal_id=effective.proposal_id,
+                    project_id=effective.project_id,
                     continued_from_id=parent.id if parent else None,
                     private_context=binding.private_context,
                     data_categories=binding.data_categories,
@@ -181,6 +188,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                 "conversation": links(s, row),
                 "product_id": str(row.product_id) if row.product_id else None,
                 "proposal_id": str(row.proposal_id) if row.proposal_id else None,
+                "project_id": str(row.project_id) if row.project_id else None,
                 "status": row.state,
                 "result": row.result,
                 "error_code": row.error_code,
@@ -201,6 +209,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
         with transaction(ctx, read_snapshot=True) as session:
             row = session.scalar(select(AgentRun).where(AgentRun.id == run_id).options(load_only(
                 AgentRun.id, AgentRun.tenant_id, AgentRun.category_id, AgentRun.proposal_id,
+                AgentRun.product_id, AgentRun.project_id,
                 AgentRun.requester_id, AgentRun.state, AgentRun.error_code, AgentRun.created_at,
                 AgentRun.reverted_at, AgentRun.read_sources, raiseload=True,
             )))
@@ -215,6 +224,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
         with transaction(ctx, read_snapshot=True) as session:
             row = session.scalar(select(AgentRun).where(AgentRun.id == run_id).options(load_only(
                 AgentRun.id, AgentRun.tenant_id, AgentRun.category_id, AgentRun.proposal_id,
+                AgentRun.product_id, AgentRun.project_id,
                 AgentRun.requester_id, AgentRun.state, AgentRun.reverted_at, raiseload=True,
             )))
             owner(session, ctx, visible_run(session, ctx, row))
@@ -276,6 +286,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
         cursor: UUID | None = None,
         page_size: int = 50,
         proposal_id: UUID | None = None,
+        project_id: UUID | None = None,
         ctx=run_dependency,
     ):
         from pdos_next.domain.preproject.models import Proposal
@@ -297,6 +308,16 @@ def router(engine, *, context_dependency, ports: ApiPorts):
             )
             if proposal_id is not None:
                 query = query.where(AgentRun.proposal_id == proposal_id)
+            if project_id is not None:
+                from pdos_next.domain.projects.models import Project
+
+                project = s.get(Project, project_id)
+                if (
+                    project is None or project.tenant_id != ctx.tenant_id
+                    or project.category_id != ctx.category_id
+                ):
+                    raise DomainError("FORBIDDEN_SCOPE", "项目不在当前可读范围。", 403)
+                query = query.where(AgentRun.project_id == project_id)
             if cursor is not None:
                 anchor = s.get(AgentRun, cursor)
                 if (
@@ -304,6 +325,8 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                     or anchor.requester_id != ctx.requester_id
                     or proposal_id is not None
                     and anchor.proposal_id != proposal_id
+                    or project_id is not None
+                    and anchor.project_id != project_id
                 ):
                     raise DomainError("FORBIDDEN_SCOPE", "运行历史游标不在当前可读范围。", 403)
                 visible_run(s, ctx, anchor)
@@ -327,6 +350,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                         "goal": row.goal,
                         "product_id": str(row.product_id) if row.product_id else None,
                         "proposal_id": str(row.proposal_id) if row.proposal_id else None,
+                        "project_id": str(row.project_id) if row.project_id else None,
                         "status": row.state,
                         "error_code": row.error_code,
                         "created_at": row.created_at.isoformat(),

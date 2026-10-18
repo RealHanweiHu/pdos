@@ -195,9 +195,9 @@ export function Workspace({ categoryId, projectId = "", onPaiContext }: { catego
 
   useEffect(() => {
     if (!onPaiContext) return;
-    onPaiContext({ categoryId, productId, sources: data?.product.id === productId ? data.sources : [] });
+    onPaiContext({ categoryId, productId, projectId: projectId || undefined, sources: data?.product.id === productId ? data.sources : [] });
     return () => onPaiContext(null);
-  }, [onPaiContext, categoryId, productId, data]);
+  }, [onPaiContext, categoryId, productId, projectId, data]);
 
   return <>
     <WorkspaceExperience categoryId={categoryId} projectId={projectId} auth={auth} session={session} products={products} productId={productId} data={data} locked={busy || !!pending} onProductChange={setProductId} onCreateProduct={() => setNewProduct(!newProduct)} api={api}>

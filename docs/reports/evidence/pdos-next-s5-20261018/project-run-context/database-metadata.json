@@ -1,0 +1,140 @@
+{
+  "head": "s0_0794",
+  "target": "127.0.0.1:64245/pdos_test",
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "read_only": true,
+  "functions": [
+    {
+      "signature": "kernel_project_visible(uuid,uuid,uuid,uuid)",
+      "sha256": "ec47bce0975f81eb95e608dd965dcdd54b42624b294df44757a49273b044f707",
+      "security_definer": false,
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypass_rls": false,
+      "acl": "{pdos_next_owner=X/pdos_next_owner,pdos_next_app=X/pdos_next_owner,pdos_agent=X/pdos_next_owner,pdos_next_auth=X/pdos_next_owner,pdos_next_dispatch=X/pdos_next_owner}"
+    },
+    {
+      "signature": "kernel_session_guard()",
+      "sha256": "e5a2387d93145fe0a327879d506dc4e4f216c8b3fa1867aac816524397e9e7f5",
+      "security_definer": false,
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypass_rls": false,
+      "acl": "{pdos_next_owner=X/pdos_next_owner}"
+    },
+    {
+      "signature": "kernel_run_guard()",
+      "sha256": "47b570aa364996a7fe71b4e07df1ea49fca1865cf82c1d97ba0e97848a617514",
+      "security_definer": false,
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypass_rls": false,
+      "acl": "{pdos_next_owner=X/pdos_next_owner}"
+    },
+    {
+      "signature": "kernel_scope_failed(uuid)",
+      "sha256": "ce341fd7571b5ea8f81872e0be04835fc1490a0cf860585d651a4ae28e514e4a",
+      "security_definer": true,
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypass_rls": false,
+      "acl": "{pdos_next_owner=X/pdos_next_owner,pdos_next_dispatch=X/pdos_next_owner}"
+    },
+    {
+      "signature": "automation_service_start(uuid)",
+      "sha256": "eb85bdf0f8a6e7b8d6594b5f3c7089099f02815d7e206d652245a75105f74b72",
+      "security_definer": true,
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypass_rls": false,
+      "acl": "{pdos_next_owner=X/pdos_next_owner,pdos_next_app=X/pdos_next_owner}"
+    },
+    {
+      "signature": "assert_automation_service_run(uuid,uuid)",
+      "sha256": "bf6e98b001234aef87d3b2cca08160afaa42e858d9728c25a6f000070ed4b8d2",
+      "security_definer": true,
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypass_rls": false,
+      "acl": "{pdos_next_owner=X/pdos_next_owner}"
+    }
+  ],
+  "project_policies": [
+    [
+      "agent_runs",
+      "RESTRICTIVE",
+      [
+        "pdos_agent",
+        "pdos_next_app",
+        "pdos_next_auth",
+        "pdos_next_dispatch"
+      ],
+      "SELECT",
+      "kernel_project_visible(tenant_id, category_id, product_id, project_id)"
+    ],
+    [
+      "agent_sessions",
+      "RESTRICTIVE",
+      [
+        "pdos_agent",
+        "pdos_next_app",
+        "pdos_next_auth",
+        "pdos_next_dispatch"
+      ],
+      "SELECT",
+      "kernel_project_visible(tenant_id, category_id, product_id, project_id)"
+    ]
+  ],
+  "columns": [
+    [
+      "agent_runs",
+      "project_id",
+      "YES",
+      "uuid"
+    ],
+    [
+      "agent_sessions",
+      "project_id",
+      "YES",
+      "uuid"
+    ]
+  ],
+  "force_rls_tables": [
+    [
+      "agent_runs",
+      true,
+      true
+    ],
+    [
+      "agent_run_events",
+      true,
+      true
+    ],
+    [
+      "agent_sessions",
+      true,
+      true
+    ]
+  ],
+  "agent_direct_business_dml": [],
+  "constraints": [
+    [
+      "kernel_run_project_fk",
+      "FOREIGN KEY (tenant_id, product_id, project_id) REFERENCES projects(tenant_id, product_id, id)"
+    ],
+    [
+      "kernel_run_project_scope",
+      "CHECK (((project_id IS NULL) OR ((category_id IS NOT NULL) AND (product_id IS NOT NULL))))"
+    ],
+    [
+      "kernel_session_project_fk",
+      "FOREIGN KEY (tenant_id, product_id, project_id) REFERENCES projects(tenant_id, product_id, id)"
+    ],
+    [
+      "kernel_session_project_scope",
+      "CHECK (((project_id IS NULL) OR ((category_id IS NOT NULL) AND (product_id IS NOT NULL))))"
+    ]
+  ],
+  "actual_start_equals_frozen_0794": true,
+  "historical_project_backfill": false
+}

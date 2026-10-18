@@ -26,7 +26,13 @@ def prepare(session, ctx, data):
     identity = data.continue_from_run_id
     if identity is None:
         return data, None
-    if data.session_id or data.product_id or data.proposal_id or data.sources:
+    if (
+        data.session_id
+        or data.product_id
+        or data.proposal_id
+        or getattr(data, "project_id", None) is not None
+        or data.sources
+    ):
         raise DomainError(
             "VALIDATION_FAILED", "继续工作只需原运行和新目标，范围由服务器沿用。", 422
         )
@@ -53,6 +59,7 @@ def prepare(session, ctx, data):
             "session_id": parent.session_id,
             "product_id": parent.product_id,
             "proposal_id": parent.proposal_id,
+            "project_id": getattr(parent, "project_id", None),
             "sources": [
                 SourceRead.model_validate(
                     {key: value for key, value in ref.items() if key != "product_id"}
@@ -101,6 +108,7 @@ def lineage(session, run):
         "category_id",
         "product_id",
         "proposal_id",
+        "project_id",
         "requester_id",
         "writer_id",
         "session_id",
@@ -144,6 +152,7 @@ def lineage(session, run):
             or row.category_id != run.category_id
             or row.product_id != run.product_id
             or row.proposal_id != run.proposal_id
+            or getattr(row, "project_id", None) != getattr(run, "project_id", None)
             or row.reverted_at
             or row.state not in {"completed", "partial", "failed", "cancelled"}
         ):

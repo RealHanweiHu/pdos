@@ -17,7 +17,7 @@ import { restoreRunStart } from "@/lib/run-start-intent";
 
 type Source = { id: string; title: string; revision: number; status: string };
 type Question = { id: string; question: string; why: string; options: { value: string; label: string }[]; allow_free_text: boolean };
-type Run = { conversation?: {previous_run_id:string|null;next_run_id:string|null}; process?: RunProcessData; reconciliation?: unknown; run_id: string; product_id: string | null; proposal_id?: string | null; cancel_epoch: number; status: string; error_code: string | null; reverted: boolean; result: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
+type Run = { conversation?: {previous_run_id:string|null;next_run_id:string|null}; process?: RunProcessData; reconciliation?: unknown; run_id: string; product_id: string | null; project_id?: string | null; proposal_id?: string | null; cancel_epoch: number; status: string; error_code: string | null; reverted: boolean; result: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
 type History = { items: (Run & { goal: string; created_at: string; product_id: string | null })[]; next_cursor: string | null };
 type Candidate = { command: Record<string, unknown> & { payload: { statement: string; quote: string; prepared_event_id: string } }; event_id: string };
 type Event = { id?: string; sequence: number; event: { type: string; questions?: Question[]; status?: string; command?: Candidate["command"]; prepared_event_id?: string } };
@@ -25,9 +25,9 @@ type Pending = { path: string; body: unknown };
 const labels: Record<string, string> = { queued: "已保存，等待执行", running: "正在执行", waiting_input: "等待你的答复", completed: "已完成", partial: "已形成部分结果", cancelled: "已取消后续执行", failed: "执行未完成" };
 
 /** Runs and events are server facts. Reading or reopening this panel never starts inference. */
-export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange, initialRunId, categoryId, principalId, proposalId }: {
+export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange, initialRunId, categoryId, principalId, proposalId, projectId, projectName }: {
   api: WorkspaceTransport; productId: string; sources: Source[]; composeOpen: boolean; onComposeChange: (open: boolean) => void;
-  initialRunId?: string; proposalId?: string;
+  initialRunId?: string; proposalId?: string; projectId?: string; projectName?: string;
   categoryId: string; principalId: string;
 }) {
   const historyPath = `v1/agent-runs?page_size=50${proposalId ? `&proposal_id=${proposalId}` : ""}`;
@@ -50,19 +50,19 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
   const writeLock = useRef(false);
   const request = useRef<Pending | null>(null);
   const current = useRef<string | null>(null);
-  const startStorageKey = `pdos-next:run-start:${principalId}:${categoryId}:${proposalId ?? "category"}`;
+  const startStorageKey = `pdos-next:run-start:${principalId}:${categoryId}:${proposalId ?? "category"}${projectId ? `:project:${projectId}` : ""}`;
 
   useEffect(() => {
     let active = true;
     void Promise.resolve().then(() => {
       if (!active) return;
       try {
-        const original = restoreRunStart(JSON.parse(localStorage.getItem(startStorageKey) ?? "null"), proposalId);
+        const original = restoreRunStart(JSON.parse(localStorage.getItem(startStorageKey) ?? "null"), proposalId, projectId);
         if (original) { request.current = original; setPending(original); }
       } catch { /* Optional local recovery; server history remains authoritative. */ }
     });
     return () => { active = false; };
-  }, [startStorageKey, proposalId]);
+  }, [startStorageKey, proposalId, projectId]);
 
   useEffect(() => () => { generation.current++; }, []);
   const readRun = useCallback(async (id: string) => {
@@ -151,6 +151,7 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
   return <section className="panel space-y-5" aria-label="小Pai 运行">
     <div className="flex items-center gap-2"><Sparkle className="text-primary" aria-hidden="true" /><h2 className="font-semibold">小Pai</h2><Button className="ml-auto" size="sm" variant="outline" disabled={busy} onClick={() => void read(() => refreshHistory())}>刷新运行</Button></div>
     <p className="subtle">{proposalId ? "在当前提案内委派起草、抽取或查漏。资料范围由服务器核对；G0 仍由具名评审人决定。" : "在当前品类委派工作。结果、待答问题和未完成事项会保留，关闭页面后仍可回来查看。"}</p>
+    {projectId && <p className="subtle">新工作绑定项目：{projectName || projectId}</p>}
     {error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
     {pending && <div className="rounded-lg border p-3"><p>原请求仍待核对，输入暂时保留。</p><Button variant="outline" className="mt-3" disabled={busy} onClick={() => { if (request.current) void send(request.current); }}>重试原请求</Button></div>}
     <details open={composeOpen} onToggle={event => onComposeChange(event.currentTarget.open)}>
@@ -158,17 +159,17 @@ export function Xiaopai({ api, productId, sources, composeOpen, onComposeChange,
       <form className="mt-4" onSubmit={event => {
         event.preventDefault();
         if (useProduct && selected.some(id => !sources.some(source => source.id === id && source.status === "active"))) { setError("型号或来源已变化，请重新选择本次工作依据。"); return; }
-        void send({ path: "v1/agent-runs", body: { goal, idempotency_key: crypto.randomUUID(), product_id: useProduct && productId ? productId : null, ...(proposalId ? { proposal_id: proposalId } : {}), sources: selected.map(id => { const source = sources.find(item => item.id === id)!; return { artifact_id: source.id, expected_revision: source.revision }; }) } });
+        void send({ path: "v1/agent-runs", body: { goal, idempotency_key: crypto.randomUUID(), product_id: productId && (projectId || useProduct) ? productId : null, ...(proposalId ? { proposal_id: proposalId } : {}), ...(projectId ? { project_id: projectId } : {}), sources: selected.map(id => { const source = sources.find(item => item.id === id)!; return { artifact_id: source.id, expected_revision: source.revision }; }) } });
       }}>
         <fieldset disabled={busy || !!pending}>
           <label>希望得到什么结果<textarea required minLength={3} maxLength={8000} rows={4} value={goal} onChange={event => setGoal(event.target.value)} placeholder="说明目标、希望形成的结果和需要核对的依据" /></label>
-          {productId && <label className="flex items-center gap-2"><input type="checkbox" checked={useProduct} onChange={event => { setUseProduct(event.target.checked); if (!event.target.checked) setSelected([]); }} />关联当前型号</label>}
+          {productId && !projectId && <label className="flex items-center gap-2"><input type="checkbox" checked={useProduct} onChange={event => { setUseProduct(event.target.checked); if (!event.target.checked) setSelected([]); }} />关联当前型号</label>}
           {useProduct && productId && <fieldset className="mb-4"><legend className="mb-2 text-sm">选择本次工作依据</legend>{sources.filter(source => source.status === "active").map(source => <label key={source.id} className="flex items-center gap-2"><input type="checkbox" checked={selected.includes(source.id)} onChange={event => setSelected(old => event.target.checked ? [...old, source.id] : old.filter(id => id !== source.id))} />{source.title} · 版本 {source.revision}</label>)}</fieldset>}
           <Button>保存并开始</Button>
         </fieldset>
       </form>
     </details>
-    {run && <div className="space-y-4 border-t pt-4">
+    {run && <div className="space-y-4 border-t pt-4">{run.project_id && <p className="subtle">运行绑定项目：{run.project_id}</p>}
       <div className="flex flex-wrap items-center gap-3"><h3 className="font-medium">{run.reverted ? "已整次撤回" : reconciliationNeeded(run) ? "原调用结果待核对" : labels[run.status] ?? run.status}</h3><Button size="sm" variant="outline" disabled={busy} onClick={() => void read(() => readRun(run.run_id))}>核对当前状态</Button></div>
       {run.result?.summary && <p className="whitespace-pre-wrap break-words">{run.result.summary}</p>}
       <ResearchResult value={run.result?.result?.research} />

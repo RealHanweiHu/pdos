@@ -29,6 +29,7 @@ class RunScope:
     isolation: Isolation = "main"
     artifact_ids: frozenset[UUID] = frozenset()
     trigger: str = "conversation"
+    project_id: UUID | None = field(default=None, kw_only=True)
 
     def child(self, isolation: Isolation, *, artifact_ids=frozenset()):
         from dataclasses import replace

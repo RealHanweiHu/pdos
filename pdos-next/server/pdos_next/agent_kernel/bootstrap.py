@@ -154,7 +154,19 @@ class Bootstrap:
                     .with_for_update()
                 )
                 private = product.visibility != "category"
-        elif data.product_id is not None or data.proposal_id is not None or data.sources:
+            if getattr(data, "project_id", None) is not None:
+                from .project_scope import require_project
+
+                actual_project = require_project(
+                    session, ctx, data.project_id, data.product_id, lock=True
+                )
+                private = private or actual_project.visibility != "category"
+        elif (
+            data.product_id is not None
+            or data.proposal_id is not None
+            or getattr(data, "project_id", None) is not None
+            or data.sources
+        ):
             raise DomainError("FORBIDDEN_SCOPE", "个人入口不能绑定业务对象。", 403)
         if data.proposal_id is not None:
             from pdos_next.domain.preproject.access import proposal
@@ -258,6 +270,20 @@ class Bootstrap:
                     validate(session, scope, run, extra_value=value["proposal"])
                 else:
                     validate(session, scope, run)
+            if getattr(scope, "project_id", None) is not None and (
+                fields is None or "project" in fields
+            ):
+                from .project_scope import require_project
+
+                actual_project = require_project(
+                    session, self.commands.context(scope), scope.project_id, scope.product_id
+                )
+                value["project"] = {
+                    "id": str(actual_project.id),
+                    "name": actual_project.name,
+                    "revision": actual_project.revision,
+                    "visibility": actual_project.visibility,
+                }
             if run.continued_from_id is not None:
                 from .conversation import memory
                 value["conversation"] = memory(

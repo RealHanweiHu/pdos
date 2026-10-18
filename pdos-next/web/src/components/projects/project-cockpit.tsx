@@ -9,6 +9,8 @@ import type { browserApi } from "@/lib/browser-api";
 import { ProjectActivity } from "./project-activity";
 import { ProjectStatusSummary } from "./project-status-summary";
 
+import type { PaiContext } from "@/components/pai-rail";
+
 type Api = typeof browserApi;
 const visibilityLabels: Record<string, string> = { private: "私有", category: "品类共享", audience: "指定受众" };
 const disciplineLabels: Record<string, string> = { engineering: "工程", npi: "NPI" };
@@ -120,10 +122,11 @@ function SingleCockpit({ entry, session, today, onBack, onOpenWorkbench }: {
   </>;
 }
 
-export function ProjectCockpit({ api, session, location, onOpenProject, onOpenOverview, onOpenWorkbench }: {
+export function ProjectCockpit({ api, session, location, onOpenProject, onOpenOverview, onOpenWorkbench, onPaiContext }: {
   api: Api; session: { name: string; principal_id: string }; location: GlobalLocation;
   onOpenProject: (categoryId: string, projectId: string) => void;
   onOpenOverview: () => void;
+  onPaiContext?: (context: PaiContext | null) => void;
   onOpenWorkbench: (categoryId: string, productId: string, projectId: string) => void;
 }) {
   const [reading, setReading] = useState<{ api: Api; scope: string; portfolio: Portfolio | null; error: string } | null>(null);
@@ -133,6 +136,12 @@ export function ProjectCockpit({ api, session, location, onOpenProject, onOpenOv
   const scope = JSON.stringify([session.principal_id, location.categoryId, location.projectId, reload]);
   const current = reading?.api === api && reading.scope === scope ? reading : null;
   const portfolio = current?.portfolio ?? null, error = current?.error ?? "";
+  const found = location.projectId && portfolio ? findProject(portfolio, location.projectId) : undefined;
+  const entry = found && (!location.categoryId || found.category.id === location.categoryId) ? found : undefined;
+  useEffect(() => {
+    onPaiContext?.(entry ? { categoryId: entry.category.id, productId: entry.product.id, projectId: entry.project.id, projectName: entry.project.name, sources: [] } : null);
+    return () => onPaiContext?.(null);
+  }, [entry, onPaiContext]);
 
   useEffect(() => {
     let active = true;
@@ -143,8 +152,6 @@ export function ProjectCockpit({ api, session, location, onOpenProject, onOpenOv
   const refresh = <Button variant="outline" className="mb-4" onClick={() => { setReading(null); setReload(value => value + 1); }}><ArrowClockwise/>刷新</Button>;
   if (error) return <><div className="workspace-page-heading flex-col sm:flex-row"><div className="min-w-0"><h1>项目驾驶舱</h1><p>读取失败。</p></div></div><p role="alert" className="workspace-read-error">{error}</p>{refresh}</>;
   if (!portfolio) return <p role="status" className="subtle">正在读取项目经营总览…</p>;
-  const found = location.projectId ? findProject(portfolio, location.projectId) : undefined;
-  const entry = found && (!location.categoryId || found.category.id === location.categoryId) ? found : undefined;
   if (location.projectId && !entry) return <>
     <div className="workspace-page-heading flex-col sm:flex-row"><div className="min-w-0"><h1>项目驾驶舱</h1><p>此项目当前不可见或已移除；仅显示本人权限内项目。</p></div></div>
     <Button variant="outline" onClick={onOpenOverview}><ArrowLeft/>返回经营总览</Button>

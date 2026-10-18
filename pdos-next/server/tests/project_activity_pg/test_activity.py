@@ -136,6 +136,8 @@ def read_activity(work, *, actor=None, project_id=None, product_id=None, **param
     for item in value["items"]:
         assert set(item) == {
             "id",
+            "record_kind",
+            "status",
             "operation",
             "event_type",
             "recorded_at",

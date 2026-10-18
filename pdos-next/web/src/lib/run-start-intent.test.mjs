@@ -26,3 +26,12 @@ test("local recovery cannot substitute another operation, proposal or policy con
     { ...original, body: { ...original.body, sources: [{ artifact_id: proposal, expected_revision: 0 }] } },
   ]) assert.equal(restoreRunStart(value, proposal), null);
 });
+
+test("project start recovery retains its original project and product and rejects another page", () => {
+  const project = "22222222-2222-4222-8222-222222222222";
+  const request = { path: "v1/agent-runs", body: { goal: "核对项目当前资料", idempotency_key: "original-project-key", product_id: proposal, project_id: project, sources: [] } };
+  assert.equal(restoreRunStart(request, undefined, project), request);
+  assert.equal(restoreRunStart(request), null);
+  assert.equal(restoreRunStart(request, undefined, proposal), null);
+  assert.equal(restoreRunStart({ ...request, body: { ...request.body, product_id: null } }, undefined, project), null);
+});

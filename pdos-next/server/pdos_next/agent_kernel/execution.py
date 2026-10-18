@@ -37,6 +37,7 @@ def scope_for_run(run):
         frozenset(run.data_categories),
         tuple(run.customer_identities),
         trigger=run.trigger,
+        project_id=getattr(run, "project_id", None),
     )
 
 
@@ -164,6 +165,7 @@ def check_run_binding(run, scope, *, for_write=True):
         not run
         or run.id != scope.run_id
         or any(getattr(run, key) != getattr(scope, key) for key in fields)
+        or getattr(run, "project_id", None) != getattr(scope, "project_id", None)
     ):
         raise DomainError("FORBIDDEN_SCOPE", "调用不属于服务器实际运行。")
     if (

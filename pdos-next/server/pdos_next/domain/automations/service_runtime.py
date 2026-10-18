@@ -121,6 +121,10 @@ def run_binding(s, run):
         or run.validation_budget_id != spec.validation_budget_id
         or run.token_limit != spec.token_limit
         or run.proposal_id is not None
+        or getattr(run, "project_id", None) is not None and (
+            spec.trigger_kind != "relative_milestone"
+            or str(run.project_id) != str(spec.trigger_config["project_id"])
+        )
     ):
         raise DomainError("FORBIDDEN_SCOPE", "运行超出固定服务授权。", 403)
     if grant.expires_at is not None and now() >= grant.expires_at:

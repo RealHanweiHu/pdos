@@ -11,6 +11,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import aliased
 from sqlalchemy.types import NullType
 
+from pdos_next.agent_kernel.models import AgentEvent, AgentRun
 from pdos_next.database import require_context
 from pdos_next.domain.work_management.owner import project as readable_project
 from pdos_next.errors import DomainError
@@ -19,6 +20,16 @@ from pdos_next.project_activity_catalog import OPERATION_LABELS, SOURCES
 from pdos_next.service import EVENTS
 
 VERSION = "project-activity/v1"
+RUN_EVENTS = {
+    "accepted": "小Pai 工作已受理",
+    "needs_input": "小Pai 工作等待本人答复",
+    "model_unavailable": "小Pai 模型服务暂不可用",
+    "reconciliation_required": "小Pai 原调用结果待核对",
+    "run_reconciled": "小Pai 原调用已核对",
+    "finished": "小Pai 工作已记录结果",
+    "run_state": "小Pai 工作状态已记录",
+}
+RUN_STATES = {"queued", "running", "waiting_input", "completed", "partial", "cancelled", "failed"}
 LINK_LABELS = {
     "plan": "打开工作与计划",
     "build": "打开配置与准备",
@@ -175,6 +186,8 @@ def activity_records(ctx, product_id, project_id):
                 expression("task_refs", JSONB).label("task_refs"),
                 literal(source.view).label("view"),
                 literal(source.label).label("link_label"),
+                literal("domain_receipt").label("record_kind"),
+                cast(literal(None), String).label("status"),
             )
             .select_from(source.model)
             .join(Receipt, and_(*receipt_binding(source)))
@@ -205,6 +218,64 @@ def activity_records(ctx, product_id, project_id):
             .where(*source_binding(source, ctx.tenant_id, ctx.category_id, product_id, project_id))
         )
         branches.append(branch)
+    # Existing requester-private Run/Event RLS remains in force. An explicit
+    # project link grants no new audience and never exposes goal/result/body.
+    actor, requester = aliased(Principal), aliased(Principal)
+    kind = AgentEvent.body["type"].astext
+    actor_id = AgentRun.writer_id  # Bound execution identity, not an invented event author.
+    branches.append(
+        select(
+            AgentEvent.id,
+            AgentEvent.created_at.label("recorded_at"),
+            cast(literal(None), Receipt.id.type).label("receipt_id"),
+            literal("agent.run.record").label("operation"),
+            (literal("agent.run.") + kind).label("event_type"),
+            literal("agent_run").label("subject_kind"),
+            AgentRun.id.label("subject_id"),
+            AgentEvent.sequence.label("subject_revision"),
+            actor_id.label("actor_id"),
+            actor.name.label("actor_name"),
+            actor.kind.label("actor_kind"),
+            AgentRun.requester_id,
+            requester.name.label("requester_name"),
+            AgentRun.id.label("run_id"),
+            cast(literal(None), String).label("title"),
+            case(*[(kind == key, value) for key, value in RUN_EVENTS.items()]).label("summary"),
+            cast(literal(None), String).label("next_steps"),
+            cast(AgentEvent.created_at, String).label("occurred_at"),
+            cast(literal(None), String).label("original_timezone"),
+            cast(literal(None), JSONB).label("sources"),
+            cast(literal(None), JSONB).label("task_refs"),
+            cast(literal(None), String).label("view"),
+            cast(literal(None), String).label("link_label"),
+            literal("run_event").label("record_kind"),
+            case(
+                (
+                    AgentEvent.body["status"].astext.in_(RUN_STATES),
+                    AgentEvent.body["status"].astext,
+                ),
+                else_=None,
+            ).label("status"),
+        )
+        .select_from(AgentEvent)
+        .join(
+            AgentRun,
+            and_(AgentRun.tenant_id == AgentEvent.tenant_id, AgentRun.id == AgentEvent.run_id),
+        )
+        .outerjoin(actor, and_(actor.tenant_id == AgentRun.tenant_id, actor.id == actor_id))
+        .outerjoin(
+            requester,
+            and_(requester.tenant_id == AgentRun.tenant_id, requester.id == AgentRun.requester_id),
+        )
+        .where(
+            AgentRun.tenant_id == ctx.tenant_id,
+            AgentRun.category_id == ctx.category_id,
+            AgentRun.product_id == product_id,
+            AgentRun.project_id == project_id,
+            AgentRun.requester_id == ctx.requester_id,
+            kind.in_(RUN_EVENTS),
+        )
+    )
     return union_all(*branches).subquery("project_activity")
 
 
@@ -241,6 +312,8 @@ def activity_item(row):
     actual = row["occurred_at"]
     return {
         "id": str(row["id"]),
+        "record_kind": row["record_kind"],
+        "status": row["status"],
         "operation": row["operation"],
         "event_type": row["event_type"],
         "recorded_at": _aware(row["recorded_at"]).isoformat(),
@@ -260,7 +333,7 @@ def activity_item(row):
         "requester": {"id": str(row["requester_id"]), "name": row["requester_name"]},
         "summary": row["summary"] or OPERATION_LABELS[row["operation"]],
         "next_steps": row["next_steps"],
-        "receipt_id": str(row["receipt_id"]),
+        "receipt_id": str(row["receipt_id"]) if row["receipt_id"] else None,
         "run_id": str(row["run_id"]) if row["run_id"] else None,
         "sources": _refs(row["sources"]),
         "task_refs": _refs(row["task_refs"], tasks=True),
@@ -296,7 +369,8 @@ def project_activity(session, ctx, product_id, project_id, *, page_size=20, curs
         .all()
     )
     page = rows[:page_size]
-    if len({row["receipt_id"] for row in rows}) != len(rows):
+    receipt_ids = [row["receipt_id"] for row in rows if row["receipt_id"] is not None]
+    if len(set(receipt_ids)) != len(receipt_ids):
         raise DomainError("INTEGRITY_MISMATCH", "项目动态的业务回执重复，请核对原记录。")
     return {
         "version": VERSION,

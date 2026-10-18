@@ -35,10 +35,20 @@ class AgentSession(KernelRow, Base):
     category_id: Mapped[UUID | None] = mapped_column(index=True)
     product_id: Mapped[UUID | None]
     proposal_id: Mapped[UUID | None]
+    project_id: Mapped[UUID | None]
     owner_id: Mapped[UUID]
     revision: Mapped[int] = mapped_column(Integer, default=1)
     __table_args__ = (
         UniqueConstraint("tenant_id", "id"),
+        CheckConstraint(
+            "project_id IS NULL OR (category_id IS NOT NULL AND product_id IS NOT NULL)",
+            name="kernel_session_project_scope",
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "product_id", "project_id"],
+            ["projects.tenant_id", "projects.product_id", "projects.id"],
+            name="kernel_session_project_fk",
+        ),
         ForeignKeyConstraint(
             ["tenant_id", "category_id"], ["categories.tenant_id", "categories.id"]
         ),
@@ -55,6 +65,7 @@ class AgentRun(KernelRow, Base):
     category_id: Mapped[UUID | None] = mapped_column(index=True)
     product_id: Mapped[UUID | None]
     proposal_id: Mapped[UUID | None]
+    project_id: Mapped[UUID | None]
     session_id: Mapped[UUID]
     continued_from_id: Mapped[UUID | None]
     requester_id: Mapped[UUID]
@@ -81,6 +92,19 @@ class AgentRun(KernelRow, Base):
     revert_receipt_id: Mapped[UUID | None]
     __table_args__ = (
         UniqueConstraint("tenant_id", "id"),
+        CheckConstraint(
+            "project_id IS NULL OR (category_id IS NOT NULL AND product_id IS NOT NULL)",
+            name="kernel_run_project_scope",
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "product_id", "project_id"],
+            ["projects.tenant_id", "projects.product_id", "projects.id"],
+            name="kernel_run_project_fk",
+        ),
+        Index(
+            "ix_kernel_project_runs", "tenant_id", "category_id", "product_id",
+            "project_id", "requester_id",
+        ),
         UniqueConstraint("tenant_id", "category_id", "id", name="uq_agent_runs_category_identity"),
         UniqueConstraint("tenant_id", "requester_id", "intent_key"),
         UniqueConstraint("tenant_id", "continued_from_id", name="uq_kernel_continuation"),
