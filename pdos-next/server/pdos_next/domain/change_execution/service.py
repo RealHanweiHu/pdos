@@ -172,6 +172,8 @@ def _snapshot(row):
 
 
 def _scope_seed(s, ctx, pid, refs):
+    if any(ref.kind == "field_feedback" for ref in refs):
+        return _seed(s, ctx, pid, refs)
     loader = _issue_loader(s)
     from pdos_next.domain.quality_execution.service import (
         _change_scope_for_change,
@@ -197,11 +199,19 @@ def _scope_seed(s, ctx, pid, refs):
 
 
 def _seed(s, ctx, pid, refs):
-    loader = _issue_loader(s)
+    from .field_bridge import get as field_feedback
+
+    loader = None
     values, wrappers = [], {}
     for ref in refs:
+        if ref.kind == "field_feedback":
+            row, _, _, purpose = field_feedback(s, ctx, pid, ref)
+            values.append((row, {"purpose": purpose}))
+            continue
         if ref.kind not in {"issue", "capa"}:
             continue
+        if loader is None:
+            loader = _issue_loader(s)
         identity = (ref.id, ref.revision)
         if identity not in wrappers:
             wrappers[identity] = loader(s, ctx, pid, ref.id, ref.revision)
@@ -216,7 +226,9 @@ def _seed(s, ctx, pid, refs):
             raise DomainError("FIXED_REFERENCE_MISMATCH", "Issue端口未返回指定固定版。")
         values.append((row, view))
     if not values:
-        raise DomainError("MISSING_REQUIRED_EVIDENCE", "须固定真实Issue/CAPA依据。", 422)
+        raise DomainError(
+            "MISSING_REQUIRED_EVIDENCE", "须固定真实Issue、CAPA或已定位现场反馈依据。", 422
+        )
     if len({(str(row.project_id), view["purpose"]) for row, view in values}) != 1:
         raise DomainError("FORBIDDEN_SCOPE", "变更依据跨项目或精确用途。", 403)
     row, view = values[0]
@@ -356,8 +368,6 @@ def _evidence(s, ctx, pid, reads, sources=(), *, io=True):
 
     basis, lines, private = {}, {}, False
     store = getattr(s.get_bind(), "_pdos_change_store", None)
-    if store is None:
-        raise DomainError("INTEGRATION_REQUIRED", "变更原件安全读取端口未配置。", 503)
     for read in reads:
         source = source_for(s, ctx, pid, UUID(read["artifact_id"]), read["expected_revision"])
         if source.content_hash != content_digest(source.content):
@@ -383,6 +393,8 @@ def _evidence(s, ctx, pid, reads, sources=(), *, io=True):
         if original.status != "parsed" or ref.size_bytes > MAX_ORIGINAL_BYTES:
             raise DomainError("SOURCE_UNAVAILABLE", "原件不可定位或超过有界核验上限。")
         if io:
+            if store is None:
+                raise DomainError("INTEGRATION_REQUIRED", "变更原件安全读取端口未配置。", 503)
             try:
                 content = read_registered_bytes(
                     store, ref, ctx.tenant_id, original.product_id, ctx.category_id
@@ -1185,7 +1197,7 @@ def _history_sources(s, ctx, pid, reads):
     return current
 
 
-def _source_options(s, ctx, pid, reads):
+def _source_options(s, ctx, pid, reads, *, include_registered_native=False):
     from pdos_next.original_security import require_safe
     from pdos_next.originals import require_original
     from pdos_next.service import source_for
@@ -1195,11 +1207,17 @@ def _source_options(s, ctx, pid, reads):
         try:
             row = source_for(s, ctx, pid, UUID(read["artifact_id"]), read["expected_revision"])
             if row.original_id is None:
-                continue
-            writing = not s.info.get("read_snapshot")
-            require_safe(
-                s, ctx, require_original(s, ctx, pid, row.original_id, lock=writing), lock=writing
-            )
+                if not include_registered_native:
+                    continue
+                _native_registration(s, ctx, pid, row)
+            else:
+                writing = not s.info.get("read_snapshot")
+                require_safe(
+                    s,
+                    ctx,
+                    require_original(s, ctx, pid, row.original_id, lock=writing),
+                    lock=writing,
+                )
         except DomainError:
             continue
         for number, line in enumerate(row.content.splitlines(), 1):
@@ -1277,6 +1295,7 @@ def list_changes(
     *,
     project_id=None,
     issue_id=None,
+    field_feedback_id=None,
     change_id=None,
     history_cursor=None,
     capture_cursor=None,
@@ -1285,6 +1304,8 @@ def list_changes(
     from pdos_next.service import require_access
 
     _human(s, ctx, product_id)
+    if issue_id is not None and field_feedback_id is not None:
+        raise DomainError("INVALID_PAYLOAD", "请分别选择问题或现场反馈作为新建变更入口。", 422)
     caller_write = True
     try:
         require_access(s, ctx, product_id, write=True)
@@ -1307,6 +1328,12 @@ def list_changes(
             | ChangeRequestVersion.request_snapshot["roots"].contains(refs[1])
             | ChangeRequestVersion.request_snapshot["references"].contains(refs[0])
             | ChangeRequestVersion.request_snapshot["references"].contains(refs[1])
+        )
+    if field_feedback_id is not None:
+        fixed_ref = [{"id": str(field_feedback_id), "kind": "field_feedback"}]
+        q = q.where(
+            ChangeRequestVersion.request_snapshot["roots"].contains(fixed_ref)
+            | ChangeRequestVersion.request_snapshot["references"].contains(fixed_ref)
         )
     joined = (
         (ChangeCurrent.tenant_id == ChangeRequestVersion.tenant_id)
@@ -1385,6 +1412,49 @@ def list_changes(
                 "reason_codes": [error.code],
             }
             create_allowed = False
+    if field_feedback_id is not None:
+        from .field_bridge import current as current_feedback
+
+        try:
+            feedback_row, feedback, scope, purpose = current_feedback(
+                s, ctx, product_id, field_feedback_id
+            )
+            if project_id is not None and scope.project_id != project_id:
+                raise DomainError("FORBIDDEN_SCOPE", "现场反馈不属于筛选的实际项目。", 403)
+            ref = Ref(
+                id=feedback_row.feedback_id, revision=feedback_row.revision, kind="field_feedback"
+            )
+            options[ref.identity] = {
+                "label": feedback["title"],
+                "ref": ref.model_dump(mode="json"),
+            }
+            source_options = _source_options(
+                s,
+                ctx,
+                product_id,
+                feedback["required_source_read_set"],
+                include_registered_native=True,
+            )
+            create_authority = professional.assess(
+                s, ctx, product_id, scope.project_id, "change.request.create", purpose, now()
+            )
+            create_allowed = (
+                caller_write
+                and bool(source_options)
+                and create_authority["authorized"] is True
+                and create_authority["qualified"] is True
+            )
+            if create_allowed:
+                _evidence(s, ctx, product_id, feedback["required_source_read_set"], io=False)
+        except DomainError as error:
+            if error.status == 403:
+                raise
+            create_authority = {
+                "authorized": False,
+                "qualified": None,
+                "reason_codes": [error.code],
+            }
+            create_allowed = False
     ready = {}
     for row in rows:
         request = _snapshot(row)
@@ -1419,6 +1489,21 @@ def list_changes(
                 continue
             authority = {"authorized": False, "qualified": None, "reason_codes": [error.code]}
             eligible, source_current = False, False
+        blockers = (
+            []
+            if eligible
+            else [{"code": "RECHECK_REQUIRED", "detail": "当前权限、专业依据或来源需核对。"}]
+        )
+        if any(ref.kind == "field_feedback" for ref in (*request.roots, *request.references)):
+            blockers.append(
+                {
+                    "code": "INTEGRATION_REQUIRED",
+                    "detail": (
+                        "可建立草稿与核对双线影响；现场反馈的正式逐项选择材料尚未接入，"
+                        "不能宣称已批准、实施或复验。"
+                    ),
+                }
+            )
         items.append(
             {
                 "id": str(row.id),
@@ -1442,9 +1527,7 @@ def list_changes(
                     "verification_record": False,
                     "close": False,
                 },
-                "blockers": []
-                if eligible
-                else [{"code": "RECHECK_REQUIRED", "detail": "当前权限、专业依据或来源需核对。"}],
+                "blockers": blockers,
             }
         )
         if pointer:

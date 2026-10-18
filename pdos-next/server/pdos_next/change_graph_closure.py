@@ -36,6 +36,7 @@ VERSION = "change-dependency-closure-v1"
 # Same candidate as next_0030; the manifest checks the two sets independently.
 # A pending dependency must be rejected, rather than hidden by no_autoflush.
 DEPENDENCY_TABLES = frozenset(
+    "field_feedback_versions field_feedback_currents "
     "artifact_versions uploaded_originals original_security original_scan_requests "
     "original_scan_results lifecycle_objects lifecycle_candidates lifecycle_intents "
     "lifecycle_requests projects project_product_links definition_revisions definition_specs "

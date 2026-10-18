@@ -510,3 +510,7 @@ PAYLOADS.update(RISK_FOLLOWUP_PAYLOADS)
 from pdos_next.domain.knowledge.schemas import PAYLOADS as KNOWLEDGE_PAYLOADS  # noqa: E402
 
 PAYLOADS.update(KNOWLEDGE_PAYLOADS)
+
+from pdos_next.domain.field_feedback.schemas import PAYLOADS as FIELD_PAYLOADS  # noqa: E402
+
+PAYLOADS.update(FIELD_PAYLOADS)

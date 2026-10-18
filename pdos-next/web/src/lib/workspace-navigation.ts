@@ -21,6 +21,7 @@ export const workspaceSections: Record<WorkspaceArea, WorkspaceEntry[]> = {
     { id: "overview", label: "现在" }, { id: "plan", label: "工作与计划", panel: "plan" },
     { id: "builds", label: "试制" }, { id: "verification", label: "测试与交接" },
     { id: "issues", label: "问题与变更", panel: "quality" },
+    { id: "field", label: "现场与客户反馈", panel: "field" },
     { id: "reviews", label: "评审与交付", planned: true }, { id: "files", label: "资料", panel: "originals" },
   ],
   knowledge: [{ id: "sources", label: "来源与事实", panel: "sources" }, { id: "files", label: "原件", panel: "originals" }],

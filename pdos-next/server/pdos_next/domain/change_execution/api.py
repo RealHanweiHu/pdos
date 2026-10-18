@@ -28,6 +28,7 @@ def register_routes(app: FastAPI, engine, auth_dependency):
         product_id: UUID,
         project_id: UUID | None = None,
         issue_id: UUID | None = None,
+        field_feedback_id: UUID | None = None,
         change_id: UUID | None = None,
         history_cursor: str | None = None,
         capture_cursor: str | None = None,
@@ -35,7 +36,17 @@ def register_routes(app: FastAPI, engine, auth_dependency):
     ):
         from .service import list_changes
 
-        _query(request, {"project_id", "issue_id", "change_id", "history_cursor", "capture_cursor"})
+        _query(
+            request,
+            {
+                "project_id",
+                "issue_id",
+                "field_feedback_id",
+                "change_id",
+                "history_cursor",
+                "capture_cursor",
+            },
+        )
         with tenant_session(
             engine,
             ctx.tenant_id,
@@ -50,6 +61,7 @@ def register_routes(app: FastAPI, engine, auth_dependency):
                 product_id,
                 project_id=project_id,
                 issue_id=issue_id,
+                field_feedback_id=field_feedback_id,
                 change_id=change_id,
                 history_cursor=history_cursor,
                 capture_cursor=capture_cursor,

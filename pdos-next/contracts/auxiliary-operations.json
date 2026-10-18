@@ -617,6 +617,78 @@
       ],
       "payload_schema": "payloads.schema.json",
       "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "field.feedback.create",
+      "write_tier": "T0",
+      "executor": "qualified_authorized_actor",
+      "event": "field.feedback_created",
+      "purpose": "Record exact customer/field source facts; reported labels and acceptance claims are not verified configurations or release decisions.",
+      "canonical_policy_preserved": [
+        "change.request.create:T0",
+        "change.impact.compute:T0",
+        "change.order.approve:T2",
+        "change.implementation.record:T1",
+        "knowledge.candidate.create:T0",
+        "knowledge.rule.publish:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice",
+      "source": "v1.1 §04.12, §04.15 and acceptance F; finite implementation commands"
+    },
+    {
+      "operation": "field.feedback.locate",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "field.feedback_located",
+      "purpose": "Confirm actual engineering/manufacturing configuration, optional native physical lot and project; preserve unknown labels and original report.",
+      "canonical_policy_preserved": [
+        "change.request.create:T0",
+        "change.impact.compute:T0",
+        "change.order.approve:T2",
+        "change.implementation.record:T1",
+        "knowledge.candidate.create:T0",
+        "knowledge.rule.publish:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice",
+      "source": "v1.1 §04.12, §04.15 and acceptance F; finite implementation commands"
+    },
+    {
+      "operation": "field.feedback.action.record",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "field.feedback_action_recorded",
+      "purpose": "Record an independently evidenced performed containment or improvement fact. Does not close a quality issue or approve implementation.",
+      "canonical_policy_preserved": [
+        "change.request.create:T0",
+        "change.impact.compute:T0",
+        "change.order.approve:T2",
+        "change.implementation.record:T1",
+        "knowledge.candidate.create:T0",
+        "knowledge.rule.publish:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice",
+      "source": "v1.1 §04.12, §04.15 and acceptance F; finite implementation commands"
+    },
+    {
+      "operation": "field.feedback.followup.link",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "field.feedback_followup_linked",
+      "purpose": "Link fixed actual native result receipts in the located project; a link does not attest completion, retest pass, effectiveness or release.",
+      "canonical_policy_preserved": [
+        "change.request.create:T0",
+        "change.impact.compute:T0",
+        "change.order.approve:T2",
+        "change.implementation.record:T1",
+        "knowledge.candidate.create:T0",
+        "knowledge.rule.publish:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice",
+      "source": "v1.1 §04.12, §04.15 and acceptance F; finite implementation commands"
     }
   ]
 }

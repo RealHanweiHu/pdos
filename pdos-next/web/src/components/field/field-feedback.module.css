@@ -1,0 +1,45 @@
+.root { display: grid; gap: 1rem; min-width: 0; }
+.heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; }
+.heading h2 { font-size: 1.2rem; font-weight: 650; }
+.group { display: grid; gap: 1rem; min-width: 0; }
+.group > h3, .panel > h3, .card h4 { font-weight: 600; }
+.eyebrow, .note { color: var(--muted-foreground); font-size: .8rem; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 390px), 1fr)); gap: 1rem; }
+.card, .panel { display: grid; gap: .85rem; align-content: start; min-width: 0; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; background: var(--card); }
+.badge { padding: .25rem .5rem; border-radius: 6px; background: var(--muted); font-size: .75rem; }
+.facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .4rem .75rem; font-size: .8rem; }
+.facts dt { color: var(--muted-foreground); }
+.card p, .facts dd, .panel p, .sources, .responses { overflow-wrap: anywhere; white-space: pre-wrap; }
+.sources, .responses { display: grid; gap: .65rem; font-size: .8rem; }
+.sources summary, .responses summary, .preview summary { cursor: pointer; }
+.sources blockquote { margin-top: .6rem; padding-left: .75rem; border-left: 2px solid var(--primary); }
+.responses > div { display: grid; gap: .4rem; padding-top: .75rem; border-top: 1px solid var(--border); }
+.responseHeading { font-weight: 600; }
+.form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; min-width: 0; }
+.form:disabled { opacity: .65; }
+.form > p, .wide { grid-column: 1 / -1; }
+.form label, .selectLabel { display: grid; gap: .35rem; min-width: 0; align-content: start; font-size: .875rem; }
+.form input, .form select, .form textarea, .selectLabel select, .selectLabel textarea { min-width: 0; width: 100%; padding: .55rem .7rem; border: 1px solid var(--border); border-radius: 8px; background: var(--background); color: var(--foreground); }
+.form textarea, .selectLabel textarea { min-height: 5rem; resize: vertical; }
+.form input:focus-visible, .form select:focus-visible, .form textarea:focus-visible, .selectLabel select:focus-visible, .selectLabel textarea:focus-visible, .sourceLine:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.sourcePicker { display: grid; gap: .7rem; min-width: 0; }
+.sourcePicker h4 { font-size: .875rem; font-weight: 600; }
+.lines { max-height: 19rem; overflow: auto; border: 1px solid var(--border); border-radius: 8px; }
+.sourceLine { display: flex; gap: .75rem; padding: .6rem .75rem; width: 100%; text-align: left; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .8rem; border-bottom: 1px solid var(--border); }
+.sourceLine > span:first-child { flex-shrink: 0; color: var(--muted-foreground); }
+.sourceLine:not(:disabled):hover { background: var(--muted); }
+.sourceLine:disabled { opacity: .55; }
+.selectedSources { display: grid; gap: .5rem; font-size: .8rem; }
+.selectedSources li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .4rem; }
+.notice, .pending, .preview, .success { min-width: 0; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; background: var(--muted); overflow-wrap: anywhere; }
+.pending, .preview, .success { display: grid; gap: .8rem; }
+.preview { border-color: var(--primary); }
+.comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: .75rem; }
+.comparison > div { min-width: 0; }
+.preview pre { max-height: 22rem; padding: .75rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .75rem; }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.error { color: var(--destructive); font-size: .875rem; overflow-wrap: anywhere; }
+.warning { border-left: 3px solid var(--primary); padding-left: .75rem; font-size: .8rem; overflow-wrap: anywhere; }
+.success { font-size: .875rem; }
+.success > p:first-child { display: flex; align-items: center; gap: .5rem; }
+@media (max-width: 620px) { .form, .comparison { grid-template-columns: minmax(0, 1fr); } .card, .panel, .notice, .pending, .preview { padding: .8rem; } .facts { grid-template-columns: 1fr; gap: .2rem; } .facts dd { margin-bottom: .4rem; } .heading { align-items: flex-start; } }

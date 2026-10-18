@@ -1,0 +1,771 @@
+### Browser `pdos-s5-field-20261018` opened with pid 48161.
+### Ran Playwright code
+```js
+await page.goto('about:blank');
+```
+### Page
+- Page URL: about:blank
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T22-38-57-942Z.yml)
+
+### Result
+{"syntheticLoginSet":true}
+### Ran Playwright code
+```js
+await (async page => { await page.context().addCookies([{"name": "pdos-next-session", "value": "[SYNTHETIC_LOGIN_REDACTED]", "domain": "127.0.0.1", "path": "/", "httpOnly": true, "sameSite": "Lax"}]); return { syntheticLoginSet: true }; })(page);
+```
+
+### Ran Playwright code
+```js
+await page.goto('http://127.0.0.1:56942/?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&bench=projects&view=field&product=2154753f-75f5-4de8-92ff-4d07e0c203c1&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0');
+```
+### Page
+- Page URL: http://127.0.0.1:56942/?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&bench=projects&view=field&product=2154753f-75f5-4de8-92ff-4d07e0c203c1&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0
+- Page Title: PDOS · 研发工作区
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T22-38-59-167Z.yml)
+
+### Page
+- Page URL: http://127.0.0.1:56942/?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&bench=projects&view=field&product=2154753f-75f5-4de8-92ff-4d07e0c203c1&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Snapshot
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e4]
+  - generic [ref=e5]:
+    - link "跳到工作内容" [ref=e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e11]: PDOS
+        - button "收起侧栏" [ref=e12]
+      - navigation "工作区导航" [ref=e13]:
+        - link "我的工作" [ref=e14] [cursor=pointer]:
+          - /url: "?area=work&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - link "项目驾驶舱" [ref=e18] [cursor=pointer]:
+          - /url: "?area=cockpit&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - link "项目列表" [ref=e22] [cursor=pointer]:
+          - /url: "?area=projects&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - link "项目集" [ref=e26] [cursor=pointer]:
+          - /url: "?area=programs&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+          - generic [ref=e30]: 尚未接入
+        - link "产品品类工作区" [ref=e31] [cursor=pointer]:
+          - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&bench=projects&view=field&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+        - link "知识" [ref=e35] [cursor=pointer]:
+          - /url: "?area=knowledge&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - generic [ref=e39]:
+          - paragraph [ref=e40]: 当前品类
+          - paragraph [ref=e41]: 汽车充气泵
+          - paragraph [ref=e42]: 项目与专业工作按品类范围授权
+      - generic [ref=e43]:
+        - link "计划执行进度" [ref=e44] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=e47]: 计划进度
+        - button "小Pai 工作栏" [ref=e48]:
+          - generic [ref=e51]: 小Pai
+        - link "设置" [ref=e52] [cursor=pointer]:
+          - /url: "?area=settings&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - generic [ref=e56]:
+          - generic [aria-hidden] [ref=e57]: S
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: Synthetic owner
+            - paragraph [ref=e60]: 本地合成环境
+    - generic [ref=e61]:
+      - banner [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e64]: PDOS
+          - generic [ref=e67]: 产品品类工作区
+          - generic [ref=e70]: 汽车充气泵
+        - generic [ref=e71]:
+          - button "搜索对象" [ref=e72]:
+            - generic [ref=e73]: 搜索
+          - button "小Pai 工作栏" [ref=e74]
+          - button "切换明暗主题" [ref=e75]
+      - main [ref=e76]:
+        - navigation "品类工作台区" [ref=e77]:
+          - link "型号" [ref=e78] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=products&view=overview&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "项目" [ref=e82] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=overview&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "知识" [ref=e86] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=knowledge&view=sources&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "设置" [ref=e90] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=settings&view=preferences&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - button "快速查找入口或型号" [ref=e94] [cursor=pointer]
+          - combobox "当前型号" [ref=e97]:
+            - option "Synthetic product"
+            - option "Synthetic development" [selected]
+        - navigation "项目视图" [ref=e98]:
+          - link "现在" [ref=e99] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=overview&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "工作与计划" [ref=e103] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=plan&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "试制" [ref=e107] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=builds&task=prepare&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "测试与交接" [ref=e111] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=verification&task=prepare&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "问题与变更" [ref=e115] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=issues&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "现场与客户反馈" [ref=e119] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=field&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "评审与交付 尚未接入" [ref=e123] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=reviews&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+            - generic [ref=e126]: 评审与交付
+            - generic "尚未接入" [ref=e127]
+          - link "资料" [ref=e128] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=files&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+        - generic [ref=e132]:
+          - generic [ref=e134]:
+            - heading "现场与客户反馈" [level=1] [ref=e135]
+            - paragraph [ref=e136]: 当前范围：Synthetic development
+          - region "现场与客户反馈" [ref=e138]:
+            - generic [ref=e139]:
+              - generic [ref=e140]:
+                - paragraph [ref=e141]: 反馈来源 → 实际定位 → 遏制 / 改善 → 变更与复验
+                - heading "现场与客户反馈" [level=2] [ref=e142]
+              - generic [ref=e143]:
+                - button "刷新反馈记录" [ref=e144]
+                - button "登记反馈" [ref=e145]
+            - paragraph [ref=e146]: 先保留收到的原话和来源。产品、批次或配置无法定位时保持未知；报告标签不作为实际配置。客户意见、变更要求与承认声明分别记录，承认声明不授予工程或制造放行。
+            - region "反馈列表" [ref=e147]:
+              - heading "收到的反馈" [level=3] [ref=e148]
+              - article [ref=e150]:
+                - generic [ref=e151]:
+                  - heading "Synthetic customer vibration" [level=4] [ref=e152]
+                  - generic [ref=e153]: 已有配置定位 · v2
+                - paragraph [ref=e154]: Customer reported vibration; investigate actual identity.
+                - generic [ref=e155]:
+                  - term [ref=e156]: 来源类型
+                  - definition [ref=e157]: 客户 · 客户意见
+                  - term [ref=e158]: 接收时间
+                  - definition [ref=e159]: 2026-10-18T22:37:15.450783Z
+                  - term [ref=e160]: 用途
+                  - definition [ref=e161]: Investigate one synthetic customer feedback against its actual fixed configuration
+                  - term [ref=e162]: 报告中的标签
+                  - definition [ref=e163]: 产品：Unverified model label；批次：未知；配置：未知
+                  - term [ref=e164]: 实际项目
+                  - definition [ref=e165]: Synthetic development
+                  - term [ref=e166]: 实际工程配置
+                  - definition [ref=e167]: Synthetic engineering configuration · v1
+                  - term [ref=e168]: 实际制造配置
+                  - definition [ref=e169]: Synthetic manufacturing configuration · v1
+                  - term [ref=e170]: 实际批次
+                  - definition [ref=e171]: 未知，待调查
+                  - term [ref=e172]: 受众与来源
+                  - definition [ref=e173]: 仅本人可读 · 来源需重核
+                - group [ref=e174]:
+                  - generic "固定来源 · 2 条" [ref=e175] [cursor=pointer]
+                - generic [ref=e176]:
+                  - button "重新核对定位" [disabled]
+                  - button "登记遏制 / 改善" [ref=e177]
+                  - button "链接后续结果" [ref=e178]
+                  - button "查看变更接续" [disabled]
+                - region "Synthetic customer vibration的处置与后续结果" [ref=e179]:
+                  - heading "处置与后续结果" [level=5] [ref=e180]
+                  - generic [ref=e181]:
+                    - paragraph [ref=e182]: 已发生遏制 · 2026-10-18T22:37:15.450783+00:00
+                    - paragraph [ref=e183]: Recorded isolation; formal quality closure stays separate.
+                    - paragraph [ref=e184]: 依据反馈 v2 · 私人记录
+                    - paragraph [ref=e185]: 记录回执 5ba42b19-9de9-4a73-93c2-6480226da512
+                  - generic [ref=e186]:
+                    - paragraph [ref=e187]: 固定后续结果 · 2026-10-18T22:37:15.450783+00:00
+                    - paragraph [ref=e188]: Link actual impact; no implementation or retest is asserted.
+                    - paragraph [ref=e189]: 依据反馈 v2 · 私人记录
+                    - group [ref=e190]:
+                      - generic "固定实际结果回执 · 1 条" [ref=e191] [cursor=pointer]
+                    - paragraph [ref=e192]: 记录回执 e9963eb2-744a-4594-ad4d-3f453688dfac
+                  - generic [ref=e193]:
+                    - paragraph [ref=e194]: 已发生改善 · 2026-10-18T22:37:42.316275+00:00
+                    - paragraph [ref=e195]: Record a later sourced investigation; the old report stays stale.
+                    - paragraph [ref=e196]: 依据反馈 v2 · 私人记录
+                    - paragraph [ref=e197]: 记录回执 f99a7823-42dd-4726-b3f3-88428b17547b
+                - group [ref=e198]:
+                  - generic "反馈版本历史 · 2 条" [ref=e199] [cursor=pointer]
+            - paragraph [ref=e200]: 实际复验与处置结果可继续形成经验候选。前往本型号“知识 → 来源与事实”记录候选，并保留上述固定来源及实际结果回执；适用性审核与正式规则发布另行办理。
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T22-38-59-023Z.log#L1
+
+### Ran Playwright code
+```js
+await page.getByRole('button', { name: '登记反馈' }).click();
+```
+### Page
+- Page URL: http://127.0.0.1:56942/?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&bench=projects&view=field&product=2154753f-75f5-4de8-92ff-4d07e0c203c1&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T22-39-21-177Z.yml)
+
+### Result
+{"passed":true,"feedback_id":"47e04c3f-65d0-5999-b1a4-bbaf2dc4dc41","receipt_id":"597b0704-6e50-4344-9938-e8db9800ba7b","unknown_location_retained":true,"refresh_posts":0,"original_key_and_payload_replayed":true,"create_previews":0,"create_executions":2,"actual_saved_versions":1,"title":"合成页面现场观察","model_calls":0}
+### Ran Playwright code
+```js
+await (async page => {
+ const config={"snapshot": "/private/tmp/pdos-field-y02q0jeq", "api_port": 56941, "web_port": 56942, "tenant_id": "bdde4a09-0aef-47dd-808f-d6da106946c4", "category_id": "f1ac063e-bed0-4914-b225-78a66a00c95b", "product_id": "2154753f-75f5-4de8-92ff-4d07e0c203c1", "project_id": "c82d6961-2d49-4db0-a9bc-86c9d15c73f0", "principal_id": "cda5be68-d97f-404e-930f-b5ce837d5a30", "source_id": "2dd8fc5f-25f9-4d76-b415-7b72eeeafb88", "engineering_configuration": {"id": "7aa64f5e-5e24-467a-9dc3-51f628633ec2", "revision": 1}, "manufacturing_configuration": {"id": "f7df9df2-8289-4a7a-a065-71cf293d0fff", "revision": 1}, "purpose": "Investigate one synthetic customer feedback against its actual fixed configuration", "issuer_key": "synthetic-knowledge:bdde4a09-0aef-47dd-808f-d6da106946c4", "issuer_version": "v1"}, op='field.feedback.create', root='/api/v1/categories/'+config.category_id+'/products/'+config.product_id+'/field-feedback', title='合成页面现场观察';
+ const section=()=>page.getByRole('region',{name:'现场与客户反馈',exact:true}), form=()=>page.getByRole('region',{name:'本次反馈表单',exact:true});
+ const read=async()=>{const r=await page.request.get(new URL(root+'?project_id='+config.project_id,page.url()).href);if(r.status()!==200)throw Error('Actual read '+r.status());return r.json();};
+ const before=await read(), source=before.options.sources.find(x=>x.id===config.source_id);if(!source||source.status!=='active')throw Error('Actual active source missing');
+ await form().getByRole('textbox',{name:'反馈标题',exact:true}).fill(title);
+ await form().getByRole('textbox',{name:'反馈接收时间（含时区）',exact:true}).fill(new Date().toISOString());
+ await form().getByRole('textbox',{name:'收到的具体内容',exact:true}).fill(source.content.split('\n').find(x=>x.trim()));
+ await form().getByRole('textbox',{name:'具体用途',exact:true}).fill(config.purpose);
+ await form().getByRole('textbox',{name:'办理理由',exact:true}).fill('合成页面验证：保留实际原件来源，先记录现场观察并保持配置未知。');
+ await form().getByRole('combobox',{name:'选择依据原件',exact:true}).selectOption(config.source_id);
+ await form().getByRole('region',{name:'本次精确来源',exact:true}).getByRole('button').first().click();
+ const writes=[];const listener=req=>{if(req.url().includes('/api/')&&req.method()==='POST')writes.push({path:new URL(req.url()).pathname,body:req.postDataJSON()});};page.on('request',listener);
+ let receipt,original,injected=false,resolveDone,rejectDone;const done=new Promise((yes,no)=>{resolveDone=yes;rejectDone=no;});
+ const pattern=/\/api\/v1\/categories\/[^/]+\/commands$/;
+ const handler=async route=>{const req=route.request(),body=req.method()==='POST'?req.postDataJSON():null;if(body?.operation!==op||injected)return route.continue();injected=true;try{original=body;const r=await route.fetch({timeout:60000});if(r.status()!==200)throw Error('Actual create '+r.status()+' '+await r.text());receipt=await r.json();await route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({code:'SOURCE_UNAVAILABLE',message:'合成已保存响应丢失'})});resolveDone();}catch(e){rejectDone(e);throw e;}};
+ try{
+  await page.route(pattern,handler);await form().getByRole('button',{name:'保存反馈来源事实',exact:true}).click();
+  let timer;try{await Promise.race([done,new Promise((_,no)=>{timer=setTimeout(()=>no(Error('No actual response-loss injection')),60000);})]);}finally{clearTimeout(timer);}
+  await section().getByRole('region',{name:'保留的原反馈请求',exact:true}).waitFor();await page.unroute(pattern,handler);
+  const saved=(await read()).feedbacks.find(x=>x.version_id===receipt.subject_id);if(!saved||saved.revision!==1||saved.location!==null||saved.project_id!==null||saved.responses.length)throw Error('Intake did not keep actual location unknown');
+  const oldCount=writes.length;await page.reload({waitUntil:'domcontentloaded'});const pending=page.getByRole('region',{name:'保留的原反馈请求',exact:true});await pending.getByRole('button',{name:'按原请求核对反馈保存结果',exact:true}).waitFor({timeout:60000});if(writes.length!==oldCount)throw Error('Reload submitted a POST');
+  const replay=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname.endsWith('/commands')&&r.request().postDataJSON()?.operation===op);
+  await pending.getByRole('button',{name:'按原请求核对反馈保存结果',exact:true}).click();const rr=await replay;if(rr.status()!==200||(await rr.json()).id!==receipt.id)throw Error('Replay receipt mismatch');await page.getByRole('region',{name:'反馈保存回执',exact:true}).waitFor({timeout:60000});
+  const creates=writes.filter(x=>x.path.endsWith('/commands')&&x.body.operation===op);if(creates.length!==2||JSON.stringify(creates[0].body)!==JSON.stringify(creates[1].body)||writes.some(x=>x.path.endsWith('/preview')))throw Error('Not one original T0 command replay');
+  const final=(await read()).feedbacks.filter(x=>x.id===saved.id);if(final.length!==1||final[0].history.length!==1)throw Error('Duplicate intake after response loss');
+  return {passed:true,feedback_id:saved.id,receipt_id:receipt.id,unknown_location_retained:true,refresh_posts:0,original_key_and_payload_replayed:true,create_previews:0,create_executions:2,actual_saved_versions:1,title,model_calls:0};
+ }finally{page.off('request',listener);await page.unroute(pattern,handler);}
+}
+)(page);
+```
+### Page
+- Page URL: http://127.0.0.1:56942/?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&bench=projects&view=field&product=2154753f-75f5-4de8-92ff-4d07e0c203c1&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0
+- Page Title: PDOS · 研发工作区
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T22-38-59-023Z.log#L2
+
+### Page
+- Page URL: http://127.0.0.1:56942/?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&bench=projects&view=field&product=2154753f-75f5-4de8-92ff-4d07e0c203c1&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0
+- Page Title: PDOS · 研发工作区
+### Snapshot
+```yaml
+- generic [active] [ref=f1e1]:
+  - alert [ref=f1e2]
+  - generic [ref=f1e3]:
+    - link "跳到工作内容" [ref=f1e4] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=f1e5]:
+      - generic [ref=f1e6]:
+        - generic [ref=f1e9]: PDOS
+        - button "收起侧栏" [ref=f1e10]
+      - navigation "工作区导航" [ref=f1e11]:
+        - link "我的工作" [ref=f1e12] [cursor=pointer]:
+          - /url: "?area=work&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - link "项目驾驶舱" [ref=f1e16] [cursor=pointer]:
+          - /url: "?area=cockpit&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - link "项目列表" [ref=f1e20] [cursor=pointer]:
+          - /url: "?area=projects&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - link "项目集" [ref=f1e24] [cursor=pointer]:
+          - /url: "?area=programs&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+          - generic [ref=f1e28]: 尚未接入
+        - link "产品品类工作区" [ref=f1e29] [cursor=pointer]:
+          - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&bench=projects&view=field&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+        - link "知识" [ref=f1e33] [cursor=pointer]:
+          - /url: "?area=knowledge&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - generic [ref=f1e37]:
+          - paragraph [ref=f1e38]: 当前品类
+          - paragraph [ref=f1e39]: 汽车充气泵
+          - paragraph [ref=f1e40]: 项目与专业工作按品类范围授权
+      - generic [ref=f1e41]:
+        - link "计划执行进度" [ref=f1e42] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=f1e45]: 计划进度
+        - button "小Pai 工作栏" [ref=f1e46]:
+          - generic [ref=f1e49]: 小Pai
+        - link "设置" [ref=f1e50] [cursor=pointer]:
+          - /url: "?area=settings&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - generic [ref=f1e54]:
+          - generic [aria-hidden] [ref=f1e55]: S
+          - generic [ref=f1e56]:
+            - paragraph [ref=f1e57]: Synthetic owner
+            - paragraph [ref=f1e58]: 本地合成环境
+    - generic [ref=f1e59]:
+      - banner [ref=f1e60]:
+        - generic [ref=f1e61]:
+          - generic [ref=f1e62]: PDOS
+          - generic [ref=f1e65]: 产品品类工作区
+          - generic [ref=f1e68]: 汽车充气泵
+        - generic [ref=f1e69]:
+          - button "搜索对象" [ref=f1e70]:
+            - generic [ref=f1e71]: 搜索
+          - button "小Pai 工作栏" [ref=f1e72]
+          - button "切换明暗主题" [ref=f1e73]
+      - main [ref=f1e74]:
+        - navigation "品类工作台区" [ref=f1e75]:
+          - link "型号" [ref=f1e76] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=products&view=overview&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "项目" [ref=f1e80] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=overview&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "知识" [ref=f1e84] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=knowledge&view=sources&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "设置" [ref=f1e88] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=settings&view=preferences&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - button "快速查找入口或型号" [ref=f1e92] [cursor=pointer]
+          - combobox "当前型号" [ref=f1e95]:
+            - option "Synthetic product"
+            - option "Synthetic development" [selected]
+        - navigation "项目视图" [ref=f1e96]:
+          - link "现在" [ref=f1e97] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=overview&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "工作与计划" [ref=f1e101] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=plan&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "试制" [ref=f1e105] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=builds&task=prepare&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "测试与交接" [ref=f1e109] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=verification&task=prepare&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "问题与变更" [ref=f1e113] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=issues&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "现场与客户反馈" [ref=f1e117] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=field&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "评审与交付 尚未接入" [ref=f1e121] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=reviews&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+            - generic [ref=f1e124]: 评审与交付
+            - generic "尚未接入" [ref=f1e125]
+          - link "资料" [ref=f1e126] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=files&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+        - generic [ref=f1e130]:
+          - generic [ref=f1e132]:
+            - heading "现场与客户反馈" [level=1] [ref=f1e133]
+            - paragraph [ref=f1e134]: 当前范围：Synthetic development
+          - region "现场与客户反馈" [ref=f1e136]:
+            - generic [ref=f1e137]:
+              - generic [ref=f1e138]:
+                - paragraph [ref=f1e139]: 反馈来源 → 实际定位 → 遏制 / 改善 → 变更与复验
+                - heading "现场与客户反馈" [level=2] [ref=f1e140]
+              - generic [ref=f1e141]:
+                - button "刷新反馈记录" [ref=f1e142]
+                - button "登记反馈" [ref=f1e143]
+            - paragraph [ref=f1e144]: 先保留收到的原话和来源。产品、批次或配置无法定位时保持未知；报告标签不作为实际配置。客户意见、变更要求与承认声明分别记录，承认声明不授予工程或制造放行。
+            - status [ref=f1e145]: 已取得保存回执，正在只读回当前记录。
+            - region "反馈列表" [ref=f1e146]:
+              - heading "收到的反馈" [level=3] [ref=f1e147]
+              - generic [ref=f1e148]:
+                - article [ref=f1e149]:
+                  - generic [ref=f1e150]:
+                    - heading "合成页面现场观察" [level=4] [ref=f1e151]
+                    - generic [ref=f1e152]: 配置未知 · 待调查 · v1
+                  - paragraph [ref=f1e153]: Synthetic isolation and inspection performed on the reported units.
+                  - generic [ref=f1e154]:
+                    - term [ref=f1e155]: 来源类型
+                    - definition [ref=f1e156]: 现场 · 现场观察
+                    - term [ref=f1e157]: 接收时间
+                    - definition [ref=f1e158]: 2026-10-18T22:39:52.993000Z
+                    - term [ref=f1e159]: 用途
+                    - definition [ref=f1e160]: Investigate one synthetic customer feedback against its actual fixed configuration
+                    - term [ref=f1e161]: 报告中的标签
+                    - definition [ref=f1e162]: 产品：未知；批次：未知；配置：未知
+                    - term [ref=f1e163]: 实际项目
+                    - definition [ref=f1e164]: 项目尚未定位
+                    - term [ref=f1e165]: 实际工程配置
+                    - definition [ref=f1e166]: 未知，待调查
+                    - term [ref=f1e167]: 实际制造配置
+                    - definition [ref=f1e168]: 未知，待调查
+                    - term [ref=f1e169]: 实际批次
+                    - definition [ref=f1e170]: 未知，待调查
+                    - term [ref=f1e171]: 受众与来源
+                    - definition [ref=f1e172]: 仅本人可读 · 当前来源已核对
+                  - group [ref=f1e173]:
+                    - generic "固定来源 · 1 条" [ref=f1e174] [cursor=pointer]
+                  - generic [ref=f1e175]:
+                    - button "定位实际配置" [ref=f1e176]
+                    - button "登记遏制 / 改善" [ref=f1e177]
+                    - button "链接后续结果" [disabled]
+                    - button "查看变更接续" [disabled]
+                  - region "合成页面现场观察的处置与后续结果" [ref=f1e178]:
+                    - heading "处置与后续结果" [level=5] [ref=f1e179]
+                    - paragraph [ref=f1e180]: 尚无可读处置记录；不能据此推定问题已解决。
+                  - group [ref=f1e181]:
+                    - generic "反馈版本历史 · 1 条" [ref=f1e182] [cursor=pointer]
+                - article [ref=f1e183]:
+                  - generic [ref=f1e184]:
+                    - heading "Synthetic customer vibration" [level=4] [ref=f1e185]
+                    - generic [ref=f1e186]: 已有配置定位 · v2
+                  - paragraph [ref=f1e187]: Customer reported vibration; investigate actual identity.
+                  - generic [ref=f1e188]:
+                    - term [ref=f1e189]: 来源类型
+                    - definition [ref=f1e190]: 客户 · 客户意见
+                    - term [ref=f1e191]: 接收时间
+                    - definition [ref=f1e192]: 2026-10-18T22:37:15.450783Z
+                    - term [ref=f1e193]: 用途
+                    - definition [ref=f1e194]: Investigate one synthetic customer feedback against its actual fixed configuration
+                    - term [ref=f1e195]: 报告中的标签
+                    - definition [ref=f1e196]: 产品：Unverified model label；批次：未知；配置：未知
+                    - term [ref=f1e197]: 实际项目
+                    - definition [ref=f1e198]: Synthetic development
+                    - term [ref=f1e199]: 实际工程配置
+                    - definition [ref=f1e200]: Synthetic engineering configuration · v1
+                    - term [ref=f1e201]: 实际制造配置
+                    - definition [ref=f1e202]: Synthetic manufacturing configuration · v1
+                    - term [ref=f1e203]: 实际批次
+                    - definition [ref=f1e204]: 未知，待调查
+                    - term [ref=f1e205]: 受众与来源
+                    - definition [ref=f1e206]: 仅本人可读 · 来源需重核
+                  - group [ref=f1e207]:
+                    - generic "固定来源 · 2 条" [ref=f1e208] [cursor=pointer]
+                  - generic [ref=f1e209]:
+                    - button "重新核对定位" [disabled]
+                    - button "登记遏制 / 改善" [ref=f1e210]
+                    - button "链接后续结果" [ref=f1e211]
+                    - button "查看变更接续" [disabled]
+                  - region "Synthetic customer vibration的处置与后续结果" [ref=f1e212]:
+                    - heading "处置与后续结果" [level=5] [ref=f1e213]
+                    - generic [ref=f1e214]:
+                      - paragraph [ref=f1e215]: 已发生遏制 · 2026-10-18T22:37:15.450783+00:00
+                      - paragraph [ref=f1e216]: Recorded isolation; formal quality closure stays separate.
+                      - paragraph [ref=f1e217]: 依据反馈 v2 · 私人记录
+                      - paragraph [ref=f1e218]: 记录回执 5ba42b19-9de9-4a73-93c2-6480226da512
+                    - generic [ref=f1e219]:
+                      - paragraph [ref=f1e220]: 固定后续结果 · 2026-10-18T22:37:15.450783+00:00
+                      - paragraph [ref=f1e221]: Link actual impact; no implementation or retest is asserted.
+                      - paragraph [ref=f1e222]: 依据反馈 v2 · 私人记录
+                      - group [ref=f1e223]:
+                        - generic "固定实际结果回执 · 1 条" [ref=f1e224] [cursor=pointer]
+                      - paragraph [ref=f1e225]: 记录回执 e9963eb2-744a-4594-ad4d-3f453688dfac
+                    - generic [ref=f1e226]:
+                      - paragraph [ref=f1e227]: 已发生改善 · 2026-10-18T22:37:42.316275+00:00
+                      - paragraph [ref=f1e228]: Record a later sourced investigation; the old report stays stale.
+                      - paragraph [ref=f1e229]: 依据反馈 v2 · 私人记录
+                      - paragraph [ref=f1e230]: 记录回执 f99a7823-42dd-4726-b3f3-88428b17547b
+                  - group [ref=f1e231]:
+                    - generic "反馈版本历史 · 2 条" [ref=f1e232] [cursor=pointer]
+            - region "现场反馈变更接续" [ref=f1e233]:
+              - generic [ref=f1e234]:
+                - heading "合成页面现场观察 · 变更接续" [level=3] [ref=f1e235]
+                - button "收起变更接续" [ref=f1e236]
+              - paragraph [ref=f1e237]: 反馈的实际项目、配置或当前来源尚未核实，继续调查后再建变更。
+            - paragraph [ref=f1e238]: 实际复验与处置结果可继续形成经验候选。前往本型号“知识 → 来源与事实”记录候选，并保留上述固定来源及实际结果回执；适用性审核与正式规则发布另行办理。
+            - region "反馈保存回执" [ref=f1e239]:
+              - paragraph [ref=f1e240]: 已保存：登记反馈来源事实
+              - paragraph [ref=f1e243]: 回执 597b0704-6e50-4344-9938-e8db9800ba7b · 固定版本 v1
+```
+
+### Ran Playwright code
+```js
+await page.getByRole('button', { name: '定位实际配置' }).click();
+```
+### Page
+- Page URL: http://127.0.0.1:56942/?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&bench=projects&view=field&product=2154753f-75f5-4de8-92ff-4d07e0c203c1&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0
+- Page Title: PDOS · 研发工作区
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T22-40-31-969Z.yml)
+
+### Error
+TimeoutError: locator.selectOption: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('region', { name: '本次反馈表单', exact: true }).getByRole('combobox', { name: '实际工程配置', exact: true })[22m
+[2m    - locator resolved to <select>…</select>[22m
+[2m  - attempting select option action[22m
+[2m    2 × waiting for element to be visible and enabled[22m
+[2m      - did not find some options[22m
+[2m    - retrying select option action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible and enabled[22m
+[2m      - did not find some options[22m
+[2m    - retrying select option action[22m
+[2m      - waiting 100ms[22m
+[2m    59 × waiting for element to be visible and enabled[22m
+[2m       - did not find some options[22m
+[2m     - retrying select option action[22m
+[2m       - waiting 500ms[22m
+
+
+### Result
+{"passed":true,"feedback_id":"47e04c3f-65d0-5999-b1a4-bbaf2dc4dc41","parent_version_id":"e7a65f29-ba75-5571-814d-92c2414831ee","parent_revision":2,"actual_project":"c82d6961-2d49-4db0-a9bc-86c9d15c73f0","batch_still_unknown":true,"responses":1,"receipt_ids":{"field.feedback.locate":"ace89ff2-8429-4b23-8102-e0b12ac08fc8","field.feedback.action.record":"23bc7f6d-77cf-423c-8c12-3e6ee7b669a4"},"each_T1_preview":1,"each_T1_execute":1,"parent_unchanged_by_action":true,"model_calls":0}
+### Ran Playwright code
+```js
+await (async page=>{
+ const c={"snapshot": "/private/tmp/pdos-field-y02q0jeq", "api_port": 56941, "web_port": 56942, "tenant_id": "bdde4a09-0aef-47dd-808f-d6da106946c4", "category_id": "f1ac063e-bed0-4914-b225-78a66a00c95b", "product_id": "2154753f-75f5-4de8-92ff-4d07e0c203c1", "project_id": "c82d6961-2d49-4db0-a9bc-86c9d15c73f0", "principal_id": "cda5be68-d97f-404e-930f-b5ce837d5a30", "source_id": "2dd8fc5f-25f9-4d76-b415-7b72eeeafb88", "engineering_configuration": {"id": "7aa64f5e-5e24-467a-9dc3-51f628633ec2", "revision": 1}, "manufacturing_configuration": {"id": "f7df9df2-8289-4a7a-a065-71cf293d0fff", "revision": 1}, "purpose": "Investigate one synthetic customer feedback against its actual fixed configuration", "issuer_key": "synthetic-knowledge:bdde4a09-0aef-47dd-808f-d6da106946c4", "issuer_version": "v1"}, id="47e04c3f-65d0-5999-b1a4-bbaf2dc4dc41", root='/api/v1/categories/'+c.category_id+'/products/'+c.product_id+'/field-feedback';
+ const form=()=>page.getByRole('region',{name:'本次反馈表单',exact:true}), card=()=>page.getByRole('region',{name:'反馈列表',exact:true}).locator('article').filter({has:page.getByRole('heading',{name:'合成页面现场观察',exact:true})});
+ const read=async()=>{const r=await page.request.get(new URL(root+'?project_id='+c.project_id,page.url()).href);if(r.status()!==200)throw Error('Read '+r.status());return(await r.json()).feedbacks.find(x=>x.id===id);};
+ const source=async()=>{await form().getByRole('combobox',{name:'选择依据原件',exact:true}).selectOption(c.source_id);await form().getByRole('region',{name:'本次精确来源',exact:true}).getByRole('button').first().click();};
+ const writes=[];const listener=r=>{if(r.url().includes('/api/')&&r.method()==='POST')writes.push({path:new URL(r.url()).pathname,body:r.postDataJSON()});};page.on('request',listener);const receipts={};
+ const finish=async op=>{const before=writes.filter(x=>x.path.endsWith('/commands')).length;await form().getByRole('button',{name:'核对此次办理材料',exact:true}).click();const p=page.getByRole('region',{name:'本次反馈共同确认',exact:true});await p.getByRole('button',{name:'本人确认本次保存',exact:true}).waitFor({timeout:60000});if(writes.filter(x=>x.path.endsWith('/commands')).length!==before)throw Error('Saved before explicit T1 confirmation');const pending=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname.endsWith('/commands')&&r.request().postDataJSON()?.operation===op);await p.getByRole('button',{name:'本人确认本次保存',exact:true}).click();const result=await pending;if(result.status()!==200)throw Error('Actual '+op+' '+result.status()+' '+await result.text());receipts[op]=(await result.json()).id;await page.getByRole('region',{name:'反馈保存回执',exact:true}).waitFor({timeout:60000});};
+ try{
+  const before=await read();if(before.revision!==1||before.location!==null)throw Error('Expected original unknown intake');
+  await form().getByRole('combobox',{name:'实际工程配置',exact:true}).selectOption({label:'Synthetic engineering configuration · v1'});
+  await form().getByRole('combobox',{name:'实际制造配置',exact:true}).selectOption({label:'Synthetic manufacturing configuration · v1'});
+  await form().getByRole('textbox',{name:'办理理由',exact:true}).fill('合成具名定位：核对实际项目与固定工程/制造配置，批次仍未知。');await source();await finish('field.feedback.locate');
+  const located=await read();if(located.revision!==2||located.project_id!==c.project_id||located.location.engineering_configuration.id!==c.engineering_configuration.id||located.location.manufacturing_configuration.id!==c.manufacturing_configuration.id||located.location.batch!==null||located.history.length!==2)throw Error('Actual location mismatch');
+  await card().getByRole('button',{name:'登记遏制 / 改善',exact:true}).click();
+  await form().getByRole('textbox',{name:'实际发生时间（含时区）',exact:true}).fill(new Date().toISOString());await form().getByRole('textbox',{name:'实际处置内容',exact:true}).fill('根据已登记合成原件记录隔离与检查事实；不声明正式问题关闭、变更实施或复验通过。');await form().getByRole('textbox',{name:'办理理由',exact:true}).fill('合成页面核对：处置流水独立保存，反馈配置版本保持 v2。');await source();await finish('field.feedback.action.record');
+  const after=await read();if(after.version_id!==located.version_id||after.revision!==2||after.history.length!==2||after.responses.length!==1||after.responses[0].feedback.revision!==2)throw Error('Response invalidated parent or missing actual ledger');
+  for(const op of ['field.feedback.locate','field.feedback.action.record'])if(writes.filter(x=>x.body.operation===op&&x.path.endsWith('/commands')).length!==1||writes.filter(x=>x.body.operation===op&&x.path.endsWith('/preview')).length!==1)throw Error('T1 not exactly one preview/confirmation');
+  return{passed:true,feedback_id:id,parent_version_id:after.version_id,parent_revision:after.revision,actual_project:c.project_id,batch_still_unknown:true,responses:1,receipt_ids:receipts,each_T1_preview:1,each_T1_execute:1,parent_unchanged_by_action:true,model_calls:0};
+ }finally{page.off('request',listener);}
+}
+)(page);
+```
+
+### Page
+- Page URL: http://127.0.0.1:56942/?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&bench=projects&view=field&product=2154753f-75f5-4de8-92ff-4d07e0c203c1&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0
+- Page Title: PDOS · 研发工作区
+### Snapshot
+```yaml
+- generic [active] [ref=f1e1]:
+  - alert [ref=f1e2]
+  - generic [ref=f1e3]:
+    - link "跳到工作内容" [ref=f1e4] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=f1e5]:
+      - generic [ref=f1e6]:
+        - generic [ref=f1e9]: PDOS
+        - button "收起侧栏" [ref=f1e10]
+      - navigation "工作区导航" [ref=f1e11]:
+        - link "我的工作" [ref=f1e12] [cursor=pointer]:
+          - /url: "?area=work&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - link "项目驾驶舱" [ref=f1e16] [cursor=pointer]:
+          - /url: "?area=cockpit&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - link "项目列表" [ref=f1e20] [cursor=pointer]:
+          - /url: "?area=projects&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - link "项目集" [ref=f1e24] [cursor=pointer]:
+          - /url: "?area=programs&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+          - generic [ref=f1e28]: 尚未接入
+        - link "产品品类工作区" [ref=f1e29] [cursor=pointer]:
+          - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&bench=projects&view=field&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+        - link "知识" [ref=f1e33] [cursor=pointer]:
+          - /url: "?area=knowledge&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - generic [ref=f1e37]:
+          - paragraph [ref=f1e38]: 当前品类
+          - paragraph [ref=f1e39]: 汽车充气泵
+          - paragraph [ref=f1e40]: 项目与专业工作按品类范围授权
+      - generic [ref=f1e41]:
+        - link "计划执行进度" [ref=f1e42] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=f1e45]: 计划进度
+        - button "小Pai 工作栏" [ref=f1e46]:
+          - generic [ref=f1e49]: 小Pai
+        - link "设置" [ref=f1e50] [cursor=pointer]:
+          - /url: "?area=settings&category=f1ac063e-bed0-4914-b225-78a66a00c95b"
+        - generic [ref=f1e54]:
+          - generic [aria-hidden] [ref=f1e55]: S
+          - generic [ref=f1e56]:
+            - paragraph [ref=f1e57]: Synthetic owner
+            - paragraph [ref=f1e58]: 本地合成环境
+    - generic [ref=f1e59]:
+      - banner [ref=f1e60]:
+        - generic [ref=f1e61]:
+          - generic [ref=f1e62]: PDOS
+          - generic [ref=f1e65]: 产品品类工作区
+          - generic [ref=f1e68]: 汽车充气泵
+        - generic [ref=f1e69]:
+          - button "搜索对象" [ref=f1e70]:
+            - generic [ref=f1e71]: 搜索
+          - button "小Pai 工作栏" [ref=f1e72]
+          - button "切换明暗主题" [ref=f1e73]
+      - main [ref=f1e74]:
+        - navigation "品类工作台区" [ref=f1e75]:
+          - link "型号" [ref=f1e76] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=products&view=overview&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "项目" [ref=f1e80] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=overview&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "知识" [ref=f1e84] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=knowledge&view=sources&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "设置" [ref=f1e88] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=settings&view=preferences&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - button "快速查找入口或型号" [ref=f1e92] [cursor=pointer]
+          - combobox "当前型号" [ref=f1e95]:
+            - option "Synthetic product"
+            - option "Synthetic development" [selected]
+        - navigation "项目视图" [ref=f1e96]:
+          - link "现在" [ref=f1e97] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=overview&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "工作与计划" [ref=f1e101] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=plan&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "试制" [ref=f1e105] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=builds&task=prepare&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "测试与交接" [ref=f1e109] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=verification&task=prepare&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "问题与变更" [ref=f1e113] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=issues&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "现场与客户反馈" [ref=f1e117] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=field&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+          - link "评审与交付 尚未接入" [ref=f1e121] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=reviews&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+            - generic [ref=f1e124]: 评审与交付
+            - generic "尚未接入" [ref=f1e125]
+          - link "资料" [ref=f1e126] [cursor=pointer]:
+            - /url: "?area=category&category=f1ac063e-bed0-4914-b225-78a66a00c95b&project=c82d6961-2d49-4db0-a9bc-86c9d15c73f0&bench=projects&view=files&product=2154753f-75f5-4de8-92ff-4d07e0c203c1"
+        - generic [ref=f1e130]:
+          - generic [ref=f1e132]:
+            - heading "现场与客户反馈" [level=1] [ref=f1e133]
+            - paragraph [ref=f1e134]: 当前范围：Synthetic development
+          - region "现场与客户反馈" [ref=f1e136]:
+            - generic [ref=f1e137]:
+              - generic [ref=f1e138]:
+                - paragraph [ref=f1e139]: 反馈来源 → 实际定位 → 遏制 / 改善 → 变更与复验
+                - heading "现场与客户反馈" [level=2] [ref=f1e140]
+              - generic [ref=f1e141]:
+                - button "刷新反馈记录" [ref=f1e142]
+                - button "登记反馈" [ref=f1e143]
+            - paragraph [ref=f1e144]: 先保留收到的原话和来源。产品、批次或配置无法定位时保持未知；报告标签不作为实际配置。客户意见、变更要求与承认声明分别记录，承认声明不授予工程或制造放行。
+            - status [ref=f1e268]: 已取得保存回执，正在只读回当前记录。
+            - region "反馈列表" [ref=f1e269]:
+              - heading "收到的反馈" [level=3] [ref=f1e270]
+              - generic [ref=f1e271]:
+                - article [ref=f1e272]:
+                  - generic [ref=f1e273]:
+                    - heading "合成页面现场观察" [level=4] [ref=f1e274]
+                    - generic [ref=f1e275]: 已有配置定位 · v2
+                  - paragraph [ref=f1e276]: Synthetic isolation and inspection performed on the reported units.
+                  - generic [ref=f1e277]:
+                    - term [ref=f1e278]: 来源类型
+                    - definition [ref=f1e279]: 现场 · 现场观察
+                    - term [ref=f1e280]: 接收时间
+                    - definition [ref=f1e281]: 2026-10-18T22:39:52.993000Z
+                    - term [ref=f1e282]: 用途
+                    - definition [ref=f1e283]: Investigate one synthetic customer feedback against its actual fixed configuration
+                    - term [ref=f1e284]: 报告中的标签
+                    - definition [ref=f1e285]: 产品：未知；批次：未知；配置：未知
+                    - term [ref=f1e286]: 实际项目
+                    - definition [ref=f1e287]: Synthetic development
+                    - term [ref=f1e288]: 实际工程配置
+                    - definition [ref=f1e289]: Synthetic engineering configuration · v1
+                    - term [ref=f1e290]: 实际制造配置
+                    - definition [ref=f1e291]: Synthetic manufacturing configuration · v1
+                    - term [ref=f1e292]: 实际批次
+                    - definition [ref=f1e293]: 未知，待调查
+                    - term [ref=f1e294]: 受众与来源
+                    - definition [ref=f1e295]: 仅本人可读 · 当前来源已核对
+                  - group [ref=f1e296]:
+                    - generic "固定来源 · 2 条" [ref=f1e297] [cursor=pointer]
+                  - generic [ref=f1e298]:
+                    - button "重新核对定位" [ref=f1e299]
+                    - button "登记遏制 / 改善" [ref=f1e300]
+                    - button "链接后续结果" [ref=f1e301]
+                    - button "查看变更接续" [ref=f1e302]
+                  - region "合成页面现场观察的处置与后续结果" [ref=f1e303]:
+                    - heading "处置与后续结果" [level=5] [ref=f1e304]
+                    - generic [ref=f1e305]:
+                      - paragraph [ref=f1e306]: 已发生遏制 · 2026-10-18T22:42:10.634000+00:00
+                      - paragraph [ref=f1e307]: 根据已登记合成原件记录隔离与检查事实；不声明正式问题关闭、变更实施或复验通过。
+                      - paragraph [ref=f1e308]: 依据反馈 v2 · 私人记录
+                      - paragraph [ref=f1e309]: 记录回执 23bc7f6d-77cf-423c-8c12-3e6ee7b669a4
+                  - group [ref=f1e310]:
+                    - generic "反馈版本历史 · 2 条" [ref=f1e311] [cursor=pointer]
+                - article [ref=f1e312]:
+                  - generic [ref=f1e313]:
+                    - heading "Synthetic customer vibration" [level=4] [ref=f1e314]
+                    - generic [ref=f1e315]: 已有配置定位 · v2
+                  - paragraph [ref=f1e316]: Customer reported vibration; investigate actual identity.
+                  - generic [ref=f1e317]:
+                    - term [ref=f1e318]: 来源类型
+                    - definition [ref=f1e319]: 客户 · 客户意见
+                    - term [ref=f1e320]: 接收时间
+                    - definition [ref=f1e321]: 2026-10-18T22:37:15.450783Z
+                    - term [ref=f1e322]: 用途
+                    - definition [ref=f1e323]: Investigate one synthetic customer feedback against its actual fixed configuration
+                    - term [ref=f1e324]: 报告中的标签
+                    - definition [ref=f1e325]: 产品：Unverified model label；批次：未知；配置：未知
+                    - term [ref=f1e326]: 实际项目
+                    - definition [ref=f1e327]: Synthetic development
+                    - term [ref=f1e328]: 实际工程配置
+                    - definition [ref=f1e329]: Synthetic engineering configuration · v1
+                    - term [ref=f1e330]: 实际制造配置
+                    - definition [ref=f1e331]: Synthetic manufacturing configuration · v1
+                    - term [ref=f1e332]: 实际批次
+                    - definition [ref=f1e333]: 未知，待调查
+                    - term [ref=f1e334]: 受众与来源
+                    - definition [ref=f1e335]: 仅本人可读 · 来源需重核
+                  - group [ref=f1e336]:
+                    - generic "固定来源 · 2 条" [ref=f1e337] [cursor=pointer]
+                  - generic [ref=f1e338]:
+                    - button "重新核对定位" [disabled]
+                    - button "登记遏制 / 改善" [ref=f1e339]
+                    - button "链接后续结果" [ref=f1e340]
+                    - button "查看变更接续" [disabled]
+                  - region "Synthetic customer vibration的处置与后续结果" [ref=f1e341]:
+                    - heading "处置与后续结果" [level=5] [ref=f1e342]
+                    - generic [ref=f1e343]:
+                      - paragraph [ref=f1e344]: 已发生遏制 · 2026-10-18T22:37:15.450783+00:00
+                      - paragraph [ref=f1e345]: Recorded isolation; formal quality closure stays separate.
+                      - paragraph [ref=f1e346]: 依据反馈 v2 · 私人记录
+                      - paragraph [ref=f1e347]: 记录回执 5ba42b19-9de9-4a73-93c2-6480226da512
+                    - generic [ref=f1e348]:
+                      - paragraph [ref=f1e349]: 固定后续结果 · 2026-10-18T22:37:15.450783+00:00
+                      - paragraph [ref=f1e350]: Link actual impact; no implementation or retest is asserted.
+                      - paragraph [ref=f1e351]: 依据反馈 v2 · 私人记录
+                      - group [ref=f1e352]:
+                        - generic "固定实际结果回执 · 1 条" [ref=f1e353] [cursor=pointer]
+                      - paragraph [ref=f1e354]: 记录回执 e9963eb2-744a-4594-ad4d-3f453688dfac
+                    - generic [ref=f1e355]:
+                      - paragraph [ref=f1e356]: 已发生改善 · 2026-10-18T22:37:42.316275+00:00
+                      - paragraph [ref=f1e357]: Record a later sourced investigation; the old report stays stale.
+                      - paragraph [ref=f1e358]: 依据反馈 v2 · 私人记录
+                      - paragraph [ref=f1e359]: 记录回执 f99a7823-42dd-4726-b3f3-88428b17547b
+                  - group [ref=f1e360]:
+                    - generic "反馈版本历史 · 2 条" [ref=f1e361] [cursor=pointer]
+            - region "现场反馈变更接续" [ref=f1e362]:
+              - generic [ref=f1e363]:
+                - heading "合成页面现场观察 · 变更接续" [level=3] [ref=f1e364]
+                - button "收起变更接续" [ref=f1e365]
+              - button "拟定此反馈的变更" [ref=f1e366]
+              - generic [ref=f1e367]:
+                - text: 选择实际变更
+                - combobox "选择实际变更" [ref=f1e368]:
+                  - option "请选择固定反馈对应的实际变更" [selected]
+              - paragraph [ref=f1e369]: 尚无可读的关联变更。
+              - paragraph [ref=f1e370]: 此入口可保存反馈变更草稿与双线影响核对。现场反馈的正式选择材料尚未接通，后续批准、实施和复验仍须在对应领域完成；这里不声明已实施或复验通过。
+            - paragraph [ref=f1e371]: 实际复验与处置结果可继续形成经验候选。前往本型号“知识 → 来源与事实”记录候选，并保留上述固定来源及实际结果回执；适用性审核与正式规则发布另行办理。
+            - region "反馈保存回执" [ref=f1e372]:
+              - paragraph [ref=f1e373]: 已保存：登记已发生处置
+              - paragraph [ref=f1e376]: 回执 23bc7f6d-77cf-423c-8c12-3e6ee7b669a4 · 独立处置记录 v1，反馈配置版本保持原样
+```
+
+### Result
+{"passed":true,"feedback_id":"47e04c3f-65d0-5999-b1a4-bbaf2dc4dc41","change_id":"ab8c8dc4-8fe5-5e4a-b60a-6d6aa729d8de","create_receipt":"6dc72c44-c716-4c8d-a77a-251a7cffc9af","graph_id":"608fae27-5bba-4efe-bad2-c6d1e0fb4607","impact_receipt":"b8b4096d-1267-42c9-bf80-95e6a6a79059","change_revision":2,"actual_field_root":true,"formal_selection_still_unavailable":true,"model_calls":0}
+### Ran Playwright code
+```js
+await (async page=>{
+ const c={"snapshot": "/private/tmp/pdos-field-y02q0jeq", "api_port": 56941, "web_port": 56942, "tenant_id": "bdde4a09-0aef-47dd-808f-d6da106946c4", "category_id": "f1ac063e-bed0-4914-b225-78a66a00c95b", "product_id": "2154753f-75f5-4de8-92ff-4d07e0c203c1", "project_id": "c82d6961-2d49-4db0-a9bc-86c9d15c73f0", "principal_id": "cda5be68-d97f-404e-930f-b5ce837d5a30", "source_id": "2dd8fc5f-25f9-4d76-b415-7b72eeeafb88", "engineering_configuration": {"id": "7aa64f5e-5e24-467a-9dc3-51f628633ec2", "revision": 1}, "manufacturing_configuration": {"id": "f7df9df2-8289-4a7a-a065-71cf293d0fff", "revision": 1}, "purpose": "Investigate one synthetic customer feedback against its actual fixed configuration", "issuer_key": "synthetic-knowledge:bdde4a09-0aef-47dd-808f-d6da106946c4", "issuer_version": "v1"}, id="47e04c3f-65d0-5999-b1a4-bbaf2dc4dc41", root='/api/v1/categories/'+c.category_id+'/products/'+c.product_id+'/change-execution';
+ const panel=()=>page.getByRole('region',{name:'现场反馈变更接续',exact:true}), form=()=>page.getByRole('region',{name:'本次反馈表单',exact:true});
+ const read=async()=>{const r=await page.request.get(new URL(root+'?field_feedback_id='+id,page.url()).href);if(r.status()!==200)throw Error('Actual change read '+r.status());return r.json();};
+ const waitCommand=op=>page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname.endsWith('/commands')&&r.request().postDataJSON()?.operation===op,{timeout:60000});
+ const before=await read();if(!before.capabilities['change.request.create'])throw Error('Actual create qualification unavailable');
+ await panel().getByRole('button',{name:'拟定此反馈的变更',exact:true}).click();await form().getByRole('textbox',{name:'变更提案标题',exact:true}).fill('合成页面现场反馈变更');await form().getByRole('textbox',{name:'办理理由',exact:true}).fill('合成页面：真实现场反馈作为固定起点，核对工程与制造影响。');await form().getByRole('combobox',{name:'选择依据原件',exact:true}).selectOption(c.source_id);await form().getByRole('region',{name:'本次精确来源',exact:true}).getByRole('button').first().click();
+ const created=waitCommand('change.request.create');await form().getByRole('button',{name:'保存现场反馈变更草稿',exact:true}).click();const cr=await created;if(cr.status()!==200)throw Error('Change create '+cr.status()+' '+await cr.text());const receipt=await cr.json();await page.getByRole('region',{name:'反馈保存回执',exact:true}).waitFor({timeout:60000});
+ const rows=await read(), row=rows.changes.find(x=>x.id===receipt.subject_id);if(!row||row.request.roots[0].kind!=='field_feedback'||row.request.roots[0].id!==id)throw Error('Not actual Field root');
+ await panel().getByRole('combobox',{name:'选择实际变更',exact:true}).selectOption(row.change_id);await panel().getByRole('textbox',{name:'固定图捕获理由',exact:true}).fill('合成页面：只沿真实已定位工程与制造配置捕图，保留未知覆盖。');
+ const capturing=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname.endsWith('/change-execution/captures'),{timeout:60000});await panel().getByRole('button',{name:'从真实配置捕获固定图',exact:true}).click();const gr=await capturing;if(gr.status()!==200)throw Error('Actual graph '+gr.status()+' '+await gr.text());const graph=(await gr.json()).capture;
+ const result=waitCommand('change.impact.compute');await panel().getByRole('button',{name:'核对工程 / 制造路径及未知',exact:true}).click();const ir=await result;if(ir.status()!==200)throw Error('Actual impact '+ir.status()+' '+await ir.text());const impact=await ir.json();await page.getByRole('region',{name:'反馈保存回执',exact:true}).waitFor({timeout:60000});
+ const final=await read(), current=final.changes.find(x=>x.id===impact.subject_id);if(!current||current.revision!==2||current.capabilities.order_approve||current.capabilities.implementation_record||!current.request.assessments.length)throw Error('Field impact or retained formal boundary mismatch');
+ return{passed:true,feedback_id:id,change_id:row.change_id,create_receipt:receipt.id,graph_id:graph.id,impact_receipt:impact.id,change_revision:2,actual_field_root:true,formal_selection_still_unavailable:true,model_calls:0};
+}
+)(page);
+```
+
+### Result
+{"passed":true,"feedback_id":"47e04c3f-65d0-5999-b1a4-bbaf2dc4dc41","receipt_id":"3caef6a5-3bdb-44b6-acb2-18b99057287c","fixed_native_impact_receipt":"b8b4096d-1267-42c9-bf80-95e6a6a79059","parent_revision":2,"responses":2,"parent_unchanged":true,"model_calls":0}
+### Ran Playwright code
+```js
+await (async page=>{
+ const c={"snapshot": "/private/tmp/pdos-field-y02q0jeq", "api_port": 56941, "web_port": 56942, "tenant_id": "bdde4a09-0aef-47dd-808f-d6da106946c4", "category_id": "f1ac063e-bed0-4914-b225-78a66a00c95b", "product_id": "2154753f-75f5-4de8-92ff-4d07e0c203c1", "project_id": "c82d6961-2d49-4db0-a9bc-86c9d15c73f0", "principal_id": "cda5be68-d97f-404e-930f-b5ce837d5a30", "source_id": "2dd8fc5f-25f9-4d76-b415-7b72eeeafb88", "engineering_configuration": {"id": "7aa64f5e-5e24-467a-9dc3-51f628633ec2", "revision": 1}, "manufacturing_configuration": {"id": "f7df9df2-8289-4a7a-a065-71cf293d0fff", "revision": 1}, "purpose": "Investigate one synthetic customer feedback against its actual fixed configuration", "issuer_key": "synthetic-knowledge:bdde4a09-0aef-47dd-808f-d6da106946c4", "issuer_version": "v1"}, f={"passed": true, "feedback_id": "47e04c3f-65d0-5999-b1a4-bbaf2dc4dc41", "change_id": "ab8c8dc4-8fe5-5e4a-b60a-6d6aa729d8de", "create_receipt": "6dc72c44-c716-4c8d-a77a-251a7cffc9af", "graph_id": "608fae27-5bba-4efe-bad2-c6d1e0fb4607", "impact_receipt": "b8b4096d-1267-42c9-bf80-95e6a6a79059", "change_revision": 2, "actual_field_root": true, "formal_selection_still_unavailable": true, "model_calls": 0}, root='/api/v1/categories/'+c.category_id+'/products/'+c.product_id+'/field-feedback';
+ const card=()=>page.getByRole('region',{name:'反馈列表',exact:true}).locator('article').filter({has:page.getByRole('heading',{name:'合成页面现场观察',exact:true})}),form=()=>page.getByRole('region',{name:'本次反馈表单',exact:true});
+ const read=async()=>{const r=await page.request.get(new URL(root+'?project_id='+c.project_id,page.url()).href);return(await r.json()).feedbacks.find(x=>x.id===f.feedback_id);};const before=await read();
+ await card().getByRole('button',{name:'链接后续结果',exact:true}).click();await form().getByRole('textbox',{name:'实际发生时间（含时区）',exact:true}).fill(new Date().toISOString());await form().getByRole('textbox',{name:'后续结果说明',exact:true}).fill('关联本页面刚保存的真实双线影响回执；尚未正式实施或完成复验。');await form().getByRole('textbox',{name:'实际后续结果回执',exact:true}).fill(f.impact_receipt);await form().getByRole('textbox',{name:'办理理由',exact:true}).fill('合成页面确认：固定实际结果和来源，保持父反馈配置版本。');await form().getByRole('combobox',{name:'选择依据原件',exact:true}).selectOption(c.source_id);await form().getByRole('region',{name:'本次精确来源',exact:true}).getByRole('button').first().click();
+ await form().getByRole('button',{name:'核对此次办理材料',exact:true}).click();const confirm=page.getByRole('region',{name:'本次反馈共同确认',exact:true});await confirm.getByRole('button',{name:'本人确认本次保存',exact:true}).waitFor({timeout:60000});const pending=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname.endsWith('/commands')&&r.request().postDataJSON()?.operation==='field.feedback.followup.link');await confirm.getByRole('button',{name:'本人确认本次保存',exact:true}).click();const result=await pending;if(result.status()!==200)throw Error('Actual link '+result.status()+' '+await result.text());const receipt=await result.json();await page.getByRole('region',{name:'反馈保存回执',exact:true}).waitFor({timeout:60000});const final=await read();if(final.version_id!==before.version_id||final.revision!==2||final.responses.length!==2||!final.responses.some(x=>x.receipt_id===receipt.id&&x.result_receipts.some(y=>y.receipt_id===f.impact_receipt)))throw Error('Actual result link/parent mismatch');return{passed:true,feedback_id:final.id,receipt_id:receipt.id,fixed_native_impact_receipt:f.impact_receipt,parent_revision:2,responses:2,parent_unchanged:true,model_calls:0};
+}
+)(page);
+```
+
+### Result
+{"passed":true,"light":1440,"dark":320,"narrow_overflow":false,"files":["field-light-1440.png","field-dark-320.png"]}
+### Ran Playwright code
+```js
+await (async page=>{const dir="/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s5-20261018/field";const card=()=>page.getByRole('region',{name:'反馈列表',exact:true}).locator('article').filter({has:page.getByRole('heading',{name:'合成页面现场观察',exact:true})});await page.setViewportSize({width:1440,height:1000});if(await page.evaluate(()=>document.documentElement.classList.contains('dark')))await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();await card().scrollIntoViewIfNeeded();await page.evaluate(()=>window.scrollBy(0,-220));await page.screenshot({path:dir+'/field-light-1440.png'});await page.setViewportSize({width:320,height:900});if(!await page.evaluate(()=>document.documentElement.classList.contains('dark')))await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();await card().scrollIntoViewIfNeeded();await page.evaluate(()=>window.scrollBy(0,-180));const size=await page.evaluate(()=>({viewport:innerWidth,scroll:document.documentElement.scrollWidth}));if(size.scroll>size.viewport+1)throw Error('Narrow overflow '+JSON.stringify(size));await page.screenshot({path:dir+'/field-dark-320.png'});await page.setViewportSize({width:1440,height:1000});return{passed:true,light:1440,dark:320,narrow_overflow:false,files:['field-light-1440.png','field-dark-320.png']};})(page);
+```
+
+### Result
+{"passed":true,"light":1440,"dark":320,"narrow_overflow":false,"files":["field-light-1440.png","field-dark-320.png"]}
+### Ran Playwright code
+```js
+await (async page=>{const dir="/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s5-20261018/field";const card=()=>page.getByRole('region',{name:'反馈列表',exact:true}).locator('article').filter({has:page.getByRole('heading',{name:'合成页面现场观察',exact:true})});await page.setViewportSize({width:1440,height:1000});if(await page.evaluate(()=>document.documentElement.classList.contains('dark')))await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();await page.waitForFunction(()=>Array.from(document.querySelectorAll('article')).find(x=>x.textContent.includes('合成页面现场观察'))?.querySelector('button')?.disabled===false);await card().scrollIntoViewIfNeeded();await page.evaluate(()=>window.scrollBy(0,-220));await page.screenshot({path:dir+'/field-light-1440.png',animations:'disabled'});await page.setViewportSize({width:320,height:900});if(!await page.evaluate(()=>document.documentElement.classList.contains('dark')))await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();await page.waitForFunction(()=>Array.from(document.querySelectorAll('article')).find(x=>x.textContent.includes('合成页面现场观察'))?.querySelector('button')?.disabled===false);await card().scrollIntoViewIfNeeded();await page.evaluate(()=>window.scrollBy(0,-180));const size=await page.evaluate(()=>({viewport:innerWidth,scroll:document.documentElement.scrollWidth}));if(size.scroll>size.viewport+1)throw Error('Narrow overflow '+JSON.stringify(size));await page.screenshot({path:dir+'/field-dark-320.png',animations:'disabled'});await page.setViewportSize({width:1440,height:1000});return{passed:true,light:1440,dark:320,narrow_overflow:false,files:['field-light-1440.png','field-dark-320.png']};})(page);
+```
+
+Browser 'pdos-s5-field-20261018' closed
+
+

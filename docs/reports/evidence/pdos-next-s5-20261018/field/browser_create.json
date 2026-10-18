@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "feedback_id": "47e04c3f-65d0-5999-b1a4-bbaf2dc4dc41",
+  "receipt_id": "597b0704-6e50-4344-9938-e8db9800ba7b",
+  "unknown_location_retained": true,
+  "refresh_posts": 0,
+  "original_key_and_payload_replayed": true,
+  "create_previews": 0,
+  "create_executions": 2,
+  "actual_saved_versions": 1,
+  "title": "合成页面现场观察",
+  "model_calls": 0
+}

@@ -946,6 +946,10 @@ def create_app(
 
     register_knowledge_experience(app, engine, auth_dependency)
 
+    from pdos_next.domain.field_feedback.api import register_routes as register_field_feedback
+
+    register_field_feedback(app, engine, auth_dependency)
+
     from pdos_next.domain.automations.api import register_routes as register_automations
 
     register_automations(app, engine, auth_dependency,

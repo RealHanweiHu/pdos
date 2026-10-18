@@ -2,6 +2,10 @@
 
 CATEGORY_OPERATIONS = frozenset(
     {
+        "field.feedback.create",
+        "field.feedback.locate",
+        "field.feedback.action.record",
+        "field.feedback.followup.link",
         "knowledge.candidate.create",
         "ai.automation.draft.save",
         "ai.automation.activate",
@@ -63,6 +67,9 @@ T2_OPERATIONS = frozenset(
 
 T1_OPERATIONS = frozenset(
     {
+        "field.feedback.locate",
+        "field.feedback.action.record",
+        "field.feedback.followup.link",
         "work.risk.followup.record",
         "ai.automation.activate",
         "ai.automation.pause",
@@ -141,6 +148,7 @@ T1_OPERATIONS = frozenset(
 # PAYLOADS. An unclassified command is refused by tier_of, never treated as T0.
 T0_OPERATIONS = frozenset(
     {
+        "field.feedback.create",
         "knowledge.candidate.create",
         "ai.automation.draft.save",
         "work.task.create",
@@ -217,6 +225,15 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation in {
+        "field.feedback.create",
+        "field.feedback.locate",
+        "field.feedback.action.record",
+        "field.feedback.followup.link",
+    }:
+        from pdos_next.domain.field_feedback import service as field_service
+
+        return field_service
     if operation in {"knowledge.candidate.create", "knowledge.rule.publish"}:
         from pdos_next.domain.knowledge import service as knowledge_service
 

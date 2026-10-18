@@ -35,6 +35,7 @@ Kind = Literal[
     "evidence",
     "issue",
     "capa",
+    "field_feedback",
     "manufacturing_configuration",
     "graph_snapshot",
 ]

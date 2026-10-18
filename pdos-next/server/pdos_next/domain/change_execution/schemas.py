@@ -27,10 +27,10 @@ class ChangeCreatePayload(RequestCreate):
         return values
 
     @model_validator(mode="after")
-    def fixed_issue_basis(self) -> Self:
+    def fixed_native_basis(self) -> Self:
         refs = (*self.roots, *self.references)
-        if not any(ref.kind in {"issue", "capa"} for ref in refs):
-            raise ValueError("本轮变更须固定一个真实Issue或其CAPA作为依据")
+        if not any(ref.kind in {"issue", "capa", "field_feedback"} for ref in refs):
+            raise ValueError("变更须固定真实Issue、CAPA或已定位现场反馈作为依据")
         for group in (self.roots, self.references):
             if len({ref.identity for ref in group}) != len(group):
                 raise ValueError("固定引用不能重复")

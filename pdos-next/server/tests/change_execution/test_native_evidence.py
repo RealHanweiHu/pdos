@@ -1,7 +1,7 @@
 """Native text needs actual server registration; uploaded files keep their gate."""
 
 from types import SimpleNamespace
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import pytest
 
@@ -127,3 +127,44 @@ def test_uploaded_original_keeps_bytes_integrity_and_security_epoch(monkeypatch)
     assert basis[str(exact.id)]["source_origin"] == "uploaded_original"
     assert basis[str(exact.id)]["original_revision"] == 1
     assert basis[str(exact.id)]["security_epoch"] == 7 and store.calls == 1
+
+
+@pytest.mark.parametrize("io", [True, False])
+def test_registered_native_text_needs_no_uploaded_object_store(monkeypatch, io):
+    s, ctx, pid, reads, exact, store, receipt, _ = native(monkeypatch)
+    s.get_bind = SimpleNamespace  # No object-store dependency is installed.
+    basis, _, verified = service._evidence(s, ctx, pid, reads, (exact,), io=io)
+    assert basis[str(exact.id)]["registration_receipt_id"] == str(receipt.id)
+    assert service.digest(exact) in verified and store.calls == 0
+    s.scalars = lambda query: ()
+    with pytest.raises(DomainError) as failure:
+        service._evidence(s, ctx, pid, reads, (exact,), io=io)
+    assert failure.value.reason == "INTEGRATION_REQUIRED"
+    assert "登记回执" in failure.value.message  # Absence of a store never waives provenance.
+
+
+def test_uploaded_byte_io_still_requires_actual_object_store(monkeypatch):
+    s, ctx, pid, reads, exact, store = evidence(monkeypatch)
+    s.get_bind = SimpleNamespace
+    with pytest.raises(DomainError) as failure:
+        service._evidence(s, ctx, pid, reads, (exact,), io=True)
+    assert failure.value.reason == "INTEGRATION_REQUIRED" and failure.value.status == 503
+    assert store.calls == 0
+
+
+def test_uploaded_metadata_refresh_keeps_safety_check_without_store_or_byte_io(monkeypatch):
+    from pdos_next import original_security
+
+    s, ctx, pid, reads, exact, store = evidence(monkeypatch)
+    s.get_bind = SimpleNamespace
+    checked, require_safe = [], original_security.require_safe
+
+    def safety(*args, **kwargs):
+        checked.append(args[2].id)
+        return require_safe(*args, **kwargs)
+
+    monkeypatch.setattr(original_security, "require_safe", safety)
+    basis, _, verified = service._evidence(s, ctx, pid, reads, (exact,), io=False)
+    assert checked == [UUID(basis[str(exact.id)]["original_id"])]
+    assert basis[str(exact.id)]["security_epoch"] == 7
+    assert service.digest(exact) in verified and store.calls == 0

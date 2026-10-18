@@ -25,6 +25,8 @@ const releasePaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9
 const projectWorkPaths = /^v1\/products\/[a-f0-9-]{36}\/project-work(?:\/activity|\/fulfillment(?:\/inputs)?|\/external-waits(?:\/inputs)?|\/risks(?:\/inputs)?|\/inputs)?$/i;
 const projectWorkCommands = new Set(["work.risk.followup.record", "work.external_wait.record", "work.task.create", "work.task.assign", "work.task.accept", "work.commitment.accept", "work.commitment.review", "work.task.start", "work.task.submit", "work.task.review", "work.status_update.create"]);
 const knowledgeExperiencePaths = /^v1\/(?:products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/)?experience(?:\/inputs)?$/i;
+const fieldFeedbackPaths = /^v1\/(?:products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/)?field-feedback(?:\/inputs)?$/i;
+const fieldCommands = new Set(["field.feedback.create", "field.feedback.locate", "field.feedback.action.record", "field.feedback.followup.link"]);
 const knowledgeCommands = new Set(["knowledge.candidate.create", "knowledge.rule.publish"]);
 const automationPaths = /^v1\/automation-rules(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/trigger)?)?$/i;
 const releaseCommands = new Set(["release.package.assemble", "release.engineering.approve", "release.manufacturing.approve"]);
@@ -156,7 +158,23 @@ function validKnowledgeCommand(value: unknown, productId: string | null, categor
   const a = p.applicability, t = a.target;
   return Object.keys(a).every(key => ["target", "purpose", "differences", "adopted_rule", "conditions", "decision", "rationale", "valid_from", "valid_until"].includes(key)) && isRecord(t) && Object.keys(t).every(key => ["kind", "id", "revision"].includes(key)) && ["engineering_configuration", "process_revision"].includes(String(t.kind)) && ref({ id: t.id, revision: t.revision }) && nonempty(a.purpose, 2000) && Array.isArray(a.differences) && a.differences.every(row => nonempty(row)) && nonempty(a.adopted_rule) && Array.isArray(a.conditions) && a.conditions.every(row => nonempty(row)) && ["applicable", "not_applicable", "unknown", "conflicted"].includes(String(a.decision)) && nonempty(a.rationale) && instant(a.valid_from) && (a.valid_until == null || instant(a.valid_until) && Date.parse(a.valid_until) > Date.parse(a.valid_from));
 }
+function validFieldCommand(value: unknown, productId: string | null, categoryId: string): boolean {
+  if (!isRecord(value) || Object.keys(value).some(key => !["command_id","idempotency_key","operation","category_id","product_id","expected_revision","payload","source_read_set"].includes(key)) || value.category_id !== categoryId || (value.product_id ?? null) !== productId || typeof value.operation !== "string" || !fieldCommands.has(value.operation) || typeof value.command_id !== "string" || !uuid.test(value.command_id) || typeof value.idempotency_key !== "string" || value.idempotency_key.length < 8 || value.idempotency_key.length > 160 || !positiveRevision(value.expected_revision) || !isRecord(value.payload) || !Array.isArray(value.source_read_set) || !value.source_read_set.length) return false;
+  const p=value.payload, seen=new Map<string,number>();
+  const text=(x:unknown,max=4000)=>typeof x==="string" && !!x.trim() && x.trim().length<=max;
+  const ref=(x:unknown)=>isRecord(x) && Object.keys(x).every(k=>["id","revision"].includes(k)) && typeof x.id==="string" && uuid.test(x.id) && positiveRevision(x.revision);
+  for(const r of value.source_read_set){if(!isRecord(r) || Object.keys(r).some(k=>!["artifact_id","expected_revision"].includes(k)) || typeof r.artifact_id!=="string" || !uuid.test(r.artifact_id) || !positiveRevision(r.expected_revision) || seen.has(r.artifact_id.toLowerCase()))return false;seen.set(r.artifact_id.toLowerCase(),r.expected_revision);}
+  if (!text(p.reason) || !Array.isArray(p.sources) || !p.sources.length || !p.sources.every(r=>isRecord(r) && Object.keys(r).every(k=>["id","revision","kind","position"].includes(k)) && r.kind==="artifact" && typeof r.id==="string" && uuid.test(r.id) && positiveRevision(r.revision) && text(r.position,2000) && seen.get(r.id.toLowerCase())===r.revision))return false;
+  const create=value.operation==="field.feedback.create", locate=value.operation==="field.feedback.locate", link=value.operation==="field.feedback.followup.link";
+  const allowed=create?["sources","reason","visibility","title","description","channel","feedback_kind","received_at","reported","purpose"]:locate?["sources","reason","feedback","confirmation_token","project_id","engineering_configuration","manufacturing_configuration","batch"]:["sources","reason","feedback","confirmation_token","description","occurred_at","visibility",link?"result_receipts":"action_kind"];
+  if(Object.keys(p).some(k=>!allowed.includes(k)))return false;
+  if(create)return text(p.title,200) && text(p.description) && text(p.purpose,2000) && ["field","customer"].includes(String(p.channel)) && ["observation","opinion","change_request","conditional_acceptance","formal_acceptance_claim"].includes(String(p.feedback_kind)) && isRecord(p.reported) && Object.keys(p.reported).every(k=>["product_label","batch_label","configuration_label"].includes(k));
+  if(!ref(p.feedback) || !(p.confirmation_token==null || text(p.confirmation_token,128)))return false;
+  if(locate)return productId!==null && ref(p.engineering_configuration) && (p.manufacturing_configuration==null || ref(p.manufacturing_configuration)) && (p.batch==null || ref(p.batch)) && (p.project_id==null || typeof p.project_id==="string" && uuid.test(p.project_id));
+  return text(p.description) && (link?Array.isArray(p.result_receipts) && p.result_receipts.length>0 && p.result_receipts.every(r=>isRecord(r) && Object.keys(r).every(k=>k==="receipt_id") && typeof r.receipt_id==="string" && uuid.test(r.receipt_id)):["containment","improvement"].includes(String(p.action_kind)));
+}
 const longCommands = new Set([
+  ...fieldCommands,
   ...manufacturingPreparationCommands,
   ...manufacturingPublicationCommands,
   ...nativePilotCommands,
@@ -210,11 +228,12 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const externalHandoff = externalHandoffPaths.test(pathname);
   const releaseException = releaseExceptionPaths.test(pathname);
   const projectWork = projectWorkPaths.test(pathname);
+  const fieldFeedback = fieldFeedbackPaths.test(pathname);
   const knowledgeExperience = knowledgeExperiencePaths.test(pathname);
   const automation = automationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !automation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (automation) {
     const method = pathname.endsWith("/trigger") ? "POST" : "GET";
@@ -369,7 +388,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   } else if (resourceInspect) {
     if (request.method !== "POST") return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: "POST" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "请在正文中固定唯一试制资源范围。" }, { status: 422 });
-  } else if (knowledgeExperience) {
+  } else if (knowledgeExperience || fieldFeedback) {
     const input = pathname.endsWith("/inputs"), method = input ? "POST" : "GET";
     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "请使用经验读取或材料核对入口。" }, { status: 405, headers: { Allow: method } });
     for (const [key, value] of request.nextUrl.searchParams) {
@@ -459,7 +478,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     const method = /\/(?:inputs|captures|selection-material|implementation-captures)$/.test(pathname) ? "POST" : "GET";
     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: method } });
     const orderContext = pathname.endsWith("/order-context");
-    const allowed = method === "POST" ? [] : pathname.endsWith("/quality-execution") ? ["build_id", "run_id", "issue_id"] : orderContext ? ["change_id"] : ["issue_id", "change_id", "project_id"];
+    const allowed = method === "POST" ? [] : pathname.endsWith("/quality-execution") ? ["build_id", "run_id", "issue_id"] : orderContext ? ["change_id"] : ["issue_id", "field_feedback_id", "change_id", "project_id"];
     for (const [key, value] of request.nextUrl.searchParams) {
       if (!allowed.includes(key) || query.has(key) || !uuid.test(value)) {
         return Response.json({ code: "VALIDATION_FAILED", message: "请使用有效且明确的查询范围。" }, { status: 422 });
@@ -509,6 +528,14 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   if (!base) return Response.json({ code: "SOURCE_UNAVAILABLE", message: "服务尚未配置。" }, { status: 503 });
   try {
     const body = request.method === "GET" ? undefined : await request.text();
+    if (fieldFeedback && request.method === "POST" || request.method === "POST" && ["v1/commands","v1/commands/preview"].includes(pathname)) {
+      let value: unknown;
+      try { value=JSON.parse(body ?? ""); } catch { if(fieldFeedback)return Response.json({code:"VALIDATION_FAILED",message:"请提交完整反馈原请求。"},{status:422}); }
+      if(fieldFeedback || isRecord(value) && typeof value.operation==="string" && fieldCommands.has(value.operation)){
+        const product=fieldFeedback?path[1]==="products"?path[2]:null:isRecord(value) && typeof value.product_id==="string"?value.product_id:null;
+        if(!categoryId || request.nextUrl.searchParams.size || !validFieldCommand(value,product,categoryId))return Response.json({code:"VALIDATION_FAILED",message:"请固定当前反馈范围、原件及本次操作。"},{status:422});
+      }
+    }
     if (knowledgeExperience && request.method === "POST" || request.method === "POST" && ["v1/commands", "v1/commands/preview"].includes(pathname)) {
       let value: unknown;
       try { value = JSON.parse(body ?? ""); } catch { if (knowledgeExperience) return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整经验原请求。" }, { status: 422 }); }

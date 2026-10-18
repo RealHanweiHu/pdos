@@ -1,0 +1,12 @@
+{
+  "base": "a87f437e48123f841ee7afee318c9e2c1d33bedc",
+  "baseline_only": true,
+  "exit": 1,
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n____ test_frozen_catalog_matches_actual_columns_without_consuming_transport ____\n\n    def test_frozen_catalog_matches_actual_columns_without_consuming_transport():\n        assert set(COVERED_COLUMNS) == set(models.Base.metadata.tables)\n        for name, table in models.Base.metadata.tables.items():\n>           assert set(COVERED_COLUMNS[name]) == set(table.columns.keys())\nE           AssertionError: assert {'category_id...osal_id', ...} == {'category_id...ject_id', ...}\nE             \nE             Extra items in the right set:\nE             'project_id'\nE             Use -v to get more diff\n\ntests/preproject/test_m3_lifecycle_catalog.py:26: AssertionError\n=========================== short test summary info ============================\nFAILED tests/preproject/test_m3_lifecycle_catalog.py::test_frozen_catalog_matches_actual_columns_without_consuming_transport\n1 failed in 0.37s\n",
+  "connections": 0,
+  "affected_existing_tables": [
+    "agent_sessions",
+    "agent_runs",
+    "work_task_versions"
+  ]
+}

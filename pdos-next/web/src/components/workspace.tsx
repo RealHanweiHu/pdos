@@ -38,6 +38,7 @@ import { ProjectActivity } from "@/components/projects/project-activity";
 import { ProjectWork } from "@/components/projects/project-work";
 import { ProjectPlanning } from "@/components/projects/project-planning";
 import { KnowledgeExperience } from "@/components/knowledge/knowledge-experience";
+import { FieldFeedback } from "@/components/field/field-feedback";
 import { Button } from "@/components/ui/button";
 import { categoryTransport } from "@/lib/category-transport";
 import { createWorkspaceApi } from "@/lib/workspace-api";
@@ -234,6 +235,7 @@ export function Workspace({ categoryId, projectId = "", onPaiContext }: { catego
           <WorkspacePanel key={`launch:${session?.principal_id}:${productId}`} name="launch">{session && <BuildLaunch projectId={projectId} key={`launch:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />}</WorkspacePanel>
           <WorkspacePanel key={`results:${session?.principal_id}:${productId}`} name="results">{session && <BuildResults projectId={projectId} key={`results:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />}</WorkspacePanel>
           <WorkspacePanel key={`quality:${session?.principal_id}:${productId}:${projectId}`} name="quality">{session && <div className="space-y-6"><BuildQualityLoop projectId={projectId} key={`quality:${session.principal_id}:${productId}:${projectId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} /><BuildQualityFollowup projectId={projectId} key={`quality-followup:${session.principal_id}:${productId}:${projectId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} /><BuildChangeOrders projectId={projectId} key={`change-orders:${session.principal_id}:${productId}:${projectId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} /></div>}</WorkspacePanel>
+          <WorkspacePanel key={`field:${session?.principal_id}:${productId}:${projectId}`} name="field">{session && <FieldFeedback api={api} categoryId={categoryId} product={data.product} principalId={session.principal_id} projectId={projectId || null} onSaved={refresh}/>}</WorkspacePanel>
           <WorkspacePanel key={`accounting:${session?.principal_id}:${productId}`} name="accounting">{session && <ModelAccounting key={`accounting:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />}</WorkspacePanel>
           <WorkspacePanel key={`originals:${session?.principal_id}:${productId}`} name="originals"><OriginalFiles key={productId} product={data.product} originals={data.originals} api={api} onSaved={refresh} /></WorkspacePanel>
           <WorkspacePanel key={`lifecycle:${session?.principal_id}:${productId}`} name="lifecycle">{session && <OriginalLifecycle key={`lifecycle:${session.principal_id}:${productId}`} productId={productId} productRevision={data.product.revision} api={api} onCommitted={refresh} />}</WorkspacePanel>

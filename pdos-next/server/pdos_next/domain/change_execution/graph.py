@@ -1,5 +1,6 @@
 """Fixed owner reads and bounded graph capture; no invented completeness manifests."""
 
+from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime
 from typing import get_args
@@ -165,6 +166,20 @@ class OwnerReader:
 
         s, ctx, pid = self.s, self.ctx, self.pid
         basis = {}
+        if ref.kind == "field_feedback":
+            from .field_bridge import get as field_feedback
+
+            row, view, _, _ = field_feedback(s, ctx, pid, ref)
+            return (
+                row,
+                view,
+                view["required_source_read_set"],
+                {
+                    "feedback_version_id": str(row.id),
+                    "feedback_sha256": row.body_sha256,
+                    "feedback_source_basis": deepcopy(row.source_basis),
+                },
+            )
         if ref.kind in {"issue", "capa"}:
             identity = (ref.id, ref.revision)
             if identity not in self.issue_wrappers:
@@ -396,7 +411,13 @@ class OwnerReader:
         def add(kind, identity, revision, relation, key=None):
             links.append((Ref(id=identity, revision=revision, kind=kind, key=key), relation))
 
-        if ref.kind in {"issue", "capa"}:
+        if ref.kind == "field_feedback":
+            from .field_bridge import configuration_refs
+
+            links.extend(
+                (configuration, "现场反馈固定定位配置") for configuration in configuration_refs(v)
+            )
+        elif ref.kind in {"issue", "capa"}:
             for failure in v["failures"]:
                 for kind, value in (
                     ("build", failure["build"]),

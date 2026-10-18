@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "feedback_id": "47e04c3f-65d0-5999-b1a4-bbaf2dc4dc41",
+  "parent_version_id": "e7a65f29-ba75-5571-814d-92c2414831ee",
+  "parent_revision": 2,
+  "actual_project": "c82d6961-2d49-4db0-a9bc-86c9d15c73f0",
+  "batch_still_unknown": true,
+  "responses": 1,
+  "receipt_ids": {
+    "field.feedback.locate": "ace89ff2-8429-4b23-8102-e0b12ac08fc8",
+    "field.feedback.action.record": "23bc7f6d-77cf-423c-8c12-3e6ee7b669a4"
+  },
+  "each_T1_preview": 1,
+  "each_T1_execute": 1,
+  "parent_unchanged_by_action": true,
+  "model_calls": 0
+}

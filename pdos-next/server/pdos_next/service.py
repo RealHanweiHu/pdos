@@ -84,6 +84,10 @@ def command_digest(command: Command) -> str:
 
 
 EVENTS = {
+    "field.feedback.create": "field.feedback_created",
+    "field.feedback.locate": "field.feedback_located",
+    "field.feedback.action.record": "field.feedback_action_recorded",
+    "field.feedback.followup.link": "field.feedback_followup_linked",
     "knowledge.candidate.create": "knowledge.candidate_created",
     "knowledge.rule.publish": "knowledge.rule_published",
     "work.commitment.review": "commitment.reviewed",
