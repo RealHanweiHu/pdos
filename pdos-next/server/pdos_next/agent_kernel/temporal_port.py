@@ -77,7 +77,8 @@ async def dispatch_pending_runs(engine, tenant_id, port):
     with tenant_session(engine, tenant_id) as session:
         rows = (
             session.execute(
-                text("SELECT * FROM kernel_pending_runs(:tenant,100)"), {"tenant": tenant_id}
+                text("SELECT * FROM kernel_pending_run_references(:tenant,100)"),
+                {"tenant": tenant_id},
             )
             .mappings()
             .all()
@@ -87,7 +88,7 @@ async def dispatch_pending_runs(engine, tenant_id, port):
         reference = {
             "tenant_id": str(row["tenant_id"]),
             "category_id": str(row["category_id"]) if row["category_id"] else "",
-            "actor_id": str(row["requester_id"]),
+            "actor_id": str(row["actor_id"]),
             "requester_id": str(row["requester_id"]),
             "subject_id": str(row["run_id"]),
         }

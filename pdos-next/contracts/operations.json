@@ -585,7 +585,7 @@
       "stage": "S5",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json",
-      "note": "Manual human-admitted read-only rules only; service schedules, domain events and relative milestones remain pending."
+      "note": "Read-only rules support human manual admission and named service authorization for schedule, registered domain event and actual relative milestone triggers. Network, MCP and business writes remain disabled; formal S5 acceptance is pending."
     },
     {
       "operation": "ai.automation.pause",
@@ -595,7 +595,7 @@
       "stage": "S5",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json",
-      "note": "Manual human-admitted read-only rules only; service schedules, domain events and relative milestones remain pending."
+      "note": "Read-only rules support human manual admission and named service authorization for schedule, registered domain event and actual relative milestone triggers. Network, MCP and business writes remain disabled; formal S5 acceptance is pending."
     },
     {
       "operation": "my_work.query",

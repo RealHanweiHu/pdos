@@ -1,0 +1,36 @@
+{
+  "head": "s0_0788",
+  "database": "pdos_test",
+  "port": 64245,
+  "tables": [
+    {
+      "table": "automation_service_grants",
+      "columns": 10,
+      "foreign_keys": 5,
+      "ordinary_owner": true,
+      "force_rls": true,
+      "agent_zero_dml": true
+    },
+    {
+      "table": "automation_causal_chains",
+      "columns": 8,
+      "foreign_keys": 3,
+      "ordinary_owner": true,
+      "force_rls": true,
+      "agent_zero_dml": true
+    },
+    {
+      "table": "automation_service_attempts",
+      "columns": 21,
+      "foreign_keys": 6,
+      "ordinary_owner": true,
+      "force_rls": true,
+      "agent_zero_dml": true
+    }
+  ],
+  "history_downgrade_refused": true,
+  "head_unchanged": true,
+  "backup_retained": true,
+  "narrow_host_commands": true,
+  "dispatcher_uuid_only": true
+}

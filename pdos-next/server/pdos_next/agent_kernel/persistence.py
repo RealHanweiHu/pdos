@@ -112,6 +112,10 @@ class KernelStore:
             yield session, run
 
     def authority(self, session, scope):
+        if scope.trigger == "automation_service":
+            from pdos_next.domain.automations.service_runtime import run_binding
+
+            run_binding(session, session.get(AgentRun, scope.run_id))
         for person in {scope.writer_id, scope.requester_id}:
             row = session.get(Principal, person)
             if not row or row.tenant_id != scope.tenant_id or not row.active:
@@ -145,8 +149,16 @@ class KernelStore:
         if scope.proposal_id is not None:
             from pdos_next.domain.preproject.access import proposal
 
-            proposal(session, Context(scope.tenant_id, scope.writer_id, scope.requester_id,
-                                     category_id=scope.category_id), scope.proposal_id)
+            proposal(
+                session,
+                Context(
+                    scope.tenant_id,
+                    scope.writer_id,
+                    scope.requester_id,
+                    category_id=scope.category_id,
+                ),
+                scope.proposal_id,
+            )
 
     def scope(self, *, tenant_id, requester_id, writer_id, category_id, run_id):
         with tenant_session(
@@ -210,12 +222,25 @@ class KernelStore:
             return [{"sequence": row.sequence, "body": row.body} for row in rows]
 
     def claim(
-        self, scope, call_key, tool, payload, *, reservation=0, cost_lease=None,
-        execution_binding=None, resume_started=False,
+        self,
+        scope,
+        call_key,
+        tool,
+        payload,
+        *,
+        reservation=0,
+        cost_lease=None,
+        execution_binding=None,
+        resume_started=False,
     ):
         try:
             return self._claim(
-                scope, call_key, tool, payload, reservation=reservation, cost_lease=cost_lease,
+                scope,
+                call_key,
+                tool,
+                payload,
+                reservation=reservation,
+                cost_lease=cost_lease,
                 execution_binding=execution_binding,
                 resume_started=resume_started,
             )
@@ -232,21 +257,35 @@ class KernelStore:
             raise
 
     def _claim(
-        self, scope, call_key, tool, payload, *, reservation=0, cost_lease=None,
-        execution_binding=None, resume_started=False,
+        self,
+        scope,
+        call_key,
+        tool,
+        payload,
+        *,
+        reservation=0,
+        cost_lease=None,
+        execution_binding=None,
+        resume_started=False,
     ):
         fingerprint = digest([tool, payload])
         binding = execution_binding or {"kind": "unbound"}
         resumable_read = (
             tool in {"research.fanout", "mcp.tools.list", "mcp.read"}
             and binding.get("kind") == "read"
-            and binding.get("read_kind") == "ordinary/v1" and binding.get("isolation") == "main"
-            and reservation == 0 and cost_lease is None
+            and binding.get("read_kind") == "ordinary/v1"
+            and binding.get("isolation") == "main"
+            and reservation == 0
+            and cost_lease is None
         )
         resumable_mcp = (
-            binding.get("kind") == "unbound" and binding.get("dispatch") == "mcp-read/v1"
-            and binding.get("isolation") == "mcp" and scope.isolation == "mcp"
-            and tool.startswith("mcp.") and reservation == 0 and cost_lease is None
+            binding.get("kind") == "unbound"
+            and binding.get("dispatch") == "mcp-read/v1"
+            and binding.get("isolation") == "mcp"
+            and scope.isolation == "mcp"
+            and tool.startswith("mcp.")
+            and reservation == 0
+            and cost_lease is None
         )
         if resume_started and not (resumable_read or resumable_mcp):
             raise DomainError("FORBIDDEN_SCOPE", "只有已绑定的只读编排可接续原调用。")
@@ -257,8 +296,11 @@ class KernelStore:
                 try:
                     parent = session.get(AgentToolCall, UUID(binding["parent_read_call_id"]))
                     if (
-                        not parent or parent.run_id != run.id or parent.tenant_id != run.tenant_id
-                        or parent.tool != "mcp.read" or parent.state not in {"started", "completed"}
+                        not parent
+                        or parent.run_id != run.id
+                        or parent.tenant_id != run.tenant_id
+                        or parent.tool != "mcp.read"
+                        or parent.state not in {"started", "completed"}
                         or parent.execution_binding.get("kind") != "read"
                         or parent.execution_binding.get("isolation") != "main"
                     ):
@@ -272,17 +314,20 @@ class KernelStore:
             )
             if call:
                 if (
-                    call.tool != tool or call.input_digest != fingerprint
+                    call.tool != tool
+                    or call.input_digest != fingerprint
                     or call.execution_binding != binding
                 ):
                     raise DomainError("DUPLICATE_INTENT_CONFLICT", "原调用绑定了不同载荷。")
                 if call.state == "completed":
                     if binding.get("kind") == "read" and (
-                        call.error_code is not None or call.receipt_id is not None
+                        call.error_code is not None
+                        or call.receipt_id is not None
                         or not isinstance(call.result, dict)
                     ):
                         raise DomainError(
-                            "SOURCE_UNAVAILABLE", "原读取没有成功完成的可信结果。",
+                            "SOURCE_UNAVAILABLE",
+                            "原读取没有成功完成的可信结果。",
                             detail={"reason": "read_call_invalid"},
                         )
                     return call.id, call.result
@@ -297,7 +342,7 @@ class KernelStore:
                 )
             if reservation < 0 or run.held_tokens + run.used_tokens + reservation > run.token_limit:
                 raise DomainError("RATE_LIMITED", "运行预算不足。")
-            if run.trigger == "automation_manual":
+            if run.trigger in {"automation_manual", "automation_service"}:
                 from pdos_next.domain.automations.runtime import reserve
 
                 reserve(session, run, reservation=reservation, cost_lease=cost_lease)
@@ -445,6 +490,7 @@ class KernelStore:
                 "partial" if result["status"] == "partial" else "completed",
             )
             from .process_view import record_state
+
             if previous_state != run.state:
                 record_state(session, run)
 
@@ -487,12 +533,22 @@ def create_run(
         or not writer.active
     ):
         raise DomainError("FORBIDDEN_SCOPE", "发起人与独立 AI 身份须由服务器绑定。")
-    fingerprint = request_digest or digest([
-        goal, session_id, ctx.category_id, product_id, proposal_id, trigger, validation_budget_id,
-        sorted(read_sources, key=lambda r: str(r["artifact_id"])),
-    ])
-    if not isinstance(fingerprint, str) or len(fingerprint) != 64 or any(
-        value not in "0123456789abcdef" for value in fingerprint
+    fingerprint = request_digest or digest(
+        [
+            goal,
+            session_id,
+            ctx.category_id,
+            product_id,
+            proposal_id,
+            trigger,
+            validation_budget_id,
+            sorted(read_sources, key=lambda r: str(r["artifact_id"])),
+        ]
+    )
+    if (
+        not isinstance(fingerprint, str)
+        or len(fingerprint) != 64
+        or any(value not in "0123456789abcdef" for value in fingerprint)
     ):
         raise DomainError("INVALID_PAYLOAD", "运行请求摘要无效。", 422)
     prior = session.scalar(
@@ -513,16 +569,21 @@ def create_run(
         require_access(session, ctx, product_id)
         canonical_reads = []
         for ref in read_sources:
-            parsed = SourceRead.model_validate({key: value for key, value in ref.items()
-                                               if key != "product_id"})
+            parsed = SourceRead.model_validate(
+                {key: value for key, value in ref.items() if key != "product_id"}
+            )
             source_product = UUID(ref["product_id"]) if ref.get("product_id") else None
-            actual = source_for(session, ctx, product_id or source_product, parsed.artifact_id,
-                                parsed.expected_revision)
+            actual = source_for(
+                session,
+                ctx,
+                product_id or source_product,
+                parsed.artifact_id,
+                parsed.expected_revision,
+            )
             actual_product = str(actual.product_id) if actual.product_id else None
             if ref.get("product_id") != actual_product:
                 raise DomainError("FORBIDDEN_SCOPE", "运行来源须保留原件的实际型号范围。", 403)
-            canonical_reads.append({**parsed.model_dump(mode="json"),
-                                    "product_id": actual_product})
+            canonical_reads.append({**parsed.model_dump(mode="json"), "product_id": actual_product})
         read_sources = canonical_reads
     if session_id:
         conversation = session.get(AgentSession, session_id)
@@ -566,9 +627,10 @@ def create_run(
         customer_identities=list(customer_identities),
         token_limit=token_limit,
         read_sources=list(read_sources),
-        versions={LAYOUT_KEY: SESSION_LAYOUT, **(
-            {"proposal_context": outbound_context} if outbound_context is not None else {}
-        )},
+        versions={
+            LAYOUT_KEY: SESSION_LAYOUT,
+            **({"proposal_context": outbound_context} if outbound_context is not None else {}),
+        },
         validation_budget_id=validation_budget_id,
     )
     session.add(run)
@@ -602,6 +664,7 @@ def cancel_run(session, ctx, run_id):
         run.held_tokens, run.state = 0, "cancelled"
         run.cancel_epoch += 1
         from .process_view import record_state
+
         record_state(session, run)
     return {
         "run_id": str(run.id),
@@ -644,14 +707,20 @@ def prepare_run_revert(session, ctx, run_id, *, lock=False):
     ):
         raise DomainError("FORBIDDEN_SCOPE", "整次撤回需要当前品类写入授权。")
     ids = set(session.scalars(text("SELECT kernel_run_receipt_ids(:id)"), {"id": run.id}))
-    receipts = session.scalars(
-        select(Receipt).where(Receipt.id.in_(ids)).order_by(Receipt.created_at, Receipt.id)
-    ).all() if ids else []
-    recorded = set(session.scalars(
-        select(AgentToolCall.receipt_id).where(
-            AgentToolCall.run_id == run.id, AgentToolCall.receipt_id.is_not(None)
+    receipts = (
+        session.scalars(
+            select(Receipt).where(Receipt.id.in_(ids)).order_by(Receipt.created_at, Receipt.id)
+        ).all()
+        if ids
+        else []
+    )
+    recorded = set(
+        session.scalars(
+            select(AgentToolCall.receipt_id).where(
+                AgentToolCall.run_id == run.id, AgentToolCall.receipt_id.is_not(None)
+            )
         )
-    ))
+    )
     if {r.id for r in receipts} != ids or not recorded.issubset(ids):
         raise DomainError("FORBIDDEN_SCOPE", "运行有缺失或当前不可读回执，不能部分撤回。")
     for receipt in receipts:
@@ -661,13 +730,14 @@ def prepare_run_revert(session, ctx, run_id, *, lock=False):
             or (run.product_id is not None and receipt.product_id != run.product_id)
             or not (
                 receipt.actor_id == run.writer_id
-                or (receipt.actor_id == run.requester_id
-                    and receipt.operation in {
-                        "evidence.claim.record", "product.definition.item.patch"
-                    }
+                or (
+                    receipt.actor_id == run.requester_id
+                    and receipt.operation
+                    in {"evidence.claim.record", "product.definition.item.patch"}
                     and receipt.result.get("origin") == "ai_draft"
                     and receipt.result.get("writer_id") == str(run.writer_id)
-                    and receipt.result.get("confirmed_by") == str(run.requester_id))
+                    and receipt.result.get("confirmed_by") == str(run.requester_id)
+                )
             )
             or receipt.requester_id != run.requester_id
             or receipt.agent_run_id != run.id
@@ -677,9 +747,7 @@ def prepare_run_revert(session, ctx, run_id, *, lock=False):
     return run, receipts
 
 
-def finish_run_revert(
-    session, ctx, run_id, *, revert_receipt_id, expected_cancel_epoch
-):
+def finish_run_revert(session, ctx, run_id, *, revert_receipt_id, expected_cancel_epoch):
     """Stamp only technical state after the public owner flushed its Human receipt."""
     from pdos_next.models import Receipt
 
@@ -722,18 +790,30 @@ def finish_run_revert(
     run.held_tokens = 0
     run.cancel_epoch += 1
     run.reverted_at, run.reverted_by, run.revert_receipt_id = (
-        receipt.created_at, ctx.actor_id, receipt.id
+        receipt.created_at,
+        ctx.actor_id,
+        receipt.id,
     )
-    sequence = session.scalar(
-        select(func.coalesce(func.max(AgentEvent.sequence), 0))
-        .where(AgentEvent.run_id == run.id)
-    ) + 1
-    session.add(AgentEvent(
-        tenant_id=run.tenant_id, run_id=run.id, sequence=sequence,
-        body={
-            "type": "run_reverted", "receipt_id": str(receipt.id), "cancel_epoch": run.cancel_epoch
-        },
-    ))
+    sequence = (
+        session.scalar(
+            select(func.coalesce(func.max(AgentEvent.sequence), 0)).where(
+                AgentEvent.run_id == run.id
+            )
+        )
+        + 1
+    )
+    session.add(
+        AgentEvent(
+            tenant_id=run.tenant_id,
+            run_id=run.id,
+            sequence=sequence,
+            body={
+                "type": "run_reverted",
+                "receipt_id": str(receipt.id),
+                "cancel_epoch": run.cancel_epoch,
+            },
+        )
+    )
     session.flush()
     return run_revert_status(run)
 

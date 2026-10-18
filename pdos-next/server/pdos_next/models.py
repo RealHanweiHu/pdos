@@ -1156,3 +1156,5 @@ from pdos_next.domain.work_management.models import (  # noqa: E402,F401
 )
 
 import pdos_next.domain.automations.models  # noqa: E402,F401
+
+import pdos_next.domain.automations.service_models  # noqa: E402,F401

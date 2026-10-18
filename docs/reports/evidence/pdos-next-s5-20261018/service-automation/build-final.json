@@ -1,0 +1,18 @@
+{
+  "base_commit": "0a760ae05258573290ea40e1bc09f6e9d7861ba4",
+  "started_at": "2026-10-18T02:26:25.580096+00:00",
+  "finished_at": "2026-10-18T02:27:08.790457+00:00",
+  "steps": [
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exit": 0
+    }
+  ],
+  "source_changed": [],
+  "real_external_calls": 0,
+  "performance_acceptance": false
+}

@@ -149,6 +149,25 @@ def _calls(session, run):
 
 
 def _receipts(session, run):
+    if run.trigger == "automation_service":
+        from pdos_next.domain.automations.service_runtime import run_binding
+
+        run_binding(session, run)
+        return session.execute(
+            select(
+                Receipt.id,
+                Receipt.operation,
+                Receipt.subject_type,
+                Receipt.subject_id,
+                Receipt.subject_revision,
+            )
+            .where(
+                Receipt.agent_run_id == run.id,
+                Receipt.actor_id == run.writer_id,
+                Receipt.requester_id == run.requester_id,
+            )
+            .order_by(Receipt.id)
+        ).all()
     prior = session.scalar(text("SELECT current_setting('pdos.actor_id',true)"))
     try:
         with session.begin_nested():
@@ -264,11 +283,21 @@ def finalize(
         requester_id=ctx.requester_id,
         category_id=ctx.category_id,
     ) as session:
-        run = owner(
-            session,
-            ctx,
-            session.scalar(select(AgentRun).where(AgentRun.id == run_id).with_for_update()),
-        )
+        run = session.scalar(select(AgentRun).where(AgentRun.id == run_id).with_for_update())
+        if automatic and run is not None and run.trigger == "automation_service":
+            from pdos_next.domain.automations.service_runtime import run_binding
+
+            if (
+                ctx.actor_id != run.writer_id
+                or ctx.requester_id != run.requester_id
+                or ctx.category_id != run.category_id
+                or ctx.agent_run_id
+                or ctx.run_id
+            ):
+                raise DomainError("FORBIDDEN_SCOPE", "后台核对须使用实际服务运行身份。", 403)
+            run_binding(session, run)
+        else:
+            run = owner(session, ctx, run)
         previous = completed_record(session, run)
         if previous is not None:
             if (

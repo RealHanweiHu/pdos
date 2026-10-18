@@ -19,10 +19,15 @@ from .schemas import AutomationSpec
 from .service import owned, spec_current
 
 TRIGGER = "automation_manual"
+TRIGGERS = frozenset({TRIGGER, "automation_service"})
 
 
 def binding(s, run):
     """Read the immutable occurrence, never arbitrary model/configuration JSON as authority."""
+    if run.trigger == "automation_service":
+        from .service_runtime import run_binding
+
+        return run_binding(s, run)
     if run.trigger != TRIGGER:
         return None
     occurrence = s.scalar(select(Occurrence).where(Occurrence.run_id == run.id))
@@ -55,7 +60,7 @@ def binding(s, run):
 
 
 def scope_binding(store, scope):
-    if scope.trigger != TRIGGER:
+    if scope.trigger not in TRIGGERS:
         return None
     with store.transaction(scope) as (s, run):
         return binding(s, run)
@@ -98,10 +103,30 @@ def reserve(s, run, *, reservation, cost_lease):
     if value is None or cost_lease is None:
         return
     occurrence, spec = value
+    if run.trigger == "automation_service":
+        # SQL checks the stored chain and serializes its shared envelope before
+        # the per-rule lock, including descendants owned by other delegators.
+        allowed = s.scalar(
+            text("SELECT automation_chain_reserve(:run,:cost,:inp,:outp)"),
+            {"run": run.id, "cost": cost_lease[0], "inp": cost_lease[1], "outp": cost_lease[2]},
+        )
+        if allowed is not True:
+            raise DomainError("RATE_LIMITED", "本因果链的累计预算已达上限。")
     # All runs of this rule serialize new reservations; no AI DML privilege on rule facts.
     s.execute(
         text("SELECT pg_advisory_xact_lock(hashtextextended(:key,0))"),
         {"key": f"automation-budget:{run.tenant_id}:{occurrence.rule_id}"},
+    )
+    from .service_models import AutomationServiceAttempt as ServiceAttempt
+
+    admitted_runs = (
+        select(Occurrence.run_id)
+        .where(Occurrence.rule_id == occurrence.rule_id)
+        .union(
+            select(ServiceAttempt.run_id).where(
+                ServiceAttempt.rule_id == occurrence.rule_id, ServiceAttempt.state == "admitted"
+            )
+        )
     )
     used = s.execute(
         select(
@@ -142,14 +167,8 @@ def reserve(s, run, *, reservation, cost_lease):
                 0,
             ),
             func.count(AgentToolCall.id),
-        )
-        .join(
-            Occurrence,
-            (Occurrence.run_id == AgentToolCall.run_id)
-            & (Occurrence.tenant_id == AgentToolCall.tenant_id),
-        )
-        .where(
-            Occurrence.rule_id == occurrence.rule_id,
+        ).where(
+            AgentToolCall.run_id.in_(admitted_runs),
             AgentToolCall.cost_state != "unmetered",
         )
     ).one()
@@ -204,6 +223,8 @@ def admit(s, ctx, rule_id, data, ports):
     if version is None:
         raise DomainError("VERSION_CONFLICT", "请先确认启用规则。")
     spec = AutomationSpec.model_validate(version.spec)
+    if spec.trigger_kind != "manual":
+        raise DomainError("FORBIDDEN_SCOPE", "自动规则由已授权服务受理，不能借用人工触发。", 403)
     at = now()
     validate_admission(
         {

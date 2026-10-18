@@ -12,11 +12,23 @@ from .definitions import (
 
 
 class TemporalSender:
-    def __init__(self, client, task_queue="pdos-next-domain-v1", *, dispatch_engine=None):
+    def __init__(
+        self,
+        client,
+        task_queue="pdos-next-domain-v1",
+        *,
+        dispatch_engine=None,
+        automation_sender=None,
+    ):
         self.client, self.task_queue = client, task_queue
         self.dispatch_engine = dispatch_engine
+        self.automation_sender = automation_sender
 
     async def __call__(self, event: Envelope):
+        if self.automation_sender is not None:
+            # Persist every eligible rule source before this single shared consumer
+            # acknowledges delivery, even when the original event has no workflow.
+            await self.automation_sender.event(event)
         if event.event_type == "category.created":
             if self.dispatch_engine is None:
                 raise RuntimeError("Category continuation requires the metadata dispatcher")
@@ -27,7 +39,9 @@ class TemporalSender:
             if adoption is None:
                 return None
             await TemporalPort(self.client, task_queue=self.task_queue).signal(
-                adoption["tenant_id"], adoption["run_id"], adoption["input_ref"],
+                adoption["tenant_id"],
+                adoption["run_id"],
+                adoption["input_ref"],
             )
             return workflow_id(adoption["tenant_id"], adoption["run_id"])
         reference = {

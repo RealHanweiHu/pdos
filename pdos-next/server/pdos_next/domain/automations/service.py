@@ -13,7 +13,7 @@ from pdos_next.domain.preproject.access import human
 from pdos_next.errors import DomainError
 from pdos_next.models import now
 from pdos_next.request_proof import command_inputs_once
-from pdos_next.service import command_digest, digest, require_access
+from pdos_next.service import EVENTS, command_digest, digest, require_access
 
 from .models import AutomationRuleCurrent as Current
 from .models import AutomationRuleVersion as Version
@@ -23,6 +23,7 @@ DRAFT = "ai.automation.draft.save"
 ACTIVATE = "ai.automation.activate"
 PAUSE = "ai.automation.pause"
 EFFECT = "规则仅供本人手动触发只读工作；暂停只阻止新受理。"
+SERVICE_EFFECT = "按固定服务授权自动触发小Pai只读工作；暂停只阻止新受理。"
 
 
 def semantic(payload):
@@ -45,6 +46,34 @@ def owned(s, ctx, rule_id, *, lock=False):
 def spec_current(s, ctx, spec, *, enabled=False):
     """A saved selection narrows real configuration; it does not confer a skill or wallet."""
     require_access(s, ctx, spec.product_id)
+    from .trigger_sources import condition_state, relative_due
+
+    if spec.trigger_kind == "domain_event":
+        if not set(spec.trigger_config["event_types"]) <= set(EVENTS.values()):
+            raise DomainError("FORBIDDEN_SCOPE", "事件须来自已登记的领域事件目录。", 403)
+    elif spec.trigger_kind == "relative_milestone":
+        relative_due(s, ctx, spec)
+    condition_state(s, ctx, spec)
+    if enabled and spec.trigger_kind != "manual":
+        from types import SimpleNamespace
+
+        from pdos_next.agent_kernel.bootstrap import Bootstrap
+
+        from .trigger_time import Schedule
+
+        expiry = spec.trigger_config.get("expires_at")
+        if expiry:
+            from datetime import datetime
+
+            if datetime.fromisoformat(expiry.replace("Z", "+00:00")) <= now():
+                raise DomainError("VERSION_CONFLICT", "自动规则已超过明确截止时刻。")
+        if spec.trigger_kind == "schedule":
+            Schedule.model_validate(spec.trigger_config)
+        # Verifies the unique writer and its current category/product access;
+        # the confirmation stores that actual identity, never a client supplied one.
+        Bootstrap(s.bind).binding_for(
+            s, ctx, SimpleNamespace(product_id=spec.product_id, proposal_id=None, sources=[])
+        )
     catalog = SkillCatalog()
     for ref in spec.skill_keys:
         actual = catalog.configuration(ref.key)
@@ -91,6 +120,7 @@ def prepared(s, ctx, command, scope, payload):
     action = {DRAFT: "draft", ACTIVATE: "activate", PAUSE: "pause"}[command.operation]
     if command.operation == DRAFT:
         spec = payload.spec
+        saved_spec = spec.model_dump(mode="json")
         if payload.restored_from is not None:
             old = s.get(Version, payload.restored_from)
             if (
@@ -110,6 +140,7 @@ def prepared(s, ctx, command, scope, payload):
             raise DomainError("VERSION_CONFLICT", "请明确确认当前草稿或已发布版本。")
         fixed = s.get(Version, selected)
         spec = AutomationSpec.model_validate(fixed.spec)
+        saved_spec = deepcopy(fixed.spec)
     if command.operation != PAUSE:
         spec_current(s, ctx, spec, enabled=command.operation == ACTIVATE)
     rule_id = pointer.rule_id if pointer else uuid4()
@@ -118,7 +149,7 @@ def prepared(s, ctx, command, scope, payload):
         "revision": pointer.revision + 1 if pointer else 1,
         "action": action,
         "state": {"draft": "draft", "activate": "active", "pause": "paused"}[action],
-        "spec": spec.model_dump(mode="json"),
+        "spec": saved_spec,
     }
     before = (
         None
@@ -132,17 +163,26 @@ def prepared(s, ctx, command, scope, payload):
             else None,
         }
     )
-    return Prepared(
-        pointer,
-        previous,
-        {
-            "operation": command.operation,
-            "declaration": semantic(payload),
-            "before": before,
-            "after": after,
-            "effect": EFFECT,
-        },
-    )
+    review = {
+        "operation": command.operation,
+        "declaration": semantic(payload),
+        "before": before,
+        "after": after,
+        "effect": EFFECT if spec.trigger_kind == "manual" else SERVICE_EFFECT,
+    }
+    if command.operation == ACTIVATE and spec.trigger_kind != "manual":
+        from pdos_next.agent_kernel.bootstrap import Bootstrap
+
+        review["service_authorization"] = {
+            "service_principal_id": str(Bootstrap.writer_for(s, ctx)),
+            "delegator_id": str(ctx.requester_id),
+            "category_id": str(ctx.category_id),
+            "product_id": str(spec.product_id) if spec.product_id else None,
+            "purpose": spec.purpose,
+            "budget": spec.budget.model_dump(mode="json"),
+            "expires_at": spec.trigger_config.get("expires_at"),
+        }
+    return Prepared(pointer, previous, review)
 
 
 def validate(s, ctx, command, scope, payload):
@@ -229,6 +269,28 @@ def apply_validated(s, ctx, command, scope, payload, plan):
             )
         else:
             pointer.state = "paused"
+    if row.action == "activate" and row.spec["trigger_kind"] != "manual":
+        from datetime import datetime
+
+        from .service_models import AutomationServiceGrant
+
+        authorization = plan.review["service_authorization"]
+        expiry = authorization["expires_at"]
+        s.add(
+            AutomationServiceGrant(
+                id=uuid4(),
+                tenant_id=ctx.tenant_id,
+                category_id=ctx.category_id,
+                owner_id=ctx.requester_id,
+                writer_id=UUID(authorization["service_principal_id"]),
+                rule_id=row.rule_id,
+                published_version_id=row.id,
+                receipt_id=row.receipt_id,
+                expires_at=datetime.fromisoformat(expiry.replace("Z", "+00:00"))
+                if expiry
+                else None,
+            )
+        )
     row.prepared_receipt_id = row.receipt_id
     row.action_result = {"rule_id": str(row.rule_id), "state": pointer.state}
     return row, "automation_rule", "private"
@@ -239,6 +301,8 @@ def version_view(row):
 
 
 def rule_view(s, pointer):
+    from .service_runtime import grant_view
+
     draft = s.get(Version, pointer.draft_version_id) if pointer.draft_version_id else None
     published = (
         s.get(Version, pointer.published_version_id) if pointer.published_version_id else None
@@ -251,6 +315,7 @@ def rule_view(s, pointer):
         "state": pointer.state,
         "draft": version_view(draft),
         "published": version_view(published),
+        "service_grant": grant_view(s, pointer),
         "admitted_count": pointer.admitted_count,
         "last_admitted_at": pointer.last_admitted_at.isoformat()
         if pointer.last_admitted_at
@@ -278,6 +343,7 @@ def workspace(s, ctx):
     return {
         "category_revision": scope.revision,
         "as_of": now().isoformat(),
+        "event_types": sorted(set(EVENTS.values())),
         "rules": [rule_view(s, p) for p in pointers],
         "skills": [
             {
@@ -318,8 +384,39 @@ def detail(s, ctx, rule_id):
         .where(Occurrence.rule_id == rule_id)
         .order_by(Occurrence.created_at.desc(), Occurrence.id)
     ).all()
+    from .service_models import AutomationServiceAttempt as Attempt
+
+    triggers = list(
+        s.scalars(
+            select(Attempt)
+            .where(Attempt.rule_id == rule_id)
+            .order_by(Attempt.created_at.desc(), Attempt.id)
+        )
+    )
+    service_runs = s.execute(
+        select(Attempt, AgentRun.state)
+        .join(AgentRun, AgentRun.id == Attempt.run_id)
+        .where(Attempt.rule_id == rule_id, Attempt.state == "admitted")
+    ).all()
+    runs = sorted(
+        [*runs, *service_runs], key=lambda item: (item[0].created_at, item[0].id), reverse=True
+    )
     return {
         "rule": rule_view(s, pointer),
+        "triggers": [
+            {
+                "id": str(a.id),
+                "version_id": str(a.published_version_id),
+                "kind": a.trigger_kind,
+                "source": a.origin,
+                "decision": a.state,
+                "error_code": a.error_code,
+                "run_id": str(a.run_id) if a.run_id else None,
+                "created_at": a.created_at.isoformat(),
+                "admitted_at": a.admitted_at.isoformat() if a.admitted_at else None,
+            }
+            for a in triggers
+        ],
         "history": [
             {
                 "id": str(v.id),

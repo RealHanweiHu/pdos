@@ -322,7 +322,7 @@
       "write_tier": "T0",
       "executor": "named_human",
       "event": "ai.automation_draft_saved",
-      "purpose": "Save an immutable owner rule draft, including a copied historical configuration. Does not activate a service or trigger model execution. This local slice only admits explicit human manual read-only work.",
+      "purpose": "Save an immutable owner rule draft, including an actual prior configuration. Does not activate service authority or model execution. Automatic triggers require named T1 service authorization; this local slice remains read-only.",
       "canonical_policy_preserved": [
         "ai.automation.activate:T1",
         "ai.automation.pause:T1"

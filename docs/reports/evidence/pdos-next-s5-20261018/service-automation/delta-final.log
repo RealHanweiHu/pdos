@@ -1,0 +1,28 @@
+..                                                                       [100%]
+=============================== warnings summary ===============================
+tests/automations_pg/test_service_budget_pg.py::test_actual_service_chain_keeps_unknown_cost_across_rules_and_suppresses_depth
+tests/automations_pg/test_service_budget_pg.py::test_actual_service_chain_keeps_unknown_cost_across_rules_and_suppresses_depth
+tests/automations_pg/test_service_budget_pg.py::test_actual_service_chain_keeps_unknown_cost_across_rules_and_suppresses_depth
+tests/automations_pg/test_service_budget_pg.py::test_actual_service_chain_keeps_unknown_cost_across_rules_and_suppresses_depth
+tests/automations_pg/test_service_temporal_pg.py::test_actual_schedule_timer_survives_own_worker_restart_and_http_pause
+tests/automations_pg/test_service_temporal_pg.py::test_actual_schedule_timer_survives_own_worker_restart_and_http_pause
+tests/automations_pg/test_service_temporal_pg.py::test_actual_schedule_timer_survives_own_worker_restart_and_http_pause
+  /private/tmp/pdos-s5-service-delivery-c1a960m3/pdos-next/server/pdos_next/domain/automations/service.py:242: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/automations_pg/test_service_budget_pg.py::test_actual_service_chain_keeps_unknown_cost_across_rules_and_suppresses_depth
+tests/automations_pg/test_service_budget_pg.py::test_actual_service_chain_keeps_unknown_cost_across_rules_and_suppresses_depth
+tests/automations_pg/test_service_temporal_pg.py::test_actual_schedule_timer_survives_own_worker_restart_and_http_pause
+  /private/tmp/pdos-s5-service-delivery-c1a960m3/pdos-next/server/pdos_next/domain/automations/service_runtime.py:170: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([chain])
+
+tests/automations_pg/test_service_budget_pg.py::test_actual_service_chain_keeps_unknown_cost_across_rules_and_suppresses_depth
+tests/automations_pg/test_service_budget_pg.py::test_actual_service_chain_keeps_unknown_cost_across_rules_and_suppresses_depth
+tests/automations_pg/test_service_budget_pg.py::test_actual_service_chain_keeps_unknown_cost_across_rules_and_suppresses_depth
+tests/automations_pg/test_service_budget_pg.py::test_actual_service_chain_keeps_unknown_cost_across_rules_and_suppresses_depth
+tests/automations_pg/test_service_temporal_pg.py::test_actual_schedule_timer_survives_own_worker_restart_and_http_pause
+  /private/tmp/pdos-s5-service-delivery-c1a960m3/pdos-next/server/pdos_next/domain/automations/service_runtime.py:195: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([attempt])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+2 passed, 15 warnings in 30.10s

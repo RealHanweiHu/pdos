@@ -1,6 +1,7 @@
 """Local durable activities; domain truth is reread on every activity attempt."""
 
 import asyncio
+import logging
 import os
 from concurrent.futures import ThreadPoolExecutor
 from uuid import UUID
@@ -29,6 +30,12 @@ from pdos_next.workflows.transport import TemporalSender
 class Activities:
     def __init__(self, engine, store, checkpoint_url):
         self.engine, self.store, self.checkpoint_url = engine, store, checkpoint_url
+
+    @activity.defn(name="automation_rule_tick")
+    def automation_rule_tick(self, reference: dict):
+        from pdos_next.domain.automations.service_runtime import tick
+
+        return tick(self.engine, reference)
 
     @activity.defn(name="parse_uploaded_original")
     def parse(self, reference: dict):
@@ -99,6 +106,8 @@ async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
 
     dispatch_engine = engine_for(os.environ["DISPATCH_DATABASE_URL"])
     from pdos_next.agent_kernel.activities import KernelActivities, configure_agent_kernel
+    from pdos_next.domain.automations.transport import ServiceAutomationSender
+    from pdos_next.workflows.automation import AutomationRuleWork
     from pdos_next.workflows.xiaopai import XiaopaiWork
 
     if agent_kernel_adapters is not None:
@@ -106,9 +115,7 @@ async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
     else:
         from pdos_next.agent_kernel.bootstrap import Bootstrap
 
-        configure_agent_kernel(
-            engine, Bootstrap(engine, ports=agent_runtime_ports).adapters()
-        )
+        configure_agent_kernel(engine, Bootstrap(engine, ports=agent_runtime_ports).adapters())
     kernel_activities = KernelActivities(
         engine,
         checkpoint_url=os.environ["PDOS_CHECKPOINT_DATABASE_URL"],
@@ -126,7 +133,10 @@ async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
         os.environ["PDOS_TEMPORAL_ADDRESS"], namespace=os.environ["PDOS_TEMPORAL_NAMESPACE"]
     )
     activities = Activities(engine, store, os.environ["PDOS_CHECKPOINT_DATABASE_URL"])
-    sender = TemporalSender(client, dispatch_engine=dispatch_engine)
+    automation_sender = ServiceAutomationSender(client, engine, dispatch_engine)
+    sender = TemporalSender(
+        client, dispatch_engine=dispatch_engine, automation_sender=automation_sender
+    )
     from pdos_next.agent_kernel.temporal_port import TemporalPort, dispatch_pending_runs
 
     kernel_sender = TemporalPort(client, task_queue=sender.task_queue)
@@ -135,6 +145,12 @@ async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
     async def deliver():
         while not stop.is_set():
             for tenant in tenants:
+                try:
+                    await automation_sender.discover(tenant)
+                except Exception as error:
+                    logging.getLogger(__name__).warning(
+                        "Automation discovery unavailable: %s", type(error).__name__
+                    )
                 await dispatch_once(dispatch_engine, tenant, sender)
                 await dispatch_pending_runs(dispatch_engine, tenant, kernel_sender)
             try:
@@ -148,6 +164,7 @@ async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
             task_queue=sender.task_queue,
             workflows=[
                 XiaopaiWork,
+                AutomationRuleWork,
                 ParseOriginal,
                 QueueOriginalSecurity,
                 SecureOriginal,
@@ -156,6 +173,7 @@ async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
             ],
             activities=[
                 kernel_activities.advance,
+                activities.automation_rule_tick,
                 kernel_activities.reconcile,
                 activities.parse,
                 activities.queue,

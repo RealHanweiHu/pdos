@@ -20015,9 +20015,43 @@
               "type": "string"
             },
             "trigger_kind": {
-              "const": "manual",
+              "enum": [
+                "manual",
+                "schedule",
+                "domain_event",
+                "relative_milestone"
+              ],
               "title": "Trigger Kind",
               "type": "string"
+            },
+            "trigger_config": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Trigger Config"
+            },
+            "conditions": {
+              "$ref": "#/$defs/Conditions"
+            },
+            "max_cascade_depth": {
+              "default": 3,
+              "maximum": 2147483647,
+              "minimum": 0,
+              "title": "Max Cascade Depth",
+              "type": "integer"
+            },
+            "external_sources_enabled": {
+              "const": false,
+              "default": false,
+              "title": "External Sources Enabled",
+              "type": "boolean"
             },
             "product_id": {
               "anyOf": [
@@ -20135,6 +20169,56 @@
             "call_limit"
           ],
           "title": "BudgetLimits",
+          "type": "object"
+        },
+        "Conditions": {
+          "additionalProperties": false,
+          "properties": {
+            "task_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Task Id"
+            },
+            "only_states": {
+              "items": {
+                "enum": [
+                  "proposed",
+                  "assigned",
+                  "accepted",
+                  "in_progress",
+                  "submitted",
+                  "completed"
+                ],
+                "type": "string"
+              },
+              "title": "Only States",
+              "type": "array"
+            },
+            "stop_states": {
+              "items": {
+                "enum": [
+                  "proposed",
+                  "assigned",
+                  "accepted",
+                  "in_progress",
+                  "submitted",
+                  "completed"
+                ],
+                "type": "string"
+              },
+              "title": "Stop States",
+              "type": "array"
+            }
+          },
+          "title": "Conditions",
           "type": "object"
         },
         "SkillRef": {

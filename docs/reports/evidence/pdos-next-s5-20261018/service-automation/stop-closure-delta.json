@@ -1,0 +1,16 @@
+{
+  "reason": "A persisted terminal service stop must also end its supervisor, including after category access is restored.",
+  "changed": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/service_runtime.py",
+      "before_sha256": "ad228920f6b44eedbfbbb1f16161e8afdf5768f7de101002596cc91dfa4cb302",
+      "after_sha256": "f39dc2c6ef1d3279d13ecf1c56364e1640274c3b4e0431f5527e396df10100f7"
+    },
+    {
+      "path": "pdos-next/server/tests/automations_pg/test_service_automation_pg.py",
+      "before_sha256": "7a7d8096d72b492aa6aed2792dde9a140a985ef3e926bb79e30e6dd26626f51e",
+      "after_sha256": "57946ebe4d55778b2e7f79eefe678d757fb56d610b3d820c037847aa3c696263"
+    }
+  ],
+  "frontend_inputs_unchanged": true
+}
