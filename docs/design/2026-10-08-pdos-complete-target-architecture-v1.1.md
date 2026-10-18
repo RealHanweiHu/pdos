@@ -362,6 +362,8 @@ RFQ、客户规格书、客户特殊要求只挂在对应提案或变体上，�
 
 **派生边界（v1.1）**：派生出新型号或新变体时走立项提案（派生迭代入口），以原型号已发布定义为基线列出差异，G0 批准后生成新型号或变体的定义 v1；同一型号在项目内的修改走 ChangeRequest。三方差异只保留一套实现。
 
+**派生入口统一到 G0（确认稿 P23）**：可被定义 v1、项目或平台关联引用的变体身份只由 `proposal.g0.decide` 产生，并带该 G0 决定。`product.variant.derive` 只产生提案准备用的派生草稿：草稿变体不带 G0 决定，任何下游对象不得引用它，也不因此获得定义版本或项目范围。
+
 允许复用的对象包括要求、平台模块、BOM子装配、测试规程、制造工序和知识；是否可复用由版本/适用性决定。跨客户共享还需要权限。
 
 子项目成果回写平台通过独立的采用/发布动作。设计成功不代表平台已经接受；客户定制要求也不应无意成为全平台规则。
@@ -1642,7 +1644,7 @@ S0～S5是新工程交付建议，不是旧项目任务编号。顺序（v1.1 �
 | `product.definition.item.patch`（v1.1） | T0 | 需资格与授权；署 AI 名、可撤回 | definition.item_patched |
 | `product.definition.update` | T1 | 一次确认后 | definition.updated |
 | `product.definition.publish`（= 规格冻结） | T2 | 仅准备/不可代决定 | definition.published |
-| `product.variant.derive` | T1 | 一次确认后 | variant.derived |
+| `product.variant.derive`（v1.1，确认稿 P23：只产生提案准备用的派生草稿，不产生可被引用的变体身份） | T1 | 一次确认后 | variant.derived |
 | `project.create`（v1.1：随 G0 批准由触发物建立；S0–M3 过渡期保留人工 T1 入口，见确认稿决策 P2） | T2 | 随 `proposal.g0.decide`，仅准备/不可代决定 | project.created |
 | `work.task.create` | T0 | 需资格与授权 | task.created |
 | `work.task.assign` | T1 | 一次确认后 | task.assigned |

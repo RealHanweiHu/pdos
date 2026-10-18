@@ -194,16 +194,18 @@ def test_failure_after_new_platform_rolls_back_every_business_member(setup, monk
 
 
 def test_private_variant_link_hidden_but_shared_platform_metadata_readable(setup):
-    from tests.products.test_variants_transactions import definition, derive, source
+    # 确认稿 P23: only a G0 approved variant identity may be bound, so the link
+    # target comes from a derivative proposal. The named reviewer is a third human
+    # and setup.peer stays outside the private proposal audience.
+    from g0_fixture import add_category_human, create_g0_variant
 
-    artifact = source(setup)
-    parent = definition(setup, artifact)
-    variant, _, _ = derive(setup, parent, artifact, kind="customer", visibility="private")
+    reviewer = add_category_human(setup, name="Synthetic variant reviewer")
+    variant = create_g0_variant(setup, reviewer=reviewer)
     saved, _ = confirmed(
         setup,
         request(
             setup,
-            variant_id=variant["id"],
+            variant_id=variant.variant_id,
             compatibility="合成客户专属配置",
             platform_version="C1",
         ),
@@ -213,19 +215,19 @@ def test_private_variant_link_hidden_but_shared_platform_metadata_readable(setup
     assert len(visible.json()["items"]) == 1
     shared = visible.json()["items"][0]
     assert shared["id"] == saved["result"]["platform_id"] and shared["links"] == []
-    assert "合成客户专属配置" not in visible.text and variant["id"] not in visible.text
+    assert "合成客户专属配置" not in visible.text and variant.variant_id not in visible.text
     assert "receipt_id" not in shared["provenance"] and "run_id" not in shared["provenance"]
     assert (
         read(
             setup,
             f"products/{setup.product}/platform-links",
-            f"?variant_id={variant['id']}",
+            f"?variant_id={variant.variant_id}",
             actor=setup.peer,
         ).status_code
         == 404
     )
     own = read(
-        setup, f"products/{setup.product}/platform-links", f"?variant_id={variant['id']}"
+        setup, f"products/{setup.product}/platform-links", f"?variant_id={variant.variant_id}"
     ).json()
     assert own["items"][0]["links"][0]["compatibility"] == "合成客户专属配置"
     assert read(setup, f"products/{setup.product}/platform-links").json()["items"] == []
@@ -395,3 +397,25 @@ def test_platform_migration_refuses_to_remove_committed_history(setup):
             transaction.rollback()
         assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "s0_0759"
     assert read(setup).json()["items"][0]["id"] == saved["result"]["platform_id"]
+
+
+def test_platform_link_refuses_a_variant_draft_without_a_g0_decision(setup):
+    """确认稿 P23: a direct derivation is preparation only; nothing may reference it."""
+    from tests.products.test_variants_transactions import definition, derive, source
+
+    artifact = source(setup)
+    parent = definition(setup, artifact)
+    draft, _, _ = derive(setup, parent, artifact, kind="customer", visibility="private")
+    before = counts(setup)
+    blocked = setup.client.post(
+        f"/v1/categories/{setup.category}/commands/preview",
+        headers=setup.headers,
+        json=request(setup, variant_id=draft["id"]),
+    )
+    assert blocked.status_code == 403, blocked.text
+    assert blocked.json()["code"] == "FORBIDDEN_SCOPE"
+    assert blocked.json()["detail"]["reason"] == "variant_without_g0_decision"
+    committed = post(setup, request(setup, variant_id=draft["id"]))
+    assert committed.status_code == 403, committed.text
+    assert committed.json()["detail"]["reason"] == "variant_without_g0_decision"
+    assert counts(setup) == before

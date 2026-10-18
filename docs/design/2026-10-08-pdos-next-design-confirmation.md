@@ -591,3 +591,26 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
   - **B9**：承诺行改为"**数据上不合并、显示上允许折叠**"——对不同接收者的承诺永远是不同记录（I08），但可折为一行并标出接收者数量，展开后逐行可见；折叠只是呈现，不改变记录。原文"按接收者分组"在承诺较多的项目上会让时间轴不可读。
 - **实施优先级提示**：B5（阶段条按模板渲染）与 B13（技能列表由服务器下发）最易在 S1 前端被做成写死的实现，之后返工代价最大，列为先行约束。
 - 边界：本条只并入页面契约文字，未改业务代码；A 类 24 条仍待确认（A 类是"v1.1 已写明"的登记，确认与否不改变 v1.1 文本）。
+
+### P23 派生入口统一到 G0（用户 2026-10-17，按推荐）
+
+- 起因：v1.1 §02.4 要求"派生出新型号或新变体时走立项提案…G0 批准后生成定义 v1"，而附录 A 同时把 `product.variant.derive` 列为 T1 一次确认的独立命令，代码里它也确实能直接建出 `product_variants` 行。入口两套、合同自相矛盾。
+- 采纳：可被定义 v1、项目或平台关联**引用**的变体身份只由 `proposal.g0.decide` 产生并带该 G0 决定；`product.variant.derive` 保留为提案准备用的派生草稿入口（三方差异计算与显式覆盖沿用同一套实现，§02.4）。已并入 v1.1 §02.4 与附录 A 该行。
+- 现状核对（2026-10-17）：`create_project` 只在 G0 物化路径被调用，`DefinitionRevision.variant_id` 只在 `bind_g0_definition` 写入，`product_variants` 全行受 `status='draft'` 约束，因此草稿变体拿不到定义 v1 也进不了项目范围。唯一仍能引用草稿变体的下游是 `platform.link.create`，**已按本条加守卫**：目标变体 `g0_decision_id IS NULL` 时 preview 与提交都返回 `FORBIDDEN_SCOPE` / `variant_without_g0_decision`，不写任何平台关联行。
+- 测试侧：`tests/g0_fixture.py` 新增 `create_g0_variant`（派生提案 → G0 批准 → 真实变体身份）、`add_category_human`（同租户第三个真人，使具名评审人不必是 `setup.peer`）与 `published_parent`（复用派生测试里那套唯一的 owner-only 合成发布 fixture）。原平台关联测试改为用 G0 产生的私有变体，并新增草稿变体被拒的负向测试。
+- 顺带暴露的事实：`product.definition.publish`（规格冻结，T2）仍 `not_implemented`，且 `protect_fixed_definition` 不允许把已存定义改成 `published`，所以**派生提案在真实命令链上还拿不到可引用的发布父版**——派生入口要端到端走通，先要实现规格冻结。这正是 `product.variant.derive` 一直被当作实际派生路径的原因。
+- 剩余缺口：派生草稿仍落在独立的 `product_variants` 行上而不是提案内，把它收进提案连同前端"型号派生与父版重核"页的入口改写一起做；在那之前该页仍可用，但它产生的草稿不能被平台关联引用。
+- 判据：草稿变体（`g0_decision_id IS NULL`）不能被平台关联、定义或项目引用；G0 批准产生的变体带决定 ID；AI 无技能包声明该操作，不能自行派生。
+
+### P24 试点期 G0 评审人必须是第二个真人（用户 2026-10-17，按推荐）
+
+- 采纳：试点租户的 G0 由提案负责人之外的**第二个真实自然人**担任具名评审人，该人须有该品类的产品管理权限。不设"试点自审"例外，I12（分派不等于承诺、一人兼岗不豁免独立验证）与 §03.14 的领域层＋数据库双重检查保持原状不放宽。
+- 待用户提供：试点租户里该评审人的真实人选（姓名/账号）。在拿到人选前，路径 A 的 G0 正向链（批准 → 型号定义 v1 → 建项目）无法在真实试点里走通，只能验"自己不能审自己被拒绝"的负向场景；不得为了跑通流程建假负责人或假账号。
+- 验收账号不是评审人（2026-10-17）：`pdos-next/tools/acceptance_account.py` 可在某个本地环境里建"验收账号"（Principal + 品类 Grant + LoginSession），用于手工走附录 B 场景。它是环境内的合成登录，**不满足本条**——同一人持两个账号仍是自审，不得记成 G0 已独立评审。
+- 判据：`proposal_submissions` 的 `reviewer_id<>owner_id` 与 `proposal_decisions` 的 `decided_by<>owner_id`、具名评审人复合外键保持不变；试点验收记录里写明评审人是谁。
+
+### P25 CAPA 四个 PascalCase 事件名暂不改（用户 2026-10-17，按推荐）
+
+- 现状：`CapaObservationRecorded`、`CapaVerificationCandidateRecorded`、`CapaVerificationReviewed`、`CapaVerificationRulePublished` 四个事件类型用 PascalCase，与其余事件的点号小写（`issue.triaged` 这类）不一致；这四个名字已写进 `migrations/schema_s0_0001.py` 的约束和十余个消费点。
+- 采纳：暂不改名。现在统一需要新迁移改 CHECK 约束、改全部消费点并动到已存事件行的类型值，收益只是命名一致。在契约里登记为已知例外（`contracts/auxiliary-operations.json` 的 `event_naming_exception`），等 S3 CAPA 施工改到这些文件时顺手收口。
+- 判据：契约登记与代码一致；新增事件一律用点号小写，不再扩大这个例外。

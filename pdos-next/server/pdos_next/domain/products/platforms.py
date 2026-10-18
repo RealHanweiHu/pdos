@@ -90,6 +90,14 @@ def validate(s, ctx, command, product, payload):
     if command.expected_revision != product.revision:
         fail("VERSION_CONFLICT", "product_version_changed", "型号版本已变化，请重新读取。")
     _, variant = target(s, ctx, product.id, payload.variant_id)
+    if variant is not None and variant.g0_decision_id is None:
+        # P23: a preparation draft carries no G0 decision, so no object may bind it.
+        fail(
+            "FORBIDDEN_SCOPE",
+            "variant_without_g0_decision",
+            "派生草稿不能被平台关联引用；可引用的变体身份由 G0 批准产生。",
+            403,
+        )
     provenance = writing_path(s, ctx, command, payload)
     provenance["confirmed_by"] = ctx.requester_id
     _shared_metadata(s, ctx, payload)
