@@ -37,7 +37,7 @@ class FactInput(DTO):
     subject_id: UUID
     external_id: str = Field(min_length=1, max_length=200)
     kind: Literal["duty", "qualification"]
-    role: Literal["engineering", "quality", "manufacturing"]
+    role: Literal["engineering", "quality", "manufacturing", "knowledge"]
     operations: list[str] = Field(min_length=1)
     purposes: list[str] = Field(min_length=1)
     state: Literal["active", "withdrawn", "revoked"] = "active"

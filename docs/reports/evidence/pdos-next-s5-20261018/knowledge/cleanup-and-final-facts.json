@@ -1,0 +1,56 @@
+{
+  "candidate_versions_retained": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "rule_versions_retained": [
+    1,
+    2
+  ],
+  "partial_browser_candidate_versions_retained": [
+    2,
+    3
+  ],
+  "final_browser_candidate_transition": [
+    3,
+    4
+  ],
+  "final_browser_rule_transition": [
+    1,
+    2
+  ],
+  "original_rule_still_binds_candidate_v1": true,
+  "latest_rule_explicitly_binds_candidate_v4": true,
+  "actual_common_groups": [
+    {
+      "audit_entries": 1,
+      "outbox_events": 1,
+      "request_keys": 1
+    },
+    {
+      "audit_entries": 1,
+      "outbox_events": 1,
+      "request_keys": 1
+    }
+  ],
+  "actual_original_receipts_match": true,
+  "own_short_login_deleted": 1,
+  "own_preview_ports_closed": [
+    53053,
+    53054
+  ],
+  "own_browser_closed": true,
+  "shared_database_and_temporal_retained": true,
+  "backup": {
+    "path": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/post-s5-knowledge-20261018-s0_0800.dump",
+    "size": 73142249,
+    "sha256": "2dc54f7087c14ff4b8fe3e192daa5a1db5f30ce9080345bb9154b1c6f57fdf04",
+    "head": "s0_0800",
+    "database": "pdos_test",
+    "port": 64245
+  },
+  "real_model_calls": 0,
+  "business_egress": 0
+}

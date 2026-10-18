@@ -37,6 +37,7 @@ import { VerificationProfessional } from "@/components/product/verification-prof
 import { ProjectActivity } from "@/components/projects/project-activity";
 import { ProjectWork } from "@/components/projects/project-work";
 import { ProjectPlanning } from "@/components/projects/project-planning";
+import { KnowledgeExperience } from "@/components/knowledge/knowledge-experience";
 import { Button } from "@/components/ui/button";
 import { categoryTransport } from "@/lib/category-transport";
 import { createWorkspaceApi } from "@/lib/workspace-api";
@@ -237,6 +238,7 @@ export function Workspace({ categoryId, projectId = "", onPaiContext }: { catego
           <WorkspacePanel key={`originals:${session?.principal_id}:${productId}`} name="originals"><OriginalFiles key={productId} product={data.product} originals={data.originals} api={api} onSaved={refresh} /></WorkspacePanel>
           <WorkspacePanel key={`lifecycle:${session?.principal_id}:${productId}`} name="lifecycle">{session && <OriginalLifecycle key={`lifecycle:${session.principal_id}:${productId}`} productId={productId} productRevision={data.product.revision} api={api} onCommitted={refresh} />}</WorkspacePanel>
           <WorkspacePanel key={`sources:${session?.principal_id}:${productId}`} name="sources">
+          {session && <KnowledgeExperience api={api} categoryId={categoryId} product={data.product} principalId={session.principal_id} projectId={projectId || null} onSaved={refresh}/>}
           <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
             <div className="space-y-6">
               <section className="panel"><div className="mb-5 flex items-center gap-2"><FileText className="text-primary" /><h2 className="font-semibold">原始资料</h2><span className="subtle ml-auto">{data.sources.length} 份</span></div>

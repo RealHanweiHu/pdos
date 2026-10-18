@@ -21414,6 +21414,429 @@
       ],
       "title": "RiskFollowupPayload",
       "type": "object"
+    },
+    "knowledge.candidate.create": {
+      "$defs": {
+        "ResultRef": {
+          "additionalProperties": false,
+          "properties": {
+            "receipt_id": {
+              "format": "uuid",
+              "title": "Receipt Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "receipt_id"
+          ],
+          "title": "ResultRef",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "candidate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "project_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Project Id"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "lesson": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Lesson",
+          "type": "string"
+        },
+        "evidence_summary": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Evidence Summary",
+          "type": "string"
+        },
+        "applicability_hypothesis": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Applicability Hypothesis",
+          "type": "string"
+        },
+        "result_receipts": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ResultRef"
+          },
+          "title": "Result Receipts",
+          "type": "array"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "lesson",
+        "evidence_summary",
+        "applicability_hypothesis",
+        "sources",
+        "reason"
+      ],
+      "title": "CandidatePayload",
+      "type": "object"
+    },
+    "knowledge.rule.publish": {
+      "$defs": {
+        "Applicability": {
+          "additionalProperties": false,
+          "properties": {
+            "target": {
+              "$ref": "#/$defs/TargetConfiguration"
+            },
+            "purpose": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Purpose",
+              "type": "string"
+            },
+            "differences": {
+              "items": {
+                "maxLength": 4000,
+                "minLength": 1,
+                "type": "string"
+              },
+              "title": "Differences",
+              "type": "array"
+            },
+            "adopted_rule": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Adopted Rule",
+              "type": "string"
+            },
+            "conditions": {
+              "items": {
+                "maxLength": 4000,
+                "minLength": 1,
+                "type": "string"
+              },
+              "title": "Conditions",
+              "type": "array"
+            },
+            "decision": {
+              "enum": [
+                "applicable",
+                "not_applicable",
+                "unknown",
+                "conflicted"
+              ],
+              "title": "Decision",
+              "type": "string"
+            },
+            "rationale": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Rationale",
+              "type": "string"
+            },
+            "valid_from": {
+              "format": "date-time",
+              "title": "Valid From",
+              "type": "string"
+            },
+            "valid_until": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Valid Until"
+            }
+          },
+          "required": [
+            "target",
+            "purpose",
+            "differences",
+            "adopted_rule",
+            "conditions",
+            "decision",
+            "rationale",
+            "valid_from"
+          ],
+          "title": "Applicability",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        },
+        "TargetConfiguration": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "enum": [
+                "engineering_configuration",
+                "process_revision"
+              ],
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "kind"
+          ],
+          "title": "TargetConfiguration",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "candidate": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "rule": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "title": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "rule_text": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Rule Text",
+          "type": "string"
+        },
+        "applicability": {
+          "$ref": "#/$defs/Applicability"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "project_id",
+        "candidate",
+        "title",
+        "rule_text",
+        "applicability",
+        "sources",
+        "reason"
+      ],
+      "title": "RulePublishPayload",
+      "type": "object"
     }
   },
   "scope": "implemented local domain slices; real AI qualification and formal exits are separate"

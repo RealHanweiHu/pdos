@@ -1147,6 +1147,13 @@ from pdos_next.domain.release_exceptions.models import (  # noqa: E402,F401
     ReleaseExceptionCurrent,
 )
 
+from pdos_next.domain.knowledge.models import (  # noqa: E402,F401
+    ApplicabilityAssessment,
+    DesignRuleCurrent,
+    DesignRuleVersion,
+    KnowledgeCandidateCurrent,
+    KnowledgeCandidateVersion,
+)
 from pdos_next.domain.work_management.models import (  # noqa: E402,F401
     ProjectStatusUpdate,
     WorkTaskVersion,

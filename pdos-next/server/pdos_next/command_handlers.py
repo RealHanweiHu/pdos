@@ -2,6 +2,7 @@
 
 CATEGORY_OPERATIONS = frozenset(
     {
+        "knowledge.candidate.create",
         "ai.automation.draft.save",
         "ai.automation.activate",
         "ai.automation.pause",
@@ -39,6 +40,7 @@ CATEGORY_OPERATIONS = frozenset(
 
 T2_OPERATIONS = frozenset(
     {
+        "knowledge.rule.publish",
         "integration.handoff.authorize",
         "release.exception.decide",
         "release.exception.withdraw",
@@ -139,6 +141,7 @@ T1_OPERATIONS = frozenset(
 # PAYLOADS. An unclassified command is refused by tier_of, never treated as T0.
 T0_OPERATIONS = frozenset(
     {
+        "knowledge.candidate.create",
         "ai.automation.draft.save",
         "work.task.create",
         "work.external_wait.record",
@@ -214,6 +217,10 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation in {"knowledge.candidate.create", "knowledge.rule.publish"}:
+        from pdos_next.domain.knowledge import service as knowledge_service
+
+        return knowledge_service
     if operation == "work.risk.followup.record":
         from pdos_next.domain.project_risk import service as risk_followup_service
 

@@ -84,6 +84,8 @@ def command_digest(command: Command) -> str:
 
 
 EVENTS = {
+    "knowledge.candidate.create": "knowledge.candidate_created",
+    "knowledge.rule.publish": "knowledge.rule_published",
     "work.commitment.review": "commitment.reviewed",
     "ai.automation.draft.save": "ai.automation_draft_saved",
     "ai.automation.activate": "ai.automation_activated",

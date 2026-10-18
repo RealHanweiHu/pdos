@@ -20,6 +20,7 @@ from .models import ProfessionalCurrent, ProfessionalFact
 from .schemas import FactInput
 
 OPERATION_ROLES = {
+    "knowledge.rule.publish": frozenset({"knowledge"}),
     "integration.handoff.authorize": frozenset({"engineering", "manufacturing", "quality"}),
     "release.exception.decide": frozenset({"engineering", "manufacturing", "quality"}),
     "release.exception.withdraw": frozenset({"engineering", "manufacturing", "quality"}),

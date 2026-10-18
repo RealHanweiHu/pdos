@@ -1,0 +1,16 @@
+{
+  "exit": 0,
+  "output": "▲ Next.js 16.3.3 (webpack)\n✓ Running next.config.ts took 17ms\n\n  Creating an optimized production build ...\n✓ Compiled successfully in 15.4s\n  Running TypeScript ...\n  Finished TypeScript in 11.6s ...\n  Collecting page data using 9 workers ...\n  Generating static pages using 9 workers (0/5) ...\n  Generating static pages using 9 workers (1/5) \n  Generating static pages using 9 workers (2/5) \n  Generating static pages using 9 workers (3/5) \n✓ Generating static pages using 9 workers (5/5) in 676ms\n  Finalizing page optimization ...\n  Collecting build traces ...\n\nRoute (app)\n┌ ○ /\n├ ○ /_not-found\n├ ƒ /api/[...path]\n├ ƒ /api/local-session\n├ ƒ /api/v1/personal/attention\n├ ƒ /categories/[categoryId]/proposals/[proposalId]\n└ ƒ /plan\n\n\n○  (Static)   prerendered as static content\nƒ  (Dynamic)  server-rendered on demand\n\n",
+  "snapshot": "/private/tmp/pdos-knowledge-k6fm172r",
+  "web_manifest": {
+    "pdos-next/web/src/components/knowledge/knowledge-experience.test.mjs": "2e2aabcf3e86bb7776dc6d899d21cf24ed0e1d48bf34484ef2bfef4b3ba8bdbd",
+    "pdos-next/web/src/components/knowledge/knowledge-experience.module.css": "524f4f45ef99b8cf79bd8d34958421b530431f40ab4d9f8730b80da5a5c1f12b",
+    "pdos-next/web/src/components/knowledge/knowledge-experience.tsx": "f3b944c95fb71da404e769c528a9f7634973eb05175e6fa1f93e9388533249b6",
+    "pdos-next/web/src/lib/knowledge-experience.test.ts": "437352a69a322f94d56b6c35ac59e2bc9ff45d0d6b64a6c17b66be7e5923d7aa",
+    "pdos-next/web/src/lib/knowledge-experience.ts": "7be7d7226b5bb2875116c4253c481082650ff8db78b5eb4b1fed4b14157abd01",
+    "pdos-next/web/src/app/api/knowledge-experience-route.test.mjs": "ae0fe8002904f94beae8357871318e726135a6f3bec657040eb263a0291b7b26",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "101dfb9abb32c5886b18ed6ca67c2aab93e490e779cd385fed6ef54354cbf2d4",
+    "pdos-next/web/src/components/workspace.tsx": "bc8f091e5f5eb1b3a7ef9ba005e55addbee54dd45f4d7f84a51b2a5cbe42e5a9"
+  },
+  "network_scope": "public font assets required by the existing Next build"
+}

@@ -103,7 +103,7 @@ class ProfessionalFact(Row, Base):
         ),
         CheckConstraint(
             "kind IN ('duty','qualification') "
-            "AND role IN ('engineering','quality','manufacturing') "
+            "AND role IN ('engineering','quality','manufacturing','knowledge') "
             "AND nature IN ('real','synthetic')"
         ),
         CheckConstraint(

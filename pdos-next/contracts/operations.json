@@ -541,7 +541,8 @@
       "ai_execution": "需资格与授权",
       "event": "knowledge.candidate_created",
       "stage": "S5",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "knowledge.rule.publish",
@@ -549,7 +550,8 @@
       "ai_execution": "仅准备/不可代决定",
       "event": "knowledge.rule_published",
       "stage": "S5",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "ai.work.start",

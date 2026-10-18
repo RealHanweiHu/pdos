@@ -942,6 +942,10 @@ def create_app(
 
     register_project_risks(app, engine, auth_dependency)
 
+    from pdos_next.domain.knowledge.api import register_routes as register_knowledge_experience
+
+    register_knowledge_experience(app, engine, auth_dependency)
+
     from pdos_next.domain.automations.api import register_routes as register_automations
 
     register_automations(app, engine, auth_dependency,

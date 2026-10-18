@@ -24,6 +24,8 @@ const nativePilotCommands = new Set(["npi.pilot.create", "npi.pilot.result.recor
 const releasePaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:release\/inputs|release-packages(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?)$/i;
 const projectWorkPaths = /^v1\/products\/[a-f0-9-]{36}\/project-work(?:\/activity|\/fulfillment(?:\/inputs)?|\/external-waits(?:\/inputs)?|\/risks(?:\/inputs)?|\/inputs)?$/i;
 const projectWorkCommands = new Set(["work.risk.followup.record", "work.external_wait.record", "work.task.create", "work.task.assign", "work.task.accept", "work.commitment.accept", "work.commitment.review", "work.task.start", "work.task.submit", "work.task.review", "work.status_update.create"]);
+const knowledgeExperiencePaths = /^v1\/(?:products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/)?experience(?:\/inputs)?$/i;
+const knowledgeCommands = new Set(["knowledge.candidate.create", "knowledge.rule.publish"]);
 const automationPaths = /^v1\/automation-rules(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/trigger)?)?$/i;
 const releaseCommands = new Set(["release.package.assemble", "release.engineering.approve", "release.manufacturing.approve"]);
 const externalHandoffPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:external-handoff\/inputs|external-handoffs(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/receipts)?)?)$/i;
@@ -130,12 +132,37 @@ function validProjectWorkCommand(value: unknown, productId: string, categoryId: 
   }
   return true;
 }
+function validKnowledgeCommand(value: unknown, productId: string | null, categoryId: string): boolean {
+  if (!isRecord(value) || Object.keys(value).some(key => !["command_id", "idempotency_key", "operation", "category_id", "product_id", "expected_revision", "payload", "source_read_set"].includes(key)) || value.category_id !== categoryId || (value.product_id ?? null) !== productId || typeof value.operation !== "string" || !knowledgeCommands.has(value.operation) || typeof value.command_id !== "string" || !uuid.test(value.command_id) || typeof value.idempotency_key !== "string" || value.idempotency_key.length < 8 || value.idempotency_key.length > 160 || !positiveRevision(value.expected_revision) || !isRecord(value.payload) || !Array.isArray(value.source_read_set) || !value.source_read_set.length || productId !== null && !uuid.test(productId)) return false;
+  const p = value.payload, candidate = value.operation === "knowledge.candidate.create";
+  const ref = (v: unknown) => isRecord(v) && Object.keys(v).every(key => ["id", "revision"].includes(key)) && typeof v.id === "string" && uuid.test(v.id) && positiveRevision(v.revision);
+  const nonempty = (v: unknown, max = 4000) => typeof v === "string" && !!v.trim() && v.trim().length <= max;
+  const instant = (v: unknown): v is string => typeof v === "string" && /(?:Z|[+-]\d{2}:\d{2})$/.test(v) && Number.isFinite(Date.parse(v));
+  const nullableProject = p.project_id == null || typeof p.project_id === "string" && uuid.test(p.project_id);
+  const allowed = candidate ? ["candidate", "project_id", "visibility", "title", "lesson", "evidence_summary", "applicability_hypothesis", "result_receipts", "sources", "reason"] : ["project_id", "candidate", "rule", "title", "rule_text", "applicability", "sources", "reason", "approval_token"];
+  if (Object.keys(p).some(key => !allowed.includes(key)) || !nullableProject || !nonempty(p.title, 200) || !nonempty(p.reason) || !Array.isArray(p.sources) || !p.sources.length) return false;
+  const seen = new Map<string, number>();
+  for (const read of value.source_read_set) {
+    if (!isRecord(read) || Object.keys(read).some(key => !["artifact_id", "expected_revision"].includes(key)) || typeof read.artifact_id !== "string" || !uuid.test(read.artifact_id) || !positiveRevision(read.expected_revision) || seen.has(read.artifact_id.toLowerCase())) return false;
+    seen.set(read.artifact_id.toLowerCase(), read.expected_revision);
+  }
+  if (!p.sources.every(source => isRecord(source) && Object.keys(source).every(key => ["id", "revision", "kind", "position"].includes(key)) && typeof source.id === "string" && uuid.test(source.id) && positiveRevision(source.revision) && source.kind === "artifact" && nonempty(source.position, 2000) && seen.get(source.id.toLowerCase()) === source.revision)) return false;
+  if (candidate) {
+    if (p.candidate != null && !ref(p.candidate) || productId === null && p.project_id != null || ![undefined, "private", "category"].includes(p.visibility as string | undefined) || !nonempty(p.lesson) || !nonempty(p.evidence_summary) || !nonempty(p.applicability_hypothesis)) return false;
+    if (p.result_receipts === undefined) return true;
+    return Array.isArray(p.result_receipts) && p.result_receipts.every(row => isRecord(row) && Object.keys(row).every(key => key === "receipt_id") && typeof row.receipt_id === "string" && uuid.test(row.receipt_id)) && new Set(p.result_receipts.map(row => row.receipt_id.toLowerCase())).size === p.result_receipts.length;
+  }
+  if (productId === null || typeof p.project_id !== "string" || !ref(p.candidate) || p.rule != null && !ref(p.rule) || !nonempty(p.rule_text) || !isRecord(p.applicability) || !(p.approval_token == null || typeof p.approval_token === "string" && p.approval_token.length >= 20 && p.approval_token.length <= 128)) return false;
+  const a = p.applicability, t = a.target;
+  return Object.keys(a).every(key => ["target", "purpose", "differences", "adopted_rule", "conditions", "decision", "rationale", "valid_from", "valid_until"].includes(key)) && isRecord(t) && Object.keys(t).every(key => ["kind", "id", "revision"].includes(key)) && ["engineering_configuration", "process_revision"].includes(String(t.kind)) && ref({ id: t.id, revision: t.revision }) && nonempty(a.purpose, 2000) && Array.isArray(a.differences) && a.differences.every(row => nonempty(row)) && nonempty(a.adopted_rule) && Array.isArray(a.conditions) && a.conditions.every(row => nonempty(row)) && ["applicable", "not_applicable", "unknown", "conflicted"].includes(String(a.decision)) && nonempty(a.rationale) && instant(a.valid_from) && (a.valid_until == null || instant(a.valid_until) && Date.parse(a.valid_until) > Date.parse(a.valid_from));
+}
 const longCommands = new Set([
   ...manufacturingPreparationCommands,
   ...manufacturingPublicationCommands,
   ...nativePilotCommands,
   ...releaseCommands,
   ...projectWorkCommands,
+  ...knowledgeCommands,
   ...externalHandoffCommands,
   ...releaseExceptionCommands,
   ...qualityFollowupCommands,
@@ -183,10 +210,11 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const externalHandoff = externalHandoffPaths.test(pathname);
   const releaseException = releaseExceptionPaths.test(pathname);
   const projectWork = projectWorkPaths.test(pathname);
+  const knowledgeExperience = knowledgeExperiencePaths.test(pathname);
   const automation = automationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !automation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !automation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (automation) {
     const method = pathname.endsWith("/trigger") ? "POST" : "GET";
@@ -341,6 +369,13 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   } else if (resourceInspect) {
     if (request.method !== "POST") return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: "POST" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "请在正文中固定唯一试制资源范围。" }, { status: 422 });
+  } else if (knowledgeExperience) {
+    const input = pathname.endsWith("/inputs"), method = input ? "POST" : "GET";
+    if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "请使用经验读取或材料核对入口。" }, { status: 405, headers: { Allow: method } });
+    for (const [key, value] of request.nextUrl.searchParams) {
+      if (input || key !== "project_id" || !uuid.test(value) || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "经验读取仅接受一个可选实际项目，材料核对只使用原正文。" }, { status: 422 });
+      query.set(key, value);
+    }
   } else if (projectWork) {
     const input = pathname.endsWith("/inputs"), activity = pathname.endsWith("/activity"), method = input ? "POST" : "GET";
     if (request.method !== method) return Response.json({code:"VALIDATION_FAILED",message:"请使用项目工作读取或材料核对入口。"},{status:405,headers:{Allow:method}});
@@ -474,6 +509,14 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   if (!base) return Response.json({ code: "SOURCE_UNAVAILABLE", message: "服务尚未配置。" }, { status: 503 });
   try {
     const body = request.method === "GET" ? undefined : await request.text();
+    if (knowledgeExperience && request.method === "POST" || request.method === "POST" && ["v1/commands", "v1/commands/preview"].includes(pathname)) {
+      let value: unknown;
+      try { value = JSON.parse(body ?? ""); } catch { if (knowledgeExperience) return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整经验原请求。" }, { status: 422 }); }
+      if (knowledgeExperience || isRecord(value) && typeof value.operation === "string" && knowledgeCommands.has(value.operation)) {
+        const product = knowledgeExperience ? path[1] === "products" ? path[2] : null : isRecord(value) && typeof value.product_id === "string" ? value.product_id : null;
+        if (!categoryId || request.nextUrl.searchParams.size || !validKnowledgeCommand(value, product, categoryId)) return Response.json({ code: "VALIDATION_FAILED", message: "请固定当前品类、实际型号或品类候选、原件及知识操作。" }, { status: 422 });
+      }
+    }
     if (automation && request.method === "POST") {
       let value: unknown;
       try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整原触发请求。" }, { status: 422 }); }
