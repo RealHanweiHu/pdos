@@ -1,0 +1,48 @@
+{
+  "actual_risk_id": "2b47c564-a8a8-4166-9d77-7d0256477061",
+  "initial_revision": 2,
+  "final_revision": 4,
+  "actual_receipts": [
+    "c798af2f-281a-4531-b2a3-5f9267fd70dc",
+    "0d5f012c-9578-466a-bfde-9e5107117d1a"
+  ],
+  "actual_commands": [
+    "d1fc8f14-370b-41a8-9d28-ea3ebd9fb3e6",
+    "2033f52d-b6ab-4094-8227-a55686af2d48"
+  ],
+  "actual_save_response_replaced_with_503": true,
+  "injected_response_fulfilled_before_reload": true,
+  "refresh_auto_POSTs": 0,
+  "explicit_replay_exact_original_command_and_key": true,
+  "replay_same_receipt": true,
+  "two_explicit_T1_confirmations": true,
+  "linked_task_still_completed": true,
+  "actual_attention_closed_removed_reopen_restored": true,
+  "actual_activity_each_receipt_once": true,
+  "frames": [
+    {
+      "width": 1440,
+      "dark": false,
+      "overflow": false,
+      "card_box": {
+        "x": 256,
+        "y": 478.890625,
+        "width": 1152,
+        "height": 373.46875
+      },
+      "viewport_screenshot": true
+    },
+    {
+      "width": 320,
+      "dark": true,
+      "overflow": false,
+      "card_box": {
+        "x": 16,
+        "y": 279.78125,
+        "width": 288,
+        "height": 660.3125
+      },
+      "viewport_screenshot": true
+    }
+  ]
+}

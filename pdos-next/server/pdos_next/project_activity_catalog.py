@@ -49,6 +49,7 @@ from pdos_next.domain.manufacturing_trials.native_models import (
 )
 from pdos_next.domain.preproject.models import ProposalDecision
 from pdos_next.domain.professional_authority.models import ProfessionalFact
+from pdos_next.domain.project_risk.models import ProjectRiskFollowup
 from pdos_next.domain.projects.models import PlanProposal, PlanRevision
 from pdos_next.domain.quality_execution.models import QualityIssueVersion, QualityPolicyFact
 from pdos_next.domain.release.models import ReleaseDecision, ReleasePackage
@@ -205,6 +206,15 @@ def _g0_project(source, tenant_id, product_id, project_id):
 
 
 SOURCES = (
+    ActivitySource(
+        ProjectRiskFollowup,
+        "risk_followup",
+        ("work.risk.followup.record",),
+        "plan",
+        "内部风险跟进",
+        columns={"title": ProjectRiskFollowup.body["summary"].astext,
+                 "sources": ProjectRiskFollowup.sources},
+    ),
     # G0's receipt belongs to the Proposal, not the Decision. The Decision has
     # no revision: literal(None) instructs the owner to use the actual receipt's
     # subject_revision, pinned by Decision.receipt_id, never a fabricated 1.
@@ -819,5 +829,6 @@ OPERATION_LABELS = MappingProxyType(
         "work.commitment.accept": "本人承诺已记录",
         "work.commitment.review": "接收者承诺履行核对已记录",
         "work.status_update.create": "具名项目状态更新已保存",
+        "work.risk.followup.record": "内部风险跟进已记录",
     }
 )

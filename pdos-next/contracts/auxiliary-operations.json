@@ -603,6 +603,20 @@
       ],
       "payload_schema": "payloads.schema.json",
       "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "work.risk.followup.record",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "risk.followup_recorded",
+      "purpose": "The original named G0 risk followup owner confirms an internal close or reopen with actual evidence. This does not accept a professional risk, close a linked task, waive a specification, grant an exemption or authorize release.",
+      "canonical_policy_preserved": [
+        "proposal.g0.decide:T2",
+        "work.task.review:T1",
+        "work.status_update.create:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
     }
   ]
 }

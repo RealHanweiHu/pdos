@@ -1,0 +1,9 @@
+{
+  "metadata": {
+    "risk_followup_metadata_diff": [],
+    "actual_head": "s0_0798"
+  },
+  "history_downgrade_refused": true,
+  "head_preserved": "s0_0798",
+  "output": "pgSQL function inline_code_block line 1 at RAISE\n[SQL: DO $risk_followup$ BEGIN IF EXISTS(SELECT 1 FROM public.project_risk_followups) OR EXISTS(SELECT 1 FROM public.project_risk_followup_currents) OR EXISTS(SELECT 1 FROM public.action_receipts WHERE operation='work.risk.followup.record' OR subject_type='risk_followup') OR EXISTS(SELECT 1 FROM public.confirmations WHERE operation='work.risk.followup.record') THEN RAISE EXCEPTION 'Risk follow-up history retained; downgrade refused' USING ERRCODE='23514'; END IF; END; $risk_followup$]\n(Background on this error at: https://sqlalche.me/e/21/gkpj)\n"
+}

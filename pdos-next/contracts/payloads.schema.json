@@ -21256,6 +21256,164 @@
       ],
       "title": "CommitmentReviewPayload",
       "type": "object"
+    },
+    "work.risk.followup.record": {
+      "$defs": {
+        "G0OpenItemRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "decision_id": {
+              "format": "uuid",
+              "title": "Decision Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "decision_id"
+          ],
+          "title": "G0OpenItemRef",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "risk": {
+          "$ref": "#/$defs/G0OpenItemRef"
+        },
+        "current": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "action": {
+          "enum": [
+            "close",
+            "reopen"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "summary": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "sources",
+        "reason",
+        "risk",
+        "current",
+        "action",
+        "summary"
+      ],
+      "title": "RiskFollowupPayload",
+      "type": "object"
     }
   },
   "scope": "implemented local domain slices; real AI qualification and formal exits are separate"

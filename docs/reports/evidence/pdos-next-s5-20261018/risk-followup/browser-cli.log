@@ -1,0 +1,599 @@
+### Browser `pdos-s5-risk-followup-20261018` opened with pid 30374.
+### Ran Playwright code
+```js
+await page.goto('about:blank');
+```
+### Page
+- Page URL: about:blank
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T21-16-54-404Z.yml)
+
+### Result
+{"syntheticLoginSet":true}
+### Ran Playwright code
+```js
+await (async page => { await page.context().addCookies([{"name": "pdos-next-session", "value": "[SYNTHETIC_LOGIN_REDACTED]", "domain": "127.0.0.1", "path": "/", "httpOnly": true, "sameSite": "Lax"}]); return { syntheticLoginSet: true }; })(page);
+```
+
+### Ran Playwright code
+```js
+await page.goto('http://127.0.0.1:64599/?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&bench=projects&view=plan&product=eb347984-dd44-43dd-9650-778ab56e9cdb&project=3de5953d-1130-49ff-9033-f9385727c5d7');
+```
+### Page
+- Page URL: http://127.0.0.1:64599/?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&bench=projects&view=plan&product=eb347984-dd44-43dd-9650-778ab56e9cdb&project=3de5953d-1130-49ff-9033-f9385727c5d7
+- Page Title: PDOS · 研发工作区
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T21-16-56-109Z.yml)
+
+### Error
+Error: Actual read failed 422 /api/v1/personal/attention?queue=decide&page_size=100 {"code":"VALIDATION_FAILED","message":"请只提供有效且唯一的个人注意项分组与分页条件。"}
+
+### Error
+TimeoutError: locator.fill: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('region', { name: '本次风险跟进表', exact: true }).getByLabel('结果依据来源 JSON', { exact: true })[22m
+
+
+### Page
+- Page URL: http://127.0.0.1:64599/?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&bench=projects&view=plan&product=eb347984-dd44-43dd-9650-778ab56e9cdb&project=3de5953d-1130-49ff-9033-f9385727c5d7
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Snapshot
+```yaml
+- generic [ref=e1]:
+  - alert [ref=e4]
+  - generic [ref=e5]:
+    - link "跳到工作内容" [ref=e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e11]: PDOS
+        - button "收起侧栏" [ref=e12]
+      - navigation "工作区导航" [ref=e13]:
+        - link "我的工作" [ref=e14] [cursor=pointer]:
+          - /url: "?area=work&category=fe4934da-0edd-4194-b629-2d610c732a81"
+        - link "项目驾驶舱" [ref=e18] [cursor=pointer]:
+          - /url: "?area=cockpit&category=fe4934da-0edd-4194-b629-2d610c732a81"
+        - link "项目列表" [ref=e22] [cursor=pointer]:
+          - /url: "?area=projects&category=fe4934da-0edd-4194-b629-2d610c732a81"
+        - link "项目集" [ref=e26] [cursor=pointer]:
+          - /url: "?area=programs&category=fe4934da-0edd-4194-b629-2d610c732a81"
+          - generic [ref=e30]: 尚未接入
+        - link "产品品类工作区" [ref=e31] [cursor=pointer]:
+          - /url: "?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&bench=projects&view=plan&product=eb347984-dd44-43dd-9650-778ab56e9cdb"
+        - link "知识" [ref=e35] [cursor=pointer]:
+          - /url: "?area=knowledge&category=fe4934da-0edd-4194-b629-2d610c732a81"
+        - generic [ref=e39]:
+          - paragraph [ref=e40]: 当前品类
+          - paragraph [ref=e41]: 汽车充气泵
+          - paragraph [ref=e42]: 项目与专业工作按品类范围授权
+      - generic [ref=e43]:
+        - link "计划执行进度" [ref=e44] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=e47]: 计划进度
+        - button "小Pai 工作栏" [ref=e48]:
+          - generic [ref=e51]: 小Pai
+        - link "设置" [ref=e52] [cursor=pointer]:
+          - /url: "?area=settings&category=fe4934da-0edd-4194-b629-2d610c732a81"
+        - generic [ref=e56]:
+          - generic [aria-hidden] [ref=e57]: S
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: Synthetic G0 risk follow-up person
+            - paragraph [ref=e60]: 本地合成环境
+    - generic [ref=e61]:
+      - banner [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e64]: PDOS
+          - generic [ref=e67]: 产品品类工作区
+          - generic [ref=e70]: 汽车充气泵
+        - generic [ref=e71]:
+          - button "搜索对象" [ref=e72]:
+            - generic [ref=e73]: 搜索
+          - button "小Pai 工作栏" [ref=e74]
+          - button "切换明暗主题" [ref=e75]
+      - main [ref=e76]:
+        - navigation "品类工作台区" [ref=e77]:
+          - link "型号" [ref=e78] [cursor=pointer]:
+            - /url: "?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&project=3de5953d-1130-49ff-9033-f9385727c5d7&bench=products&view=overview&product=eb347984-dd44-43dd-9650-778ab56e9cdb"
+          - link "项目" [ref=e82] [cursor=pointer]:
+            - /url: "?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&project=3de5953d-1130-49ff-9033-f9385727c5d7&bench=projects&view=overview&product=eb347984-dd44-43dd-9650-778ab56e9cdb"
+          - link "知识" [ref=e86] [cursor=pointer]:
+            - /url: "?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&project=3de5953d-1130-49ff-9033-f9385727c5d7&bench=knowledge&view=sources&product=eb347984-dd44-43dd-9650-778ab56e9cdb"
+          - link "设置" [ref=e90] [cursor=pointer]:
+            - /url: "?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&project=3de5953d-1130-49ff-9033-f9385727c5d7&bench=settings&view=preferences&product=eb347984-dd44-43dd-9650-778ab56e9cdb"
+          - button "快速查找入口或型号" [ref=e94] [cursor=pointer]
+          - combobox "当前型号" [ref=e97]:
+            - option "Synthetic product"
+            - option "轻便充气泵" [selected]
+        - navigation "项目视图" [ref=e98]:
+          - link "现在" [ref=e99] [cursor=pointer]:
+            - /url: "?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&project=3de5953d-1130-49ff-9033-f9385727c5d7&bench=projects&view=overview&product=eb347984-dd44-43dd-9650-778ab56e9cdb"
+          - link "工作与计划" [ref=e103] [cursor=pointer]:
+            - /url: "?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&project=3de5953d-1130-49ff-9033-f9385727c5d7&bench=projects&view=plan&product=eb347984-dd44-43dd-9650-778ab56e9cdb"
+          - link "试制" [ref=e107] [cursor=pointer]:
+            - /url: "?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&project=3de5953d-1130-49ff-9033-f9385727c5d7&bench=projects&view=builds&task=prepare&product=eb347984-dd44-43dd-9650-778ab56e9cdb"
+          - link "测试与交接" [ref=e111] [cursor=pointer]:
+            - /url: "?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&project=3de5953d-1130-49ff-9033-f9385727c5d7&bench=projects&view=verification&task=prepare&product=eb347984-dd44-43dd-9650-778ab56e9cdb"
+          - link "问题与变更" [ref=e115] [cursor=pointer]:
+            - /url: "?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&project=3de5953d-1130-49ff-9033-f9385727c5d7&bench=projects&view=issues&product=eb347984-dd44-43dd-9650-778ab56e9cdb"
+          - link "评审与交付 尚未接入" [ref=e119] [cursor=pointer]:
+            - /url: "?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&project=3de5953d-1130-49ff-9033-f9385727c5d7&bench=projects&view=reviews&product=eb347984-dd44-43dd-9650-778ab56e9cdb"
+            - generic [ref=e122]: 评审与交付
+            - generic "尚未接入" [ref=e123]
+          - link "资料" [ref=e124] [cursor=pointer]:
+            - /url: "?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&project=3de5953d-1130-49ff-9033-f9385727c5d7&bench=projects&view=files&product=eb347984-dd44-43dd-9650-778ab56e9cdb"
+        - generic [ref=e128]:
+          - generic [ref=e130]:
+            - heading "工作与计划" [level=1] [ref=e131]
+            - paragraph [ref=e132]: 当前范围：轻便充气泵
+          - generic [ref=e134]:
+            - region "项目与首版计划" [ref=e135]:
+              - generic [ref=e136]:
+                - generic [ref=e137]:
+                  - paragraph [ref=e138]: 固定型号定义，组织真实研发工作
+                  - heading "项目与首版计划" [level=2] [ref=e139]
+                - generic [ref=e140]:
+                  - button "收起编排" [expanded] [ref=e141]
+                  - button "刷新项目" [ref=e142]
+              - paragraph [ref=e143]: 项目由立项提案的 G0 决定生成；在此查看项目并编排首版计划。当前只办理所选项目。
+              - link "返回项目驾驶舱" [ref=e144] [cursor=pointer]:
+                - /url: "?area=cockpit&category=fe4934da-0edd-4194-b629-2d610c732a81&project=3de5953d-1130-49ff-9033-f9385727c5d7"
+              - generic [ref=e145]:
+                - region "首版计划输入" [ref=e147]:
+                  - heading "准备首版计划候选" [level=3] [ref=e148]
+                  - paragraph [ref=e149]: 本机输入按当前用户、型号及项目保留。读取或刷新项目不会覆盖或删除输入。
+                  - group [ref=e151]:
+                    - generic [ref=e152]:
+                      - text: 研发项目
+                      - combobox "研发项目" [disabled] [ref=e153]:
+                        - option "选择真实项目"
+                        - option "合成研发项目 · 仅查看" [selected]
+                    - generic [ref=e154]:
+                      - paragraph [ref=e155]: 固定定义：轻便充气泵 · v1 · 尚未正式发布
+                      - paragraph [ref=e156]: 范围：合成新品评审
+                      - paragraph [ref=e157]: 当前项目由其他负责人管理，你可以查看已保存计划。
+                    - group [ref=e158]:
+                      - generic [ref=e159]:
+                        - text: 计划起点（UTC）
+                        - textbox "计划起点（UTC）" [disabled] [ref=e160]
+                      - group [ref=e161]:
+                        - generic "声明本次工作日历" [ref=e162] [cursor=pointer]
+                        - generic [ref=e163]:
+                          - paragraph [ref=e164]: 默认工作日及 09–12 / 13–17 时段是可编辑的初始输入，尚未核验为工厂日历。全部时段和休息日期按下方时区解释。同一项目调整日历时，请明确填写新版本。
+                          - generic [ref=e165]:
+                            - text: 工作日历时区（IANA）
+                            - textbox "工作日历时区（IANA）" [disabled] [ref=e166]:
+                              - /placeholder: 例如 Asia/Shanghai
+                              - text: UTC
+                          - generic [ref=e167]:
+                            - text: 日历版本
+                            - textbox "日历版本" [disabled] [ref=e168]: manual-v1
+                          - group "每周工作日" [ref=e169]:
+                            - generic [ref=e171]:
+                              - generic [ref=e172]:
+                                - checkbox "周一" [checked] [disabled] [ref=e173]
+                                - generic [ref=e174]: 周一
+                              - generic [ref=e175]:
+                                - checkbox "周二" [checked] [disabled] [ref=e176]
+                                - generic [ref=e177]: 周二
+                              - generic [ref=e178]:
+                                - checkbox "周三" [checked] [disabled] [ref=e179]
+                                - generic [ref=e180]: 周三
+                              - generic [ref=e181]:
+                                - checkbox "周四" [checked] [disabled] [ref=e182]
+                                - generic [ref=e183]: 周四
+                              - generic [ref=e184]:
+                                - checkbox "周五" [checked] [disabled] [ref=e185]
+                                - generic [ref=e186]: 周五
+                              - generic [ref=e187]:
+                                - checkbox "周六" [disabled] [ref=e188]
+                                - generic [ref=e189]: 周六
+                              - generic [ref=e190]:
+                                - checkbox "周日" [disabled] [ref=e191]
+                                - generic [ref=e192]: 周日
+                          - generic [ref=e193]:
+                            - text: 每日工作时段（每行一段，本地时刻）
+                            - textbox "每日工作时段（每行一段，本地时刻）" [disabled] [ref=e194]:
+                              - /placeholder: "09:00-12:00\n13:00-17:00"
+                              - text: 09:00-12:00 13:00-17:00
+                          - generic [ref=e195]:
+                            - text: 额外休息日期（YYYY-MM-DD，每行一天）
+                            - textbox "额外休息日期（YYYY-MM-DD，每行一天）" [disabled] [ref=e196]:
+                              - /placeholder: 未确认的节假日不会自动补入
+                      - generic [ref=e197]:
+                        - heading "工程 / NPI 任务" [level=4] [ref=e198]
+                        - button "新增任务" [disabled]
+                      - paragraph [ref=e199]: 工时单位为整数分钟。最低、最高工时可分别留空表示未知；未知会传播到依赖任务，不会自动补造估计。无依赖的任务可并行开始。
+                      - article [ref=e201]:
+                        - generic [ref=e202]:
+                          - paragraph [ref=e203]: 任务 1 · task-1
+                          - button "删除任务" [disabled]
+                        - generic [ref=e204]:
+                          - text: 任务标题
+                          - textbox "任务标题" [disabled] [ref=e205]
+                        - generic [ref=e206]:
+                          - text: 工作包
+                          - combobox "工作包" [disabled] [ref=e207]:
+                            - option "工程" [disabled] [selected]
+                            - option "NPI / 制造导入" [disabled]
+                        - generic [ref=e208]:
+                          - generic [ref=e209]:
+                            - text: 最低工时（分钟）
+                            - spinbutton "最低工时（分钟）" [disabled] [ref=e210]
+                          - generic [ref=e211]:
+                            - text: 最高工时（分钟）
+                            - spinbutton "最高工时（分钟）" [disabled] [ref=e212]
+                        - generic [ref=e213]:
+                          - text: 工时估计依据
+                          - textbox "工时估计依据" [disabled] [ref=e214]:
+                            - /placeholder: 填写真实估计来源；填写工时后必填
+                        - group "前置任务（完成后才能开始）" [ref=e215]:
+                          - paragraph [ref=e217]: 暂无其他任务；可新增并明确依赖。
+                      - generic [ref=e218]:
+                        - text: 本次计划候选说明
+                        - textbox "本次计划候选说明" [disabled] [ref=e219]:
+                          - /placeholder: 说明当前计划的范围、估计依据及未确定事项
+                      - button "保存候选并计算预测" [disabled]
+                - region "已保存项目与计划" [ref=e220]:
+                  - heading "已保存项目" [level=3] [ref=e221]
+                  - article [ref=e222]:
+                    - generic [ref=e223]:
+                      - generic [ref=e224]:
+                        - heading "合成研发项目" [level=4] [ref=e225]
+                        - generic [ref=e226]: 仅查看 · 仅本人
+                      - paragraph [ref=e227]: 合成新品评审
+                      - paragraph [ref=e228]: 固定定义 v1 · 轻便充气泵 · 尚未正式发布
+                      - group [ref=e229]:
+                        - generic "查看固定研发范围" [ref=e230] [cursor=pointer]
+                    - generic [ref=e231]:
+                      - generic [ref=e232]:
+                        - term [ref=e233]: 批准基线
+                        - definition [ref=e234]: 尚未批准
+                      - generic [ref=e235]:
+                        - term [ref=e236]: 个人承诺
+                        - definition [ref=e237]: 尚未记录
+                      - generic [ref=e238]:
+                        - term [ref=e239]: 实绩
+                        - definition [ref=e240]: 尚未记录
+                    - paragraph [ref=e241]: 首版计划尚未应用，任务尚未正式建立。
+            - generic [ref=e242]:
+              - generic [ref=e243]:
+                - generic [ref=e244]:
+                  - paragraph [ref=e245]: 本项目的执行与交付
+                  - heading "任务、个人承诺与成果" [level=2] [ref=e246]
+                - button "刷新任务" [ref=e247]
+              - paragraph [ref=e248]: 合成研发项目 · 项目 v1 · 读取时点 2026-10-18T21:17:01.005285+00:00。本人承接只确认责任，不形成日期承诺。
+              - region "G0 决定留下的事项" [ref=e249]:
+                - heading "G0 决定留下的事项" [level=3] [ref=e250]
+                - paragraph [ref=e251]: 原安排期限是 G0 决定中的日期；个人承诺需要另行具名办理。接续只建立任务草稿，成果定义须本人填写。
+                - generic [ref=e252]:
+                  - article [ref=e253]:
+                    - generic [ref=e254]:
+                      - heading "噪声" [level=4] [ref=e255]
+                      - generic [ref=e256]: 风险
+                    - paragraph [ref=e257]: 噪声
+                    - paragraph [ref=e258]:
+                      - text: 原安排负责人 Synthetic G0 risk follow-up person · 原安排期限
+                      - time [ref=e259]: 2026-10-25
+                    - paragraph [ref=e260]: 固定决定 7c693b9b-0f79-42c0-94b8-f6139484354d
+                    - paragraph [ref=e261]: 已接续任务 · v6 · 成果已验收
+                    - button "选中关联任务" [ref=e262]
+                    - paragraph [ref=e263]: 内部风险跟进中；关联任务成果验收与内部跟进均不代表规格满足、专业批准或放行。
+                    - group [ref=e264]:
+                      - generic "固定事项与原始来源" [ref=e265] [cursor=pointer]
+                  - article [ref=e266]:
+                    - generic [ref=e267]:
+                      - heading "噪声条件待确定" [level=4] [ref=e268]
+                      - generic [ref=e269]: 待办
+                    - paragraph [ref=e270]: 噪声条件待确定
+                    - paragraph [ref=e271]:
+                      - text: 原安排负责人 Synthetic G0 risk follow-up person · 原安排期限
+                      - time [ref=e272]: 2026-10-25
+                    - paragraph [ref=e273]: 固定决定 7c693b9b-0f79-42c0-94b8-f6139484354d
+                    - button "接续任务草稿" [ref=e274]
+                    - group [ref=e275]:
+                      - generic "固定事项与原始来源" [ref=e276] [cursor=pointer]
+              - region "当前项目任务" [ref=e277]:
+                - generic [ref=e278]:
+                  - heading "当前任务" [level=3] [ref=e279]
+                  - generic [ref=e280]:
+                    - button "新建任务" [ref=e281]
+                    - button "写具名周报" [ref=e282]
+                - article [ref=e284]:
+                  - generic [ref=e285]:
+                    - heading "Investigate the native risk" [level=4] [ref=e286]
+                    - generic [ref=e287]: 成果已验收 · v6
+                  - paragraph [ref=e288]: 噪声
+                  - paragraph [ref=e289]: 接续 G0 事项 2b47c564-a8a8-4166-9d77-7d0256477061 · 固定决定 7c693b9b-0f79-42c0-94b8-f6139484354d
+                  - paragraph [ref=e290]: 负责人 Synthetic owner · 执行人 Synthetic G0 risk follow-up person · 成果接收人 Synthetic owner
+                  - list [ref=e291]:
+                    - listitem [ref=e292]: Actual investigation（必需）
+                  - generic [ref=e293]:
+                    - generic [ref=e294]:
+                      - term [ref=e295]: 批准基线
+                      - definition [ref=e296]: 本视图未提供
+                    - generic [ref=e297]:
+                      - term [ref=e298]: 预测
+                      - definition [ref=e299]: 未知，未由承诺推算
+                    - generic [ref=e300]:
+                      - term [ref=e301]: 实际开始
+                      - definition [ref=e302]: 2026-10-18T21:14:55.344661+00:00 · Asia/Shanghai
+                    - generic [ref=e303]:
+                      - term [ref=e304]: 关联计划任务
+                      - definition [ref=e305]: 尚未关联
+                  - generic [ref=e306]:
+                    - strong [ref=e307]: 已提交成果 · 2026-10-18T21:15:06.216436+00:00
+                    - paragraph [ref=e308]: finding：Synthetic actual investigation completed; unresolved professional questions stay explicit. · 已提供
+                  - paragraph [ref=e309]:
+                    - text: 具名验收：已接收 · Synthetic owner · 2026-10-18T21:15:17.028626+00:00
+                    - generic [ref=e310]: finding：accepted · Received the real investigation result
+                  - group [ref=e311]:
+                    - generic "固定任务身份与办理历史" [ref=e312] [cursor=pointer]
+              - region "任务办理表单" [ref=e313]:
+                - heading "新建人工任务" [level=3] [ref=e314]
+                - group [ref=e315]:
+                  - generic [ref=e316]:
+                    - text: 任务标题
+                    - textbox "任务标题" [ref=e317]
+                  - generic [ref=e318]:
+                    - text: 任务目标
+                    - textbox "任务目标" [ref=e319]
+                  - generic [ref=e320]:
+                    - heading "成果定义" [level=4] [ref=e321]
+                    - generic [ref=e322]:
+                      - textbox "成果 1 标识" [ref=e323]: outcome-1
+                      - textbox "成果 1 说明" [ref=e324]
+                      - generic [ref=e325]:
+                        - checkbox "必需" [checked] [ref=e326]
+                        - text: 必需
+                    - button "添加成果定义" [ref=e327]
+                  - group [ref=e328]:
+                    - generic "高级：成果定义与计划任务引用" [ref=e329] [cursor=pointer]
+                  - generic [ref=e330]:
+                    - text: 办理理由
+                    - textbox "办理理由" [ref=e331]
+                  - group [ref=e332]:
+                    - generic "实际来源引用（高级 JSON，必填）" [ref=e333] [cursor=pointer]
+                  - button "保存人工任务草稿" [ref=e334]
+              - region "外部等待与跟进" [ref=e335]:
+                - generic [ref=e336]:
+                  - generic [ref=e337]:
+                    - paragraph [ref=e338]: 原请求、送达与回复分别留痕
+                    - heading "外部等待与跟进" [level=3] [ref=e339]
+                  - button "刷新外部等待" [ref=e340]
+                - paragraph [ref=e341]: 这里保存内部跟进记录。对方声明的时间与回复、实际送达、正式业务接收分别核对。
+                - generic [ref=e342]:
+                  - paragraph [ref=e343]: 合成研发项目 · 已读 0 条 · 时点 2026-10-18T21:17:01.734257+00:00
+                  - button "新建外部等待" [ref=e344]
+                - paragraph [ref=e345]: 当前可读范围内尚无外部等待。
+                - region "外部等待登记表单" [ref=e346]:
+                  - heading "新建外部等待" [level=4] [ref=e347]
+                  - group [ref=e348]:
+                    - generic [ref=e349]:
+                      - text: 等待对象
+                      - textbox "等待对象" [ref=e350]
+                    - generic [ref=e351]:
+                      - text: 原请求内容
+                      - textbox "原请求内容" [ref=e352]
+                    - group [ref=e353]:
+                      - generic "固定业务锚点（可空）" [ref=e354] [cursor=pointer]
+                    - generic [ref=e355]:
+                      - text: 等待标题
+                      - textbox "等待标题" [ref=e356]
+                    - generic [ref=e357]:
+                      - text: 内部关闭条件
+                      - textbox "内部关闭条件" [ref=e358]
+                    - generic [ref=e359]:
+                      - checkbox "此等待阻塞关键进展" [ref=e360]
+                      - text: 此等待阻塞关键进展
+                    - generic [ref=e361]:
+                      - text: 下次内部检查时间（未知留空，含时区）
+                      - textbox "下次内部检查时间（未知留空，含时区）" [ref=e362]:
+                        - /placeholder: 2030-10-20T09:00:00+08:00
+                    - generic [ref=e363]:
+                      - text: 明确采用的实际工作日历
+                      - combobox "明确采用的实际工作日历 只采用本项目实际计划或资源中的日历；这不代表对方已认可同一日历。" [ref=e364]:
+                        - option "未知，暂不采用日历" [selected]
+                      - generic [ref=e365]: 只采用本项目实际计划或资源中的日历；这不代表对方已认可同一日历。
+                    - generic [ref=e366]:
+                      - text: 原时区（IANA）
+                      - textbox "原时区（IANA）" [ref=e367]: America/Los_Angeles
+                    - generic [ref=e368]:
+                      - text: 本次登记理由
+                      - textbox "本次登记理由" [ref=e369]
+                    - group [ref=e370]:
+                      - generic "实际原件来源（高级 JSON，必填）" [ref=e371] [cursor=pointer]
+                    - button "保存本次等待登记" [ref=e372]
+              - region "风险独立跟进" [ref=e373]:
+                - generic [ref=e374]:
+                  - generic [ref=e375]:
+                    - paragraph [ref=e376]: G0 风险 · 原具名跟进人登记
+                    - heading "风险跟进" [level=2] [ref=e377]
+                  - button "刷新风险跟进" [ref=e378]
+                - paragraph [ref=e379]: 内部跟进关闭与重开由原具名跟进人登记，不代表专业风险接受或放行。关联任务的成果验收不会自动关闭风险；原跟进期限也不是个人承诺。
+                - paragraph [ref=e380]: 合成研发项目 · 读取于 2026-10-18T21:17:03.270887+00:00
+                - article [ref=e382]:
+                  - generic [ref=e383]:
+                    - heading "噪声" [level=3] [ref=e384]
+                    - generic [ref=e385]: 内部跟进中
+                  - paragraph [ref=e386]: 噪声
+                  - generic [ref=e387]:
+                    - term [ref=e388]: 原具名跟进人
+                    - definition [ref=e389]: Synthetic G0 risk follow-up person（本人）
+                    - term [ref=e390]: 原跟进期限
+                    - definition [ref=e391]: 2026-10-25
+                    - term [ref=e392]: G0 固定事项
+                    - definition [ref=e393]: 2b47c564-a8a8-4166-9d77-7d0256477061 · 决议 7c693b9b-0f79-42c0-94b8-f6139484354d
+                    - term [ref=e394]: 原事项来源
+                    - definition [ref=e395]: 规格 · 529200d0-ef2d-49f8-a3dc-d32d0045e1fa
+                    - term [ref=e396]: 当前跟进记录
+                    - definition [ref=e397]: c4a8df61-1cb7-4c9b-a42f-4f92ec2d8f68 · v2
+                    - term [ref=e398]: 关联任务
+                    - definition [ref=e399]: 任务已验收 · v6 · b03208f5-d0ef-4298-9a5e-7a3333ae599c
+                  - paragraph [ref=e400]: 最近跟进结果：New evidence requires renewed internal follow-up
+                  - group [ref=e401]:
+                    - generic "风险跟进历史 · 2 条" [ref=e402] [cursor=pointer]
+                  - button "登记本条风险跟进结果" [ref=e403]
+                - region "本次风险跟进表" [ref=e404]:
+                  - heading "关闭本条内部跟进" [level=3] [ref=e405]
+                  - paragraph [ref=e406]: 固定 G0 风险 2b47c564-a8a8-4166-9d77-7d0256477061 · 决议 7c693b9b-0f79-42c0-94b8-f6139484354d · 原跟进版本 c4a8df61-1cb7-4c9b-a42f-4f92ec2d8f68 v2
+                  - group [ref=e407]:
+                    - generic [ref=e408]:
+                      - text: 关闭跟进结果与依据
+                      - textbox "关闭跟进结果与依据" [ref=e409]: 合成页面核对：原件已核实，本条内部跟进暂时结束
+                    - generic [ref=e410]:
+                      - text: 办理理由
+                      - textbox "办理理由" [ref=e411]: 原具名跟进人验证内部关闭和原请求恢复，不作专业风险批准
+                    - group [ref=e412]:
+                      - generic "高级：原件来源引用" [active] [ref=e413] [cursor=pointer]
+                      - paragraph [ref=e414]: 填写已登记 artifact 的准确版本和原文位置。G0 事项本身不会替代结果依据。
+                      - generic [ref=e415]:
+                        - text: 结果依据来源 JSON
+                        - textbox "结果依据来源 JSON" [ref=e416]: "[]"
+                      - paragraph [ref=e417]: "格式：[{\"kind\":\"artifact\",\"id\":\"原件 UUID\",\"revision\":1,\"position\":\"准确原文位置\"}]"
+                    - paragraph [ref=e418]: 只登记本条内部跟进状态；不形成专业批准、风险接受或产品放行。
+                    - button "核对此次风险跟进材料" [ref=e419]
+              - region "承诺履行核对" [ref=e420]:
+                - generic [ref=e421]:
+                  - generic [ref=e422]:
+                    - paragraph [ref=e423]: 个人承诺 · 接收者逐条核对
+                    - heading "承诺履行" [level=2] [ref=e424]
+                  - button "刷新履行记录" [ref=e425]
+                - paragraph [ref=e426]: 任务验收与承诺履行分开。每位承诺接收者核对自己的成果范围；任务已验收或日期已过都不代表承诺已履行。
+                - paragraph [ref=e427]: 合成研发项目 · 读取于 2026-10-18T21:17:03.250255+00:00
+                - paragraph [ref=e428]: 尚无可读承诺记录。
+              - region "具名周报历史" [ref=e429]:
+                - heading "已保存的具名周报" [level=3] [ref=e430]
+                - paragraph [ref=e431]: 尚无可读周报记录。
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T21-16-55-746Z.log#L1
+
+### Result
+{"actual_risk_id":"2b47c564-a8a8-4166-9d77-7d0256477061","initial_revision":2,"final_revision":4,"actual_receipts":["c798af2f-281a-4531-b2a3-5f9267fd70dc","0d5f012c-9578-466a-bfde-9e5107117d1a"],"actual_commands":["d1fc8f14-370b-41a8-9d28-ea3ebd9fb3e6","2033f52d-b6ab-4094-8227-a55686af2d48"],"actual_save_response_replaced_with_503":true,"injected_response_fulfilled_before_reload":true,"refresh_auto_POSTs":0,"explicit_replay_exact_original_command_and_key":true,"replay_same_receipt":true,"two_explicit_T1_confirmations":true,"linked_task_still_completed":true,"actual_attention_closed_removed_reopen_restored":true,"actual_activity_each_receipt_once":true,"frames":[{"width":1440,"dark":false,"overflow":false,"card_box":{"x":256,"y":478.890625,"width":1152,"height":373.46875},"viewport_screenshot":true},{"width":320,"dark":true,"overflow":false,"card_box":{"x":16,"y":279.78125,"width":288,"height":660.3125},"viewport_screenshot":true}]}
+### Ran Playwright code
+```js
+await (async page => {
+  const config = {"sources": [{"id": "cd402e6d-16d4-406e-9a67-28f41b64fe34", "kind": "artifact", "position": "line:1;quote_sha256:83f40fe1754ff3d18825a306ab6c9a5b278d256a5e9046474bff8a04f1b8252d", "revision": 1}], "category_id": "fe4934da-0edd-4194-b629-2d610c732a81", "product_id": "eb347984-dd44-43dd-9650-778ab56e9cdb", "project_id": "3de5953d-1130-49ff-9033-f9385727c5d7", "risk_id": "2b47c564-a8a8-4166-9d77-7d0256477061", "light": "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-s5-risk-followup-20261018/light-1440.png", "dark": "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-s5-risk-followup-20261018/dark-320.png"};
+  const operation = 'work.risk.followup.record', base = '/api/v1/categories/' + config.category_id + '/products/' + config.product_id + '/project-work';
+  const section = () => page.getByRole('region', { name: '风险独立跟进', exact: true });
+  const card = () => section().locator('article').filter({ hasText: config.risk_id });
+  const get = async path => { const response = await page.request.get(new URL(path, page.url()).href); if (response.status() !== 200) throw new Error('Actual read failed ' + response.status() + ' ' + path + ' ' + await response.text()); return response.json(); };
+  const readRisk = async () => { const values = (await get(base + '/risks?project_id=' + config.project_id)).risks.filter(value => value.id === config.risk_id); if (values.length !== 1) throw new Error('Expected exactly one actual G0 risk'); return values[0]; };
+  const items = async path => { let cursor = null; const values = [], seen = new Set(); do { const data = await get(path + '&page_size=20' + (cursor ? '&cursor=' + encodeURIComponent(cursor) : '')); values.push(...data.items); cursor = data.next_cursor; if (cursor && seen.has(cursor)) throw new Error('Repeated actual read cursor'); if (cursor) seen.add(cursor); if (seen.size > 100) throw new Error('Actual read pagination exceeded expected fixture size'); } while (cursor); return values; };
+  const attention = async () => (await items('/api/v1/personal/attention?queue=decide')).filter(value => value.id === 'project_risk:' + config.risk_id);
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const writes = [];
+  const listener = request => { if (request.url().includes('/api/') && request.method() === 'POST') { let body = null; try { body = request.postDataJSON(); } catch {} writes.push({ path: new URL(request.url()).pathname, body }); } };
+  const riskPosts = suffix => writes.filter(value => value.path.endsWith(suffix) && value.body?.operation === operation);
+  const originalRisk = await readRisk();
+  if (originalRisk.state !== 'open' || originalRisk.current?.revision !== 2 || !originalRisk.can_record || originalRisk.task?.state !== 'completed') throw new Error('Expected the real reopened revision 2 risk and completed linked task');
+  if ((await attention()).length !== 1) throw new Error('The original named follower has no actual open-risk attention item');
+  const stableTask = JSON.stringify(originalRisk.task), originalHistory = originalRisk.history.map(value => value.id);
+  await section().getByRole('heading', { name: '风险跟进', exact: true }).waitFor({ timeout: 60000 });
+  if (await card().count() !== 1) throw new Error('Risk card is ambiguous');
+  page.on('request', listener);
+  let committed = null, original = null, injected = false, doneResolve, doneReject, timer;
+  const done = new Promise((resolve, reject) => { doneResolve = resolve; doneReject = reject; });
+  const routePattern = /\/api\/v1\/categories\/[^/]+\/commands$/;
+  const handler = async route => {
+    const request = route.request(), body = request.method() === 'POST' ? request.postDataJSON() : null;
+    if (body?.operation !== operation || body.payload?.risk?.id !== config.risk_id || body.payload.action !== 'close' || injected) return route.continue();
+    injected = true;
+    try {
+      original = body;
+      const response = await route.fetch({ timeout: 60000 });
+      if (response.status() !== 200) throw new Error('Actual risk close failed ' + response.status() + ' ' + await response.text());
+      committed = await response.json();
+      if (committed.subject_type !== 'risk_followup' || committed.result.risk_id !== config.risk_id || committed.result.status !== 'closed' || committed.subject_revision !== 3) throw new Error('Actual close receipt does not match revision 3');
+      await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ code: 'SOURCE_UNAVAILABLE', message: '合成已保存响应丢失' }) });
+      doneResolve();
+    } catch (error) { doneReject(error); throw error; }
+  };
+  try {
+    await card().getByRole('button', { name: '登记本条风险跟进结果', exact: true }).click();
+    const form = () => page.getByRole('region', { name: '本次风险跟进表', exact: true });
+    await form().getByLabel('关闭跟进结果与依据', { exact: true }).fill('合成页面核对：原件已核实，本条内部跟进暂时结束');
+    await form().getByLabel('办理理由', { exact: true }).fill('原具名跟进人验证内部关闭和原请求恢复，不作专业风险批准');
+    if (!(await form().getByRole('textbox', { name: '结果依据来源 JSON', exact: true }).isVisible())) await form().getByText('高级：原件来源引用', { exact: true }).click();
+    await form().getByRole('textbox', { name: '结果依据来源 JSON', exact: true }).fill(JSON.stringify(config.sources));
+    await form().getByRole('button', { name: '核对此次风险跟进材料', exact: true }).click();
+    const dialog = () => page.getByRole('dialog', { name: '确认风险跟进登记', exact: true });
+    await dialog().getByRole('button', { name: '确认保存风险跟进', exact: true }).waitFor({ timeout: 60000 });
+    if (riskPosts('/risks/inputs').length !== 1 || riskPosts('/commands/preview').length !== 1 || riskPosts('/commands').length !== 0) throw new Error('Close inputs/preview bypassed explicit confirmation');
+    if (!(await dialog().getByText('登记前', { exact: true }).count()) || !(await dialog().getByText('登记后', { exact: true }).count())) throw new Error('The before/after review is missing');
+    await page.route(routePattern, handler);
+    await dialog().getByRole('button', { name: '确认保存风险跟进', exact: true }).click();
+    try { await Promise.race([done, new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('No fulfilled response-loss injection within 60 seconds')), 60000); })]); } finally { clearTimeout(timer); }
+    await section().getByText('保存结果尚待核实。请保留原请求并明确核对，勿新建重复记录。', { exact: true }).waitFor({ timeout: 60000 });
+    await page.unroute(routePattern, handler);
+    const actualClosed = await readRisk();
+    if (actualClosed.state !== 'closed' || actualClosed.current?.revision !== 3 || actualClosed.history.length !== originalRisk.history.length + 1 || !actualClosed.history.some(value => value.receipt_id === committed.id) || JSON.stringify(actualClosed.task) !== stableTask) throw new Error('The actual close changed a task or did not produce exactly one version');
+    if ((await attention()).length !== 0) throw new Error('Closed internal followup remains in actual personal attention');
+    const beforeReload = writes.length;
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    const pending = page.getByRole('region', { name: '风险跟进原请求', exact: true });
+    await pending.getByRole('button', { name: '按原请求核对风险跟进保存结果', exact: true }).waitFor({ timeout: 60000 });
+    await card().getByRole('heading', { name: originalRisk.title, exact: true }).waitFor({ timeout: 60000 });
+    if (writes.length !== beforeReload) throw new Error('Reload automatically issued a POST');
+    const replayResponse = page.waitForResponse(response => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/commands') && response.request().postDataJSON()?.operation === operation, { timeout: 60000 });
+    await pending.getByRole('button', { name: '按原请求核对风险跟进保存结果', exact: true }).click();
+    const replay = await replayResponse;
+    if (replay.status() !== 200 || (await replay.json()).id !== committed.id) throw new Error('Explicit replay did not return the original actual receipt');
+    await section().getByText('已保存具名风险跟进 · 回执 ' + committed.id + '。刷新只读回记录。', { exact: true }).waitFor({ timeout: 60000 });
+    const closeCommands = riskPosts('/commands');
+    if (closeCommands.length !== 2 || !same(closeCommands[0].body, original) || !same(closeCommands[1].body, original)) throw new Error('Explicit replay changed the original command, payload or idempotency key');
+    if ((await readRisk()).current?.revision !== 3) throw new Error('Replay created another followup version');
+
+    await card().getByRole('button', { name: '重开本条风险跟进', exact: true }).click();
+    await form().getByLabel('重开跟进原因与下一步', { exact: true }).fill('合成页面核对：新增原件需继续内部跟进，下一步复核待办');
+    await form().getByLabel('办理理由', { exact: true }).fill('同一原具名跟进人根据新增原件重开内部跟进');
+    if (!(await form().getByRole('textbox', { name: '结果依据来源 JSON', exact: true }).isVisible())) await form().getByText('高级：原件来源引用', { exact: true }).click();
+    await form().getByRole('textbox', { name: '结果依据来源 JSON', exact: true }).fill(JSON.stringify(config.sources));
+    await form().getByRole('button', { name: '核对此次风险跟进材料', exact: true }).click();
+    await dialog().getByRole('button', { name: '确认保存风险跟进', exact: true }).waitFor({ timeout: 60000 });
+    if (riskPosts('/risks/inputs').length !== 2 || riskPosts('/commands/preview').length !== 2 || riskPosts('/commands').length !== 2) throw new Error('Reopen inputs/preview bypassed explicit confirmation');
+    const reopenResponse = page.waitForResponse(response => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/commands') && response.request().postDataJSON()?.operation === operation, { timeout: 60000 });
+    await dialog().getByRole('button', { name: '确认保存风险跟进', exact: true }).click();
+    const reopenHttp = await reopenResponse;
+    if (reopenHttp.status() !== 200) throw new Error('Actual reopen failed ' + reopenHttp.status() + ' ' + await reopenHttp.text());
+    const reopenedReceipt = await reopenHttp.json();
+    await section().getByText('已保存具名风险跟进 · 回执 ' + reopenedReceipt.id + '。刷新只读回记录。', { exact: true }).waitFor({ timeout: 60000 });
+    await card().getByRole('button', { name: '登记本条风险跟进结果', exact: true }).waitFor({ timeout: 60000 });
+    const final = await readRisk(), actualCommands = riskPosts('/commands'), reopening = actualCommands[2]?.body;
+    if (final.id !== config.risk_id || final.decision_id !== originalRisk.decision_id || final.state !== 'open' || final.current?.revision !== originalRisk.current.revision + 2 || final.history.length !== originalRisk.history.length + 2 || JSON.stringify(final.task) !== stableTask || final.task?.state !== 'completed' || !originalHistory.every(id => final.history.some(value => value.id === id))) throw new Error('Final actual risk history or completed linked task changed unexpectedly');
+    if (actualCommands.length !== 3 || reopening.payload.action !== 'reopen' || reopening.payload.current.id !== actualClosed.current.id || reopening.payload.current.revision !== 3 || reopening.payload.risk.id !== config.risk_id || reopening.command_id === original.command_id || reopening.idempotency_key === original.idempotency_key) throw new Error('Reopen did not use a new confirmed command with the exact closed predecessor');
+    if (reopenedReceipt.result.status !== 'open' || reopenedReceipt.subject_revision !== 4 || reopenedReceipt.result.risk_id !== config.risk_id || final.history.filter(value => [committed.id, reopenedReceipt.id].includes(value.receipt_id)).length !== 2) throw new Error('Final actual history does not contain exactly the two real receipts');
+    const resumedAttention = await attention();
+    if (resumedAttention.length !== 1 || resumedAttention[0].state !== 'open' || resumedAttention[0].due_at !== null || resumedAttention[0].details.g0_due_date !== originalRisk.due_date) throw new Error('Reopen did not restore actual original followup attention with an unchanged G0 date');
+    const activity = await items(base + '/activity?project_id=' + config.project_id);
+    const activityReceipts = [committed.id, reopenedReceipt.id].map(id => activity.filter(value => value.operation === operation && value.receipt_id === id));
+    if (activityReceipts.some(values => values.length !== 1)) throw new Error('Actual project activity does not contain exactly one record per new receipt');
+    const frames = [];
+    for (const [width, dark, path] of [[1440, false, config.light], [320, true, config.dark]]) {
+      await page.setViewportSize({ width, height: 1000 });
+      if (await page.locator('html').evaluate(element => element.classList.contains('dark')) !== dark) await page.getByRole('button', { name: '切换明暗主题', exact: true }).click();
+      await page.waitForFunction(expected => document.documentElement.classList.contains('dark') === expected, dark);
+      await card().getByRole('button', { name: '登记本条风险跟进结果', exact: true }).waitFor({ timeout: 60000 });
+      await card().evaluate(element => element.scrollIntoView({ block: 'start' }));
+      await page.evaluate(() => window.scrollBy(0, -280));
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+      if (overflow) throw new Error('Horizontal overflow at width ' + width);
+      await page.screenshot({ path });
+      frames.push({ width, dark, overflow, card_box: await card().boundingBox(), viewport_screenshot: true });
+    }
+    if (riskPosts('/risks/inputs').length !== 2 || riskPosts('/commands/preview').length !== 2 || riskPosts('/commands').length !== 3) throw new Error('Unexpected risk POST count');
+    return { actual_risk_id: final.id, initial_revision: originalRisk.current.revision, final_revision: final.current.revision, actual_receipts: [committed.id, reopenedReceipt.id], actual_commands: [original.command_id, reopening.command_id], actual_save_response_replaced_with_503: true, injected_response_fulfilled_before_reload: true, refresh_auto_POSTs: 0, explicit_replay_exact_original_command_and_key: true, replay_same_receipt: true, two_explicit_T1_confirmations: true, linked_task_still_completed: true, actual_attention_closed_removed_reopen_restored: true, actual_activity_each_receipt_once: true, frames };
+  } finally { clearTimeout(timer); await page.unroute(routePattern, handler); page.off('request', listener); }
+}
+)(page);
+```
+### Page
+- Page URL: http://127.0.0.1:64599/?area=category&category=fe4934da-0edd-4194-b629-2d610c732a81&bench=projects&view=plan&product=eb347984-dd44-43dd-9650-778ab56e9cdb&project=3de5953d-1130-49ff-9033-f9385727c5d7
+- Page Title: PDOS · 研发工作区
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T21-16-55-746Z.log#L2
+
+Browser 'pdos-s5-risk-followup-20261018' closed
+
+

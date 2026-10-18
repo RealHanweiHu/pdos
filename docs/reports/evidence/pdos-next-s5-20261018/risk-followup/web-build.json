@@ -1,0 +1,18 @@
+{
+  "exit": 0,
+  "output": "▲ Next.js 16.3.3 (webpack)\n✓ Running next.config.ts took 18ms\n\n  Creating an optimized production build ...\n✓ Compiled successfully in 11.8s\n  Running TypeScript ...\n  Finished TypeScript in 12.3s ...\n  Collecting page data using 9 workers ...\n  Generating static pages using 9 workers (0/5) ...\n  Generating static pages using 9 workers (1/5) \n  Generating static pages using 9 workers (2/5) \n  Generating static pages using 9 workers (3/5) \n✓ Generating static pages using 9 workers (5/5) in 672ms\n  Finalizing page optimization ...\n  Collecting build traces ...\n\nRoute (app)\n┌ ○ /\n├ ○ /_not-found\n├ ƒ /api/[...path]\n├ ƒ /api/local-session\n├ ƒ /api/v1/personal/attention\n├ ƒ /categories/[categoryId]/proposals/[proposalId]\n└ ƒ /plan\n\n\n○  (Static)   prerendered as static content\nƒ  (Dynamic)  server-rendered on demand\n\n",
+  "snapshot": "/private/tmp/pdos-risk-followup-repaired-7qdyv9m_",
+  "web_manifest": {
+    "pdos-next/web/src/lib/project-risks.ts": "4b5adbebf6cf6fd85cbba6741450032756cf4b60b71c072e726cce6d6f1d0caf",
+    "pdos-next/web/src/lib/project-risks.test.ts": "ef784810039887fbd2e425632ea7ff45e1f4e43ab39ca3b6355718991a30b431",
+    "pdos-next/web/src/components/projects/project-risks.tsx": "603d0c770b3826022cae1d57437d9f57d3c650f916710977455a4f0aaebead76",
+    "pdos-next/web/src/components/projects/project-risks.module.css": "7e8a24b72850b6d89808a038f1e73cc8519bad4b4b899842cfb4e770179617cf",
+    "pdos-next/web/src/components/projects/project-risks.test.mjs": "f3959b83e588b9b0ac673ccf736a73e3b094e2e34a2d76e72d2734ac58b0eba0",
+    "pdos-next/web/src/components/projects/project-work.tsx": "0a5c50b0d72819ace330d25f4996c29d58de3c3fc7f6fddd9c58781ec8363cce",
+    "pdos-next/web/src/components/projects/project-work.test.mjs": "1ed27b9b681f70aa171e91e2f502e452ba383d113b6daee249a5127e63a618bc",
+    "pdos-next/web/src/app/api/project-risk-route.test.mjs": "64230b965b525c9215697fdd7f85ee1eecde9220b40a1707a25b7d89b9d2527c",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "5f88961407e93aeedfa152c193dc5b8d0911631ce7c43664272aacfa4ec0dca2",
+    "pdos-next/web/src/lib/project-work.ts": "166342308a2bb52d9584947d0876688818b49990146ce4ac2d2448cfbd5ea951"
+  },
+  "network_scope": "public font assets required by the existing Next build"
+}

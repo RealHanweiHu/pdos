@@ -130,6 +130,7 @@ EVENTS = {
     "product.variant.rebase": "variant.rebased",
     "work.task.create": "task.created",
     "work.external_wait.record": "external_wait.recorded",
+    "work.risk.followup.record": "risk.followup_recorded",
     "work.task.assign": "task.assigned",
     "work.task.accept": "task.accepted",
     "work.commitment.accept": "commitment.accepted",

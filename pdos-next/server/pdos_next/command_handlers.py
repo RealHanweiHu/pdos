@@ -61,6 +61,7 @@ T2_OPERATIONS = frozenset(
 
 T1_OPERATIONS = frozenset(
     {
+        "work.risk.followup.record",
         "ai.automation.activate",
         "ai.automation.pause",
         "work.task.assign",
@@ -213,6 +214,10 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation == "work.risk.followup.record":
+        from pdos_next.domain.project_risk import service as risk_followup_service
+
+        return risk_followup_service
     if operation == "work.external_wait.record":
         from pdos_next.domain.external_wait import service as external_wait_service
 

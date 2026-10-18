@@ -1,5 +1,7 @@
 """Current project work and fixed historical facts, without historical source bodies."""
 
+from uuid import UUID
+
 from sqlalchemy import select
 
 from pdos_next.models import Grant, Principal, now
@@ -190,6 +192,14 @@ def workspace(s, ctx, pid, project_id):
             .order_by(Principal.name, Principal.id)
         )
     ]
+    from pdos_next.domain.project_risk.views import projection as risk_projection
+
+    native_items = workspace_items(s, ctx, pid, project_id)
+    for item in native_items:
+        if item["kind"] == "risk":
+            item["risk_followup"] = risk_projection(
+                s, ctx, pid, project, UUID(item["id"]), UUID(item["decision_id"])
+            )
     return {
         "project": {
             "id": str(project.id),
@@ -201,7 +211,7 @@ def workspace(s, ctx, pid, project_id):
         "product_revision": product.revision,
         "members": members,
         "tasks": tasks,
-        "g0_open_items": workspace_items(s, ctx, pid, project_id),
+        "g0_open_items": native_items,
         "commitments": commitments,
         "updates": updates,
         "as_of": now().isoformat(),
