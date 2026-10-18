@@ -38,7 +38,15 @@ def retained(s, ctx, pid, row):
         403,
     )
     require(digest(row.body) == row.body_sha256, "工作记录摘要无法核对。", "INTEGRITY_MISMATCH")
-    common_group(s, ctx, pid, row, operation=row.operation, event=OPERATIONS[row.operation][1])
+    common_group(
+        s,
+        ctx,
+        pid,
+        row,
+        operation=row.operation,
+        event=OPERATIONS[row.operation][1],
+        key_binding="project_work",
+    )
     return row
 
 

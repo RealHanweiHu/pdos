@@ -1,0 +1,81 @@
+{
+  "snapshot": "/private/tmp/pdos-s5-fulfillment-3o22_b4e",
+  "results": [
+    {
+      "name": "python-pure",
+      "command": [
+        "/private/tmp/pdos-s5-fulfillment-3o22_b4e/pdos-next/server/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "--confcutdir=tests/work_fulfillment",
+        "tests/work_fulfillment",
+        "tests/work_management",
+        "-q"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "frontend-libs",
+      "command": [
+        "node",
+        "../tools/s0_web_checkpoint.cjs",
+        "project-work"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "frontend-components-bff",
+      "command": [
+        "node",
+        "--test",
+        "src/lib/commitment-fulfillment.test.mjs",
+        "src/components/projects/commitment-fulfillment.test.mjs",
+        "src/components/projects/project-work.test.mjs",
+        "src/app/api/project-work-route.test.mjs",
+        "src/app/api/commitment-fulfillment-route.test.mjs"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "frontend-lint",
+      "command": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "src/lib/commitment-fulfillment.ts",
+        "src/components/projects/commitment-fulfillment.tsx",
+        "src/components/projects/project-work.tsx",
+        "src/components/projects/project-work.test.mjs",
+        "src/app/api/[...path]/route.ts",
+        "src/app/api/commitment-fulfillment-route.test.mjs",
+        "--max-warnings=0"
+      ],
+      "exit": 0
+    },
+    {
+      "name": "python-lint",
+      "command": [
+        "/private/tmp/pdos-s5-fulfillment-3o22_b4e/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "pdos_next/domain/work_fulfillment",
+        "tests/work_fulfillment",
+        "tests/work_fulfillment_pg",
+        "migrations/versions/s0_0789_commitment_fulfillment.py",
+        "migrations/versions/s0_0790_work_receipt_audience.py",
+        "pdos_next/personal_project_work.py"
+      ],
+      "exit": 1
+    },
+    {
+      "name": "contract-catalog",
+      "command": [
+        "/usr/bin/env",
+        "/private/tmp/pdos-s5-fulfillment-3o22_b4e/pdos-next/server/.venv/bin/python",
+        "-B",
+        "pdos-next/tools/validate_contracts.py"
+      ],
+      "exit": 0
+    }
+  ],
+  "at": "2026-10-18T02:52:33.147659+00:00"
+}

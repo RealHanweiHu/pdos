@@ -1,0 +1,24 @@
+{
+  "head": "s0_0790",
+  "own_preview_stopped": [
+    {
+      "kind": "web",
+      "port": 58855,
+      "pid": 42883
+    },
+    {
+      "kind": "api",
+      "port": 58854,
+      "pid": 37495
+    }
+  ],
+  "synthetic_browser_login_removed": true,
+  "private_seed_removed": true,
+  "final_backup": {
+    "size": 70745237,
+    "sha256": "55d837b95d0365246cd0daeeefc84c0118fc6d94426ba46cb03830eff57878a1"
+  },
+  "database_retained": true,
+  "shared_temporal_untouched": true,
+  "real_external_calls": 0
+}

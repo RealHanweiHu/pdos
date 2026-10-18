@@ -1,0 +1,40 @@
+{
+  "steps": [
+    {
+      "args": [
+        "upgrade",
+        "s0_0790"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "args": [
+        "downgrade",
+        "s0_0789"
+      ],
+      "exit": 1,
+      "output": "Traceback (most recent call last):\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 1925, in _exec_single_context\n    self.dialect.do_execute_no_params(\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py\", line 1195, in do_execute_no_params\n    cursor.execute(statement)\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/cursor.py\", line 117, in execute\n    raise ex.with_traceback(None)\npsycopg.errors.CheckViolation: Commitment fulfillment history retained; audience proof downgrade refused\nCONTEXT:  PL/pgSQL function inline_code_block line 1 at RAISE\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/__main__.py\", line 4, in <module>\n    main(prog=\"alembic\")\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py\", line 1039, in main\n    CommandLine(prog=prog).main(argv=argv)\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py\", line 1029, in main\n    self.run_cmd(cfg, options)\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py\", line 963, in run_cmd\n    fn(\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/command.py\", line 534, in downgrade\n    script.run_env()\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/script/base.py\", line 550, in run_env\n    util.load_python_file(self.dir, \"env.py\")\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/util/pyfiles.py\", line 114, in load_python_file\n    module = load_module_py(module_id, path)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/util/pyfiles.py\", line 132, in load_module_py\n    spec.loader.exec_module(module)  # type: ignore\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap_external>\", line 999, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"/private/tmp/pdos-s5-fulfillment-3o22_b4e/pdos-next/server/migrations/env.py\", line 19, in <module>\n    context.run_migrations()\n  File \"<string>\", line 8, in run_migrations\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/runtime/environment.py\", line 970, in run_migrations\n    self.get_context().run_migrations(**kw)\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/runtime/migration.py\", line 616, in run_migrations\n    step.migration_fn(**kw)\n  File \"/private/tmp/pdos-s5-fulfillment-3o22_b4e/pdos-next/server/migrations/versions/s0_0790_work_receipt_audience.py\", line 33, in downgrade\n    _apply(WORK_FUNCTIONS, DOWNGRADE_SQL)\n  File \"/private/tmp/pdos-s5-fulfillment-3o22_b4e/pdos-next/server/migrations/versions/s0_0790_work_receipt_audience.py\", line 24, in _apply\n    connection.exec_driver_sql(statement, execution_options={\"no_parameters\": True})\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 1755, in exec_driver_sql\n    ret = self._execute_context(\n          ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 1822, in _execute_context\n    return self._exec_single_context(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 1962, in _exec_single_context\n    self._handle_dbapi_exception(\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 2332, in _handle_dbapi_exception\n    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 1925, in _exec_single_context\n    self.dialect.do_execute_no_params(\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py\", line 1195, in do_execute_no_params\n    cursor.execute(statement)\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/cursor.py\", line 117, in execute\n    raise ex.with_traceback(None)\nsqlalchemy.exc.IntegrityError: (psycopg.errors.CheckViolation) Commitment fulfillment history retained; audience proof downgrade refused\nCONTEXT:  PL/pgSQL function inline_code_block line 1 at RAISE\n[SQL: DO $retain$ BEGIN IF EXISTS(SELECT 1 FROM public.work_commitment_reviews) THEN RAISE EXCEPTION 'Commitment fulfillment history retained; audience proof downgrade refused' USING ERRCODE='23514'; END IF; END; $retain$]\n(Background on this error at: https://sqlalche.me/e/21/gkpj)\n"
+    }
+  ],
+  "policies": [
+    [
+      "action_receipts",
+      "category_scope",
+      "PERMISSIVE"
+    ],
+    [
+      "action_receipts",
+      "model_audience",
+      "RESTRICTIVE"
+    ],
+    [
+      "action_receipts",
+      "work_receipt_project_read",
+      "PERMISSIVE"
+    ]
+  ],
+  "final_head": "s0_0790",
+  "history_retained": true,
+  "real_external_calls": 0
+}

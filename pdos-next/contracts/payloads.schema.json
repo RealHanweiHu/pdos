@@ -20376,6 +20376,181 @@
       ],
       "title": "Control",
       "type": "object"
+    },
+    "work.commitment.review": {
+      "$defs": {
+        "ReviewCheck": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Key",
+              "type": "string"
+            },
+            "decision": {
+              "enum": [
+                "accepted",
+                "rejected",
+                "unknown"
+              ],
+              "title": "Decision",
+              "type": "string"
+            },
+            "reason": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "decision",
+            "reason"
+          ],
+          "title": "ReviewCheck",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "commitment": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "task": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "submission": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "expected_review_revision": {
+          "minimum": 0,
+          "title": "Expected Review Revision",
+          "type": "integer"
+        },
+        "decision": {
+          "enum": [
+            "accepted",
+            "returned"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/ReviewCheck"
+          },
+          "minItems": 1,
+          "title": "Checks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "project_id",
+        "sources",
+        "reason",
+        "commitment",
+        "task",
+        "submission",
+        "expected_review_revision",
+        "decision",
+        "checks"
+      ],
+      "title": "CommitmentReviewPayload",
+      "type": "object"
     }
   },
   "scope": "implemented local domain slices; real AI qualification and formal exits are separate"

@@ -134,7 +134,7 @@ OUTPUTS = {
 }
 
 
-def common_group(s, ctx, pid, row, *, operation, event, actor=None):
+def common_group(s, ctx, pid, row, *, operation, event, actor=None, key_binding=None):
     from pdos_next.change_order_service import _one
 
     receipt = _one(
@@ -179,7 +179,11 @@ def common_group(s, ctx, pid, row, *, operation, event, actor=None):
         # receipt; the scoped DB function returns no key, digest or identity.
         keys_bound = (
             s.scalar(
-                text("SELECT public.change_receipt_key_bound(:tenant,:product,:receipt)"),
+                text(
+                    "SELECT public.work_receipt_key_bound(:tenant,:product,:receipt)"
+                    if key_binding == "project_work"
+                    else "SELECT public.change_receipt_key_bound(:tenant,:product,:receipt)"
+                ),
                 {"tenant": ctx.tenant_id, "product": pid, "receipt": receipt.id},
             )
             is True

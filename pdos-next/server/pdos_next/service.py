@@ -84,6 +84,7 @@ def command_digest(command: Command) -> str:
 
 
 EVENTS = {
+    "work.commitment.review": "commitment.reviewed",
     "ai.automation.draft.save": "ai.automation_draft_saved",
     "ai.automation.activate": "ai.automation_activated",
     "ai.automation.pause": "ai.automation_paused",

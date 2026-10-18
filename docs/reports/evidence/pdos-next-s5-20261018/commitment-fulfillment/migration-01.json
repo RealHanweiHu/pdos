@@ -1,0 +1,39 @@
+{
+  "steps": [
+    {
+      "command": [
+        "alembic",
+        "upgrade",
+        "s0_0789"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "alembic",
+        "downgrade",
+        "s0_0788"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "alembic",
+        "upgrade",
+        "s0_0789"
+      ],
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "exit": 0,
+  "snapshot": "/private/tmp/pdos-s5-fulfillment-3o22_b4e",
+  "base": "77045ba1eb6660143018b03268e4daa8b467165d",
+  "database": "127.0.0.1:64245/pdos_test",
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "before_head": "s0_0788",
+  "real_model_calls": 0,
+  "performance_acceptance": false
+}

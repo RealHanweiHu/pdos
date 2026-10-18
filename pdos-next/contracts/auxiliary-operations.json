@@ -590,6 +590,19 @@
       ],
       "payload_schema": "payloads.schema.json",
       "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "work.commitment.review",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "commitment.reviewed",
+      "purpose": "The original recipient checks every promised outcome against a fixed actual submission. Fulfillment is independent of task completion and promise dates.",
+      "canonical_policy_preserved": [
+        "work.commitment.accept:T1",
+        "work.task.assign:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
     }
   ]
 }

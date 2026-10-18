@@ -9,6 +9,7 @@ from sqlalchemy.orm import aliased
 
 from pdos_next import models
 from pdos_next.domain.projects.models import Project
+from pdos_next.domain.work_fulfillment.models import WorkCommitmentReviewCurrent
 from pdos_next.domain.work_management.models import (
     WorkCommitmentCurrent,
     WorkCommitmentVersion,
@@ -170,7 +171,14 @@ def _records(ctx, queue):
                     commitment.id == commitment_pointer.version_id,
                 ),
             )
-            .where(commitment.promisor_id == ctx.requester_id)
+            .where(
+                commitment.promisor_id == ctx.requester_id,
+                ~select(WorkCommitmentReviewCurrent.id).where(
+                    _same(WorkCommitmentReviewCurrent, commitment, BINDING),
+                    WorkCommitmentReviewCurrent.commitment_id == commitment.id,
+                    WorkCommitmentReviewCurrent.state == "fulfilled",
+                ).exists(),
+            )
         )
     else:
         query = query.where(task.state.in_(TASK_STATES[queue]))

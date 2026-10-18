@@ -66,6 +66,7 @@ T1_OPERATIONS = frozenset(
         "work.task.assign",
         "work.task.accept",
         "work.commitment.accept",
+        "work.commitment.review",
         "work.task.start",
         "work.task.submit",
         "work.task.review",
@@ -211,6 +212,10 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation == "work.commitment.review":
+        from pdos_next.domain.work_fulfillment import service as fulfillment_service
+
+        return fulfillment_service
     if operation in {"ai.automation.draft.save", "ai.automation.activate", "ai.automation.pause"}:
         from pdos_next.domain.automations import service as automation_service
 

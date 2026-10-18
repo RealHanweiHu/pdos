@@ -1,0 +1,13 @@
+{
+  "responseLostAfterCommit": true,
+  "saveStatus": 200,
+  "refreshAutomaticPosts": 0,
+  "totalPosts": 4,
+  "exactReplay": true,
+  "sameReceipt": true,
+  "receiptId": "bee9767f-413c-4590-9a66-393080593a88",
+  "receiptText": "已保存具名履行核对 · 回执 bee9767f-413c-4590-9a66-393080593a88。刷新只读回记录。",
+  "currentFulfilled": true,
+  "fixture_nature": "local synthetic registered evidence; actual browser/BFF/API commands",
+  "initial_browser_harness_issue": "Pending indicator appeared before route.fetch completed; a subsequent lookup used obsolete badge wording. Final evidence waits for actual HTTP200 and observed badge, then compares exact original request and same receipt."
+}

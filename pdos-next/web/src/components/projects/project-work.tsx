@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowClockwise, CheckCircle, ClipboardText, Plus } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { blankWorkLocal, newWorkCommand, parseWorkPayload, parseWorkSources, readProjectWork, restoreWorkLocal, runProjectWorkRequest, taskActions, workOperationNames, workPreviewCurrent, workStorageKey, type ProjectWorkApi, type ProjectWorkView, type WorkCheck, type WorkDraft, type WorkLocal, type WorkOperation, type WorkOutcome, type WorkPayload, type WorkPending, type WorkPrepared, type WorkResult, type WorkScope, type WorkTask } from "@/lib/project-work";
+import { CommitmentFulfillment } from "./commitment-fulfillment";
 import styles from "./project-work.module.css";
 
 type Props = WorkScope & { api: ProjectWorkApi; productRevision: number; onRefresh?: () => void | Promise<void>; readVersion?: number };
@@ -104,6 +105,7 @@ function ScopedProjectWork({ api, categoryId, productId, projectId, principalId,
         <label>办理理由<textarea value={d.reason ?? ""} onChange={e => change("reason", e.target.value)}/></label><details className={styles.details}><summary>实际来源引用（高级 JSON，必填）</summary><p className={styles.note}>引用已登记原件的 id、revision、kind: artifact 和准确 position。</p><textarea aria-label="实际来源引用 JSON" value={d.sources ?? "[]"} onChange={e => change("sources", e.target.value)}/></details>
         <Button type="button" disabled={!editable || !mayAct} onClick={start}>{local.operation === "work.task.create" ? "保存人工任务草稿" : "核对此次办理材料"}</Button>
       </fieldset>{!canWrite && <p className={styles.note}>当前成员没有本项目写入资格；可继续查看可读记录。</p>}{!mayAct && canWrite && <p className={styles.note}>当前任务状态或本人角色不允许此动作，请从任务卡片选择可办理项。</p>}</section>}
+      <CommitmentFulfillment api={api} scope={scope} readVersion={readVersion + attempt} onRefresh={() => { setAttempt(value => value + 1); void onRefresh?.(); }}/>
       <section className={styles.panel} aria-label="具名周报历史"><h3>已保存的具名周报</h3>{data.updates.length ? data.updates.map(value => <article className={styles.statement} key={value.id}><strong>{name(value.actor_id)} · {value.created_at}</strong><p>{value.fact_summary}</p><p>下一步：{value.next_steps}</p><small>固定任务引用：{value.task_refs.map(v => `${data.tasks.find(row => row.id === v.id)?.title ?? v.id} v${v.revision}`).join("；") || "未引用任务"} · 回执 {value.receipt_id}</small></article>) : <p className={styles.note}>尚无可读周报记录。</p>}</section>
     </>}
     {local.pending && !denied && <section className={styles.pending} aria-label="已保留的原请求"><h3>{local.pending.stage === "execute" ? "保存结果待核实" : "本次材料尚待确认"}</h3><p>已保留原请求与办理内容。重新打开页面不会自动提交。</p><Button disabled={busy || !storageOk} onClick={() => void run(local.pending!)}>{local.pending.stage === "execute" ? "按原请求核对保存结果" : "重新核对原请求"}</Button>{local.pending.stage !== "execute" && !prepared && <Button variant="outline" disabled={busy || !storageOk} onClick={() => saveEvent({ ...localRef.current, pending: null })}>返回编辑</Button>}</section>}

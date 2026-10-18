@@ -1,0 +1,16 @@
+{
+  "migration_0790": {
+    "observed_error": "psycopg.errors.InsufficientPrivilege: must be owner of function change_receipt_key_bound",
+    "rolled_back_head": "s0_0789",
+    "diagnostic_attempts": 2,
+    "resolution": "Preserve that function and its owner; add ordinary-owner work_receipt_key_bound with explicit project-work call sites. Final0790 upgrade succeeded; history downgrade refused."
+  },
+  "frontend_initial_check": {
+    "cause": "Existing parent component test hook harness executed the newly integrated child outside its own hook scope; one bare TypeScript test invocation also lacked its established transpilation harness.",
+    "resolution": "Stub independent child only in parent harness; retain9 actual child event cases; run existing library through s0_web_checkpoint.cjs. Final80 frontend cases passed."
+  },
+  "first_static_checkpoint": {
+    "result": "Python lint import order failure in new0790 version; corrected and final static checks passed."
+  },
+  "real_model_calls": 0
+}

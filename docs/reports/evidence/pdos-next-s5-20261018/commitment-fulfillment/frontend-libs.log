@@ -1,0 +1,27 @@
+✔ manual draft creation uses actual inputs then one T0 save without confirmation (5.241416ms)
+✔ work.task.assign stops after common T1 preview until a substantive confirmation (0.644042ms)
+✔ work.task.accept stops after common T1 preview until a substantive confirmation (0.279583ms)
+✔ work.commitment.accept stops after common T1 preview until a substantive confirmation (16.028666ms)
+✔ work.task.start stops after common T1 preview until a substantive confirmation (0.75475ms)
+✔ work.task.submit stops after common T1 preview until a substantive confirmation (0.535458ms)
+✔ work.task.review stops after common T1 preview until a substantive confirmation (0.500875ms)
+✔ work.status_update.create stops after common T1 preview until a substantive confirmation (0.206458ms)
+✔ acceptance does not invent a promise, and an unknown promise retains null (0.159083ms)
+✔ explicit actual time preserves microseconds and cannot be naive or unknown (0.351667ms)
+✔ exact original source versions and client-injected policy facts are rejected (0.291417ms)
+✔ a supplied result requires its own source while a missing result can remain empty (0.205667ms)
+✔ preview verifies the original key/version/readset and requires the actual T1 token and deadline (0.328583ms)
+✔ unknown execution is never retried automatically; explicit replay preserves exact body/key/token (0.384792ms)
+✔ stage persistence failure prevents a T0 or T1 irreversible save (0.220333ms)
+✔ disposing a scope after inputs prevents the later preview (0.104292ms)
+✔ restoration is a pure read and binds principal, category, product and project (0.25725ms)
+✔ task permissions keep assigner, assignee and recipient actions distinct (0.099792ms)
+✔ reading failure or partial shape never becomes an empty success (0.167791ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 33.5535
