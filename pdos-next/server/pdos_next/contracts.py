@@ -486,3 +486,7 @@ from pdos_next.domain.release_exceptions.schemas import (  # noqa: E402
 )
 
 PAYLOADS.update(RELEASE_EXCEPTION_PAYLOADS)
+
+from pdos_next.domain.work_management.schemas import PAYLOADS as WORK_PAYLOADS  # noqa: E402
+
+PAYLOADS.update(WORK_PAYLOADS)

@@ -22,6 +22,8 @@ const manufacturingPublicationCommands = new Set(["npi.manufacturing_baseline.pu
 const nativePilotPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/pilots(?:\/inputs|\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
 const nativePilotCommands = new Set(["npi.pilot.create", "npi.pilot.result.record"]);
 const releasePaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:release\/inputs|release-packages(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?)$/i;
+const projectWorkPaths = /^v1\/products\/[a-f0-9-]{36}\/project-work(?:\/inputs)?$/i;
+const projectWorkCommands = new Set(["work.task.create", "work.task.assign", "work.task.accept", "work.commitment.accept", "work.task.start", "work.task.submit", "work.task.review", "work.status_update.create"]);
 const releaseCommands = new Set(["release.package.assemble", "release.engineering.approve", "release.manufacturing.approve"]);
 const externalHandoffPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:external-handoff\/inputs|external-handoffs(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/receipts)?)?)$/i;
 const externalHandoffCommands = new Set(["integration.handoff.authorize", "integration.receipt.record"]);
@@ -116,11 +118,23 @@ function validReleaseExceptionCommand(value: unknown, productId: string): boolea
   }
   return true; // Fixed content, authority and actual scope belong to the domain owner.
 }
+function validProjectWorkCommand(value: unknown, productId: string, categoryId: string): boolean {
+  if (!isRecord(value) || Object.keys(value).some(key=>!["command_id","idempotency_key","operation","category_id","product_id","expected_revision","payload","source_read_set"].includes(key)) || value.category_id!==categoryId || value.product_id!==productId || typeof value.operation!=="string" || !projectWorkCommands.has(value.operation) || typeof value.command_id!=="string" || !uuid.test(value.command_id) || typeof value.idempotency_key!=="string" || value.idempotency_key.length<8 || value.idempotency_key.length>160 || !positiveRevision(value.expected_revision) || !Array.isArray(value.source_read_set) || !isRecord(value.payload)) return false;
+  const payload=value.payload;
+  if (typeof payload.project_id!=="string" || !uuid.test(payload.project_id) || ["owner_id","visibility","actor_id","authority","policy"].some(key=>key in payload)) return false;
+  const seen=new Set<string>();
+  for (const read of value.source_read_set) {
+    if (!isRecord(read) || Object.keys(read).some(key=>!["artifact_id","expected_revision"].includes(key)) || typeof read.artifact_id!=="string" || !uuid.test(read.artifact_id) || !positiveRevision(read.expected_revision) || seen.has(read.artifact_id.toLowerCase())) return false;
+    seen.add(read.artifact_id.toLowerCase());
+  }
+  return true;
+}
 const longCommands = new Set([
   ...manufacturingPreparationCommands,
   ...manufacturingPublicationCommands,
   ...nativePilotCommands,
   ...releaseCommands,
+  ...projectWorkCommands,
   ...externalHandoffCommands,
   ...releaseExceptionCommands,
   ...qualityFollowupCommands,
@@ -167,9 +181,10 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const release = releasePaths.test(pathname);
   const externalHandoff = externalHandoffPaths.test(pathname);
   const releaseException = releaseExceptionPaths.test(pathname);
+  const projectWork = projectWorkPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (mcpManagement) {
     const recovering = pathname.endsWith("/recover"), method = recovering ? "POST" : "GET";
@@ -315,6 +330,14 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   } else if (resourceInspect) {
     if (request.method !== "POST") return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: "POST" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "请在正文中固定唯一试制资源范围。" }, { status: 422 });
+  } else if (projectWork) {
+    const input = pathname.endsWith("/inputs"), method = input ? "POST" : "GET";
+    if (request.method !== method) return Response.json({code:"VALIDATION_FAILED",message:"请使用项目工作读取或材料核对入口。"},{status:405,headers:{Allow:method}});
+    for (const [key,value] of request.nextUrl.searchParams) {
+      if (input || key !== "project_id" || !uuid.test(value) || query.has(key)) return Response.json({code:"VALIDATION_FAILED",message:"请选择唯一实际项目。"},{status:422});
+      query.set(key,value);
+    }
+    if (!input && !query.has("project_id")) return Response.json({code:"VALIDATION_FAILED",message:"请选择实际项目。"},{status:422});
   } else if (releaseException) {
     const input = pathname.endsWith("/inputs"), history = pathname.endsWith("/release-exceptions");
     const method = input ? "POST" : "GET";
@@ -453,6 +476,11 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       let value: unknown;
       try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整制造基线发布原请求。" }, { status: 422 }); }
       if (!validManufacturingCommand(value, path[2], true)) return Response.json({ code: "VALIDATION_FAILED", message: "本入口只核对本型号、项目与固定制造基线的发布。" }, { status: 422 });
+    }
+    if (projectWork && request.method === "POST") {
+      let value: unknown;
+      try {value=JSON.parse(body??"");} catch {return Response.json({code:"VALIDATION_FAILED",message:"请提交完整项目工作原请求。"},{status:422});}
+      if (!validProjectWorkCommand(value,path[2],categoryId!)) return Response.json({code:"VALIDATION_FAILED",message:"请固定本型号项目与已登记办理操作。"},{status:422});
     }
     if (releaseException && request.method === "POST") {
       let value: unknown;

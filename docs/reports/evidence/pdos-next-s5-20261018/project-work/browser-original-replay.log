@@ -1,0 +1,7 @@
+### Result
+{"posts":[{"status":200,"id":"8e55c5a9-80f0-4efa-836c-ca6b65cce547","subject_id":"351d7cab-b525-4310-8e5c-aaf86a6da199","same_original":true},{"status":200,"id":"8e55c5a9-80f0-4efa-836c-ca6b65cce547","subject_id":"351d7cab-b525-4310-8e5c-aaf86a6da199","same_original":true}],"exactSameOriginal":true}
+### Ran Playwright code
+```js
+await (async page => { await page.getByRole("button",{name:"按原请求核对保存结果",exact:true}).click(); await page.getByText("已取得真实保存回执，正在读回当前任务。状态更新只保存本条周报。",{exact:true}).waitFor(); return {posts:page.__s5.posts,exactSameOriginal:page.__s5.posts.length===2&&page.__s5.posts.every(x=>x.same_original)&&page.__s5.posts[0].id===page.__s5.posts[1].id}; })(page);
+```
+

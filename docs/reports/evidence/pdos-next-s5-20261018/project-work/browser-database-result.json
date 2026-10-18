@@ -1,0 +1,25 @@
+{
+  "task": {
+    "id": "869b8ac3-4fc8-4c22-b97e-98f2a8fd8220",
+    "revision": 8
+  },
+  "task_fact_count": 8,
+  "commitments": [
+    {
+      "id": "35faa65e-5e5d-416d-8ead-6a1ab46d20a8",
+      "revision": 1,
+      "recipient_id": "dd18f7bb-f71f-443f-b2f2-221613492937"
+    },
+    {
+      "id": "4f6d83cb-6917-46d5-98cf-ab8ef1b5d1b6",
+      "revision": 1,
+      "recipient_id": "5c069d38-a8b4-4d3b-954f-d5d75220c2ba"
+    }
+  ],
+  "status_update": {
+    "id": "58d1efc9-8b91-40a4-9d4e-c3c3025983f2",
+    "revision": 1
+  },
+  "original_rows_unchanged": true,
+  "source_unchanged": true
+}

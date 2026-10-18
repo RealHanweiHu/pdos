@@ -919,6 +919,9 @@ def create_app(
     )
 
     register_release_exceptions(app, engine, auth_dependency)
+    from pdos_next.domain.work_management.api import register_routes as register_project_work
+
+    register_project_work(app, engine, auth_dependency)
 
     @app.get("/v1/categories/{category_id}/products/{product_id}/configurations")
     def configurations(product_id: UUID, ctx: Context = auth_dependency):

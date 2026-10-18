@@ -264,6 +264,58 @@
       ],
       "payload_schema": "payloads.schema.json",
       "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "work.task.accept",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "task.accepted",
+      "purpose": "Named acceptance of assigned responsibility only; no date commitment is created.",
+      "canonical_policy_preserved": [
+        "work.task.assign:T1",
+        "work.commitment.accept:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "work.task.start",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "task.started",
+      "purpose": "Record actual start separately from accepted responsibility and per-recipient commitment.",
+      "canonical_policy_preserved": [
+        "work.task.assign:T1",
+        "work.commitment.accept:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "work.task.submit",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "task.submitted",
+      "purpose": "Submit explicit actual outcome facts; partial and missing results remain explicit, with no automatic acceptance.",
+      "canonical_policy_preserved": [
+        "work.task.assign:T1",
+        "work.commitment.accept:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "work.task.review",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "task.reviewed",
+      "purpose": "Designated recipient accepts required results or returns them with named checks; preserves original submissions and history.",
+      "canonical_policy_preserved": [
+        "work.task.assign:T1",
+        "work.commitment.accept:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
     }
   ]
 }

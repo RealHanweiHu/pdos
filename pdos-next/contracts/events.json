@@ -539,6 +539,13 @@
       "stage": "S1",
       "schema_version": 1,
       "v1_1": "added"
+    },
+    {
+      "type": "project.status_updated",
+      "operation": "work.status_update.create",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
     }
   ]
 }

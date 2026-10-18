@@ -106,7 +106,8 @@
       "ai_execution": "需资格与授权",
       "event": "task.created",
       "stage": "S1",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "work.task.assign",
@@ -114,7 +115,8 @@
       "ai_execution": "一次确认后",
       "event": "task.assigned",
       "stage": "S1",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "work.commitment.accept",
@@ -122,7 +124,8 @@
       "ai_execution": "一次确认后",
       "event": "commitment.accepted",
       "stage": "S1",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "work.plan.propose",
@@ -803,6 +806,16 @@
       "stage": "S1",
       "implementation": "implemented_local_slice",
       "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "work.status_update.create",
+      "write_tier": "T1",
+      "ai_execution": "AI 可起草，一次确认后由具名人发布；不自动发布",
+      "event": "project.status_updated",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added (确认稿 P18)",
       "payload_schema": "payloads.schema.json"
     }
   ]

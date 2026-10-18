@@ -1146,3 +1146,11 @@ from pdos_next.domain.release_exceptions.models import (  # noqa: E402,F401
     ReleaseExceptionDecision,
     ReleaseExceptionCurrent,
 )
+
+from pdos_next.domain.work_management.models import (  # noqa: E402,F401
+    ProjectStatusUpdate,
+    WorkTaskVersion,
+    WorkTaskCurrent,
+    WorkCommitmentVersion,
+    WorkCommitmentCurrent,
+)

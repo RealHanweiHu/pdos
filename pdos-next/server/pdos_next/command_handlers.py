@@ -58,6 +58,13 @@ T2_OPERATIONS = frozenset(
 
 T1_OPERATIONS = frozenset(
     {
+        "work.task.assign",
+        "work.task.accept",
+        "work.commitment.accept",
+        "work.task.start",
+        "work.task.submit",
+        "work.task.review",
+        "work.status_update.create",
         "platform.link.create",
         "mcp.tool.grant",
         "ai.skill.enable",
@@ -150,6 +157,19 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation in {
+        "work.task.create",
+        "work.task.assign",
+        "work.task.accept",
+        "work.commitment.accept",
+        "work.task.start",
+        "work.task.submit",
+        "work.task.review",
+        "work.status_update.create",
+    }:
+        from pdos_next.domain.work_management import service as work_service
+
+        return work_service
     if operation in {"release.exception.decide", "release.exception.withdraw"}:
         from pdos_next.domain.release_exceptions import service as release_exception_service
 

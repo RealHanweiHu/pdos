@@ -1,0 +1,10 @@
+### Result
+{"posts":[{"status":200,"id":"8e55c5a9-80f0-4efa-836c-ca6b65cce547","subject_id":"351d7cab-b525-4310-8e5c-aaf86a6da199","same_original":true}],"automaticExecutePosts":0}
+### Ran Playwright code
+```js
+await (async page => { const before=page.__s5.posts.length;await page.reload();await page.getByRole("button",{name:"按原请求核对保存结果",exact:true}).waitFor(); return {posts:page.__s5.posts,automaticExecutePosts:page.__s5.posts.length-before}; })(page);
+```
+### Page
+- Page URL: http://127.0.0.1:56051/?area=category&category=4005cc53-21fc-4e3b-bb4a-4f9b7179a121&bench=projects&view=plan&product=5c5b1613-08a1-4ca4-8d47-548f29ea13b1&project=c51618c9-5a5e-4fb6-854d-511eab271c1d
+- Page Title: PDOS · 研发工作区
+

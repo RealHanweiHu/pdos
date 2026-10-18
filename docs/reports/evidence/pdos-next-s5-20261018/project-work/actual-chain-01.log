@@ -1,0 +1,51 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+  /private/tmp/pdos-s5-work-c5kd17gi/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+  /private/tmp/pdos-s5-work-c5kd17gi/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+  /private/tmp/pdos-s5-work-c5kd17gi/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+  /private/tmp/pdos-s5-work-c5kd17gi/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+  /private/tmp/pdos-s5-work-c5kd17gi/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+  /private/tmp/pdos-s5-work-c5kd17gi/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+  /private/tmp/pdos-s5-work-c5kd17gi/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+  /private/tmp/pdos-s5-work-c5kd17gi/pdos-next/server/pdos_next/domain/work_management/service.py:346: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+tests/work_management_pg/test_workflow.py::test_named_work_commitments_return_and_acceptance_are_one_real_loop
+  /private/tmp/pdos-s5-work-c5kd17gi/pdos-next/server/pdos_next/domain/work_management/service.py:394: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 20 warnings in 38.48s

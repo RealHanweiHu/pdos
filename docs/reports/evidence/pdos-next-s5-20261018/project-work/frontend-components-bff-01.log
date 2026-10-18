@@ -1,0 +1,39 @@
+✔ project work GET is exactly project scoped (32.10475ms)
+✔ work bad query  (2.574042ms)
+✔ work bad query ?project_id=00000000-0000-4000-8000-000000000004&project_id=00000000-0000-4000-8000-000000000005 (1.437167ms)
+✔ work bad query ?project_id=00000000-0000-4000-8000-000000000004&scope=all (1.112709ms)
+✔ work.task.create exact original forwarded once (2.316667ms)
+✔ work.task.assign exact original forwarded once (1.841417ms)
+✔ work.task.accept exact original forwarded once (1.658416ms)
+✔ work.commitment.accept exact original forwarded once (1.214625ms)
+✔ work.task.start exact original forwarded once (1.179417ms)
+✔ work.task.submit exact original forwarded once (1.142208ms)
+✔ work.task.review exact original forwarded once (1.064458ms)
+✔ work.status_update.create exact original forwarded once (1.061625ms)
+✔ work rejects owner_id (1.012417ms)
+✔ work rejects visibility (0.966542ms)
+✔ work rejects actor_id (0.92275ms)
+✔ work rejects authority (1.256583ms)
+✔ work rejects policy (1.370958ms)
+✔ work rejects category (1.074333ms)
+✔ work rejects product (1.320167ms)
+✔ work rejects reads (1.025667ms)
+✔ work rejects extra (0.95775ms)
+✔ work rejects json (0.991459ms)
+✔ work keeps auth origin and unknown send single attempt (2.984ms)
+✔ read failure remains distinct from an empty task list and can be retried (26.232583ms)
+✔ actual component acceptance previews but only the explicit confirmation performs one save (16.532917ms)
+✔ response loss survives remount without an automatic POST and replays the exact original command (15.618917ms)
+✔ storage failure stays inside the event boundary and prevents every command POST (7.226625ms)
+✔ confirmation storage failure retains the review and never sends an unrecoverable write (12.67575ms)
+✔ access denial removes local private material and hides previous task and report details (6.328542ms)
+✔ scope disposal during actual inputs cancels the old preview continuation (7.360167ms)
+✔ time categories and named weekly statements retain their separate meaning (7.863042ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 440.692917
