@@ -1,0 +1,41 @@
+{
+  "exit": 0,
+  "args": [
+    "-m",
+    "pytest",
+    "--confcutdir=tests/project_activity",
+    "tests/project_activity",
+    "-q"
+  ],
+  "snapshot": "/private/tmp/pdos-s5-activity-w4yjh0dj",
+  "owned_manifest": {
+    "pdos-next/server/migrations/schema_s0_0791.py": "1520f8f341f33c738bbc48e249e66c859912a92a07c4df44a0d1f64cf4b40091",
+    "pdos-next/server/migrations/schema_s0_0792.py": "1177b5fef9ce2cdb7bae30a3c29dd4066e94c78a1514914f19fb3901220c60c3",
+    "pdos-next/server/migrations/versions/s0_0791_automation_fulfillment.py": "84cefbddf8cb9f448fc43581c41752c8e4236ec36d578eba6f0aaca0ae304441",
+    "pdos-next/server/migrations/versions/s0_0792_project_activity_receipts.py": "1097a4b9ca9144ba016959df4d7384f39c4ccb47cb7e6901f5cc6fec971fa214",
+    "pdos-next/server/pdos_next/api.py": "d22542db34d89e627928a31d96599573fa11a9b27bcd204b265113f9abbb4c95",
+    "pdos-next/server/pdos_next/domain/automations/fulfillment_sources.py": "13d41ab60094e2025ba929ff62c1fc9cd8bad8f09f278698305942c4033e54e4",
+    "pdos-next/server/pdos_next/domain/automations/fulfillment_sql.py": "204bbee226177a184978a87f760dce69ba66dfbb6c6d6e661f8bb7fdcd6c2419",
+    "pdos-next/server/pdos_next/domain/automations/service_runtime.py": "033ff00b7debeecb17d2ac7dc6e4f8a17ac7fade631674144c922a18d54ef23c",
+    "pdos-next/server/pdos_next/domain/automations/trigger_sources.py": "a3f23a5bcad41ec3973ca4ee9c684b7686f0fcf07aa189db4479b7e46aa5b749",
+    "pdos-next/server/pdos_next/project_activity.py": "0122ec5f82a62b66c60f980e38c45429e25ec9381758947314e39398b75a03fc",
+    "pdos-next/server/pdos_next/project_activity_api.py": "4056f4e37aa09785e7b4e75fe7c92fcc61cacd0c1e97b0cfdafd66b9fdb397eb",
+    "pdos-next/server/pdos_next/project_activity_catalog.py": "11475e5468c8d50a3569dc11f0767018749d669a1a2f0140f52b757a251401bd",
+    "pdos-next/server/tests/automations/test_fulfillment_sources.py": "f654a3838d738dfe30e2b6e016f53e1a6faa1237445162bc07fe7845e18360d4",
+    "pdos-next/server/tests/automations/test_trigger_sources.py": "697a73469489c8551bec366febfd6442fcd18cebbd680ac43550380962c14c31",
+    "pdos-next/server/tests/automations_pg/test_service_fulfillment_pg.py": "6b88a5d7f188d900cf23f19ac1d8a02d5d15dda508aef630e4de031c8083549b",
+    "pdos-next/server/tests/project_activity/test_catalog.py": "0d396877986b61614366aded8591a15a17d53cd1e946dee3b2df004de91d1dc2",
+    "pdos-next/server/tests/project_activity/test_projection.py": "9f8a8a86c4138d4e90e51549307f67327ca6d82a9bd6cb21e3fd6083d5ffdd8d",
+    "pdos-next/server/tests/project_activity_pg/__init__.py": "edfbead749c079a00631e56c3feb633e795bcebc2438a0f23072e825c9e5db1c",
+    "pdos-next/server/tests/project_activity_pg/test_activity.py": "d52179eeedfb350cce947abcdb46197b1e8cbe64a3bc3afc88ab3486cb68300e",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "06c4d234f3d6c5792b5f2998bd361b5ee5f56e874412f814f76718c02aaa2f49",
+    "pdos-next/web/src/app/api/project-activity-route.test.mjs": "771b613f60c7c434f00a91378cca8940c36d1867bc657cc867b97a1d9f9b4729",
+    "pdos-next/web/src/components/projects/project-activity.module.css": "d10c7989f169903a57ead964d8218b1302c6add654f263ae2ff91b19f979b207",
+    "pdos-next/web/src/components/projects/project-activity.test.mjs": "59b679a415bd7fda970a69858f14a94e1eec5ac6f589a61995a0e3b54d9cb1ce",
+    "pdos-next/web/src/components/projects/project-activity.tsx": "c077bd395c38a8801941b07cc3e641a714bf25d13c3c5529d17b37a796bb0ef6",
+    "pdos-next/web/src/components/projects/project-cockpit.tsx": "27497832bfd6d7b81cc96211cb20f825eb1033cf5dac4ca3b99c698d50b224cd",
+    "pdos-next/web/src/components/workspace.tsx": "927998b7216e534d58a4a52a5e2b45051878325df631c88ba1248679cb59f99e",
+    "pdos-next/web/src/lib/project-activity.test.mjs": "72ce5d10407c41d221f3e1fc3e8e005c10a6e25fb485917e93e1f1f94b49f726",
+    "pdos-next/web/src/lib/project-activity.ts": "cf985cb6f3627e6cf9543ebc0b2371fc66a5552e221952c4a3943c3f49d4883a"
+  }
+}

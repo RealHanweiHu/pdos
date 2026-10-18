@@ -13,6 +13,7 @@ from pdos_next.errors import DomainError
 from pdos_next.schemas.planning import CalendarRef
 from pdos_next.service import digest, require_access
 
+from .fulfillment_sources import commitment_fulfilled
 from .schemas import Conditions, RelativeTrigger
 
 _INSTANT = TypeAdapter(AwareDatetime)
@@ -79,6 +80,7 @@ def relative_due(s, ctx, spec):
     project = owner.project(s, ctx, pid, config.project_id)
     _scope(project, ctx, pid)
     _require(project.id == config.project_id, "时间来源项目与所选项目不一致。")
+    goal_reached = False
     if config.source_kind == "plan_task":
         _require(
             project.current_plan_id is not None, "项目尚无当前实际计划。", "SOURCE_UNAVAILABLE"
@@ -152,6 +154,7 @@ def relative_due(s, ctx, spec):
             == config.recipient_id,
             "承诺时间须来自所选任务、承诺人和接收者的当前实际记录。",
         )
+        goal_reached = commitment_fulfilled(s, ctx, row)
         source_at = _instant(snapshot.promised_at)
         _require(
             _instant(row.promised_at) == source_at
@@ -180,7 +183,7 @@ def relative_due(s, ctx, spec):
             "source_at": source_at.isoformat() if source_at is not None else None,
             "offset_seconds": config.offset_seconds,
         }
-    return _result(config, origin, source_at)
+    return {**_result(config, origin, source_at), "goal_reached": goal_reached}
 
 
 def condition_state(s, ctx, spec):

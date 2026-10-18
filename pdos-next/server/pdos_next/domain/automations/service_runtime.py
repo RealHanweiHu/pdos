@@ -284,6 +284,20 @@ def queue_event(engine, ref, event):
         return str(attempt.id)
 
 
+def _finish_goal_queue(s, grant_id):
+    # The lifecycle stop is already saved in this transaction or a previous one.
+    # Its narrow SQL start path suppresses each old queued attempt without a Run.
+    targets = list(
+        s.scalars(
+            select(Attempt.id)
+            .where(Attempt.service_grant_id == grant_id, Attempt.state == "queued")
+            .order_by(Attempt.created_at, Attempt.id)
+        )
+    )
+    for identity in targets:
+        s.execute(text("SELECT automation_service_start(:attempt)"), {"attempt": identity})
+
+
 def stop(engine, ref, reason):
     if reason not in STOP_REASONS:
         raise ValueError("Unregistered automation stop reason")
@@ -292,6 +306,8 @@ def stop(engine, ref, reason):
             text("SELECT automation_service_stop(:grant,:reason)"),
             {"grant": UUID(ref["grant_id"]), "reason": reason},
         )
+        if reason == "GOAL_REACHED":
+            _finish_goal_queue(s, UUID(ref["grant_id"]))
 
 
 def stopped_reason(s, grant_id):
@@ -316,6 +332,8 @@ def tick(engine, ref):
             grant, _, spec = saved(s, ref, admission=True)
             reason = stopped_reason(s, grant.id)
             if reason:
+                if reason == "GOAL_REACHED":
+                    _finish_goal_queue(s, grant.id)
                 return {"state": "stopped", "wake_at": None, "reason": reason}
             pointer = s.scalar(select(Current).where(Current.rule_id == grant.rule_id))
             if not pointer or pointer.published_version_id != grant.published_version_id:
@@ -328,11 +346,29 @@ def tick(engine, ref):
                 raise DomainError("CANCELLED_RUN", "MAX_RUNS")
             if grant.expires_at is not None:
                 wake_at = min(wake_at, grant.expires_at)
+            # A fixed recipient's fulfilled promise stops even with an unknown
+            # date or while a separate explicit Task condition is waiting.
+            relative = (
+                relative_due(s, ctx, spec) if spec.trigger_kind == "relative_milestone" else None
+            )
+            if relative is not None and relative["goal_reached"]:
+                raise DomainError("CANCELLED_RUN", "GOAL_REACHED")
             condition = condition_state(s, ctx, spec)
             if condition == "goal_reached":
                 # Persisted below through a separate narrow technical transaction.
                 raise DomainError("CANCELLED_RUN", "GOAL_REACHED")
             if condition == "waiting":
+                if relative is not None and relative["origin"].get("source_kind") == "commitment":
+                    for attempt in s.scalars(
+                        select(Attempt).where(
+                            Attempt.service_grant_id == grant.id, Attempt.state == "queued"
+                        )
+                    ):
+                        if (
+                            attempt.trigger_kind == "relative_milestone"
+                            and attempt.trigger_key != relative["target_key"]
+                        ):
+                            suppress(s, attempt, "SOURCE_SUPERSEDED")
                 return {"state": "active", "wake_at": wake_at.isoformat()}
             if spec.trigger_kind == "schedule":
                 config = Schedule.model_validate(spec.trigger_config)
@@ -362,7 +398,6 @@ def tick(engine, ref):
                         },
                     )
             elif spec.trigger_kind == "relative_milestone":
-                relative = relative_due(s, ctx, spec)
                 if relative["scheduled_at"] is not None and relative["scheduled_at"] > point:
                     wake_at = min(wake_at, relative["scheduled_at"])
                 if relative["scheduled_at"] is not None and relative["scheduled_at"] <= point:
@@ -383,6 +418,14 @@ def tick(engine, ref):
             )
             targets = set()
             for attempt in pending:
+                if (
+                    relative is not None
+                    and relative["origin"].get("source_kind") == "commitment"
+                    and attempt.trigger_kind == "relative_milestone"
+                    and attempt.trigger_key != relative["target_key"]
+                ):
+                    suppress(s, attempt, "SOURCE_SUPERSEDED")
+                    continue
                 target = (attempt.origin.get("subject_type"), attempt.origin.get("subject_id"))
                 if attempt.trigger_kind == "domain_event" and target in targets:
                     suppress(s, attempt, "SOURCE_SUPERSEDED")

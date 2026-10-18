@@ -34,6 +34,7 @@ import { BuildSupply } from "@/components/builds/build-supply";
 import { BuildCost } from "@/components/builds/build-cost";
 import { BuildVerification } from "@/components/builds/build-verification";
 import { VerificationProfessional } from "@/components/product/verification-professional";
+import { ProjectActivity } from "@/components/projects/project-activity";
 import { ProjectWork } from "@/components/projects/project-work";
 import { ProjectPlanning } from "@/components/projects/project-planning";
 import { Button } from "@/components/ui/button";
@@ -264,7 +265,7 @@ export function Workspace({ categoryId, projectId = "", onPaiContext }: { catego
             </div>
           </div>
           </WorkspacePanel>
-          <WorkspacePanel key={`activity:${session?.principal_id}:${productId}`} name="activity"><section className="panel"><h2 className="mb-4 font-semibold">实际活动</h2>{data.receipts.length === 0 && <p className="subtle">暂无活动。</p>}<ol className="space-y-4">{data.receipts.map((r) => <li key={r.id}><p>{operationNames[r.operation] ?? "记录已更新"}</p><p className="subtle"><time dateTime={r.created_at}>{new Date(r.created_at).toLocaleString()}</time> · {r.operation === "evidence.original.parse" ? "资料处理" : r.operation === "ai.work.state.update" ? "系统状态" : r.writer_id === r.requester_id ? "人员操作" : "受控 AI 操作"}</p><details className="subtle mt-1"><summary className="cursor-pointer">查看回执</summary><p className="break-all">{r.id}</p></details></li>)}</ol></section></WorkspacePanel>
+          <WorkspacePanel key={`activity:${session?.principal_id}:${productId}`} name="activity">{projectId && session ? <ProjectActivity api={api} scope={{categoryId, productId, projectId, principalId: session.principal_id}}/> : <section className="panel"><h2 className="mb-4 font-semibold">实际活动</h2>{data.receipts.length === 0 && <p className="subtle">暂无活动。</p>}<ol className="space-y-4">{data.receipts.map((r) => <li key={r.id}><p>{operationNames[r.operation] ?? "记录已更新"}</p><p className="subtle"><time dateTime={r.created_at}>{new Date(r.created_at).toLocaleString()}</time> · {r.operation === "evidence.original.parse" ? "资料处理" : r.operation === "ai.work.state.update" ? "系统状态" : r.writer_id === r.requester_id ? "人员操作" : "受控 AI 操作"}</p><details className="subtle mt-1"><summary className="cursor-pointer">查看回执</summary><p className="break-all">{r.id}</p></details></li>)}</ol></section>}</WorkspacePanel>
         </>}
       </>}
     </WorkspaceExperience>

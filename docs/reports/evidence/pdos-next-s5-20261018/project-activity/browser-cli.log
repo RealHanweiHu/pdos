@@ -1,0 +1,55 @@
+### Browser `pdos-s5-activity-20261018` opened with pid 61103.
+### Ran Playwright code
+```js
+await page.goto('about:blank');
+```
+### Page
+- Page URL: about:blank
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T18-45-39-106Z.yml)
+
+### Result
+{"syntheticLoginSet":true}
+### Ran Playwright code
+```js
+await (async page => { await page.context().addCookies([{"name": "pdos-next-session", "value": "[SYNTHETIC_LOGIN_REDACTED]", "domain": "127.0.0.1", "path": "/", "httpOnly": true, "sameSite": "Lax"}]); return { syntheticLoginSet: true }; })(page);
+```
+
+### Ran Playwright code
+```js
+await page.goto('http://127.0.0.1:59063/?area=category&category=7f9afef1-79ca-4110-8891-c1c225110315&bench=projects&view=activity&product=312b4329-19a7-4dc3-85f6-08e39765e5bf&project=3aabd504-489d-474b-8884-e61039984ff4');
+```
+### Page
+- Page URL: http://127.0.0.1:59063/?area=category&category=7f9afef1-79ca-4110-8891-c1c225110315&bench=projects&view=activity&product=312b4329-19a7-4dc3-85f6-08e39765e5bf&project=3aabd504-489d-474b-8884-e61039984ff4
+- Page Title: PDOS · 研发工作区
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T18-45-40-376Z.yml)
+
+### Error
+TimeoutError: locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('region', { name: '项目动态', exact: true }).getByText('本项目的实际业务记录与具名回执') to be visible[22m
+
+
+### Result
+{"url":"http://127.0.0.1:59063/?area=cockpit&category=7f9afef1-79ca-4110-8891-c1c225110315&project=3aabd504-489d-474b-8884-e61039984ff4","text":"正在载入你的工作区…"}
+### Ran Playwright code
+```js
+await (async page => { const url=new URL(page.url());url.search=new URLSearchParams({area:"cockpit",category:url.searchParams.get("category"),project:url.searchParams.get("project")}).toString();await page.goto(url.toString());return {url:page.url(),text:(await page.locator("body").innerText()).slice(0,1300)}; })(page);
+```
+### Page
+- Page URL: http://127.0.0.1:59063/?area=cockpit&category=7f9afef1-79ca-4110-8891-c1c225110315&project=3aabd504-489d-474b-8884-e61039984ff4
+- Page Title: PDOS · 研发工作区
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T18-45-40-202Z.log#L1
+
+### Result
+{"items":20,"more":1,"text":"项目动态\n\n本项目的实际业务记录与具名回执\n\n刷新动态\n\n读取时点 2026-10-18T18:47:12.993831+00:00 · Synthetic named work loop v1\n\n具名操作\n记录于\n2026-10-18T18:44:26.746739+00:00\n合成项目动态 14：原接收者核对与实际任务记录保留\n执行人\nSynthetic owner · f2d26d8d-0a9f-4128-8756-002b71c0dc78\n请求人\nSynthetic owner · f2d26d8d-0a9f-4128-8756-002b71c0dc78\n固定对象\nproject_status_update · e512eccf-ae53-4fd1-9f95-8e416fe9f90a · v1\n实际发生\n未登记发生时间\n下一步\n按当前授权继续处理原对象\n回执、事件与固定引用\n具名项目状态更新\n具名操作\n记录于\n2026-10-18T18:44:26.295086+00:00\n合成项目动态 13：原接收者核对与实际任务记录保留\n执行人\nSynthetic owner · f2d26d8d-0a9f-4128-8756-002b71c0dc78\n请求人\nSynthetic owner · f2d26d8d-0a9f-4128-8756-002b71c0dc78\n固定对象\nproject_status_update · 92200a29-55af-4a1a-a6ad-225fb3b4ead9 · v1\n实际发生\n未登记发生时间\n下一步\n按当前授权继续处理原对象\n回执、事件与固定引用\n具名项目状态更新\n具名操作\n记录于\n2026-10-18T18:44:26.052104+00:00\n合成项目动态 12：原接收者核对与实际任务记录保留\n执行人\nSynthetic owner"}
+### Ran Playwright code
+```js
+await (async page => { await page.getByRole("region",{name:"项目动态",exact:true}).waitFor(); const r=page.getByRole("region",{name:"项目动态",exact:true});await r.locator("ol > li").first().waitFor();return {items:await r.locator("ol > li").count(),more:await r.getByRole("button",{name:"加载更多动态",exact:true}).count(),text:(await r.innerText()).slice(0,800)}; })(page);
+```
+
+Browser 'pdos-s5-activity-20261018' closed
+
+

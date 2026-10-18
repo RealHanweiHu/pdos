@@ -923,6 +923,10 @@ def create_app(
 
     register_fulfillment(app, engine, auth_dependency)
 
+    from pdos_next.project_activity_api import register_routes as register_project_activity
+
+    register_project_activity(app, engine, auth_dependency)
+
     from pdos_next.domain.work_management.api import register_routes as register_project_work
 
     register_project_work(app, engine, auth_dependency)

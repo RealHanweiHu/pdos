@@ -93,6 +93,8 @@ def case(monkeypatch):
         promised_at=AT,
         original_timezone="Asia/Shanghai",
         calendar_id=None,
+        owner_id=owner_id,
+        visibility="category",
     )
     commitment_pointer = SimpleNamespace(
         **scope,
@@ -147,10 +149,12 @@ def case(monkeypatch):
     value.commitment_read = Mock(return_value=(commitment, promise, commitment_pointer))
     value.task_read = Mock(return_value=(task_row, task_snapshot, task_pointer))
     value.access = Mock()
+    value.fulfillment_read = Mock(return_value=False)
     monkeypatch.setattr(sources.owner, "project", value.project_read)
     monkeypatch.setattr(sources.owner, "commitment", value.commitment_read)
     monkeypatch.setattr(sources.owner, "task", value.task_read)
     monkeypatch.setattr(sources, "require_access", value.access)
+    monkeypatch.setattr(sources, "commitment_fulfilled", value.fulfillment_read)
     return value
 
 

@@ -22,7 +22,7 @@ const manufacturingPublicationCommands = new Set(["npi.manufacturing_baseline.pu
 const nativePilotPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/pilots(?:\/inputs|\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
 const nativePilotCommands = new Set(["npi.pilot.create", "npi.pilot.result.record"]);
 const releasePaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:release\/inputs|release-packages(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?)$/i;
-const projectWorkPaths = /^v1\/products\/[a-f0-9-]{36}\/project-work(?:\/fulfillment)?(?:\/inputs)?$/i;
+const projectWorkPaths = /^v1\/products\/[a-f0-9-]{36}\/project-work(?:\/activity|\/fulfillment(?:\/inputs)?|\/inputs)?$/i;
 const projectWorkCommands = new Set(["work.task.create", "work.task.assign", "work.task.accept", "work.commitment.accept", "work.commitment.review", "work.task.start", "work.task.submit", "work.task.review", "work.status_update.create"]);
 const automationPaths = /^v1\/automation-rules(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/trigger)?)?$/i;
 const releaseCommands = new Set(["release.package.assemble", "release.engineering.approve", "release.manufacturing.approve"]);
@@ -342,10 +342,11 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     if (request.method !== "POST") return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: "POST" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "请在正文中固定唯一试制资源范围。" }, { status: 422 });
   } else if (projectWork) {
-    const input = pathname.endsWith("/inputs"), method = input ? "POST" : "GET";
+    const input = pathname.endsWith("/inputs"), activity = pathname.endsWith("/activity"), method = input ? "POST" : "GET";
     if (request.method !== method) return Response.json({code:"VALIDATION_FAILED",message:"请使用项目工作读取或材料核对入口。"},{status:405,headers:{Allow:method}});
     for (const [key,value] of request.nextUrl.searchParams) {
-      if (input || key !== "project_id" || !uuid.test(value) || query.has(key)) return Response.json({code:"VALIDATION_FAILED",message:"请选择唯一实际项目。"},{status:422});
+      const valid = key === "project_id" ? uuid.test(value) : activity && (key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 100 : key === "cursor" && /^[A-Za-z0-9_-]{1,2048}$/.test(value));
+      if (input || !valid || query.has(key)) return Response.json({code:"VALIDATION_FAILED",message:"请选择唯一实际项目及有效分页位置。"},{status:422});
       query.set(key,value);
     }
     if (!input && !query.has("project_id")) return Response.json({code:"VALIDATION_FAILED",message:"请选择实际项目。"},{status:422});

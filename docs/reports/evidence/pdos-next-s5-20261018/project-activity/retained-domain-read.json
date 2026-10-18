@@ -1,0 +1,37 @@
+{
+  "function_metadata": [
+    [
+      "direct_source_set_visible",
+      true,
+      "pdos_next_owner",
+      false,
+      false
+    ],
+    [
+      "m3_g0_product_source_proven",
+      true,
+      "pdos_next_owner",
+      false,
+      false
+    ],
+    [
+      "m3_published_baseline",
+      true,
+      "pdos_next_owner",
+      false,
+      false
+    ],
+    [
+      "project_activity_receipt_visible",
+      false,
+      "pdos_next_owner",
+      false,
+      false
+    ]
+  ],
+  "retained_projects": [],
+  "inaccessible_scopes_skipped_without_bypass": 80,
+  "zero_business_mutations": true,
+  "real_model_calls": 0,
+  "performance_acceptance": false
+}

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { dueState, findProject, openRisks, openTasks, projectStateLabel, readPortfolio, type Portfolio, type PortfolioProject } from "@/lib/portfolio-reads";
 import type { GlobalLocation } from "@/lib/global-navigation";
 import type { browserApi } from "@/lib/browser-api";
+import { ProjectActivity } from "./project-activity";
 import { ProjectStatusSummary } from "./project-status-summary";
 
 type Api = typeof browserApi;
@@ -149,7 +150,7 @@ export function ProjectCockpit({ api, session, location, onOpenProject, onOpenOv
     <Button variant="outline" onClick={onOpenOverview}><ArrowLeft/>返回经营总览</Button>
   </>;
   const readTime = portfolio.asOf && <p className="subtle mb-4">项目资料读取于 <time dateTime={portfolio.asOf}>{new Date(portfolio.asOf).toLocaleString()}</time></p>;
-  if (entry) return <>{refresh}{readTime}<SingleCockpit entry={entry} session={session} today={today} onBack={onOpenOverview} onOpenWorkbench={onOpenWorkbench} /></>;
+  if (entry) return <>{refresh}{readTime}<SingleCockpit entry={entry} session={session} today={today} onBack={onOpenOverview} onOpenWorkbench={onOpenWorkbench} /><ProjectActivity api={api} scope={{categoryId: entry.category.id, productId: entry.product.id, projectId: entry.project.id, principalId: session.principal_id}} readVersion={reload}/></>;
   return <>
     {refresh}{readTime}
     {portfolio.readErrors.map(item => <p key={item.path} role="status" className="subtle">部分范围暂不可读：{item.message}</p>)}

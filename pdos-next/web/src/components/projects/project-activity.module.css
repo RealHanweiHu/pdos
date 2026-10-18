@@ -1,0 +1,26 @@
+.root { display: grid; gap: 1rem; min-width: 0; color: var(--foreground); }
+.heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .75rem; }
+.heading h2 { font-size: 1.1rem; font-weight: 650; }
+.heading p, .note { color: var(--muted-foreground); font-size: .8rem; overflow-wrap: anywhere; }
+.list { display: grid; gap: .75rem; padding: 0; margin: 0; list-style: none; min-width: 0; }
+.item { display: grid; gap: .75rem; min-width: 0; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; background: var(--card); }
+.item h3 { font-size: .95rem; font-weight: 600; white-space: pre-wrap; overflow-wrap: anywhere; }
+.title { font-size: .875rem; color: var(--muted-foreground); overflow-wrap: anywhere; }
+.line { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; justify-content: space-between; min-width: 0; }
+.badge { display: inline-flex; align-items: center; gap: .3rem; font-size: .75rem; background: var(--muted); border-radius: 6px; padding: .2rem .5rem; }
+.clock { display: flex; gap: .3rem; align-items: flex-start; min-width: 0; color: var(--muted-foreground); font-size: .75rem; overflow-wrap: anywhere; }
+.clock svg { flex-shrink: 0; margin-top: .1rem; }
+.facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .35rem .75rem; font-size: .8rem; min-width: 0; }
+.facts dt { color: var(--muted-foreground); }
+.facts dd { overflow-wrap: anywhere; white-space: pre-wrap; min-width: 0; }
+.details { border-top: 1px solid var(--border); padding-top: .65rem; font-size: .75rem; min-width: 0; overflow-wrap: anywhere; }
+.details summary { cursor: pointer; color: var(--muted-foreground); }
+.details > dl, .details > ul, .details > p { margin-top: .65rem; }
+.details ul { display: grid; gap: .4rem; }
+.actions { display: flex; gap: .5rem 1rem; flex-wrap: wrap; align-items: center; min-width: 0; }
+.actions a { display: inline-flex; align-items: center; gap: .35rem; font-size: .8rem; color: var(--primary); }
+.actions a:focus-visible, .details summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 4px; }
+.run { font-size: .75rem; color: var(--muted-foreground); overflow-wrap: anywhere; }
+.notice { padding: 1rem; background: var(--muted); border: 1px solid var(--border); border-radius: 8px; font-size: .875rem; overflow-wrap: anywhere; }
+.error { color: var(--destructive); font-size: .875rem; overflow-wrap: anywhere; }
+@media (max-width: 540px) { .item { padding: .8rem; } .facts { grid-template-columns: 1fr; gap: .2rem; } .facts dd { margin-bottom: .35rem; } .heading { align-items: flex-start; } }

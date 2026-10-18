@@ -1,0 +1,21 @@
+{
+  "firstPage": 20,
+  "afterRetry": 25,
+  "afterRefresh": 20,
+  "sameCursorRetry": true,
+  "refreshHidOldPage": true,
+  "actualWorkLink": true,
+  "desktop": {
+    "width": 1152,
+    "overflow": false
+  },
+  "mobile": {
+    "width": 288,
+    "overflow": false,
+    "pageOverflow": false
+  },
+  "requests": 3,
+  "nonGetRequests": 0,
+  "realModelCalls": 0,
+  "performanceAcceptance": false
+}
