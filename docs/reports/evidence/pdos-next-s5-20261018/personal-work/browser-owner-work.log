@@ -1,0 +1,9 @@
+### Result
+{"queue":"要我接收的项目任务\n已读 1 / 共 1 条\nSynthetic second work category ／ Synthetic second work project\nOwner is the named assignee\n待本人承接\n\nSynthetic second work project · 当前任务 v2\n\n任务执行人\nSynthetic owner\n任务成果接收人\nSynthetic peer\n\n记录原时点 2026-10-18T01:15:01.977622+00:00\n\n进入项目办理\n固定记录与任务版本\n\n读回时点 2026-10-18T01:16:57.068245+00:00。队列仅提供可读记录，请进入原项目办理。","buttons":1,"commandPosts":[],"readPaths":[{"method":"GET","url":"/api/v1/personal/project-work"},{"method":"GET","url":"/api/v1/personal/project-work"},{"method":"GET","url":"/api/v1/personal/project-work"},{"method":"GET","url":"/api/v1/personal/project-work"}],"width":{"client":1280,"scroll":1280}}
+### Ran Playwright code
+```js
+await (async page => { const seen=[]; const listen=r=>seen.push({method:r.method(),url:new URL(r.url()).pathname}); page.on("request",listen); try { await page.setViewportSize({width:1280,height:900}); await page.reload(); const queue=page.getByRole("region",{name:"要我接收的项目任务",exact:true}); await queue.getByText("Owner is the named assignee",{exact:true}).waitFor(); const records=await queue.innerText(); const buttons=await queue.getByRole("button",{name:"进入项目办理",exact:true}).count(); return {queue:records,buttons,commandPosts:seen.filter(r=>r.method==="POST"),readPaths:seen.filter(r=>r.url.includes("/personal/project-work")),width:await page.evaluate(()=>({client:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth}))}; } finally {page.off("request",listen);} })(page);
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T01-16-26-818Z.log#L1
+

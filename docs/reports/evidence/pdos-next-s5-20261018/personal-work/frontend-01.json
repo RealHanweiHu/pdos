@@ -1,0 +1,32 @@
+{
+  "base_commit": "2985e4a6b4dea6804afda83b6b4c0e914b000d74",
+  "snapshot": "/private/tmp/pdos-s5-personal-delivery-ln6r5t19",
+  "candidate_revision": 2,
+  "started_at": "2026-10-18T01:10:36.810900+00:00",
+  "finished_at": "2026-10-18T01:10:39.258871+00:00",
+  "steps": [
+    {
+      "command": [
+        "node",
+        "--test",
+        "src/components/my-work-project-work.test.mjs",
+        "src/components/projects/project-status-summary.test.mjs",
+        "src/app/api/personal-project-work-route.test.mjs",
+        "src/components/projects/project-work.test.mjs",
+        "src/app/api/project-work-route.test.mjs"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "node",
+        "../tools/s0_web_checkpoint.cjs",
+        "project-work"
+      ],
+      "exit": 0
+    }
+  ],
+  "source_changed": [],
+  "real_external_calls": 0,
+  "performance_acceptance": false
+}

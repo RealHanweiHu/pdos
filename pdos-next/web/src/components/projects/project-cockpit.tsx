@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { dueState, findProject, openRisks, openTasks, projectStateLabel, readPortfolio, type Portfolio, type PortfolioProject } from "@/lib/portfolio-reads";
 import type { GlobalLocation } from "@/lib/global-navigation";
 import type { browserApi } from "@/lib/browser-api";
+import { ProjectStatusSummary } from "./project-status-summary";
 
 type Api = typeof browserApi;
 const visibilityLabels: Record<string, string> = { private: "私有", category: "品类共享", audience: "指定受众" };
@@ -52,6 +53,7 @@ function Overview({ portfolio, today, onOpenProject }: {
           {risks.map(item => <p key={item.id} className="flex items-center gap-2 text-sm"><Warning size={15} className="shrink-0 text-destructive" aria-hidden="true"/><span className="break-words">{item.title}</span></p>)}
           {conflicts.map(item => <p key={item.id} className="flex items-center gap-2 text-sm"><CalendarBlank size={15} className="shrink-0" aria-hidden="true"/><span className="break-words">{item.title}</span>{dueState(item, today) === "overdue" && <span className="workspace-state text-destructive border-destructive">已逾期</span>}</p>)}
         </div>
+        <ProjectStatusSummary update={entry.project.latest_status_update}/>
         <div className="mt-5"><Button size="sm" variant="outline" onClick={() => onOpenProject(entry.category.id, entry.project.id)}>进入项目驾驶舱<ArrowRight size={14}/></Button></div>
       </section>;
     })}</div>
@@ -94,6 +96,7 @@ function SingleCockpit({ entry, session, today, onBack, onOpenWorkbench }: {
         </section>
       </div>
       <div className="space-y-6">
+        <ProjectStatusSummary update={project.latest_status_update}/>
         <section className="panel" aria-label="计划与时间线">
           <div className="mb-4 flex items-center gap-2"><CalendarBlank className="text-primary" aria-hidden="true"/><h2 className="font-semibold">计划与时间线</h2></div>
           {project.plan ? <dl className="space-y-3 text-sm">
@@ -122,21 +125,25 @@ export function ProjectCockpit({ api, session, location, onOpenProject, onOpenOv
   onOpenOverview: () => void;
   onOpenWorkbench: (categoryId: string, productId: string, projectId: string) => void;
 }) {
-  const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
-  const [error, setError] = useState("");
+  const [reading, setReading] = useState<{ api: Api; scope: string; portfolio: Portfolio | null; error: string } | null>(null);
   const [reload, setReload] = useState(0);
   const today = new Date().toISOString().slice(0, 10);
 
+  const scope = JSON.stringify([session.principal_id, location.categoryId, location.projectId, reload]);
+  const current = reading?.api === api && reading.scope === scope ? reading : null;
+  const portfolio = current?.portfolio ?? null, error = current?.error ?? "";
+
   useEffect(() => {
     let active = true;
-    void readPortfolio(api, location.projectId || undefined).then(next => { if (active) { setPortfolio(next); setError(""); } }).catch(failure => { if (active) { setPortfolio(null); setError((failure as Error).message); } });
+    void readPortfolio(api, location.projectId || undefined).then(next => { if (active) setReading({ api, scope, portfolio: next, error: "" }); }).catch(failure => { if (active) setReading({ api, scope, portfolio: null, error: (failure as Error).message }); });
     return () => { active = false; };
-  }, [api, location.projectId, reload]);
+  }, [api, location.projectId, scope]);
 
-  const refresh = <Button variant="outline" className="mb-4" onClick={() => { setPortfolio(null); setError(""); setReload(value => value + 1); }}><ArrowClockwise/>刷新</Button>;
+  const refresh = <Button variant="outline" className="mb-4" onClick={() => { setReading(null); setReload(value => value + 1); }}><ArrowClockwise/>刷新</Button>;
   if (error) return <><div className="workspace-page-heading flex-col sm:flex-row"><div className="min-w-0"><h1>项目驾驶舱</h1><p>读取失败。</p></div></div><p role="alert" className="workspace-read-error">{error}</p>{refresh}</>;
   if (!portfolio) return <p role="status" className="subtle">正在读取项目经营总览…</p>;
-  const entry = location.projectId ? findProject(portfolio, location.projectId) : undefined;
+  const found = location.projectId ? findProject(portfolio, location.projectId) : undefined;
+  const entry = found && (!location.categoryId || found.category.id === location.categoryId) ? found : undefined;
   if (location.projectId && !entry) return <>
     <div className="workspace-page-heading flex-col sm:flex-row"><div className="min-w-0"><h1>项目驾驶舱</h1><p>此项目当前不可见或已移除；仅显示本人权限内项目。</p></div></div>
     <Button variant="outline" onClick={onOpenOverview}><ArrowLeft/>返回经营总览</Button>

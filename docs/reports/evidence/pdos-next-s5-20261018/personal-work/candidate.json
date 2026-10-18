@@ -1,0 +1,122 @@
+{
+  "snapshot": "/private/tmp/pdos-s5-personal-delivery-ln6r5t19",
+  "preview": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/s5-personal-preview-20261018",
+  "base_commit": "2985e4a6b4dea6804afda83b6b4c0e914b000d74",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/personal_project_work.py",
+      "sha256": "2c429500c6e9cb38a223fb70177e4bb2a7b8d656d5cdc435f825240674ada863",
+      "working_sha256": "2c429500c6e9cb38a223fb70177e4bb2a7b8d656d5cdc435f825240674ada863",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/project_work_summaries.py",
+      "sha256": "a521bc13593cdfbc120f83725a9683a6037e417732ac36e8ff4ab4924641713e",
+      "working_sha256": "a521bc13593cdfbc120f83725a9683a6037e417732ac36e8ff4ab4924641713e",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/tests/work_management/test_personal_projection.py",
+      "sha256": "8d67ebdd960587012b0a5d75747eba1d46bb5cff954fc6beb75e6b5db6beb253",
+      "working_sha256": "8d67ebdd960587012b0a5d75747eba1d46bb5cff954fc6beb75e6b5db6beb253",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/tests/work_management_pg/test_personal_projection.py",
+      "sha256": "a9acac3ff968a712b0139b2ee05ece75bfa4bf72a26f038627c086d28d2c1b3a",
+      "working_sha256": "a9acac3ff968a712b0139b2ee05ece75bfa4bf72a26f038627c086d28d2c1b3a",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/lib/personal-project-work.ts",
+      "sha256": "2ca966e00af45b6cd19f4a38a4027023b32dc5f70925692f0bec2917aa14ffec",
+      "working_sha256": "2ca966e00af45b6cd19f4a38a4027023b32dc5f70925692f0bec2917aa14ffec",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/components/my-work-project-work.tsx",
+      "sha256": "b15ac603947d35cf33289c97c6edd94dda48cd460ae5283ba400119df7867c53",
+      "working_sha256": "b15ac603947d35cf33289c97c6edd94dda48cd460ae5283ba400119df7867c53",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/components/my-work-project-work.module.css",
+      "sha256": "67c8dd5ed1af83d7e6c6ce9b46addacf2b05e0f6c90bb8fa9e0141e752bc4275",
+      "working_sha256": "67c8dd5ed1af83d7e6c6ce9b46addacf2b05e0f6c90bb8fa9e0141e752bc4275",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/components/my-work-project-work.test.mjs",
+      "sha256": "83ad9ebe9866e77043abe7319f3684e3cd4c6f95632ff2c75c461205a2e94a22",
+      "working_sha256": "83ad9ebe9866e77043abe7319f3684e3cd4c6f95632ff2c75c461205a2e94a22",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/lib/project-status-update.ts",
+      "sha256": "466f50631497afed32064b0f3501017f9fbe1401f6e0665377eb5b11b2871f86",
+      "working_sha256": "466f50631497afed32064b0f3501017f9fbe1401f6e0665377eb5b11b2871f86",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/components/projects/project-status-summary.tsx",
+      "sha256": "eaf9f79b33e30cada7e96a331c362910a973e5129cf90098156328897c6ff890",
+      "working_sha256": "eaf9f79b33e30cada7e96a331c362910a973e5129cf90098156328897c6ff890",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/components/projects/project-status-summary.module.css",
+      "sha256": "e51178cff0a2874dc578fcca285de25d2e7949947753e791fdd028405ad0bff3",
+      "working_sha256": "e51178cff0a2874dc578fcca285de25d2e7949947753e791fdd028405ad0bff3",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/components/projects/project-status-summary.test.mjs",
+      "sha256": "a29c0752d1cbbc520e6c161f05547c4a5bc89763c69b7a01cccf5d0df019dd4b",
+      "working_sha256": "a29c0752d1cbbc520e6c161f05547c4a5bc89763c69b7a01cccf5d0df019dd4b",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/app/api/personal-project-work-route.test.mjs",
+      "sha256": "3accf4959a2c5a42c971c88ab1f45276ee623208900dcf20f2a44a3602a9833a",
+      "working_sha256": "3accf4959a2c5a42c971c88ab1f45276ee623208900dcf20f2a44a3602a9833a",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/personal_views.py",
+      "sha256": "a4890e30d2c810735c53e8413a698a7765ef77442d767e048861e4400b68a82f",
+      "working_sha256": "d278e96b1ceff87ddc1a8e4f49997e6a7f26fbe6a6acf11cb4be5f2e01933616",
+      "foreign_context_removed": true
+    },
+    {
+      "path": "pdos-next/web/src/lib/portfolio-reads.ts",
+      "sha256": "6bb8ea28d57a42d1604b86c3607a897ebdf45644a592d812897236ea6eecf1ae",
+      "working_sha256": "6bb8ea28d57a42d1604b86c3607a897ebdf45644a592d812897236ea6eecf1ae",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "sha256": "fefe79a80d48d522fc8d6cc46c590ea873fb4a6c8b95a610b7d9540b48fb0ce4",
+      "working_sha256": "fefe79a80d48d522fc8d6cc46c590ea873fb4a6c8b95a610b7d9540b48fb0ce4",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/web/src/components/my-work.tsx",
+      "sha256": "80689bf7719e335beb5f15baa0402b51a80f35e9bca3a2db28e6a48ed4858cbe",
+      "working_sha256": "94d14309bdb1542f5f81cbbd30b0855220dbe1f91e40594aa357f5d6ac7e648f",
+      "foreign_context_removed": true
+    },
+    {
+      "path": "pdos-next/web/src/components/projects/project-list.tsx",
+      "sha256": "039577bc6bf039ab66092cdbb73b4a145de3785ce43914260aa3e28f4de55ab7",
+      "working_sha256": "1b8c3261f6d661333fc72321291e1f87234a326526790a7c8beb41caafa8524a",
+      "foreign_context_removed": true
+    },
+    {
+      "path": "pdos-next/web/src/components/projects/project-cockpit.tsx",
+      "sha256": "d6467fe2462d66864857a316649b66f1ab33f27a2e8df51cd12bb46d31003024",
+      "working_sha256": "802e6115c38e767898021ca669ec8cfb4f066431d4ec64ac732621300863910d",
+      "foreign_context_removed": true
+    }
+  ],
+  "shared_layout_note": "Three existing UI entry integrations reconstructed against committed layout; working UI restyle retained, including untracked ProjectWorkspace. Same owned queue/summary modules and backend projection."
+}

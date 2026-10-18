@@ -1,0 +1,10 @@
+All checks passed!
+
+
+/private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/web/src/components/projects/project-personal-integration.test.mjs
+  13:1  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/rules-of-hooks')
+
+✖ 1 problem (0 errors, 1 warning)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+
+ESLint found too many warnings (maximum: 0).

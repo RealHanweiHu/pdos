@@ -5,6 +5,8 @@ import { ArrowClockwise, ArrowRight, BellRinging, ClipboardText, FolderSimple, S
 import { Button } from "@/components/ui/button";
 import { dueState, myOpenItems, readPortfolio, readRunActivity, type ActivityRun, type MyOpenItem, type Portfolio } from "@/lib/portfolio-reads";
 import type { browserApi } from "@/lib/browser-api";
+import { usePersonalProjectWork } from "@/lib/personal-project-work";
+import { PersonalProjectWorkQueue } from "./my-work-project-work";
 
 type Api = typeof browserApi;
 const runLabels: Record<string, string> = { queued: "已保存，等待执行", running: "正在执行", waiting_input: "等待你的答复", completed: "已完成", partial: "已形成部分结果", cancelled: "已取消后续执行", failed: "执行未完成" };
@@ -24,10 +26,18 @@ export function MyWork({ api, session, onOpenRun, onOpenProject, onOpenPai }: {
   onOpenProject: (categoryId: string, projectId: string) => void;
   onOpenPai: () => void;
 }) {
-  const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
-  const [runs, setRuns] = useState<ActivityRun[]>([]);
+  const [portfolioResult, setPortfolio] = useState<Portfolio | null>(null);
+  const [runResults, setRuns] = useState<ActivityRun[]>([]);
   const [reload, setReload] = useState(0);
-  const [error, setError] = useState("");
+  const [readError, setError] = useState("");
+  const scope = JSON.stringify([session.principal_id, reload]);
+  const [readIdentity, setReadIdentity] = useState<{ scope: string; api: Api } | null>(null);
+  const current = readIdentity?.scope === scope && readIdentity.api === api;
+  const portfolio = current ? portfolioResult : null, runs = current ? runResults : [], error = current ? readError : "";
+  const receiveWork = usePersonalProjectWork(api, session.principal_id, reload, "receive");
+  const verifyWork = usePersonalProjectWork(api, session.principal_id, reload, "verify");
+  const taskWork = usePersonalProjectWork(api, session.principal_id, reload, "tasks");
+  const commitmentWork = usePersonalProjectWork(api, session.principal_id, reload, "commitments");
   const today = new Date().toISOString().slice(0, 10);
 
   useEffect(() => {
@@ -42,10 +52,11 @@ export function MyWork({ api, session, onOpenRun, onOpenProject, onOpenPai }: {
         setPortfolio(next);
         setRuns(merged);
         setError("");
-      } catch (failure) { if (active) { setPortfolio(null); setRuns([]); setError((failure as Error).message); } }
+        setReadIdentity({ scope, api });
+      } catch (failure) { if (active) { setPortfolio(null); setRuns([]); setError((failure as Error).message); setReadIdentity({ scope, api }); } }
     })();
     return () => { active = false; };
-  }, [api, reload]);
+  }, [api, scope]);
 
   const items: MyOpenItem[] = portfolio ? myOpenItems(portfolio, session.principal_id) : [];
   const waiting = runs.filter(run => run.status === "waiting_input");
@@ -55,6 +66,12 @@ export function MyWork({ api, session, onOpenRun, onOpenProject, onOpenPai }: {
     {error && <p role="alert" className="workspace-read-error">{error}</p>}
     {portfolio?.asOf && <p className="subtle mb-4">项目资料读取于 <time dateTime={portfolio.asOf}>{new Date(portfolio.asOf).toLocaleString()}</time></p>}
     {portfolio?.readErrors.map(item => <p key={item.path} role="status" className="subtle">部分范围暂不可读：{item.message}</p>)}
+    <div className="workspace-overview-columns">
+      <PersonalProjectWorkQueue queue="receive" state={receiveWork} onOpenProject={onOpenProject}/>
+      <PersonalProjectWorkQueue queue="verify" state={verifyWork} onOpenProject={onOpenProject}/>
+      <PersonalProjectWorkQueue queue="tasks" state={taskWork} onOpenProject={onOpenProject}/>
+      <PersonalProjectWorkQueue queue="commitments" state={commitmentWork} onOpenProject={onOpenProject}/>
+    </div>
     {waiting.length > 0 && <section className="panel mb-6" aria-label="待答复">
       <div className="mb-4 flex items-center gap-2"><BellRinging className="text-primary" aria-hidden="true"/><h2 className="font-semibold">等待你的答复</h2><span className="subtle ml-auto">{waiting.length} 项</span></div>
       <div className="space-y-3">{waiting.map(run => <div key={run.run_id} className="flex items-center gap-3 border-t border-border pt-3 first:border-0 first:pt-0">

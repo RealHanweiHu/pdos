@@ -5,30 +5,34 @@ import { ArrowClockwise, ArrowRight, FolderSimple, Package } from "@phosphor-ico
 import { Button } from "@/components/ui/button";
 import { groupByCategory, projectStateLabel, readPortfolio, type Portfolio } from "@/lib/portfolio-reads";
 import type { browserApi } from "@/lib/browser-api";
+import { ProjectStatusSummary } from "./project-status-summary";
 
 type Api = typeof browserApi;
 const visibilityLabels: Record<string, string> = { private: "私有", category: "品类共享", audience: "指定受众" };
 
-export function ProjectList({ api, onOpenProject, onOpenWorkbench }: {
-  api: Api;
+export function ProjectList({ api, principalId = "", onOpenProject, onOpenWorkbench }: {
+  api: Api; principalId?: string;
   onOpenProject: (categoryId: string, projectId: string) => void;
   onOpenWorkbench: (categoryId: string, productId: string, projectId: string) => void;
 }) {
-  const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
-  const [error, setError] = useState("");
+  const [reading, setReading] = useState<{ api: Api; scope: string; portfolio: Portfolio | null; error: string } | null>(null);
   const [reload, setReload] = useState(0);
+
+  const scope = JSON.stringify([principalId, reload]);
+  const current = reading?.api === api && reading.scope === scope ? reading : null;
+  const portfolio = current?.portfolio ?? null, error = current?.error ?? "";
 
   useEffect(() => {
     let active = true;
-    void readPortfolio(api).then(next => { if (active) { setPortfolio(next); setError(""); } }).catch(failure => { if (active) { setPortfolio(null); setError((failure as Error).message); } });
+    void readPortfolio(api).then(next => { if (active) setReading({ api, scope, portfolio: next, error: "" }); }).catch(failure => { if (active) setReading({ api, scope, portfolio: null, error: (failure as Error).message }); });
     return () => { active = false; };
-  }, [api, reload]);
+  }, [api, scope]);
 
   const groups = portfolio ? groupByCategory(portfolio) : [];
   const total = portfolio?.projects.length ?? 0;
 
   return <>
-    <div className="workspace-page-heading"><div className="min-w-0"><h1>项目列表</h1><p>本人可见的研发项目，按品类与型号归属，继续查看计划、风险与未决事项。</p></div><Button variant="outline" onClick={() => { setPortfolio(null); setError(""); setReload(value => value + 1); }}><ArrowClockwise/>刷新</Button></div>
+    <div className="workspace-page-heading"><div className="min-w-0"><h1>项目列表</h1><p>本人可见的研发项目，按品类与型号归属，继续查看计划、风险与未决事项。</p></div><Button variant="outline" onClick={() => { setReading(null); setReload(value => value + 1); }}><ArrowClockwise/>刷新</Button></div>
     {error && <p role="alert" className="workspace-read-error">{error}</p>}
     {portfolio?.asOf && <p className="subtle mb-4">项目资料读取于 <time dateTime={portfolio.asOf}>{new Date(portfolio.asOf).toLocaleString()}</time></p>}
     {portfolio?.readErrors.map(item => <p key={item.path} role="status" className="subtle">部分范围暂不可读：{item.message}</p>)}
@@ -43,6 +47,7 @@ export function ProjectList({ api, onOpenProject, onOpenWorkbench }: {
             <FolderSimple size={18} className="shrink-0 text-muted-foreground" aria-hidden="true"/>
             <div className="min-w-0 flex-1">
               <p className="break-words font-medium">{entry.project.name}</p>
+              <ProjectStatusSummary update={entry.project.latest_status_update}/>
               <p className="subtle truncate">{entry.project.definition.title} · 固定 v{entry.project.definition.revision} · {visibilityLabels[entry.project.visibility] ?? entry.project.visibility}</p>
             </div>
           </div>

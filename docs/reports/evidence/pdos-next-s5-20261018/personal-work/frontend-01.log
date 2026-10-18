@@ -1,0 +1,86 @@
+✔ personal receive forwards only exact authenticated GET (32.929375ms)
+✔ personal verify forwards only exact authenticated GET (2.613125ms)
+✔ personal tasks forwards only exact authenticated GET (1.484458ms)
+✔ personal commitments forwards only exact authenticated GET (1.233042ms)
+✔ invalid personal queue, duplicate and alternate scopes never reach backend (1.960708ms)
+✔ personal queue does not accept commands or category override (1.680791ms)
+✔ anonymous and failed personal reads remain unavailable without retry (2.520459ms)
+✔ project work GET is exactly project scoped (32.635667ms)
+✔ work bad query  (4.4345ms)
+✔ work bad query ?project_id=00000000-0000-4000-8000-000000000004&project_id=00000000-0000-4000-8000-000000000005 (1.979291ms)
+✔ work bad query ?project_id=00000000-0000-4000-8000-000000000004&scope=all (1.460792ms)
+✔ work.task.create exact original forwarded once (2.748791ms)
+✔ work.task.assign exact original forwarded once (1.604791ms)
+✔ work.task.accept exact original forwarded once (1.623875ms)
+✔ work.commitment.accept exact original forwarded once (1.381042ms)
+✔ work.task.start exact original forwarded once (1.258041ms)
+✔ work.task.submit exact original forwarded once (1.55525ms)
+✔ work.task.review exact original forwarded once (1.351541ms)
+✔ work.status_update.create exact original forwarded once (1.388125ms)
+✔ work rejects owner_id (1.178291ms)
+✔ work rejects visibility (1.013041ms)
+✔ work rejects actor_id (1.0065ms)
+✔ work rejects authority (0.9975ms)
+✔ work rejects policy (0.958917ms)
+✔ work rejects category (0.909125ms)
+✔ work rejects product (0.99125ms)
+✔ work rejects reads (0.9635ms)
+✔ work rejects extra (0.932875ms)
+✔ work rejects json (0.983708ms)
+✔ work keeps auth origin and unknown send single attempt (2.854792ms)
+✔ first read failures remain unknown and actual retry distinguishes a truly empty queue (24.204625ms)
+✔ failed subsequent page preserves the exact cursor and retries without losing the first page (8.3085ms)
+✔ a repeated cursor and a duplicate task are rejected without appending or discarding earlier records (13.731833ms)
+✔ scope changes immediately hide prior data and ignore the old queued response (3.841333ms)
+✔ principal, transport and reload boundaries clear synchronously before their own GET completes (3.963875ms)
+✔ 403 on a later page clears every earlier private record and retains an error instead of false empty success (3.20575ms)
+✔ commitments to separate people retain completed tasks, unknown dates and original timezone without claiming fulfillment (21.602708ms)
+✔ invalid typed pages, wrong actor and a commitment ID disguised as a task fail closed (1.927834ms)
+✔ unmount cancels pending queue reads without issuing another request or retaining output (1.272208ms)
+✔ unread and no signed update are distinct states (6.986041ms)
+✔ named summary keeps actual author, receipt and fixed task version (28.119875ms)
+✔ unread author is never replaced with the viewing user and statement remains text (0.33075ms)
+✔ read failure remains distinct from an empty task list and can be retried (27.76825ms)
+✔ actual component acceptance previews but only the explicit confirmation performs one save (17.943167ms)
+✔ response loss survives remount without an automatic POST and replays the exact original command (16.275667ms)
+✔ storage failure stays inside the event boundary and prevents every command POST (7.278791ms)
+✔ confirmation storage failure retains the review and never sends an unrecoverable write (13.470375ms)
+✔ access denial removes local private material and hides previous task and report details (6.142459ms)
+✔ scope disposal during actual inputs cancels the old preview continuation (7.335625ms)
+✔ time categories and named weekly statements retain their separate meaning (7.415958ms)
+ℹ tests 50
+ℹ suites 0
+ℹ pass 50
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 627.76775
+
+✔ manual draft creation uses actual inputs then one T0 save without confirmation (4.912792ms)
+✔ work.task.assign stops after common T1 preview until a substantive confirmation (0.4855ms)
+✔ work.task.accept stops after common T1 preview until a substantive confirmation (0.255292ms)
+✔ work.commitment.accept stops after common T1 preview until a substantive confirmation (13.566166ms)
+✔ work.task.start stops after common T1 preview until a substantive confirmation (0.758417ms)
+✔ work.task.submit stops after common T1 preview until a substantive confirmation (0.513583ms)
+✔ work.task.review stops after common T1 preview until a substantive confirmation (0.464667ms)
+✔ work.status_update.create stops after common T1 preview until a substantive confirmation (0.194208ms)
+✔ acceptance does not invent a promise, and an unknown promise retains null (0.143542ms)
+✔ explicit actual time preserves microseconds and cannot be naive or unknown (0.336417ms)
+✔ exact original source versions and client-injected policy facts are rejected (0.264292ms)
+✔ a supplied result requires its own source while a missing result can remain empty (0.185834ms)
+✔ preview verifies the original key/version/readset and requires the actual T1 token and deadline (0.273209ms)
+✔ unknown execution is never retried automatically; explicit replay preserves exact body/key/token (0.345375ms)
+✔ stage persistence failure prevents a T0 or T1 irreversible save (0.179416ms)
+✔ disposing a scope after inputs prevents the later preview (0.090458ms)
+✔ restoration is a pure read and binds principal, category, product and project (0.212458ms)
+✔ task permissions keep assigner, assignee and recipient actions distinct (0.095167ms)
+✔ reading failure or partial shape never becomes an empty success (0.150584ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 28.182458

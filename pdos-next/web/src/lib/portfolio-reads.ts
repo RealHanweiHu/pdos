@@ -1,4 +1,5 @@
 import type { Project, PlanForecast } from "@/lib/project-plan-view";
+import type { NamedProjectUpdate } from "@/lib/project-status-update";
 
 export type PortfolioApi = <T>(path: string, body?: unknown) => Promise<T>;
 export type PortfolioCategory = { id: string; name: string; purpose: string };
@@ -10,6 +11,7 @@ export type PortfolioProject = {
     plan_state: "available" | "not_created" | "unavailable";
     task_count: number | null;
     owner_name?: string | null;
+    latest_status_update?: NamedProjectUpdate | null;
   };
   category: PortfolioCategory;
   product: PortfolioProduct;

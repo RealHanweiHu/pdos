@@ -1,0 +1,26 @@
+{
+  "base_commit": "2985e4a6b4dea6804afda83b6b4c0e914b000d74",
+  "snapshot": "/private/tmp/pdos-s5-personal-delivery-ln6r5t19",
+  "candidate_revision": 2,
+  "started_at": "2026-10-18T01:10:36.810912+00:00",
+  "finished_at": "2026-10-18T01:10:40.185183+00:00",
+  "steps": [
+    {
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider",
+        "tests/work_management"
+      ],
+      "exit": 0
+    }
+  ],
+  "source_changed": [],
+  "real_external_calls": 0,
+  "performance_acceptance": false
+}

@@ -23,6 +23,7 @@ from pdos_next.domain.projects.models import (
 from pdos_next.errors import DomainError
 from pdos_next.models import Artifact, Category, Principal, Product
 from pdos_next.original_security import source_status
+from pdos_next.project_work_summaries import latest as latest_work_updates
 from pdos_next.schema_base import StrictModel
 from pdos_next.service import Context
 
@@ -263,6 +264,7 @@ def projects(session, ctx, *, cursor=None, page_size=50, project_id=None):
         for item in items:
             person = people.get(UUID(item["owner_id"]))
             item["owner_name"] = person.name if person else None
+    updates = latest_work_updates(session, ctx, rows)
     entries, unavailable = [], 0
     for row in rows:
         product, category = products.get(row.product_id), categories.get(row.category_id)
@@ -320,6 +322,7 @@ def projects(session, ctx, *, cursor=None, page_size=50, project_id=None):
                     "revision": row.revision,
                     "status": row.status,
                     "created_at": row.created_at.isoformat(),
+                    "latest_status_update": updates.get(row.id),
                     "source_status": state,
                     "definition": {
                         "id": str(definition.id),
@@ -420,6 +423,11 @@ class ActivityPage(ProjectPage):
     waiting: bool = False
 
 
+class PersonalProjectWorkPage(ProjectPage):
+    queue: Literal["receive", "verify", "tasks", "commitments"]
+    page_size: int = Field(default=20, ge=1, le=100)
+
+
 class SearchPage(StrictModel):
     q: str = Field(min_length=1, max_length=200)
     kind: Literal["all", "category", "project", "product", "proposal"] = "all"
@@ -456,6 +464,17 @@ def register_routes(app, engine, auth_dependency):
     def project_detail(project_id: UUID, ctx: Context = auth_dependency):
         with scope(ctx) as session:
             return projects(session, ctx, project_id=project_id)
+
+    @app.get("/v1/personal/project-work")
+    def project_work(
+        page: Annotated[PersonalProjectWorkPage, Query()], ctx: Context = auth_dependency
+    ):
+        from pdos_next.personal_project_work import read
+
+        with scope(ctx) as session:
+            return read(
+                session, ctx, queue=page.queue, cursor=page.cursor, page_size=page.page_size
+            )
 
     @app.get("/v1/personal/run-activity")
     def activity(page: Annotated[ActivityPage, Query()], ctx: Context = auth_dependency):
