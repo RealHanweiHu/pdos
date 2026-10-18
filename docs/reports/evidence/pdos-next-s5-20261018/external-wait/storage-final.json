@@ -1,0 +1,9 @@
+{
+  "metadata": {
+    "external_wait_metadata_diff": [],
+    "actual_head": "s0_0797"
+  },
+  "history_downgrade_refused": true,
+  "head_preserved": "s0_0797",
+  "output": "sycopg.errors.CheckViolation) External waiting history retained; downgrade refused\nCONTEXT:  PL/pgSQL function inline_code_block line 1 at RAISE\n[SQL: DO $external_wait$ BEGIN IF EXISTS(SELECT 1 FROM public.external_wait_versions) OR EXISTS(SELECT 1 FROM public.external_wait_currents) OR EXISTS(SELECT 1 FROM public.action_receipts WHERE operation='work.external_wait.record' OR subject_type='external_wait') THEN RAISE EXCEPTION 'External waiting history retained; downgrade refused' USING ERRCODE='23514'; END IF; END; $external_wait$]\n(Background on this error at: https://sqlalche.me/e/21/gkpj)\n"
+}

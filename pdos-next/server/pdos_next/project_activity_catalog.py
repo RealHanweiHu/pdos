@@ -38,6 +38,7 @@ from pdos_next.domain.configurations.models import (
 )
 from pdos_next.domain.cost_execution.models import CostEstimate, CostInputSnapshot
 from pdos_next.domain.external_handoff.models import ExternalHandoffAuthorization, ExternalReceipt
+from pdos_next.domain.external_wait.models import ExternalWaitVersion
 from pdos_next.domain.manufacturing_baseline.models import PreparationVersion
 from pdos_next.domain.manufacturing_baseline.publication_models import (
     ManufacturingBaselinePublication,
@@ -654,6 +655,17 @@ SOURCES = (
         columns={"sources": ExternalReceipt.sources, "occurred_at": ExternalReceipt.occurred_at},
     ),
     ActivitySource(
+        ExternalWaitVersion,
+        "external_wait",
+        ("work.external_wait.record",),
+        "plan",
+        "外部等待登记",
+        columns={
+            "title": ExternalWaitVersion.body["title"].astext,
+            "sources": ExternalWaitVersion.sources,
+        },
+    ),
+    ActivitySource(
         WorkTaskVersion,
         "work_task",
         (
@@ -725,6 +737,7 @@ SOURCES = (
 
 OPERATION_LABELS = MappingProxyType(
     {
+        "work.external_wait.record": "登记外部等待",
         "proposal.g0.decide": "项目建立决定已保存",
         "work.plan.propose": "计划候选已保存",
         "work.plan.apply": "计划应用已记录",

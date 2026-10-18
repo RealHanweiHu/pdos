@@ -5,6 +5,7 @@ import { ArrowClockwise, CheckCircle, ClipboardText, Plus } from "@phosphor-icon
 import { Button } from "@/components/ui/button";
 import { blankWorkLocal, newWorkCommand, parseWorkPayload, parseWorkSources, readProjectWork, restoreWorkLocal, runProjectWorkRequest, taskActions, workOperationNames, workPreviewCurrent, workStorageKey, workG0Ref, type ProjectWorkApi, type ProjectWorkView, type WorkCheck, type WorkDraft, type WorkG0OpenItem, type WorkLocal, type WorkOperation, type WorkOutcome, type WorkPayload, type WorkPending, type WorkPrepared, type WorkResult, type WorkScope, type WorkTask } from "@/lib/project-work";
 import { CommitmentFulfillment } from "./commitment-fulfillment";
+import { ExternalWaits } from "./external-waits";
 import styles from "./project-work.module.css";
 
 type Props = WorkScope & { api: ProjectWorkApi; productRevision: number; onRefresh?: () => void | Promise<void>; readVersion?: number };
@@ -125,6 +126,7 @@ function ScopedProjectWork({ api, categoryId, productId, projectId, principalId,
         <label>办理理由<textarea value={d.reason ?? ""} onChange={e => change("reason", e.target.value)}/></label><details className={styles.details}><summary>实际来源引用（高级 JSON，{optionalSources ? "G0 固定事项可留空" : "必填"}）</summary><p className={styles.note}>{optionalSources ? "原 G0 事项及固定决定由服务器核对；若补充原件，只引用准确版本和位置。成果标为已提供时，成果自身仍须原件来源。" : "引用已登记原件的 id、revision、kind: artifact 和准确 position。"}</p><textarea aria-label="实际来源引用 JSON" value={d.sources ?? "[]"} onChange={e => change("sources", e.target.value)}/></details>
         <Button type="button" disabled={!editable || !mayAct} onClick={start}>{local.operation === "work.task.create" ? "保存人工任务草稿" : "核对此次办理材料"}</Button>
       </fieldset>{!canWrite && <p className={styles.note}>当前成员没有本项目写入资格；可继续查看可读记录。</p>}{!mayAct && canWrite && <p className={styles.note}>{local.operation === "work.task.create" && !createG0Ready ? "原 G0 事项已关联任务、已变化或尚未读回，请从原事项选择同一任务或刷新核对。" : "当前任务状态或本人角色不允许此动作，请从任务卡片选择可办理项。"}</p>}</section>}
+      <ExternalWaits api={api} scope={scope} readVersion={readVersion + attempt} onRefresh={() => { setAttempt(value => value + 1); void onRefresh?.(); }}/>
       <CommitmentFulfillment api={api} scope={scope} readVersion={readVersion + attempt} onRefresh={() => { setAttempt(value => value + 1); void onRefresh?.(); }}/>
       <section className={styles.panel} aria-label="具名周报历史"><h3>已保存的具名周报</h3>{data.updates.length ? data.updates.map(value => <article className={styles.statement} key={value.id}><strong>{name(value.actor_id)} · {value.created_at}</strong><p>{value.fact_summary}</p><p>下一步：{value.next_steps}</p><small>固定任务引用：{value.task_refs.map(v => `${data.tasks.find(row => row.id === v.id)?.title ?? v.id} v${v.revision}`).join("；") || "未引用任务"} · 回执 {value.receipt_id}</small></article>) : <p className={styles.note}>尚无可读周报记录。</p>}</section>
     </>}

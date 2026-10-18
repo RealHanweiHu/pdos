@@ -18,6 +18,7 @@ from pdos_next.personal_views import _personal
 def records(ctx, queue):
     from pdos_next import (
         personal_attention_decisions,
+        personal_attention_external_wait,
         personal_attention_verification,
         personal_attention_work,
     )
@@ -27,6 +28,7 @@ def records(ctx, queue):
             query
             for adapter in (
                 personal_attention_work,
+                personal_attention_external_wait,
                 personal_attention_decisions,
                 personal_attention_verification,
             )

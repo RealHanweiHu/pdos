@@ -491,6 +491,10 @@ from pdos_next.domain.work_management.schemas import PAYLOADS as WORK_PAYLOADS  
 
 PAYLOADS.update(WORK_PAYLOADS)
 
+from pdos_next.domain.external_wait.schemas import PAYLOADS as EXTERNAL_WAIT_PAYLOADS  # noqa: E402
+
+PAYLOADS.update(EXTERNAL_WAIT_PAYLOADS)
+
 from pdos_next.domain.automations.schemas import PAYLOADS as AUTOMATION_PAYLOADS  # noqa: E402
 
 PAYLOADS.update(AUTOMATION_PAYLOADS)

@@ -167,7 +167,8 @@
       "ai_execution": "需资格与授权",
       "event": "external_wait.recorded",
       "stage": "S1",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "work.status_update.create",

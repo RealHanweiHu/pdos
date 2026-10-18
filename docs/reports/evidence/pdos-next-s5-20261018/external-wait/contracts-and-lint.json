@@ -1,0 +1,7 @@
+{
+  "catalog_exit": 0,
+  "catalog": "v1.1 catalog/source coverage passed: 87 operations, 86 events, 63 acceptance IDs.\nThis is design coverage only; no runtime, model or manufacturing qualification inferred.\n",
+  "ruff_exit": 0,
+  "ruff": "All checks passed!\n",
+  "snapshot": "/private/tmp/pdos-external-wait-repaired-8z34tv6n"
+}

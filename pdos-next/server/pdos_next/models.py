@@ -1160,3 +1160,5 @@ import pdos_next.domain.automations.models  # noqa: E402,F401
 import pdos_next.domain.automations.service_models  # noqa: E402,F401
 
 import pdos_next.domain.work_fulfillment.models  # noqa: E402,F401
+
+import pdos_next.domain.external_wait.models  # noqa: E402,F401

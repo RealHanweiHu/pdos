@@ -18793,6 +18793,27 @@
     },
     "work.task.create": {
       "$defs": {
+        "G0OpenItemRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "decision_id": {
+              "format": "uuid",
+              "title": "Decision Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "decision_id"
+          ],
+          "title": "G0OpenItemRef",
+          "type": "object"
+        },
         "Outcome": {
           "additionalProperties": false,
           "properties": {
@@ -18892,7 +18913,6 @@
           "items": {
             "$ref": "#/$defs/SourceRef"
           },
-          "minItems": 1,
           "title": "Sources",
           "type": "array"
         },
@@ -18926,6 +18946,17 @@
           "anyOf": [
             {
               "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "g0_open_item": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/G0OpenItemRef"
             },
             {
               "type": "null"
@@ -19018,7 +19049,6 @@
           "items": {
             "$ref": "#/$defs/SourceRef"
           },
-          "minItems": 1,
           "title": "Sources",
           "type": "array"
         },
@@ -19140,7 +19170,6 @@
           "items": {
             "$ref": "#/$defs/SourceRef"
           },
-          "minItems": 1,
           "title": "Sources",
           "type": "array"
         },
@@ -19440,7 +19469,6 @@
           "items": {
             "$ref": "#/$defs/SourceRef"
           },
-          "minItems": 1,
           "title": "Sources",
           "type": "array"
         },
@@ -19617,7 +19645,6 @@
           "items": {
             "$ref": "#/$defs/SourceRef"
           },
-          "minItems": 1,
           "title": "Sources",
           "type": "array"
         },
@@ -19795,7 +19822,6 @@
           "items": {
             "$ref": "#/$defs/SourceRef"
           },
-          "minItems": 1,
           "title": "Sources",
           "type": "array"
         },
@@ -19983,6 +20009,686 @@
         "next_steps"
       ],
       "title": "StatusUpdatePayload",
+      "type": "object"
+    },
+    "work.external_wait.record": {
+      "$defs": {
+        "CalendarRef": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "project_plan",
+                "build_resource"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "calendar_key": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Calendar Key",
+              "type": "string"
+            },
+            "calendar_version": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Calendar Version",
+              "type": "string"
+            },
+            "resource_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Resource Id"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "revision",
+            "calendar_key",
+            "calendar_version"
+          ],
+          "title": "CalendarRef",
+          "type": "object"
+        },
+        "Close": {
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "close",
+              "title": "Action",
+              "type": "string"
+            },
+            "result": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Result",
+              "type": "string"
+            }
+          },
+          "required": [
+            "action",
+            "result"
+          ],
+          "title": "Close",
+          "type": "object"
+        },
+        "CounterpartyCommitment": {
+          "additionalProperties": false,
+          "properties": {
+            "original_timezone": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "action": {
+              "const": "commitment",
+              "title": "Action",
+              "type": "string"
+            },
+            "promised_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Promised At"
+            },
+            "text": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            }
+          },
+          "required": [
+            "original_timezone",
+            "action",
+            "promised_at",
+            "text"
+          ],
+          "title": "CounterpartyCommitment",
+          "type": "object"
+        },
+        "Create": {
+          "additionalProperties": false,
+          "properties": {
+            "original_timezone": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "next_check_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Next Check At"
+            },
+            "calendar": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/CalendarRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "action": {
+              "const": "create",
+              "title": "Action",
+              "type": "string"
+            },
+            "title": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Title",
+              "type": "string"
+            },
+            "target": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Target",
+              "type": "string"
+            },
+            "request_content": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Request Content",
+              "type": "string"
+            },
+            "closure_condition": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Closure Condition",
+              "type": "string"
+            },
+            "blocking": {
+              "title": "Blocking",
+              "type": "boolean"
+            },
+            "milestone": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/VersionRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "build": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/VersionRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "replaces": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/VersionRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "original_timezone",
+            "next_check_at",
+            "action",
+            "title",
+            "target",
+            "request_content",
+            "closure_condition",
+            "blocking"
+          ],
+          "title": "Create",
+          "type": "object"
+        },
+        "Delivery": {
+          "additionalProperties": false,
+          "properties": {
+            "original_timezone": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "At"
+            },
+            "text": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "action": {
+              "const": "delivery",
+              "title": "Action",
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "effective",
+                "unverified",
+                "conflict"
+              ],
+              "title": "Status",
+              "type": "string"
+            }
+          },
+          "required": [
+            "original_timezone",
+            "at",
+            "text",
+            "action",
+            "status"
+          ],
+          "title": "Delivery",
+          "type": "object"
+        },
+        "Details": {
+          "additionalProperties": false,
+          "properties": {
+            "original_timezone": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "next_check_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Next Check At"
+            },
+            "calendar": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/CalendarRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "action": {
+              "const": "details",
+              "title": "Action",
+              "type": "string"
+            },
+            "title": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Title",
+              "type": "string"
+            },
+            "closure_condition": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Closure Condition",
+              "type": "string"
+            },
+            "blocking": {
+              "title": "Blocking",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "original_timezone",
+            "next_check_at",
+            "action",
+            "title",
+            "closure_condition",
+            "blocking"
+          ],
+          "title": "Details",
+          "type": "object"
+        },
+        "Initiate": {
+          "additionalProperties": false,
+          "properties": {
+            "original_timezone": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "At"
+            },
+            "text": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "action": {
+              "const": "initiate",
+              "title": "Action",
+              "type": "string"
+            }
+          },
+          "required": [
+            "original_timezone",
+            "at",
+            "text",
+            "action"
+          ],
+          "title": "Initiate",
+          "type": "object"
+        },
+        "Reopen": {
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "reopen",
+              "title": "Action",
+              "type": "string"
+            }
+          },
+          "required": [
+            "action"
+          ],
+          "title": "Reopen",
+          "type": "object"
+        },
+        "Reply": {
+          "additionalProperties": false,
+          "properties": {
+            "original_timezone": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "At"
+            },
+            "text": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "action": {
+              "const": "reply",
+              "title": "Action",
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "partial",
+                "received",
+                "conflict",
+                "unknown"
+              ],
+              "title": "Status",
+              "type": "string"
+            }
+          },
+          "required": [
+            "original_timezone",
+            "at",
+            "text",
+            "action",
+            "status"
+          ],
+          "title": "Reply",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        },
+        "TransferAccept": {
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "transfer_accept",
+              "title": "Action",
+              "type": "string"
+            },
+            "request_id": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "action",
+            "request_id"
+          ],
+          "title": "TransferAccept",
+          "type": "object"
+        },
+        "TransferCancel": {
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "transfer_cancel",
+              "title": "Action",
+              "type": "string"
+            },
+            "request_id": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "action",
+            "request_id"
+          ],
+          "title": "TransferCancel",
+          "type": "object"
+        },
+        "TransferRequest": {
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "transfer_request",
+              "title": "Action",
+              "type": "string"
+            },
+            "to_id": {
+              "format": "uuid",
+              "title": "To Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "action",
+            "to_id"
+          ],
+          "title": "TransferRequest",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "wait": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "record": {
+          "discriminator": {
+            "mapping": {
+              "close": "#/$defs/Close",
+              "commitment": "#/$defs/CounterpartyCommitment",
+              "create": "#/$defs/Create",
+              "delivery": "#/$defs/Delivery",
+              "details": "#/$defs/Details",
+              "initiate": "#/$defs/Initiate",
+              "reopen": "#/$defs/Reopen",
+              "reply": "#/$defs/Reply",
+              "transfer_accept": "#/$defs/TransferAccept",
+              "transfer_cancel": "#/$defs/TransferCancel",
+              "transfer_request": "#/$defs/TransferRequest"
+            },
+            "propertyName": "action"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Create"
+            },
+            {
+              "$ref": "#/$defs/Details"
+            },
+            {
+              "$ref": "#/$defs/Initiate"
+            },
+            {
+              "$ref": "#/$defs/Delivery"
+            },
+            {
+              "$ref": "#/$defs/CounterpartyCommitment"
+            },
+            {
+              "$ref": "#/$defs/Reply"
+            },
+            {
+              "$ref": "#/$defs/Close"
+            },
+            {
+              "$ref": "#/$defs/Reopen"
+            },
+            {
+              "$ref": "#/$defs/TransferRequest"
+            },
+            {
+              "$ref": "#/$defs/TransferAccept"
+            },
+            {
+              "$ref": "#/$defs/TransferCancel"
+            }
+          ],
+          "title": "Record"
+        }
+      },
+      "required": [
+        "project_id",
+        "sources",
+        "reason",
+        "record"
+      ],
+      "title": "Payload",
       "type": "object"
     },
     "ai.automation.draft.save": {
@@ -20483,7 +21189,6 @@
           "items": {
             "$ref": "#/$defs/SourceRef"
           },
-          "minItems": 1,
           "title": "Sources",
           "type": "array"
         },

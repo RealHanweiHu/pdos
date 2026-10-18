@@ -934,6 +934,10 @@ def create_app(
 
     register_project_work(app, engine, auth_dependency)
 
+    from pdos_next.domain.external_wait.api import register_routes as register_external_waits
+
+    register_external_waits(app, engine, auth_dependency)
+
     from pdos_next.domain.automations.api import register_routes as register_automations
 
     register_automations(app, engine, auth_dependency,

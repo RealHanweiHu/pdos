@@ -140,6 +140,7 @@ T0_OPERATIONS = frozenset(
     {
         "ai.automation.draft.save",
         "work.task.create",
+        "work.external_wait.record",
         "integration.receipt.record",
         "build.readiness.compute",
         "category.knowledge.add",
@@ -212,6 +213,10 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation == "work.external_wait.record":
+        from pdos_next.domain.external_wait import service as external_wait_service
+
+        return external_wait_service
     if operation == "work.commitment.review":
         from pdos_next.domain.work_fulfillment import service as fulfillment_service
 

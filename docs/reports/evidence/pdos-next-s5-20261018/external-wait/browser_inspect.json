@@ -1,0 +1,14 @@
+{
+  "status": [],
+  "alerts": [],
+  "pending": 0,
+  "saved": [
+    {
+      "key": "pdos.external-waits.v1:70067771-f8f7-40b1-b9ec-d687fbd16e13:a051a908-5996-4290-b6cf-9b9166210d36:b8127689-cc89-4f28-83d6-aef8ca30e950:62520600-4831-47e2-9285-a02e61bebba9",
+      "pending": null,
+      "receipt": {
+        "id": "26dd9dbc-be43-4f56-bec0-bb7e6291b8d9"
+      }
+    }
+  ]
+}

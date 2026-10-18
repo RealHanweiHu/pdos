@@ -22,8 +22,8 @@ const manufacturingPublicationCommands = new Set(["npi.manufacturing_baseline.pu
 const nativePilotPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/pilots(?:\/inputs|\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
 const nativePilotCommands = new Set(["npi.pilot.create", "npi.pilot.result.record"]);
 const releasePaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:release\/inputs|release-packages(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?)$/i;
-const projectWorkPaths = /^v1\/products\/[a-f0-9-]{36}\/project-work(?:\/activity|\/fulfillment(?:\/inputs)?|\/inputs)?$/i;
-const projectWorkCommands = new Set(["work.task.create", "work.task.assign", "work.task.accept", "work.commitment.accept", "work.commitment.review", "work.task.start", "work.task.submit", "work.task.review", "work.status_update.create"]);
+const projectWorkPaths = /^v1\/products\/[a-f0-9-]{36}\/project-work(?:\/activity|\/fulfillment(?:\/inputs)?|\/external-waits(?:\/inputs)?|\/inputs)?$/i;
+const projectWorkCommands = new Set(["work.external_wait.record", "work.task.create", "work.task.assign", "work.task.accept", "work.commitment.accept", "work.commitment.review", "work.task.start", "work.task.submit", "work.task.review", "work.status_update.create"]);
 const automationPaths = /^v1\/automation-rules(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/trigger)?)?$/i;
 const releaseCommands = new Set(["release.package.assemble", "release.engineering.approve", "release.manufacturing.approve"]);
 const externalHandoffPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:external-handoff\/inputs|external-handoffs(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/receipts)?)?)$/i;
@@ -497,7 +497,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     if (projectWork && request.method === "POST") {
       let value: unknown;
       try {value=JSON.parse(body??"");} catch {return Response.json({code:"VALIDATION_FAILED",message:"请提交完整项目工作原请求。"},{status:422});}
-      if (!validProjectWorkCommand(value,path[2],categoryId!) || !isRecord(value) || (pathname.endsWith("/fulfillment/inputs") ? value.operation !== "work.commitment.review" : value.operation === "work.commitment.review")) return Response.json({code:"VALIDATION_FAILED",message:"请固定本型号项目与已登记办理操作。"},{status:422});
+      if (!validProjectWorkCommand(value,path[2],categoryId!) || !isRecord(value) || (pathname.endsWith("/external-waits/inputs") ? value.operation !== "work.external_wait.record" : pathname.endsWith("/fulfillment/inputs") ? value.operation !== "work.commitment.review" : ["work.commitment.review", "work.external_wait.record"].includes(String(value.operation)))) return Response.json({code:"VALIDATION_FAILED",message:"请固定本型号项目与已登记办理操作。"},{status:422});
     }
     if (releaseException && request.method === "POST") {
       let value: unknown;

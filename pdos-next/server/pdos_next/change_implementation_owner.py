@@ -199,7 +199,13 @@ def common_group(s, ctx, pid, row, *, operation, event, actor=None, key_binding=
             outbox.subject_id,
             outbox.subject_revision,
         )
-        == (event, receipt.actor_id, receipt.command_id, row.id, row.revision),
+        == (
+            event,
+            receipt.actor_id,
+            receipt.agent_run_id or receipt.run_id or receipt.command_id,
+            row.id,
+            row.revision,
+        ),
         "IMPLEMENTATION_GROUP_MISMATCH",
     )
     return {
