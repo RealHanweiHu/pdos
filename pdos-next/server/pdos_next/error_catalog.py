@@ -479,6 +479,7 @@ REASONS = {
     "VERIFICATION_SCOPE_MISMATCH": "VALIDATION_FAILED",
     "VERIFICATION_TOO_EARLY": "VALIDATION_FAILED",
     "VERSION_CONFLICT": "VERSION_CONFLICT",
+    "WRITE_TIER_UNREGISTERED": "FORBIDDEN_SCOPE",
 }
 
 # B5 owner-specific causes remain detail reasons under the frozen categories.

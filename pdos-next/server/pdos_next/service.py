@@ -15,6 +15,7 @@ from pdos_next.command_handlers import (
     T2_OPERATIONS,
     handler,
     reviewed_view,
+    tier_of,
 )
 from pdos_next.contracts import (
     PAYLOADS,
@@ -945,6 +946,8 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
             else "FORBIDDEN_SCOPE"
         )
         raise DomainError(code, "该命令未在当前可执行能力中开放。", 403)
+    # A registered payload still needs a registered tier; nothing falls through to T0.
+    tier_of(command.operation)
     payload = payload_cls.model_validate(command.payload)
     request_digest = command_digest(command)
     key = s.scalar(

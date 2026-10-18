@@ -175,17 +175,13 @@ class ToolRegistry:
 
 def command_tools(payloads=None, tiers=None, handlers=None):
     if payloads is None:
-        from pdos_next.command_handlers import T1_OPERATIONS, T2_OPERATIONS
+        from pdos_next.command_handlers import tier_of
         from pdos_next.contracts import PAYLOADS
 
         payloads = PAYLOADS
+        # tier_of refuses an unregistered operation; a new payload cannot become T0 by omission.
         tiers = {
-            key: "T2-prepare-only"
-            if key in T2_OPERATIONS
-            else "T1"
-            if key in T1_OPERATIONS
-            else "T0"
-            for key in payloads
+            key: "T2-prepare-only" if tier_of(key) == "T2" else tier_of(key) for key in payloads
         }
     handlers = handlers or {}
     specs = []

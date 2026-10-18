@@ -133,6 +133,55 @@ T1_OPERATIONS = frozenset(
     }
 )
 
+# T0 is registered explicitly, exactly like T1 and T2: the three sets partition
+# PAYLOADS. An unclassified command is refused by tier_of, never treated as T0.
+T0_OPERATIONS = frozenset(
+    {
+        "ai.automation.draft.save",
+        "work.task.create",
+        "integration.receipt.record",
+        "build.readiness.compute",
+        "category.knowledge.add",
+        "change.impact.compute",
+        "change.request.create",
+        "cost.estimate.compute",
+        "evidence.artifact.register",
+        "evidence.claim.record",
+        "evidence.link.create",
+        "product.definition.draft",
+        "product.definition.item.patch",
+        "proposal.item.patch",
+        "quality.capa.draft",
+        "quality.issue.create",
+        "research.snapshot.register",
+        "supply.kit.compute",
+        "test.result.compute",
+        "verification.request.create",
+        "verification.schedule.propose",
+        "release.package.assemble",
+        "work.plan.propose",
+    }
+)
+
+
+def tier_of(operation):
+    """Resolve the registered write tier; an unregistered command never defaults to T0."""
+    if operation in T2_OPERATIONS:
+        return "T2"
+    if operation in T1_OPERATIONS:
+        return "T1"
+    if operation in T0_OPERATIONS:
+        return "T0"
+    from pdos_next.errors import DomainError
+
+    raise DomainError(
+        "WRITE_TIER_UNREGISTERED",
+        "该命令未登记写入档位。",
+        403,
+        detail={"operation": operation},
+    )
+
+
 # These adapters prepare once in each call and bind the actual common proof.
 # No handler/client can opt itself into these hooks through a payload flag.
 PHASED_MATERIAL_OPERATIONS = frozenset(
