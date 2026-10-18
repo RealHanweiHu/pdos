@@ -102,7 +102,10 @@ def _scope(session, state):
     if state.get("preview_tenant_id") and state.get("preview_category_id"):
         tenant = UUID(state["preview_tenant_id"])
         category = UUID(state["preview_category_id"])
-        assert session.get(Category, (tenant, category)) is not None, "Category is gone"
+        found = session.scalar(
+            select(Category).where(Category.tenant_id == tenant, Category.id == category)
+        )
+        assert found is not None, "This environment's category is gone"
         return tenant, category, False
     # Imported here: the kernel models resolve their FK metadata through
     # pdos_next.models, so they cannot be imported before it.
@@ -241,6 +244,38 @@ def renew(args):
     print(f"until its own expiry. New token stored in {args.state}.")
 
 
+def admit(args):
+    """Record this environment's tenant as locally admitted to the pilot.
+
+    tenant_pilot_admissions gates skill enablement and the Xiaopai flows. A
+    synthetic local environment holds no real pilot approval, and the reference
+    says exactly that; it never stands in for one.
+    """
+    from pdos_next.agent_kernel.models import TenantPilotAdmission
+
+    state, admin = verified_state(args.state)
+    at_head(admin)
+    tenant = state.get("preview_tenant_id")
+    if tenant is None:
+        raise SystemExit("Refusing: this environment has no tenant yet; create an account first.")
+    with Session(admin) as session, session.begin():
+        row = session.get(TenantPilotAdmission, UUID(tenant))
+        if row is None:
+            session.add(
+                TenantPilotAdmission(
+                    tenant_id=UUID(tenant),
+                    active=True,
+                    approval_reference=(
+                        "Local acceptance environment only; no pilot qualification"
+                    ),
+                )
+            )
+            print(f"Recorded a local pilot admission for tenant {tenant}.")
+        else:
+            row.active = True
+            print(f"Tenant {tenant} was already admitted; active is now True.")
+
+
 def show(args):
     state = json.loads(Path(args.state).read_text())
     accounts = state.get("acceptance_accounts", {})
@@ -257,7 +292,7 @@ def show(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["create", "renew", "list"])
+    parser.add_argument("action", choices=["create", "renew", "list", "admit"])
     parser.add_argument("--state", default=str(ROOT / ".local" / "runtime.json"))
     parser.add_argument("--name", default="acceptance")
     parser.add_argument("--display-name", default="验收账号（仅验收演练）")
@@ -265,7 +300,7 @@ def main():
     parser.add_argument("--no-product-manager", dest="product_manager", action="store_false")
     parser.set_defaults(product_manager=True)
     args = parser.parse_args()
-    {"create": create, "renew": renew, "list": show}[args.action](args)
+    {"create": create, "renew": renew, "list": show, "admit": admit}[args.action](args)
 
 
 if __name__ == "__main__":

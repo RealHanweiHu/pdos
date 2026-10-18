@@ -316,9 +316,20 @@ def main():
             env,
         )
     if action == "serve-web":
+        # Optional account name: serve the browser as one acceptance login
+        # (tools/acceptance_account.py) instead of the seeded preview person.
+        account = sys.argv[2] if len(sys.argv) > 2 else None
+        tokens = state.get("acceptance_tokens", {})
+        if account is not None and account not in tokens:
+            raise SystemExit(
+                f"No acceptance token named {account!r} in this environment; "
+                "create one with tools/acceptance_account.py create."
+            )
         env.update(
             PDOS_NEXT_API_URL="http://127.0.0.1:8898",
-            PDOS_NEXT_LOCAL_SESSION=state["preview_token"],
+            PDOS_NEXT_LOCAL_SESSION=(
+                state["preview_token"] if account is None else tokens[account]
+            ),
         )
         subprocess.run(
             ["pnpm", "start", "--hostname", "127.0.0.1", "--port", "3028"],
