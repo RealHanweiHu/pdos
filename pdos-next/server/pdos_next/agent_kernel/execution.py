@@ -63,6 +63,8 @@ def command_run(session, ctx, product_id):
     ):
         raise DomainError("FORBIDDEN_SCOPE", "命令未绑定实际小 Pai 运行和调用。", 403)
     check_run_binding(run, scope_for_run(run))
+    if run.trigger == "automation_manual":
+        raise DomainError("FORBIDDEN_SCOPE", "手动只读规则没有业务写入权限。", 403)
     if run.used_tokens > run.token_limit:
         raise DomainError("MODEL_BUDGET_EXCEEDED", "原运行用量已超出预算。")
     return run

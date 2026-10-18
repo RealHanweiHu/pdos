@@ -316,6 +316,19 @@
       ],
       "payload_schema": "payloads.schema.json",
       "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "ai.automation.draft.save",
+      "write_tier": "T0",
+      "executor": "named_human",
+      "event": "ai.automation_draft_saved",
+      "purpose": "Save an immutable owner rule draft, including a copied historical configuration. Does not activate a service or trigger model execution. This local slice only admits explicit human manual read-only work.",
+      "canonical_policy_preserved": [
+        "ai.automation.activate:T1",
+        "ai.automation.pause:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
     }
   ]
 }

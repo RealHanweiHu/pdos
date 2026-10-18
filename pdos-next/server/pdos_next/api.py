@@ -923,6 +923,11 @@ def create_app(
 
     register_project_work(app, engine, auth_dependency)
 
+    from pdos_next.domain.automations.api import register_routes as register_automations
+
+    register_automations(app, engine, auth_dependency,
+                         agent_api_ports or kernel_bootstrap.api_ports(kernel_temporal))
+
     @app.get("/v1/categories/{category_id}/products/{product_id}/configurations")
     def configurations(product_id: UUID, ctx: Context = auth_dependency):
         from pdos_next.domain.configurations.service import list_configurations

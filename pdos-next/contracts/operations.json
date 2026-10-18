@@ -583,7 +583,9 @@
       "ai_execution": "一次确认后",
       "event": "ai.automation_activated",
       "stage": "S5",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json",
+      "note": "Manual human-admitted read-only rules only; service schedules, domain events and relative milestones remain pending."
     },
     {
       "operation": "ai.automation.pause",
@@ -591,7 +593,9 @@
       "ai_execution": "一次确认后",
       "event": "ai.automation_paused",
       "stage": "S5",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json",
+      "note": "Manual human-admitted read-only rules only; service schedules, domain events and relative milestones remain pending."
     },
     {
       "operation": "my_work.query",

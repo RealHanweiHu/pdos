@@ -1,0 +1,16 @@
+...                                                                      [100%]
+=============================== warnings summary ===============================
+tests/automations_pg/test_manual_workflow.py::test_actual_manual_rule_publish_pause_resume_and_exact_run_replay
+tests/automations_pg/test_manual_workflow.py::test_actual_manual_rule_publish_pause_resume_and_exact_run_replay
+tests/automations_pg/test_manual_workflow.py::test_actual_manual_rule_publish_pause_resume_and_exact_run_replay
+tests/automations_pg/test_manual_workflow.py::test_actual_manual_rule_publish_pause_resume_and_exact_run_replay
+tests/automations_pg/test_manual_workflow.py::test_actual_manual_rule_publish_pause_resume_and_exact_run_replay
+tests/automations_pg/test_shared_budget.py::test_actual_rule_budget_sums_settled_usage_and_other_run_reservation_once
+tests/automations_pg/test_shared_budget.py::test_actual_rule_budget_sums_settled_usage_and_other_run_reservation_once
+tests/automations_pg/test_unknown_budget.py::test_actual_unknown_estimate_prevents_another_run_exceeding_shared_rule_budget
+tests/automations_pg/test_unknown_budget.py::test_actual_unknown_estimate_prevents_another_run_exceeding_shared_rule_budget
+  /private/tmp/pdos-s5-automation-delivery-555c9bmy/pdos-next/server/pdos_next/domain/automations/service.py:202: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+3 passed, 9 warnings in 20.17s

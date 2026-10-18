@@ -1,0 +1,20 @@
+{
+  "base_commit": "c0cfc6a4daea2c67ec86e785348328716ba06456",
+  "started_at": "2026-10-18T01:52:56.078548+00:00",
+  "finished_at": "2026-10-18T01:52:56.628790+00:00",
+  "steps": [
+    {
+      "command": [
+        "node",
+        "--test",
+        "src/lib/automation-rules.test.mjs",
+        "src/components/automation-rules.test.mjs",
+        "src/app/api/automation-rules-route.test.mjs"
+      ],
+      "exit": 0
+    }
+  ],
+  "source_changed": [],
+  "real_external_calls": 0,
+  "performance_acceptance": false
+}

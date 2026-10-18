@@ -83,6 +83,9 @@ def command_digest(command: Command) -> str:
 
 
 EVENTS = {
+    "ai.automation.draft.save": "ai.automation_draft_saved",
+    "ai.automation.activate": "ai.automation_activated",
+    "ai.automation.pause": "ai.automation_paused",
     "platform.link.create": "platform.linked",
     "research.snapshot.register": "research.snapshot_registered",
     "category.knowledge.add": "category.knowledge_added",

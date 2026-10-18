@@ -92,6 +92,14 @@ class KernelActivities:
             if row.state in {"completed", "partial", "failed", "cancelled"}:
                 return {"run_id": str(row.id), "status": row.state}
             writer, goal = row.writer_id, row.goal
+            if row.trigger == "automation_manual":
+                from pdos_next.domain.automations.runtime import binding
+
+                _, rule_spec = binding(s, row)
+                goal += (
+                    f"\n\n用途：{rule_spec.purpose}\n停止条件：{rule_spec.stop_condition}"
+                    "\n本规则只读取资料并返回结果，禁止联网、MCP 和业务写入。"
+                )
         try:
             scope = self.store.scope(
                 tenant_id=ctx.tenant_id,
@@ -149,7 +157,7 @@ class KernelActivities:
                     goal=goal,
                     answer=answer,
                     checkpointer=saver,
-                    preload=tuple(adapters.preload(scope)) if adapters.preload else (),
+                    preload=self.preload(scope, adapters),
                 )
             if result.get("__interrupt__"):
                 with self.store.transaction(scope, lock=True) as (_, row):
@@ -194,6 +202,14 @@ class KernelActivities:
             if thread.is_alive():
                 thread.join(timeout=1)
             host.gateway.close()
+
+    def preload(self, scope, adapters):
+        from pdos_next.domain.automations.runtime import preload
+
+        fallback = () if scope.trigger == "automation_manual" else (
+            tuple(adapters.preload(scope)) if adapters.preload else ()
+        )
+        return preload(self.store, scope, fallback)
 
     @activity.defn(name="reconcile_xiaopai_run")
     def reconcile(self, reference):

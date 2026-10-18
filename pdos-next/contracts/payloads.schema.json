@@ -19984,6 +19984,314 @@
       ],
       "title": "StatusUpdatePayload",
       "type": "object"
+    },
+    "ai.automation.draft.save": {
+      "$defs": {
+        "AutomationSpec": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "maxLength": 160,
+              "minLength": 1,
+              "title": "Name",
+              "type": "string"
+            },
+            "goal": {
+              "maxLength": 12000,
+              "minLength": 1,
+              "title": "Goal",
+              "type": "string"
+            },
+            "purpose": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Purpose",
+              "type": "string"
+            },
+            "stop_condition": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Stop Condition",
+              "type": "string"
+            },
+            "trigger_kind": {
+              "const": "manual",
+              "title": "Trigger Kind",
+              "type": "string"
+            },
+            "product_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Product Id"
+            },
+            "skill_keys": {
+              "items": {
+                "$ref": "#/$defs/SkillRef"
+              },
+              "maxItems": 12,
+              "minItems": 1,
+              "title": "Skill Keys",
+              "type": "array"
+            },
+            "validation_budget_id": {
+              "format": "uuid",
+              "title": "Validation Budget Id",
+              "type": "string"
+            },
+            "token_limit": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "title": "Token Limit",
+              "type": "integer"
+            },
+            "budget": {
+              "$ref": "#/$defs/BudgetLimits"
+            },
+            "cooldown_seconds": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "title": "Cooldown Seconds",
+              "type": "integer"
+            },
+            "max_runs": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "title": "Max Runs",
+              "type": "integer"
+            },
+            "allow_network": {
+              "const": false,
+              "default": false,
+              "title": "Allow Network",
+              "type": "boolean"
+            },
+            "mcp_tools": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 0,
+              "title": "Mcp Tools",
+              "type": "array"
+            },
+            "cross_object_write": {
+              "const": false,
+              "default": false,
+              "title": "Cross Object Write",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "name",
+            "goal",
+            "purpose",
+            "stop_condition",
+            "trigger_kind",
+            "skill_keys",
+            "validation_budget_id",
+            "token_limit",
+            "budget",
+            "cooldown_seconds",
+            "max_runs"
+          ],
+          "title": "AutomationSpec",
+          "type": "object"
+        },
+        "BudgetLimits": {
+          "additionalProperties": false,
+          "properties": {
+            "limit_micro_usd": {
+              "minimum": 0,
+              "title": "Limit Micro Usd",
+              "type": "integer"
+            },
+            "input_token_limit": {
+              "minimum": 1,
+              "title": "Input Token Limit",
+              "type": "integer"
+            },
+            "output_token_limit": {
+              "minimum": 1,
+              "title": "Output Token Limit",
+              "type": "integer"
+            },
+            "call_limit": {
+              "minimum": 1,
+              "title": "Call Limit",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "limit_micro_usd",
+            "input_token_limit",
+            "output_token_limit",
+            "call_limit"
+          ],
+          "title": "BudgetLimits",
+          "type": "object"
+        },
+        "SkillRef": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maxLength": 160,
+              "minLength": 1,
+              "title": "Key",
+              "type": "string"
+            },
+            "version": {
+              "maxLength": 160,
+              "minLength": 1,
+              "title": "Version",
+              "type": "string"
+            },
+            "digest": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Digest",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "version",
+            "digest"
+          ],
+          "title": "SkillRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rule Id"
+        },
+        "expected_rule_revision": {
+          "minimum": 0,
+          "title": "Expected Rule Revision",
+          "type": "integer"
+        },
+        "spec": {
+          "$ref": "#/$defs/AutomationSpec"
+        },
+        "restored_from": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Restored From"
+        }
+      },
+      "required": [
+        "expected_rule_revision",
+        "spec"
+      ],
+      "title": "DraftSave",
+      "type": "object"
+    },
+    "ai.automation.activate": {
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "format": "uuid",
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "expected_rule_revision": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Rule Revision",
+          "type": "integer"
+        },
+        "version_id": {
+          "format": "uuid",
+          "title": "Version Id",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "rule_id",
+        "expected_rule_revision",
+        "version_id"
+      ],
+      "title": "Control",
+      "type": "object"
+    },
+    "ai.automation.pause": {
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "format": "uuid",
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "expected_rule_revision": {
+          "exclusiveMinimum": 0,
+          "title": "Expected Rule Revision",
+          "type": "integer"
+        },
+        "version_id": {
+          "format": "uuid",
+          "title": "Version Id",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "rule_id",
+        "expected_rule_revision",
+        "version_id"
+      ],
+      "title": "Control",
+      "type": "object"
     }
   },
   "scope": "implemented local domain slices; real AI qualification and formal exits are separate"

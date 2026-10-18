@@ -490,3 +490,7 @@ PAYLOADS.update(RELEASE_EXCEPTION_PAYLOADS)
 from pdos_next.domain.work_management.schemas import PAYLOADS as WORK_PAYLOADS  # noqa: E402
 
 PAYLOADS.update(WORK_PAYLOADS)
+
+from pdos_next.domain.automations.schemas import PAYLOADS as AUTOMATION_PAYLOADS  # noqa: E402
+
+PAYLOADS.update(AUTOMATION_PAYLOADS)

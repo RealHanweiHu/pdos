@@ -2,6 +2,9 @@
 
 CATEGORY_OPERATIONS = frozenset(
     {
+        "ai.automation.draft.save",
+        "ai.automation.activate",
+        "ai.automation.pause",
         "mcp.connector.allow",
         "mcp.tool.grant",
         "model.configuration.save",
@@ -58,6 +61,8 @@ T2_OPERATIONS = frozenset(
 
 T1_OPERATIONS = frozenset(
     {
+        "ai.automation.activate",
+        "ai.automation.pause",
         "work.task.assign",
         "work.task.accept",
         "work.commitment.accept",
@@ -157,6 +162,10 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation in {"ai.automation.draft.save", "ai.automation.activate", "ai.automation.pause"}:
+        from pdos_next.domain.automations import service as automation_service
+
+        return automation_service
     if operation in {
         "work.task.create",
         "work.task.assign",

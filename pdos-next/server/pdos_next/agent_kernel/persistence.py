@@ -94,6 +94,7 @@ class KernelStore:
                 or run.product_id != scope.product_id
                 or run.proposal_id != scope.proposal_id
                 or run.session_id != scope.session_id
+                or run.trigger != scope.trigger
                 or run.private_context != scope.private_context
                 or frozenset(run.data_categories) != scope.data_categories
                 or tuple(run.customer_identities) != scope.customer_identities
@@ -296,6 +297,10 @@ class KernelStore:
                 )
             if reservation < 0 or run.held_tokens + run.used_tokens + reservation > run.token_limit:
                 raise DomainError("RATE_LIMITED", "运行预算不足。")
+            if run.trigger == "automation_manual":
+                from pdos_next.domain.automations.runtime import reserve
+
+                reserve(session, run, reservation=reservation, cost_lease=cost_lease)
             call = AgentToolCall(
                 tenant_id=scope.tenant_id,
                 run_id=run.id,

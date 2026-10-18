@@ -24,6 +24,7 @@ const nativePilotCommands = new Set(["npi.pilot.create", "npi.pilot.result.recor
 const releasePaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:release\/inputs|release-packages(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?)$/i;
 const projectWorkPaths = /^v1\/products\/[a-f0-9-]{36}\/project-work(?:\/inputs)?$/i;
 const projectWorkCommands = new Set(["work.task.create", "work.task.assign", "work.task.accept", "work.commitment.accept", "work.task.start", "work.task.submit", "work.task.review", "work.status_update.create"]);
+const automationPaths = /^v1\/automation-rules(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/trigger)?)?$/i;
 const releaseCommands = new Set(["release.package.assemble", "release.engineering.approve", "release.manufacturing.approve"]);
 const externalHandoffPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:external-handoff\/inputs|external-handoffs(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/receipts)?)?)$/i;
 const externalHandoffCommands = new Set(["integration.handoff.authorize", "integration.receipt.record"]);
@@ -182,11 +183,16 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const externalHandoff = externalHandoffPaths.test(pathname);
   const releaseException = releaseExceptionPaths.test(pathname);
   const projectWork = projectWorkPaths.test(pathname);
+  const automation = automationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !automation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
-  if (mcpManagement) {
+  if (automation) {
+    const method = pathname.endsWith("/trigger") ? "POST" : "GET";
+    if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "请使用规则读取或明确手动触发入口。" }, { status: 405, headers: { Allow: method } });
+    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "规则只按当前本人和品类读取。" }, { status: 422 });
+  } else if (mcpManagement) {
     const recovering = pathname.endsWith("/recover"), method = recovering ? "POST" : "GET";
     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "请使用 MCP 登记读取或原请求核对入口。" }, { status: 405, headers: { Allow: method } });
     const detail = pathname !== "v1/agent-mcp" && !recovering && !pathname.endsWith("/history");
@@ -467,6 +473,11 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   if (!base) return Response.json({ code: "SOURCE_UNAVAILABLE", message: "服务尚未配置。" }, { status: 503 });
   try {
     const body = request.method === "GET" ? undefined : await request.text();
+    if (automation && request.method === "POST") {
+      let value: unknown;
+      try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整原触发请求。" }, { status: 422 }); }
+      if (!isRecord(value) || Object.keys(value).some(key => !["expected_rule_revision", "version_id", "idempotency_key"].includes(key)) || !positiveRevision(value.expected_rule_revision) || typeof value.version_id !== "string" || !uuid.test(value.version_id) || typeof value.idempotency_key !== "string" || !positiveRevision(value.expected_rule_revision) || typeof value.idempotency_key !== "string" || value.idempotency_key.trim().length < 8 || value.idempotency_key.length > 120) return Response.json({ code: "VALIDATION_FAILED", message: "请固定当前规则版本和原请求编号。" }, { status: 422 });
+    }
     if (selectionMaterial) {
       let value: unknown;
       try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交所选变更与精确原文完整行。" }, { status: 422 }); }

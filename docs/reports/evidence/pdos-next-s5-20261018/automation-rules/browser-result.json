@@ -1,0 +1,24 @@
+{
+  "candidate_build": "build-02",
+  "scope": "Synthetic manual rule from actual API/PG test; read-only browser verification",
+  "rule_version": 5,
+  "admitted_runs": 2,
+  "fixed_product_preserved_on_edit": true,
+  "original_run_status": "queued",
+  "original_run_reads": 3,
+  "business_posts": 0,
+  "desktop": {
+    "client_width": 1280,
+    "scroll_width": 1280
+  },
+  "mobile_dark": {
+    "client_width": 320,
+    "scroll_width": 320
+  },
+  "model_calls": 0,
+  "notes": [
+    "Initial browser list rejected actual product binding; corrected in final source and build-02",
+    "Favicon 404 only; no application console errors",
+    "No model/Temporal execution or formal phase acceptance claimed"
+  ]
+}

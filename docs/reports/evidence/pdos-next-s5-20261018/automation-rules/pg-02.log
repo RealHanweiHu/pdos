@@ -1,0 +1,12 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/automations_pg/test_manual_workflow.py::test_actual_manual_rule_publish_pause_resume_and_exact_run_replay
+tests/automations_pg/test_manual_workflow.py::test_actual_manual_rule_publish_pause_resume_and_exact_run_replay
+tests/automations_pg/test_manual_workflow.py::test_actual_manual_rule_publish_pause_resume_and_exact_run_replay
+tests/automations_pg/test_manual_workflow.py::test_actual_manual_rule_publish_pause_resume_and_exact_run_replay
+tests/automations_pg/test_manual_workflow.py::test_actual_manual_rule_publish_pause_resume_and_exact_run_replay
+  /private/tmp/pdos-s5-automation-delivery-555c9bmy/pdos-next/server/pdos_next/domain/automations/service.py:202: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 5 warnings in 12.36s

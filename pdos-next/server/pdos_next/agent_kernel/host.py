@@ -79,6 +79,10 @@ class BoundHost:
         return {"context": value, "context_ref": reference}
 
     def enabled(self, scope, skill):
+        from pdos_next.domain.automations.runtime import permitted_skill
+
+        if not permitted_skill(self.store, scope, skill):
+            return False
         with self.store.transaction(scope) as (session, _):
             return policy.skill_enabled(session, scope, skill)
 
@@ -111,6 +115,9 @@ class BoundHost:
         return self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
 
     def read(self, scope, spec, arguments, intent_key, *, source: ReadSource | None = None):
+        from pdos_next.domain.automations.runtime import guard_tool
+
+        guard_tool(self.store, scope, spec.name)
         callback = self.adapters.read_tools.get(spec.name)
         if callback is None:
             raise DomainError(
@@ -190,10 +197,16 @@ class BoundHost:
             raise
 
     def prepare(self, scope, spec, arguments, intent_key):
+        from pdos_next.domain.automations.runtime import guard_tool
+
+        guard_tool(self.store, scope, writing=True)
         self.current(scope)
         return self.adapters.prepare_candidate(scope, spec, arguments, intent_key)
 
     def write(self, scope, spec, arguments, intent_key, *, source: WriteSource):
+        from pdos_next.domain.automations.runtime import guard_tool
+
+        guard_tool(self.store, scope, writing=True)
         self.current(scope)
         if spec.tier != "T0" or scope.isolation != "main":
             raise DomainError("NAMED_DECISION_REQUIRED", "该工具没有 AI 自动执行权。")
