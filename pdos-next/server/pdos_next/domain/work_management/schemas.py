@@ -25,6 +25,11 @@ class VersionRef(DTO):
     revision: int = Field(ge=1, strict=True)
 
 
+class G0OpenItemRef(DTO):
+    id: UUID
+    decision_id: UUID
+
+
 class Outcome(DTO):
     key: Key
     text: Text
@@ -37,7 +42,7 @@ def unique_keys(values):
 
 class Payload(DTO):
     project_id: UUID
-    sources: tuple[SourceRef, ...] = Field(min_length=1)
+    sources: tuple[SourceRef, ...]
     reason: Text
 
     @field_validator("sources")
@@ -57,6 +62,13 @@ class TaskCreatePayload(Payload):
     goal: Text
     outcomes: tuple[Outcome, ...] = Field(min_length=1)
     plan_task: VersionRef | None = None
+    g0_open_item: G0OpenItemRef | None = None
+
+    @model_validator(mode="after")
+    def has_direct_source(self):
+        if not self.sources and self.g0_open_item is None:
+            raise ValueError("A task requires original artifacts or an exact G0 open item")
+        return self
 
     @field_validator("outcomes")
     @classmethod
@@ -98,6 +110,7 @@ class ClockFields(DTO):
 
 
 class CommitmentAcceptPayload(ConfirmedPayload, ClockFields):
+    sources: tuple[SourceRef, ...] = Field(min_length=1)
     task: VersionRef
     recipient_id: UUID
     outcome_keys: tuple[Key, ...] = Field(min_length=1)
@@ -165,6 +178,7 @@ class TaskReviewPayload(TaskStartPayload):
 
 
 class StatusUpdatePayload(ConfirmedPayload):
+    sources: tuple[SourceRef, ...] = Field(min_length=1)
     fact_summary: Text
     next_steps: Text
     task_refs: tuple[VersionRef, ...] = ()
@@ -214,6 +228,7 @@ class TaskSnapshot(DTO):
     goal: Text
     outcomes: tuple[Outcome, ...]
     plan_task: VersionRef | None = None
+    g0_open_item: G0OpenItemRef | None = None
     assignee_id: UUID | None = None
     recipient_id: UUID | None = None
     actual_start: TimeFact | None = None

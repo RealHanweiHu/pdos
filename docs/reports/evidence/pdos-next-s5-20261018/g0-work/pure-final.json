@@ -1,0 +1,38 @@
+{
+  "args": [
+    "-m",
+    "pytest",
+    "-q",
+    "tests/work_management",
+    "tests/work_fulfillment",
+    "tests/project_activity",
+    "tests/test_personal_attention.py",
+    "tests/test_personal_attention_decisions.py",
+    "tests/test_personal_attention_verification.py"
+  ],
+  "exit": 0,
+  "output": "........................................................................ [ 34%]\n........................................................................ [ 69%]\n................................................................         [100%]\n208 passed in 1.48s\n",
+  "base": "02492016a2d1a77712d44009b9757d3d7213a083",
+  "source_manifest": {
+    "pdos-next/server/pdos_next/domain/work_management/models.py": "cf396ad30d8897e2b6219a5aa9d0bf7eaa62ed94a353e2ae5d070a5f53a61069",
+    "pdos-next/server/pdos_next/domain/work_management/schemas.py": "fb79a14f49dd1b36c3077f2cb39d53ad8250435025c5d5666b4a5d5e0bf31eef",
+    "pdos-next/server/pdos_next/domain/work_management/service.py": "ca4b9f1182bb16881c3ad7309aec2bcb8739a58d55091232ff3947829912e89c",
+    "pdos-next/server/pdos_next/domain/work_management/rules.py": "e157e620a18e871ca60cf2cfa42618bf6e26c75c277d5671e7fadd45f9389d86",
+    "pdos-next/server/pdos_next/domain/work_management/owner.py": "c6c3456ec4b111b1b48ca12795ae50d7289542a334062befeaa071c6394c78cf",
+    "pdos-next/server/pdos_next/domain/work_management/views.py": "1494c249bd54b14e8ae60ffb48cef7f259d1d8b1ffe34c413375dfdc9f11fdbe",
+    "pdos-next/server/pdos_next/domain/work_management/g0_sources.py": "ee12aa77a475c1257b74d1fec69ab26f74d77fa4edd365a4e3d3bc489b83822f",
+    "pdos-next/server/pdos_next/domain/work_management/g0_storage.py": "2849b2c3c475de1717f59a06f23d00536d53ebd4088815b6143f93d23c1aea4c",
+    "pdos-next/server/tests/work_management/test_g0_sources.py": "8610bd32667dde604b627ece05d5bc7276c70dcb98cb5d32dce3ab797fde69d6",
+    "pdos-next/server/tests/work_management/test_g0_storage.py": "4882d31366ebbc1b5a4f0e9c7911ca17c43435aef75933bf456fecd4bd17d6fa",
+    "pdos-next/server/tests/work_management/test_g0_service.py": "047d6d5cef60d742c7d516233ba9dbfd8c3f67408d154b4423295b3a2e015136",
+    "pdos-next/server/tests/work_management_pg/test_g0_continuation.py": "23c6b5279c719c29bc98adfecfd60711c01fa2b7c11648cc20c16b8c55c82343",
+    "pdos-next/server/migrations/schema_s0_0795.py": "44c006e2d9ef5be8b4ed7dd9c17be7df7280ab862ee1ce27edd98bb72a091c62",
+    "pdos-next/server/migrations/versions/s0_0795_g0_work.py": "e2267c1e1130430be0583617b2167b491dbf70db611b88546ed6b1015dc3ec9a",
+    "docs/design/2026-10-18-pdos-next-s5-g0-work-contract.md": "b672eae018cf6269beab4519312ee0b975c0a0a02814b1c1129356446b93564f"
+  },
+  "snapshot": "/private/tmp/pdos-g0-work-4e5ke071",
+  "target": null,
+  "head": null,
+  "model_calls": 0,
+  "performance_acceptance": false
+}

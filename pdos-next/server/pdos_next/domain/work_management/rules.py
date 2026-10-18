@@ -60,6 +60,7 @@ def transition(operation, payload, *, current=None, actor_id, at, task_id=None):
             goal=payload.goal,
             outcomes=payload.outcomes,
             plan_task=payload.plan_task,
+            g0_open_item=payload.g0_open_item,
         )
     current = TaskSnapshot.model_validate(current)
     require(

@@ -46,6 +46,9 @@ def task_view(row, history):
         "assignee_id": str(snapshot.assignee_id) if snapshot.assignee_id else None,
         "recipient_id": str(snapshot.recipient_id) if snapshot.recipient_id else None,
         "plan_task": snapshot.plan_task.model_dump(mode="json") if snapshot.plan_task else None,
+        "g0_open_item": snapshot.g0_open_item.model_dump(mode="json")
+        if snapshot.g0_open_item
+        else None,
         "sources": row.sources,
         "actual_start": _time(snapshot.actual_start),
         "submission": None
@@ -101,6 +104,8 @@ def update_view(row):
 
 
 def workspace(s, ctx, pid, project_id):
+    from .g0_sources import workspace_items
+
     product = require_access(s, ctx, pid)
     project = owner.project(s, ctx, pid, project_id)
     scope = (
@@ -196,6 +201,7 @@ def workspace(s, ctx, pid, project_id):
         "product_revision": product.revision,
         "members": members,
         "tasks": tasks,
+        "g0_open_items": workspace_items(s, ctx, pid, project_id),
         "commitments": commitments,
         "updates": updates,
         "as_of": now().isoformat(),

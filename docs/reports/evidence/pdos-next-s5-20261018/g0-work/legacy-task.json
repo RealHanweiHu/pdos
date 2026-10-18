@@ -1,0 +1,12 @@
+{
+  "actual_0794_body_lacked_new_field": true,
+  "task_id": "fd73aa66-bf4e-4d27-aa91-7f0ed8b43658",
+  "before_version": "f5f87c45-a253-4ccf-801d-25bd35f26c5b",
+  "after_version": "74badcc3-b358-4f63-ab2e-8b3a0d057167",
+  "revision": 3,
+  "receipt_id": "7e090409-7670-4346-af19-eb1d2463c50b",
+  "same_original_receipt_replay": true,
+  "assignment_unchanged": true,
+  "native_origin": null,
+  "model_calls": 0
+}

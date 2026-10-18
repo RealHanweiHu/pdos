@@ -9,10 +9,12 @@ from sqlalchemy import (
     CheckConstraint,
     DateTime,
     ForeignKeyConstraint,
+    Index,
     Integer,
     String,
     Text,
     UniqueConstraint,
+    text,
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
@@ -47,7 +49,17 @@ def _scope():
     )
 
 
-def _fact():
+def _fact(*, g0_task=False):
+    source_requirement = "jsonb_array_length(sources)>0 AND jsonb_array_length(reads)>0"
+    if g0_task:
+        source_requirement = (
+            f"(({source_requirement}) OR (sources='[]'::jsonb AND reads='[]'::jsonb "
+            "AND g0_open_item_id IS NOT NULL AND g0_decision_id IS NOT NULL "
+            "AND COALESCE(jsonb_typeof(source_basis->'g0_open_item')='object' "
+            "AND source_basis->'g0_open_item'->>'id'=g0_open_item_id::text "
+            "AND source_basis->'g0_open_item'->>'decision_id'=g0_decision_id::text "
+            "AND source_basis->'g0_open_item'->>'digest' ~ '^[a-f0-9]{64}$',false)))"
+        )
     return (
         *_scope(),
         UniqueConstraint("tenant_id", "id"),
@@ -73,7 +85,9 @@ def _fact():
         ),
         CheckConstraint("writer_id=actor_id AND revision>0"),
         CheckConstraint(
-            "jsonb_typeof(command)='object' AND jsonb_typeof(body)='object' AND jsonb_typeof(source_basis)='object' AND jsonb_typeof(sources)='array' AND jsonb_array_length(sources)>0 AND jsonb_typeof(reads)='array' AND jsonb_array_length(reads)>0"
+            "jsonb_typeof(command)='object' AND jsonb_typeof(body)='object' AND jsonb_typeof(source_basis)='object' AND jsonb_typeof(sources)='array' AND jsonb_typeof(reads)='array' AND "
+            + source_requirement,
+            name="work_task_g0_sources" if g0_task else None,
         ),
         CheckConstraint(
             "body_sha256 ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$' AND intent_digest ~ '^[a-f0-9]{64}$'"
@@ -114,19 +128,38 @@ class WorkTaskVersion(_Fact, Base):
     previous_revision: Mapped[int | None] = mapped_column(Integer)
     action: Mapped[str] = mapped_column(String(16))
     state: Mapped[str] = mapped_column(String(16))
+    g0_open_item_id: Mapped[UUID | None]
+    g0_decision_id: Mapped[UUID | None]
 
     @property
     def status(self):
         return self.state
 
     __table_args__ = (
-        *_fact(),
+        *_fact(g0_task=True),
         UniqueConstraint("tenant_id", "product_id", "task_id", "revision"),
         UniqueConstraint(*BINDING, "task_id", "id", "revision"),
         _fk(
             (*BINDING, "task_id", "previous_id", "previous_revision"),
             TASK,
             (*BINDING, "task_id", "id", "revision"),
+        ),
+        _fk(("g0_open_item_id",), "project_open_items", ("id",), name="work_task_g0_item_fk"),
+        _fk(
+            ("tenant_id", "category_id", "g0_decision_id"),
+            "proposal_decisions",
+            ("tenant_id", "category_id", "id"),
+            name="work_task_g0_decision_fk",
+        ),
+        CheckConstraint(
+            "(g0_open_item_id IS NULL)=(g0_decision_id IS NULL)", name="work_task_g0_identity"
+        ),
+        Index(
+            "uq_work_task_g0_open_item_first",
+            "tenant_id",
+            "g0_open_item_id",
+            unique=True,
+            postgresql_where=text("revision=1 AND g0_open_item_id IS NOT NULL"),
         ),
         CheckConstraint(
             "(revision=1 AND action='create' AND state='proposed' AND previous_id IS NULL AND previous_revision IS NULL) OR (revision>1 AND previous_id IS NOT NULL AND previous_id<>id AND previous_revision=revision-1)"

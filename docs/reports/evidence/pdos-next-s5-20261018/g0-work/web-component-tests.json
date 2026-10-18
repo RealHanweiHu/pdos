@@ -1,0 +1,13 @@
+{
+  "kind": "component",
+  "exit": 0,
+  "output": "✔ read failure remains distinct from an empty task list and can be retried (85.093041ms)\n✔ actual component acceptance previews but only the explicit confirmation performs one save (72.755791ms)\n✔ response loss survives remount without an automatic POST and replays the exact original command (120.557583ms)\n✔ storage failure stays inside the event boundary and prevents every command POST (28.499708ms)\n✔ confirmation storage failure retains the review and never sends an unrecoverable write (62.193833ms)\n✔ access denial removes local private material and hides previous task and report details (39.863083ms)\n✔ scope disposal during actual inputs cancels the old preview continuation (64.911417ms)\n✔ time categories and named weekly statements retain their separate meaning (28.59025ms)\n✔ G0 continuation prefills an editable draft while outcomes require human input and T0 saves only a task (68.4975ms)\n✔ an existing G0 link selects the same task and task completion preserves the independent risk (35.518375ms)\n✔ a current G0 task assignment accepts its inherited fixed basis but still waits for T1 confirmation (41.0095ms)\n✔ G0 draft refresh never duplicates a newly linked task or automatically replays an unknown save (55.09325ms)\n✔ stale G0 draft links and G0 access denial cannot become a fresh duplicate task (60.960958ms)\nℹ tests 13\nℹ suites 0\nℹ pass 13\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 1402.230916\n",
+  "snapshot": "/private/tmp/pdos-g0-work-final-veophgq1",
+  "web_manifest": {
+    "pdos-next/web/src/lib/project-work.ts": "ec0e4989fdfd8dc8aae6613b39601b17df5665d4fe3fb2534f50a382f8a42012",
+    "pdos-next/web/src/lib/project-work.test.ts": "b30df5eec1f1d2268038a09afaa2773df7113cb20ad604cf6c2e2e82b315644f",
+    "pdos-next/web/src/components/projects/project-work.tsx": "5be0d387a77c3737832ca2110d356b2ba88210ca30b972939c3d52ec159ad250",
+    "pdos-next/web/src/components/projects/project-work.module.css": "c7d7cea91cf7bafc348aa9fe4df956a5f999671476da4a73b94755fbda6b0d66",
+    "pdos-next/web/src/components/projects/project-work.test.mjs": "21e6e4ad0ee1572c0cbf5744ccb8ca3dc847706dfcaeded613e58352bbb5540e"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "args": [
+    "-m",
+    "pytest",
+    "-q",
+    "-s",
+    "tests/work_management_pg/test_g0_continuation.py"
+  ],
+  "exit": 0,
+  "output": "G0 native: one task/6 versions; risk remains open; private proposal hidden; exact replay/duplicate rejection/late rollback passed\n.\n=============================== warnings summary ===============================\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\n  /private/tmp/pdos-g0-work-repaired-hq876mfy/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated\n    s.flush([row])\n\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\n  /private/tmp/pdos-g0-work-repaired-hq876mfy/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated\n    s.flush([pointer])\n\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\n  /private/tmp/pdos-g0-work-repaired-hq876mfy/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated\n    s.flush([sub])\n\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\n  /private/tmp/pdos-g0-work-repaired-hq876mfy/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated\n    s.flush([decision])\n\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\n  /private/tmp/pdos-g0-work-repaired-hq876mfy/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated\n    s.flush([product])\n\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\n  /private/tmp/pdos-g0-work-repaired-hq876mfy/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated\n    s.flush([subject])\n\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\n  /private/tmp/pdos-g0-work-repaired-hq876mfy/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated\n    s.flush([project])\n\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\ntests/work_management_pg/test_g0_continuation.py::test_g0_native_task_lifecycle_preserves_private_sources_and_open_risk\n  /private/tmp/pdos-g0-work-repaired-hq876mfy/pdos-next/server/pdos_next/domain/work_management/service.py:375: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated\n    s.flush([row])\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n1 passed, 19 warnings in 24.84s\n",
+  "base": "02492016a2d1a77712d44009b9757d3d7213a083",
+  "source_manifest": {
+    "pdos-next/server/pdos_next/domain/work_management/models.py": "cf396ad30d8897e2b6219a5aa9d0bf7eaa62ed94a353e2ae5d070a5f53a61069",
+    "pdos-next/server/pdos_next/domain/work_management/schemas.py": "fb79a14f49dd1b36c3077f2cb39d53ad8250435025c5d5666b4a5d5e0bf31eef",
+    "pdos-next/server/pdos_next/domain/work_management/service.py": "ca4b9f1182bb16881c3ad7309aec2bcb8739a58d55091232ff3947829912e89c",
+    "pdos-next/server/pdos_next/domain/work_management/rules.py": "e157e620a18e871ca60cf2cfa42618bf6e26c75c277d5671e7fadd45f9389d86",
+    "pdos-next/server/pdos_next/domain/work_management/owner.py": "c6c3456ec4b111b1b48ca12795ae50d7289542a334062befeaa071c6394c78cf",
+    "pdos-next/server/pdos_next/domain/work_management/views.py": "1494c249bd54b14e8ae60ffb48cef7f259d1d8b1ffe34c413375dfdc9f11fdbe",
+    "pdos-next/server/pdos_next/domain/work_management/g0_sources.py": "1b108a6fce8d11e1e2ed25511a3edab5de2f06db6b2dcdb11ac1bfd66a42625d",
+    "pdos-next/server/pdos_next/domain/work_management/g0_storage.py": "2849b2c3c475de1717f59a06f23d00536d53ebd4088815b6143f93d23c1aea4c",
+    "pdos-next/server/tests/work_management/test_g0_sources.py": "a3763fe6e3987300661c1c74a660c3b8d967ed3ec9ce6f29cde58e70a855b04f",
+    "pdos-next/server/tests/work_management/test_g0_storage.py": "4882d31366ebbc1b5a4f0e9c7911ca17c43435aef75933bf456fecd4bd17d6fa",
+    "pdos-next/server/tests/work_management/test_g0_service.py": "047d6d5cef60d742c7d516233ba9dbfd8c3f67408d154b4423295b3a2e015136",
+    "pdos-next/server/tests/work_management_pg/test_g0_continuation.py": "a2d95f81bc752c47aab0602965272d4a74c44c93b45676be3a9a848ef3891532",
+    "pdos-next/server/migrations/schema_s0_0795.py": "44c006e2d9ef5be8b4ed7dd9c17be7df7280ab862ee1ce27edd98bb72a091c62",
+    "pdos-next/server/migrations/versions/s0_0795_g0_work.py": "e2267c1e1130430be0583617b2167b491dbf70db611b88546ed6b1015dc3ec9a",
+    "docs/design/2026-10-18-pdos-next-s5-g0-work-contract.md": "b672eae018cf6269beab4519312ee0b975c0a0a02814b1c1129356446b93564f",
+    "pdos-next/web/src/lib/project-work.ts": "ec0e4989fdfd8dc8aae6613b39601b17df5665d4fe3fb2534f50a382f8a42012",
+    "pdos-next/web/src/lib/project-work.test.ts": "b30df5eec1f1d2268038a09afaa2773df7113cb20ad604cf6c2e2e82b315644f",
+    "pdos-next/web/src/components/projects/project-work.tsx": "5be0d387a77c3737832ca2110d356b2ba88210ca30b972939c3d52ec159ad250",
+    "pdos-next/web/src/components/projects/project-work.module.css": "c7d7cea91cf7bafc348aa9fe4df956a5f999671476da4a73b94755fbda6b0d66",
+    "pdos-next/web/src/components/projects/project-work.test.mjs": "21e6e4ad0ee1572c0cbf5744ccb8ca3dc847706dfcaeded613e58352bbb5540e"
+  },
+  "snapshot": "/private/tmp/pdos-g0-work-repaired-hq876mfy",
+  "target": "127.0.0.1:64245/pdos_test",
+  "head": "s0_0795",
+  "model_calls": 0,
+  "performance_acceptance": false
+}

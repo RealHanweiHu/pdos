@@ -1,0 +1,9 @@
+{
+  "metadata": {
+    "work_task_metadata_diff": [],
+    "actual_head": "s0_0795"
+  },
+  "history_downgrade_refused": true,
+  "head_preserved": "s0_0795",
+  "output": "mbic/runtime/environment.py\", line 970, in run_migrations\n    self.get_context().run_migrations(**kw)\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/runtime/migration.py\", line 616, in run_migrations\n    step.migration_fn(**kw)\n  File \"/private/tmp/pdos-g0-work-repaired-hq876mfy/pdos-next/server/migrations/versions/s0_0795_g0_work.py\", line 35, in downgrade\n    raise RuntimeError(\"Native G0 task history exists; downgrade would discard its source\")\nRuntimeError: Native G0 task history exists; downgrade would discard its source\n"
+}

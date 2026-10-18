@@ -1,0 +1,720 @@
+### Browser `pdos-s5-g0-work-20261018` opened with pid 16524.
+### Ran Playwright code
+```js
+await page.goto('about:blank');
+```
+### Page
+- Page URL: about:blank
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T20-22-09-609Z.yml)
+
+### Result
+{"syntheticLoginSet":true}
+### Ran Playwright code
+```js
+await (async page => { await page.context().addCookies([{"name": "pdos-next-session", "value": "[SYNTHETIC_LOGIN_REDACTED]", "domain": "127.0.0.1", "path": "/", "httpOnly": true, "sameSite": "Lax"}]); return { syntheticLoginSet: true }; })(page);
+```
+
+### Ran Playwright code
+```js
+await page.goto('http://127.0.0.1:58572/?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&bench=projects&view=plan&product=7d804d8a-0a15-493a-a761-ce56030f6743&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5');
+```
+### Page
+- Page URL: http://127.0.0.1:58572/?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&bench=projects&view=plan&product=7d804d8a-0a15-493a-a761-ce56030f6743&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5
+- Page Title: PDOS · 研发工作区
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T20-22-10-874Z.yml)
+
+### Page
+- Page URL: http://127.0.0.1:58572/?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&bench=projects&view=plan&product=7d804d8a-0a15-493a-a761-ce56030f6743&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Snapshot
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e4]
+  - generic [ref=e5]:
+    - link "跳到工作内容" [ref=e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e11]: PDOS
+        - button "收起侧栏" [ref=e12]
+      - navigation "工作区导航" [ref=e13]:
+        - link "我的工作" [ref=e14] [cursor=pointer]:
+          - /url: "?area=work&category=e41fadb1-f185-4d24-a78c-4786eb2af99e"
+        - link "项目驾驶舱" [ref=e18] [cursor=pointer]:
+          - /url: "?area=cockpit&category=e41fadb1-f185-4d24-a78c-4786eb2af99e"
+        - link "项目列表" [ref=e22] [cursor=pointer]:
+          - /url: "?area=projects&category=e41fadb1-f185-4d24-a78c-4786eb2af99e"
+        - link "项目集" [ref=e26] [cursor=pointer]:
+          - /url: "?area=programs&category=e41fadb1-f185-4d24-a78c-4786eb2af99e"
+          - generic [ref=e30]: 尚未接入
+        - link "产品品类工作区" [ref=e31] [cursor=pointer]:
+          - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&bench=projects&view=plan&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+        - link "知识" [ref=e35] [cursor=pointer]:
+          - /url: "?area=knowledge&category=e41fadb1-f185-4d24-a78c-4786eb2af99e"
+        - generic [ref=e39]:
+          - paragraph [ref=e40]: 当前品类
+          - paragraph [ref=e41]: 汽车充气泵
+          - paragraph [ref=e42]: 项目与专业工作按品类范围授权
+      - generic [ref=e43]:
+        - link "计划执行进度" [ref=e44] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=e47]: 计划进度
+        - button "小Pai 工作栏" [ref=e48]:
+          - generic [ref=e51]: 小Pai
+        - link "设置" [ref=e52] [cursor=pointer]:
+          - /url: "?area=settings&category=e41fadb1-f185-4d24-a78c-4786eb2af99e"
+        - generic [ref=e56]:
+          - generic [aria-hidden] [ref=e57]: S
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: Synthetic G0 action owner
+            - paragraph [ref=e60]: 本地合成环境
+    - generic [ref=e61]:
+      - banner [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e64]: PDOS
+          - generic [ref=e67]: 产品品类工作区
+          - generic [ref=e70]: 汽车充气泵
+        - generic [ref=e71]:
+          - button "搜索对象" [ref=e72]:
+            - generic [ref=e73]: 搜索
+          - button "小Pai 工作栏" [ref=e74]
+          - button "切换明暗主题" [ref=e75]
+      - main [ref=e76]:
+        - navigation "品类工作台区" [ref=e77]:
+          - link "型号" [ref=e78] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=products&view=overview&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "项目" [ref=e82] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=overview&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "知识" [ref=e86] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=knowledge&view=sources&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "设置" [ref=e90] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=settings&view=preferences&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - button "快速查找入口或型号" [ref=e94] [cursor=pointer]
+          - combobox "当前型号" [ref=e97]:
+            - option "Synthetic product"
+            - option "轻便充气泵" [selected]
+        - navigation "项目视图" [ref=e98]:
+          - link "现在" [ref=e99] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=overview&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "工作与计划" [ref=e103] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=plan&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "试制" [ref=e107] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=builds&task=prepare&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "测试与交接" [ref=e111] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=verification&task=prepare&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "问题与变更" [ref=e115] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=issues&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "评审与交付 尚未接入" [ref=e119] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=reviews&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+            - generic [ref=e122]: 评审与交付
+            - generic "尚未接入" [ref=e123]
+          - link "资料" [ref=e124] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=files&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+        - generic [ref=e128]:
+          - generic [ref=e130]:
+            - heading "工作与计划" [level=1] [ref=e131]
+            - paragraph [ref=e132]: 当前范围：轻便充气泵
+          - generic [ref=e134]:
+            - region "项目与首版计划" [ref=e135]:
+              - generic [ref=e136]:
+                - generic [ref=e137]:
+                  - paragraph [ref=e138]: 固定型号定义，组织真实研发工作
+                  - heading "项目与首版计划" [level=2] [ref=e139]
+                - generic [ref=e140]:
+                  - button "收起编排" [expanded] [ref=e141]
+                  - button "刷新项目" [ref=e142]
+              - paragraph [ref=e143]: 项目由立项提案的 G0 决定生成；在此查看项目并编排首版计划。当前只办理所选项目。
+              - link "返回项目驾驶舱" [ref=e144] [cursor=pointer]:
+                - /url: "?area=cockpit&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5"
+              - generic [ref=e145]:
+                - region "首版计划输入" [ref=e147]:
+                  - heading "准备首版计划候选" [level=3] [ref=e148]
+                  - paragraph [ref=e149]: 本机输入按当前用户、型号及项目保留。读取或刷新项目不会覆盖或删除输入。
+                  - group [ref=e151]:
+                    - generic [ref=e152]:
+                      - text: 研发项目
+                      - combobox "研发项目" [disabled] [ref=e153]:
+                        - option "选择真实项目"
+                        - option "合成研发项目 · 仅查看" [selected]
+                    - generic [ref=e154]:
+                      - paragraph [ref=e155]: 固定定义：轻便充气泵 · v1 · 尚未正式发布
+                      - paragraph [ref=e156]: 范围：合成新品评审
+                      - paragraph [ref=e157]: 当前项目由其他负责人管理，你可以查看已保存计划。
+                    - group [ref=e158]:
+                      - generic [ref=e159]:
+                        - text: 计划起点（UTC）
+                        - textbox "计划起点（UTC）" [disabled] [ref=e160]
+                      - group [ref=e161]:
+                        - generic "声明本次工作日历" [ref=e162] [cursor=pointer]
+                        - generic [ref=e163]:
+                          - paragraph [ref=e164]: 默认工作日及 09–12 / 13–17 时段是可编辑的初始输入，尚未核验为工厂日历。全部时段和休息日期按下方时区解释。同一项目调整日历时，请明确填写新版本。
+                          - generic [ref=e165]:
+                            - text: 工作日历时区（IANA）
+                            - textbox "工作日历时区（IANA）" [disabled] [ref=e166]:
+                              - /placeholder: 例如 Asia/Shanghai
+                              - text: UTC
+                          - generic [ref=e167]:
+                            - text: 日历版本
+                            - textbox "日历版本" [disabled] [ref=e168]: manual-v1
+                          - group "每周工作日" [ref=e169]:
+                            - generic [ref=e171]:
+                              - generic [ref=e172]:
+                                - checkbox "周一" [checked] [disabled] [ref=e173]
+                                - generic [ref=e174]: 周一
+                              - generic [ref=e175]:
+                                - checkbox "周二" [checked] [disabled] [ref=e176]
+                                - generic [ref=e177]: 周二
+                              - generic [ref=e178]:
+                                - checkbox "周三" [checked] [disabled] [ref=e179]
+                                - generic [ref=e180]: 周三
+                              - generic [ref=e181]:
+                                - checkbox "周四" [checked] [disabled] [ref=e182]
+                                - generic [ref=e183]: 周四
+                              - generic [ref=e184]:
+                                - checkbox "周五" [checked] [disabled] [ref=e185]
+                                - generic [ref=e186]: 周五
+                              - generic [ref=e187]:
+                                - checkbox "周六" [disabled] [ref=e188]
+                                - generic [ref=e189]: 周六
+                              - generic [ref=e190]:
+                                - checkbox "周日" [disabled] [ref=e191]
+                                - generic [ref=e192]: 周日
+                          - generic [ref=e193]:
+                            - text: 每日工作时段（每行一段，本地时刻）
+                            - textbox "每日工作时段（每行一段，本地时刻）" [disabled] [ref=e194]:
+                              - /placeholder: "09:00-12:00\n13:00-17:00"
+                              - text: 09:00-12:00 13:00-17:00
+                          - generic [ref=e195]:
+                            - text: 额外休息日期（YYYY-MM-DD，每行一天）
+                            - textbox "额外休息日期（YYYY-MM-DD，每行一天）" [disabled] [ref=e196]:
+                              - /placeholder: 未确认的节假日不会自动补入
+                      - generic [ref=e197]:
+                        - heading "工程 / NPI 任务" [level=4] [ref=e198]
+                        - button "新增任务" [disabled]
+                      - paragraph [ref=e199]: 工时单位为整数分钟。最低、最高工时可分别留空表示未知；未知会传播到依赖任务，不会自动补造估计。无依赖的任务可并行开始。
+                      - article [ref=e201]:
+                        - generic [ref=e202]:
+                          - paragraph [ref=e203]: 任务 1 · task-1
+                          - button "删除任务" [disabled]
+                        - generic [ref=e204]:
+                          - text: 任务标题
+                          - textbox "任务标题" [disabled] [ref=e205]
+                        - generic [ref=e206]:
+                          - text: 工作包
+                          - combobox "工作包" [disabled] [ref=e207]:
+                            - option "工程" [disabled] [selected]
+                            - option "NPI / 制造导入" [disabled]
+                        - generic [ref=e208]:
+                          - generic [ref=e209]:
+                            - text: 最低工时（分钟）
+                            - spinbutton "最低工时（分钟）" [disabled] [ref=e210]
+                          - generic [ref=e211]:
+                            - text: 最高工时（分钟）
+                            - spinbutton "最高工时（分钟）" [disabled] [ref=e212]
+                        - generic [ref=e213]:
+                          - text: 工时估计依据
+                          - textbox "工时估计依据" [disabled] [ref=e214]:
+                            - /placeholder: 填写真实估计来源；填写工时后必填
+                        - group "前置任务（完成后才能开始）" [ref=e215]:
+                          - paragraph [ref=e217]: 暂无其他任务；可新增并明确依赖。
+                      - generic [ref=e218]:
+                        - text: 本次计划候选说明
+                        - textbox "本次计划候选说明" [disabled] [ref=e219]:
+                          - /placeholder: 说明当前计划的范围、估计依据及未确定事项
+                      - button "保存候选并计算预测" [disabled]
+                - region "已保存项目与计划" [ref=e220]:
+                  - heading "已保存项目" [level=3] [ref=e221]
+                  - article [ref=e222]:
+                    - generic [ref=e223]:
+                      - generic [ref=e224]:
+                        - heading "合成研发项目" [level=4] [ref=e225]
+                        - generic [ref=e226]: 仅查看 · 仅本人
+                      - paragraph [ref=e227]: 合成新品评审
+                      - paragraph [ref=e228]: 固定定义 v1 · 轻便充气泵 · 尚未正式发布
+                      - group [ref=e229]:
+                        - generic "查看固定研发范围" [ref=e230] [cursor=pointer]
+                    - generic [ref=e231]:
+                      - generic [ref=e232]:
+                        - term [ref=e233]: 批准基线
+                        - definition [ref=e234]: 尚未批准
+                      - generic [ref=e235]:
+                        - term [ref=e236]: 个人承诺
+                        - definition [ref=e237]: 尚未记录
+                      - generic [ref=e238]:
+                        - term [ref=e239]: 实绩
+                        - definition [ref=e240]: 尚未记录
+                    - paragraph [ref=e241]: 首版计划尚未应用，任务尚未正式建立。
+            - generic [ref=e242]:
+              - generic [ref=e243]:
+                - generic [ref=e244]:
+                  - paragraph [ref=e245]: 本项目的执行与交付
+                  - heading "任务、个人承诺与成果" [level=2] [ref=e246]
+                - button "刷新任务" [ref=e247]
+              - paragraph [ref=e248]: 合成研发项目 · 项目 v1 · 读取时点 2026-10-18T20:22:12.109880+00:00。本人承接只确认责任，不形成日期承诺。
+              - region "G0 决定留下的事项" [ref=e249]:
+                - heading "G0 决定留下的事项" [level=3] [ref=e250]
+                - paragraph [ref=e251]: 原安排期限是 G0 决定中的日期；个人承诺需要另行具名办理。接续只建立任务草稿，成果定义须本人填写。
+                - generic [ref=e252]:
+                  - article [ref=e253]:
+                    - generic [ref=e254]:
+                      - heading "噪声条件待确定" [level=4] [ref=e255]
+                      - generic [ref=e256]: 待办
+                    - paragraph [ref=e257]: 噪声条件待确定
+                    - paragraph [ref=e258]:
+                      - text: 原安排负责人 Synthetic G0 action owner · 原安排期限
+                      - time [ref=e259]: 2026-10-25
+                    - paragraph [ref=e260]: 固定决定 f3fb914e-3b6f-4503-855a-809dc91a11d1
+                    - button "接续任务草稿" [ref=e261]
+                    - group [ref=e262]:
+                      - generic "固定事项与原始来源" [ref=e263] [cursor=pointer]
+                  - article [ref=e264]:
+                    - generic [ref=e265]:
+                      - heading "噪声" [level=4] [ref=e266]
+                      - generic [ref=e267]: 风险
+                    - paragraph [ref=e268]: 噪声
+                    - paragraph [ref=e269]:
+                      - text: 原安排负责人 Synthetic G0 action owner · 原安排期限
+                      - time [ref=e270]: 2026-10-25
+                    - paragraph [ref=e271]: 固定决定 f3fb914e-3b6f-4503-855a-809dc91a11d1
+                    - paragraph [ref=e272]: 已接续任务 · v6 · 成果已验收
+                    - button "选中关联任务" [ref=e273]
+                    - paragraph [ref=e274]: 风险待独立处置；关联任务成果验收不代表风险关闭或规格满足。
+                    - group [ref=e275]:
+                      - generic "固定事项与原始来源" [ref=e276] [cursor=pointer]
+              - region "当前项目任务" [ref=e277]:
+                - generic [ref=e278]:
+                  - heading "当前任务" [level=3] [ref=e279]
+                  - generic [ref=e280]:
+                    - button "新建任务" [ref=e281]
+                    - button "写具名周报" [ref=e282]
+                - article [ref=e284]:
+                  - generic [ref=e285]:
+                    - heading "Investigate the carried G0 risk" [level=4] [ref=e286]
+                    - generic [ref=e287]: 成果已验收 · v6
+                  - paragraph [ref=e288]: 噪声
+                  - paragraph [ref=e289]: 接续 G0 事项 8fa45ac1-624b-4b91-bfc0-78e8d6f5766e · 固定决定 f3fb914e-3b6f-4503-855a-809dc91a11d1
+                  - paragraph [ref=e290]: 负责人 Synthetic owner · 执行人 Synthetic G0 action owner · 成果接收人 Synthetic owner
+                  - list [ref=e291]:
+                    - listitem [ref=e292]: Named investigation evidence（必需）
+                  - generic [ref=e293]:
+                    - generic [ref=e294]:
+                      - term [ref=e295]: 批准基线
+                      - definition [ref=e296]: 本视图未提供
+                    - generic [ref=e297]:
+                      - term [ref=e298]: 预测
+                      - definition [ref=e299]: 未知，未由承诺推算
+                    - generic [ref=e300]:
+                      - term [ref=e301]: 实际开始
+                      - definition [ref=e302]: 2026-10-18T20:19:27.494014+00:00 · Asia/Shanghai
+                    - generic [ref=e303]:
+                      - term [ref=e304]: 关联计划任务
+                      - definition [ref=e305]: 尚未关联
+                  - generic [ref=e306]:
+                    - strong [ref=e307]: 已提交成果 · 2026-10-18T20:19:38.681847+00:00
+                    - paragraph [ref=e308]: finding：Synthetic independent investigation result; the original risk needs its own disposition. · 已提供
+                  - paragraph [ref=e309]:
+                    - text: 具名验收：已接收 · Synthetic owner · 2026-10-18T20:19:49.778798+00:00
+                    - generic [ref=e310]: finding：accepted · Received the actual investigation result
+                  - group [ref=e311]:
+                    - generic "固定任务身份与办理历史" [ref=e312] [cursor=pointer]
+              - region "任务办理表单" [ref=e313]:
+                - heading "新建人工任务" [level=3] [ref=e314]
+                - group [ref=e315]:
+                  - generic [ref=e316]:
+                    - text: 任务标题
+                    - textbox "任务标题" [ref=e317]
+                  - generic [ref=e318]:
+                    - text: 任务目标
+                    - textbox "任务目标" [ref=e319]
+                  - generic [ref=e320]:
+                    - heading "成果定义" [level=4] [ref=e321]
+                    - generic [ref=e322]:
+                      - textbox "成果 1 标识" [ref=e323]: outcome-1
+                      - textbox "成果 1 说明" [ref=e324]
+                      - generic [ref=e325]:
+                        - checkbox "必需" [checked] [ref=e326]
+                        - text: 必需
+                    - button "添加成果定义" [ref=e327]
+                  - group [ref=e328]:
+                    - generic "高级：成果定义与计划任务引用" [ref=e329] [cursor=pointer]
+                  - generic [ref=e330]:
+                    - text: 办理理由
+                    - textbox "办理理由" [ref=e331]
+                  - group [ref=e332]:
+                    - generic "实际来源引用（高级 JSON，必填）" [ref=e333] [cursor=pointer]
+                  - button "保存人工任务草稿" [ref=e334]
+              - region "承诺履行核对" [ref=e335]:
+                - generic [ref=e336]:
+                  - generic [ref=e337]:
+                    - paragraph [ref=e338]: 个人承诺 · 接收者逐条核对
+                    - heading "承诺履行" [level=2] [ref=e339]
+                  - button "刷新履行记录" [ref=e340]
+                - paragraph [ref=e341]: 任务验收与承诺履行分开。每位承诺接收者核对自己的成果范围；任务已验收或日期已过都不代表承诺已履行。
+                - paragraph [ref=e342]: 合成研发项目 · 读取于 2026-10-18T20:22:12.286327+00:00
+                - paragraph [ref=e343]: 尚无可读承诺记录。
+              - region "具名周报历史" [ref=e344]:
+                - heading "已保存的具名周报" [level=3] [ref=e345]
+                - paragraph [ref=e346]: 尚无可读周报记录。
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T20-22-10-713Z.log#L1
+
+### Error
+Error: route.fulfill: Route is already handled!
+
+route.fulfill: Route is already handled!
+    at handler (evalmachine.<anonymous>:11:375)
+
+### Page
+- Page URL: http://127.0.0.1:58572/?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&bench=projects&view=plan&product=7d804d8a-0a15-493a-a761-ce56030f6743&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5
+- Page Title: PDOS · 研发工作区
+### Snapshot
+```yaml
+- generic [ref=f1e1]:
+  - alert [ref=f1e2]
+  - generic [ref=f1e3]:
+    - link "跳到工作内容" [ref=f1e4] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - generic [ref=f1e5]:
+      - banner [ref=f1e6]:
+        - button "打开导航" [ref=f1e7]
+        - generic [ref=f1e8]: PDOS
+        - generic [ref=f1e10]:
+          - button "搜索对象" [ref=f1e11]
+          - button "小Pai 工作栏" [ref=f1e12]
+          - button "切换明暗主题" [active] [ref=f1e13]
+      - main [ref=f1e14]:
+        - navigation "品类工作台区" [ref=f1e15]:
+          - link "型号" [ref=f1e16] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=products&view=overview&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "项目" [ref=f1e20] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=overview&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "知识" [ref=f1e24] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=knowledge&view=sources&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "设置" [ref=f1e28] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=settings&view=preferences&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - button "快速查找入口或型号" [ref=f1e32] [cursor=pointer]
+          - combobox "当前型号" [ref=f1e35]:
+            - option "Synthetic product"
+            - option "轻便充气泵" [selected]
+        - navigation "项目视图" [ref=f1e36]:
+          - link "现在" [ref=f1e37] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=overview&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "工作与计划" [ref=f1e41] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=plan&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "试制" [ref=f1e45] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=builds&task=prepare&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "测试与交接" [ref=f1e49] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=verification&task=prepare&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "问题与变更" [ref=f1e53] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=issues&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+          - link "评审与交付 尚未接入" [ref=f1e57] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=reviews&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+            - generic [ref=f1e60]: 评审与交付
+            - generic "尚未接入" [ref=f1e61]
+          - link "资料" [ref=f1e62] [cursor=pointer]:
+            - /url: "?area=category&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5&bench=projects&view=files&product=7d804d8a-0a15-493a-a761-ce56030f6743"
+        - generic [ref=f1e66]:
+          - generic [ref=f1e68]:
+            - heading "工作与计划" [level=1] [ref=f1e69]
+            - paragraph [ref=f1e70]: 当前范围：轻便充气泵
+          - generic [ref=f1e72]:
+            - region "项目与首版计划" [ref=f1e73]:
+              - generic [ref=f1e74]:
+                - generic [ref=f1e75]:
+                  - paragraph [ref=f1e76]: 固定型号定义，组织真实研发工作
+                  - heading "项目与首版计划" [level=2] [ref=f1e77]
+                - generic [ref=f1e78]:
+                  - button "收起编排" [expanded] [ref=f1e79]
+                  - button "刷新项目" [ref=f1e80]
+              - paragraph [ref=f1e81]: 项目由立项提案的 G0 决定生成；在此查看项目并编排首版计划。当前只办理所选项目。
+              - link "返回项目驾驶舱" [ref=f1e82] [cursor=pointer]:
+                - /url: "?area=cockpit&category=e41fadb1-f185-4d24-a78c-4786eb2af99e&project=ca7cb86d-00ac-4c34-86c7-bd160cb7e6e5"
+              - generic [ref=f1e83]:
+                - region "首版计划输入" [ref=f1e85]:
+                  - heading "准备首版计划候选" [level=3] [ref=f1e86]
+                  - paragraph [ref=f1e87]: 本机输入按当前用户、型号及项目保留。读取或刷新项目不会覆盖或删除输入。
+                  - group [ref=f1e89]:
+                    - generic [ref=f1e90]:
+                      - text: 研发项目
+                      - combobox "研发项目" [disabled] [ref=f1e91]:
+                        - option "选择真实项目"
+                        - option "合成研发项目 · 仅查看" [selected]
+                    - generic [ref=f1e92]:
+                      - paragraph [ref=f1e93]: 固定定义：轻便充气泵 · v1 · 尚未正式发布
+                      - paragraph [ref=f1e94]: 范围：合成新品评审
+                      - paragraph [ref=f1e95]: 当前项目由其他负责人管理，你可以查看已保存计划。
+                    - group [ref=f1e96]:
+                      - generic [ref=f1e97]:
+                        - text: 计划起点（UTC）
+                        - textbox "计划起点（UTC）" [disabled] [ref=f1e98]
+                      - group [ref=f1e99]:
+                        - generic "声明本次工作日历" [ref=f1e100] [cursor=pointer]
+                        - generic [ref=f1e101]:
+                          - paragraph [ref=f1e102]: 默认工作日及 09–12 / 13–17 时段是可编辑的初始输入，尚未核验为工厂日历。全部时段和休息日期按下方时区解释。同一项目调整日历时，请明确填写新版本。
+                          - generic [ref=f1e103]:
+                            - text: 工作日历时区（IANA）
+                            - textbox "工作日历时区（IANA）" [disabled] [ref=f1e104]:
+                              - /placeholder: 例如 Asia/Shanghai
+                              - text: UTC
+                          - generic [ref=f1e105]:
+                            - text: 日历版本
+                            - textbox "日历版本" [disabled] [ref=f1e106]: manual-v1
+                          - group "每周工作日" [ref=f1e107]:
+                            - generic [ref=f1e109]:
+                              - generic [ref=f1e110]:
+                                - checkbox "周一" [checked] [disabled] [ref=f1e111]
+                                - generic [ref=f1e112]: 周一
+                              - generic [ref=f1e113]:
+                                - checkbox "周二" [checked] [disabled] [ref=f1e114]
+                                - generic [ref=f1e115]: 周二
+                              - generic [ref=f1e116]:
+                                - checkbox "周三" [checked] [disabled] [ref=f1e117]
+                                - generic [ref=f1e118]: 周三
+                              - generic [ref=f1e119]:
+                                - checkbox "周四" [checked] [disabled] [ref=f1e120]
+                                - generic [ref=f1e121]: 周四
+                              - generic [ref=f1e122]:
+                                - checkbox "周五" [checked] [disabled] [ref=f1e123]
+                                - generic [ref=f1e124]: 周五
+                              - generic [ref=f1e125]:
+                                - checkbox "周六" [disabled] [ref=f1e126]
+                                - generic [ref=f1e127]: 周六
+                              - generic [ref=f1e128]:
+                                - checkbox "周日" [disabled] [ref=f1e129]
+                                - generic [ref=f1e130]: 周日
+                          - generic [ref=f1e131]:
+                            - text: 每日工作时段（每行一段，本地时刻）
+                            - textbox "每日工作时段（每行一段，本地时刻）" [disabled] [ref=f1e132]:
+                              - /placeholder: "09:00-12:00\n13:00-17:00"
+                              - text: 09:00-12:00 13:00-17:00
+                          - generic [ref=f1e133]:
+                            - text: 额外休息日期（YYYY-MM-DD，每行一天）
+                            - textbox "额外休息日期（YYYY-MM-DD，每行一天）" [disabled] [ref=f1e134]:
+                              - /placeholder: 未确认的节假日不会自动补入
+                      - generic [ref=f1e135]:
+                        - heading "工程 / NPI 任务" [level=4] [ref=f1e136]
+                        - button "新增任务" [disabled]
+                      - paragraph [ref=f1e137]: 工时单位为整数分钟。最低、最高工时可分别留空表示未知；未知会传播到依赖任务，不会自动补造估计。无依赖的任务可并行开始。
+                      - article [ref=f1e139]:
+                        - generic [ref=f1e140]:
+                          - paragraph [ref=f1e141]: 任务 1 · task-1
+                          - button "删除任务" [disabled]
+                        - generic [ref=f1e142]:
+                          - text: 任务标题
+                          - textbox "任务标题" [disabled] [ref=f1e143]
+                        - generic [ref=f1e144]:
+                          - text: 工作包
+                          - combobox "工作包" [disabled] [ref=f1e145]:
+                            - option "工程" [disabled] [selected]
+                            - option "NPI / 制造导入" [disabled]
+                        - generic [ref=f1e146]:
+                          - generic [ref=f1e147]:
+                            - text: 最低工时（分钟）
+                            - spinbutton "最低工时（分钟）" [disabled] [ref=f1e148]
+                          - generic [ref=f1e149]:
+                            - text: 最高工时（分钟）
+                            - spinbutton "最高工时（分钟）" [disabled] [ref=f1e150]
+                        - generic [ref=f1e151]:
+                          - text: 工时估计依据
+                          - textbox "工时估计依据" [disabled] [ref=f1e152]:
+                            - /placeholder: 填写真实估计来源；填写工时后必填
+                        - group "前置任务（完成后才能开始）" [ref=f1e153]:
+                          - paragraph [ref=f1e155]: 暂无其他任务；可新增并明确依赖。
+                      - generic [ref=f1e156]:
+                        - text: 本次计划候选说明
+                        - textbox "本次计划候选说明" [disabled] [ref=f1e157]:
+                          - /placeholder: 说明当前计划的范围、估计依据及未确定事项
+                      - button "保存候选并计算预测" [disabled]
+                - region "已保存项目与计划" [ref=f1e158]:
+                  - heading "已保存项目" [level=3] [ref=f1e159]
+                  - article [ref=f1e160]:
+                    - generic [ref=f1e161]:
+                      - generic [ref=f1e162]:
+                        - heading "合成研发项目" [level=4] [ref=f1e163]
+                        - generic [ref=f1e164]: 仅查看 · 仅本人
+                      - paragraph [ref=f1e165]: 合成新品评审
+                      - paragraph [ref=f1e166]: 固定定义 v1 · 轻便充气泵 · 尚未正式发布
+                      - group [ref=f1e167]:
+                        - generic "查看固定研发范围" [ref=f1e168] [cursor=pointer]
+                    - generic [ref=f1e169]:
+                      - generic [ref=f1e170]:
+                        - term [ref=f1e171]: 批准基线
+                        - definition [ref=f1e172]: 尚未批准
+                      - generic [ref=f1e173]:
+                        - term [ref=f1e174]: 个人承诺
+                        - definition [ref=f1e175]: 尚未记录
+                      - generic [ref=f1e176]:
+                        - term [ref=f1e177]: 实绩
+                        - definition [ref=f1e178]: 尚未记录
+                    - paragraph [ref=f1e179]: 首版计划尚未应用，任务尚未正式建立。
+            - generic [ref=f1e180]:
+              - generic [ref=f1e181]:
+                - generic [ref=f1e182]:
+                  - paragraph [ref=f1e183]: 本项目的执行与交付
+                  - heading "任务、个人承诺与成果" [level=2] [ref=f1e184]
+                - button "刷新任务" [ref=f1e185]
+              - status [ref=f1e186]: 已取得真实保存回执，正在读回当前任务。状态更新只保存本条周报。
+              - paragraph [ref=f1e187]: 合成研发项目 · 项目 v1 · 读取时点 2026-10-18T20:22:59.366726+00:00。本人承接只确认责任，不形成日期承诺。
+              - region "G0 决定留下的事项" [ref=f1e188]:
+                - heading "G0 决定留下的事项" [level=3] [ref=f1e189]
+                - paragraph [ref=f1e190]: 原安排期限是 G0 决定中的日期；个人承诺需要另行具名办理。接续只建立任务草稿，成果定义须本人填写。
+                - generic [ref=f1e191]:
+                  - article [ref=f1e192]:
+                    - generic [ref=f1e193]:
+                      - heading "噪声条件待确定" [level=4] [ref=f1e194]
+                      - generic [ref=f1e195]: 待办
+                    - paragraph [ref=f1e196]: 噪声条件待确定
+                    - paragraph [ref=f1e197]:
+                      - text: 原安排负责人 Synthetic G0 action owner · 原安排期限
+                      - time [ref=f1e198]: 2026-10-25
+                    - paragraph [ref=f1e199]: 固定决定 f3fb914e-3b6f-4503-855a-809dc91a11d1
+                    - paragraph [ref=f1e200]: 已接续任务 · v1 · 待分派
+                    - button "选中关联任务" [ref=f1e201]
+                    - group [ref=f1e202]:
+                      - generic "固定事项与原始来源" [ref=f1e203] [cursor=pointer]
+                  - article [ref=f1e204]:
+                    - generic [ref=f1e205]:
+                      - heading "噪声" [level=4] [ref=f1e206]
+                      - generic [ref=f1e207]: 风险
+                    - paragraph [ref=f1e208]: 噪声
+                    - paragraph [ref=f1e209]:
+                      - text: 原安排负责人 Synthetic G0 action owner · 原安排期限
+                      - time [ref=f1e210]: 2026-10-25
+                    - paragraph [ref=f1e211]: 固定决定 f3fb914e-3b6f-4503-855a-809dc91a11d1
+                    - paragraph [ref=f1e212]: 已接续任务 · v6 · 成果已验收
+                    - button "选中关联任务" [ref=f1e213]
+                    - paragraph [ref=f1e214]: 风险待独立处置；关联任务成果验收不代表风险关闭或规格满足。
+                    - group [ref=f1e215]:
+                      - generic "固定事项与原始来源" [ref=f1e216] [cursor=pointer]
+              - region "当前项目任务" [ref=f1e217]:
+                - generic [ref=f1e218]:
+                  - heading "当前任务" [level=3] [ref=f1e219]
+                  - generic [ref=f1e220]:
+                    - button "新建任务" [ref=f1e221]
+                    - button "写具名周报" [ref=f1e222]
+                - generic [ref=f1e223]:
+                  - article [ref=f1e224]:
+                    - generic [ref=f1e225]:
+                      - heading "Investigate the carried G0 risk" [level=4] [ref=f1e226]
+                      - generic [ref=f1e227]: 成果已验收 · v6
+                    - paragraph [ref=f1e228]: 噪声
+                    - paragraph [ref=f1e229]: 接续 G0 事项 8fa45ac1-624b-4b91-bfc0-78e8d6f5766e · 固定决定 f3fb914e-3b6f-4503-855a-809dc91a11d1
+                    - paragraph [ref=f1e230]: 负责人 Synthetic owner · 执行人 Synthetic G0 action owner · 成果接收人 Synthetic owner
+                    - list [ref=f1e231]:
+                      - listitem [ref=f1e232]: Named investigation evidence（必需）
+                    - generic [ref=f1e233]:
+                      - generic [ref=f1e234]:
+                        - term [ref=f1e235]: 批准基线
+                        - definition [ref=f1e236]: 本视图未提供
+                      - generic [ref=f1e237]:
+                        - term [ref=f1e238]: 预测
+                        - definition [ref=f1e239]: 未知，未由承诺推算
+                      - generic [ref=f1e240]:
+                        - term [ref=f1e241]: 实际开始
+                        - definition [ref=f1e242]: 2026-10-18T20:19:27.494014+00:00 · Asia/Shanghai
+                      - generic [ref=f1e243]:
+                        - term [ref=f1e244]: 关联计划任务
+                        - definition [ref=f1e245]: 尚未关联
+                    - generic [ref=f1e246]:
+                      - strong [ref=f1e247]: 已提交成果 · 2026-10-18T20:19:38.681847+00:00
+                      - paragraph [ref=f1e248]: finding：Synthetic independent investigation result; the original risk needs its own disposition. · 已提供
+                    - paragraph [ref=f1e249]:
+                      - text: 具名验收：已接收 · Synthetic owner · 2026-10-18T20:19:49.778798+00:00
+                      - generic [ref=f1e250]: finding：accepted · Received the actual investigation result
+                    - group [ref=f1e251]:
+                      - generic "固定任务身份与办理历史" [ref=f1e252] [cursor=pointer]
+                  - article [ref=f1e253]:
+                    - generic [ref=f1e254]:
+                      - heading "合成 G0 接续任务：确认原问题处置" [level=4] [ref=f1e255]
+                      - generic [ref=f1e256]: 待分派 · v1
+                    - paragraph [ref=f1e257]: 噪声条件待确定
+                    - paragraph [ref=f1e258]: 接续 G0 事项 8cc7df1d-5987-4c9e-a008-4eb0662815ae · 固定决定 f3fb914e-3b6f-4503-855a-809dc91a11d1
+                    - paragraph [ref=f1e259]: 负责人 Synthetic owner · 执行人 尚未指定 · 成果接收人 尚未指定
+                    - list [ref=f1e260]:
+                      - listitem [ref=f1e261]: 具名处理说明及实际来源（必需）
+                    - generic [ref=f1e262]:
+                      - generic [ref=f1e263]:
+                        - term [ref=f1e264]: 批准基线
+                        - definition [ref=f1e265]: 本视图未提供
+                      - generic [ref=f1e266]:
+                        - term [ref=f1e267]: 预测
+                        - definition [ref=f1e268]: 未知，未由承诺推算
+                      - generic [ref=f1e269]:
+                        - term [ref=f1e270]: 实际开始
+                        - definition [ref=f1e271]: 尚未登记
+                      - generic [ref=f1e272]:
+                        - term [ref=f1e273]: 关联计划任务
+                        - definition [ref=f1e274]: 尚未关联
+                    - group [ref=f1e275]:
+                      - generic "固定任务身份与办理历史" [ref=f1e276] [cursor=pointer]
+              - region "任务办理表单" [ref=f1e277]:
+                - heading "分派任务 · 合成 G0 接续任务：确认原问题处置 v1" [level=3] [ref=f1e278]
+                - group [ref=f1e279]:
+                  - generic [ref=f1e280]:
+                    - text: 任务执行人
+                    - combobox "任务执行人" [disabled] [ref=f1e281]:
+                      - option "请选择执行人" [disabled] [selected]
+                      - option "Synthetic G0 action owner" [disabled]
+                      - option "Synthetic owner" [disabled]
+                  - generic [ref=f1e282]:
+                    - text: 成果 / 承诺接收人
+                    - combobox "成果 / 承诺接收人" [disabled] [ref=f1e283]:
+                      - option "请选择接收人" [disabled] [selected]
+                      - option "Synthetic G0 action owner" [disabled]
+                      - option "Synthetic owner" [disabled]
+                      - option "Synthetic peer" [disabled]
+                      - option "合成工程专家" [disabled]
+                  - generic [ref=f1e284]:
+                    - text: 办理理由
+                    - textbox "办理理由" [disabled] [ref=f1e285]
+                  - group [ref=f1e286]:
+                    - generic "实际来源引用（高级 JSON，G0 固定事项可留空）" [ref=f1e287] [cursor=pointer]
+                  - button "核对此次办理材料" [disabled]
+                - paragraph [ref=f1e288]: 当前任务状态或本人角色不允许此动作，请从任务卡片选择可办理项。
+              - region "承诺履行核对" [ref=f1e289]:
+                - generic [ref=f1e290]:
+                  - generic [ref=f1e291]:
+                    - paragraph [ref=f1e292]: 个人承诺 · 接收者逐条核对
+                    - heading "承诺履行" [level=2] [ref=f1e293]
+                  - button "刷新履行记录" [ref=f1e294]
+                - paragraph [ref=f1e295]: 任务验收与承诺履行分开。每位承诺接收者核对自己的成果范围；任务已验收或日期已过都不代表承诺已履行。
+                - paragraph [ref=f1e296]: 合成研发项目 · 读取于 2026-10-18T20:22:59.425606+00:00
+                - paragraph [ref=f1e297]: 尚无可读承诺记录。
+              - region "具名周报历史" [ref=f1e298]:
+                - heading "已保存的具名周报" [level=3] [ref=f1e299]
+                - paragraph [ref=f1e300]: 尚无可读周报记录。
+```
+
+### Result
+{"actual_task_id":"8e1e3937-0e6d-41c8-9637-bf81f9044c3f","original_command_id":"not collected from aborted harness; reconcile through one actual retained fact","receipt_id":"1906853b-0018-4bd2-848a-3e6bcc00dcdd","one_create_version":true,"actual_native_item_id":"8cc7df1d-5987-4c9e-a008-4eb0662815ae","actual_fixed_decision_id":"f3fb914e-3b6f-4503-855a-809dc91a11d1","task_state":"proposed","assignee_id":null,"recipient_id":null,"pending_at_followup":null,"final_reload_POSTs":[],"no_duplicate_create_CTA":true,"risk_still_independent":true,"light":{"width":1440,"overflow":false},"dark":{"width":320,"overflow":false},"initial_503_injection_not_claimed":true}
+### Ran Playwright code
+```js
+await (async page => {
+ await page.unroute(/\/api\/v1\/categories\/.*\/commands$/);
+ const writes=[];const listener=req=>{if(req.url().includes('/api/')&&req.method()!=='GET')writes.push({method:req.method(),path:new URL(req.url()).pathname});};page.on('request',listener);
+ const state=await page.evaluate(()=>{const keys=Object.keys(localStorage).filter(k=>k.startsWith('pdos.project-work.v1:'));if(keys.length!==1)throw new Error('Expected the one isolated project draft');const v=JSON.parse(localStorage.getItem(keys[0]));return {pending:v.pending,receipt:v.receipt,completed:v.completed?{command_id:v.completed.command_id,operation:v.completed.operation,g0_open_item:v.completed.payload.g0_open_item}:null};});
+ // The prior pass already explicitly recovered the unknown save, then selected
+ // its linked task. That selection clears its success receipt, so read the
+ // persisted business identity from the actual API below, not a guessed state.
+ const g0=()=>page.getByRole('region',{name:'G0 决定留下的事项',exact:true});
+ await page.reload({waitUntil:'domcontentloaded'});await g0().getByText('已接续任务 · v1 · 待分派',{exact:true}).waitFor({timeout:60000});
+ if(writes.length)throw new Error('Reload submitted a business command');
+ const text=await g0().innerText();if(!text.includes('成果已验收')||!text.includes('风险待独立处置'))throw new Error('Risk closure was inferred');
+ if(await g0().getByRole('button',{name:'接续任务草稿',exact:true}).count())throw new Error('Linked source offers duplicate creation');
+ const data=await page.request.get(new URL('/api/v1/categories/'+new URL(page.url()).searchParams.get('category')+'/products/'+new URL(page.url()).searchParams.get('product')+'/project-work?project_id='+new URL(page.url()).searchParams.get('project'),page.url()).href);if(data.status()!==200)throw new Error('Actual view unavailable');const view=await data.json();
+ const created=view.tasks.find(x=>x.title==='合成 G0 接续任务：确认原问题处置');if(!created||created.state!=='proposed'||created.assignee_id!==null||created.recipient_id!==null||created.history.length!==1)throw new Error('Draft created acceptance or duplicate versions');
+ const item=view.g0_open_items.find(x=>x.id===created.g0_open_item.id);if(!item||item.task.id!==created.id||item.task.revision!==1)throw new Error('Native source link differs');
+ await page.setViewportSize({width:1440,height:1000});if(await page.locator('html').evaluate(el=>el.classList.contains('dark')))await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();await page.waitForFunction(()=>!document.documentElement.classList.contains('dark'));await g0().screenshot({path:'/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-s5-g0-work-20261018/light-1440.png'});const lightOverflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);if(lightOverflow)throw new Error('Desktop overflow');
+ await page.setViewportSize({width:320,height:950});if(!(await page.locator('html').evaluate(el=>el.classList.contains('dark'))))await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();await page.waitForFunction(()=>document.documentElement.classList.contains('dark'));await g0().screenshot({path:'/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-s5-g0-work-20261018/dark-320.png'});const darkOverflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);if(darkOverflow)throw new Error('Mobile overflow');
+ page.off('request',listener);return {actual_task_id:created.id,original_command_id:'not collected from aborted harness; reconcile through one actual retained fact',receipt_id:created.history[0].receipt_id,one_create_version:true,actual_native_item_id:item.id,actual_fixed_decision_id:item.decision_id,task_state:created.state,assignee_id:created.assignee_id,recipient_id:created.recipient_id,pending_at_followup:state.pending,final_reload_POSTs:writes,no_duplicate_create_CTA:true,risk_still_independent:true,light:{width:1440,overflow:lightOverflow},dark:{width:320,overflow:darkOverflow},initial_503_injection_not_claimed:true};
+}
+)(page);
+```
+
+Browser 'pdos-s5-g0-work-20261018' closed
+
+

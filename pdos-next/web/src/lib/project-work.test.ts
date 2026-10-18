@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { blankWorkLocal, newWorkCommand, parseProjectWork, parseWorkPayload, restoreWorkLocal, runProjectWorkRequest, taskActions, workPrepared, workSemantic, workStorageKey, type ProjectWorkApi, type WorkCommand, type WorkOperation, type WorkPayload, type WorkPending, type WorkScope, type WorkTask } from "./project-work";
+import { blankWorkLocal, newWorkCommand, parseProjectWork, parseWorkPayload, restoreWorkLocal, runProjectWorkRequest, taskActions, validWorkCommand, workPrepared, workSemantic, workStorageKey, type ProjectWorkApi, type WorkCommand, type WorkOperation, type WorkPayload, type WorkPending, type WorkScope, type WorkTask } from "./project-work";
 
 // Transport substitutes establish no actual task, qualification or database fact.
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
@@ -25,3 +25,41 @@ test("disposing a scope after inputs prevents the later preview", async () => { 
 test("restoration is a pure read and binds principal, category, product and project", () => { const local = blankWorkLocal(scope), c = preview(command()).command; local.pending = { stage: "execute", command: c }; assert.deepEqual(restoreWorkLocal(local, scope), local); for (const field of ["principalId", "categoryId", "productId", "projectId"] as const) { const other = { ...scope, [field]: id(99) }; assert.equal(restoreWorkLocal(local, other), null); assert.notEqual(workStorageKey(scope), workStorageKey(other)); } });
 test("task permissions keep assigner, assignee and recipient actions distinct", () => { const t = { id: id(6), state: "assigned", assignee_id: id(4), recipient_id: id(7), owner_id: id(8) } as WorkTask; assert.deepEqual(taskActions(t, id(4), id(9)), ["work.task.accept"]); assert.deepEqual(taskActions(t, id(7), id(9)), []); assert.deepEqual(taskActions(t, id(8), id(9)), ["work.task.assign"]); assert.deepEqual(taskActions({ ...t, state: "submitted" }, id(7), id(9)), ["work.task.review"]); assert.deepEqual(taskActions({ ...t, state: "completed" }, id(4), id(9)), []); });
 test("reading failure or partial shape never becomes an empty success", () => { const view = { project: { id: scope.projectId, revision: 1, name: "实际项目", owner_id: id(4), visibility: "category" }, product_revision: 3, members: [], tasks: [], commitments: [], updates: [], as_of: at }; assert.equal(parseProjectWork(view, scope).tasks.length, 0); assert.throws(() => parseProjectWork({ ...view, commitments: undefined }, scope)); assert.throws(() => parseProjectWork(view, { ...scope, projectId: id(99) })); });
+
+const g0 = { id: id(90), decision_id: id(91) };
+test("a G0 task draft binds its fixed item and decision with an empty artifact read set", async () => {
+  const c = newWorkCommand(scope, 3, "work.task.create", { ...payload("work.task.create"), sources: [], g0_open_item: g0 });
+  assert.deepEqual(c.source_read_set, []); assert.deepEqual(c.payload.g0_open_item, g0); assert.ok(validWorkCommand(c, scope));
+  const routes: string[] = [];
+  const saved = await runProjectWorkRequest(async <T>(route: string) => { routes.push(route); return (route.endsWith("/inputs") ? inputs(c) : { id: id(92), operation: c.operation, subject_id: id(93), subject_revision: 1, subject_type: "task" }) as T; }, { stage: "inputs", command: c }, scope, () => {}, () => true);
+  assert.equal(saved?.stage, "saved"); assert.equal(routes.length, 2); assert.equal(routes.some(route => route.endsWith("/preview")), false);
+  for (const value of [null, { id: g0.id }, { ...g0, approved: true }]) assert.throws(() => newWorkCommand(scope, 3, "work.task.create", { ...payload("work.task.create"), sources: [], g0_open_item: value }));
+  assert.deepEqual(workSemantic("work.task.create", payload("work.task.create")), workSemantic("work.task.create", { ...payload("work.task.create"), g0_open_item: null }));
+});
+test("only the current actual G0 task permits new task commands without artifact sources", () => {
+  const actualTask = { id: id(6), revision: 2, g0_open_item: g0 } as WorkTask;
+  for (const operation of ["work.task.assign", "work.task.accept", "work.task.start", "work.task.submit", "work.task.review"] as WorkOperation[]) {
+    const body: WorkPayload = { ...payload(operation), sources: [] };
+    if (operation === "work.task.submit") body.results = [{ key: "report", text: "尚缺", status: "missing", sources: [] }];
+    assert.doesNotThrow(() => newWorkCommand(scope, 3, operation, body, actualTask));
+    assert.throws(() => newWorkCommand(scope, 3, operation, body));
+    assert.throws(() => newWorkCommand(scope, 3, operation, body, { ...actualTask, revision: 3 }));
+    assert.throws(() => newWorkCommand(scope, 3, operation, body, { ...actualTask, g0_open_item: null }));
+  }
+  for (const operation of ["work.commitment.accept", "work.status_update.create"] as WorkOperation[]) assert.throws(() => newWorkCommand(scope, 3, operation, { ...payload(operation), sources: [] }, actualTask));
+  assert.throws(() => newWorkCommand(scope, 3, "work.task.submit", { ...payload("work.task.submit"), sources: [], results: [{ key: "report", text: "报告已提供", status: "present", sources: [] }] }, actualTask));
+});
+test("empty-source G0 request restoration is structural and exact unknown-save replay keeps old revision and key", async () => {
+  const actualTask = { id: id(6), revision: 2, g0_open_item: g0 } as WorkTask, original = preview(newWorkCommand(scope, 3, "work.task.accept", { ...payload("work.task.accept"), sources: [] }, actualTask)).command;
+  const local = blankWorkLocal(scope); local.taskId = actualTask.id; local.draft = { g0OpenItem: JSON.stringify(g0) }; local.pending = { stage: "execute", command: original };
+  const restored = restoreWorkLocal(local, scope); assert.deepEqual(restored, local); const calls: unknown[] = [];
+  await runProjectWorkRequest(async <T>(_route: string, body?: unknown) => { calls.push(body); return { id: id(92), operation: original.operation, subject_id: actualTask.id, subject_revision: 3, subject_type: "task" } as T; }, restored!.pending!, scope, () => assert.fail(), () => true);
+  assert.deepEqual(calls, [original]); assert.deepEqual((original.payload as WorkPayload).task, { id: actualTask.id, revision: 2 });
+  const artifact = command(); artifact.source_read_set = []; assert.equal(validWorkCommand(artifact, scope), false);
+});
+test("G0 project reads validate fixed decisions, date-only deadlines and task links without closing risk", () => {
+  const view = { project: { id: scope.projectId, revision: 1, name: "实际项目", owner_id: id(4), visibility: "category" }, product_revision: 3, members: [], tasks: [], commitments: [], updates: [], as_of: at, g0_open_items: [{ ...g0, kind: "risk", title: "保留风险", note: "待独立处置", owner_id: id(4), due_date: "2030-10-20", source: { kind: "question", id: id(94) }, task: { id: id(6), revision: 3, state: "completed" } }] };
+  assert.equal(parseProjectWork(view, scope).g0_open_items![0].kind, "risk");
+  for (const invalid of [{ ...view.g0_open_items[0], due_date: "2030-02-30" }, { ...view.g0_open_items[0], source: { kind: "artifact", id: id(94) } }, { ...view.g0_open_items[0], task: { id: id(6), revision: 0, state: "completed" } }]) assert.throws(() => parseProjectWork({ ...view, g0_open_items: [invalid] }, scope));
+  assert.throws(() => parseProjectWork({ ...view, g0_open_items: [view.g0_open_items[0], view.g0_open_items[0]] }, scope));
+});

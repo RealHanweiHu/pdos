@@ -38,3 +38,39 @@ test("confirmation storage failure retains the review and never sends an unrecov
 test("access denial removes local private material and hides previous task and report details", async t => { const env = environment(t); await ready(env); await click(env, "本人承接"); await fill(env, "办理理由", "PRIVATE_DRAFT"); await click(env, "刷新任务"); env.reject(env.pending("/project-work?"), Object.assign(new Error("权限已撤销"), { status: 403 })); await env.flush(); assert.equal(env.store.has(workStorageKey(scope)), false); assert.doesNotMatch(env.html(), /合成报告任务|PRIVATE_DRAFT/); assert.match(env.html(), /已清除本机私有任务材料/); });
 test("scope disposal during actual inputs cancels the old preview continuation", async t => { const env = environment(t); await ready(env); await click(env, "本人承接"); await fill(env, "办理理由", "旧项目承接"); await click(env, "核对此次办理材料"); const old = env.pending("/inputs"), c = old.body; env.setProps({ projectId: id(99) }); await env.flush(); env.respond(old, { payload: c.payload, required_source_read_set: c.source_read_set, review: {} }); await env.flush(); assert.equal(env.calls.filter(v => v.route.endsWith("/commands/preview")).length, 0); assert.doesNotMatch(env.html(), /合成报告任务/); assert.equal(env.calls.at(-1).route.includes(`project_id=${id(99)}`), true); });
 test("time categories and named weekly statements retain their separate meaning", async t => { const env = environment(t); const value = view("accepted"); value.commitments = [{ id: id(40), revision: 1, task_id: id(6), promisor_id: scope.principalId, recipient_id: id(7), outcome_keys: ["report"], promised_at: null, original_timezone: "Asia/Shanghai", calendar_id: null, replaces: null, status: "current", created_at: at }]; value.updates = [{ id: id(41), revision: 1, actor_id: scope.principalId, fact_summary: "具名事实陈述", next_steps: "继续补齐资料", task_refs: [{ id: id(6), revision: 2 }], sources: [source], created_at: at, receipt_id: id(42) }]; await ready(env, value); for (const text of ["批准基线", "本视图未提供", "预测", "未由承诺推算", "当前个人承诺", "未知 / 未登记", "具名事实陈述", "合成报告任务 v2"]) assert.ok(env.html().includes(text), text); await click(env, "写具名周报"); assert.match(env.html(), /不创建任务、承诺或改变任务状态/); assert.ok(env.calls.every(c => c.body === undefined)); });
+
+function g0View(kind = "risk", state = null) {
+  const value = view(state ?? "proposed"), linked = state !== null;
+  value.tasks = linked ? value.tasks.map(task => ({ ...task, g0_open_item: { id: id(90), decision_id: id(91) }, sources: [] })) : [];
+  value.g0_open_items = [{ id: id(90), decision_id: id(91), kind, title: "G0 原安排事项", note: "核对原安排的目标", owner_id: scope.principalId, due_date: "2030-10-20", source: { kind: "question", id: id(94) }, task: linked ? { id: id(6), revision: 2, state } : null }];
+  return value;
+}
+test("G0 continuation prefills an editable draft while outcomes require human input and T0 saves only a task", async t => {
+  const env = environment(t); await ready(env, g0View()); assert.match(env.html(), /原安排期限.*2030-10-20|固定决定/); await click(env, "接续任务草稿");
+  const title = nodes(env.tree(), node => node.type === "label" && words(node).startsWith("任务标题"))[0], input = nodes(title, node => node.type === "input")[0]; assert.equal(input.props.value, "G0 原安排事项");
+  await fill(env, "任务标题", "本人编辑后的任务标题"); await fill(env, "办理理由", "接续固定 G0 安排"); await click(env, "保存人工任务草稿"); assert.equal(env.calls.filter(call => call.body !== undefined).length, 0); assert.match(env.html(), /成果定义/);
+  const outcome = nodes(env.tree(), node => node.type === "input" && node.props["aria-label"] === "成果 1 说明")[0]; outcome.props.onChange({ target: { value: "本人定义可验收的成果" } }); await env.flush(); await click(env, "保存人工任务草稿");
+  const call = env.pending("/inputs"), c = call.body; assert.equal(c.operation, "work.task.create"); assert.equal(c.payload.title, "本人编辑后的任务标题"); assert.equal(c.payload.goal, "核对原安排的目标"); assert.deepEqual(c.payload.g0_open_item, { id: id(90), decision_id: id(91) }); assert.deepEqual(c.payload.sources, []); assert.deepEqual(c.source_read_set, []);
+  for (const field of ["assignee_id", "recipient_id", "promised_at", "actual_at"]) assert.equal(field in c.payload, false);
+  env.respond(call, { payload: workSemantic(c.operation, c.payload), required_source_read_set: [], review: {} }); await env.flush(); assert.equal(env.calls.filter(call => call.route.endsWith("/commands/preview")).length, 0); assert.equal(env.calls.filter(call => call.route.endsWith("/commands")).length, 1);
+});
+test("an existing G0 link selects the same task and task completion preserves the independent risk", async t => {
+  const env = environment(t); await ready(env, g0View("risk", "completed")); assert.doesNotMatch(env.html(), /接续任务草稿/); assert.match(env.html(), /风险待独立处置/); assert.match(env.html(), /成果验收不代表风险关闭或规格满足/); await click(env, "选中关联任务");
+  assert.match(env.html(), /合成报告任务 v2/); assert.ok(env.calls.every(call => call.body === undefined)); const form = nodes(env.tree(), node => node.type === "fieldset")[0]; assert.equal(form.props.disabled, true);
+});
+test("a current G0 task assignment accepts its inherited fixed basis but still waits for T1 confirmation", async t => {
+  const env = environment(t); await ready(env, g0View("task", "proposed")); await click(env, "选中关联任务"); await fill(env, "任务执行人", scope.principalId); await fill(env, "办理理由", "分派原固定事项的同一任务"); await click(env, "核对此次办理材料");
+  const call = env.pending("/inputs"), c = call.body; assert.equal(c.operation, "work.task.assign"); assert.deepEqual(c.payload.task, { id: id(6), revision: 2 }); assert.deepEqual(c.payload.sources, []); assert.equal("g0_open_item" in c.payload, false);
+  env.respond(call, { payload: c.payload, required_source_read_set: [], review: {} }); await env.flush(); assert.ok(env.pending("/commands/preview")); assert.equal(env.calls.filter(call => call.route.endsWith("/commands")).length, 0);
+});
+test("G0 draft refresh never duplicates a newly linked task or automatically replays an unknown save", async t => {
+  const store = new Map(), env = environment(t, store); await ready(env, g0View("task")); await click(env, "接续任务草稿"); await fill(env, "办理理由", "保留原请求");
+  const outcome = nodes(env.tree(), node => node.type === "input" && node.props["aria-label"] === "成果 1 说明")[0]; outcome.props.onChange({ target: { value: "实际成果" } }); await env.flush(); await click(env, "保存人工任务草稿"); const first = env.pending("/inputs"), c = first.body;
+  env.respond(first, { payload: workSemantic(c.operation, c.payload), required_source_read_set: [], review: {} }); await env.flush(); const executed = env.calls.find(call => call.route.endsWith("/commands")); env.reject(executed, new Error("未知保存结果")); await env.flush(); env.dispose();
+  const restored = environment(t, store); await ready(restored, g0View("task", "proposed")); assert.ok(restored.calls.every(call => call.body === undefined)); assert.doesNotMatch(restored.html(), /接续任务草稿/); await click(restored, "按原请求核对保存结果"); assert.deepEqual(restored.calls.find(call => call.route.endsWith("/commands")).body, executed.body);
+});
+test("stale G0 draft links and G0 access denial cannot become a fresh duplicate task", async t => {
+  const env = environment(t); await ready(env, g0View()); await click(env, "接续任务草稿"); await fill(env, "办理理由", "保留的 G0 草稿"); await click(env, "刷新任务"); await ready(env, g0View("risk", "proposed"));
+  assert.doesNotMatch(env.html(), /接续任务草稿/); assert.match(env.html(), /本事项已有关联任务/); assert.equal(nodes(env.tree(), node => node.type === "fieldset")[0].props.disabled, true);
+  await click(env, "刷新任务"); env.reject(env.pending("/project-work?"), Object.assign(new Error("G0 当前项目失权"), { status: 403 })); await env.flush(); assert.equal(env.store.has(workStorageKey(scope)), false); assert.doesNotMatch(env.html(), /G0 原安排事项|保留的 G0 草稿|核对原安排的目标/); assert.ok(env.calls.every(call => call.body === undefined));
+});

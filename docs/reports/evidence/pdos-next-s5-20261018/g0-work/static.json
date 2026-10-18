@@ -1,0 +1,36 @@
+{
+  "captured_sql_line_length_exemption": true,
+  "initial_captured_sql_E501_count": 58,
+  "checks": [
+    {
+      "args": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "/private/tmp/pdos-g0-work-repaired-hq876mfy/pdos-next/server/pdos_next/domain/work_management/models.py",
+        "/private/tmp/pdos-g0-work-repaired-hq876mfy/pdos-next/server/pdos_next/domain/work_management/schemas.py"
+      ],
+      "exit": 0,
+      "output": "All checks passed!\n"
+    },
+    {
+      "args": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "--ignore",
+        "E501"
+      ],
+      "exit": 0,
+      "output": "All checks passed!\n"
+    },
+    {
+      "args": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "/private/tmp/pdos-g0-work-repaired-hq876mfy/pdos-next/server/pdos_next/domain/work_management/models.py"
+      ],
+      "exit": 0,
+      "output": "14 files already formatted\n"
+    }
+  ]
+}

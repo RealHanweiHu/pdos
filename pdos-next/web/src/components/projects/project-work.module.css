@@ -36,3 +36,9 @@
 .error { color: var(--destructive); font-size: .875rem; overflow-wrap: anywhere; }
 .success { padding: .8rem; border: 1px solid var(--border); border-radius: 8px; font-size: .875rem; overflow-wrap: anywhere; }
 @media (max-width: 540px) { .panel, .task, .preview { padding: .8rem; } .times { grid-template-columns: 1fr; } .outcome { grid-template-columns: 1fr; } .heading { align-items: flex-start; } }
+
+.g0Item { display: grid; align-content: start; gap: .65rem; min-width: 0; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; }
+.g0Item h4 { font-weight: 600; overflow-wrap: anywhere; }
+.g0Item p { overflow-wrap: anywhere; white-space: pre-wrap; }
+.risk { margin: 0; padding-left: .7rem; border-left: 2px solid var(--primary); font-size: .8rem; color: var(--muted-foreground); }
+@media (max-width: 540px) { .g0Item { padding: .8rem; } }

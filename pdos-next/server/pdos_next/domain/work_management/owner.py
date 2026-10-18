@@ -114,6 +114,10 @@ def commitment(s, ctx, pid, task_id, actor_id, recipient_id, *, lock=False):
 
 def sources_current(s, ctx, pid, basis):
     """Recheck retained direct metadata, never reload historical source bodies."""
+    if basis.get("g0_open_item") is not None:
+        from .g0_sources import sources_current as g0_current
+
+        g0_current(s, ctx, pid, basis["g0_open_item"])
     for expected in basis.get("artifacts", []):
         actual = s.execute(
             select(

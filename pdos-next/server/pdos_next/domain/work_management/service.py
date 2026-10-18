@@ -13,7 +13,7 @@ from pdos_next.models import now
 from pdos_next.service import command_digest, digest
 from pdos_next.source_current import direct_source_basis
 
-from . import owner, rules
+from . import g0_sources, owner, rules
 from .constants import ASSIGN, COMMIT, CREATE, STATUS, TASK_OPERATIONS
 from .models import (
     ProjectStatusUpdate,
@@ -136,6 +136,31 @@ def validate(s, ctx, command, product, payload):
             grant = member(s, ctx, identity)
             rules.require(grant.can_write, "办理人须有当前品类写入权限。", "FORBIDDEN_SCOPE", 403)
     refs = _sources(payload)
+    native_basis = None
+    if command.operation == CREATE and payload.g0_open_item is not None:
+        native_basis = g0_sources.resolve(
+            s, ctx, product.id, project.id, payload.g0_open_item, lock=True
+        )
+        existing = s.scalar(
+            select(WorkTaskVersion.task_id).where(
+                WorkTaskVersion.tenant_id == ctx.tenant_id,
+                WorkTaskVersion.g0_open_item_id == payload.g0_open_item.id,
+                WorkTaskVersion.revision == 1,
+            )
+        )
+        rules.require(
+            existing is None,
+            "原 G0 事项已有执行任务，请继续办理该任务。",
+            "VERSION_CONFLICT",
+        )
+    elif command.operation in TASK_OPERATIONS and task_row is not None:
+        native_basis = task_row.source_basis.get("g0_open_item")
+    rules.require(
+        bool(refs) or native_basis is not None,
+        "须有实际原件或本次任务的固定 G0 事项来源。",
+        "MISSING_REQUIRED_EVIDENCE",
+        422,
+    )
     basis, private = direct_source_basis(s, ctx, product, refs, command.source_read_set)
     rules.require(
         not private or project.visibility == "private",
@@ -146,6 +171,8 @@ def validate(s, ctx, command, product, payload):
     source_basis = {"artifacts": basis}
     if task_row is not None:
         source_basis = _merge_basis(task_row.source_basis, source_basis)
+    if native_basis is not None:
+        source_basis["g0_open_item"] = deepcopy(native_basis)
     at = now()
     if command.operation in TASK_OPERATIONS:
         previous = task_row
@@ -340,6 +367,8 @@ def apply_validated(s, ctx, command, product, payload, value):
             previous_revision=previous.revision if previous else None,
             action=command.operation.rsplit(".", 1)[1],
             state=plan.state,
+            g0_open_item_id=plan.g0_open_item.id if plan.g0_open_item else None,
+            g0_decision_id=plan.g0_open_item.decision_id if plan.g0_open_item else None,
             **data,
         )
         s.add(row)
