@@ -31,6 +31,8 @@ TIERS = MappingProxyType(
         "release.engineering.approve": "T2",
         "release.manufacturing.approve": "T2",
         "integration.handoff.authorize": "T2",
+        "release.exception.decide": "T2",
+        "release.exception.withdraw": "T2",
         "npi.pilot.create": "T1",
         "npi.pilot.result.record": "T1",
     }

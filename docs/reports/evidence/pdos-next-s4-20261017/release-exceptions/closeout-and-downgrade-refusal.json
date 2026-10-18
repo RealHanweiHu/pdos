@@ -1,0 +1,40 @@
+{
+  "expected_refusal": "Release exception business history retained; downgrade refused",
+  "actual_exit": 1,
+  "before": {
+    "head": "s0_0784",
+    "tables": {
+      "release_exception_decisions": {
+        "count": 6,
+        "sha256": "2a0e436eccb84e438e2abe1daad5b83ade970faa130b4077f5402b209806b794"
+      },
+      "release_exception_currents": {
+        "count": 3,
+        "sha256": "bed0760bc9e9ba79786d2716433d06f629a58ff8e8e592ba69d2b215b227a1c4"
+      }
+    }
+  },
+  "after": {
+    "head": "s0_0784",
+    "tables": {
+      "release_exception_decisions": {
+        "count": 6,
+        "sha256": "2a0e436eccb84e438e2abe1daad5b83ade970faa130b4077f5402b209806b794"
+      },
+      "release_exception_currents": {
+        "count": 3,
+        "sha256": "bed0760bc9e9ba79786d2716433d06f629a58ff8e8e592ba69d2b215b227a1c4"
+      }
+    }
+  },
+  "target": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d"
+  },
+  "own_preview_stopped": true,
+  "private_seed_removed": true,
+  "dedicated_browser_closed": true,
+  "business_rows_unchanged": true
+}

@@ -1,0 +1,19 @@
+.panel, .stack { display: grid; gap: 1rem; min-width: 0; }
+.row { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: .75rem; }
+.panel h2 { display: flex; align-items: center; gap: .5rem; }
+.card { border: 1px solid var(--border); border-radius: 8px; padding: 1rem; display: grid; gap: .75rem; min-width: 0; overflow-wrap: anywhere; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: .75rem 1rem; }
+.facts dt { color: var(--muted-foreground); font-size: .8rem; }
+.facts dd { margin: .25rem 0 0; white-space: pre-wrap; font-variant-numeric: tabular-nums; }
+.panel label { display: grid; gap: .5rem; min-width: 0; font-size: .875rem; }
+.panel select, .panel textarea { width: 100%; min-width: 0; }
+.panel textarea, .panel pre { font-family: var(--font-geist-mono), monospace; font-size: .8rem; }
+.panel pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.panel summary { cursor: pointer; margin-block: .25rem; }
+.panel .check { display: flex; align-items: start; gap: .5rem; margin-block: .75rem; }
+.check input { margin-top: .2rem; }
+.entry { display: grid; gap: .5rem; padding-block: .75rem; border-bottom: 1px solid var(--border); }
+.entry[data-state="unknown"], .entry[data-state="blocked"] { border-inline-start: 3px solid var(--primary); padding-inline-start: .75rem; }
+.attention { border-inline-start: 3px solid var(--primary); padding: .75rem; background: color-mix(in srgb, var(--primary) 6%, transparent); }
+.dialog { width: min(52rem, calc(100vw - 2rem)); max-height: 85vh; overflow: auto; padding: 1.25rem; border: 1px solid var(--border); border-radius: 8px; background: var(--background); color: var(--foreground); }
+.dialog::backdrop { background: rgb(0 0 0 / .4); }

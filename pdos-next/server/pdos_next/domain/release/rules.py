@@ -234,35 +234,43 @@ def evaluate(package, discipline, release_scope, *, at: datetime):
     if package.policy is None:
         unknown.append("RELEASE_POLICY_MISSING")
     for check in checks:
-        if check.state == "unknown":
-            unknown.append(check.key)
-        elif check.state == "blocked":
-            exception = next(
-                (value for value in package.exceptions if value.decision == check.exception), None
-            )
-            permitted = (
+        if check.state == "satisfied":
+            continue
+        candidates = tuple(
+            value
+            for value in package.exceptions
+            if (check.exception is None or value.decision == check.exception)
+            and check.key in value.check_keys
+        )
+        from .policy_rules import _covers
+
+        permitted = tuple(
+            value
+            for value in candidates
+            if (
                 not check.non_waivable
-                and exception is not None
-                and exception.decision in package.declaration.exceptions
-                and exception.state == "current"
-                and exception.discipline == discipline
-                and exception.scope == package.scope
-                and exception.subject_config == package.declaration.subject_config
-                and exception.purpose == package.declaration.purpose
+                and value.decision in package.declaration.exceptions
+                and value.state == "current"
+                and value.discipline == discipline
+                and value.scope == package.scope
+                and value.subject_config == package.declaration.subject_config
+                and value.purpose == package.declaration.purpose
                 and package.policy is not None
-                and exception.policy_version == package.policy.version
-                and check.key in exception.check_keys
-                and scope_contains(exception.release_scope, selected)
-                and (exception.expiry is None or at < exception.expiry)
+                and value.policy_version == package.policy.version
+                and _covers(value.release_scope, selected)
+                and (value.expiry is None or at < value.expiry)
             )
-            if permitted:
-                conditions.append(exception.decision)
-            else:
-                blocked.append(check.key)
-                if check.exception is not None and (
-                    exception is None or exception.state == "unknown"
-                ):
-                    unknown.append(check.key + ":exception_unknown")
+        )
+        if permitted:
+            conditions.extend(value.decision for value in permitted)
+        elif check.state == "unknown":
+            unknown.append(check.key)
+        else:
+            blocked.append(check.key)
+            if check.exception is not None and (
+                not candidates or any(value.state == "unknown" for value in candidates)
+            ):
+                unknown.append(check.key + ":exception_unknown")
     state = (
         "BLOCKED"
         if blocked

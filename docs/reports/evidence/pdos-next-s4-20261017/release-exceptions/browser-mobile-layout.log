@@ -1,0 +1,7 @@
+### Result
+{"theme":"dark","width":320,"client":320,"scroll":320}
+### Ran Playwright code
+```js
+await (async page => { await page.getByRole("button",{name:"切换明暗主题",exact:true}).click(); await page.getByRole("region",{name:"已保存具名例外",exact:true}).screenshot({path:"/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s4-20261017/release-exceptions/browser-withdrawn-mobile-dark.png"}); return await page.evaluate(()=>({theme:document.documentElement.className,width:window.innerWidth,client:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth})); })(page);
+```
+

@@ -37,6 +37,8 @@ CATEGORY_OPERATIONS = frozenset(
 T2_OPERATIONS = frozenset(
     {
         "integration.handoff.authorize",
+        "release.exception.decide",
+        "release.exception.withdraw",
         "release.engineering.approve",
         "release.manufacturing.approve",
         "ai.skill.qualify",
@@ -124,6 +126,8 @@ T1_OPERATIONS = frozenset(
 PHASED_MATERIAL_OPERATIONS = frozenset(
     {
         "integration.handoff.authorize",
+        "release.exception.decide",
+        "release.exception.withdraw",
         "npi.work_instruction.record",
         "npi.control_plan.record",
         "npi.manufacturing_baseline.record",
@@ -146,6 +150,10 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation in {"release.exception.decide", "release.exception.withdraw"}:
+        from pdos_next.domain.release_exceptions import service as release_exception_service
+
+        return release_exception_service
     if operation in {"integration.handoff.authorize", "integration.receipt.record"}:
         from pdos_next.domain.external_handoff import service as external_handoff_service
 

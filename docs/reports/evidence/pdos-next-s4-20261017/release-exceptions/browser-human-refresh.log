@@ -1,0 +1,10 @@
+### Result
+{"before":1,"after":1,"automaticExecutePosts":0}
+### Ran Playwright code
+```js
+await (async page => { const before=page.__exceptionBrowser.posts.length; await page.reload(); await page.getByRole("button",{name:"重放并核对同一原提交",exact:true}).waitFor({state:"visible",timeout:30000}); return {before,after:page.__exceptionBrowser.posts.length,automaticExecutePosts:page.__exceptionBrowser.posts.length-before}; })(page);
+```
+### Page
+- Page URL: http://127.0.0.1:51992/?area=category&category=8f1d2f8c-2087-489c-b0b4-f510f4e4d4d1&bench=projects&view=builds&task=prepare&product=332526d1-148b-469f-91c8-ad3fea3688f4&project=70300502-3f96-4481-8048-9f7e6649640f
+- Page Title: PDOS · 研发工作区
+

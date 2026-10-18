@@ -431,7 +431,7 @@
       "stage": "S4",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json",
-      "note": "Fixed preparation preserves unknowns; actual release policy owner is unconnected, so no positive engineering/manufacturing decision is enabled by default."
+      "note": "Actual release policy and scoped exception owners are connected. Missing, unknown or unsupported evidence stays explicit; a positive decision requires applicable fixed material and the current named T2 professional authority. A bounded exception preserves original checks and permits only conditions."
     },
     {
       "operation": "release.engineering.approve",
@@ -441,7 +441,7 @@
       "stage": "S4",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json",
-      "note": "Fixed preparation preserves unknowns; actual release policy owner is unconnected, so no positive engineering/manufacturing decision is enabled by default."
+      "note": "Actual release policy and scoped exception owners are connected. Missing, unknown or unsupported evidence stays explicit; a positive decision requires applicable fixed material and the current named T2 professional authority. A bounded exception preserves original checks and permits only conditions."
     },
     {
       "operation": "release.manufacturing.approve",
@@ -451,7 +451,7 @@
       "stage": "S4",
       "implementation": "implemented_local_slice",
       "payload_schema": "payloads.schema.json",
-      "note": "Fixed preparation preserves unknowns; actual release policy owner is unconnected, so no positive engineering/manufacturing decision is enabled by default."
+      "note": "Actual release policy and scoped exception owners are connected. Missing, unknown or unsupported evidence stays explicit; a positive decision requires applicable fixed material and the current named T2 professional authority. A bounded exception preserves original checks and permits only conditions."
     },
     {
       "operation": "customer.sample.send",
@@ -509,7 +509,8 @@
       "ai_execution": "仅准备/不可代决定",
       "event": "external_handoff.authorized",
       "stage": "S4",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "integration.receipt.record",
@@ -517,7 +518,8 @@
       "ai_execution": "可信连接器",
       "event": "external_receipt.recorded",
       "stage": "S4",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "knowledge.candidate.create",

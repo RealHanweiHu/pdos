@@ -53,6 +53,7 @@ from pdos_next.domain.professional_authority.signature_watermarks import signatu
 from pdos_next.domain.projects.models import Project, ProjectProductLink
 from pdos_next.domain.quality_execution import service as quality
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
+from pdos_next.domain.release_exceptions.owner import ActualReleaseExceptionOwner
 from pdos_next.domain.verification_launch.models import (
     VerificationRunCurrent,
     VerificationRunVersion,
@@ -200,6 +201,7 @@ class ActualReleaseMaterialOwner:
     def __init__(self, engine):
         self.engine = engine
         self.policy_owner = ActualReleasePolicyOwner(engine)
+        self.exception_owner = ActualReleaseExceptionOwner(engine)
         self._reads, self._cache = WeakKeyDictionary(), WeakKeyDictionary()
 
     def _runtime(self, s):
@@ -219,6 +221,8 @@ class ActualReleaseMaterialOwner:
             id(operational._fact_hash),
             id(type(self.policy_owner).read),
             id(type(self.policy_owner).current),
+            id(type(self.exception_owner).read),
+            id(type(self.exception_owner).current),
         )
 
     def _collect(self, s, ctx, pid, payload):
@@ -383,12 +387,6 @@ class ActualReleaseMaterialOwner:
             kind: tuple(value for value in selected_refs if value.kind == kind)
             for kind in {value.kind for value in selected_refs}
         }
-        _require(
-            not payload.exceptions and "exception" not in kinds,
-            "真实独立例外决定owner尚未接通，不能把引用当有效例外。",
-            "INTEGRATION_REQUIRED",
-            503,
-        )
 
         def add(ref_value, actual, snapshot=None, *, project_id=None, current=False):
             policy_facts.append(
@@ -663,6 +661,50 @@ class ActualReleaseMaterialOwner:
                     project_id=project.id,
                 )
             gaps.append("RESOURCE_QUALIFICATION_OWNER_UNCONNECTED")
+        exceptions, exception_basis = (), ()
+        if payload.exceptions:
+            from .policy_owner import _fact as policy_fact
+            from .policy_owner import _pointer as policy_pointer
+            from .schemas import VersionRef
+
+            scope = Scope(tenant_id=ctx.tenant_id, product_id=pid, project_id=project.id)
+            policy_row = policy_fact(
+                s,
+                ctx,
+                pid,
+                scope,
+                payload.purpose,
+                policy_pointer(s, ctx, pid, scope, payload.purpose),
+            )
+            exceptions, fixed_exceptions, exception_basis, extra_sources, extra_reads = (
+                self.exception_owner.read(
+                    s,
+                    ctx,
+                    pid,
+                    payload.exceptions,
+                    scope=scope,
+                    config=payload.subject_config,
+                    purpose=payload.purpose,
+                    policy_version=policy_row.policy_version if policy_row else None,
+                    policy_fact=VersionRef(id=policy_row.id, revision=policy_row.revision)
+                    if policy_row
+                    else None,
+                    visibility=payload.visibility,
+                )
+            )
+            for fixed, actual in zip(fixed_exceptions, exceptions, strict=True):
+                objects[fixed.ref] = fixed
+                policy_facts.append(
+                    {
+                        "ref": fixed.ref,
+                        "value": {
+                            "snapshot": actual.model_dump(mode="json"),
+                            "_release_current": actual.state == "current",
+                        },
+                    }
+                )
+            sources.extend(extra_sources)
+            reads.extend(extra_reads)
         policy = self.policy_owner.read(
             s,
             ctx,
@@ -737,12 +779,12 @@ class ActualReleaseMaterialOwner:
             objects=tuple(objects[value] for value in selected_refs),
             policy=policy.policy,
             checks=policy.checks,
-            exceptions=(),
+            exceptions=exceptions,
             sources=all_sources,
             required_source_read_set=merged,
         )
-        # This actual read can assemble fixed content. It deliberately cannot
-        # supply a positive release policy, resource qualification or exception.
+        # Actual fixed content does not grant resource qualification;
+        # policy and independent exception applicability remain explicit owner facts.
         basis = to_jsonable_python(
             {
                 "watermarks": direct._merge_marks(marks),
@@ -751,6 +793,7 @@ class ActualReleaseMaterialOwner:
                 "signatures": signatures,
                 "line_links": links,
                 "policy": deepcopy(policy.source_basis),
+                "exceptions": deepcopy(exception_basis),
                 "project_definition": {
                     "id": link_rows[0].definition_id,
                     "revision": link_rows[0].definition_revision,
@@ -877,4 +920,7 @@ class ActualReleaseMaterialOwner:
             )
         elif material.policy is not None:
             _require(False, "固定政策缺实际来源水位。")
+        if material.exceptions:
+            _require(bool(source_basis.get("exceptions")), "例外缺实际固定决定水位。")
+            self.exception_owner.current(s, ctx, pid, source_basis["exceptions"])
         return True

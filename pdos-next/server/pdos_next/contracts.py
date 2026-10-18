@@ -480,3 +480,9 @@ PAYLOADS.update(
         "integration.receipt.record": ExternalReceiptRecordPayload,
     }
 )
+
+from pdos_next.domain.release_exceptions.schemas import (  # noqa: E402
+    PAYLOADS as RELEASE_EXCEPTION_PAYLOADS,
+)
+
+PAYLOADS.update(RELEASE_EXCEPTION_PAYLOADS)

@@ -293,7 +293,7 @@ def test_only_separate_actual_applicable_exception_yields_conditions(case):
 def test_exception_cannot_cover_hard_unknown_or_another_scope(case, fault):
     plan = with_exception(
         case,
-        non_waivable=fault == "hard",
+        non_waivable=fault in {"hard", "unknown"},
         expiry=AT - timedelta(seconds=1) if fault == "expired" else None,
     )
     if fault == "wrong_discipline":

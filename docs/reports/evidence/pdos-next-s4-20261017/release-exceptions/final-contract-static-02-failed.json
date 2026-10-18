@@ -1,0 +1,9 @@
+{
+  "exit": 1,
+  "ruff_after_import_format": 0,
+  "validate_contracts": 1,
+  "failure": "Existing HEAD design/catalog provenance mismatch at validate_contracts.py assertion",
+  "HEAD_design_sha256": "010d2ee46ad025122a9a9c0b80f2ba1625f4116f2f38eb70526b7808d3bc723a",
+  "HEAD_operations_events_acceptance_provenance_sha256": "2820b72159622c2131774b9b0a0b548d63b44fa948af882aa795c26e231246f4",
+  "root_action": "Preserve other-author pending design and provenance; verify exact generated schemas independently; do not claim global catalog validation passed"
+}

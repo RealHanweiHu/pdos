@@ -21,6 +21,8 @@ from .schemas import FactInput
 
 OPERATION_ROLES = {
     "integration.handoff.authorize": frozenset({"engineering", "manufacturing", "quality"}),
+    "release.exception.decide": frozenset({"engineering", "manufacturing", "quality"}),
+    "release.exception.withdraw": frozenset({"engineering", "manufacturing", "quality"}),
     "release.policy.import": frozenset({"engineering", "manufacturing", "quality"}),
     "npi.work_instruction.record": frozenset({"manufacturing"}),
     "npi.control_plan.record": frozenset({"manufacturing"}),

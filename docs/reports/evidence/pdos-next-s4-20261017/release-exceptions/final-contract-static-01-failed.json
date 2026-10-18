@@ -1,0 +1,11 @@
+{
+  "exit": 1,
+  "initial_full_owned_lint_errors": 439,
+  "diagnostic_counts": {
+    "schema_s0_0784.py:E501": 435,
+    "api.py:I001": 2,
+    "api.py:E501": 2
+  },
+  "resolution": "Two new API imports were wrapped, preserving identical Python AST. Installed frozen SQL predecessor capture is retained byte-for-byte; E501 is ignored only for schema_s0_0784.py, all other lint checks retained.",
+  "formal_acceptance": false
+}

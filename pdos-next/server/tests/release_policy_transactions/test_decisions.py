@@ -231,6 +231,12 @@ def test_controlled_policy_and_independent_named_decisions(publication_case, mon
         # Establish this operation's authority before the initial policy fact
         # fixes its professional-source set; later replay must use that same set.
         prepare_authority(work)
+    if os.environ.get("PDOS_RELEASE_EXCEPTION_LINK") == "1":
+        from release_exception_transactions.harness import (
+            prepare_authority as prepare_exception_authority,
+        )
+
+        prepare_exception_authority(work)
     owner = ActualReleasePolicyOwner(setup.engine)
     policy_line = json.dumps(policy, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     policy_artifact = upstream.register_text(
@@ -387,3 +393,7 @@ def test_controlled_policy_and_independent_named_decisions(publication_case, mon
             request_key=policy_key,
         )
     assert old_replay == original_receipt and upstream.snapshots(work, MODELS) == before
+    if os.environ.get("PDOS_RELEASE_EXCEPTION_LINK") == "1":
+        from release_exception_transactions.harness import run as run_exception_chain
+
+        run_exception_chain(work, second, package_payload, policy, prior, monkeypatch)

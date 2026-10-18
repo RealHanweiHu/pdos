@@ -1141,3 +1141,8 @@ import pdos_next.domain.release.models  # noqa: E402,F401
 from pdos_next.domain.release import policy_models as _release_policy_models  # noqa: F401, E402
 
 import pdos_next.domain.external_handoff.models  # noqa: E402,F401
+
+from pdos_next.domain.release_exceptions.models import (  # noqa: E402,F401
+    ReleaseExceptionDecision,
+    ReleaseExceptionCurrent,
+)

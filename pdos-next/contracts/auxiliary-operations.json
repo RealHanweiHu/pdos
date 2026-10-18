@@ -238,6 +238,32 @@
       ],
       "payload_schema": "payloads.schema.json",
       "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "release.exception.decide",
+      "write_tier": "T2",
+      "executor": "named_human",
+      "event": "release.exception_decided",
+      "purpose": "Named bounded Waiver decision under v1.1 section 03.7-8; fixes actual policy, configuration, purpose and rule scope without changing the original check result or replacing professional release.",
+      "canonical_policy_preserved": [
+        "release.engineering.approve:T2",
+        "release.manufacturing.approve:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "release.exception.withdraw",
+      "write_tier": "T2",
+      "executor": "named_human",
+      "event": "release.exception_withdrawn",
+      "purpose": "Named withdrawal of an immutable bounded Waiver; retains the original approval and history and prevents its further consumption.",
+      "canonical_policy_preserved": [
+        "release.engineering.approve:T2",
+        "release.manufacturing.approve:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
     }
   ]
 }

@@ -14761,650 +14761,6 @@
       "title": "BaselinePayload",
       "type": "object"
     },
-    "product.definition.item.patch": {
-      "$defs": {
-        "DefinitionItemOp": {
-          "additionalProperties": false,
-          "properties": {
-            "op": {
-              "default": "upsert",
-              "enum": [
-                "upsert",
-                "remove"
-              ],
-              "title": "Op",
-              "type": "string"
-            },
-            "item_id": {
-              "anyOf": [
-                {
-                  "format": "uuid",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Item Id"
-            },
-            "base_version": {
-              "anyOf": [
-                {
-                  "exclusiveMinimum": 0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Base Version"
-            },
-            "content": {
-              "anyOf": [
-                {
-                  "$ref": "#/$defs/SpecItem"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null
-            },
-            "source_refs": {
-              "items": {
-                "$ref": "#/$defs/Reference"
-              },
-              "title": "Source Refs",
-              "type": "array"
-            }
-          },
-          "title": "DefinitionItemOp",
-          "type": "object"
-        },
-        "Reference": {
-          "additionalProperties": false,
-          "properties": {
-            "type": {
-              "enum": [
-                "human",
-                "artifact",
-                "original",
-                "snapshot",
-                "knowledge",
-                "parameter",
-                "definition",
-                "claim"
-              ],
-              "title": "Type",
-              "type": "string"
-            },
-            "id": {
-              "format": "uuid",
-              "title": "Id",
-              "type": "string"
-            },
-            "version": {
-              "exclusiveMinimum": 0,
-              "title": "Version",
-              "type": "integer"
-            },
-            "line": {
-              "anyOf": [
-                {
-                  "exclusiveMinimum": 0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Line"
-            },
-            "quote": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Quote"
-            },
-            "statement": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Statement"
-            }
-          },
-          "required": [
-            "type",
-            "id",
-            "version"
-          ],
-          "title": "Reference",
-          "type": "object"
-        },
-        "SpecItem": {
-          "additionalProperties": false,
-          "properties": {
-            "key": {
-              "minLength": 1,
-              "title": "Key",
-              "type": "string"
-            },
-            "parameter": {
-              "minLength": 1,
-              "title": "Parameter",
-              "type": "string"
-            },
-            "parameter_id": {
-              "anyOf": [
-                {
-                  "format": "uuid",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Parameter Id"
-            },
-            "parameter_version": {
-              "anyOf": [
-                {
-                  "exclusiveMinimum": 0,
-                  "type": "integer"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Parameter Version"
-            },
-            "value_type": {
-              "enum": [
-                "number",
-                "range",
-                "text",
-                "boolean",
-                "enum"
-              ],
-              "title": "Value Type",
-              "type": "string"
-            },
-            "value": {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Value"
-            },
-            "lower": {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Lower"
-            },
-            "upper": {
-              "anyOf": [
-                {
-                  "type": "number"
-                },
-                {
-                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Upper"
-            },
-            "tolerance": {
-              "anyOf": [
-                {
-                  "minimum": 0.0,
-                  "type": "number"
-                },
-                {
-                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Tolerance"
-            },
-            "text_value": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Text Value"
-            },
-            "unit": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Unit"
-            },
-            "condition_note": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Condition Note"
-            },
-            "test_conditions": {
-              "items": {
-                "type": "string"
-              },
-              "title": "Test Conditions",
-              "type": "array"
-            },
-            "verification_method": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Verification Method"
-            },
-            "acceptance_criterion": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Acceptance Criterion"
-            },
-            "modality": {
-              "anyOf": [
-                {
-                  "enum": [
-                    "must",
-                    "should",
-                    "may",
-                    "prohibited",
-                    "unstated"
-                  ],
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Modality"
-            },
-            "exceptions": {
-              "items": {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              "title": "Exceptions",
-              "type": "array"
-            },
-            "applicable_variants": {
-              "items": {
-                "additionalProperties": true,
-                "type": "object"
-              },
-              "title": "Applicable Variants",
-              "type": "array"
-            },
-            "nature": {
-              "default": "decided",
-              "enum": [
-                "observed",
-                "extracted",
-                "computed",
-                "inferred",
-                "decided"
-              ],
-              "title": "Nature",
-              "type": "string"
-            },
-            "availability": {
-              "default": "unknown",
-              "enum": [
-                "known",
-                "unknown",
-                "conflicted",
-                "not_applicable"
-              ],
-              "title": "Availability",
-              "type": "string"
-            },
-            "item_status": {
-              "default": "unknown",
-              "enum": [
-                "ai_draft",
-                "confirmed",
-                "expert_pending",
-                "unknown"
-              ],
-              "title": "Item Status",
-              "type": "string"
-            },
-            "owner_id": {
-              "anyOf": [
-                {
-                  "format": "uuid",
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Owner Id"
-            },
-            "reason": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": null,
-              "title": "Reason"
-            }
-          },
-          "required": [
-            "key",
-            "parameter",
-            "value_type"
-          ],
-          "title": "SpecItem",
-          "type": "object"
-        }
-      },
-      "additionalProperties": false,
-      "properties": {
-        "prepared_by_run_id": {
-          "anyOf": [
-            {
-              "format": "uuid",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Prepared By Run Id"
-        },
-        "candidate_digest": {
-          "anyOf": [
-            {
-              "pattern": "^[a-f0-9]{64}$",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Candidate Digest"
-        },
-        "confirmation_token": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Confirmation Token"
-        },
-        "definition_id": {
-          "format": "uuid",
-          "title": "Definition Id",
-          "type": "string"
-        },
-        "ops": {
-          "items": {
-            "$ref": "#/$defs/DefinitionItemOp"
-          },
-          "minItems": 1,
-          "title": "Ops",
-          "type": "array"
-        }
-      },
-      "required": [
-        "definition_id",
-        "ops"
-      ],
-      "title": "DefinitionItemPatch",
-      "type": "object"
-    },
-    "platform.link.create": {
-      "$defs": {
-        "NewPlatform": {
-          "additionalProperties": false,
-          "properties": {
-            "code": {
-              "minLength": 1,
-              "title": "Code",
-              "type": "string"
-            },
-            "name": {
-              "minLength": 1,
-              "title": "Name",
-              "type": "string"
-            },
-            "description": {
-              "default": "",
-              "title": "Description",
-              "type": "string"
-            }
-          },
-          "required": [
-            "code",
-            "name"
-          ],
-          "title": "NewPlatform",
-          "type": "object"
-        }
-      },
-      "additionalProperties": false,
-      "properties": {
-        "product_id": {
-          "format": "uuid",
-          "title": "Product Id",
-          "type": "string"
-        },
-        "variant_id": {
-          "anyOf": [
-            {
-              "format": "uuid",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Variant Id"
-        },
-        "platform_id": {
-          "anyOf": [
-            {
-              "format": "uuid",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Platform Id"
-        },
-        "new_platform": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/NewPlatform"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
-        },
-        "action": {
-          "enum": [
-            "attach",
-            "detach"
-          ],
-          "title": "Action",
-          "type": "string"
-        },
-        "compatibility": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Compatibility"
-        },
-        "platform_version": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Platform Version"
-        },
-        "reason": {
-          "minLength": 1,
-          "title": "Reason",
-          "type": "string"
-        },
-        "expected_link_version": {
-          "minimum": 0,
-          "title": "Expected Link Version",
-          "type": "integer"
-        },
-        "confirmation_token": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Confirmation Token"
-        },
-        "prepared_by_run_id": {
-          "anyOf": [
-            {
-              "format": "uuid",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Prepared By Run Id"
-        },
-        "candidate_digest": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Candidate Digest"
-        }
-      },
-      "required": [
-        "product_id",
-        "action",
-        "reason",
-        "expected_link_version"
-      ],
-      "title": "PlatformLinkInput",
-      "type": "object"
-    },
     "npi.manufacturing_baseline.publish": {
       "$defs": {
         "Applicability": {
@@ -17043,6 +16399,650 @@
       "title": "PilotResultPayload",
       "type": "object"
     },
+    "product.definition.item.patch": {
+      "$defs": {
+        "DefinitionItemOp": {
+          "additionalProperties": false,
+          "properties": {
+            "op": {
+              "default": "upsert",
+              "enum": [
+                "upsert",
+                "remove"
+              ],
+              "title": "Op",
+              "type": "string"
+            },
+            "item_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Item Id"
+            },
+            "base_version": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Base Version"
+            },
+            "content": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SpecItem"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "source_refs": {
+              "items": {
+                "$ref": "#/$defs/Reference"
+              },
+              "title": "Source Refs",
+              "type": "array"
+            }
+          },
+          "title": "DefinitionItemOp",
+          "type": "object"
+        },
+        "Reference": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "enum": [
+                "human",
+                "artifact",
+                "original",
+                "snapshot",
+                "knowledge",
+                "parameter",
+                "definition",
+                "claim"
+              ],
+              "title": "Type",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "version": {
+              "exclusiveMinimum": 0,
+              "title": "Version",
+              "type": "integer"
+            },
+            "line": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Line"
+            },
+            "quote": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quote"
+            },
+            "statement": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Statement"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "title": "Reference",
+          "type": "object"
+        },
+        "SpecItem": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "minLength": 1,
+              "title": "Key",
+              "type": "string"
+            },
+            "parameter": {
+              "minLength": 1,
+              "title": "Parameter",
+              "type": "string"
+            },
+            "parameter_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Parameter Id"
+            },
+            "parameter_version": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Parameter Version"
+            },
+            "value_type": {
+              "enum": [
+                "number",
+                "range",
+                "text",
+                "boolean",
+                "enum"
+              ],
+              "title": "Value Type",
+              "type": "string"
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Value"
+            },
+            "lower": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lower"
+            },
+            "upper": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Upper"
+            },
+            "tolerance": {
+              "anyOf": [
+                {
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Tolerance"
+            },
+            "text_value": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Text Value"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "condition_note": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Condition Note"
+            },
+            "test_conditions": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Test Conditions",
+              "type": "array"
+            },
+            "verification_method": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Verification Method"
+            },
+            "acceptance_criterion": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Acceptance Criterion"
+            },
+            "modality": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "must",
+                    "should",
+                    "may",
+                    "prohibited",
+                    "unstated"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Modality"
+            },
+            "exceptions": {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "title": "Exceptions",
+              "type": "array"
+            },
+            "applicable_variants": {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "title": "Applicable Variants",
+              "type": "array"
+            },
+            "nature": {
+              "default": "decided",
+              "enum": [
+                "observed",
+                "extracted",
+                "computed",
+                "inferred",
+                "decided"
+              ],
+              "title": "Nature",
+              "type": "string"
+            },
+            "availability": {
+              "default": "unknown",
+              "enum": [
+                "known",
+                "unknown",
+                "conflicted",
+                "not_applicable"
+              ],
+              "title": "Availability",
+              "type": "string"
+            },
+            "item_status": {
+              "default": "unknown",
+              "enum": [
+                "ai_draft",
+                "confirmed",
+                "expert_pending",
+                "unknown"
+              ],
+              "title": "Item Status",
+              "type": "string"
+            },
+            "owner_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Owner Id"
+            },
+            "reason": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Reason"
+            }
+          },
+          "required": [
+            "key",
+            "parameter",
+            "value_type"
+          ],
+          "title": "SpecItem",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "prepared_by_run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prepared By Run Id"
+        },
+        "candidate_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Digest"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "definition_id": {
+          "format": "uuid",
+          "title": "Definition Id",
+          "type": "string"
+        },
+        "ops": {
+          "items": {
+            "$ref": "#/$defs/DefinitionItemOp"
+          },
+          "minItems": 1,
+          "title": "Ops",
+          "type": "array"
+        }
+      },
+      "required": [
+        "definition_id",
+        "ops"
+      ],
+      "title": "DefinitionItemPatch",
+      "type": "object"
+    },
+    "platform.link.create": {
+      "$defs": {
+        "NewPlatform": {
+          "additionalProperties": false,
+          "properties": {
+            "code": {
+              "minLength": 1,
+              "title": "Code",
+              "type": "string"
+            },
+            "name": {
+              "minLength": 1,
+              "title": "Name",
+              "type": "string"
+            },
+            "description": {
+              "default": "",
+              "title": "Description",
+              "type": "string"
+            }
+          },
+          "required": [
+            "code",
+            "name"
+          ],
+          "title": "NewPlatform",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "product_id": {
+          "format": "uuid",
+          "title": "Product Id",
+          "type": "string"
+        },
+        "variant_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Variant Id"
+        },
+        "platform_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Platform Id"
+        },
+        "new_platform": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NewPlatform"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "action": {
+          "enum": [
+            "attach",
+            "detach"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "compatibility": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Compatibility"
+        },
+        "platform_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Platform Version"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "expected_link_version": {
+          "minimum": 0,
+          "title": "Expected Link Version",
+          "type": "integer"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        },
+        "prepared_by_run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prepared By Run Id"
+        },
+        "candidate_digest": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Digest"
+        }
+      },
+      "required": [
+        "product_id",
+        "action",
+        "reason",
+        "expected_link_version"
+      ],
+      "title": "PlatformLinkInput",
+      "type": "object"
+    },
     "release.package.assemble": {
       "$defs": {
         "ObjectRef": {
@@ -17908,6 +17908,887 @@
         "reason"
       ],
       "title": "ManufacturingApprovePayload",
+      "type": "object"
+    },
+    "integration.handoff.authorize": {
+      "$defs": {
+        "Destination": {
+          "additionalProperties": false,
+          "properties": {
+            "system": {
+              "minLength": 1,
+              "title": "System",
+              "type": "string"
+            },
+            "recipient_id": {
+              "minLength": 1,
+              "title": "Recipient Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "system",
+            "recipient_id"
+          ],
+          "title": "Destination",
+          "type": "object"
+        },
+        "ManifestFile": {
+          "additionalProperties": false,
+          "properties": {
+            "artifact": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "logical_name": {
+              "minLength": 1,
+              "title": "Logical Name",
+              "type": "string"
+            },
+            "content_sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Content Sha256",
+              "type": "string"
+            },
+            "external_number": {
+              "minLength": 1,
+              "title": "External Number",
+              "type": "string"
+            },
+            "external_version": {
+              "minLength": 1,
+              "title": "External Version",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/OriginalRef"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "artifact",
+            "logical_name",
+            "content_sha256",
+            "external_number",
+            "external_version",
+            "sources"
+          ],
+          "title": "ManifestFile",
+          "type": "object"
+        },
+        "MappingRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "enum": [
+                "definition",
+                "engineering_configuration",
+                "process_revision",
+                "part",
+                "bom_revision",
+                "artifact",
+                "work_instruction",
+                "control_plan"
+              ],
+              "title": "Kind",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "kind"
+          ],
+          "title": "MappingRef",
+          "type": "object"
+        },
+        "NumberMapping": {
+          "additionalProperties": false,
+          "properties": {
+            "ref": {
+              "$ref": "#/$defs/MappingRef"
+            },
+            "external_number": {
+              "minLength": 1,
+              "title": "External Number",
+              "type": "string"
+            },
+            "external_version": {
+              "minLength": 1,
+              "title": "External Version",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/OriginalRef"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "ref",
+            "external_number",
+            "external_version",
+            "sources"
+          ],
+          "title": "NumberMapping",
+          "type": "object"
+        },
+        "OriginalRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "const": "artifact",
+              "default": "artifact",
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "OriginalRef",
+          "type": "object"
+        },
+        "ReleaseScope": {
+          "additionalProperties": false,
+          "description": "None is unknown/uncovered; an empty set never means all objects.",
+          "properties": {
+            "quantity": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quantity"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "lots": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/VersionRef"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lots"
+            },
+            "site": {
+              "anyOf": [
+                {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Site"
+            },
+            "lines": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/VersionRef"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lines"
+            },
+            "regions": {
+              "anyOf": [
+                {
+                  "items": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Regions"
+            }
+          },
+          "title": "ReleaseScope",
+          "type": "object"
+        },
+        "SubjectConfiguration": {
+          "additionalProperties": false,
+          "properties": {
+            "definition": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "engineering_configuration": {
+              "$ref": "#/$defs/VersionRef"
+            },
+            "manufacturing_configuration": {
+              "$ref": "#/$defs/VersionRef"
+            }
+          },
+          "required": [
+            "definition",
+            "engineering_configuration",
+            "manufacturing_configuration"
+          ],
+          "title": "SubjectConfiguration",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "package": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "engineering_decision": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "manufacturing_decision": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "subject_config": {
+          "$ref": "#/$defs/SubjectConfiguration"
+        },
+        "release_scope": {
+          "$ref": "#/$defs/ReleaseScope"
+        },
+        "purpose": {
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "destination": {
+          "$ref": "#/$defs/Destination"
+        },
+        "external_id": {
+          "minLength": 1,
+          "title": "External Id",
+          "type": "string"
+        },
+        "mappings": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/NumberMapping"
+          },
+          "title": "Mappings",
+          "type": "array"
+        },
+        "manifest": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ManifestFile"
+          },
+          "title": "Manifest",
+          "type": "array"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/OriginalRef"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "project_id",
+        "package",
+        "engineering_decision",
+        "manufacturing_decision",
+        "subject_config",
+        "release_scope",
+        "purpose",
+        "destination",
+        "external_id",
+        "sources",
+        "reason"
+      ],
+      "title": "AuthorizePayload",
+      "type": "object"
+    },
+    "integration.receipt.record": {
+      "$defs": {
+        "OriginalRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "const": "artifact",
+              "default": "artifact",
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "OriginalRef",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "handoff": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "intent": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "source": {
+          "$ref": "#/$defs/OriginalRef"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "handoff",
+        "intent",
+        "source",
+        "reason"
+      ],
+      "title": "ReceiptRecordPayload",
+      "type": "object"
+    },
+    "release.exception.decide": {
+      "$defs": {
+        "OriginalRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "const": "artifact",
+              "default": "artifact",
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "OriginalRef",
+          "type": "object"
+        },
+        "ReleaseScope": {
+          "additionalProperties": false,
+          "description": "None is unknown/uncovered; an empty set never means all objects.",
+          "properties": {
+            "quantity": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quantity"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "lots": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/VersionRef"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lots"
+            },
+            "site": {
+              "anyOf": [
+                {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Site"
+            },
+            "lines": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/VersionRef"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lines"
+            },
+            "regions": {
+              "anyOf": [
+                {
+                  "items": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Regions"
+            }
+          },
+          "title": "ReleaseScope",
+          "type": "object"
+        },
+        "SourcedText": {
+          "additionalProperties": false,
+          "properties": {
+            "text": {
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/OriginalRef"
+              },
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "text",
+            "sources"
+          ],
+          "title": "SourcedText",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "basis_package": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "discipline": {
+          "enum": [
+            "engineering",
+            "manufacturing"
+          ],
+          "title": "Discipline",
+          "type": "string"
+        },
+        "release_scope": {
+          "$ref": "#/$defs/ReleaseScope"
+        },
+        "purpose": {
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "check_keys": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Check Keys",
+          "type": "array"
+        },
+        "limits": {
+          "items": {
+            "$ref": "#/$defs/SourcedText"
+          },
+          "minItems": 1,
+          "title": "Limits",
+          "type": "array"
+        },
+        "risk_controls": {
+          "items": {
+            "$ref": "#/$defs/SourcedText"
+          },
+          "minItems": 1,
+          "title": "Risk Controls",
+          "type": "array"
+        },
+        "expiry": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expiry"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/OriginalRef"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "basis_package",
+        "discipline",
+        "release_scope",
+        "purpose",
+        "check_keys",
+        "limits",
+        "risk_controls",
+        "sources",
+        "reason"
+      ],
+      "title": "DecidePayload",
+      "type": "object"
+    },
+    "release.exception.withdraw": {
+      "$defs": {
+        "OriginalRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "const": "artifact",
+              "default": "artifact",
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "OriginalRef",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "exception": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/OriginalRef"
+          },
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "exception",
+        "sources",
+        "reason"
+      ],
+      "title": "WithdrawPayload",
       "type": "object"
     }
   },

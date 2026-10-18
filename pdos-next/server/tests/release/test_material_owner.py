@@ -157,7 +157,7 @@ def test_no_fixed_scope_or_policy_fact_is_inferred_from_payload(work, fault):
         work.release_payload = work.release_payload.model_copy(
             update={"exceptions": (schemas.VersionRef(id=uuid4(), revision=1),)}
         )
-        expected = "INTEGRATION_REQUIRED"
+        expected = "FORBIDDEN_SCOPE"
     reject(work.read_release, expected)
 
 
