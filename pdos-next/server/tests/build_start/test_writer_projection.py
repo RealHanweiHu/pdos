@@ -28,6 +28,27 @@ from pdos_next.request_proof import request_proof
 AT = datetime(2026, 10, 9, 12, tzinfo=UTC)
 
 
+def sqlite_table(engine, model):
+    """Create one real mapped table in SQLite, minus PostgreSQL-only CHECK syntax.
+
+    The category root lock is production behaviour (`category_lifecycle_fence`),
+    so the host boundary needs the actual table. Only the `key ~ '...'` regex
+    check is dropped; SQLite cannot parse it and this file never asserts on it.
+    """
+    from sqlalchemy import CheckConstraint, MetaData
+    from sqlalchemy.schema import CreateTable
+
+    table = model.__table__.to_metadata(MetaData())
+    for constraint in list(table.constraints):
+        if isinstance(constraint, CheckConstraint) and "~" in str(constraint.sqltext):
+            table.constraints.discard(constraint)
+    with engine.begin() as connection:
+        # Foreign keys are left out of the DDL: their target tables are not part
+        # of this one-table copy, and SQLite would not enforce them anyway.
+        connection.execute(CreateTable(table, include_foreign_key_constraints=[]))
+    return table
+
+
 def mapped(model, **values):
     """Use real attribute names; do not invent a mapped audience column."""
     keys = {attribute.key for attribute in model.__mapper__.column_attrs}
@@ -121,7 +142,23 @@ def owners():
         )
     engine = create_engine("sqlite://")
     Product.__table__.create(engine)
+    categories = sqlite_table(engine, Category)
     with engine.begin() as connection:
+        connection.execute(
+            categories.insert().values(
+                id=category,
+                tenant_id=tenant,
+                created_at=AT,
+                key="host-boundary",
+                name="Host boundary only",
+                purpose="No actual professional or RLS qualification",
+                owner_id=actor,
+                revision=1,
+                status="active",
+                lifecycle_epoch=1,
+                created_by_run_id=None,
+            )
+        )
         connection.execute(
             Product.__table__.insert().values(
                 id=product,

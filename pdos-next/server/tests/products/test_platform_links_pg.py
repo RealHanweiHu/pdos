@@ -387,6 +387,10 @@ def test_platform_migration_refuses_to_remove_committed_history(setup):
     from migrations.versions.s0_0759_platform_links import downgrade
 
     saved, _ = confirmed(setup, request(setup))
+    # The point is that a refused downgrade leaves the stamp alone, whatever
+    # revision this environment is on; pinning one revision only ages.
+    with setup.admin.connect() as probe:
+        before = probe.scalar(text("SELECT version_num FROM alembic_version"))
     with setup.admin.connect() as connection:
         transaction = connection.begin()
         try:
@@ -395,7 +399,7 @@ def test_platform_migration_refuses_to_remove_committed_history(setup):
                     downgrade()
         finally:
             transaction.rollback()
-        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "s0_0759"
+        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == before
     assert read(setup).json()["items"][0]["id"] == saved["result"]["platform_id"]
 
 

@@ -56,6 +56,9 @@ def assert_downgrade_blocked(work):
                 "AND conname='m3_spec_known_shape'"
             )
         )
+        # A refused downgrade must leave the stamp alone, whatever revision this
+        # environment is on; pinning one revision only ages.
+        stamp = connection.scalar(text("SELECT version_num FROM alembic_version"))
     with pytest.raises(DBAPIError) as caught:
         with work.admin.begin() as connection:
             connection.exec_driver_sql("SET LOCAL ROLE pdos_next_owner")
@@ -64,7 +67,7 @@ def assert_downgrade_blocked(work):
     assert caught.value.orig.sqlstate == "23514"
     assert "Single-bound specification history" in str(caught.value.orig)
     with work.admin.connect() as connection:
-        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "s0_0757"
+        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == stamp
         assert (
             connection.scalar(
                 text(

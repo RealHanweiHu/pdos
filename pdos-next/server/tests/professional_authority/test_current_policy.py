@@ -85,6 +85,24 @@ def _grant(setup, kind, identity):
         )
 
 
+def _revoke(setup, *kinds):
+    """Start an invisibility check from no audience at all for the reader.
+
+    G0 materialisation and the authority import now add product/project audience
+    rows for the named reviewer (setup.peer), so turning an object private is no
+    longer enough on its own; the reader keeps its own audience row.
+    """
+    with Session(setup.admin) as session, session.begin():
+        session.execute(
+            delete(ObjectAudience).where(
+                ObjectAudience.tenant_id == setup.tenant,
+                ObjectAudience.category_id == setup.category,
+                ObjectAudience.principal_id == setup.peer,
+                ObjectAudience.object_type.in_(kinds),
+            )
+        )
+
+
 @pytest.mark.parametrize("revoked", ["source", "fact", "project"])
 def test_current_and_fact_sql_share_live_audience_revocation(setup, authority_work, revoked):
     response = post(
@@ -143,6 +161,7 @@ def test_current_and_fact_sql_share_live_audience_revocation(setup, authority_wo
         "fact": ("professional_authority_facts", identity),
         "project": ("projects", project),
     }
+    _revoke(setup, "products", "projects", "artifact_versions", "professional_authority_facts")
     assert _visible_rows(setup, authority_work, identity, setup.peer) == ([], [])
     for kind, target in targets.values():
         _grant(setup, kind, target)
@@ -265,6 +284,7 @@ def test_current_and_fact_sql_keep_category_and_exact_product_audience(
                 )
                 .values(visibility="private")
             )
+        _revoke(setup, "products")
         assert _visible_rows(setup, authority_work, identity, setup.peer) == ([], [])
         _grant(setup, "products", setup.product)
         assert _visible_rows(setup, authority_work, identity, setup.peer) == expected

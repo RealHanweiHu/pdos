@@ -266,7 +266,10 @@ def test_sealed_definition_rejects_insert(work, table):
     proposal_id, _ = create(work, data)
     submit(work, proposal_id)
     approved, _ = save(work, decide_request(work, proposal_id), actor=work.peer)
-    with Session(work.admin) as s, s.begin(), pytest.raises(DBAPIError, match="sealed"):
+    # definition_specs now trips the narrower m3 item guard ("definition is fixed")
+    # before the generic sealed guard; both are the same refusal.
+    refusal = "sealed|definition is fixed"
+    with Session(work.admin) as s, s.begin(), pytest.raises(DBAPIError, match=refusal):
         columns = list(
             s.scalars(
                 text(
