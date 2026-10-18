@@ -1,0 +1,16 @@
+{
+  "exit": 0,
+  "frontend_manifest": {
+    "pdos-next/web/src/app/api/v1/personal/attention/route.ts": "c965a2f11a947203dcc836da1811d33eb3f524bbfa380695c4b96c079c323292",
+    "pdos-next/web/src/components/my-work-attention.module.css": "36d92a5933653f768cbecbea58738851de3d363343d1fe6f76e8422a49b40374",
+    "pdos-next/web/src/components/my-work-attention.test.mjs": "66ee2afb8db2e80e4e941fd3e8bc1a8e825489e8cca8ec2352d769768e933aa8",
+    "pdos-next/web/src/components/my-work-attention.tsx": "a427ccf647d6b39194394029b5f5e670aa76164b9be960ed2b6fb780b9941302",
+    "pdos-next/web/src/components/my-work.tsx": "65add26b1f0764100b6a982c307e45618cc30fb58b169a0d73107ccff8860da7",
+    "pdos-next/web/src/lib/personal-attention-proxy.test.mjs": "34aa8d99f70cbf65ca0a511602b4cdabf4741ee63384400140fc7b75869ee5ca",
+    "pdos-next/web/src/lib/personal-attention-proxy.ts": "804706f15d8c290b32e5530c3230251744466bd72f1e1101bf326077df06f68a",
+    "pdos-next/web/src/lib/personal-attention.ts": "0d24fae68ea3d2a697178601988d59be6ac44d62fd7e0fe2d34ac674a062505d"
+  },
+  "source": "observed final build exec 96155 exit 0",
+  "log": "build-final.log",
+  "business_egress": false
+}

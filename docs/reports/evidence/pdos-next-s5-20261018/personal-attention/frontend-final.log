@@ -1,0 +1,23 @@
+✔ typed parsing preserves nullable facts and rejects a foreign identity even for empty reads (1.709833ms)
+✔ navigation uses only the actual original project or proposal, never a details-supplied href (0.477625ms)
+✔ first failure stays unknown; retry can establish a truly empty queue (13.555417ms)
+✔ subsequent page errors preserve records and exact cursor for retry (6.833042ms)
+✔ duplicate records and cursor loops do not append or discard current records (6.298125ms)
+✔ queue and identity changes hide old records synchronously and ignore late responses (3.696166ms)
+✔ transport and reload isolate their reads; unmount does not retain a late response (3.019875ms)
+✔ 403 on a later page clears earlier private items and requires a new initial read (3.193917ms)
+✔ four groups retain per-card blocking, real source facts and actual external stages (4.983917ms)
+✔ all four exact personal reads use only the session cookie as server Bearer identity (70.735959ms)
+✔ forbidden identity, duplicates, bad queues and invalid pagination never reach upstream (10.911333ms)
+✔ bounded opaque cursor is preserved exactly without decoding it into scope (8.027375ms)
+✔ non-GET methods, missing session and missing configuration fail before networking (11.782084ms)
+✔ upstream domain outcomes stay exact and unavailable transport is a single failed read (17.41325ms)
+✔ the static route exports GET alone and delegates the actual request to its narrow proxy (2.137791ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 365.4135

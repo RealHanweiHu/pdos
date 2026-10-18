@@ -422,6 +422,9 @@ def create_app(
     from pdos_next.personal_views import register_routes as register_personal_routes
 
     register_personal_routes(app, engine, auth_dependency)
+    from pdos_next.personal_attention_api import register_routes as register_attention
+
+    register_attention(app, engine, auth_dependency)
     from pdos_next.agent_kernel.management_api import register_routes as register_governance_routes
 
     register_governance_routes(app, engine, auth_dependency)

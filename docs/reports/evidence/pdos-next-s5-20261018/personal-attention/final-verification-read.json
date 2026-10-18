@@ -1,0 +1,18 @@
+{
+  "checks": [
+    {
+      "kind": "verification_handoff_return",
+      "actual_completed_source_still_readable": true,
+      "no_pending_attention_after_actual_coverage": true
+    },
+    {
+      "kind": "verification_result_return",
+      "actual_completed_source_still_readable": true,
+      "no_pending_attention_after_actual_coverage": true
+    }
+  ],
+  "final_sealed_source": true,
+  "real_model_calls": 0,
+  "grant_changes": 0,
+  "business_mutations": 0
+}

@@ -1,0 +1,36 @@
+{
+  "groups": [
+    {
+      "name": "要我决定",
+      "text": "要我决定\n已读 0 / 共 0 条\n\n当前可读范围内暂无此类注意项。\n\n读回时点 2026-10-18T19:56:21.461159+00:00。请在原对象查看当前资料并办理。"
+    },
+    {
+      "name": "要我接收",
+      "text": "要我接收\n已读 1 / 共 1 条\n\n汽车充气泵 ／ Synthetic named work loop ／ Synthetic named work loop\n\n合成注意项：核对本轮样件资料\n待本人承接\n\n你是这项任务当前指定的承接人。\n\n当前责任人\nSynthetic owner\n本人关系\n当前承接人\n固定来源版本\nv2\n当前办理授权有效至\n2026-10-18T20:39:08.740623+00:00\n查看原项目\n来源与版本\n\n读回时点 2026-10-18T19:56:21.502923+00:00。请在原对象查看当前资料并办理。"
+    },
+    {
+      "name": "要我验证",
+      "text": "要我验证\n已读 0 / 共 0 条\n\n当前可读范围内暂无此类注意项。\n\n读回时点 2026-10-18T19:56:21.648889+00:00。请在原对象查看当前资料并办理。"
+    },
+    {
+      "name": "等外部回复",
+      "text": "等外部回复\n已读 0 / 共 0 条\n\n当前可读范围内暂无此类注意项。\n\n读回时点 2026-10-18T19:56:21.833201+00:00。请在原对象查看当前资料并办理。"
+    }
+  ],
+  "actual_task_identity": true,
+  "failed_read_stays_unknown": true,
+  "retry_restored_actual_item": true,
+  "forbidden_scope_query_status": 422,
+  "light": {
+    "width": 1440,
+    "overflow": false
+  },
+  "dark": {
+    "width": 320,
+    "overflow": false
+  },
+  "original_project_link": "/?area=cockpit&category=c00ec828-d946-48cc-be61-93065309eb80&project=14a093e6-9722-495b-bc55-35bfef9bd26a",
+  "navigation_project_matches": true,
+  "observed_API_writes": [],
+  "attention_GETs": 13
+}

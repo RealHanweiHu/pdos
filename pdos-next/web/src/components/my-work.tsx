@@ -7,9 +7,10 @@ import { dueState, myOpenItems, readPortfolio, readRunActivity, type ActivityRun
 import type { browserApi } from "@/lib/browser-api";
 import { usePersonalProjectWork } from "@/lib/personal-project-work";
 import { PersonalProjectWorkQueue } from "./my-work-project-work";
+import { PersonalAttention } from "./my-work-attention";
 
 type Api = typeof browserApi;
-const runLabels: Record<string, string> = { queued: "已保存，等待执行", running: "正在执行", waiting_input: "等待你的答复", completed: "已完成", partial: "已形成部分结果", cancelled: "已取消后续执行", failed: "执行未完成" };
+const runLabels: Record<string, string> = { queued: "已保存，等待执行", running: "正在执行", waiting_input: "运行已暂停，需查看", completed: "已完成", partial: "已形成部分结果", cancelled: "已取消后续执行", failed: "执行未完成" };
 const kindLabels: Record<string, string> = { task: "任务", risk: "风险" };
 
 function dueChip(item: { due_date: string | null; status: string }, today: string) {
@@ -34,8 +35,6 @@ export function MyWork({ api, session, onOpenRun, onOpenProject, onOpenPai }: {
   const [readIdentity, setReadIdentity] = useState<{ scope: string; api: Api } | null>(null);
   const current = readIdentity?.scope === scope && readIdentity.api === api;
   const portfolio = current ? portfolioResult : null, runs = current ? runResults : [], error = current ? readError : "";
-  const receiveWork = usePersonalProjectWork(api, session.principal_id, reload, "receive");
-  const verifyWork = usePersonalProjectWork(api, session.principal_id, reload, "verify");
   const taskWork = usePersonalProjectWork(api, session.principal_id, reload, "tasks");
   const commitmentWork = usePersonalProjectWork(api, session.principal_id, reload, "commitments");
   const today = new Date().toISOString().slice(0, 10);
@@ -66,17 +65,16 @@ export function MyWork({ api, session, onOpenRun, onOpenProject, onOpenPai }: {
     {error && <p role="alert" className="workspace-read-error">{error}</p>}
     {portfolio?.asOf && <p className="subtle mb-4">项目资料读取于 <time dateTime={portfolio.asOf}>{new Date(portfolio.asOf).toLocaleString()}</time></p>}
     {portfolio?.readErrors.map(item => <p key={item.path} role="status" className="subtle">部分范围暂不可读：{item.message}</p>)}
+    <PersonalAttention api={api} principalId={session.principal_id} reload={reload}/>
     <div className="workspace-overview-columns">
-      <PersonalProjectWorkQueue queue="receive" state={receiveWork} onOpenProject={onOpenProject}/>
-      <PersonalProjectWorkQueue queue="verify" state={verifyWork} onOpenProject={onOpenProject}/>
       <PersonalProjectWorkQueue queue="tasks" state={taskWork} onOpenProject={onOpenProject}/>
       <PersonalProjectWorkQueue queue="commitments" state={commitmentWork} onOpenProject={onOpenProject}/>
     </div>
-    {waiting.length > 0 && <section className="panel mb-6" aria-label="待答复">
-      <div className="mb-4 flex items-center gap-2"><BellRinging className="text-primary" aria-hidden="true"/><h2 className="font-semibold">等待你的答复</h2><span className="subtle ml-auto">{waiting.length} 项</span></div>
+    {waiting.length > 0 && <section className="panel mb-6" aria-label="待查看运行">
+      <div className="mb-4 flex items-center gap-2"><BellRinging className="text-primary" aria-hidden="true"/><h2 className="font-semibold">运行需关注</h2><span className="subtle ml-auto">{waiting.length} 项</span></div>
       <div className="space-y-3">{waiting.map(run => <div key={run.run_id} className="flex items-center gap-3 border-t border-border pt-3 first:border-0 first:pt-0">
         <div className="min-w-0 flex-1"><p className="break-words">{run.goal}</p><p className="subtle mt-1">{run.categoryName} · <time dateTime={run.created_at}>{new Date(run.created_at).toLocaleString()}</time></p></div>
-        <Button size="sm" variant="outline" onClick={() => onOpenRun(run.run_id, run.categoryId)}>去答复</Button>
+        <Button size="sm" variant="outline" onClick={() => onOpenRun(run.run_id, run.categoryId)}>查看运行</Button>
       </div>)}</div>
     </section>}
     <div className="workspace-overview-columns">

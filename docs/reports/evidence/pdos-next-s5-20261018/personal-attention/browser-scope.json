@@ -1,0 +1,12 @@
+{
+  "snapshot": "/private/tmp/pdos-attention-final-lcft6_x4",
+  "api_port": 52647,
+  "web_port": 52648,
+  "tenant_id": "cd1c3fd7-256f-499c-90b9-1dd5fadd30ce",
+  "category_id": "c00ec828-d946-48cc-be61-93065309eb80",
+  "product_id": "51def10b-aff2-4604-a764-da6102f6b14c",
+  "project_id": "14a093e6-9722-495b-bc55-35bfef9bd26a",
+  "principal_id": "9fadfacf-065e-4616-b3d8-6c3d06955a70",
+  "task_id": "fd73aa66-bf4e-4d27-aa91-7f0ed8b43658",
+  "assigned_revision": 2
+}
