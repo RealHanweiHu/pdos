@@ -4844,3 +4844,14 @@ COVERED_COLUMNS.update({'field_feedback_versions': ('feedback_id',
                             'tenant_id',
                             'created_at')})
 GUARDED = (*GUARDED, 'field_feedback_versions', 'field_feedback_currents', 'field_response_records')
+
+# Native Field plan origins share the existing controlled Selection fact.
+COVERED_COLUMNS["controlled_change_selection_facts"] = (
+    *COVERED_COLUMNS["controlled_change_selection_facts"],
+    "basis_kind",
+    "feedback_id",
+    "feedback_version_id",
+    "feedback_revision",
+    "feedback_sha256",
+    "executor_id",
+)

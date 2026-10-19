@@ -13,7 +13,7 @@ import {
 import { qualityRecord, qualitySource, qualitySourceKey, qualityStable, validQualitySource } from "@/lib/build-quality-loop-view";
 import { sourceLines, type DefinitionSource } from "@/lib/product-view";
 
-type Props = { projectId?: string; changeId: string; product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: OrderApi; onSaved: () => void | Promise<void>; blocked?: boolean; onLockChange?: (locked: boolean) => void };
+type Props = { projectId?: string; changeId: string; product: { id: string; revision: number }; principalId: string; api: OrderApi; onSaved: () => void | Promise<void>; blocked?: boolean; onLockChange?: (locked: boolean) => void };
 const time = (value: string | null) => value === null ? "未另设到期时点" : value === "server_on_save" ? "保存时由服务器记录" : Number.isFinite(Date.parse(value)) ? new Date(value).toLocaleString("zh-CN", { hour12: false }) : "尚未提供";
 
 function Evidence({ reference, sources }: { reference: OrderReadSource; sources: DefinitionSource[] }) {

@@ -1,14 +1,17 @@
 """Read actual order inputs and registered selection material; never save a decision."""
 
 from types import SimpleNamespace
+from typing import Literal
 from uuid import UUID, uuid4
 
-from pydantic import Field, ValidationError
+from pydantic import AwareDatetime, Field, ValidationError, model_validator
 from sqlalchemy import select
 
 from pdos_next import change_controlled_owner as controlled
 from pdos_next import change_controlled_store as models
 from pdos_next import change_selection_service as selection
+from pdos_next import field_change_selection as field
+from pdos_next.change_controlled_schemas import FieldIntentTarget, FieldSelectionMaterial
 from pdos_next.change_implementation_owner import common_group
 from pdos_next.change_order_service import _one, current_fixed, snapshot
 from pdos_next.contracts import Command
@@ -18,13 +21,31 @@ from pdos_next.domain.change_execution.graph import OwnerReader
 from pdos_next.errors import DomainError
 from pdos_next.models import Product
 from pdos_next.schema_base import StrictModel
+from pdos_next.schemas.change_control.contracts import PlanItem
 from pdos_next.schemas.verification.contracts import SourceRef
 
 
 class SelectionMaterialInput(StrictModel):
     change_id: UUID
     expected_change_revision: int = Field(strict=True, ge=1)
-    source: SourceRef
+    source: SourceRef | None = None
+    field_intent: FieldIntentTarget | None = None
+    item: PlanItem | None = None
+    status: Literal["applicable", "not_applicable", "unknown"] | None = None
+    valid_until: AwareDatetime | None = None
+    reason: str | None = Field(default=None, min_length=3, max_length=2000)
+
+    @model_validator(mode="after")
+    def exact_input(self):
+        draft = {"field_intent", "item", "status", "valid_until", "reason"}
+        if self.source is not None:
+            if self.model_fields_set & draft:
+                raise ValueError("Registered material and future-plan drafting are separate inputs")
+        elif "source" in self.model_fields_set or any(
+            getattr(self, key) is None for key in ("field_intent", "item", "status", "reason")
+        ):
+            raise ValueError("Declare an exact future Field intent or choose registered material")
+        return self
 
 
 def _missing(error):
@@ -82,11 +103,13 @@ def _objects(s, ctx, pid, request):
 
 
 def _actions(s, ctx, pid, row, request, purpose):
-    loader = change._issue_loader(s)
     issue_ids = dict.fromkeys(
         ref.id for ref in (*request.roots, *request.references) if ref.kind in {"issue", "capa"}
     )
     actions = []
+    if not issue_ids:
+        return actions
+    loader = change._issue_loader(s)
     for issue_id in issue_ids:
         issue_row, typed = loader(s, ctx, pid, issue_id)
         view = typed.model_dump(mode="json") if hasattr(typed, "model_dump") else typed
@@ -134,9 +157,39 @@ def _selection_record(s, ctx, pid, row, request, purpose, fact):
         403,
     )
     try:
-        material = models.SelectionMaterial.model_validate(fact.material)
-    except ValidationError:
+        material = field.parse_material(fact.material)
+    except (ValidationError, ValueError):
         raise DomainError("INTEGRITY_MISMATCH", "保存的逐项适用材料无法核对。") from None
+    if isinstance(material, FieldSelectionMaterial):
+        controlled.require(
+            fact.basis_kind == "field_intent"
+            and (
+                fact.feedback_id,
+                fact.feedback_version_id,
+                fact.feedback_revision,
+                fact.feedback_sha256,
+                fact.executor_id,
+            )
+            == (
+                material.feedback.id,
+                material.feedback_version_id,
+                material.feedback.revision,
+                material.feedback_sha256,
+                material.executor_id,
+            )
+            and all(
+                getattr(fact, key) is None
+                for key in (
+                    "issue_id",
+                    "issue_version_id",
+                    "issue_revision",
+                    "capa_id",
+                    "action_id",
+                    "action_sha256",
+                )
+            ),
+            "INTEGRITY_MISMATCH",
+        )
     controlled.require(
         material.scope == request.scope
         and material.purpose == purpose
@@ -148,8 +201,11 @@ def _selection_record(s, ctx, pid, row, request, purpose, fact):
         and material.status == fact.status
         and material.valid_until == fact.valid_until
         and material.nature == fact.nature
-        and (material.issue_id, material.capa_id, material.action_id, material.action_sha256)
-        == (fact.issue_id, fact.capa_id, fact.action_id, fact.action_sha256),
+        and (
+            isinstance(material, FieldSelectionMaterial)
+            or (material.issue_id, material.capa_id, material.action_id, material.action_sha256)
+            == (fact.issue_id, fact.capa_id, fact.action_id, fact.action_sha256)
+        ),
         "INTEGRITY_MISMATCH",
     )
     value = {
@@ -163,14 +219,27 @@ def _selection_record(s, ctx, pid, row, request, purpose, fact):
         "current": True,
         "source_status": "needs_recheck",
         "missing": [],
-        "issue_id": str(fact.issue_id),
-        "capa_id": str(fact.capa_id),
-        "action_id": str(fact.action_id),
+        "basis_kind": getattr(fact, "basis_kind", "capa_action"),
+        "material_sha256": fact.material_sha256,
+        **(
+            {
+                "feedback": material.feedback.model_dump(mode="json"),
+                "feedback_version_id": str(material.feedback_version_id),
+                "feedback_sha256": material.feedback_sha256,
+                "intent_id": str(material.item.intent.id),
+            }
+            if isinstance(material, FieldSelectionMaterial)
+            else {
+                "issue_id": str(fact.issue_id),
+                "capa_id": str(fact.capa_id),
+                "action_id": str(fact.action_id),
+            }
+        ),
         "executor_id": str(material.executor_id),
     }
     try:
         original, _ = controlled.original(
-            s, ctx, pid, SourceRef.model_validate(fact.source), models.SelectionMaterial
+            s, ctx, pid, SourceRef.model_validate(fact.source), field.SelectionMaterialReader
         )
         controlled.require(original == material, "SOURCE_STALE")
         controlled.original_authority(s, ctx, pid, fact)
@@ -221,6 +290,7 @@ def order_context(s, ctx, pid, change_id):
     row, request, purpose = _current(s, ctx, pid, change_id)
     objects = _objects(s, ctx, pid, request)
     actions = _actions(s, ctx, pid, row, request, purpose)
+    field_options = field.options(s, ctx, pid, request)
     missing, policy = [], None
     try:
         actual = controlled.policy_callback(
@@ -256,7 +326,7 @@ def order_context(s, ctx, pid, change_id):
         value = _selection_record(s, ctx, pid, row, request, purpose, fact)
         selections.append(value)
         missing.extend(value["missing"])
-    if not actions:
+    if not actions and not field_options:
         missing.append({"code": "INTEGRATION_REQUIRED", "detail": "关联问题尚无实际CAPA措施。"})
     if not request.assessments:
         missing.append({"code": "RECHECK_REQUIRED", "detail": "尚无当前固定影响评估。"})
@@ -275,6 +345,8 @@ def order_context(s, ctx, pid, change_id):
         },
         "policy": policy,
         "actions": actions,
+        "field_basis_options": field_options,
+        "executor_options": field.executor_options(s, ctx) if field_options else [],
         "selections": selections,
         "object_options": objects,
         "missing": missing,
@@ -284,7 +356,9 @@ def order_context(s, ctx, pid, change_id):
 def selection_material(s, ctx, pid, data):
     row, request, purpose = _current(s, ctx, pid, data.change_id)
     controlled.require(row.revision == data.expected_change_revision, "VERSION_CONFLICT")
-    material, _ = controlled.original(s, ctx, pid, data.source, models.SelectionMaterial)
+    if data.source is None:
+        return _field_material_draft(s, ctx, pid, row, request, purpose, data)
+    material, _ = controlled.original(s, ctx, pid, data.source, field.SelectionMaterialReader)
     controlled.require(
         material.scope == request.scope
         and material.purpose == purpose
@@ -293,25 +367,30 @@ def selection_material(s, ctx, pid, data):
         "ACTION_INTENT_SCOPE_MISMATCH",
         403,
     )
-    actions = _actions(s, ctx, pid, row, request, purpose)
-    action = next(
-        (
-            value
-            for value in actions
-            if (value["issue_id"], value["capa_id"], value["action_id"], value["executor_id"])
-            == tuple(
-                str(value)
-                for value in (
-                    material.issue_id,
-                    material.capa_id,
-                    material.action_id,
-                    material.executor_id,
+    is_field = isinstance(material, FieldSelectionMaterial)
+    actions = [] if is_field else _actions(s, ctx, pid, row, request, purpose)
+    action = (
+        None
+        if is_field
+        else next(
+            (
+                value
+                for value in actions
+                if (value["issue_id"], value["capa_id"], value["action_id"], value["executor_id"])
+                == tuple(
+                    str(value)
+                    for value in (
+                        material.issue_id,
+                        material.capa_id,
+                        material.action_id,
+                        material.executor_id,
+                    )
                 )
-            )
-        ),
-        None,
+            ),
+            None,
+        )
     )
-    controlled.require(action is not None, "ACTION_INTENT_REQUIRED", 422)
+    controlled.require(is_field or action is not None, "ACTION_INTENT_REQUIRED", 422)
     _, prior = controlled.selection_pointer(
         s, ctx, pid, request.scope, request.id, material.item.id
     )
@@ -320,7 +399,11 @@ def selection_material(s, ctx, pid, data):
         expected_change_revision=row.revision,
         visibility=row.visibility,
         item=material.item,
-        action=models.ActionTarget(
+        action=FieldIntentTarget(
+            kind="field_intent", feedback=material.feedback, executor_id=material.executor_id
+        )
+        if is_field
+        else models.ActionTarget(
             issue_id=material.issue_id,
             expected_issue_revision=action["issue_revision"],
             capa_id=material.capa_id,
@@ -349,4 +432,74 @@ def selection_material(s, ctx, pid, data):
         "command": prepared["command"],
         "material": material.model_dump(mode="json"),
         "required_source_read_set": prepared["required_source_read_set"],
+    }
+
+
+def _field_material_draft(s, ctx, pid, row, request, purpose, data):
+    policy = controlled.policy_callback(
+        s, ctx, pid, scope=request.scope, purpose=purpose, request=request
+    )
+    authority, _ = controlled.authority(
+        s, ctx, pid, request.scope, models.SELECTION_OPERATION, purpose
+    )
+    controlled.require(
+        data.item.discipline in authority["roles"]
+        and data.item.discipline in policy.required_disciplines,
+        "FORBIDDEN_DISCIPLINE",
+        403,
+    )
+    controlled.require(
+        policy.nature != "real" or authority.get("synthetic") is False, "NATURE_MISMATCH", 403
+    )
+    known = (
+        {value.node.ref.identity for value in request.assessments[-1].known}
+        if request.assessments
+        else set()
+    )
+    controlled.require(
+        all(
+            ref.identity in known for ref in (*data.item.selection.objects, *data.item.intent.basis)
+        ),
+        "PLAN_SCOPE_MISMATCH",
+        422,
+    )
+    controlled.exact_units(data.item)
+    basis, _ = field.load_basis(
+        s, ctx, pid, data.field_intent, data.item, request, request.scope, purpose, policy.nature
+    )
+    _, object_reads, object_sources = controlled.objects(s, ctx, pid, request, data.item)
+    reads = controlled._reads(
+        row.required_source_read_set,
+        basis.required_source_read_set,
+        object_reads,
+        policy.required_source_read_set,
+        authority["required_source_read_set"],
+    )
+    sources = tuple(
+        dict.fromkeys((*request.sources, policy.source, *basis.sources, *object_sources))
+    )
+    controlled._source_guard(s, ctx, pid, row.visibility, row.owner_id, reads, sources)
+    material = field.material_for(
+        ctx,
+        request,
+        data.item,
+        data.field_intent,
+        basis,
+        status=data.status,
+        valid_until=data.valid_until,
+        reason=data.reason,
+    )
+    content = controlled.canonical(material.model_dump(mode="json"))
+    return {
+        "stage": "material_draft",
+        "material": material.model_dump(mode="json"),
+        "material_content": content,
+        "material_visibility": row.visibility,
+        "required_source_read_set": reads,
+        "artifact_payload": {
+            "title": f"Field变更计划：{request.title[:60]}",
+            "content": content,
+            "source_label": "服务端形成的具名未来计划，待T2确认",
+            "visibility": row.visibility,
+        },
     }

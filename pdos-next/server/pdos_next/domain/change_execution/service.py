@@ -1494,16 +1494,6 @@ def list_changes(
             if eligible
             else [{"code": "RECHECK_REQUIRED", "detail": "当前权限、专业依据或来源需核对。"}]
         )
-        if any(ref.kind == "field_feedback" for ref in (*request.roots, *request.references)):
-            blockers.append(
-                {
-                    "code": "INTEGRATION_REQUIRED",
-                    "detail": (
-                        "可建立草稿与核对双线影响；现场反馈的正式逐项选择材料尚未接入，"
-                        "不能宣称已批准、实施或复验。"
-                    ),
-                }
-            )
         items.append(
             {
                 "id": str(row.id),

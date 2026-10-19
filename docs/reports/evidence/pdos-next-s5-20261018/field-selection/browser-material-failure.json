@@ -1,0 +1,14 @@
+{
+  "passed": false,
+  "status": 422,
+  "stage": "Field material draft through existing browser BFF",
+  "reason": "Legacy validSelectionMaterial accepted only source-backed material reads; the new native Field future-plan drafting branch was rejected before the backend.",
+  "actual_ui_error": "此入口只读取明确变更版本与原文完整行中的实际材料。",
+  "source_registered": false,
+  "t2_preview_or_save": false,
+  "original_pending_request_retained": true,
+  "recovery": "After BFF fix/build, use the existing 按原请求核对材料登记 control; do not create another draft or source.",
+  "trace": "browser-cli.log",
+  "snapshot": "/private/tmp/pdos-field-plan-xcd2xoex",
+  "phase_acceptance": false
+}

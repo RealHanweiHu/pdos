@@ -708,6 +708,7 @@ test("项目试制列表拒绝重复、无效或额外筛选，不将读取变�
 });
 
 const materialBody = () => JSON.stringify({ change_id: change, expected_change_revision: 2, source: { id: issue, revision: 1, kind: "artifact", position: `line:3;quote_sha256:${"a".repeat(64)}` } });
+const fieldMaterialDraft = () => ({ change_id: change, expected_change_revision: 2, field_intent: { kind: "field_intent", feedback: { id: issue, revision: 3 }, executor_id: run }, item: { id: build, discipline: "engineering", selection: { objects: [{ kind: "engineering_configuration", id: product, revision: 1, key: null }], units: [`object:engineering_configuration:${product}:1:`], conditions: ["仅本项目的固定用途"], sources: [{ id: issue, revision: 1, kind: "artifact", position: `line:3;quote_sha256:${"a".repeat(64)}` }] }, intent: { id: run, kind: "new_engineering_configuration", basis: [{ kind: "engineering_configuration", id: product, revision: 1, key: null }], description: "未来建立明确的新工程配置" }, verification_requirement: "新配置另行实际复验" }, status: "applicable", valid_until: null as string | null, reason: "本人明确本项未来计划" });
 test("正式变更读取只放行当前项目列表与唯一指定变更上下文", async () => {
   for (const [path, query] of [["change-execution", `project_id=${issue}`], ["change-execution", `project_id=${issue}&change_id=${change}`], ["change-execution/order-context", `change_id=${change}`]]) {
     const h = harness(), result = await h.send(`${base}/${path}`, { query });
@@ -740,6 +741,25 @@ test("适用性材料入口拒绝非精确变更版本、非整行来源与客�
     assert.equal(result.response.status, 422, JSON.stringify(value)); assert.equal(result.reads, 1); assert.equal(h.calls.length, 0);
   }
   const invalid = harness(); assert.equal((await invalid.send(`${base}/change-execution/selection-material`, { method: "POST", body: "not-json" })).response.status, 422); assert.equal(invalid.calls.length, 0);
+});
+test("现场未来计划材料分支完整转发本人声明原文，保留空截止时间且不代作领域决定", async () => {
+  for (const [status, deadline] of [["applicable", null], ["unknown", "2026-10-18T12:00:00+08:00"], ["not_applicable", undefined]] as const) {
+    const draft = { ...fieldMaterialDraft(), status, valid_until: deadline }, body = ` \n${JSON.stringify(draft)}\n`, h = harness(), result = await h.send(`${base}/change-execution/selection-material`, { method: "POST", body });
+    assert.equal(result.response.status, 200); assert.equal(result.reads, 1); assert.equal(h.calls.length, 1); assert.equal(h.calls[0].url, `http://synthetic-api.invalid/${base}/change-execution/selection-material`); assert.equal(h.calls[0].init.method, "POST"); assert.equal(h.calls[0].init.body, body); assert.deepEqual(h.timeouts, [180000]);
+  }
+});
+test("现场材料草拟拒绝混用来源分支、伪范围、错误反馈执行人和不完整计划", async () => {
+  const valid = fieldMaterialDraft(), target = valid.field_intent, item = valid.item, missing = ["change_id", "expected_change_revision", "field_intent", "item", "status", "reason"].map(key => Object.fromEntries(Object.entries(valid).filter(([field]) => field !== key)));
+  const invalid: unknown[] = [
+    ...missing, { ...valid, source: JSON.parse(materialBody()).source }, { ...valid, source: null },
+    ...["scope", "tenant_id", "category_id", "product_id", "project_id", "purpose", "qualified", "authorized", "owner_id"].map(key => ({ ...valid, [key]: key === "scope" ? { tenant_id: product, project_id: issue } : issue })),
+    { ...valid, expected_change_revision: "2" }, { ...valid, field_intent: null }, { ...valid, field_intent: { ...target, kind: "capa_action" } }, { ...valid, field_intent: { ...target, executor_id: "not-a-person-id" } }, { ...valid, field_intent: { ...target, executor_id: null } }, { ...valid, field_intent: { ...target, feedback: { id: "not-feedback", revision: 3 } } },
+    ...["3", true, 0].map(revision => ({ ...valid, field_intent: { ...target, feedback: { ...target.feedback, revision } } })),
+    { ...valid, field_intent: { ...target, feedback: { ...target.feedback, qualified: true } } }, { ...valid, field_intent: { ...target, scope: { project_id: issue } } },
+    { ...valid, status: "approved" }, { ...valid, reason: " " }, { ...valid, valid_until: "2026-10-18T12:00:00" }, { ...valid, valid_until: "invalid" },
+    { ...valid, item: {} }, { ...valid, item: { ...item, id: "not-item" } }, { ...valid, item: { ...item, discipline: "self-approved" } }, { ...valid, item: { ...item, selection: null } }, { ...valid, item: { ...item, selection: { ...item.selection, objects: [] } } }, { ...valid, item: { ...item, selection: { ...item.selection, sources: [] } } }, { ...valid, item: { ...item, intent: { ...item.intent, basis: [] } } }, { ...valid, item: { ...item, intent: { ...item.intent, kind: "arbitrary-action" } } }, { ...valid, item: { ...item, verification_requirement: "" } },
+  ];
+  for (const value of invalid) { const h = harness(), result = await h.send(`${base}/change-execution/selection-material`, { method: "POST", body: JSON.stringify(value) }); assert.equal(result.response.status, 422, JSON.stringify(value)); assert.equal(result.reads, 1); assert.equal(h.calls.length, 0); }
 });
 test("适用性材料只读传输失败与真实共同提交未知分别报告，读取不冒充待保存", async () => {
   const reading = harness({ response: async () => { throw new Error("synthetic unavailable"); } });

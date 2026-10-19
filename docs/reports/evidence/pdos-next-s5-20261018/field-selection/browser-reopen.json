@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "original_material_request_restored": true,
+  "change_id": "a16d3af9-2ddd-5707-80a8-b4f37041ae41",
+  "script_process_exit": 1,
+  "note": "UI reopen completed successfully; the CLI also surfaced two orphaned response-wait timeouts from the earlier rejected 422 draft. No material/source/decision was submitted by reopen. The next browser_selection.json independently completed the retained material request and named T2/recovery."
+}

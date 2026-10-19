@@ -8,6 +8,8 @@ from weakref import WeakKeyDictionary
 
 from pdos_next import change_controlled_owner as owner
 from pdos_next import change_controlled_store as models
+from pdos_next import field_change_selection as field
+from pdos_next.change_controlled_schemas import FieldIntentTarget, FieldSelectionMaterial
 from pdos_next.change_order_service import _one, current_fixed, snapshot
 from pdos_next.change_selection_consumption import ConsumptionHost
 from pdos_next.clock import deadline_current, earliest_deadline
@@ -65,7 +67,7 @@ class PreparedSelection:
     prior: object
     policy: object
     policy_snapshot: dict
-    material: models.SelectionMaterial
+    material: object
     basis: object
     units: tuple
     object_basis: dict
@@ -141,9 +143,10 @@ def _read(s, ctx, command, payload, *, new_write, require_reads=True):
         s, ctx, command.product_id, scope=scope, purpose=purpose, request=request
     )
     _, policy_row = owner.policy_pointer(s, ctx, command.product_id, scope, purpose)
+    is_field = isinstance(payload.action, FieldIntentTarget)
     action_target = (
         payload.action
-        if new_write
+        if new_write or is_field
         else payload.action.model_copy(
             update={
                 "expected_issue_revision": owner._current_issue_revision(
@@ -152,31 +155,61 @@ def _read(s, ctx, command, payload, *, new_write, require_reads=True):
             }
         )
     )
-    basis, action = owner.action_basis(s, ctx, command.product_id, action_target, scope, purpose)
-    owner.require(
-        (selected.owner_id, selected.visibility) == (basis.owner_id, basis.visibility),
-        "AUDIENCE_USE_FORBIDDEN",
-        403,
-    )
+
+    def action_read():
+        if is_field:
+            return field.load_basis(
+                s,
+                ctx,
+                command.product_id,
+                action_target,
+                payload.item,
+                request,
+                scope,
+                purpose,
+                policy.nature,
+            )
+        return owner.action_basis(s, ctx, command.product_id, action_target, scope, purpose)
+
+    basis, action = action_read()
+    if not is_field:
+        owner.require(
+            (selected.owner_id, selected.visibility) == (basis.owner_id, basis.visibility),
+            "AUDIENCE_USE_FORBIDDEN",
+            403,
+        )
     material, _ = owner.original(
-        s, ctx, command.product_id, payload.source, models.SelectionMaterial
+        s, ctx, command.product_id, payload.source, field.SelectionMaterialReader
     )
-    expected = models.SelectionMaterial(
-        schema_version="pdos-controlled-change-selection-v1",
-        scope=scope,
-        purpose=purpose,
-        change_id=request.id,
-        item=payload.item,
-        issue_id=basis.issue_id,
-        capa_id=basis.capa_id,
-        action_id=action.action_id,
-        action_sha256=action.action_sha256,
-        executor_id=action.executor_id,
-        decider_id=ctx.actor_id,
-        status=payload.status,
-        valid_until=payload.valid_until,
-        reason=payload.reason,
-        nature=basis.nature,
+    expected = (
+        field.material_for(
+            ctx,
+            request,
+            payload.item,
+            action_target,
+            basis,
+            status=payload.status,
+            valid_until=payload.valid_until,
+            reason=payload.reason,
+        )
+        if is_field
+        else models.SelectionMaterial(
+            schema_version="pdos-controlled-change-selection-v1",
+            scope=scope,
+            purpose=purpose,
+            change_id=request.id,
+            item=payload.item,
+            issue_id=basis.issue_id,
+            capa_id=basis.capa_id,
+            action_id=action.action_id,
+            action_sha256=action.action_sha256,
+            executor_id=action.executor_id,
+            decider_id=ctx.actor_id,
+            status=payload.status,
+            valid_until=payload.valid_until,
+            reason=payload.reason,
+            nature=basis.nature,
+        )
     )
     owner.require(material == expected, "ACTION_INTENT_SOURCE_MISMATCH")
     owner.require(policy.nature == basis.nature, "NATURE_MISMATCH", 403)
@@ -203,26 +236,58 @@ def _read(s, ctx, command, payload, *, new_write, require_reads=True):
         )
         owner.require(
             prior is None
-            or (
-                prior.owner_id,
-                prior.visibility,
-                prior.purpose,
-                prior.intent_id,
-                prior.action_id,
-                prior.capa_id,
-                prior.issue_id,
-            )
-            == (
-                selected.owner_id,
-                selected.visibility,
-                purpose,
-                payload.item.intent.id,
-                action.action_id,
-                basis.capa_id,
-                basis.issue_id,
-            ),
+            or getattr(prior, "basis_kind", "capa_action")
+            == ("field_intent" if is_field else "capa_action"),
             "SELECTION_SERIES_SCOPE_CHANGED",
         )
+        if is_field:
+            owner.require(
+                prior is None
+                or (
+                    prior.owner_id,
+                    prior.visibility,
+                    prior.purpose,
+                    prior.intent_id,
+                    prior.feedback_id,
+                    prior.feedback_version_id,
+                    prior.feedback_revision,
+                    prior.feedback_sha256,
+                )
+                == (
+                    selected.owner_id,
+                    selected.visibility,
+                    purpose,
+                    payload.item.intent.id,
+                    basis.feedback_id,
+                    basis.feedback_version_id,
+                    basis.feedback_revision,
+                    basis.feedback_sha256,
+                ),
+                "SELECTION_SERIES_SCOPE_CHANGED",
+            )
+        else:
+            owner.require(
+                prior is None
+                or (
+                    prior.owner_id,
+                    prior.visibility,
+                    prior.purpose,
+                    prior.intent_id,
+                    prior.action_id,
+                    prior.capa_id,
+                    prior.issue_id,
+                )
+                == (
+                    selected.owner_id,
+                    selected.visibility,
+                    purpose,
+                    payload.item.intent.id,
+                    action.action_id,
+                    basis.capa_id,
+                    basis.issue_id,
+                ),
+                "SELECTION_SERIES_SCOPE_CHANGED",
+            )
     else:
         revision, epoch = (prior.revision, prior.epoch) if prior else (1, 1)
     sources = tuple(
@@ -251,9 +316,7 @@ def _read(s, ctx, command, payload, *, new_write, require_reads=True):
     owner.policy_callback(
         s, ctx, command.product_id, scope=scope, purpose=purpose, request=request, previous=policy
     )
-    final_basis, final_action = owner.action_basis(
-        s, ctx, command.product_id, action_target, scope, purpose
-    )
+    final_basis, final_action = action_read()
     owner.require(
         final_basis == basis
         and final_action == action
@@ -343,6 +406,7 @@ def _read(s, ctx, command, payload, *, new_write, require_reads=True):
 
 def review(phase):
     """Stable 13 keys; no prospective UUID or evaluated clock enters material."""
+    is_field = isinstance(phase.material, FieldSelectionMaterial)
     return {
         "operation": OPERATION,
         "payload_semantic": deepcopy(phase.payload_semantic),
@@ -355,7 +419,14 @@ def review(phase):
         "after": {
             "selection_revision": phase.next_revision,
             "material": phase.material.model_dump(mode="json"),
-            "issue_version_id": str(phase.basis.issue_version_id),
+            **(
+                {
+                    "feedback_version_id": str(phase.basis.feedback_version_id),
+                    "feedback_sha256": phase.basis.feedback_sha256,
+                }
+                if is_field
+                else {"issue_version_id": str(phase.basis.issue_version_id)}
+            ),
         },
         "read_set": deepcopy(phase.reads),
         "sources": [v.model_dump(mode="json") for v in phase.sources],
@@ -366,9 +437,17 @@ def review(phase):
             "item_sha256": digest(phase.material.item),
             "units": [v.model_dump(mode="json") for v in phase.units],
             "objects": deepcopy(phase.object_basis),
-            "action_sha256": phase.material.action_sha256,
+            **(
+                {"intent_sha256": digest(phase.material.item.intent)}
+                if is_field
+                else {"action_sha256": phase.material.action_sha256}
+            ),
         },
-        "effect": "保存逐项适用与真实CAPA措施关联；未批准变更令、未实施、未授资格或完整影响覆盖。",
+        "effect": (
+            "保存现场反馈的明确未来实施意图与逐项适用；不代表执行人已承诺、已实施或复验。"
+            if is_field
+            else "保存逐项适用与真实CAPA措施关联；未批准变更令、未实施、未授资格或完整影响覆盖。"
+        ),
         "unknown": ["八维影响完整性、实际实施和生效由原独立owner办理。"]
         if phase.material.status == "applicable"
         else ["该项不适用/未知，不能批准或实施。"],
@@ -444,6 +523,7 @@ def _stage_without_io(s, ctx, command, phase, marker, saved_at):
         "SOURCE_STALE",
     )
     material, prior = phase.material, phase.prior
+    is_field = isinstance(material, FieldSelectionMaterial)
     atom = models.ChangeSelectionFact(
         id=uuid4(),
         tenant_id=ctx.tenant_id,
@@ -481,12 +561,25 @@ def _stage_without_io(s, ctx, command, phase, marker, saved_at):
         item_id=material.item.id,
         item_sha256=digest(material.item),
         intent_id=material.item.intent.id,
-        issue_id=material.issue_id,
-        issue_version_id=phase.basis.issue_version_id,
-        issue_revision=phase.basis.issue_revision,
-        capa_id=material.capa_id,
-        action_id=material.action_id,
-        action_sha256=material.action_sha256,
+        basis_kind="field_intent" if is_field else "capa_action",
+        issue_id=None if is_field else material.issue_id,
+        issue_version_id=None if is_field else phase.basis.issue_version_id,
+        issue_revision=None if is_field else phase.basis.issue_revision,
+        capa_id=None if is_field else material.capa_id,
+        action_id=None if is_field else material.action_id,
+        action_sha256=None if is_field else material.action_sha256,
+        **(
+            {
+                "category_id": phase.basis.category_id,
+                "feedback_id": phase.basis.feedback_id,
+                "feedback_version_id": phase.basis.feedback_version_id,
+                "feedback_revision": phase.basis.feedback_revision,
+                "feedback_sha256": phase.basis.feedback_sha256,
+                "executor_id": material.executor_id,
+            }
+            if is_field
+            else {}
+        ),
         policy_id=phase.policy.id,
         policy_revision=phase.policy.revision,
         policy_snapshot=phase.policy_snapshot,
@@ -500,7 +593,11 @@ def _stage_without_io(s, ctx, command, phase, marker, saved_at):
     )
     atom.action_result = {
         "item_id": str(atom.item_id),
-        "action_id": str(atom.action_id),
+        **(
+            {"intent_id": str(atom.intent_id), "feedback_id": str(atom.feedback_id)}
+            if is_field
+            else {"action_id": str(atom.action_id)}
+        ),
         "material_sha256": atom.material_sha256,
     }
     s.add(atom)

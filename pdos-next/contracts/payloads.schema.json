@@ -13508,6 +13508,52 @@
           "title": "ControlledIntent",
           "type": "object"
         },
+        "FieldFeedbackRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "FieldFeedbackRef",
+          "type": "object"
+        },
+        "FieldIntentTarget": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "field_intent",
+              "title": "Kind",
+              "type": "string"
+            },
+            "feedback": {
+              "$ref": "#/$defs/FieldFeedbackRef"
+            },
+            "executor_id": {
+              "format": "uuid",
+              "title": "Executor Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "feedback",
+            "executor_id"
+          ],
+          "title": "FieldIntentTarget",
+          "type": "object"
+        },
         "PlanItem": {
           "additionalProperties": false,
           "properties": {
@@ -13734,7 +13780,15 @@
           "$ref": "#/$defs/PlanItem"
         },
         "action": {
-          "$ref": "#/$defs/ActionTarget"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ActionTarget"
+            },
+            {
+              "$ref": "#/$defs/FieldIntentTarget"
+            }
+          ],
+          "title": "Action"
         },
         "status": {
           "enum": [

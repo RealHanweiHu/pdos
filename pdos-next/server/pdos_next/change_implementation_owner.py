@@ -5,6 +5,7 @@ import json
 from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Literal
 from uuid import UUID, uuid4
 from weakref import WeakKeyDictionary
 
@@ -12,6 +13,7 @@ from pydantic import AwareDatetime, ConfigDict, Field, field_validator, model_va
 from sqlalchemy import select, text
 
 from pdos_next import change_order_store as store
+from pdos_next.change_controlled_schemas import FieldFeedbackRef
 from pdos_next.clock import deadline_current, earliest_deadline, proof_deadline_current
 from pdos_next.clock import now as server_now
 from pdos_next.database import category_for_product
@@ -49,14 +51,9 @@ def _require(value, code="IMPLEMENTATION_OWNER_MISMATCH", status=409):
         raise DomainError(code, "实施原件、批准、本人、实际配置或共同保存组未满足。", status)
 
 
-class Occurrence(DTO):
+class _Occurrence(DTO):
     model_config = ConfigDict(extra="forbid", frozen=True, str_strip_whitespace=False)
-    schema_version: str = Field(pattern="^pdos-change-implementation-occurrence-v2$")
     scope: Scope
-    issue_id: UUID
-    capa_id: UUID
-    action_id: UUID
-    action_sha256: str = Field(pattern="^[0-9a-f]{64}$")
     purpose: Text
     change_id: UUID
     order_id: UUID
@@ -97,6 +94,36 @@ class Occurrence(DTO):
         return self
 
 
+class Occurrence(_Occurrence):
+    """The existing CAPA occurrence retains its exact v2 meaning."""
+
+    schema_version: str = Field(pattern="^pdos-change-implementation-occurrence-v2$")
+    issue_id: UUID
+    capa_id: UUID
+    action_id: UUID
+    action_sha256: str = Field(pattern="^[0-9a-f]{64}$")
+
+
+class FieldOccurrence(_Occurrence):
+    """Actual Field execution of a fixed, named, approved selection."""
+
+    schema_version: Literal["pdos-field-change-implementation-occurrence-v1"]
+    feedback: FieldFeedbackRef
+    feedback_version_id: UUID
+    feedback_sha256: str = Field(pattern="^[0-9a-f]{64}$")
+    selection_id: UUID
+    selection_revision: int = Field(strict=True, ge=1)
+    selection_sha256: str = Field(pattern="^[0-9a-f]{64}$")
+
+
+def parse_occurrence(raw):
+    kind = raw.get("schema_version") if isinstance(raw, dict) else None
+    model = (
+        FieldOccurrence if kind == "pdos-field-change-implementation-occurrence-v1" else Occurrence
+    )
+    return model.model_validate(raw)
+
+
 def original_occurrence(s, ctx, pid, source):
     _require(source.kind == "artifact", "MISSING_REQUIRED_EVIDENCE", 422)
     artifact = source_for(s, ctx, pid, source.id, source.revision)
@@ -113,7 +140,7 @@ def original_occurrence(s, ctx, pid, source):
     line = lines[number - 1]
     _require(hashlib.sha256(line.encode("utf-8")).hexdigest() == match[2], "SOURCE_STALE")
     try:
-        value = Occurrence.model_validate(
+        value = parse_occurrence(
             json.loads(line, object_pairs_hook=_pairs, parse_constant=_constant)
         )
     except (ValueError, TypeError) as error:
@@ -393,6 +420,8 @@ def validate_binding(s, ctx, pid, request, order, occurrence, *, new_write=False
             "NAMED_EXECUTOR_REQUIRED",
             403,
         )
+    if isinstance(occurrence, FieldOccurrence):
+        return _field_binding(s, ctx, pid, request, item, occurrence), item
     basis = load_followup_basis(
         s,
         ctx,
@@ -419,6 +448,67 @@ def validate_binding(s, ctx, pid, request, order, occurrence, *, new_write=False
     return basis, item
 
 
+def _field_binding(s, ctx, pid, request, item, occurrence):
+    """Use the actual selected Field intent, never fabricate a CAPA basis."""
+    from pdos_next import change_controlled_owner as controlled
+    from pdos_next.change_controlled_schemas import FieldIntentTarget, FieldSelectionMaterial
+    from pdos_next.field_change_selection import load_basis, parse_material
+
+    proof = controlled.selection_callback(
+        s, ctx, pid, scope=request.scope, purpose=occurrence.purpose, item=item, request=request
+    )
+    _, selected = controlled.selection_pointer(s, ctx, pid, request.scope, request.id, item.id)
+    _require(selected is not None and selected.basis_kind == "field_intent")
+    material = parse_material(selected.material)
+    _require(isinstance(material, FieldSelectionMaterial), "IMPLEMENTATION_MATERIAL_MISMATCH")
+    _require(
+        occurrence.selection_id == selected.id
+        and occurrence.selection_revision == selected.revision
+        and occurrence.selection_sha256 == selected.material_sha256
+        and occurrence.selection_sha256 == digest(material)
+        and material.scope == request.scope
+        and material.purpose == occurrence.purpose
+        and material.change_id == request.id
+        and material.item == item
+        and material.feedback == occurrence.feedback
+        and material.feedback_version_id == occurrence.feedback_version_id
+        and material.feedback_sha256 == occurrence.feedback_sha256
+        and selected.feedback_id == occurrence.feedback.id
+        and selected.feedback_version_id == occurrence.feedback_version_id
+        and selected.feedback_revision == occurrence.feedback.revision
+        and selected.feedback_sha256 == occurrence.feedback_sha256
+        and selected.executor_id == occurrence.executor_id
+        and material.executor_id == occurrence.executor_id
+        and material.nature == occurrence.nature == proof.nature,
+        "IMPLEMENTATION_MATERIAL_MISMATCH",
+    )
+    basis, intent = load_basis(
+        s,
+        ctx,
+        pid,
+        FieldIntentTarget(
+            kind="field_intent",
+            feedback=occurrence.feedback,
+            executor_id=occurrence.executor_id,
+        ),
+        item,
+        request,
+        request.scope,
+        occurrence.purpose,
+        material.nature,
+    )
+    _require(
+        basis.feedback_id == occurrence.feedback.id
+        and basis.feedback_revision == occurrence.feedback.revision
+        and basis.feedback_version_id == occurrence.feedback_version_id
+        and basis.feedback_sha256 == occurrence.feedback_sha256
+        and intent.intent_id == occurrence.intent_id
+        and intent.executor_id == occurrence.executor_id,
+        "IMPLEMENTATION_MATERIAL_MISMATCH",
+    )
+    return basis
+
+
 def _current_issue_revision(s, ctx, pid, identity):
     from pdos_next.domain.quality_execution.service import get_issue
 
@@ -430,7 +520,7 @@ def _current_issue_revision(s, ctx, pid, identity):
 class CaptureRead:
     row: object
     fact: ImplementationFact
-    occurrence: Occurrence
+    occurrence: Occurrence | FieldOccurrence
     output_basis: dict
 
 
@@ -472,7 +562,7 @@ def read_capture(s, ctx, pid, request, order, fact_id, *, new_write=False):
     if row.visibility == "private":
         _require(row.owner_id == ctx.requester_id, "FORBIDDEN_SCOPE", 403)
     fact = ImplementationFact.model_validate(row.fact_snapshot)
-    occurrence = Occurrence.model_validate(row.occurrence_snapshot)
+    occurrence = parse_occurrence(row.occurrence_snapshot)
     _require(
         fact.id == occurrence.implementation_id == row.fact_id
         and fact.executor_id == row.executor_id
@@ -568,7 +658,10 @@ def prepare_capture(s, ctx, pid, input):
     reads = old._merge_reads(
         old._source_reads(sources),
         row.required_source_read_set,
-        [v.model_dump(mode="json") for v in basis.required_source_read_set],
+        [
+            v.model_dump(mode="json") if hasattr(v, "model_dump") else dict(v)
+            for v in basis.required_source_read_set
+        ],
         *[v.reads for v in reader.objects.values()],
     )
     sourcebasis, private, _ = old._evidence(s, ctx, pid, reads, sources)
@@ -649,7 +742,7 @@ class ApprovedImplementationRead:
     version: object
     implementation: object
     receipt_id: UUID
-    occurrence: Occurrence
+    occurrence: Occurrence | FieldOccurrence
     material: dict
     valid_until: datetime
 

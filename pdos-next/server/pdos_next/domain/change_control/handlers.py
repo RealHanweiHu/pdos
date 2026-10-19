@@ -157,7 +157,7 @@ class ChangeControlHandler:
         statuses += [self._source(uow, authority, s) for s in graph_sources(snapshot)]
         return statuses
 
-    def _current(self, uow, authority, request):
+    def _current(self, uow, authority, request, *, include_assessment=True):
         """ACL checked even on stale history. Return reasons; callers choose block."""
         reasons = list(request.recheck_reasons) if request.needs_recheck else []
         self._port("facts").audience(
@@ -169,7 +169,7 @@ class ChangeControlHandler:
         )
         checks = [self._ref(uow, authority, r) for r in (*request.roots, *request.references)]
         checks += [self._source(uow, authority, s) for s in request.sources]
-        if request.assessments and request.status != "draft":
+        if include_assessment and request.assessments and request.status != "draft":
             a = request.assessments[-1]
             checks += self._fixed_graph(uow, authority, a.graph)
             checks += [self._source(uow, authority, s) for h in a.hypotheses for s in h.sources]
@@ -236,10 +236,10 @@ class ChangeControlHandler:
                 reasons += list(check.reasons) or ["固定来源或配置已变化/撤回。"]
         return tuple(dict.fromkeys(reasons))
 
-    def _require_current(self, uow, authority, request):
-        reasons = self._current(uow, authority, request)
-        if reasons:
-            raise DomainError("RECHECK_REQUIRED", "；".join(reasons))
+    def _require_current(self, uow, authority, request, *, include_assessment=True):
+        reasons = self._current(uow, authority, request, include_assessment=include_assessment)
+        if reasons or request.needs_recheck:
+            raise DomainError("RECHECK_REQUIRED", "；".join(reasons) or "当前变更待显式重核。")
 
     def _order(self, request):
         if not request.orders:
@@ -406,7 +406,16 @@ class ChangeControlHandler:
             if request.revision != revision:
                 raise DomainError("VERSION_CONFLICT", "变更版本已变化。")
             if operation not in {"change.recheck", "change.request.revise"}:
-                self._require_current(uow, authority, request)
+                # Recompute validates the selected new graph below. Requiring
+                # the old graph's currentness would prevent its replacement and
+                # ask a single-capture Facts port to resolve another identity.
+                # The request owner still owns all retained-history read ACLs.
+                self._require_current(
+                    uow,
+                    authority,
+                    request,
+                    include_assessment=operation != "change.impact.compute",
+                )
             read = digest(request)
 
         new_ids = ()

@@ -93,11 +93,22 @@ class ActionTarget(Exact):
     action_id: UUID
 
 
+class FieldFeedbackRef(Exact):
+    id: UUID
+    revision: int = Field(strict=True, ge=1)
+
+
+class FieldIntentTarget(Exact):
+    kind: Literal["field_intent"]
+    feedback: FieldFeedbackRef
+    executor_id: UUID
+
+
 class SelectionPayload(Target, Exact):
     """A named proposal: actual applicability is established only by T2 consumption."""
 
     item: PlanItem
-    action: ActionTarget
+    action: ActionTarget | FieldIntentTarget
     status: Literal["applicable", "not_applicable", "unknown"]
     source: SourceRef
     valid_until: AwareDatetime | None = None
@@ -127,6 +138,25 @@ class SelectionMaterial(Exact):
     decider_id: UUID
     status: Literal["applicable", "not_applicable", "unknown"]
     valid_until: AwareDatetime
+    reason: Text
+    nature: Literal["real", "synthetic"]
+
+
+class FieldSelectionMaterial(Exact):
+    """A future PlanItem explicitly declared by a named person, never a response."""
+
+    schema_version: Literal["pdos-field-change-selection-v1"]
+    scope: Scope
+    purpose: Text
+    change_id: UUID
+    item: PlanItem
+    feedback: FieldFeedbackRef
+    feedback_version_id: UUID
+    feedback_sha256: str = Field(pattern="^[0-9a-f]{64}$")
+    executor_id: UUID
+    decider_id: UUID
+    status: Literal["applicable", "not_applicable", "unknown"]
+    valid_until: AwareDatetime | None
     reason: Text
     nature: Literal["real", "synthetic"]
 

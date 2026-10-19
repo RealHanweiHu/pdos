@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "reviewed_by": "root",
+  "method": "Actual viewport captures visually inspected with view_image; earlier full-locator captures retained as prior because fixed navigation was duplicated into the long element capture.",
+  "screenshots": {
+    "light-form.png": "6601fd061d78f0bae04ec814bb954f108ae75804af7b1e75add3c04eb552a1c7",
+    "dark-mobile-form.png": "b5405f5f992583d8bb0335608a4e858ebb718dd30c9dd0fb0c21986d55f68305"
+  },
+  "findings": "Native form text, selectors and actions remain within the actual viewport; both themes readable; no horizontal document overflow at 1440 and 320. Saved material and selection remain separate from the blank future-plan draft after reload.",
+  "new_product_source_changes": false
+}

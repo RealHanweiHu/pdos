@@ -17,7 +17,6 @@ export const qualitySame = (a: unknown, b: unknown) => JSON.stringify(qualitySta
 export function qualityReads(...groups: SourceRead[][]): SourceRead[] {
   const refs = new Map<string, SourceRead>();
   for (const row of groups.flat()) { if (!row || typeof row.artifact_id !== "string" || !row.artifact_id || !qualityRevision(row.expected_revision)) throw new Error("固定来源读集缺少有效身份或版本。"); const old = refs.get(row.artifact_id); if (old && old.expected_revision !== row.expected_revision) throw new Error("同一来源的两个版本不能混入一次办理。"); refs.set(row.artifact_id, { artifact_id: row.artifact_id, expected_revision: row.expected_revision }); }
-  if (refs.size > 20) throw new Error("合并后的精确来源超过 20 份，不能截断；请缩小本次办理范围。");
   return [...refs.values()].sort((a, b) => a.artifact_id.localeCompare(b.artifact_id));
 }
 export type QualitySource = { id: string; revision: number; kind: "artifact"; position: string };

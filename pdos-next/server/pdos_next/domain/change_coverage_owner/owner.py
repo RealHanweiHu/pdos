@@ -220,6 +220,7 @@ def _fixed_request(value):
 
 def fixed_seed(s, ctx, pid, refs, *, verify_sources=True):
     # The existing optional arbitrary Issue loader is not a coverage truth root.
+    from pdos_next.domain.change_execution.field_bridge import get as field_feedback
     from pdos_next.domain.quality_execution.service import (
         _change_scope_for_change,
         get_issue_for_change,
@@ -227,13 +228,23 @@ def fixed_seed(s, ctx, pid, refs, *, verify_sources=True):
 
     fixed = {}
     for ref in refs:
+        if ref.kind == "field_feedback":
+            key = ("field_feedback", ref.id, ref.revision)
+            if key not in fixed:
+                # Field's native owner checks Current, real configuration,
+                # source status and caller ACL even in a metadata-only binding.
+                # This derives scope; it grants no completeness or publication.
+                _, _, scope, purpose = field_feedback(s, ctx, pid, ref)
+                fixed[key] = (scope.project_id, purpose)
+            continue
         if ref.kind not in {"issue", "capa"}:
             continue
-        if (ref.id, ref.revision) in fixed:
+        key = ("issue", ref.id, ref.revision)
+        if key in fixed:
             continue
         if not verify_sources:
             scope, purpose = _change_scope_for_change(s, ctx, pid, ref)
-            fixed[(ref.id, ref.revision)] = (scope.project_id, purpose)
+            fixed[key] = (scope.project_id, purpose)
             continue
         row, view = get_issue_for_change(s, ctx, pid, ref.id, ref.revision)
         require(
@@ -244,7 +255,7 @@ def fixed_seed(s, ctx, pid, refs, *, verify_sources=True):
             and view.source_status == "current",
             "COVERAGE_DEPENDENCY_UNRESOLVED",
         )
-        fixed[(ref.id, ref.revision)] = (row.project_id, view.purpose)
+        fixed[key] = (row.project_id, view.purpose)
     require(bool(fixed) and len(set(fixed.values())) == 1, "COVERAGE_DEPENDENCY_UNRESOLVED")
     project_id, purpose = next(iter(fixed.values()))
     return Scope(tenant_id=ctx.tenant_id, product_id=pid, project_id=project_id), purpose

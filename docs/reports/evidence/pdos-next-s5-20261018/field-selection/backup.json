@@ -1,0 +1,11 @@
+{
+  "path": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/post-s5-field-plan-20261018-s0_0807.dump",
+  "head": "s0_0807",
+  "database": "pdos_test",
+  "port": 64245,
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "size": 75738002,
+  "sha256": "bb37655b15a9c00b4e6d59a349519ec7dcc7b22a90045450f6b14a4a5c8977b2",
+  "previous_backups_preserved": true,
+  "shared_environment_retained": true
+}

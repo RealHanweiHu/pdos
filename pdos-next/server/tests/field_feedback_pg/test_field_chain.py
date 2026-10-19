@@ -454,7 +454,9 @@ def test_unknown_field_to_real_change_impact_and_retained_response(knowledge_wor
     assert current_change["revision"] == 2
     assert current_change["capabilities"]["order_approve"] is False
     assert current_change["capabilities"]["implementation_record"] is False
-    assert any(blocker["code"] == "INTEGRATION_REQUIRED" for blocker in current_change["blockers"])
+    assert not any(
+        blocker["code"] == "INTEGRATION_REQUIRED" for blocker in current_change["blockers"]
+    )
 
     link, _ = prepare(
         work,

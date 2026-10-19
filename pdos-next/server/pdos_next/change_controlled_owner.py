@@ -11,6 +11,8 @@ from sqlalchemy import select
 
 from pdos_next import change_controlled_store as models
 from pdos_next import change_order_store as outputs
+from pdos_next import field_change_selection as field
+from pdos_next.change_controlled_schemas import FieldIntentTarget, FieldSelectionMaterial
 from pdos_next.change_implementation_owner import _atom_proof, _json, common_group
 from pdos_next.change_order_service import _one, current_fixed, snapshot
 from pdos_next.clock import deadline_current, earliest_deadline
@@ -403,7 +405,7 @@ def selection_callback(s, ctx, pid, *, scope, purpose, item, request, previous=N
     require(row is not None, "CHANGE_SELECTION_OWNER_REQUIRED", 503)
     require(row.visibility != "private" or row.owner_id == ctx.requester_id, "FORBIDDEN_SCOPE", 403)
     material, _ = original(
-        s, ctx, pid, SourceRef.model_validate(row.source), models.SelectionMaterial
+        s, ctx, pid, SourceRef.model_validate(row.source), field.SelectionMaterialReader
     )
     require(
         material.model_dump(mode="json") == row.material
@@ -422,23 +424,69 @@ def selection_callback(s, ctx, pid, *, scope, purpose, item, request, previous=N
     require(row.status == "applicable", "SELECTION_NOT_APPLICABLE")
     current_policy = policy_callback(s, ctx, pid, scope=scope, purpose=purpose, request=request)
     require(same(current_policy.model_dump(mode="json"), row.policy_snapshot), "RECHECK_REQUIRED")
-    target = models.ActionTarget(
-        issue_id=row.issue_id,
-        expected_issue_revision=_current_issue_revision(s, ctx, pid, scope, row.issue_id),
-        capa_id=row.capa_id,
-        action_id=row.action_id,
-    )
-    basis, action = action_basis(s, ctx, pid, target, scope, purpose)
+    is_field = isinstance(material, FieldSelectionMaterial)
     require(
-        (action.action_sha256, action.executor_id)
-        == (material.action_sha256, material.executor_id),
-        "ACTION_INTENT_CHANGED",
+        getattr(row, "basis_kind", "capa_action")
+        == ("field_intent" if is_field else "capa_action"),
+        "INTEGRITY_MISMATCH",
     )
-    require(
-        row.visibility == basis.visibility and row.owner_id == basis.owner_id,
-        "AUDIENCE_USE_FORBIDDEN",
-        403,
+    target = (
+        FieldIntentTarget(
+            kind="field_intent", feedback=material.feedback, executor_id=material.executor_id
+        )
+        if is_field
+        else models.ActionTarget(
+            issue_id=row.issue_id,
+            expected_issue_revision=_current_issue_revision(s, ctx, pid, scope, row.issue_id),
+            capa_id=row.capa_id,
+            action_id=row.action_id,
+        )
     )
+
+    def action_read():
+        if is_field:
+            return field.load_basis(
+                s, ctx, pid, target, item, request, scope, purpose, current_policy.nature
+            )
+        return action_basis(s, ctx, pid, target, scope, purpose)
+
+    basis, action = action_read()
+    if is_field:
+        require(
+            (
+                row.feedback_id,
+                row.feedback_version_id,
+                row.feedback_revision,
+                row.feedback_sha256,
+                row.executor_id,
+                row.intent_id,
+            )
+            == (
+                material.feedback.id,
+                material.feedback_version_id,
+                material.feedback.revision,
+                material.feedback_sha256,
+                material.executor_id,
+                action.intent_id,
+            ),
+            "INTEGRITY_MISMATCH",
+        )
+        require(
+            (basis.feedback_version_id, basis.feedback_sha256, action.executor_id)
+            == (material.feedback_version_id, material.feedback_sha256, material.executor_id),
+            "ACTION_INTENT_CHANGED",
+        )
+    else:
+        require(
+            (action.action_sha256, action.executor_id)
+            == (material.action_sha256, material.executor_id),
+            "ACTION_INTENT_CHANGED",
+        )
+        require(
+            row.visibility == basis.visibility and row.owner_id == basis.owner_id,
+            "AUDIENCE_USE_FORBIDDEN",
+            403,
+        )
     require(
         [v.model_dump(mode="json") for v in exact_units(item)] == row.units_snapshot,
         "SELECTION_SCOPE_MISMATCH",
@@ -483,7 +531,7 @@ def selection_callback(s, ctx, pid, *, scope, purpose, item, request, previous=N
         s, ctx, pid, scope=scope, purpose=purpose, request=request, previous=current_policy
     )
     final_original_until = original_authority(s, ctx, pid, row)
-    last_basis, last_action = action_basis(s, ctx, pid, target, scope, purpose)
+    last_basis, last_action = action_read()
     require(
         last_basis == basis
         and last_action == action

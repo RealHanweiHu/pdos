@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "named_field_selection_count": 1,
+  "native_feedback_and_executor_bound": true,
+  "capa_columns_null": true,
+  "selection_and_proof_expiry_null": true,
+  "human_actor_equals_requester": true,
+  "actual_common_groups": {
+    "6cb0ef4d-d180-466e-9438-64250e7c5be5": {
+      "audit_entries": 1,
+      "outbox_events": 1,
+      "request_keys": 1
+    },
+    "48c3dd2c-bc92-40ca-8cb3-18d0f9e9bd9d": {
+      "audit_entries": 1,
+      "outbox_events": 1,
+      "request_keys": 1
+    }
+  },
+  "own_short_login_deleted": 1,
+  "own_browser_closed": true,
+  "own_preview_ports_closed": [
+    62090,
+    62091
+  ],
+  "shared_database_and_temporal_retained": true,
+  "partial_test_histories_retained": true,
+  "head": "s0_0807",
+  "target": "127.0.0.1:64245/pdos_test",
+  "model_calls": 0,
+  "business_egress": 0
+}

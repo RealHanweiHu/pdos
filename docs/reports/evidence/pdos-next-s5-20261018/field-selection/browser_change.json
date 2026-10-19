@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "feedback_id": "9bfb5ddc-c3a0-55a8-8b8f-f9cc28291091",
+  "change_id": "a16d3af9-2ddd-5707-80a8-b4f37041ae41",
+  "create_receipt": "d161e8d1-9d9f-4dc7-81a3-ecf9cb5e44fe",
+  "graph_id": "3fe1f457-c9d6-48a8-b447-88aefcd2b1c8",
+  "impact_receipt": "9593f8cc-81d1-4790-9107-0feb796cb4ec",
+  "change_revision": 2,
+  "actual_field_root": true,
+  "formal_plan_panel_expected": true,
+  "model_calls": 0
+}
