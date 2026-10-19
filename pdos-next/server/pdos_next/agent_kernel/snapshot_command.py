@@ -16,6 +16,7 @@ from pdos_next.research.web import canonical_url
 from pdos_next.schema_base import StrictModel
 
 from .bindings import ModelBinding, WriteSource, execution_key
+from .disclosure import disclosed_in_run
 from .models import AgentEvent, AgentRun, AgentToolCall, PublicWebSnapshot
 
 OPERATION = "research.snapshot.register"
@@ -194,7 +195,7 @@ def _verify_candidate_source(session, run, event):
             or event.body["intent_key"] != execution_key(run.id, model.id, source.response_index)
             or binding.model_version != run.versions.get("model_version")
             or binding.model_route_digest != run.versions.get("model_route_digest")
-            or binding.tool_definitions_digest != run.versions["tool_definitions"].get("main")
+            or not disclosed_in_run(run.versions, "main", binding.tool_definitions_digest)
             or binding.prompt_digest != run.versions["prompt_prefixes"].get("main")
         ):
             _deny("snapshot_candidate_source_invalid")

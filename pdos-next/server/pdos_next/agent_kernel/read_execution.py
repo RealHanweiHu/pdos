@@ -16,6 +16,7 @@ from pdos_next.schema_base import StrictModel
 from pdos_next.service import digest
 
 from .bindings import ModelBinding, execution_key
+from .disclosure import binding_operations, disclosed_in_run, disclosure
 from .execution import check_run_binding
 from .models import AgentRun, AgentToolCall
 from .types import Isolation
@@ -105,14 +106,15 @@ def _model_matches_run(run, scope, model):
         model.isolation != scope.isolation or model.cancel_epoch != run.cancel_epoch
         or model.model_version != versions.get("model_version")
         or model.model_route_digest != versions.get("model_route_digest")
-        or model.tool_definitions_digest != versions["tool_definitions"].get(scope.isolation)
+        or not disclosed_in_run(versions, scope.isolation, model.tool_definitions_digest)
         or model.prompt_digest != versions["prompt_prefixes"].get(scope.isolation)
     ):
         _deny("read_model_binding_mismatch", code="VERSION_CONFLICT")
 
 
 def verify_read_source(
-    session, scope, run, spec, arguments, source, registry, route, *, intent_key=None
+    session, scope, run, spec, arguments, source, registry, route, *,
+    catalog=None, intent_key=None,
 ):
     """Return the actual ModelBinding after validating a new, active read.
 
@@ -124,6 +126,10 @@ def verify_read_source(
     """
     if not isinstance(source, ReadSource):
         _deny("read_source_required")
+    if catalog is None:
+        from .skills import SkillCatalog
+
+        catalog = SkillCatalog()
     try:
         actual = session.get(AgentRun, scope.run_id)
         check_run_binding(actual, scope)
@@ -143,8 +149,9 @@ def verify_read_source(
         if current != spec:
             _deny("read_registry_changed", code="VERSION_CONFLICT")
         registry.authorize(scope, spec.name, arguments, {}, lambda *_: False)
-        definitions = registry.definitions(scope.isolation)
-        if not any(item["name"] == spec.name for item in definitions):
+        if not any(
+            item["name"] == spec.name for item in registry.definitions(scope.isolation)
+        ):
             _deny("read_tool_isolation_mismatch")
         call = session.get(AgentToolCall, source.model_call_id)
         if (
@@ -156,10 +163,16 @@ def verify_read_source(
             _deny("read_model_call_invalid")
         model = ModelBinding.model_validate(call.execution_binding)
         _model_matches_run(actual, scope, model)
+        # A read is only trusted when the call it cites disclosed this tool, which
+        # the binding's own loaded skills must imply (see .disclosure).
+        disclosed = disclosure(
+            registry, scope.isolation, binding_operations(catalog, model.loaded_skills)
+        )
         if (
             route is None or route.version != model.model_version
             or route.digest != model.model_route_digest
-            or digest(definitions) != model.tool_definitions_digest
+            or digest(disclosed) != model.tool_definitions_digest
+            or not any(item["name"] == spec.name for item in disclosed)
         ):
             _deny("read_route_or_registry_changed", code="VERSION_CONFLICT")
         calls = call.result.get("calls") if isinstance(call.result, dict) else None

@@ -86,6 +86,13 @@ def final():
 
 
 def test_progressive_load_preserves_prefix_and_unqualified_t0_becomes_candidate():
+    """The system prefix is frozen; the disclosed tool list only grows by loading.
+
+    Before the per-skill disclosure this asserted the tool list never changed at
+    all. It now changes in exactly one way: loading a skill adds that skill's own
+    commands and nothing else, so what 小Pai can see still comes only from a
+    server-verified skill load.
+    """
     host = Host(
         [
             ModelTurn(
@@ -106,7 +113,15 @@ def test_progressive_load_preserves_prefix_and_unqualified_t0_becomes_candidate(
     state = kernel.execute(scope(), goal="Synthetic proposal")
     assert state["output"]["result"]["tool_count"] == 2
     assert len(host.prepared) == 1 and not host.writes
-    assert host.prefixes[0] == host.prefixes[1] == host.prefixes[2]
+    systems = [system for system, _ in host.prefixes]
+    assert systems[0] == systems[1] == systems[2]
+    names = [tuple(item["name"] for item in tools) for _, tools in host.prefixes]
+    # The first call had no skill loaded, so the write command was not even visible.
+    assert "proposal.item.patch" not in names[0]
+    assert set(names[0]) < set(names[1]) and names[1] == names[2]
+    gained = set(names[1]) - set(names[0])
+    skill = kernel.catalog.configuration("proposal_drafting")
+    assert gained <= skill.operations and "proposal.item.patch" in gained
     assert host.events[1]["type"] == "skill_loaded"
 
 

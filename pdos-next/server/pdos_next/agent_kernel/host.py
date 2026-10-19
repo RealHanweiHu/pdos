@@ -157,6 +157,7 @@ class BoundHost:
                 session, scope, run, spec, arguments, source,
                 self.adapters.tool_registry or default_registry(),
                 self.adapters.route_for(scope),
+                catalog=self.catalog,
                 intent_key=intent_key,
             )
             computed = engine.calculate(arguments) if engine is not None else None

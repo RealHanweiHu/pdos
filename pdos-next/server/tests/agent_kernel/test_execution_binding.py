@@ -11,6 +11,7 @@ import pytest
 from langgraph.checkpoint.memory import InMemorySaver
 from pdos_agent_runtime.graph import registered_graph_context
 
+from pdos_next.agent_kernel.disclosure import disclosure, skill_operations
 from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
 from pdos_next.agent_kernel.execution import (
     finish_domain_call,
@@ -200,7 +201,10 @@ def ledger():
     spec, arguments = registry.get("proposal.item.patch"), {"text": "draft"}
     model_binding = ModelBinding(
         model_version=route.version, model_route_digest=route.digest,
-        tool_definitions_digest=digest(registry.definitions()), prompt_digest=digest("prefix"),
+        # The call discloses what its loaded skill allows, not the whole registry.
+        tool_definitions_digest=digest(
+            disclosure(registry, "main", skill_operations([skill]))
+        ), prompt_digest=digest("prefix"),
         isolation="main", cancel_epoch=actual.cancel_epoch, loaded_skills=(bound,),
     )
     row = AgentRun(

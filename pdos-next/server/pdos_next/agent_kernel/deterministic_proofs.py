@@ -21,6 +21,7 @@ from pdos_next.models import Product
 from pdos_next.service import digest
 
 from .bindings import ModelBinding, execution_key
+from .disclosure import disclosed_in_run
 from .execution import check_run_binding, scope_for_run
 from .models import AgentRun, AgentToolCall
 from .persistence import KernelStore
@@ -141,8 +142,7 @@ def _historical_read(session, scope, call_id, read_kind, *, deny):
         or model_binding.cancel_epoch != binding.cancel_epoch
         or model_binding.model_version != versions.get("model_version")
         or model_binding.model_route_digest != versions.get("model_route_digest")
-        or model_binding.tool_definitions_digest
-        != versions["tool_definitions"].get(binding.isolation)
+        or not disclosed_in_run(versions, binding.isolation, model_binding.tool_definitions_digest)
         or model_binding.prompt_digest != versions["prompt_prefixes"].get(binding.isolation)
         or any(getattr(model_binding, key) != getattr(binding, key) for key in (
             "model_version", "model_route_digest", "tool_definitions_digest", "prompt_digest",

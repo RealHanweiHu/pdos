@@ -82,6 +82,17 @@ class ToolSpec:
     def definition(self):
         return {"name": self.name, "description": self.description, "parameters": self.input_schema}
 
+    @property
+    def requires_loaded_skill(self):
+        """Whether calling this needs a loaded, enabled skill that allows the operation.
+
+        The one source of truth for both ``ToolRegistry.authorize`` and the
+        per-call disclosure derivation, so what 小Pai may see cannot drift from
+        what it may call. T2 preparation produces named-decision material under
+        its own policy and never required a skill.
+        """
+        return self.kind == "write" and self.tier != "T2-prepare-only"
+
 
 class ToolRegistry:
     def __init__(self, specs=()):
@@ -154,7 +165,7 @@ class ToolRegistry:
             allowed = {d["name"] for d in self.definitions(scope.isolation)}
             if name not in allowed or spec.tier != "READ":
                 raise DomainError("FORBIDDEN_SCOPE", "隔离子任务只拥有登记的读取工具。")
-        if spec.kind == "write" and spec.tier != "T2-prepare-only":
+        if spec.requires_loaded_skill:
             skills = [
                 skill
                 for skill in loaded.values()

@@ -16,6 +16,7 @@ from pydantic import ValidationError
 from pdos_next.errors import DomainError
 
 from .bindings import SkillBinding, WriteSource, execution_key
+from .disclosure import disclosure, skill_operations
 from .read_execution import ReadSource
 from .registry import ToolRegistry
 from .skills import SkillCatalog
@@ -147,14 +148,26 @@ class AgentKernel:
             + "\nSkill directory:\n"
             + json.dumps(self.catalog.index, ensure_ascii=False)
         )
-        # This tuple is captured once; loading skills never mutates the prefix or definitions.
+        # The full registry snapshot. What a call discloses is derived per turn from
+        # the skills loaded then (see compile.disclosed); loading never rewrites the
+        # system prefix, and nothing here is sent to the model as-is.
         self.definitions = self.registry.definitions()
 
     def compile(
         self, scope: RunScope, *, checkpointer=None, preload=(), trusted_adoption=None
     ):
         ports, registry, catalog, budget = self.ports, self.registry, self.catalog, self.budget
-        definitions = json.loads(json.dumps(registry.definitions(scope.isolation)))
+
+        def disclosed(loaded):
+            """Only the loaded skills' commands reach the model this turn.
+
+            Derived per model call, never captured once: a mid-run skill.load
+            widens it, and the server is the only author. Anything callable
+            without a loaded skill stays disclosed (see .disclosure).
+            """
+            return json.loads(json.dumps(disclosure(
+                registry, scope.isolation, skill_operations(loaded.values()),
+            )))
 
         def load_binding(skill):
             event_id = ports.emit(scope, {
@@ -229,7 +242,7 @@ class AgentKernel:
 
         def model(state):
             ports.current(scope)
-            restore_loaded(state)
+            loaded = restore_loaded(state)
             if state["turns"] >= budget.model_turns or state["tools_used"] >= budget.tool_calls:
                 return partial(state)
             ports.emit(scope, {"type": "model_started", "turn": state["turns"] + 1})
@@ -238,7 +251,7 @@ class AgentKernel:
                     scope,
                     system=self.system,
                     messages=state["messages"],
-                    tools=definitions,
+                    tools=disclosed(loaded),
                     output_schema=WireAgentOutput.model_json_schema(),
                     loaded_skills=tuple(SkillBinding.model_validate(b) for b in state["loaded"]),
                 )

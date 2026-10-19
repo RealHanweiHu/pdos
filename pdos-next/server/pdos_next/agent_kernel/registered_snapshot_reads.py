@@ -86,6 +86,7 @@ class RegisteredSnapshotReads:
                             source,
                             host.adapters.tool_registry or default_registry(),
                             host.adapters.route_for(scope),
+                            catalog=host.catalog,
                             intent_key=intent_key,
                         )
                         expected = build_read_binding(

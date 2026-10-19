@@ -9,6 +9,7 @@ from pdos_next.providers.agent_client import AgentProviderClient, request_body
 from pdos_next.providers.types import ProviderError, ProviderUsage
 
 from .bindings import ModelBinding
+from .disclosure import CHAIN_KEY, record_disclosure
 from .execution import validate_skill_load
 from .policy import egress
 from .pricing import CostUsage
@@ -83,10 +84,16 @@ class AgentGateway:
 
             tool_digests = run.versions.get("tool_definitions", {})
             prompt_digests = run.versions.get("prompt_prefixes", {})
-            if tool_digests.get(scope.isolation, digest(tools)) != digest(
-                tools
-            ) or prompt_digests.get(scope.isolation, digest(system)) != digest(system):
-                raise DomainError("VERSION_CONFLICT", "原运行的提示与工具前缀不能静默替换。")
+            if prompt_digests.get(scope.isolation, digest(system)) != digest(system):
+                raise DomainError("VERSION_CONFLICT", "原运行的提示前缀不能静默替换。")
+            # The disclosure may grow when a skill loads, and only that way: the
+            # chain keeps every earlier, narrower list verifiable (see .disclosure).
+            chain = record_disclosure(
+                run.versions,
+                scope.isolation,
+                [item["name"] for item in tools],
+                digest(tools),
+            )
             run.versions = {
                 **run.versions,
                 "model_version": route.version,
@@ -94,6 +101,7 @@ class AgentGateway:
                 "provider_key": provider_key,
                 "tool_definitions": {**tool_digests, scope.isolation: digest(tools)},
                 "prompt_prefixes": {**prompt_digests, scope.isolation: digest(system)},
+                CHAIN_KEY: chain,
             }
             binding = ModelBinding(
                 model_version=route.version, model_route_digest=route.digest,

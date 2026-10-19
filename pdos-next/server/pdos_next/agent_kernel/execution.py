@@ -17,6 +17,7 @@ from pdos_next.service import Context, digest, receipt_view
 
 from . import policy
 from .bindings import DomainBinding, ModelBinding, SkillBinding, WriteSource, execution_key
+from .disclosure import binding_operations, disclosed_in_run, disclosure
 from .models import AgentEvent, AgentRun, AgentToolCall
 from .qualification_binding import model_identity, tool_identity
 from .types import RunScope
@@ -240,7 +241,7 @@ def validate_model_source(
         or binding.model_route_digest != run.versions.get("model_route_digest")
         or binding.model_version != route.version
         or binding.model_route_digest != route.digest
-        or binding.tool_definitions_digest != run.versions.get("tool_definitions", {}).get("main")
+        or not disclosed_in_run(run.versions, "main", binding.tool_definitions_digest)
         or binding.prompt_digest != run.versions.get("prompt_prefixes", {}).get("main")
     ):
         raise DomainError("VERSION_CONFLICT", "实际模型、工具或提示绑定已变化。")
@@ -273,12 +274,18 @@ def verify_source(
     if skill.version != source.skill.version or skill.digest != source.skill.digest:
         raise DomainError("VERSION_CONFLICT", "实际技能版本或内容已变化。")
     current = registry.get(spec.name)
+    # The binding must match the disclosure its own loaded skills imply, so a write
+    # is provably bound to a call that could actually see that command.
+    disclosed = disclosure(
+        registry, model.isolation, binding_operations(catalog, model.loaded_skills)
+    )
     if (
         current != spec
         or current.tier not in ({"T0", "T1"} if prepare_only else {"T0"})
         or current.operation_key != spec.operation_key
         or spec.name not in skill.operations
-        or digest(registry.definitions()) != model.tool_definitions_digest
+        or digest(disclosed) != model.tool_definitions_digest
+        or not any(item["name"] == spec.name for item in disclosed)
     ):
         raise DomainError("VERSION_CONFLICT", "实际登记工具或技能允许操作已变化。")
     return model, skill
