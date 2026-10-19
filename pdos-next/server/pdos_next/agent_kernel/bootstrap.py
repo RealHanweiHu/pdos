@@ -458,6 +458,11 @@ class Bootstrap:
             if scope.category_id is None:
                 return ("category_framing",)
             if scope.proposal_id is None:
+                if scope.project_id is not None:
+                    # A project run is not proposal drafting. Which project method applies is
+                    # not derivable from the bound scope, so the catalog stays as the only
+                    # entry and skill.load decides, under the server's own scope check.
+                    return ()
                 return ("proposal_drafting",)
             from pdos_next.domain.preproject.models import Proposal, ProposalSubmission
 

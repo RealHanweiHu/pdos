@@ -11,7 +11,7 @@ from pdos_next.agent_kernel.skills import SkillCatalog
 
 def test_every_registered_skill_has_a_resolved_closed_context_contract_and_digest():
     catalog = SkillCatalog()
-    assert len(catalog.index) == 12
+    assert len(catalog.index) == 17
     for entry in catalog.index:
         skill = catalog.configuration(entry["key"])
         schema = skill.metadata["context_schema"]

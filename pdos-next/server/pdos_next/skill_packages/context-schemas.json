@@ -533,6 +533,37 @@
       ],
       "additionalProperties": false
     },
+    "project": {
+      "type": "object",
+      "properties": {
+        "goal": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source"
+          }
+        },
+        "category": {
+          "$ref": "#/$defs/category"
+        },
+        "product": {
+          "$ref": "#/$defs/product"
+        },
+        "conversation": {
+          "$ref": "#/$defs/conversation"
+        },
+        "project": {
+          "$ref": "#/$defs/project"
+        }
+      },
+      "required": [
+        "goal",
+        "sources"
+      ],
+      "additionalProperties": false
+    },
     "proposal": {
       "type": "object",
       "properties": {

@@ -269,3 +269,17 @@ def test_explicit_runtime_preload_override_remains_supported():
 
     owner = Bootstrap(NS(), ports=RuntimePorts(preload=custom))
     assert owner.adapters().preload is custom
+
+
+def test_project_entry_does_not_preload_proposal_drafting():
+    f = fixture()
+    scope = replace(f.scope, project_id=uuid4())
+    assert f.owner.default_preload(scope) == ()
+    assert f.owner.store.checked == [scope]
+    assert f.session.reads == []
+
+
+def test_proposal_entry_keeps_its_skills_when_a_project_is_also_bound():
+    f = fixture(proposal=True)
+    scope = replace(f.scope, project_id=uuid4())
+    assert f.owner.default_preload(scope) == ("proposal_drafting", "gap_check")

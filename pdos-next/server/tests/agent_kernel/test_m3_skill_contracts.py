@@ -104,3 +104,55 @@ def test_claim_withdraw_example_is_actual_t1_without_confirmation_fabrication():
     assert ClaimWithdraw.model_validate(raw).confirmation_token is None
     assert "evidence.claim.withdraw" in skill("proposal_drafting").operations
     assert default_registry().get("evidence.claim.withdraw").tier == "T1"
+
+
+PROJECT_SKILLS = (
+    "build_execution",
+    "quality_issue",
+    "test_verification",
+    "change_control",
+    "release_handover",
+)
+# Administrator and named-decision surfaces stay outside every skill's authorization.
+GOVERNANCE = ("ai.", "mcp.connector", "mcp.tool.grant", "model.", "provider.", "project.create")
+
+
+@pytest.mark.parametrize("key", [entry["key"] for entry in SkillCatalog().index])
+def test_every_skill_operation_declares_the_registered_tier(key):
+    registry = default_registry()
+    for operation in skill(key).metadata["allowed_operations"]:
+        assert registry.get(operation["tool"]).tier == operation["tier"]
+
+
+@pytest.mark.parametrize("key", PROJECT_SKILLS)
+def test_project_skills_bind_the_project_context_profile(key):
+    current = skill(key)
+    profile = SkillCatalog().contexts["profiles"]["project"]
+    assert current.metadata["context_schema"]["properties"] == profile["properties"]
+    assert current.metadata["context_schema"]["required"] == profile["required"]
+
+
+@pytest.mark.parametrize("key", PROJECT_SKILLS)
+def test_project_skills_never_authorize_governance_or_t2_execution(key):
+    registry = default_registry()
+    for operation in skill(key).metadata["allowed_operations"]:
+        name = operation["tool"]
+        assert not name.startswith(GOVERNANCE), name
+        assert registry.get(name).tier in {"READ", "T0", "T1", "T2-prepare-only"}
+        if registry.get(name).tier == "T2-prepare-only":
+            assert registry.get(name).operation_key is None, name
+
+
+def test_project_skills_cover_the_registered_manufacturing_chain():
+    """The S2–S5 write commands are reachable through a declared method, not by tool presence."""
+    catalog = SkillCatalog()
+    authorized = set()
+    for entry in catalog.index:
+        authorized |= catalog.configuration(entry["key"]).operations
+    families = ("build.", "npi.", "supply.", "cost.", "quality.", "test.", "verification.",
+                "change.", "release.", "integration.", "engineering.")
+    registered = {
+        definition["name"] for definition in default_registry().definitions()
+        if definition["name"].startswith(families)
+    }
+    assert registered and registered <= authorized
