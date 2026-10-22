@@ -1,5 +1,6 @@
 """Approved read/compute/isolation tools plus automatically registered domain commands."""
 
+from .command_usage import describe
 from .registry import PREPARE_ONLY, ToolRegistry, ToolSpec, command_tools
 
 READS = frozenset(
@@ -85,7 +86,7 @@ def default_registry():
         registry.add(
             ToolSpec(
                 name,
-                f"读取或计算 {name}；范围由服务器运行绑定。",
+                describe(name, "READ", kind),
                 schemas[name].model_json_schema() if name in schemas else {"type": "object"},
                 {"type": "object"},
                 kind,
@@ -117,7 +118,7 @@ def default_registry():
             registry.add(
                 ToolSpec(
                     name,
-                    f"准备 {name} 候选。",
+                    describe(name, tier),
                     CategoryCandidateInput.model_json_schema()
                     if name == "category.create"
                     else {"type": "object"},
@@ -132,7 +133,7 @@ def default_registry():
             registry.add(
                 ToolSpec(
                     name,
-                    f"只准备 {name} 的具名决定材料，无执行权。",
+                    describe(name, "T2-prepare-only"),
                     {"type": "object"},
                     {"type": "object"},
                     "write",

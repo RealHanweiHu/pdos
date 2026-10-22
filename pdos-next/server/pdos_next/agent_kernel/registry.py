@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 
 from pdos_next.errors import DomainError
 
+from .command_usage import require
 from .types import RunScope, Tier
 
 PREPARE_ONLY = frozenset(
@@ -195,6 +196,8 @@ def command_tools(payloads=None, tiers=None, handlers=None):
             key: "T2-prepare-only" if tier_of(key) == "T2" else tier_of(key) for key in payloads
         }
     handlers = handlers or {}
+    # The calling note is a required part of registering a command (see .command_usage).
+    usage = require(sorted(payloads))
     specs = []
     for operation, schema in sorted(payloads.items()):
         tier = (
@@ -211,9 +214,7 @@ def command_tools(payloads=None, tiers=None, handlers=None):
         specs.append(
             ToolSpec(
                 operation,
-                f"准备 {operation}"
-                if tier == "T2-prepare-only"
-                else f"办理 {operation}；结果以领域回执为准。",
+                usage[operation].description(operation, tier),
                 raw,
                 {"type": "object"},
                 "write",

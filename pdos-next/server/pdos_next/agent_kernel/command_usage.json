@@ -1,0 +1,1063 @@
+{
+  "format_version": 1,
+  "_note": "每条已登记领域命令的调用须知，由 agent_kernel 生成工具描述时消费。when（何时调用）是必填字段：字符串为已书写，null 表示显式登记为待书写，由该领域负责人补写，不得由模型、自动化或推测填入。produces 与 limit 取自 v1.1 附录 A 或 DC-11 档位政策。新增领域命令若未在此登记，command_tools() 直接拒绝启动。",
+  "commands": {
+    "ai.automation.activate": {
+      "when": null,
+      "produces": "ai.automation_activated",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "ai.automation.draft.save": {
+      "when": null,
+      "produces": null,
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "DC-11 档位政策"
+    },
+    "ai.automation.pause": {
+      "when": null,
+      "produces": "ai.automation_paused",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "ai.budget.configure": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "ai.model_call.reconcile": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "ai.run.revert": {
+      "when": null,
+      "produces": "ai.run_reverted",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "ai.skill.enable": {
+      "when": "租户启用技能包",
+      "produces": "ai.skill_enabled",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "ai.skill.qualify": {
+      "when": "记录 T0 资格依据",
+      "produces": "ai.skill_qualified",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "ai.skill.review.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "build.configuration.actual.record": {
+      "when": null,
+      "produces": "actual_configuration.recorded",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "build.create": {
+      "when": null,
+      "produces": "build.created",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "build.engineering.authorize": {
+      "when": null,
+      "produces": null,
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "DC-11 档位政策"
+    },
+    "build.manufacturing.authorize": {
+      "when": null,
+      "produces": null,
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "DC-11 档位政策"
+    },
+    "build.output.record": {
+      "when": null,
+      "produces": "build.output_recorded",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "build.readiness.compute": {
+      "when": null,
+      "produces": "readiness.computed",
+      "limit": "确定性引擎。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "build.sample.allocate": {
+      "when": null,
+      "produces": "sample.allocated",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "build.sample.readiness.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "build.start": {
+      "when": null,
+      "produces": "build.started",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "calc.cost_subtotal": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "calc.derivation_diff": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "calc.market_size": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "calc.opportunity_score": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "calc.price_band": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "calc.spec_compare": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "category.competitors.list": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "category.create": {
+      "when": null,
+      "produces": "category.created",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "category.knowledge.add": {
+      "when": null,
+      "produces": "category.knowledge_added",
+      "limit": "需资格与授权；AI 来源标 `ai_draft`。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "category.knowledge.list": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "category.knowledge.promote": {
+      "when": "去标识沉淀",
+      "produces": "category.knowledge_promoted",
+      "limit": "一次确认后，须人工确认已去标识。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "category.knowledge.withdraw": {
+      "when": null,
+      "produces": "category.knowledge_withdrawn",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "category.list": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "category.member.grant": {
+      "when": null,
+      "produces": "category.member_granted",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T2-prepare-only",
+      "source": "v1.1 附录 A"
+    },
+    "category.parameter.publish": {
+      "when": "规格字典新版本",
+      "produces": "category.parameter_published",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "category.parameters.list": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "category.read": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "change.close": {
+      "when": null,
+      "produces": null,
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "DC-11 档位政策"
+    },
+    "change.effectivity.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "change.impact.compute": {
+      "when": null,
+      "produces": "change.impact_created",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "change.implementation.record": {
+      "when": null,
+      "produces": "change.implementation_recorded",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "change.order.approve": {
+      "when": null,
+      "produces": "change.approved",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "change.order.prepare": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "change.request.create": {
+      "when": null,
+      "produces": "change.requested",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "change.selection.decide": {
+      "when": null,
+      "produces": null,
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "DC-11 档位政策"
+    },
+    "change.verification.record": {
+      "when": null,
+      "produces": null,
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "DC-11 档位政策"
+    },
+    "conversation.history": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "cost.estimate.compute": {
+      "when": null,
+      "produces": "cost.estimated",
+      "limit": "确定性引擎。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "cost.inputs.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "engineering.bom.revise": {
+      "when": null,
+      "produces": "bom.revised",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "engineering.configuration.create": {
+      "when": null,
+      "produces": "configuration.created",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "evidence.artifact.read": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "evidence.artifact.register": {
+      "when": null,
+      "produces": "artifact.registered",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "evidence.claim.record": {
+      "when": null,
+      "produces": "claim.recorded",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "evidence.claim.withdraw": {
+      "when": "确认稿决策 P9：单条撤回 Claim，已被签署决定消费的不可撤回",
+      "produces": "claim.withdrawn",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "evidence.extract": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "evidence.lifecycle.cancel": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "evidence.lifecycle.protection.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "evidence.lifecycle.quarantine": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "evidence.lifecycle.restore": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "evidence.lifecycle.upload.abandon": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "evidence.link.create": {
+      "when": null,
+      "produces": "evidence.linked",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "evidence.original.withdraw": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "evidence.search": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "field.feedback.action.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "field.feedback.create": {
+      "when": null,
+      "produces": null,
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "DC-11 档位政策"
+    },
+    "field.feedback.followup.link": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "field.feedback.locate": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "integration.handoff.authorize": {
+      "when": null,
+      "produces": "external_handoff.authorized",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "integration.receipt.record": {
+      "when": null,
+      "produces": "external_receipt.recorded",
+      "limit": "可信连接器。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "knowledge.candidate.create": {
+      "when": null,
+      "produces": "knowledge.candidate_created",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "knowledge.rule.publish": {
+      "when": null,
+      "produces": "knowledge.rule_published",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "mcp.connector.allow": {
+      "when": "管理员准入",
+      "produces": "mcp.connector_allowed",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "mcp.read": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "mcp.result.read": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "mcp.tool.grant": {
+      "when": "按技能包或自动化规则授权",
+      "produces": "mcp.tool_granted",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "mcp.tools.list": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "model.configuration.save": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "npi.control_plan.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "npi.manufacturing_baseline.publish": {
+      "when": null,
+      "produces": null,
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "DC-11 档位政策"
+    },
+    "npi.manufacturing_baseline.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "npi.pilot.create": {
+      "when": null,
+      "produces": "pilot.created",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "npi.pilot.result.record": {
+      "when": null,
+      "produces": "pilot.results_recorded",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "npi.process.revise": {
+      "when": null,
+      "produces": "process.revised",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "npi.work_instruction.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "platform.link.create": {
+      "when": null,
+      "produces": "platform.linked",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "platform.read": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "product.baseline.read": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "product.definition.draft": {
+      "when": null,
+      "produces": "definition.draft_created",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "product.definition.item.patch": {
+      "when": null,
+      "produces": "definition.item_patched",
+      "limit": "需资格与授权；署 AI 名、可撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "product.variant.derive": {
+      "when": "确认稿 P23：只产生提案准备用的派生草稿，不产生可被引用的变体身份",
+      "produces": "variant.derived",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "product.variant.rebase": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "project.create": {
+      "when": "v1.1：随 G0 批准由触发物建立；S0–M3 过渡期保留人工 T1 入口，见确认稿决策 P2",
+      "produces": "project.created",
+      "limit": "随 `proposal.g0.decide`，仅准备/不可代决定。",
+      "tier": "T2-prepare-only",
+      "source": "v1.1 附录 A"
+    },
+    "proposal.create": {
+      "when": null,
+      "produces": "proposal.created",
+      "limit": "一次确认后；默认私有。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "proposal.g0.decide": {
+      "when": null,
+      "produces": "proposal.g0_decided",
+      "limit": "仅准备/不可代决定；评审人不得为负责人。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "proposal.g0.submit": {
+      "when": null,
+      "produces": "proposal.g0_submitted",
+      "limit": "仅提案负责人本人。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "proposal.item.patch": {
+      "when": "条目级编辑",
+      "produces": "proposal.item_patched",
+      "limit": "需资格与授权；署 AI 名、可按运行撤回、不覆盖人工值。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "proposal.items.read": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "proposal.question.create": {
+      "when": "待决问题",
+      "produces": "proposal.question_created",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "proposal.read": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "proposal.share": {
+      "when": "私有改为品类共享",
+      "produces": "proposal.shared",
+      "limit": "仅人工。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "provider.agreement.register": {
+      "when": "服务商数据协议；P26 起为可选治理工具，登记后按类别限制出站",
+      "produces": "provider.agreement_registered",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T2-prepare-only",
+      "source": "v1.1 附录 A"
+    },
+    "quality.capa.actions.complete": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "quality.capa.draft": {
+      "when": null,
+      "produces": "capa.drafted",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "quality.capa.followup.link": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "quality.capa.observation.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "quality.capa.verification.candidate.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "quality.capa.verification.review": {
+      "when": null,
+      "produces": null,
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "DC-11 档位政策"
+    },
+    "quality.issue.containment.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "quality.issue.create": {
+      "when": null,
+      "produces": "issue.created",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "quality.issue.merge": {
+      "when": null,
+      "produces": "issues.merged",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "quality.issue.root_cause.decide": {
+      "when": null,
+      "produces": null,
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "DC-11 档位政策"
+    },
+    "quality.issue.triage": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "release.engineering.approve": {
+      "when": null,
+      "produces": "release.engineering_approved",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "release.exception.decide": {
+      "when": null,
+      "produces": null,
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "DC-11 档位政策"
+    },
+    "release.exception.withdraw": {
+      "when": null,
+      "produces": null,
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "DC-11 档位政策"
+    },
+    "release.manufacturing.approve": {
+      "when": null,
+      "produces": "release.manufacturing_approved",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "release.package.assemble": {
+      "when": null,
+      "produces": "release.package_assembled",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "research.fanout": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "research.read": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "research.search": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "research.snapshot.register": {
+      "when": null,
+      "produces": "research.snapshot_registered",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "skill.load": {
+      "when": null,
+      "produces": null,
+      "limit": "只读，无业务写入。",
+      "tier": "READ",
+      "source": "DC-11 档位政策"
+    },
+    "supply.kit.compute": {
+      "when": null,
+      "produces": "kit.computed",
+      "limit": "确定性引擎。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "supply.snapshot.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "test.disposition.decide": {
+      "when": null,
+      "produces": "test.disposition_decided",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "test.result.compute": {
+      "when": null,
+      "produces": "test.result_computed",
+      "limit": "确定性引擎。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "test.results.import": {
+      "when": null,
+      "produces": "test.results_imported",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "test.run.plan": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "test.run.review": {
+      "when": null,
+      "produces": null,
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "DC-11 档位政策"
+    },
+    "test.run.start": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "verification.actual_method.prepare": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "verification.handoff.accept": {
+      "when": null,
+      "produces": "handoff.accepted",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "verification.handoff.offer": {
+      "when": null,
+      "produces": "handoff.offered",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "verification.handoff.return": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "verification.method.prepare": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "verification.preparation.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "verification.request.create": {
+      "when": null,
+      "produces": "verification.requested",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "verification.schedule.promise": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "verification.schedule.propose": {
+      "when": null,
+      "produces": "verification.schedule_proposed",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "work.commitment.accept": {
+      "when": null,
+      "produces": "commitment.accepted",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "work.commitment.review": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "work.external_wait.record": {
+      "when": null,
+      "produces": "external_wait.recorded",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "work.plan.apply": {
+      "when": null,
+      "produces": "plan.applied",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "work.plan.propose": {
+      "when": null,
+      "produces": "plan.proposed",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "work.risk.followup.record": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "work.status_update.create": {
+      "when": "确认稿 P18，具名项目状态更新",
+      "produces": "project.status_updated",
+      "limit": "AI 可起草，一次确认后由具名人发布；不自动发布。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "work.task.accept": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "work.task.assign": {
+      "when": null,
+      "produces": "task.assigned",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "work.task.create": {
+      "when": null,
+      "produces": "task.created",
+      "limit": "需当前资格与授权；可按运行撤回。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "work.task.review": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "work.task.start": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "work.task.submit": {
+      "when": null,
+      "produces": null,
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    }
+  }
+}
