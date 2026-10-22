@@ -1,8 +1,0 @@
-.next
-node_modules
-coverage
-*.log
-.env
-.env.*
-AGENTS.md
-CLAUDE.md
