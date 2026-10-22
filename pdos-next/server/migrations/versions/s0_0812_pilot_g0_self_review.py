@@ -1,5 +1,7 @@
 """P27: allow a named human owner to review G0 in an admitted pilot tenant."""
 
+# ruff: noqa: E501 -- preserve reviewed SQL literals
+
 from alembic import op
 
 from migrations.versions.s0_0778_native_pilot import ordinary_owner

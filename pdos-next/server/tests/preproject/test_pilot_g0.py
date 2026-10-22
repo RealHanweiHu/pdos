@@ -81,7 +81,9 @@ def test_pilot_owner_appears_and_named_decision_creates_project_once(work):
     assert receipt["result"]["project_id"] and receipt["result"]["definition_id"]
     assert post(work, confirmed).json()["id"] == receipt["id"]
     with Session(work.admin) as s:
-        fact = s.get(ProposalDecision, UUID(receipt["subject_id"]))
+        fact = s.scalar(
+            select(ProposalDecision).where(ProposalDecision.receipt_id == UUID(receipt["id"]))
+        )
         assert fact.owner_id == fact.decided_by == work.human
 
 

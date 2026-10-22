@@ -258,10 +258,9 @@ def register_routes(app, engine, auth_dependency):
 
     @app.get("/v1/categories/{category_id}/proposals/{proposal_id}/participants")
     def proposal_participants(proposal_id: UUID, ctx: Context = auth_dependency):
+        from pdos_next.agent_kernel.skill_qualification import is_pilot
         from pdos_next.clock import now
         from pdos_next.models import Grant, Principal
-
-        from pdos_next.agent_kernel.skill_qualification import is_pilot
 
         from .access import proposal
 
