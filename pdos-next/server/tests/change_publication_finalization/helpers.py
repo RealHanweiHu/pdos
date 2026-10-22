@@ -61,6 +61,37 @@ def payload_for(e, operation):
             "sources": [e.source.model_dump(mode="json")],
             "approval_token": "offline-tail-approval-token",
         }
+    if operation == "change.effectivity.record":
+        return {
+            **target,
+            "item_id": uuid4(),
+            "lot": {"id": uuid4(), "revision": 1},
+            "sample_refs": [{"kind": "sample", "id": uuid4(), "revision": 1}],
+            "confirmation_token": "offline-tail-confirmation-token",
+        }
+    if operation == "change.verification.record":
+        return {
+            **target,
+            "mappings": [
+                {
+                    "item_id": uuid4(),
+                    "run": {"kind": "test_run", "id": uuid4(), "revision": 1},
+                    "sample_id": uuid4(),
+                    "test_item_id": "voltage",
+                    "method": e.source.model_dump(mode="json"),
+                    "requirement_sha256": "a" * 64,
+                    "rationale": "Explicit offline fixed sample/method applicability",
+                }
+            ],
+            "text": "Offline independent completion verification",
+            "approval_token": "offline-tail-approval-token",
+        }
+    if operation == "change.close":
+        return {
+            **target,
+            "text": "Offline separate named completion close",
+            "approval_token": "offline-tail-approval-token",
+        }
     return {
         **target,
         "item_id": uuid4(),
@@ -154,10 +185,19 @@ def case(request, monkeypatch):
 
             def validate(self, *args):
                 e.current = existing.read(e)
-                if operation == "change.implementation.record":
+                if operation in {
+                    "change.implementation.record",
+                    "change.effectivity.record",
+                    "change.verification.record",
+                    "change.close",
+                }:
                     e.current = owner.read_retained(
-                        e.s, e.ctx, e.pid, change_id=e.material.change_id,
-                        purpose=e.material.purpose, graph=covered_graph(e.graph, e.current),
+                        e.s,
+                        e.ctx,
+                        e.pid,
+                        change_id=e.material.change_id,
+                        purpose=e.material.purpose,
+                        graph=covered_graph(e.graph, e.current),
                         saved=e.current.source_basis,
                     )
                 e.domain_runtime = impact._runtime_stamp(e.s)

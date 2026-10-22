@@ -2731,6 +2731,7 @@ COVERED_COLUMNS = {
         "category_id",
         "product_id",
         "proposal_id",
+        "project_id",
         "owner_id",
         "revision",
         "id",
@@ -4425,6 +4426,7 @@ COVERED_COLUMNS.update(
             "category_id",
             "product_id",
             "proposal_id",
+            "project_id",
             "session_id",
             "continued_from_id",
             "requester_id",
@@ -4774,7 +4776,10 @@ COVERED_COLUMNS.update({'knowledge_candidate_versions': ('candidate_id',
                              'id',
                              'tenant_id',
                              'created_at')})
-GUARDED = (*GUARDED, 'knowledge_candidate_versions', 'knowledge_candidate_currents', 'knowledge_applicability_assessments', 'knowledge_rule_versions', 'knowledge_rule_currents')
+GUARDED = (
+    *GUARDED, 'knowledge_candidate_versions', 'knowledge_candidate_currents',
+    'knowledge_applicability_assessments', 'knowledge_rule_versions', 'knowledge_rule_currents',
+)
 
 # Explicit Field source/location and independent-response lifecycle links.
 COVERED_COLUMNS.update({'field_feedback_versions': ('feedback_id',
@@ -4854,4 +4859,71 @@ COVERED_COLUMNS["controlled_change_selection_facts"] = (
     "feedback_revision",
     "feedback_sha256",
     "executor_id",
+)
+
+# Native completion atoms retain actual owners and their complete source read set.
+COVERED_COLUMNS["change_completion_records"] = ('order_id',
+ 'order_record_id',
+ 'item_id',
+ 'fact_id',
+ 'fact_snapshot',
+ 'native_input',
+ 'owner_basis',
+ 'product_id',
+ 'project_id',
+ 'change_id',
+ 'change_version_id',
+ 'change_revision',
+ 'revision',
+ 'owner_id',
+ 'visibility',
+ 'actor_id',
+ 'operation',
+ 'command_id',
+ 'intent_digest',
+ 'shared_proof_id',
+ 'shared_proof_revision',
+ 'proof_consumed_at',
+ 'proof_expires_at',
+ 'token_sha256',
+ 'material_sha256',
+ 'read_set_sha256',
+ 'sources',
+ 'required_source_read_set',
+ 'source_basis',
+ 'authority_snapshot',
+ 'policy_snapshot',
+ 'input_snapshot',
+ 'id',
+ 'tenant_id',
+ 'created_at',
+ 'category_id')
+GUARDED = (*GUARDED, "change_completion_records")
+
+# Existing persisted project/G0 columns participate in the same lifecycle inventory.
+for _table, _columns in {
+    "agent_sessions": ("project_id",),
+    "agent_runs": ("project_id",),
+    "work_task_versions": ("g0_decision_id", "g0_open_item_id"),
+}.items():
+    COVERED_COLUMNS[_table] = (
+        *COVERED_COLUMNS[_table],
+        *(column for column in _columns if column not in COVERED_COLUMNS[_table]),
+    )
+
+# Owner display metadata contains no consuming original-material reference.
+COVERED_COLUMNS["agent_session_presentations"] = (
+    "session_id",
+    "owner_id",
+    "revision",
+    "previous_id",
+    "request_key",
+    "request_sha256",
+    "action",
+    "title",
+    "pinned",
+    "archived",
+    "id",
+    "tenant_id",
+    "created_at",
 )

@@ -1121,6 +1121,7 @@ for _name in (
 
 # The Agent kernel owns its category scope and composite identity constraints.
 import pdos_next.agent_kernel.models  # noqa: E402,F401
+import pdos_next.agent_kernel.session_presentation_models  # noqa: E402,F401
 
 # Tenant model metadata is part of the actual shared schema; credentials stay in host ports.
 import pdos_next.model_configuration.persistence  # noqa: E402,F401

@@ -118,7 +118,9 @@ def require_same_graph(expected, current):
     _require(graph_material(expected) == graph_material(current))
 
 
-def approved_projection(graph, current, reader, output_refs, original_owner_sha256):
+def approved_projection(
+    graph, current, reader, output_refs, original_owner_sha256, *, native_refs=()
+):
     """Remove only actual approved configuration outputs from a rebuilt graph.
 
     The retained coverage digest includes each original owner's complete view,
@@ -142,7 +144,13 @@ def approved_projection(graph, current, reader, output_refs, original_owner_sha2
     configurations = {
         (r.id, r.revision) for r in output_refs if r.kind == "manufacturing_configuration"
     }
-    allowed = outputs | {
+    # Only callers that have read an actual approved native successor chain may
+    # name these extra concrete objects. Existing implementation callers supply
+    # no native refs and retain their original exact topology contract.
+    native = {ref.identity for ref in native_refs} - original - outputs
+    _require(all(ref.kind in {"build", "sample", "test_run", "engineering_configuration",
+                              "manufacturing_configuration"} for ref in native_refs))
+    allowed = outputs | native | {
         key
         for key, ref in actual.items()
         if ref.kind in {"operation", "sop"} and (ref.id, ref.revision) in configurations

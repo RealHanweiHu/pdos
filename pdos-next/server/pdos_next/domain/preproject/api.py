@@ -1,5 +1,6 @@
 """M3 reads use the same authenticated category root and common command endpoints."""
 
+from decimal import Decimal
 from typing import Annotated, Literal
 from uuid import UUID
 
@@ -260,11 +261,14 @@ def register_routes(app, engine, auth_dependency):
         from pdos_next.clock import now
         from pdos_next.models import Grant, Principal
 
+        from pdos_next.agent_kernel.skill_qualification import is_pilot
+
         from .access import proposal
 
         with scope(ctx) as s:
             require_access(s, ctx, None)
             row = proposal(s, ctx, proposal_id)
+            pilot_self_review = is_pilot(s, ctx.tenant_id)
             query = (
                 select(Principal, Grant)
                 .join(
@@ -284,11 +288,23 @@ def register_routes(app, engine, auth_dependency):
                         "id": str(person.id),
                         "name": person.name,
                         "can_write": grant.can_write,
-                        "reviewer_eligible": grant.product_manager and person.id != row.owner_id,
+                        "reviewer_eligible": grant.product_manager
+                        and (person.id != row.owner_id or pilot_self_review),
                     }
                     for person, grant in s.execute(query)
                 ]
             }
+
+    @app.get("/v1/categories/{category_id}/category-matrix")
+    def category_matrix(
+        price_breaks: Annotated[list[Decimal] | None, Query()] = None,
+        ctx: Context = auth_dependency,
+    ):
+        from .category_matrix import read
+
+        with scope(ctx) as s:
+            require_access(s, ctx, None)
+            return read(s, ctx, breaks=price_breaks)
 
     @app.get("/v1/categories/{category_id}/views/{view_name}")
     def proposal_view(
@@ -327,6 +343,20 @@ def register_routes(app, engine, auth_dependency):
                     )
                 ]
             }
+
+    @app.get("/v1/categories/{category_id}/proposals/{proposal_id}/voices")
+    def proposal_voices(proposal_id: UUID, ctx: Context = auth_dependency):
+        from .proposal_voices import read
+
+        with scope(ctx) as s:
+            return read(s, ctx, proposal_id)
+
+    @app.get("/v1/categories/{category_id}/competitors/{entry_id}/segment-assignment")
+    def competitor_segment_assignment(entry_id: UUID, ctx: Context = auth_dependency):
+        from .competitor_segments import read
+
+        with scope(ctx) as s:
+            return read(s, ctx, entry_id)
 
     @app.get("/v1/categories/{category_id}/proposals/{proposal_id}/handoff")
     def proposal_handoff(proposal_id: UUID, ctx: Context = auth_dependency):

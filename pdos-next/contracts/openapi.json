@@ -5595,6 +5595,294 @@
         }
       }
     },
+    "/v1/categories/{category_id}/products/{product_id}/change-execution/completion-context": {
+      "get": {
+        "summary": "Completion Context",
+        "operationId": "completion_context_v1_categories__category_id__products__product_id__change_execution_completion_context_get",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Product Id"
+            }
+          },
+          {
+            "name": "change_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Change Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/categories/{category_id}/products/{product_id}/change-execution/completion-material": {
+      "post": {
+        "summary": "Completion Material",
+        "operationId": "completion_material_v1_categories__category_id__products__product_id__change_execution_completion_material_post",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Product Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompletionMaterial"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/categories/{category_id}/standard-match": {
       "post": {
         "summary": "Standard Match",
@@ -26200,6 +26488,57 @@
         ],
         "title": "CategoryCreate"
       },
+      "ClosePayload": {
+        "properties": {
+          "change_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Change Id"
+          },
+          "expected_change_revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Change Revision"
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "private",
+              "category",
+              "audience"
+            ],
+            "title": "Visibility",
+            "default": "private"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Text"
+          },
+          "approval_token": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 512,
+                "minLength": 16
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approval Token"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "change_id",
+          "expected_change_revision",
+          "text"
+        ],
+        "title": "ClosePayload"
+      },
       "Command": {
         "properties": {
           "command_id": {
@@ -26265,6 +26604,40 @@
           "payload"
         ],
         "title": "Command"
+      },
+      "CompletionMaterial": {
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": [
+              "change.effectivity.record",
+              "change.verification.record",
+              "change.close"
+            ],
+            "title": "Operation"
+          },
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EffectivityPayload"
+              },
+              {
+                "$ref": "#/components/schemas/VerificationPayload"
+              },
+              {
+                "$ref": "#/components/schemas/ClosePayload"
+              }
+            ],
+            "title": "Payload"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "operation",
+          "payload"
+        ],
+        "title": "CompletionMaterial"
       },
       "ConfigurationRef": {
         "properties": {
@@ -26746,6 +27119,69 @@
         ],
         "title": "EffectivenessRequirement"
       },
+      "EffectivityPayload": {
+        "properties": {
+          "change_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Change Id"
+          },
+          "expected_change_revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Change Revision"
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "private",
+              "category",
+              "audience"
+            ],
+            "title": "Visibility",
+            "default": "private"
+          },
+          "item_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Item Id"
+          },
+          "lot": {
+            "$ref": "#/components/schemas/FixedNativeRef"
+          },
+          "sample_refs": {
+            "items": {
+              "$ref": "#/components/schemas/Ref-Input"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Sample Refs"
+          },
+          "confirmation_token": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 512,
+                "minLength": 16
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confirmation Token"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "change_id",
+          "expected_change_revision",
+          "item_id",
+          "lot",
+          "sample_refs"
+        ],
+        "title": "EffectivityPayload"
+      },
       "EventTime": {
         "properties": {
           "occurred_at": {
@@ -27071,6 +27507,27 @@
           "executor_id"
         ],
         "title": "FieldIntentTarget"
+      },
+      "FixedNativeRef": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Revision"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "revision"
+        ],
+        "title": "FixedNativeRef"
       },
       "GraphCaptureInput": {
         "properties": {
@@ -29147,6 +29604,55 @@
         ],
         "title": "ResourceView"
       },
+      "RunScopeMapping": {
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Item Id"
+          },
+          "run": {
+            "$ref": "#/components/schemas/Ref-Input"
+          },
+          "sample_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Sample Id"
+          },
+          "test_item_id": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Test Item Id"
+          },
+          "method": {
+            "$ref": "#/components/schemas/SourceRef"
+          },
+          "requirement_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Requirement Sha256"
+          },
+          "rationale": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Rationale"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "item_id",
+          "run",
+          "sample_id",
+          "test_item_id",
+          "method",
+          "requirement_sha256",
+          "rationale"
+        ],
+        "title": "RunScopeMapping"
+      },
       "SampleRef": {
         "properties": {
           "id": {
@@ -30162,6 +30668,66 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "VerificationPayload": {
+        "properties": {
+          "change_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Change Id"
+          },
+          "expected_change_revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Change Revision"
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "private",
+              "category",
+              "audience"
+            ],
+            "title": "Visibility",
+            "default": "private"
+          },
+          "mappings": {
+            "items": {
+              "$ref": "#/components/schemas/RunScopeMapping"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Mappings"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Text"
+          },
+          "approval_token": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 512,
+                "minLength": 16
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approval Token"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "change_id",
+          "expected_change_revision",
+          "mappings",
+          "text"
+        ],
+        "title": "VerificationPayload"
       },
       "VersionRef": {
         "properties": {

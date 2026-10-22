@@ -212,3 +212,53 @@ class ChangeImplementationRecord(_Atom, Base):
             ],
         ),
     )
+
+
+class ChangeCompletionRecord(_Atom, Base):
+    """One common command's native fact or named closure, on the existing chain."""
+
+    __tablename__ = "change_completion_records"
+    order_id: Mapped[UUID]
+    order_record_id: Mapped[UUID]
+    item_id: Mapped[UUID | None]
+    fact_id: Mapped[UUID]
+    fact_snapshot: Mapped[dict] = mapped_column(JSONB)
+    native_input: Mapped[dict] = mapped_column(JSONB)
+    owner_basis: Mapped[dict] = mapped_column(JSONB)
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "product_id", "id"),
+        UniqueConstraint(*PARENT),
+        UniqueConstraint(*BOUND, "operation", "fact_id"),
+        parent_fk(),
+        ForeignKeyConstraint(["tenant_id", "actor_id"], ["principals.tenant_id", "principals.id"]),
+        ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
+        ForeignKeyConstraint(
+            ["tenant_id", "shared_proof_id"],
+            ["confirmations.tenant_id", "confirmations.id"],
+            deferrable=True,
+            initially="DEFERRED",
+        ),
+        ForeignKeyConstraint(
+            [*BOUND, "order_id", "order_record_id"],
+            [
+                *[f"change_order_records.{v}" for v in BOUND],
+                "change_order_records.order_id",
+                "change_order_records.id",
+            ],
+        ),
+        CheckConstraint(
+            "operation IN ('change.effectivity.record','change.verification.record','change.close')"
+        ),
+        CheckConstraint("revision = 1 AND change_revision > 1 AND shared_proof_revision > 0"),
+        CheckConstraint("visibility IN ('private','category','audience')"),
+        CheckConstraint(
+            "proof_consumed_at <= created_at AND "
+            "(proof_expires_at IS NULL OR created_at < proof_expires_at)"
+        ),
+        CheckConstraint(
+            "operation <> 'change.effectivity.record' OR "
+            "(proof_expires_at IS NOT NULL AND item_id IS NOT NULL)"
+        ),
+        CheckConstraint("operation = 'change.effectivity.record' OR item_id IS NULL"),
+        CheckConstraint("jsonb_array_length(required_source_read_set)>0"),
+    )

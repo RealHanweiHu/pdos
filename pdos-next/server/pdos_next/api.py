@@ -469,11 +469,14 @@ def create_app(
 
     @app.get("/v1/categories")
     def categories(ctx: Context = auth_dependency):
+        from pdos_next.category_capabilities import product_management_categories
         from pdos_next.models import Category
 
         with tenant_session(
             engine, ctx.tenant_id, actor_id=ctx.actor_id, requester_id=ctx.requester_id
         ) as s:
+            visible = list(s.scalars(select(Category).order_by(Category.created_at)))
+            product_management = product_management_categories(s, ctx, [c.id for c in visible])
             return [
                 {
                     "id": str(c.id),
@@ -482,8 +485,9 @@ def create_app(
                     "purpose": c.purpose,
                     "revision": c.revision,
                     "status": c.status,
+                    "capabilities": {"product_management": c.id in product_management},
                 }
-                for c in s.scalars(select(Category).order_by(Category.created_at))
+                for c in visible
             ]
 
     from pdos_next.category_scope import CategoryCreate, MemberGrant, create_category, grant_member

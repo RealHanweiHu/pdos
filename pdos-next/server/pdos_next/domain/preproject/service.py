@@ -400,8 +400,10 @@ def validate(s, ctx, command, scope, payload):
     elif isinstance(payload, G0Submit):
         if ctx.requester_id != row.owner_id:
             fail("NAMED_DECISION_REQUIRED", "owner_only", "提案由负责人本人提交评审。", 403)
-        if payload.reviewer_id == row.owner_id:
-            fail("VALIDATION_FAILED", "reviewer_is_owner", "负责人不能评审自己的提案。")
+        from pdos_next.agent_kernel.skill_qualification import is_pilot
+
+        if payload.reviewer_id == row.owner_id and not is_pilot(s, ctx.tenant_id, lock=True):
+            fail("VALIDATION_FAILED", "reviewer_is_owner", "非试点租户须由另一位产品经理评审。")
         member(s, ctx, payload.reviewer_id, reviewer=True)
         doc = document(s, row)
         from .derivation import validate_baseline
@@ -420,7 +422,11 @@ def validate(s, ctx, command, scope, payload):
             )
     elif isinstance(payload, G0Decide):
         sub = _submission(s, ctx, row, payload)
-        if ctx.requester_id != sub.reviewer_id or ctx.requester_id == row.owner_id:
+        from pdos_next.agent_kernel.skill_qualification import is_pilot
+
+        if ctx.requester_id != sub.reviewer_id or (
+            ctx.requester_id == row.owner_id and not is_pilot(s, ctx.tenant_id, lock=True)
+        ):
             fail(
                 "NAMED_DECISION_REQUIRED", "reviewer_only", "只有本次具名评审人可作 G0 决定。", 403
             )

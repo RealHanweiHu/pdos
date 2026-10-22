@@ -132,6 +132,9 @@ def register_routes(app: FastAPI, engine, auth_dependency):
                 "change.order.prepare",
                 "change.order.approve",
                 "change.implementation.record",
+                "change.effectivity.record",
+                "change.verification.record",
+                "change.close",
                 "change.selection.decide",
             }:
                 return module.inputs(session, ctx, product_id, data)
@@ -173,3 +176,27 @@ def register_routes(app: FastAPI, engine, auth_dependency):
             category_id=ctx.category_id,
         ) as session:
             return capture_view(prepare_capture(session, ctx, product_id, data))
+
+
+    from pdos_next.change_completion_schemas import CompletionMaterial
+
+    @app.get("/v1/categories/{category_id}/products/{product_id}/change-execution/completion-context")
+    def completion_context(request: Request, product_id: UUID, change_id: UUID,
+                           ctx: Context = auth_dependency):
+        from pdos_next.change_completion_view import completion_context as read
+
+        _query(request, {"change_id"})
+        with tenant_session(engine, ctx.tenant_id, actor_id=ctx.actor_id,
+                            requester_id=ctx.requester_id, category_id=ctx.category_id,
+                            read_snapshot=True) as session:
+            return read(session, ctx, product_id, change_id)
+
+    @app.post("/v1/categories/{category_id}/products/{product_id}/change-execution/completion-material")
+    def completion_material(request: Request, product_id: UUID, data: CompletionMaterial,
+                            ctx: Context = auth_dependency):
+        from pdos_next.change_completion_view import completion_material as prepare
+
+        _query(request, set())
+        with tenant_session(engine, ctx.tenant_id, actor_id=ctx.actor_id,
+                            requester_id=ctx.requester_id, category_id=ctx.category_id) as session:
+            return prepare(session, ctx, product_id, data)

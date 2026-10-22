@@ -317,6 +317,9 @@ def binding(s, ctx, pid, change_id, purpose, *, material=None, lock=False, verif
                     "change.order.prepare",
                     "change.order.approve",
                     "change.implementation.record",
+                    "change.effectivity.record",
+                    "change.verification.record",
+                    "change.close",
                 }
             )
             origin = _one(

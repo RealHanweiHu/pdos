@@ -10,6 +10,11 @@ from weakref import WeakKeyDictionary
 from sqlalchemy import select
 
 from pdos_next import change_order_store as store
+from pdos_next.change_completion_schemas import (
+    ClosePayload,
+    EffectivityPayload,
+    VerificationPayload,
+)
 from pdos_next.clock import deadline_current, earliest_deadline
 from pdos_next.clock import now as server_now
 from pdos_next.database import category_for_product
@@ -28,10 +33,13 @@ from pdos_next.models import Grant, Principal, Product
 from pdos_next.request_proof import snapshot_rows
 from pdos_next.schemas.change_control.contracts import (
     ChangeRequest,
+    Close,
+    EffectivityRecord,
     History,
     ImplementationRecord,
     OrderApprove,
     OrderPrepare,
+    VerificationRecord,
 )
 from pdos_next.service import digest as common_digest
 
@@ -40,6 +48,9 @@ PAYLOADS = MappingProxyType(
         "change.order.prepare": store.OrderPreparePayload,
         "change.order.approve": store.OrderApprovePayload,
         "change.implementation.record": store.ImplementationPayload,
+        "change.effectivity.record": EffectivityPayload,
+        "change.verification.record": VerificationPayload,
+        "change.close": ClosePayload,
     }
 )
 EVENTS = MappingProxyType(
@@ -47,6 +58,9 @@ EVENTS = MappingProxyType(
         "change.order.prepare": "change.order_prepared",
         "change.order.approve": "change.approved",
         "change.implementation.record": "change.implementation_recorded",
+        "change.effectivity.record": "change.effectivity_recorded",
+        "change.verification.record": "change.verification_recorded",
+        "change.close": "change.closed",
     }
 )
 deduplicate_subject = {"change_request"}
@@ -233,6 +247,7 @@ class PreparedChange:
     runtime_stamp: tuple
     valid_until: datetime
     coverage: object = None
+    completion: tuple = ()
 
 
 class Facts(adapters.Facts):
@@ -257,6 +272,35 @@ class Facts(adapters.Facts):
             503,
         )
         return value
+
+    def effectivity(self, uow, authority, fact_id, order, item):
+        from pdos_next.schemas.change_control.contracts import EffectivityFact
+
+        value = self.phase.facts.get(fact_id)
+        require(
+            type(value) is EffectivityFact and value.item_id == item.id,
+            "SOURCE_STALE",
+        )
+        return value
+
+    def verification(self, uow, authority, fact_id, order):
+        from pdos_next.schemas.change_control.contracts import VerificationFact
+
+        value = self.phase.facts.get(fact_id)
+        require(
+            type(value) is VerificationFact and value.content_digest == order.content_digest,
+            "SOURCE_STALE",
+        )
+        return value
+
+    def source(self, uow, authority, source):
+        if source.kind == "domain" and any(
+            source in value.owner.verified_domain_sources for value in self.phase.completion
+        ):
+            from pdos_next.domain.change_control.ports import Currentness
+
+            return Currentness(current=True)
+        return super().source(uow, authority, source)
 
 
 class Policies:
@@ -293,7 +337,7 @@ def kernel(ctx, phase, at, *, confirm=None, save=None):
     )
 
 
-def parsed_payload(payload):
+def parsed_payload(payload, ctx=None, request=None):
     if type(payload) is store.OrderPreparePayload:
         return OrderPrepare(
             assessment_id=payload.assessment_id, plan=payload.plan, reason=payload.reason
@@ -301,6 +345,18 @@ def parsed_payload(payload):
     if type(payload) is store.OrderApprovePayload:
         return OrderApprove(
             discipline=payload.discipline, text=payload.text, expires_at=payload.expires_at
+        )
+    if type(payload) is ClosePayload:
+        return Close(text=payload.text)
+    if type(payload) in {EffectivityPayload, VerificationPayload}:
+        from pdos_next.change_completion_owner import fact_id
+
+        require(ctx is not None and request is not None and bool(request.orders), "INVALID_STATE")
+        identity = fact_id(payload, request.orders[-1], ctx.actor_id)
+        return (
+            EffectivityRecord(item_id=payload.item_id, fact_id=identity)
+            if type(payload) is EffectivityPayload
+            else VerificationRecord(fact_id=identity, text=payload.text)
         )
     return ImplementationRecord(item_id=payload.item_id, fact_id=payload.fact_id)
 
@@ -364,7 +420,8 @@ def read_phase(
 
     coverage = None
     coverage_refresh = None
-    implementing = type(payload) is store.ImplementationPayload
+    completing = type(payload) in {EffectivityPayload, VerificationPayload, ClosePayload}
+    implementing = type(payload) is store.ImplementationPayload or completing
     if implementing:
         from pdos_next.change_coverage_binding import read_retained_graph, refresh_retained_graph
 
@@ -555,6 +612,62 @@ def read_phase(
             captures=tuple(captures),
             retained_coverage=coverage,
         )
+    completion = []
+    if completing:
+        from pdos_next.change_completion_owner import CompletionRead, read_native, read_recorded
+
+        require(bool(request.orders), "INVALID_STATE")
+        for order in request.orders:
+            for fact in order.effectivity:
+                completion.append(
+                    read_recorded(
+                        s,
+                        ctx,
+                        command.product_id,
+                        request,
+                        order,
+                        fact,
+                        "change.effectivity.record",
+                        at=clock(),
+                    )
+                )
+            for verification in order.verifications:
+                completion.append(
+                    read_recorded(
+                        s,
+                        ctx,
+                        command.product_id,
+                        request,
+                        order,
+                        verification.fact,
+                        "change.verification.record",
+                        at=clock(),
+                    )
+                )
+        if type(payload) in {EffectivityPayload, VerificationPayload}:
+            native = read_native(
+                s, ctx, command.product_id, request, request.orders[-1], payload, at=clock()
+            )
+            completion.append(CompletionRead(native.fact, payload, native))
+        for value in completion:
+            facts[value.fact.id] = value.fact
+            sources.extend(value.owner.sources)
+            saved_reads.append(list(value.owner.required_source_read_set))
+            for ref in value.owner.actual_refs:
+                require(reader.resolve(ref).current, "RECHECK_REQUIRED")
+        from pdos_next.change_completion_closure import recheck_completion_closure
+
+        closure = recheck_completion_closure(
+            s,
+            ctx,
+            command,
+            request=request,
+            graph=graph,
+            expected_closure=row.source_basis.get("closure"),
+            captures=tuple(captures),
+            completion=tuple(completion),
+            retained_coverage=coverage,
+        )
     sources = tuple(dict.fromkeys(sources))
     authority, authority_until = _authority(
         s, ctx, command.product_id, scope, command.operation, purpose
@@ -613,6 +726,47 @@ def read_phase(
             )
             == selections[str(item.id)]
         )
+    if completion:
+        from pdos_next.change_completion_owner import read_native, read_recorded
+
+        for value in completion:
+            order = next(
+                o
+                for o in request.orders
+                if any(
+                    item.id
+                    in (
+                        {value.fact.item_id}
+                        if hasattr(value.fact, "item_id")
+                        else set(value.fact.item_ids)
+                    )
+                    for item in o.plan.items
+                )
+            )
+            refreshed = (
+                read_native(
+                    s,
+                    ctx,
+                    command.product_id,
+                    request,
+                    order,
+                    value.payload,
+                    at=clock(),
+                    identity=value.fact.id,
+                )
+                if value.row is None
+                else read_recorded(
+                    s,
+                    ctx,
+                    command.product_id,
+                    request,
+                    order,
+                    value.fact,
+                    value.row.operation,
+                    at=clock(),
+                ).owner
+            )
+            require(refreshed == value.owner, "RECHECK_REQUIRED")
     # Fresh owner reads after all bytes: no stale ORM/phase memo can silently
     # retain a changed configuration or previously checked approval signer.
     fresh_reader = OwnerReader(
@@ -737,6 +891,11 @@ def read_phase(
             "artifacts": basis,
             "owners": {str(k): v.source_basis for k, v in reader.objects.items()},
             "outputs": outputs,
+            **(
+                {"completion": {str(v.fact.id): v.owner.source_basis for v in completion}}
+                if completion
+                else {}
+            ),
             "verified_sources": sorted(verified),
             "closure": closure.closure,
             **({"coverage": coverage.source_basis} if coverage is not None else {}),
@@ -745,6 +904,7 @@ def read_phase(
         stamp,
         until,
         coverage,
+        tuple(completion),
     )
 
 
@@ -756,11 +916,17 @@ def _proposed_snapshot(after, before, operation):
         approval = proposed["orders"][-1]["approvals"][-1]
         approval["at"] = "server_on_save"
         approval["decision_id"] = "actual_consumed_named_proof_on_save"
+    if operation == "change.verification.record":
+        verification = proposed["orders"][-1]["verifications"][-1]
+        verification["at"] = "server_on_save"
+        verification["decision_id"] = "actual_consumed_named_proof_on_save"
+    if operation == "change.close":
+        proposed["orders"][-1]["closure"]["at"] = "server_on_save"
     return proposed
 
 
 def _review(ctx, command, payload, phase):
-    parsed = parsed_payload(payload)
+    parsed = parsed_payload(payload, ctx, phase.request)
     # Core preview is a proposal, not an actual decision/proof. Its provisional UUID
     # and appended server evaluation clock are labelled; real source clocks stay exact.
     preview, (after, _, _, event) = kernel(ctx, phase, clock())._prepare(
@@ -803,14 +969,21 @@ def _review(ctx, command, payload, phase):
         "selection": [v.model_dump(mode="json") for v in phase.selections.values()],
         "effect": preview.effect,
         "unknown": list(preview.unknown),
-        "proof_tier": "T2" if command.operation == "change.order.approve" else "T1",
+        "proof_tier": "T2"
+        if command.operation
+        in {"change.order.approve", "change.verification.record", "change.close"}
+        else "T1",
     }
 
 
 def validate(s, ctx, command, product, payload):
     phase = read_phase(s, ctx, command, payload)
     kernel(ctx, phase, clock()).preview(
-        s, command.operation, phase.request.id, phase.request.revision, parsed_payload(payload)
+        s,
+        command.operation,
+        phase.request.id,
+        phase.request.revision,
+        parsed_payload(payload, ctx, phase.request),
     )
 
 
@@ -988,6 +1161,41 @@ def stage_mutation(s, ctx, command, payload, phase, mutation, marker, *, at, fin
                 discipline=approval.discipline,
                 approval_snapshot=approval.model_dump(mode="json"),
             )
+        elif command.operation in {
+            "change.effectivity.record",
+            "change.verification.record",
+            "change.close",
+        }:
+            if command.operation == "change.effectivity.record":
+                fact = order.effectivity[-1]
+                item_id = fact.item_id
+            else:
+                fact = order.verifications[-1].fact
+                item_id = None
+            native = next((v for v in phase.completion if v.fact == fact), None)
+            require(native is not None, "SOURCE_STALE")
+            require(
+                marker.tier == ("T1" if item_id is not None else "T2"),
+                "CHANGE_CONSUMED_PROOF_REQUIRED",
+                503,
+            )
+            if command.operation == "change.verification.record":
+                require(
+                    order.verifications[-1].decision_id == marker.proof_id
+                    and fact.verifier_id == ctx.actor_id,
+                    "CHANGE_CONSUMED_PROOF_REQUIRED",
+                    503,
+                )
+            atom = store.ChangeCompletionRecord(
+                **fields,
+                order_id=order.id,
+                order_record_id=parent.id,
+                item_id=item_id,
+                fact_id=fact.id,
+                fact_snapshot=fact.model_dump(mode="json"),
+                native_input=semantic(native.payload),
+                owner_basis=deepcopy(native.owner.source_basis),
+            )
         else:
             fact = order.implementations[-1]
             require(
@@ -1049,7 +1257,7 @@ def apply_prepared(s, ctx, command, product, payload, phase, proof, host, module
             status=mutation.change.status,
         )
 
-    core = parsed_payload(payload)
+    core = parsed_payload(payload, ctx, phase.request)
     invocation = Invocation(
         command_id=command.command_id,
         operation=command.operation,

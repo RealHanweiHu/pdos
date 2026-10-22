@@ -28,6 +28,34 @@ from .helpers import case, existing  # noqa: F401 - shared explicit offline fixt
 
 candidate_common = actual_common
 
+COMPLETION_OPERATIONS = (
+    "change.effectivity.record",
+    "change.verification.record",
+    "change.close",
+)
+
+
+@pytest.mark.parametrize("case", COMPLETION_OPERATIONS, indirect=True)
+def test_native_completion_actual_common_tail_accepts_retained_publication(candidate):
+    result = candidate_common.execute(candidate.s, candidate.ctx, candidate.command)
+    assert result["id"] == str(candidate.receipt.id)
+    assert candidate.trace[-1] == "after_full_common_flush"
+    assert not hasattr(candidate.subject, candidate_guard._ATTRIBUTE)
+
+
+@pytest.mark.parametrize("case", COMPLETION_OPERATIONS, indirect=True)
+def test_native_completion_rejects_current_projection_as_retained_proof(candidate, monkeypatch):
+    original = candidate.module.validate
+
+    def wrong_kind(*args):
+        original(*args)
+        candidate.current = existing.read(candidate)
+
+    monkeypatch.setattr(candidate.module, "validate", wrong_kind)
+    with pytest.raises(DomainError) as caught:
+        candidate_common.execute(candidate.s, candidate.ctx, candidate.command)
+    assert caught.value.reason == "RECHECK_REQUIRED"
+
 
 def test_tail_requires_operation_specific_opaque_coverage(candidate, monkeypatch):
     from pdos_next.domain.change_coverage_owner import owner
@@ -39,10 +67,15 @@ def test_tail_requires_operation_specific_opaque_coverage(candidate, monkeypatch
         original(*args)
         current = existing.read(e)
         e.current = (
-            current if e.command.operation == "change.implementation.record"
+            current
+            if e.command.operation == "change.implementation.record"
             else owner.read_retained(
-                e.s, e.ctx, e.pid, change_id=e.material.change_id,
-                purpose=e.material.purpose, graph=covered_graph(e.graph, current),
+                e.s,
+                e.ctx,
+                e.pid,
+                change_id=e.material.change_id,
+                purpose=e.material.purpose,
+                graph=covered_graph(e.graph, current),
                 saved=current.source_basis,
             )
         )

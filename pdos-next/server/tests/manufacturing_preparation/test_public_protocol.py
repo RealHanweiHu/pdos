@@ -109,10 +109,13 @@ def test_actual_closed_command_registries_and_event_families(op):
     assert common.EVENTS[op] == f"{schemas.KINDS[op]}.recorded"
 
 
-def test_canonical_pilot_still_unconnected_and_draft_never_authorizes_it():
-    assert command_handlers.handler("npi.pilot.create") is None
-    assert "npi.pilot.create" not in contracts.PAYLOADS
-    assert "npi.pilot.create" not in command_handlers.T1_OPERATIONS
+def test_canonical_pilot_is_native_and_draft_never_authorizes_it():
+    from pdos_next.domain.manufacturing_trials import native_service
+
+    assert command_handlers.handler("npi.pilot.create") is native_service
+    assert command_handlers.handler("npi.pilot.create") is not service
+    assert "npi.pilot.create" not in schemas.PAYLOADS
+    assert "npi.pilot.create" not in command_handlers.T2_OPERATIONS
     with pytest.raises(DomainError) as error:
         service.qualified_pilot_baseline()
     assert (error.value.status, error.value.reason) == (

@@ -152,6 +152,9 @@ def _snapshot(row):
         "change.order.prepare",
         "change.order.approve",
         "change.implementation.record",
+        "change.effectivity.record",
+        "change.verification.record",
+        "change.close",
     }:
         from pdos_next.change_order_service import snapshot
 

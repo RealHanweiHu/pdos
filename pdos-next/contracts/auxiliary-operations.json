@@ -689,6 +689,45 @@
       "payload_schema": "payloads.schema.json",
       "implementation": "implemented_local_slice",
       "source": "v1.1 §04.12, §04.15 and acceptance F; finite implementation commands"
+    },
+    {
+      "operation": "change.effectivity.record",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "change.effectivity_recorded",
+      "purpose": "Confirm actual native successor development Build adoption within the fixed approved plan; no inventory, WIP, other Build or ERP/MES switching.",
+      "canonical_policy_preserved": [
+        "change.order.approve:T2",
+        "change.implementation.record:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "change.verification.record",
+      "write_tier": "T2",
+      "executor": "named_human",
+      "event": "change.verification_recorded",
+      "purpose": "Named independent quality review of explicit approved requirements using actual fixed Run methods, raw measurements and executor identities.",
+      "canonical_policy_preserved": [
+        "change.order.approve:T2",
+        "change.implementation.record:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "change.close",
+      "write_tier": "T2",
+      "executor": "named_human",
+      "event": "change.closed",
+      "purpose": "Separate named closure after full actual adoption and independent pass, with the original verification and current sources rechecked.",
+      "canonical_policy_preserved": [
+        "change.order.approve:T2",
+        "change.implementation.record:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice"
     }
   ]
 }

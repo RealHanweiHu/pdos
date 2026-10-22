@@ -173,11 +173,13 @@ def _records(ctx, queue):
             )
             .where(
                 commitment.promisor_id == ctx.requester_id,
-                ~select(WorkCommitmentReviewCurrent.id).where(
+                ~select(WorkCommitmentReviewCurrent.id)
+                .where(
                     _same(WorkCommitmentReviewCurrent, commitment, BINDING),
                     WorkCommitmentReviewCurrent.commitment_id == commitment.id,
                     WorkCommitmentReviewCurrent.state == "fulfilled",
-                ).exists(),
+                )
+                .exists(),
             )
         )
     else:

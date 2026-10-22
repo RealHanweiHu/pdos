@@ -263,6 +263,11 @@ def test_submit_guards(work, failure):
     if failure == "no_narrative":
         data["groups"]["items"] = [i for i in data["groups"]["items"] if i["kind"] != "section"]
     proposal_id, _ = create(work, data)
+    if failure == "self":
+        from pdos_next.agent_kernel.models import TenantPilotAdmission
+
+        with Session(work.admin) as s, s.begin():
+            s.get(TenantPilotAdmission, work.tenant).active = False
     if failure == "no_capability":
         with Session(work.admin) as s, s.begin():
             s.scalar(select(Grant).where(Grant.principal_id == work.peer)).product_manager = False
@@ -611,7 +616,7 @@ def test_database_submission_check_and_receipt_atom(work):
         )
 
 
-def test_participant_selector_excludes_owner_from_reviewers(work):
+def test_participant_selector_excludes_owner_without_manager_capability(work):
     proposal_id, _ = create(work)
     response = work.client.get(
         f"/v1/categories/{work.category}/proposals/{proposal_id}/participants", headers=work.headers

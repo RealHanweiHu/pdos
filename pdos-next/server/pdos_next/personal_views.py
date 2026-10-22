@@ -423,6 +423,14 @@ class ActivityPage(ProjectPage):
     waiting: bool = False
 
 
+class G0ReviewPage(ProjectPage):
+    page_size: int = Field(default=50, ge=1, le=100)
+
+
+class TestStartPromisePage(ProjectPage):
+    page_size: int = Field(default=20, ge=1, le=100)
+
+
 class PersonalProjectWorkPage(ProjectPage):
     queue: Literal["receive", "verify", "tasks", "commitments"]
     page_size: int = Field(default=20, ge=1, le=100)
@@ -492,3 +500,19 @@ def register_routes(app, engine, auth_dependency):
             return search(
                 session, ctx, page.q, kind=page.kind, cursor=page.cursor, page_size=page.page_size,
             )
+
+    @app.get("/v1/personal/g0-reviews")
+    def g0_reviews(page: Annotated[G0ReviewPage, Query()], ctx: Context = auth_dependency):
+        from pdos_next.personal_g0_reviews import read
+
+        with scope(ctx) as session:
+            return read(session, ctx, cursor=page.cursor, page_size=page.page_size)
+
+    @app.get("/v1/personal/test-start-promises")
+    def test_start_promises(
+        page: Annotated[TestStartPromisePage, Query()], ctx: Context = auth_dependency
+    ):
+        from pdos_next.personal_test_start_promises import read
+
+        with scope(ctx) as session:
+            return read(session, ctx, cursor=page.cursor, page_size=page.page_size)

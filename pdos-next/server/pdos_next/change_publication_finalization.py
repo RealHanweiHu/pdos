@@ -18,6 +18,9 @@ _OPERATIONS = frozenset(
         "change.order.prepare",
         "change.order.approve",
         "change.implementation.record",
+        "change.effectivity.record",
+        "change.verification.record",
+        "change.close",
     }
 )
 
@@ -101,7 +104,12 @@ def _attach(
         _require("coverage" not in subject.source_basis)
         return
     _require(type(subject) is ChangeRequestVersion and not hasattr(subject, _ATTRIBUTE))
-    retained = command.operation == "change.implementation.record"
+    retained = command.operation in {
+        "change.implementation.record",
+        "change.effectivity.record",
+        "change.verification.record",
+        "change.close",
+    }
     _require(
         type(coverage) is (owner.RetainedCoverageRead if retained else owner.CoverageRead)
         and coverage._token is (owner._RETAINED_TOKEN if retained else owner._READ_TOKEN)

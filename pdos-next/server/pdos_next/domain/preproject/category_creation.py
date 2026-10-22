@@ -38,6 +38,8 @@ class InitialKnowledge(StrictModel):
     @model_validator(mode="after")
     def typed_content(self):
         self.content = CONTENT_TYPES[self.kind].model_validate(self.content).model_dump(mode="json")
+        if self.kind == "competitor" and self.content.get("segment_refs"):
+            raise ValueError("Initial category material cannot reference existing fixed segments")
         return self
 
 

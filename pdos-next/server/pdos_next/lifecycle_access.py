@@ -63,6 +63,7 @@ NON_CONSUMING = frozenset(
         # The Run's server-bound read_sources consume originals. Model replies,
         # input answers and tool arguments are untrusted technical records.
         "agent_sessions",
+        "agent_session_presentations",
         "agent_tool_calls",
         "agent_run_events",
         "agent_run_inputs",

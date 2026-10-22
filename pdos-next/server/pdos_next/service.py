@@ -207,6 +207,9 @@ EVENTS = {
     "change.order.prepare": "change.order_prepared",
     "change.order.approve": "change.approved",
     "change.implementation.record": "change.implementation_recorded",
+    "change.effectivity.record": "change.effectivity_recorded",
+    "change.verification.record": "change.verification_recorded",
+    "change.close": "change.closed",
     "change.policy.import": "change.policy_imported",
     "release.policy.import": "release.policy_imported",
     "change.coverage.import": "change.coverage_imported",
@@ -1250,6 +1253,9 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
             "change.order.prepare",
             "change.order.approve",
             "change.implementation.record",
+            "change.effectivity.record",
+            "change.verification.record",
+            "change.close",
         }:
             from pdos_next.change_publication_finalization import finalize
 
@@ -1261,6 +1267,9 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
             "change.order.prepare",
             "change.order.approve",
             "change.implementation.record",
+            "change.effectivity.record",
+            "change.verification.record",
+            "change.close",
         }:
             from pdos_next.change_publication_finalization import discard
 

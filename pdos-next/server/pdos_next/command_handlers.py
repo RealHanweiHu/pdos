@@ -53,6 +53,8 @@ T2_OPERATIONS = frozenset(
         "ai.skill.qualify",
         "mcp.connector.allow",
         "change.order.approve",
+        "change.verification.record",
+        "change.close",
         "proposal.g0.decide",
         "change.selection.decide",
         "build.engineering.authorize",
@@ -98,6 +100,7 @@ T1_OPERATIONS = frozenset(
         "category.parameter.publish",
         "change.order.prepare",
         "change.implementation.record",
+        "change.effectivity.record",
         "evidence.original.withdraw",
         "evidence.lifecycle.upload.abandon",
         "evidence.lifecycle.quarantine",
@@ -213,7 +216,10 @@ PHASED_MATERIAL_OPERATIONS = frozenset(
         "npi.pilot.create",
         "npi.pilot.result.record",
         "change.order.approve",
+        "change.verification.record",
+        "change.close",
         "change.implementation.record",
+        "change.effectivity.record",
         "change.selection.decide",
         "quality.capa.followup.link",
         "quality.capa.verification.candidate.record",
@@ -347,7 +353,10 @@ def handler(operation):
     if operation in {
         "change.order.prepare",
         "change.order.approve",
+        "change.verification.record",
+        "change.close",
         "change.implementation.record",
+        "change.effectivity.record",
     }:
         from pdos_next import change_order_integration
 

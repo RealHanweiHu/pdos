@@ -4,7 +4,7 @@ from decimal import Decimal
 from typing import Literal
 from uuid import UUID
 
-from pydantic import Field, model_validator
+from pydantic import Field, model_serializer, model_validator
 
 from pdos_next.schema_base import StrictModel
 
@@ -61,12 +61,34 @@ class PriceObservation(StrictModel):
     source_ref: Reference | None = None
 
 
+class SegmentRef(StrictModel):
+    entry_id: UUID
+    version: int = Field(gt=0, strict=True)
+
+
 class CompetitorContent(StrictModel):
     brand: str = Field(min_length=1)
     model: str = Field(min_length=1)
     metrics: list[CompetitorMetric] = Field(default_factory=list)
     features: list[CompetitorMetric] = Field(default_factory=list)
     prices: list[PriceObservation] = Field(default_factory=list)
+    segment_refs: list[SegmentRef] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def unique_segments(self):
+        keys = [(ref.entry_id, ref.version) for ref in self.segment_refs]
+        if len(keys) != len(set(keys)):
+            raise ValueError("Fixed segment references must be distinct")
+        return self
+
+    @model_serializer(mode="wrap")
+    def preserve_legacy_content(self, handler):
+        result = handler(self)
+        # Existing candidate and replay digests include the old defaults. Only
+        # this new field is absent when omitted; an explicit [] remains a clear.
+        if "segment_refs" not in self.model_fields_set:
+            result.pop("segment_refs", None)
+        return result
 
 
 class VoiceContent(StrictModel):

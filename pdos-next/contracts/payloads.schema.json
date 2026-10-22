@@ -13430,6 +13430,435 @@
       "title": "ImplementationPayload",
       "type": "object"
     },
+    "change.effectivity.record": {
+      "$defs": {
+        "FixedNativeRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "FixedNativeRef",
+          "type": "object"
+        },
+        "Ref": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "enum": [
+                "spec",
+                "part",
+                "bom",
+                "interface",
+                "engineering_configuration",
+                "build",
+                "sample",
+                "test_run",
+                "operation",
+                "tooling",
+                "fixture",
+                "sop",
+                "work_instruction",
+                "control_plan",
+                "manufacturing_baseline",
+                "pilot_run",
+                "manufacturing_release",
+                "customer_sample",
+                "supply_commitment",
+                "inventory",
+                "wip",
+                "training",
+                "evidence",
+                "issue",
+                "capa",
+                "field_feedback",
+                "manufacturing_configuration",
+                "graph_snapshot"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "key": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Key"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "kind"
+          ],
+          "title": "Ref",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "change_id": {
+          "format": "uuid",
+          "title": "Change Id",
+          "type": "string"
+        },
+        "expected_change_revision": {
+          "minimum": 1,
+          "title": "Expected Change Revision",
+          "type": "integer"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "item_id": {
+          "format": "uuid",
+          "title": "Item Id",
+          "type": "string"
+        },
+        "lot": {
+          "$ref": "#/$defs/FixedNativeRef"
+        },
+        "sample_refs": {
+          "items": {
+            "$ref": "#/$defs/Ref"
+          },
+          "minItems": 1,
+          "title": "Sample Refs",
+          "type": "array"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 16,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "change_id",
+        "expected_change_revision",
+        "item_id",
+        "lot",
+        "sample_refs"
+      ],
+      "title": "EffectivityPayload",
+      "type": "object"
+    },
+    "change.verification.record": {
+      "$defs": {
+        "Ref": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "enum": [
+                "spec",
+                "part",
+                "bom",
+                "interface",
+                "engineering_configuration",
+                "build",
+                "sample",
+                "test_run",
+                "operation",
+                "tooling",
+                "fixture",
+                "sop",
+                "work_instruction",
+                "control_plan",
+                "manufacturing_baseline",
+                "pilot_run",
+                "manufacturing_release",
+                "customer_sample",
+                "supply_commitment",
+                "inventory",
+                "wip",
+                "training",
+                "evidence",
+                "issue",
+                "capa",
+                "field_feedback",
+                "manufacturing_configuration",
+                "graph_snapshot"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "key": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Key"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "kind"
+          ],
+          "title": "Ref",
+          "type": "object"
+        },
+        "RunScopeMapping": {
+          "additionalProperties": false,
+          "properties": {
+            "item_id": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            },
+            "run": {
+              "$ref": "#/$defs/Ref"
+            },
+            "sample_id": {
+              "format": "uuid",
+              "title": "Sample Id",
+              "type": "string"
+            },
+            "test_item_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Test Item Id",
+              "type": "string"
+            },
+            "method": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "requirement_sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Requirement Sha256",
+              "type": "string"
+            },
+            "rationale": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Rationale",
+              "type": "string"
+            }
+          },
+          "required": [
+            "item_id",
+            "run",
+            "sample_id",
+            "test_item_id",
+            "method",
+            "requirement_sha256",
+            "rationale"
+          ],
+          "title": "RunScopeMapping",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "change_id": {
+          "format": "uuid",
+          "title": "Change Id",
+          "type": "string"
+        },
+        "expected_change_revision": {
+          "minimum": 1,
+          "title": "Expected Change Revision",
+          "type": "integer"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "mappings": {
+          "items": {
+            "$ref": "#/$defs/RunScopeMapping"
+          },
+          "minItems": 1,
+          "title": "Mappings",
+          "type": "array"
+        },
+        "text": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 16,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "change_id",
+        "expected_change_revision",
+        "mappings",
+        "text"
+      ],
+      "title": "VerificationPayload",
+      "type": "object"
+    },
+    "change.close": {
+      "additionalProperties": false,
+      "properties": {
+        "change_id": {
+          "format": "uuid",
+          "title": "Change Id",
+          "type": "string"
+        },
+        "expected_change_revision": {
+          "minimum": 1,
+          "title": "Expected Change Revision",
+          "type": "integer"
+        },
+        "visibility": {
+          "default": "private",
+          "enum": [
+            "private",
+            "category",
+            "audience"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 16,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "change_id",
+        "expected_change_revision",
+        "text"
+      ],
+      "title": "ClosePayload",
+      "type": "object"
+    },
     "change.selection.decide": {
       "$defs": {
         "ActionTarget": {

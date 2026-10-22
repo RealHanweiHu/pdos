@@ -287,6 +287,8 @@ def _selection_record(s, ctx, pid, row, request, purpose, fact):
 
 
 def order_context(s, ctx, pid, change_id):
+    from pdos_next.change_build_adoption import DEVELOPMENT_BUILD_ADOPTION_CONDITION
+
     row, request, purpose = _current(s, ctx, pid, change_id)
     objects = _objects(s, ctx, pid, request)
     actions = _actions(s, ctx, pid, row, request, purpose)
@@ -346,6 +348,12 @@ def order_context(s, ctx, pid, change_id):
         "policy": policy,
         "actions": actions,
         "field_basis_options": field_options,
+        "adoption_condition": DEVELOPMENT_BUILD_ADOPTION_CONDITION,
+        "old_builds": [
+            {"ref": value["ref"], "label": value["label"]}
+            for value in objects
+            if value["ref"]["kind"] == "build"
+        ],
         "executor_options": field.executor_options(s, ctx) if field_options else [],
         "selections": selections,
         "object_options": objects,

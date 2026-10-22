@@ -27,6 +27,9 @@ TIERS = MappingProxyType(
         "change.order.prepare": "T1",
         "change.order.approve": "T2",
         "change.implementation.record": "T1",
+        "change.effectivity.record": "T1",
+        "change.verification.record": "T2",
+        "change.close": "T2",
     }
 )
 

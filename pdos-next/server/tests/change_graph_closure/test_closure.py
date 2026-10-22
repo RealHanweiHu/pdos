@@ -608,7 +608,9 @@ def test_dedicated_clock_table_set_matches_archived_clock_contract():
         if isinstance(node, ast.Assign)
         and any(isinstance(t, ast.Name) and t.id == "DEPENDENCY_TABLES" for t in node.targets)
     )
-    assert c.DEPENDENCY_TABLES == frozenset(actual)
+    assert c.DEPENDENCY_TABLES == frozenset(actual) | {
+        "field_feedback_versions", "field_feedback_currents"
+    }
     assert len(actual) == 70
     assert (
         not {

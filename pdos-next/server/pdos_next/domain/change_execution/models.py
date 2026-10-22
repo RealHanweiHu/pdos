@@ -68,11 +68,12 @@ class ChangeRequestVersion(Row, Base):
         ),
         CheckConstraint(
             "visibility IN ('private','category','audience') AND status IN "
-            "('draft','analysis','review','approved','implementing')"
+            "('draft','analysis','review','approved','implementing','verifying','closed')"
         ),
         CheckConstraint(
             "operation IN ('change.request.create','change.impact.compute',"
-            "'change.order.prepare','change.order.approve','change.implementation.record')"
+            "'change.order.prepare','change.order.approve','change.implementation.record',"
+            "'change.effectivity.record','change.verification.record','change.close')"
         ),
         CheckConstraint(
             "(revision = 1 AND previous_version_id IS NULL AND previous_revision IS NULL) OR "
@@ -82,7 +83,8 @@ class ChangeRequestVersion(Row, Base):
         CheckConstraint("COALESCE(request_snapshot->>'status' = status, false)"),
         CheckConstraint(
             "(operation IN ('change.order.prepare','change.order.approve',"
-            "'change.implementation.record')) OR "
+            "'change.implementation.record','change.effectivity.record',"
+            "'change.verification.record','change.close')) OR "
             "COALESCE(request_snapshot->'orders' = '[]'::jsonb, false)"
         ),
         CheckConstraint("COALESCE((request_snapshot->>'revision')::integer = revision, false)"),

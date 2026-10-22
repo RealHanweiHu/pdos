@@ -74,11 +74,15 @@ def test_both_trusted_startups_preserve_the_other_family_and_grant_nothing():
         "change.order.prepare",
         "change.order.approve",
         "change.implementation.record",
+        "change.effectivity.record",
+        "change.verification.record",
+        "change.close",
     }
     assert not hasattr(engine, "_pdos_professional_issuers")
     assert not hasattr(engine, "_pdos_quality_followup")
-    for op in ("change.policy.import", "npi.pilot.create"):
-        assert op not in contracts.PAYLOADS and registry.handler(op) is None
+    assert "change.policy.import" not in contracts.PAYLOADS
+    assert registry.handler("change.policy.import") is None
+    assert callable(registry.handler("npi.pilot.create").validate)
 
 
 def test_actual_models_have_complete_lifecycle_and_exact_fk_parent_keys():

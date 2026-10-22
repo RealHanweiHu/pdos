@@ -234,7 +234,7 @@ class ProposalSubmission(Row, Base):
         ForeignKeyConstraint(
             ["tenant_id", "receipt_id"], ["action_receipts.tenant_id", "action_receipts.id"]
         ),
-        CheckConstraint("reviewer_id<>owner_id AND revision>0 AND option_count>=0"),
+        CheckConstraint("revision>0 AND option_count>=0", name="proposal_submissions_check"),
     )
 
 
@@ -285,7 +285,6 @@ class ProposalDecision(Row, Base):
         ForeignKeyConstraint(
             ["tenant_id", "receipt_id"], ["action_receipts.tenant_id", "action_receipts.id"]
         ),
-        CheckConstraint("decided_by<>owner_id"),
         CheckConstraint("outcome IN ('approved','returned','rejected')"),
         CheckConstraint(
             "outcome<>'approved' OR (created_product_id IS NOT NULL "

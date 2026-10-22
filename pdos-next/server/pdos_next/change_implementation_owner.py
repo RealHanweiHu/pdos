@@ -389,7 +389,15 @@ def validate_binding(s, ctx, pid, request, order, occurrence, *, new_write=False
         and occurrence.change_id == request.id
         and occurrence.order_id == order.id
     )
-    _require(request.status in {"approved", "implementing"}, "INVALID_STATE")
+    _require(
+        request.status
+        in (
+            {"approved", "implementing"}
+            if new_write
+            else {"approved", "implementing", "verifying", "closed"}
+        ),
+        "INVALID_STATE",
+    )
     _require(
         {v.discipline for v in order.approvals} == set(order.required_disciplines)
         and {"engineering", "manufacturing"} <= set(order.required_disciplines),

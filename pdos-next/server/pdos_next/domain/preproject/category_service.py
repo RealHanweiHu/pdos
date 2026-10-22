@@ -337,6 +337,9 @@ def validate(s, ctx, command, scope, payload):
             fail("FORBIDDEN_SCOPE", "private_context_run", "私有上下文内容须经去标识沉淀。", 403)
         check_shared_sources(s, ctx, _references(payload))
         if payload.kind == "competitor":
+            from .competitor_segments import validate_refs
+
+            validate_refs(s, ctx, payload.content.get("segment_refs", []))
             for item in [*payload.content["metrics"], *payload.content["features"]]:
                 check_parameter(
                     s, ctx, item["parameter_id"], item["parameter_version"], item["unit"]
@@ -409,6 +412,9 @@ def validate(s, ctx, command, scope, payload):
             )
     elif isinstance(payload, KnowledgePromote):
         if payload.kind == "competitor":
+            from .competitor_segments import validate_refs
+
+            validate_refs(s, ctx, payload.content.get("segment_refs", []))
             for item in [*payload.content["metrics"], *payload.content["features"]]:
                 check_parameter(
                     s, ctx, item["parameter_id"], item["parameter_version"], item["unit"]

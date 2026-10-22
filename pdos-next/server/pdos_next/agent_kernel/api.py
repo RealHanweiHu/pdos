@@ -94,6 +94,26 @@ def router(engine, *, context_dependency, ports: ApiPorts):
         require_project(session, ctx, row.project_id, row.product_id)
         return row
 
+    from .session_views import router as session_router
+
+    result.include_router(
+        session_router(transaction=transaction, context_dependency=run_dependency)
+    )
+
+    from .session_presentation_api import router as presentation_router
+
+    result.include_router(
+        presentation_router(transaction=transaction, context_dependency=run_dependency)
+    )
+
+    from .source_views import router as source_router
+
+    result.include_router(source_router(transaction=transaction, context_dependency=run_dependency))
+
+    from .upload_views import router as upload_router
+
+    result.include_router(upload_router(transaction=transaction, context_dependency=run_dependency))
+
     @result.post("/v1/categories/{category_id}/agent-runs", status_code=202)
     @result.post("/v1/personal/agent-runs", status_code=202)
     async def start(data: StartInput, ctx=run_dependency):

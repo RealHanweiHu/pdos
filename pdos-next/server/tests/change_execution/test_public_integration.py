@@ -333,7 +333,11 @@ def test_archived_migration27_retains_frozen_eight_tables_and_old_guards():
     assert all(n in Base.metadata.tables for n in constants["TABLES"])
     assert "quality.issue.merge" in constants["EXTENDED_RECEIPT_HELPER"]
     assert "CapaVerificationCandidateRecorded" in constants["EXTENDED_RECEIPT_HELPER"]
-    for operation in owner.PAYLOADS:
+    for operation in (
+        "change.order.prepare",
+        "change.order.approve",
+        "change.implementation.record",
+    ):
         assert operation in constants["EXTENDED_RECEIPT_HELPER"]
     assert "require_quality_change_atom" not in constants["CONTROLLED_GUARDS"]
     assert "CASCADE" not in constants["DOWNGRADE_PREFLIGHT"]

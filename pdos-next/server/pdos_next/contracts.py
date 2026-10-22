@@ -400,12 +400,17 @@ PAYLOADS.update(
 )
 
 
-# Three existing canonical change operations; selection is an explicit auxiliary proposal.
+# Canonical Change operations; selection is an explicit auxiliary proposal.
 # The host-only policy publisher is deliberately absent from PAYLOADS.
 from pdos_next.change_command_schemas import (  # noqa: E402
     ImplementationPayload,
     OrderApprovePayload,
     OrderPreparePayload,
+)
+from pdos_next.change_completion_schemas import (  # noqa: E402
+    ClosePayload,
+    EffectivityPayload,
+    VerificationPayload,
 )
 from pdos_next.change_controlled_schemas import SelectionPayload  # noqa: E402
 
@@ -414,6 +419,9 @@ PAYLOADS.update(
         "change.order.prepare": OrderPreparePayload,
         "change.order.approve": OrderApprovePayload,
         "change.implementation.record": ImplementationPayload,
+        "change.effectivity.record": EffectivityPayload,
+        "change.verification.record": VerificationPayload,
+        "change.close": ClosePayload,
         "change.selection.decide": SelectionPayload,
     }
 )
