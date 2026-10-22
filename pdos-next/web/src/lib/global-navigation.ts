@@ -1,19 +1,32 @@
 export type GlobalArea = "work" | "cockpit" | "projects" | "programs" | "category" | "knowledge" | "settings";
 export type GlobalLocation = { area: GlobalArea; categoryId: string; projectId: string };
-export type GlobalAreaEntry = { id: GlobalArea; label: string; planned?: boolean };
+export type GlobalAreaEntry = { id: GlobalArea; label: string; group?: "main" | "product_management"; planned?: boolean };
+export type NavigationCategory = { id: string; capabilities?: { product_management?: boolean } };
 
-/** 全局入口（用户 2026-10-13 定）：项目管理是主体，品类工作是项目前置。 */
+/** P15：四个全局主干；项目工作区保留深链，品类归入按实际授权显示的产品管理组。 */
 export const globalAreas: GlobalAreaEntry[] = [
-  { id: "work", label: "我的工作" },
-  { id: "cockpit", label: "项目驾驶舱" },
-  { id: "projects", label: "项目列表" },
-  { id: "programs", label: "项目集", planned: true },
-  { id: "category", label: "产品品类工作区" },
-  { id: "knowledge", label: "知识" },
+  { id: "work", label: "我的工作", group: "main" },
+  { id: "projects", label: "项目", group: "main" },
+  { id: "programs", label: "组合与资源", group: "main", planned: true },
+  { id: "knowledge", label: "知识", group: "main" },
+  { id: "category", label: "品类开发", group: "product_management" },
+  { id: "cockpit", label: "项目工作区" },
   { id: "settings", label: "设置" },
 ];
 
 export const defaultGlobalLocation: GlobalLocation = { area: "work", categoryId: "", projectId: "" };
+
+/** 只消费服务器对当前有效 Grant 的投影；普通可读、can_write 或岗位名称都不能补授此能力。 */
+export function productManagementCategories<T extends NavigationCategory>(categories: T[]): T[] {
+  return categories.filter(category => category.capabilities?.product_management === true);
+}
+
+export function productManagementHref(categoryId = "", view: "categories" | "proposals" = "categories"): string {
+  const params = new URLSearchParams({ area: "category" });
+  if (categoryId) params.set("category", categoryId);
+  if (view === "proposals") params.set("focus", "proposals");
+  return `?${params.toString()}`;
+}
 
 /** 旧品类工作区 area 值到新全局结构的映射。旧"项目"即品类内项目执行区。 */
 const legacyBenchAreas = new Set(["products", "projects", "knowledge", "settings"]);
@@ -35,7 +48,7 @@ export function globalHref(location: GlobalLocation, search = ""): string {
   params.set("area", location.area);
   if (location.categoryId) params.set("category", location.categoryId); else params.delete("category");
   if (location.projectId) params.set("project", location.projectId); else params.delete("project");
-  if (location.area !== "category") { params.delete("bench"); params.delete("view"); params.delete("task"); params.delete("product"); }
+  if (location.area !== "category") { params.delete("bench"); params.delete("view"); params.delete("task"); params.delete("product"); params.delete("focus"); }
   return `?${params.toString()}`;
 }
 

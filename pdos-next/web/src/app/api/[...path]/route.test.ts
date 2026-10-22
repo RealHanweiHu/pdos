@@ -772,7 +772,7 @@ test("适用性材料只读传输失败与真实共同提交未知分别报告�
   assert.equal(rejected.response.status, 403); assert.equal(rejected.reads, 0); assert.equal(crossOrigin.calls.length, 0);
 });
 test("变更适用性、准备、批准与实施使用共同长命令等待，原正文令牌不改写", async () => {
-  for (const operation of ["change.selection.decide", "change.order.prepare", "change.order.approve", "change.implementation.record"]) for (const path of ["v1/commands/preview", "v1/commands"]) {
+  for (const operation of ["change.selection.decide", "change.order.prepare", "change.order.approve", "change.implementation.record", "change.effectivity.record", "change.verification.record", "change.close"]) for (const path of ["v1/commands/preview", "v1/commands"]) {
     const h = harness(), body = ` {"operation":"${operation}","command_id":"original-command","idempotency_key":"original-key","payload":{"approval_token":"original-approval","confirmation_token":"original-confirmation","unknown":null}}\n`;
     assert.equal((await h.send(path, { method: "POST", body })).response.status, 200); assert.equal(h.calls[0].init.body, body); assert.deepEqual(h.timeouts, [180000]);
   }
@@ -882,4 +882,44 @@ test("实施捕获的实际领域失败保留原状态和逐字正文，不伪�
     const result = await h.send(implementationCapturePath, { method: "POST", body: JSON.stringify(implementationCaptureInput()) });
     assert.equal(result.response.status, status); assert.equal(await result.response.text(), body); assert.equal(h.calls.length, 1);
   }
+});
+
+test("实际采用与关闭读取固定Change目录；材料只读提交原文且不能夹带批准token", async () => {
+  const directory = `${base}/change-execution/completion-context`;
+  const h = harness();
+  assert.equal((await h.send(directory, { query: `change_id=${change}` })).response.status, 200);
+  assert.equal(h.calls.length, 1);
+  for (const query of ["", `change_id=${change}&project_id=${issue}`, `change_id=${change}&change_id=${change}`]) {
+    const denied = harness();
+    assert.equal((await denied.send(directory, { query })).response.status, 422);
+    assert.equal(denied.calls.length, 0);
+  }
+  const material = `${base}/change-execution/completion-material`;
+  const value = { operation: "change.close", payload: { change_id: change, expected_change_revision: 8, visibility: "category", text: "具名核对通过后分别关闭" } };
+  const body = ` \n${JSON.stringify(value)}\n`, prepared = harness();
+  assert.equal((await prepared.send(material, { method: "POST", body })).response.status, 200);
+  assert.equal(prepared.calls[0].init.body, body);
+  const nullable = harness();
+  assert.equal((await nullable.send(material, { method: "POST", body: JSON.stringify({ ...value, payload: { ...value.payload, approval_token: null } }) })).response.status, 200);
+  for (const invalid of [{ ...value, authorized: true }, { ...value, operation: "change.order.approve" }, { ...value, payload: { ...value.payload, approval_token: "synthetic-not-a-real-token" } }]) {
+    const denied = harness();
+    assert.equal((await denied.send(material, { method: "POST", body: JSON.stringify(invalid) })).response.status, 422);
+    assert.equal(denied.calls.length, 0);
+  }
+});
+
+test("采用复核材料保留同源和会话守卫；传输失败只报告读取失败", async () => {
+  const path = `${base}/change-execution/completion-material`;
+  const body = JSON.stringify({ operation: "change.close", payload: { change_id: change, expected_change_revision: 8, visibility: "category", text: "Separate named close" } });
+  const cross = harness();
+  assert.equal((await cross.send(path, { method: "POST", body, origin: "http://other.invalid" })).response.status, 403);
+  assert.equal(cross.calls.length, 0);
+  const unsigned = harness({ token: null });
+  assert.equal((await unsigned.send(path, { method: "POST", body })).response.status, 401);
+  assert.equal(unsigned.calls.length, 0);
+  const lost = harness({ response: async () => { throw new Error("private transport detail"); } });
+  const response = (await lost.send(path, { method: "POST", body })).response;
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).code, "SOURCE_UNAVAILABLE");
+  assert.equal(lost.calls.length, 1);
 });

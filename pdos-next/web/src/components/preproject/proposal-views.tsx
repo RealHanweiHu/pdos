@@ -6,6 +6,7 @@ import { numericValueText } from "@/lib/spec-bound-values";
 import { ProposalSourceInspector } from "./proposal-source-inspector";
 import { isProposalViewResponse, matchesProposalDocument, proposalViewNames } from "./proposal-view-contracts";
 import type { ProposalViewDocument, ProposalViewName, ProposalViewResponse, ViewComparisonGroup, ViewMaturity, ViewObservation, ViewPositioningGroup, ViewSubject, ViewSubjectRef, ViewUnknown } from "./proposal-view-contracts";
+import styles from "./proposal-document.module.css";
 
 const labels: Record<string, string> = {
   measured: "实测", observed: "实测", claimed: "宣传", vendor_claimed: "宣传", inferred: "推断", unknown: "未知",
@@ -166,9 +167,9 @@ export function ProposalViews({ view, result, document: currentDocument, people 
   else if (result.view === "definition-maturity") content = <Maturity data={result.data} people={people} />;
   else if (result.view === "positioning") content = <div className="space-y-4"><p className="text-sm text-muted-foreground">实测实心 · 宣传空心 · 推断虚线 · 其他性质方形 · 我方橙色 · 竞品灰色。未知 {result.data.unknown_count} 条，不绘制坐标。</p>{result.data.groups.length === 0 && <p>当前提案暂无可绘制的定位分组。请核对已映射的参数、数值、单位和工况；未知值不会绘制成坐标。</p>}{result.data.groups.map((group, index) => <PositioningFacet key={`${result.document_digest}:${group.key}:${index}`} group={group} />)}<Unknowns unknowns={[...result.data.unknowns, ...(result.data.unavailable ?? [])]} /><Unmapped observations={result.data.unmapped} /></div>;
   else content = <div className="space-y-4"><ComparisonTable groups={result.data.groups} subjects={result.data.subjects} features={result.view === "feature-config"} /><Unmapped observations={result.data.unmapped} subjects={result.data.subjects} />{result.view === "feature-config" && <UnmappedFeatures subjects={result.data.subjects} />}<Unknowns unknowns={result.data.unavailable ?? []} subjects={result.data.subjects} /></div>;
-  return <section className="space-y-4" aria-label="提案视图">
-    {onViewChange && <nav aria-label="切换提案视图" className="flex flex-wrap gap-2">{(Object.keys(proposalViewNames) as ProposalViewName[]).map(name => <Button key={name} type="button" variant={view === name ? "secondary" : "ghost"} aria-current={view === name ? "page" : undefined} onClick={() => onViewChange(name)}>{proposalViewNames[name]}</Button>)}</nav>}
-    <h2 className="text-lg font-semibold">{proposalViewNames[view]}</h2>
+  return <section className={styles.view} aria-label="提案视图">
+    {onViewChange && <nav aria-label="切换提案视图" className={styles.tabs}>{(Object.keys(proposalViewNames) as ProposalViewName[]).map(name => <Button className={styles.viewChip} size="xs" key={name} type="button" variant={view === name ? "secondary" : "ghost"} aria-current={view === name ? "page" : undefined} onClick={() => onViewChange(name)}>{proposalViewNames[name]}</Button>)}</nav>}
+    <h2 className={styles.viewTitle}>{proposalViewNames[view]}</h2>
     {current && !loading && !error && <p className="text-xs text-muted-foreground">提案第 {result!.revision} 版 · {["frozen", "submission"].includes(result!.document_mode) ? "提交固定副本" : "文档视图"}{result!.context_changes.length > 0 ? " · 相关资料已有变化，请核对来源。" : ""}</p>}
     {content}
     {!loading && (error || !current) && onRetry && <Button type="button" variant="outline" onClick={onRetry}>重新读取当前视图</Button>}

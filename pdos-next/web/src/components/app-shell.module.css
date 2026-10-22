@@ -1,0 +1,313 @@
+.primaryLink[aria-current="location"] {
+  background: var(--surface);
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.projects {
+  margin: 2px 0 6px;
+}
+
+.projectLink {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 26px;
+  margin: 1px 0;
+  padding: 0 10px 0 22px;
+  border-radius: 6px;
+  color: var(--text-subtle);
+  text-decoration: none;
+  font-size: 11.5px;
+}
+
+.projectLink:hover,
+.projectLink[aria-current="page"] {
+  background: var(--surface);
+  color: var(--foreground);
+}
+
+.projectMark {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.projectName {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.projectStage {
+  color: var(--text-tertiary);
+  font-size: 9.5px;
+}
+
+.scopeBadge {
+  margin-left: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0 4px;
+  color: var(--text-tertiary);
+  font-size: 9.5px;
+  line-height: 16px;
+}
+
+.groupNote {
+  margin: 6px 8px 0;
+  color: var(--text-tertiary);
+  font-size: 10.5px;
+  line-height: 1.55;
+}
+
+.readNotice {
+  padding: 5px 6px;
+  color: var(--text-subtle);
+  font-size: 11px;
+}
+
+.retry {
+  text-align: left;
+  cursor: pointer;
+}
+
+.retry:hover {
+  color: var(--foreground);
+  text-decoration: underline;
+}
+
+.content :global(section[aria-label="立项提案"]) {
+  scroll-margin-top: 64px;
+}
+
+.brandMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.quickActions {
+  display: flex;
+  gap: 6px;
+  padding: 0 2px 8px;
+  flex-shrink: 0;
+}
+
+.quickCreate {
+  position: relative;
+  min-width: 0;
+  flex: 1;
+}
+
+.createTrigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--foreground);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.createTrigger::-webkit-details-marker {
+  display: none;
+}
+
+.createTrigger:hover,
+.commandTrigger:hover {
+  background: var(--surface-2);
+}
+
+.createTrigger:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+.createCaret {
+  margin-left: auto;
+}
+
+.commandTrigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 58px;
+  min-height: 34px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-subtle);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.commandTrigger kbd {
+  font-family: inherit;
+  font-size: 10.5px;
+  color: var(--text-tertiary);
+}
+
+.createMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 65;
+  width: 232px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.createMenu > button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-subtle);
+  text-align: left;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.createMenu > button:hover {
+  background: var(--surface-2);
+  color: var(--foreground);
+}
+
+.createMenu > button > svg {
+  flex-shrink: 0;
+}
+
+.createMenu small {
+  display: block;
+  margin-top: 2px;
+  font-size: 10.5px;
+  color: var(--text-subtle);
+}
+
+.createMenu hr {
+  margin: 4px 8px;
+  border-color: var(--border);
+}
+
+.menuNote {
+  padding: 3px 8px 5px;
+  color: var(--text-tertiary);
+  font-size: 10.5px;
+}
+
+.headerDate {
+  color: var(--text-tertiary);
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.searchAction > button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--text-subtle);
+}
+
+.searchAction > button > span {
+  display: none;
+}
+
+.fab {
+  position: fixed;
+  right: 22px;
+  bottom: max(22px, env(safe-area-inset-bottom));
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--primary-border);
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 13px;
+  font-weight: 650;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform .15s ease-out;
+}
+
+.fab:active {
+  transform: scale(.97);
+}
+
+:global(.workspace-collapsed .workspace-sidebar) .quickActions {
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-inline: 0;
+}
+
+:global(.workspace-collapsed .workspace-sidebar) .quickCreate {
+  flex: none;
+}
+
+:global(.workspace-collapsed .workspace-sidebar) .createTrigger,
+:global(.workspace-collapsed .workspace-sidebar) .commandTrigger {
+  width: 34px;
+  min-width: 34px;
+  justify-content: center;
+  padding-inline: 0;
+}
+
+:global(.workspace-collapsed .workspace-sidebar) .createMenu {
+  left: 44px;
+  top: 0;
+}
+
+@media (max-width: 767px) {
+  .headerDate {
+    font-size: 10.5px;
+  }
+
+  .fab {
+    right: 16px;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    min-height: 44px;
+  }
+}
+
+@media (pointer: coarse) {
+  .projectLink,
+  .createTrigger,
+  .commandTrigger,
+  .createMenu > button,
+  .fab {
+    min-height: 44px;
+  }
+}

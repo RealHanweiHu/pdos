@@ -5,12 +5,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Dialog } from "radix-ui";
 import { ArrowLeft, LockKey, CheckCircle, WarningCircle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
-import { ObjectSearch } from "@/components/object-search";
-import { browserApi } from "@/lib/browser-api";
 import { ProposalViews } from "@/components/preproject/proposal-views";
 import { ProposalShare } from "@/components/preproject/proposal-share";
 import { ProposalPai } from "@/components/preproject/proposal-pai";
 import { ProposalHandoff } from "@/components/preproject/proposal-handoff";
+import { ProposalSourceInspector } from "@/components/preproject/proposal-source-inspector";
+import { ProposalVoices } from "@/components/preproject/proposal-voices";
+import { numericValueText } from "@/lib/spec-bound-values";
+import styles from "./proposal-document.module.css";
 import type { G0Decision } from "@/lib/proposal-handoff";
 import type { ProposalShareReceipt } from "@/components/preproject/proposal-share";
 import { isProposalViewResponse, matchesProposalDocument } from "@/components/preproject/proposal-view-contracts";
@@ -35,6 +37,33 @@ type Assignment = { kind: string; owner_id: string; due_date: string };
 const statuses: Record<string, string> = { draft: "草稿", returned: "已退回", in_review: "G0 评审中", approved: "已立项", rejected: "不立项" };
 const itemStatuses: Record<string, string> = { confirmed: "人工确认", ai_draft: "AI 草稿", expert_pending: "待专家确认", unknown: "未知" };
 const variantNames: Record<string, string> = { customer: "客户变体", region: "地区变体", configuration: "配置变体" };
+const documentTabs = [
+  { id: "narrative", label: "叙述与关键规格" }, { id: "comparison", label: "竞品对比" },
+  { id: "voice", label: "用户声音" }, { id: "options", label: "方案对比" },
+  { id: "questions", label: "待决问题" }, { id: "risks", label: "风险" },
+  { id: "evidence", label: "证据" }, { id: "decisions", label: "决策记录" },
+] as const;
+type DocumentTab = typeof documentTabs[number]["id"];
+const sectionNames: Record<string, string> = { worth_it: "为什么值得做", target_customer_market_channel: "目标用户、市场与渠道", features_in_out: "做成什么样", certification_regions: "认证地区", launch_window: "上市窗口" };
+const itemNames: Record<string, string> = { option: "方案对比", question: "待决问题", risk: "风险", assumption: "待验证假设", difference: "派生差异", commercial_target: "商业目标", decision_note: "取舍记录" };
+const readableSources = (item: Item) => item.source_refs.filter((source): source is Record<string, unknown> => source !== null && typeof source === "object" && !Array.isArray(source));
+
+function SpecTable({ items }: { items: Item[] }) {
+  return <section className={styles.panel} aria-label="关键规格">
+    <header className={styles.panelHeading}><h2>关键规格</h2><span>引用规格字典参数版本</span></header>
+    <div className={styles.tableScroll}><table className={styles.specTable}><thead><tr><th scope="col">参数</th><th scope="col">目标值</th><th scope="col">字典版本</th><th scope="col">状态</th><th scope="col">来源</th><th scope="col">条目版本</th></tr></thead><tbody>
+      {items.map(item => <tr key={`${item.item_id}:${item.version}`}>
+        <th scope="row">{String(item.content.parameter ?? item.content.key ?? "未命名参数")}<span className={styles.cellNote}>{String(item.content.condition_note ?? "工况未定")}</span></th>
+        <td className={styles.numeric}>{item.content.availability === "unknown" ? "值未知" : item.content.availability === "not_applicable" ? "不适用" : typeof item.content.value === "boolean" ? item.content.value ? "有" : "无" : item.content.text_value != null ? String(item.content.text_value) : numericValueText(item.content.value as string | number | null, item.content.lower as string | number | null, item.content.upper as string | number | null)} {String(item.content.unit ?? (["number", "range"].includes(String(item.content.value_type)) ? "（单位未定）" : ""))}</td>
+        <td className={styles.dictionaryVersion}>{item.content.parameter_version ? `v${item.content.parameter_version}` : "无"}</td>
+        <td><span className={styles.itemStatus} data-state={String(item.content.item_status)}>{itemStatuses[String(item.content.item_status)] ?? "状态未提供"}</span>{item.origin === "ai_draft" && item.content.item_status !== "ai_draft" && <span className={styles.cellNote}>AI 起草</span>}</td>
+        <td><ProposalSourceInspector sources={readableSources(item)} label="查看来源"/></td><td className={styles.dictionaryVersion}>v{item.version}</td>
+      </tr>)}
+    </tbody></table></div>
+    {!items.length && <p className={styles.empty}>本提案尚无关键规格条目。</p>}
+    <p className={styles.note}>无字典版本的条目不进入对标与矩阵。</p>
+  </section>;
+}
 
 async function api<T>(path: string, body?: unknown, signal?: AbortSignal): Promise<T> {
   const response = await fetch(`/api/v1/${path}`, {
@@ -67,6 +96,8 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
   const [documentError, setDocumentError] = useState("");
   const [readVersion, setReadVersion] = useState(0);
   const [selectedView, setSelectedView] = useState<ProposalViewName>("spec-benchmark");
+  const [documentTab, setDocumentTab] = useState<DocumentTab>("narrative");
+  const [reviewOpen, setReviewOpen] = useState(false);
   const [viewResult, setViewResult] = useState<ProposalViewResponse | null>(null);
   const [viewLoading, setViewLoading] = useState(true);
   const [viewError, setViewError] = useState("");
@@ -219,36 +250,44 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
   const docItems = proposal?.display_document.items ?? [];
   const options = docItems.filter(item => item.kind === "option");
   const variantTarget = proposal?.display_document.target_kind === "new_variant";
-  return <main className="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:px-8">
-    <div className="flex flex-wrap items-center gap-3">
-      <Link href={`/?category=${categoryId}`} className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft />品类工作区</Link>
-      <Button type="button" variant="outline" disabled={busy} onClick={() => { void reload(); }}>刷新文档与视图</Button>
-      {me && <div className="ml-auto"><ObjectSearch api={browserApi}/></div>}
+  const tabItems = docItems.filter(item => documentTab === "options" ? item.kind === "option" : documentTab === "questions" ? item.kind === "question" : documentTab === "risks" ? item.kind === "risk" : documentTab === "decisions" ? item.kind === "decision_note" : !["spec", "option", "question", "risk", "decision_note"].includes(item.kind));
+  return <div className={styles.page}>
+    <div className={styles.toolbar}>
+      <Link href={`/?category=${categoryId}`} className={styles.backLink}><ArrowLeft size={14}/>品类工作区</Link>
+      <Button type="button" size="xs" variant="outline" disabled={busy} onClick={() => { void reload(); }}>刷新文档与视图</Button>
+      {proposal && documentReady && <Button type="button" size="sm" onClick={() => { setReviewOpen(true); requestAnimationFrame(() => document.getElementById("proposal-g0-review")?.scrollIntoView({ block: "nearest" })); }}>打开 G0 评审包</Button>}
     </div>
     {documentError && <p role="alert">{documentError}</p>}
     {error && <div role="alert" className="panel flex items-start gap-2"><WarningCircle size={20} /><span>{error}</span></div>}
     {!proposal || !documentReady ? <p role="status">{documentError ? "请核对当前会话与提案受众后重新读取。" : "正在读取提案…"}</p> : <>
-      <header className="space-y-3">
-        <div className="flex flex-wrap items-center gap-3"><h1 className="text-2xl font-semibold">{proposal.display_document.title}</h1><span className="rounded-md border px-2 py-1 text-xs">{statuses[proposal.status] ?? proposal.status}</span><span className="inline-flex items-center gap-1 text-sm text-muted-foreground"><LockKey />{proposal.visibility === "private" ? "私有提案" : "已共享"}</span></div>
-        <p className="text-muted-foreground">{proposal.display_document.brief}</p>
-        <p className="subtle">{{ customer_request: "客户需求", new_product: "自主新品", derivative: "派生迭代" }[proposal.display_document.entry_kind]} · {variantTarget ? "新变体" : "新型号"}{proposal.display_document.baseline_definition_revision ? ` · 固定父定义 v${proposal.display_document.baseline_definition_revision}` : ""}</p>
-        {proposal.private_source_count > 0 && <p className="text-sm">引用了私有来源，内容只对提案受众可见。</p>}
+      <div className={styles.layout}><div className={styles.document}>
+      <p className={styles.roleNote}><LockKey size={14} aria-hidden="true"/>{proposal.visibility === "private" ? "本案私有，按当前提案受众授权读取。" : "本案已共享，按当前提案受众授权读取。"}{proposal.private_source_count > 0 && "引用了私有来源，内容只对提案受众可见。"}</p>
+      <header className={styles.documentHeader}>
+        <div className={styles.titleRow}><h1>{proposal.display_document.title}</h1><span className={styles.status}>{statuses[proposal.status] ?? proposal.status}</span></div>
+        <p className={styles.meta}>触发物：{{ customer_request: "客户需求", new_product: "自主新品", derivative: "派生迭代" }[proposal.display_document.entry_kind]} · {variantTarget ? "新变体" : "新型号"} · 负责人 {people.find(person => person.id === proposal.owner_id)?.name ?? "未取得姓名"}{deciding ? " · 我是本案具名评审人" : owner ? " · 我是本案负责人" : ""}{proposal.display_document.baseline_definition_revision ? ` · 固定父定义 v${proposal.display_document.baseline_definition_revision}` : ""}</p>
+        <p className={styles.brief}>{proposal.display_document.brief}</p>
       </header>
-      <ProposalViews view={selectedView} result={viewResult} document={proposal.document_identity} people={people}
-        loading={viewLoading} error={viewError} onViewChange={changeView} onRetry={() => { void reload(); }} />
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]"><div className="space-y-4">
+      <nav className={styles.tabs} aria-label="提案文档视图">{documentTabs.map(tab => <button type="button" key={tab.id} className={styles.chip} aria-pressed={documentTab === tab.id} onClick={() => setDocumentTab(tab.id)}>{tab.label}{tab.id === "questions" || tab.id === "risks" ? <b>{docItems.filter(item => item.kind === (tab.id === "questions" ? "question" : "risk")).length}</b> : null}</button>)}</nav>
+      <div className={styles.documentContent}>
         {deciding && <p className="panel text-sm">{frozenAvailable ? "当前评审的是提交时的固定副本。未知规格可带入立项，须逐条明确后续处置。" : "提交副本的来源不在当前可读范围，请核对权限后刷新。"}</p>}
-        {docItems.map(item => <section key={`${item.item_id}:${item.version}`} className="panel space-y-3">
-          <div className="flex items-center justify-between gap-3"><h2 className="font-semibold">{item.kind === "spec" ? String(item.content.parameter) : item.kind === "question" ? "待决问题" : item.kind === "option" ? "方案对比" : item.content.key === "worth_it" ? "为什么值得做" : "提案内容"}</h2><span className="text-xs text-muted-foreground">{item.origin === "ai_draft" ? "AI 草稿" : "人工记录"}</span></div>
-          {item.kind === "spec" ? <><p>{item.content.availability === "unknown" ? "值未知" : String(item.content.value ?? item.content.text_value ?? `${item.content.lower ?? ""}–${item.content.upper ?? ""}`)} {String(item.content.unit ?? (["number", "range"].includes(String(item.content.value_type)) ? "（单位未定）" : ""))}</p><p className="text-sm text-muted-foreground">{itemStatuses[String(item.content.item_status)]} · {String(item.content.condition_note ?? "工况未定")}</p></> : item.kind === "question" ? <><p>{String(item.content.question)}</p><p className="text-sm text-muted-foreground">负责人：{people.find(person => person.id === item.content.owner_id)?.name ?? "提案受众"} · {String(item.content.due_date)} · {item.content.status === "carried" ? "已转入项目" : item.content.status === "answered" ? "已答复" : "待答复"}</p></> : editable && ["section", "option"].includes(item.kind) ? <ItemEditor item={item} busy={busy || !!prepared} save={content => patch(item, content)} /> : <p className="whitespace-pre-wrap">{String(item.content.text ?? item.content.name ?? item.content.statement ?? item.content.summary ?? "")}</p>}
-          <p className="text-xs text-muted-foreground">第 {item.version} 版 · {item.source_refs.length} 个来源</p>
+        {!["comparison", "voice", "evidence"].includes(documentTab) && tabItems.map(item => <section key={`${item.item_id}:${item.version}`} className={item.kind === "section" ? styles.narrative : styles.itemCard}>
+          <div className={styles.itemHeading}><h2>{item.kind === "section" ? sectionNames[String(item.content.key)] ?? "提案内容" : itemNames[item.kind] ?? "提案内容"}</h2><span>{item.origin === "ai_draft" ? "AI 草稿" : "人工记录"}</span></div>
+          {item.kind === "question" ? <><p>{String(item.content.question)}</p><p className={styles.meta}>负责人：{people.find(person => person.id === item.content.owner_id)?.name ?? "提案受众"} · {String(item.content.due_date)} · {item.content.status === "carried" ? "已转入项目" : item.content.status === "answered" ? "已答复" : "待答复"}</p></> : <><p className={styles.itemText}>{String(item.content.text ?? item.content.name ?? item.content.statement ?? item.content.summary ?? "")}</p>{editable && ["section", "option"].includes(item.kind) && <details className={styles.inlineEditor}><summary>编辑此条</summary><ItemEditor item={item} busy={busy || !!prepared} save={content => patch(item, content)}/></details>}</>}
+          <p className={styles.itemVersion}>第 {item.version} 版 · {item.source_refs.length} 个来源</p>
         </section>)}
-      </div><aside className="space-y-4">
-        <section className="panel space-y-2"><h2 className="font-semibold">定义成熟度</h2><p className="text-sm">{proposal.maturity.spec_count} 条规格 · {proposal.maturity.option_count} 个方案</p><p className="text-sm">{proposal.maturity.freeze_blockers.length} 条规格仍需完善</p><ul className="list-inside list-disc text-sm">{proposal.maturity.freeze_blockers.map(item => <li key={item.item_id}>{String(item.content.parameter)}：{itemStatuses[String(item.content.item_status)]}，单位或工况需核对</li>)}</ul><p className="text-xs text-muted-foreground">10–20 条关键规格仅作提示。G0 批准后封存定义 v1，保留未知与草稿状态。</p></section>
+        {documentTab === "narrative" && <SpecTable items={docItems.filter(item => item.kind === "spec")} />}
+        {documentTab === "voice" && <ProposalVoices categoryId={categoryId} proposalId={proposalId} document={proposal.document_identity} readVersion={readVersion}/>}
+        {documentTab === "decisions" && proposal.decision && <section className={styles.itemCard}><h2>具名 G0 决定</h2><p>{proposal.decision.rationale}</p><p className={styles.meta}>{people.find(person => person.id === proposal.decision?.decided_by)?.name ?? "原签发人"}{proposal.decision.decided_at && <> · <time dateTime={proposal.decision.decided_at}>{new Date(proposal.decision.decided_at).toLocaleString()}</time></>}</p></section>}
+        {documentTab === "evidence" && <section className={styles.panel}><header className={styles.panelHeading}><h2>证据引用</h2><span>按提案条目保留来源身份与版本</span></header>{docItems.filter(item => item.source_refs.length > 0).map(item => <div className={styles.evidenceRow} key={item.item_id}><h3>{String(item.content.parameter ?? item.content.name ?? sectionNames[String(item.content.key)] ?? itemNames[item.kind] ?? "提案条目")}</h3><ProposalSourceInspector sources={readableSources(item)}/></div>)}{!docItems.some(item => item.source_refs.length > 0) && <p className={styles.empty}>当前条目未提供可读来源引用。</p>}</section>}
+        {!["narrative", "comparison", "voice", "evidence"].includes(documentTab) && tabItems.length === 0 && !(documentTab === "decisions" && proposal.decision) && <p className={styles.empty}>当前提案没有{documentTabs.find(tab => tab.id === documentTab)?.label}条目。</p>}
+        <details className={styles.calculatedViews} open={documentTab === "comparison"} hidden={documentTab !== "narrative" && documentTab !== "comparison"}><summary>对标、定位与成熟度核对</summary><ProposalViews view={selectedView} result={viewResult} document={proposal.document_identity} people={people} loading={viewLoading} error={viewError} onViewChange={changeView} onRetry={() => { void reload(); }}/></details>
+        {documentTab === "narrative" && <section className={styles.panel}><header className={styles.panelHeading}><h2>定义成熟度</h2><span>按真实规格状态核对</span></header><div className={styles.maturity}><span>{proposal.maturity.spec_count} 条规格</span><span>{proposal.maturity.option_count} 个方案</span><span>{proposal.maturity.freeze_blockers.length} 条规格仍需完善</span></div><ul className={styles.blockers}>{proposal.maturity.freeze_blockers.map(item => <li key={item.item_id}>{String(item.content.parameter)}：{itemStatuses[String(item.content.item_status)]}，单位或工况需核对</li>)}</ul><p className={styles.note}>10–20 条关键规格仅作提示。G0 批准后封存定义 v1，保留未知与草稿状态。</p></section>}
+      </div>
+      <details id="proposal-g0-review" className={styles.reviewPanel} open={reviewOpen} onToggle={event => setReviewOpen(event.currentTarget.open)}><summary>G0 评审与项目承接</summary><div className={styles.reviewBody}>
         {editable && owner && <form className="panel space-y-3" onSubmit={event => { event.preventDefault(); preview("proposal.g0.submit", { proposal_id: proposalId, expected_revision: proposal.revision, reviewer_id: reviewer, no_alternative_reason: alternativeReason || null }); }}>
           <h2 className="font-semibold">提交 G0 立项评审</h2><label className="block text-sm">具名评审人<select required value={reviewer} onChange={event => setReviewer(event.target.value)}><option value="">选择产品经理</option>{people.filter(person => person.reviewer_eligible).map(person => <option key={person.id} value={person.id}>{person.name}</option>)}</select></label>
           {options.length < 2 && <label className="block text-sm">没有替代方案的理由<textarea required value={alternativeReason} onChange={event => setAlternativeReason(event.target.value)} /></label>}
-          <Button ref={reviewTrigger} disabled={busy || !!prepared || !reviewer}>核对提交内容</Button><p className="text-xs text-muted-foreground">负责人不能评审自己的提案。</p>
+          <Button ref={reviewTrigger} disabled={busy || !!prepared || !reviewer}>核对提交内容</Button><p className="text-xs text-muted-foreground">评审人须有品类产品管理权限；试点租户支持负责人本人具名评审。</p>
         </form>}
         {deciding && frozenAvailable && <form className="panel space-y-3" onSubmit={event => {
           event.preventDefault();
@@ -276,8 +315,9 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
         </form>}
         {proposal.decision && <section className="panel space-y-2"><h2 className="flex items-center gap-2 font-semibold"><CheckCircle />决定记录</h2><p className="text-sm">{proposal.decision.rationale}</p><p className="subtle">具名评审人：{people.find(person => person.id === proposal.decision?.decided_by)?.name ?? "原签发人"}{proposal.decision.decided_at && <> · <time dateTime={proposal.decision.decided_at}>{new Date(proposal.decision.decided_at).toLocaleString()}</time></>}</p></section>}
         {proposal.decision?.outcome === "approved" && <ProposalHandoff categoryId={categoryId} proposalId={proposalId} decision={proposal.decision} />}
-        <ProposalPai key={`${me}:${categoryId}:${proposalId}`} categoryId={categoryId} proposalId={proposalId} principalId={me} />
-      </aside></div>
+        {!deciding && !(editable && owner) && !proposal.decision && <p className={styles.empty}>当前没有本人可办理的 G0 动作。</p>}
+      </div></details>
+      </div><aside className={styles.assistant}><ProposalPai key={`${me}:${categoryId}:${proposalId}`} categoryId={categoryId} proposalId={proposalId} principalId={me} proposalTitle={proposal.display_document.title}/></aside></div>
     </>}
     {owner && <ProposalShare categoryId={categoryId} proposalId={proposalId} principalId={me}
       onChanged={receipt => { setShareReceipt(receipt); return reload(); }} />}
@@ -301,5 +341,5 @@ function ScopedProposalDocument({ categoryId, proposalId }: { categoryId: string
         finally { if (live.current) setBusy(false); }
       }}>确认办理</Button><Button variant="outline" disabled={busy} onClick={() => setPrepared(null)}>返回修改</Button></div><p className="mt-3 text-xs text-muted-foreground">暂未取得回执时可重试本次办理，重复请求会返回原结果。</p>
     </Dialog.Content></Dialog.Portal></Dialog.Root>}
-  </main>;
+  </div>;
 }

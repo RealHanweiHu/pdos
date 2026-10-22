@@ -76,3 +76,107 @@ test("an uncommitted request remains recoverable with exactly its original comma
  await second.click("核对原请求");assert.equal(p.writes.length,2);assert.deepEqual(p.writes[1],p.writes[0]);assert.equal(p.previews,1);assert.equal(storage.size,0);
  }finally{first.unmount();second?.unmount();}
 });
+
+
+function pagedRecovery(state = "adopted", operation = original.operation) {
+ const reads = [], writes = [], previews = [];
+ const material = operation === original.operation ? original : { ...original, operation, payload: { prepared_by_run_id: run, candidate_digest: "a".repeat(64), title: "Retained synthetic proposal" } };
+ const savedReceipt = { ...receipt, operation, subject_type: operation === "proposal.create" ? "proposal" : "public_web_snapshot" };
+ const currentItem = { ...pendingItem, operation, command: material };
+ const command = { ...material, payload: { ...material.payload, confirmation_token: "actual-original-token" } };
+ storage.set(`pdos-next:run-candidate:owner:${category}:${run}`, JSON.stringify({ eventId: event, command }));
+ const firstPage = Array.from({ length: 50 }, (_, index) => ({
+  ...pendingItem, event_id: `older-event-${index}`, sequence: index + 1,
+  state: "unavailable", command: null, receipt: null,
+ }));
+ firstPage[0] = { ...pendingItem, sequence: 1, event_id: "55555555-5555-4555-8555-555555555555", command: { ...original, payload: { ...original.payload, prepared_event_id: "55555555-5555-4555-8555-555555555555" } } };
+ const api = async (url, body) => {
+  if (url.includes("/candidates")) {
+   reads.push(url);
+   const after = Number(new URL(url, "https://local.test").searchParams.get("after"));
+   return { run_id: run, items: after === 0 ? firstPage : [{
+    ...currentItem, sequence: 51, state, command: state === "pending" ? material : null,
+    receipt: state === "adopted" ? savedReceipt : null,
+   }], next_cursor: after === 0 ? 50 : null };
+  }
+  if (url.endsWith("/preview")) { previews.push(body); throw Error("No new preview during recovery"); }
+  writes.push(structuredClone(body)); return savedReceipt;
+ };
+ return { api, reads, writes, previews, command };
+}
+
+test("unknown saved response after the first 50 candidates can read on and restore its receipt without POST", async () => {
+ storage.clear(); const p = pagedRecovery(), c = session(p.api);
+ try {
+  await c.settle(); assert.equal(p.reads.length, 1); assert.equal(storage.size, 1);
+  const newPreviews = nodes(c.render(), node => node.props?.onClick && text(node.props.children) === "核对并预览研究来源登记");
+  assert.ok(newPreviews.length > 0); assert.ok(newPreviews.every(node => node.props.disabled));
+  await c.click("查看更多候选");
+  assert.equal(p.reads.length, 2); assert.match(p.reads[1], /after=50/);
+  assert.match(c.text(), /研究来源登记已保存/); assert.equal(storage.size, 0);
+  assert.equal(p.previews.length, 0); assert.equal(p.writes.length, 0);
+ } finally { c.unmount(); }
+});
+
+test("pending candidate on a later page keeps the original request and requires an explicit replay", async () => {
+ storage.clear(); const p = pagedRecovery("pending"), c = session(p.api);
+ try {
+  await c.settle(); const saved = [...storage.values()][0];
+  await c.click("查看更多候选");
+  assert.equal(p.writes.length, 0); assert.equal([...storage.values()][0], saved);
+  assert.ok(nodes(c.render(), node => node.props?.onClick && text(node.props.children) === "核对并预览研究来源登记").every(node => node.props.disabled));
+  await c.click("核对原请求"); assert.deepEqual(p.writes, [p.command]);
+  assert.equal(p.previews.length, 0); assert.equal(storage.size, 0);
+ } finally { c.unmount(); }
+});
+
+
+test("proposal adoption on a later page restores the proposal link from its actual receipt", async () => {
+ storage.clear(); const p = pagedRecovery("adopted", "proposal.create"), c = session(p.api);
+ try {
+  await c.settle(); await c.click("查看更多候选");
+  assert.match(c.text(), /立项提案已保存/);
+  assert.ok(nodes(c.render(), node => node.props?.href === `/categories/${category}/proposals/${snapshot}`).length > 0);
+  assert.equal(storage.size, 0); assert.equal(p.writes.length, 0); assert.equal(p.previews.length, 0);
+ } finally { c.unmount(); }
+});
+
+test("failed later-page read retains the exact request and refresh can recover the saved receipt", async () => {
+ storage.clear(); const p = pagedRecovery(); let fail = true;
+ const c = session(async (url, body) => {
+  if (url.includes("after=50") && fail) { fail = false; throw Error("Synthetic page unavailable"); }
+  return p.api(url, body);
+ });
+ try {
+  await c.settle(); const saved = [...storage.values()][0]; await c.click("查看更多候选");
+  assert.match(c.text(), /Synthetic page unavailable/); assert.equal([...storage.values()][0], saved);
+  await c.click("刷新候选"); await c.click("查看更多候选");
+  assert.match(c.text(), /研究来源登记已保存/); assert.equal(storage.size, 0);
+  assert.equal(p.writes.length, 0); assert.equal(p.previews.length, 0);
+ } finally { c.unmount(); }
+});
+
+for (const state of ["cancelled", "unavailable"]) test(`later-page ${state} candidate keeps unknown intent and blocks replay or a new preview`, async () => {
+ storage.clear(); const p = pagedRecovery(state), c = session(p.api);
+ try {
+  await c.settle(); const saved = [...storage.values()][0]; await c.click("查看更多候选");
+  const replay = nodes(c.render(), node => node.props?.onClick && text(node.props.children) === "核对原请求")[0];
+  assert.ok(replay.props.disabled); assert.equal([...storage.values()][0], saved);
+  const previews = nodes(c.render(), node => node.props?.onClick && text(node.props.children) === "核对并预览研究来源登记");
+  assert.ok(previews.length > 0); assert.ok(previews.every(node => node.props.disabled));
+  assert.equal(p.writes.length, 0); assert.equal(p.previews.length, 0);
+ } finally { c.unmount(); }
+});
+
+test("later-page authority loss removes local recovery and does not send the original command", async () => {
+ storage.clear(); const p = pagedRecovery();
+ const c = session(async (url, body) => {
+  if (url.includes("after=50")) throw Object.assign(Error("Synthetic current authority revoked"), { status: 403 });
+  return p.api(url, body);
+ });
+ try {
+  await c.settle(); await c.click("查看更多候选");
+  assert.equal(storage.size, 0); assert.ok(!c.text().includes("保存结果待核对，已保留原请求"));
+  assert.equal(p.writes.length, 0); assert.equal(p.previews.length, 0);
+ } finally { c.unmount(); }
+});

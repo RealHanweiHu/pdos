@@ -48,12 +48,13 @@ const react = { ...React,
 const modules = new Map();
 const container = props => React.createElement("div", null, props.children);
 function load(filename) {
+  if (filename.endsWith(".css")) return { __esModule: true, default: new Proxy({}, { get: (_, key) => String(key) }) };
   if (!path.extname(filename)) filename = [".tsx", ".ts"].map(ext => filename + ext).find(existsSync);
   if (modules.has(filename)) return modules.get(filename).exports;
   const loaded = new Module(filename); modules.set(filename, loaded);
   loaded.require = name => name === "react" ? react
     : name === "next/link" ? props => React.createElement("a", { href: props.href }, props.children)
-    : name === "@phosphor-icons/react" ? Object.fromEntries(["ArrowLeft", "LockKey", "CheckCircle", "WarningCircle", "ShareNetwork", "MagnifyingGlass", "X"].map(key => [key, () => React.createElement("svg")]))
+    : name === "@phosphor-icons/react" ? new Proxy({}, { get: () => () => React.createElement("svg") })
     : name === "radix-ui" ? { Dialog: Object.fromEntries(["Root", "Portal", "Overlay", "Content", "Title", "Description"].map(key => [key, container])) }
     : name.startsWith("@/") ? load(path.join(webRoot, "src", name.slice(2)))
     : name.startsWith(".") ? load(path.resolve(path.dirname(filename), name)) : dependency(name);
@@ -64,6 +65,7 @@ function load(filename) {
 }
 const { ProposalDocument } = load(path.resolve(source));
 const { ProposalViews } = load(path.join(directory, "proposal-views.tsx"));
+const { ProposalVoices } = load(path.join(directory, "proposal-voices.tsx"));
 function elements(tree, predicate) {
   if (!tree || typeof tree !== "object") return [];
   if (Array.isArray(tree)) return tree.flatMap(item => elements(item, predicate));
@@ -327,4 +329,51 @@ test("legacy responses without document identity remain unavailable", async t =>
   assert.equal(view(env), undefined);
   assert.equal(env.calls.some(call => call.url.includes("/views/")), false);
   assert.ok(env.html().includes("未提供可读的提案文档身份"));
+});
+
+test("document chips switch only returned item groups and never submit a domain command", async t => {
+  const env = environment(t), doc = proposal({ frozen: true });
+  doc.display_document.items.push(
+    { item_id: "risk", version: 1, kind: "risk", content: { statement: "RETURNED_RISK" }, source_refs: [], origin: "ai_draft" },
+    { item_id: "option", version: 1, kind: "option", content: { name: "RETURNED_OPTION" }, source_refs: [], origin: "human" },
+  );
+  await ready(env, doc, "reviewer");
+  const chips = () => elements(env.tree(), item => item.props?.["aria-label"] === "提案文档视图")[0];
+  assert.equal(elements(chips(), item => item.type === "button").length, 8);
+  assert.equal(env.html().includes("RETURNED_RISK"), false);
+  elements(chips(), item => item.type === "button" && item.props.children[0] === "风险")[0].props.onClick(); await env.flush();
+  const content = renderToStaticMarkup(elements(env.tree(), item => item.props?.className === "documentContent")[0]);
+  assert.ok(content.includes("RETURNED_RISK")); assert.equal(content.includes("RETURNED_OPTION"), false);
+  elements(chips(), item => item.type === "button" && item.props.children[0] === "用户声音")[0].props.onClick(); await env.flush();
+  const voices = elements(env.tree(), item => item.type === ProposalVoices)[0];
+  assert.ok(voices);
+  assert.equal(voices.props.categoryId, "category-a");
+  assert.equal(voices.props.proposalId, doc.id);
+  assert.deepEqual(voices.props.document, doc.document_identity);
+  assert.ok(voices.props.readVersion > 0);
+  assert.ok(env.calls.every(call => call.options.method === "GET")); assert.equal(env.calls.length, 4);
+});
+
+test("key specification table preserves decimal bounds, false, unknowns and returned source identity", async t => {
+  const env = environment(t), doc = proposal({ frozen: true });
+  doc.display_document.items.push(
+    { item_id: "spec", version: 3, kind: "spec", content: { parameter: "压力下限", parameter_version: 2, value_type: "range", availability: "known", lower: "123.45678901234567890", upper: null, unit: "kPa", condition_note: "23 C", item_status: "ai_draft" }, source_refs: [{ type: "snapshot", id: "SPEC_EXACT_SOURCE", version: 7 }], origin: "ai_draft" },
+    { item_id: "boolean", version: 1, kind: "spec", content: { parameter: "自停", value_type: "boolean", availability: "known", value: false, item_status: "unknown" }, source_refs: [], origin: "human" },
+    { item_id: "unknown", version: 1, kind: "spec", content: { parameter: "温升", value_type: "number", availability: "unknown", item_status: "unknown" }, source_refs: [], origin: "human" },
+  );
+  await ready(env, doc, "reviewer"); const html = env.html();
+  for (const text of ["≥123.45678901234567890", "SPEC_EXACT_SOURCE", "值未知", ">无 ", "字典版本", "工况未定"]) assert.ok(html.includes(text), text);
+  assert.equal(html.includes("确认此条"), false); assert.ok(env.calls.every(call => call.options.method === "GET"));
+});
+
+test("document-tab changes retain the named G0 form and immutable prepared request", async t => {
+  const env = environment(t); await ready(env, proposal({ frozen: true }), "reviewer");
+  elements(env.tree(), item => item.type === "textarea" && item.props.required)[0].props.onChange({ target: { value: "PRESERVED_REASON" } }); await env.flush();
+  elements(env.tree(), item => item.type === "form")[0].props.onSubmit({ preventDefault() {} }); await env.flush();
+  const preview = env.pending(call => call.url.endsWith("/commands/preview"));
+  const command = JSON.parse(preview.options.body); env.respond(preview, { command, review: {} }); await env.flush();
+  const chips = elements(env.tree(), item => item.props?.["aria-label"] === "提案文档视图")[0];
+  elements(chips, item => item.type === "button" && item.props.children[0] === "证据")[0].props.onClick(); await env.flush();
+  assert.ok(env.html().includes("PRESERVED_REASON")); await click(env, "确认办理");
+  assert.deepEqual(JSON.parse(env.pending(call => call.url.endsWith("/commands")).options.body), command);
 });

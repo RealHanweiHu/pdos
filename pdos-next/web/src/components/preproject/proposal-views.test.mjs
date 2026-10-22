@@ -13,6 +13,7 @@ const React = dependency("react");
 const { renderToStaticMarkup } = dependency("react-dom/server");
 const modules = new Map();
 function load(filename) {
+  if (filename.endsWith(".css")) return { __esModule: true, default: new Proxy({}, { get: (_, key) => String(key) }) };
   if (!path.extname(filename)) filename = [".tsx", ".ts"].map(ext => filename + ext).find(existsSync);
   if (modules.has(filename)) return modules.get(filename).exports;
   const loaded = new Module(filename); modules.set(filename, loaded);

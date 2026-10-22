@@ -1,9 +1,41 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { globalHref, normalizeGlobalSearch, projectWorkbenchHref, resolveGlobalLocation } from "./global-navigation";
+import { defaultGlobalLocation, globalAreas, globalHref, normalizeGlobalSearch, productManagementCategories, productManagementHref, projectWorkbenchHref, resolveGlobalLocation, type NavigationCategory } from "./global-navigation";
 
 const category = "11111111-2222-4333-8444-555555555555";
 const project = "66666666-7777-4888-8999-aaaaaaaaaaaa";
+
+test("P15 四个全局主干按项目优先排列，默认仍是我的工作", () => {
+  assert.deepEqual(globalAreas.filter(entry => entry.group === "main").map(entry => [entry.id, entry.label]), [["work", "我的工作"], ["projects", "项目"], ["programs", "组合与资源"], ["knowledge", "知识"]]);
+  assert.equal(globalAreas.find(entry => entry.id === "category")?.group, "product_management");
+  assert.equal(globalAreas.find(entry => entry.id === "cockpit")?.group, undefined);
+  assert.equal(defaultGlobalLocation.area, "work");
+});
+
+test("产品管理组只使用当前品类的明确服务器能力，不从可读、写入或岗位补授", () => {
+  const granted = { id: "pm", capabilities: { product_management: true } };
+  const readable = { id: "reader" };
+  const ordinaryWriter = { id: "writer", can_write: true };
+  const roleName = { id: "role", role: "product_manager", product_manager: true };
+  const revoked = { id: "revoked", capabilities: { product_management: false } };
+  const malformed = { id: "malformed", capabilities: { product_management: "true" } } as unknown as NavigationCategory;
+  const categories = [readable, granted, ordinaryWriter, roleName, revoked, malformed];
+  assert.deepEqual(productManagementCategories(categories), [granted]);
+  assert.deepEqual(productManagementCategories([]), []);
+  assert.equal(categories.length, 6);
+});
+
+test("产品管理入口定位现有品类提案，不继承项目工作台范围", () => {
+  assert.equal(productManagementHref(), "?area=category");
+  const params = new URLSearchParams(productManagementHref(category, "proposals"));
+  assert.equal(params.get("area"), "category");
+  assert.equal(params.get("category"), category);
+  assert.equal(params.get("focus"), "proposals");
+  assert.equal(params.get("bench"), null);
+  assert.equal(params.get("project"), null);
+  assert.equal(resolveGlobalLocation(`?${params}`).area, "category");
+  assert.equal(new URLSearchParams(globalHref({ area: "projects", categoryId: category, projectId: "" }, `?${params}`)).get("focus"), null);
+});
 
 test("项目工作台直达保留具体项目和型号，直接进入计划", () => {
   const href = projectWorkbenchHref(category, "model-identity", project);
@@ -16,7 +48,7 @@ test("项目工作台直达保留具体项目和型号，直接进入计划", ()
   assert.equal(normalizeGlobalSearch(href).changed, false);
 });
 
-test("全局七入口解析与往返保持", () => {
+test("全局及旧项目工作区七种位置解析与往返保持", () => {
   for (const area of ["work", "cockpit", "projects", "programs", "category", "knowledge", "settings"] as const) {
     const location = resolveGlobalLocation(`?area=${area}&category=${category}`);
     assert.equal(location.area, area);

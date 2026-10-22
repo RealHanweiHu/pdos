@@ -39,6 +39,7 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
 function environment(t, input = {}, full = false) {
   const network = transport(), own = { slots: [], index: 0, effects: [], dirty: false, disposed: false };
   let props = { api: network.api, principalId, reload: 0, queue: "receive", ...input }, state, tree;
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- This isolated hook runner installs and flushes the test hook shim.
   function render() { own.index = 0; own.effects = []; own.dirty = false; hooks = own; try { if (full) tree = PersonalAttention(props); else { state = usePersonalAttention(props.api, props.principalId, props.reload, props.queue); tree = PersonalAttentionQueue({ queue: props.queue, state }); } } finally { hooks = null; } own.effects.forEach(effect => effect()); }
   const dispose = () => { if (!own.disposed) { own.slots.forEach(slot => slot?.cleanup?.()); own.disposed = true; } };
   render(); t.after(dispose);

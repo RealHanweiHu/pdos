@@ -36,7 +36,8 @@ function load(filename) {
   if (modules.has(filename)) return modules.get(filename).exports;
   const loaded = new Module(filename); modules.set(filename, loaded);
   loaded.require = specifier => specifier === "react" ? reactShim
-    : specifier === "@phosphor-icons/react" ? { Sparkle: () => React.createElement("svg") }
+    : specifier === "@phosphor-icons/react" ? new Proxy({}, { get: () => () => React.createElement("svg") })
+    : specifier.endsWith(".module.css") ? { __esModule: true, default: new Proxy({}, { get: (_target, key) => String(key) }) }
     : specifier.startsWith("@/") ? load(path.join(webRoot, "src", specifier.slice(2)))
     : specifier.startsWith(".") ? load(path.resolve(path.dirname(filename), specifier)) : dependency(specifier);
   loaded._compile(ts.transpileModule(readFileSync(filename, "utf8"), { compilerOptions: {
@@ -45,6 +46,7 @@ function load(filename) {
   return loaded.exports;
 }
 const { CategoryCreateForm } = load(path.join(directory, "category-create-form.tsx"));
+const { SessionHistory } = load(path.join(directory, "../pai/session-history.tsx"));
 const { PersonalXiaopai } = load(path.join(directory, "personal-xiaopai.tsx"));
 const { ClarificationForm, ClarificationDialog, panelVisible } = load(path.join(directory, "clarification.tsx"));
 const { adoptedCategory, asCandidate, selectedInput, RequestRejected } = load(path.join(directory, "contracts.ts"));
@@ -60,11 +62,20 @@ function elements(tree, predicate) {
   return [...(predicate(tree) ? [tree] : []), ...elements(tree.props?.children, predicate)];
 }
 function session(Component, props) {
-  const state = { values: [], index: 0, effects: [] };
-  let cleanups = [];
-  return { render() { hooks = state; state.index = 0; state.effects = []; try { return Component(props); } finally { hooks = null; } },
-    mountEffects() { cleanups = state.effects.map(effect => effect()); }, lastEffect() { return state.effects.at(-1)(); },
-    unmount() { cleanups.forEach(cleanup => cleanup?.()); } };
+  if (Component === PersonalXiaopai) props = { principalId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", ...props };
+  const levels = []; let lastState, cleanups = [];
+  return { render() {
+    let call = Component, input = props, depth = 0;
+    try { for (;;) {
+      const key = input.__key ?? "root";
+      if (!levels[depth] || levels[depth].key !== key) levels[depth] = { values: [], index: 0, effects: [], key };
+      const state = levels[depth]; hooks = state; state.index = 0; state.effects = []; lastState = state;
+      const tree = call(input);
+      if (!tree || typeof tree.type !== "function" || !/PersonalIdentity|ScopedPersonalXiaopai/.test(tree.type.name)) return tree;
+      call = tree.type; input = { ...tree.props, __key: tree.key }; depth++;
+    } } finally { hooks = null; }
+  }, mountEffects() { cleanups = levels.flatMap(state => state.effects.map(effect => effect())); },
+    lastEffect() { return lastState.effects.at(-1)(); }, unmount() { cleanups.forEach(cleanup => cleanup?.()); } };
 }
 function button(tree, label) { return elements(tree, element => element.props?.children === label && element.props?.onClick)[0]; }
 const tick = () => new Promise(resolve => setImmediate(resolve));
@@ -149,14 +160,14 @@ test("definite expired confirmation allows explicit new preview; uncertain outco
   assert.notEqual(calls[0].dto.idempotency_key, calls[2].dto.idempotency_key);
 });
 
+const sessionId = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
 const runId = "11111111-1111-4111-8111-111111111111";
 const adoption = { type: "category_adopted", proof_version: 1, run_id: runId, candidate_digest: candidate.candidate_digest,
   category_id: "22222222-2222-4222-8222-222222222222", receipt_id: "33333333-3333-4333-8333-333333333333",
   candidate_event_id: "44444444-4444-4444-8444-444444444444", input_ref: "55555555-5555-4555-8555-555555555555", cancel_epoch: 0 };
-async function openHistory(component, goal = "已有个人任务") {
-  await click(component, "刷新记录");
-  const target = elements(component.render(), e => Array.isArray(e.props?.children) && e.props.children[0] === goal && e.props.onClick)[0];
-  assert.ok(target); target.props.onClick(); await tick();
+async function openHistory(component, goal = "已有个人任务", id = runId) {
+  if (goal === "新的运行") id = "99999999-9999-4999-8999-999999999999";
+  elements(component.render(), e => e.type === SessionHistory)[0].props.onSelectRun(id, sessionId); await tick();
 }
 test("refresh and reopen read actual adoption receipt, suppress adoption form and navigate to original category", async () => {
   const opened = [], calls = [];
@@ -166,7 +177,7 @@ test("refresh and reopen read actual adoption receipt, suppress adoption form an
     if (path.includes("/events")) return { items: [
       { sequence: 1, event: { type: "needs_input", questions: [{ id: "old-question", question: "旧问题", why: "旧原因", options: [], allow_free_text: true }] } },
       { sequence: 2, event: candidate }, { sequence: 3, event: adoption }], next_cursor: 3 };
-    return { run_id: runId, status: "waiting_input", cancel_epoch: 0, reverted: false };
+    return { session_id: sessionId, run_id: runId, status: "waiting_input", cancel_epoch: 0, reverted: false };
   };
   for (let reopen = 0; reopen < 2; reopen++) {
     const component = session(PersonalXiaopai, { api, onCreated: value => opened.push(value) });
@@ -187,9 +198,9 @@ test("an adoption from another run cannot suppress the current run candidate", a
   const component = session(PersonalXiaopai, { onCreated() {}, api: async path => {
     if (path.includes("?page_size=50")) return { items: [{ run_id: otherRun, goal: "已有个人任务", status: "completed" }], next_cursor: null };
     if (path.includes("/events")) return { items: [{ sequence: 1, event: candidate }, { sequence: 2, event: adoption }], next_cursor: 2 };
-    return { run_id: otherRun, status: "completed", cancel_epoch: 0, reverted: false };
+    return { session_id: sessionId, run_id: otherRun, status: "completed", cancel_epoch: 0, reverted: false };
   } });
-  await openHistory(component);
+  await openHistory(component, "已有个人任务", otherRun);
   const form = elements(component.render(), e => e.type === CategoryCreateForm)[0];
   assert.equal(form.props.runId, otherRun); assert.equal(button(component.render(), "进入已创建品类"), undefined);
 });
@@ -216,10 +227,10 @@ test("personal start retries the identical request and never fans out another mo
   const component = session(PersonalXiaopai, { onCreated() {}, api: async (path, body) => {
     calls.push({ path, body: structuredClone(body) });
     if (body && ++count === 1) throw Error("network failed");
-    if (body) return { run_id: "run" };
+    if (body) return { session_id: sessionId, run_id: "run" };
     if (path.includes("/events")) return { items: [], next_cursor: 0 };
     if (path.includes("?page_size=50")) return { items: [], next_cursor: null };
-    return { run_id: "run", status: "completed", cancel_epoch: 0, reverted: false };
+    return { session_id: sessionId, run_id: "run", status: "completed", cancel_epoch: 0, reverted: false };
   } });
   elements(component.render(), e => e.type === "textarea")[0].props.onChange({ target: { value: "合成新品类研究" } });
   elements(component.render(), e => e.type === "form")[0].props.onSubmit({ preventDefault() {} }); await tick();
@@ -231,7 +242,7 @@ test("personal start retries the identical request and never fans out another mo
 });
 test("successful personal start followed by read failure cannot resend start", async () => {
   let writes = 0;
-  const component = session(PersonalXiaopai, { onCreated() {}, api: async (_path, body) => { if (body) { writes++; return { run_id: "run" }; } throw Error("read failed"); } });
+  const component = session(PersonalXiaopai, { onCreated() {}, api: async (_path, body) => { if (body) { writes++; return { session_id: sessionId, run_id: "run" }; } throw Error("read failed"); } });
   elements(component.render(), e => e.type === "textarea")[0].props.onChange({ target: { value: "合成新品类研究" } });
   elements(component.render(), e => e.type === "form")[0].props.onSubmit({ preventDefault() {} }); await tick();
   assert.equal(writes, 1); assert.equal(button(component.render(), "重试同一请求"), undefined);
@@ -273,10 +284,10 @@ test("panel visibility excludes background, detached, hidden and offscreen panel
 test("only a new live visible interrupt opens; closing, repeat polls and hidden delivery preserve inline answers", async () => {
   let status = "running", events = [];
   const component = session(PersonalXiaopai, { onCreated() {}, api: async (path, body) => {
-    if (body) return { run_id: runId };
+    if (body) return { session_id: sessionId, run_id: runId };
     if (path.includes("?page_size=50")) return { items: [], next_cursor: null };
     if (path.includes("/events")) return { items: events, next_cursor: events.at(-1)?.sequence ?? 0 };
-    return { run_id: runId, status, cancel_epoch: 0, reverted: false };
+    return { session_id: sessionId, run_id: runId, status, cancel_epoch: 0, reverted: false };
   } });
   const panel = visiblePanel(); component.render().props.ref.current = panel;
   await startPersonal(component); const poll = capturePoll(component);
@@ -296,7 +307,7 @@ test("history and manual refresh restore unanswered questions inline without ope
   const component = session(PersonalXiaopai, { onCreated() {}, api: async path => {
     if (path.includes("?page_size=50")) return { items: [{ run_id: runId, goal: "已有个人任务", status: "waiting_input" }], next_cursor: null };
     if (path.includes("/events")) return { items: [{ sequence, event: { type: "needs_input", questions } }], next_cursor: sequence };
-    return { run_id: runId, status: "waiting_input", cancel_epoch: 0, reverted: false };
+    return { session_id: sessionId, run_id: runId, status: "waiting_input", cancel_epoch: 0, reverted: false };
   } });
   component.render().props.ref.current = visiblePanel(); await openHistory(component);
   assert.equal(dialogue(component).props.open, false); assert.deepEqual(inlineQuestions(component).props.answers, {});
@@ -308,11 +319,11 @@ test("closed dialog answers use the actual original run and preserve a failed an
     if (body) {
       requests.push({ path, body: structuredClone(body) });
       if (path.endsWith("/answers") && !failed) { failed = true; throw Error("answer response lost"); }
-      return { run_id: runId };
+      return { session_id: sessionId, run_id: runId };
     }
     if (path.includes("?page_size=50")) return { items: [], next_cursor: null };
     if (path.includes("/events")) return { items: [{ sequence: 30, event: { type: "needs_input", questions } }], next_cursor: 30 };
-    return { run_id: runId, status: "waiting_input", cancel_epoch: 0, reverted: false };
+    return { session_id: sessionId, run_id: runId, status: "waiting_input", cancel_epoch: 0, reverted: false };
   } });
   component.render().props.ref.current = visiblePanel(); await startPersonal(component);
   assert.equal(dialogue(component).props.open, true); dialogue(component).props.onClose();
@@ -326,12 +337,12 @@ test("late poll for a previous run cannot open or replace the current run questi
   const other = "99999999-9999-4999-8999-999999999999";
   let oldPending = false, resolveOld;
   const component = session(PersonalXiaopai, { onCreated() {}, api: async (path, body) => {
-    if (body) return { run_id: runId };
+    if (body) return { session_id: sessionId, run_id: runId };
     if (path.includes("?page_size=50")) return { items: [{ run_id: other, goal: "新的运行", status: "waiting_input" }], next_cursor: null };
     if (path.includes("/events")) return { items: path.includes(other) ? [{ sequence: 1, event: { type: "needs_input", questions } }] : [], next_cursor: 1 };
-    if (path.endsWith(other)) return { run_id: other, status: "waiting_input", cancel_epoch: 0, reverted: false };
+    if (path.endsWith(other)) return { session_id: sessionId, run_id: other, status: "waiting_input", cancel_epoch: 0, reverted: false };
     if (oldPending) return new Promise(resolve => { resolveOld = resolve; });
-    return { run_id: runId, status: "running", cancel_epoch: 0, reverted: false };
+    return { session_id: sessionId, run_id: runId, status: "running", cancel_epoch: 0, reverted: false };
   } });
   component.render().props.ref.current = visiblePanel(); await startPersonal(component); const poll = capturePoll(component);
   oldPending = true; await poll(); await openHistory(component, "新的运行");
@@ -352,7 +363,7 @@ test("failed run refresh hides material but restores the original confirmation t
     if (path.includes("?page_size=50")) return { items: [{ run_id: runId, goal: "已有个人任务", status: "completed" }], next_cursor: null };
     if (readFails) throw Error("temporary read failure");
     if (path.includes("/events")) return { items: [{ sequence: 1, event: candidate }], next_cursor: 1 };
-    return { run_id: runId, status: "completed", cancel_epoch: 0, reverted: false };
+    return { session_id: sessionId, run_id: runId, status: "completed", cancel_epoch: 0, reverted: false };
   };
   const parent = session(PersonalXiaopai, { api, onCreated: value => opened.push(value) });
   await openHistory(parent);
@@ -375,4 +386,30 @@ test("dialog dismissal returns keyboard focus to inline answering without submit
   tree.props.onOpenChange(false);
   elements(tree, e => e.props?.onCloseAutoFocus)[0].props.onCloseAutoFocus({ preventDefault() { prevented++; } });
   assert.equal(closed, 1); assert.equal(focused, 1); assert.equal(prevented, 1); assert.equal(submitted, 0);
+});
+
+test("personal background keeps the original run, issues no request and leaves later questions inline", async () => {
+  let status = "running", events = [];
+  const calls = [];
+  const component = session(PersonalXiaopai, { onCreated() {}, api: async (path, body) => {
+    calls.push({ path, body });
+    if (body) return { session_id: sessionId, run_id: runId };
+    if (path.includes("?page_size=50")) return { items: [{ run_id: runId, goal: "新品类研究", status }], next_cursor: null };
+    if (path.includes("/events")) return { items: events, next_cursor: events.at(-1)?.sequence ?? 0 };
+    return { session_id: sessionId, run_id: runId, goal: "新品类研究", status, cancel_epoch: 0, reverted: false };
+  } });
+  component.render().props.ref.current = visiblePanel();
+  await startPersonal(component);
+  const count = calls.length;
+  await click(component, "转后台继续");
+  assert.equal(calls.length, count);
+  const poll = capturePoll(component);
+  status = "waiting_input"; events = [{ sequence: 1, event: { type: "needs_input", questions } }];
+  await poll();
+  assert.equal(dialogue(component), undefined);
+  assert.equal(calls.filter(call => call.body).length, 1);
+  await click(component, "返回当前工作");
+  assert.equal(dialogue(component).props.open, false);
+  assert.equal(inlineQuestions(component).props.questions[0].id, "market");
+  assert.ok(calls.filter(call => !call.body && !call.path.includes("?page_size=50")).every(call => call.path.includes(runId)));
 });
