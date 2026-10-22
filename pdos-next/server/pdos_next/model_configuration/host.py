@@ -14,6 +14,7 @@ from pdos_next.agent_kernel.mcp_runtime import McpConfiguration
 from pdos_next.agent_kernel.pricing import RateCard
 from pdos_next.errors import DomainError
 from pdos_next.model_configuration.kms import AliyunKms
+from pdos_next.model_configuration.local_kms import LOCAL_ENDPOINT, LOCAL_REGION
 from pdos_next.model_configuration.ports import SecretBinding, SecretMaterial
 from pdos_next.providers.types import ProtocolKind
 from pdos_next.research.runtime import ResearchConfiguration
@@ -26,10 +27,15 @@ class KmsLocation(ClosedDTO):
 
     @model_validator(mode="after")
     def shared_gateway(self):
-        if self.endpoint not in {
-            f"kms.{self.region}.aliyuncs.com",
-            f"kms-vpc.{self.region}.aliyuncs.com",
-        }:
+        # The ("local", "local-keychain") pair selects the macOS Keychain development
+        # backend and is never dialed; all other configs require the exact Aliyun gateway.
+        if (self.region, self.endpoint) != (LOCAL_REGION, LOCAL_ENDPOINT) and (
+            self.endpoint
+            not in {
+                f"kms.{self.region}.aliyuncs.com",
+                f"kms-vpc.{self.region}.aliyuncs.com",
+            }
+        ):
             raise ValueError("An exact KMS shared gateway endpoint is required")
         return self
 
@@ -215,7 +221,9 @@ def runtime_ports(engine=None):
     path = os.environ.get("PDOS_TENANT_RUNTIME_CONFIG")
     if not path:
         return RuntimePorts()
-    host = TenantRuntime(path)
+    from pdos_next.model_configuration.local_kms import factory_for
+
+    host = TenantRuntime(path, kms_factory=factory_for)
     research = {}
     mcp = {}
     if engine is not None:
