@@ -500,18 +500,18 @@
       "source": "v1.1 附录 A"
     },
     "mcp.read": {
-      "when": null,
+      "when": "调用获授权的 MCP 只读工具，由隔离子任务返回有原文依据的行",
       "produces": null,
-      "limit": "只读，无业务写入。",
+      "limit": null,
       "tier": "READ",
-      "source": "DC-11 档位政策"
+      "source": "工具规格原有描述"
     },
     "mcp.result.read": {
-      "when": null,
+      "when": "只在 MCP 隔离子任务内分页读取固定的不可信响应",
       "produces": null,
-      "limit": "只读，无业务写入。",
+      "limit": null,
       "tier": "READ",
-      "source": "DC-11 档位政策"
+      "source": "工具规格原有描述"
     },
     "mcp.tool.grant": {
       "when": "按技能包或自动化规则授权",
@@ -521,11 +521,11 @@
       "source": "v1.1 附录 A"
     },
     "mcp.tools.list": {
-      "when": null,
+      "when": "按实际已加载技能发现当前获授权的 MCP 只读工具；分页读取",
       "produces": null,
-      "limit": "只读，无业务写入。",
+      "limit": null,
       "tier": "READ",
-      "source": "DC-11 档位政策"
+      "source": "工具规格原有描述"
     },
     "model.configuration.save": {
       "when": null,
@@ -815,25 +815,25 @@
       "source": "v1.1 附录 A"
     },
     "research.fanout": {
-      "when": null,
+      "when": "派发只读研究并返回逐字核对的台账与代码生成的覆盖",
       "produces": null,
-      "limit": "只读，无业务写入。",
+      "limit": null,
       "tier": "READ",
-      "source": "DC-11 档位政策"
+      "source": "工具规格原有描述"
     },
     "research.read": {
-      "when": null,
+      "when": "仅隔离研究子任务读取本轮已发现网址；允许续读",
       "produces": null,
-      "limit": "只读，无业务写入。",
+      "limit": null,
       "tier": "READ",
-      "source": "DC-11 档位政策"
+      "source": "工具规格原有描述"
     },
     "research.search": {
-      "when": null,
+      "when": "搜索公开线索；查询须经服务器出站政策检查",
       "produces": null,
-      "limit": "只读，无业务写入。",
+      "limit": null,
       "tier": "READ",
-      "source": "DC-11 档位政策"
+      "source": "工具规格原有描述"
     },
     "research.snapshot.register": {
       "when": null,

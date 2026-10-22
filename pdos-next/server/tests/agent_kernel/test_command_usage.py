@@ -44,7 +44,7 @@ def test_written_notes_never_claim_an_unregistered_effect():
     for _name, usage in registry().items():
         if usage.produces is not None:
             assert usage.produces and "." in usage.produces
-        assert usage.source in {"v1.1 附录 A", "DC-11 档位政策"}
+        assert usage.source in {"v1.1 附录 A", "DC-11 档位政策", "工具规格原有描述"}
         assert usage.tier in {"T0", "T1", "T2", "T2-prepare-only", "READ"}
 
 
