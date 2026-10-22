@@ -46,7 +46,7 @@ class McpService:
                 external_write=explicit_external_write,
             )
             validate_arguments(spec, arguments)
-            decision = egress(session, scope, connector.key, text=str(arguments))
+            decision = egress(session, scope, connector.key)
             # Captured only for the bounded network call, never sent to model/event/result.
             endpoint, secret_ref, revision = (
                 connector.endpoint,
@@ -121,7 +121,7 @@ class McpService:
                     raise DomainError("VERSION_CONFLICT", "连接器配置已变化。")
                 if grant_versions != {str(g.id): g.revision for g in current_grants}:
                     raise DomainError("FORBIDDEN_SCOPE", "连接器授权已变化。")
-                egress(session, scope, connector_key, text=str(arguments))
+                egress(session, scope, connector_key)
             sent = True
             raw = redact_credential(
                 self.ports.transport(endpoint, credential, tool, arguments), credential

@@ -88,19 +88,19 @@ def test_provider_call_requires_registered_graph_and_replays_saved_request(setup
     assert error.value.code == "VERSION_CONFLICT" and client.calls == 1
 
 
-def test_private_run_dpa_failure_prevents_network_and_reservation(setup):
+def test_private_run_without_agreement_proceeds_and_receipts_none(setup):
+    # P26: the agreement registry is optional; an unsigned provider is not blocked.
     store, scope = run(setup, private_context=True, data_categories=("customer_original",))
-    client = Client(lambda _: pytest.fail("private body must not leave"))
-    with pytest.raises(DomainError) as e:
-        turn(
-            AgentGateway(
-                store, cost_required=False, route_for=lambda _: configured_route(), client=client
-            ),
-            scope,
-        )
-    assert e.value.code == "FORBIDDEN_SCOPE" and client.calls == 0
+    client = Client(lambda _: ModelTurn(usage=ProviderUsage(1, 1), structured={"ok": True}))
+    turn(
+        AgentGateway(
+            store, cost_required=False, route_for=lambda _: configured_route(), client=client
+        ),
+        scope,
+    )
+    assert client.calls == 1
     with store.transaction(scope) as (_, row):
-        assert row.held_tokens == 0
+        assert row.held_tokens == 0 and row.versions["provider_key"]
 
 
 def test_run_provider_identity_cannot_change_between_model_calls(setup):

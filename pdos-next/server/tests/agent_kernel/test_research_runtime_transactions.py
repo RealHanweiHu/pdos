@@ -17,7 +17,7 @@ from tests.agent_kernel.test_transactions import human_session, run
 from tests.model_configuration.test_host_runtime import write_config
 
 
-def test_default_search_rechecks_agreement_and_does_not_trust_callback_categories(
+def test_default_search_reclassifies_categories_and_registered_agreement_restricts(
     setup, tmp_path, monkeypatch
 ):
     _, scope = run(setup, data_categories=("customer",), customer_identities=("SyntheticClient",))
@@ -33,17 +33,18 @@ def test_default_search_rechecks_agreement_and_does_not_trust_callback_categorie
     monkeypatch.setattr(service.search_adapter, "search", search)
     assert asyncio.run(service.search(scope, "public pump catalogue")) == ()
     assert searches == ["public pump catalogue"]
-    with pytest.raises(DomainError) as error:
-        asyncio.run(service.search(scope, "SyntheticClient pump"))
-    assert error.value.code == "FORBIDDEN_SCOPE" and searches == ["public pump catalogue"]
-    with pytest.raises(DomainError):
-        service.egress(scope, "synthetic-search", ("public",), "SyntheticClient pump")
+    # P26: without a registered agreement nothing is blocked; classification is receipted.
+    assert asyncio.run(service.search(scope, "SyntheticClient pump")) == ()
+    assert searches == ["public pump catalogue", "SyntheticClient pump"]
+    # The callback's categories are never trusted: the server reclassifies from actual facts.
+    decision = service.egress(scope, "synthetic-search", ("public",), "SyntheticClient pump")
+    assert "customer" in decision.data_categories and decision.agreement_id is None
     with Session(setup.admin) as session, session.begin():
         session.add(TenantAdministrator(tenant_id=setup.tenant, principal_id=setup.human))
     agreement = AgreementInput(
         provider="synthetic-search",
         expected_revision=0,
-        data_categories=["customer"],
+        data_categories=["internal"],
         decision="批准",
         idempotency_key=str(uuid4()),
         retention_terms="synthetic-only",
@@ -53,7 +54,10 @@ def test_default_search_rechecks_agreement_and_does_not_trust_callback_categorie
     )
     with human_session(setup) as session:
         register_agreement(session, setup.ctx, agreement)
-    assert asyncio.run(service.search(scope, "SyntheticClient pump")) == ()
+    # P26: a current registered agreement restricts categories it does not cover.
+    with pytest.raises(DomainError) as error:
+        asyncio.run(service.search(scope, "SyntheticClient pump"))
+    assert error.value.detail["reason_key"] == "provider_agreement_category"
     assert searches == ["public pump catalogue", "SyntheticClient pump"]
     with human_session(setup) as session:
         register_agreement(
@@ -62,12 +66,25 @@ def test_default_search_rechecks_agreement_and_does_not_trust_callback_categorie
             agreement.model_copy(
                 update={
                     "expected_revision": 1,
+                    "data_categories": ["customer"],
+                    "idempotency_key": str(uuid4()),
+                }
+            ),
+        )
+    assert asyncio.run(service.search(scope, "SyntheticClient pump")) == ()
+    assert searches == ["public pump catalogue", "SyntheticClient pump", "SyntheticClient pump"]
+    with human_session(setup) as session:
+        register_agreement(
+            session,
+            setup.ctx,
+            agreement.model_copy(
+                update={
+                    "expected_revision": 2,
+                    "data_categories": ["customer"],
                     "active": False,
                     "idempotency_key": str(uuid4()),
                 }
             ),
         )
-    with pytest.raises(DomainError) as error:
-        asyncio.run(service.search(scope, "SyntheticClient pump"))
-    assert error.value.code == "FORBIDDEN_SCOPE"
-    assert searches == ["public pump catalogue", "SyntheticClient pump"]
+    # P26: a deactivated agreement is history, not a restriction.
+    assert asyncio.run(service.search(scope, "SyntheticClient pump")) == ()

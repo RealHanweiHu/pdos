@@ -22,7 +22,7 @@ class EgressDecision:
     checked_at: datetime
 
 
-def egress(session, scope, provider, *, data_categories=None, text=None):
+def egress(session, scope, provider, *, data_categories=None):
     # data_categories is supplied by the host from projected fields, not by a tool payload.
     categories = frozenset(data_categories or scope.data_categories)
     if not categories:
@@ -36,34 +36,24 @@ def egress(session, scope, provider, *, data_categories=None, text=None):
         .order_by(ProviderDataAgreement.revision.desc())
         .limit(1)
     )
-    valid = bool(
+    current = bool(
         agreement
         and agreement.active
         and agreement.signed_on <= now()
         and agreement.expires_at > now()
-        and categories <= set(agreement.data_categories)
     )
-    if categories - PUBLIC and not valid:
+    # P26: a registered current agreement restricts categories; its absence never blocks.
+    if current and not categories <= set(agreement.data_categories):
         raise DomainError(
             "FORBIDDEN_SCOPE",
-            "服务商尚无当前资料类别的签约协议。",
-            detail={"reason_key": "provider_agreement_required"},
+            "资料类别超出该服务商已登记协议的许可范围。",
+            detail={"reason_key": "provider_agreement_category"},
         )
-    if text and not valid:
-        lowered = text.casefold()
-        if any(
-            identity.casefold() in lowered for identity in scope.customer_identities if identity
-        ):
-            raise DomainError(
-                "FORBIDDEN_SCOPE",
-                "查询含未签约服务商不能接收的私有标识。",
-                detail={"reason_key": "private_query_blocked"},
-            )
     return EgressDecision(
         provider,
         tuple(sorted(categories)),
-        str(agreement.id) if valid else None,
-        agreement.revision if valid else None,
+        str(agreement.id) if current else None,
+        agreement.revision if current else None,
         now(),
     )
 

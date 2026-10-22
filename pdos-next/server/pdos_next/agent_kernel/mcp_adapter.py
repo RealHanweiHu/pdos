@@ -154,7 +154,7 @@ class McpReadAdapter:
                     "NAMED_DECISION_REQUIRED", "此入口只读取；外发须实际具名授权路径。"
                 )
             validate_arguments(spec, data.arguments)
-            policy.egress(session, scope, connector.key, text=str(data.arguments))
+            policy.egress(session, scope, connector.key)
             return connector_binding(connector, data.tool), spec, grants
 
     def resume(self, scope, arguments, *, intent_key):

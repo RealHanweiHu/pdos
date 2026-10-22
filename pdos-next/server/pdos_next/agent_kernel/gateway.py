@@ -110,7 +110,7 @@ class AgentGateway:
                 loaded_skills=tuple(loaded_skills),
             ).model_dump(mode="json")
             request["execution_binding"] = binding
-            decision = egress(session, scope, provider_key, text=str(request))
+            decision = egress(session, scope, provider_key)
         from pdos_next.service import digest
 
         call_key = "model:" + digest(request)
@@ -174,7 +174,7 @@ class AgentGateway:
             if self.context_guard is not None:
                 self.context_guard(scope)
             with self.store.transaction(scope) as (session, _):
-                egress(session, scope, provider_key, text=str(request))
+                egress(session, scope, provider_key)
             if pricing:
                 latest_price = self.rate_card_for(scope, latest)
                 if latest_price is None or latest_price.snapshot() != pricing.snapshot():

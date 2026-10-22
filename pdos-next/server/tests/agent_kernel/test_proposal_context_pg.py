@@ -114,15 +114,14 @@ def test_three_private_entries_have_actual_bound_context_and_readable_items(
             assert tuple(row.customer_identities) == ("Synthetic customer",)
 
 
-def test_unsigned_or_wrong_category_provider_receives_nothing_then_signed_fixture_can_run(
+def test_unsigned_provider_allowed_and_registered_agreement_restricts_categories(
     work, security_work
 ):
+    # P26: without a registered agreement the provider is allowed; a registered
+    # current agreement then restricts categories; a covering revision passes.
     owner, scope = start(work, security_work, "customer_request")
     client = Client(lambda _: ModelTurn("synthetic", usage=ProviderUsage(1, 1)))
-    with pytest.raises(DomainError) as error:
-        turn(gateway(owner, client), scope)
-    assert error.value.detail["reason_key"] == "provider_agreement_required"
-    assert client.calls == 0
+    assert turn(gateway(owner, client), scope).text == "synthetic" and client.calls == 1
     with owner.store.transaction(scope) as (session, row):
         assert row.held_tokens == 0
         assert (
@@ -131,12 +130,12 @@ def test_unsigned_or_wrong_category_provider_receives_nothing_then_signed_fixtur
                 .select_from(AgentToolCall)
                 .where(AgentToolCall.run_id == row.id)
             )
-            == 0
+            == 1
         )
     agree(work, scope, ["internal"])
     with pytest.raises(DomainError) as wrong:
         turn(gateway(owner, client), scope)
-    assert wrong.value.detail["reason_key"] == "provider_agreement_required" and client.calls == 0
+    assert wrong.value.detail["reason_key"] == "provider_agreement_category" and client.calls == 1
     agree(work, scope, scope.data_categories, revision=1)
     assert turn(gateway(owner, client), scope).text == "synthetic" and client.calls == 1
 

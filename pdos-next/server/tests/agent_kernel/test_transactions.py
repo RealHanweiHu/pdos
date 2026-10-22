@@ -135,17 +135,19 @@ def test_forged_taint_cannot_weaken_server_stored_private_binding(setup):
     with pytest.raises(DomainError):
         store.current(replace(bound, private_context=False))
     with store.transaction(bound) as (s, _):
-        with pytest.raises(DomainError) as e:
-            egress(s, bound, "synthetic-provider")
-        assert e.value.code == "FORBIDDEN_SCOPE"
+        # P26: no registered agreement no longer blocks; server-bound categories are receipted.
+        decision = egress(s, bound, "synthetic-provider")
+        assert decision.agreement_id is None
+        assert decision.data_categories == ("customer_original",)
 
 
-def test_unsigned_query_blocks_customer_identity_and_public_query_is_allowed(setup):
+def test_unsigned_provider_egress_is_allowed_and_receipted(setup):
+    # P26: the agreement registry is an optional restriction, never a precondition.
     store, bound = run(setup, customer_identities=("Private attachment.pdf", "Customer secret"))
     with store.transaction(bound) as (s, _):
-        assert egress(s, bound, "search-provider", text="public SUP pump").agreement_id is None
-        with pytest.raises(DomainError):
-            egress(s, bound, "search-provider", text="CUSTOMER SECRET specs")
+        decision = egress(s, bound, "search-provider")
+        assert decision.agreement_id is None and decision.provider == "search-provider"
+        assert decision.checked_at and decision.agreement_revision is None
 
 
 def agreement(setup):
@@ -178,8 +180,31 @@ def test_only_actual_admin_can_register_signed_agreement_with_receipt_atom(setup
     with store.transaction(bound) as (s, _):
         decision = egress(s, bound, "synthetic-provider")
         assert decision.agreement_id == first["subject_id"] and decision.agreement_revision == 1
-        with pytest.raises(DomainError):
-            egress(s, bound, "different-provider")
+        # P26: a provider without any registered agreement is not blocked.
+        assert egress(s, bound, "different-provider").agreement_id is None
+
+
+def test_registered_agreement_restricts_uncovered_categories(setup):
+    # P26: a current registered agreement is enforced as a category restriction.
+    with Session(setup.admin) as s, s.begin():
+        s.add(TenantAdministrator(tenant_id=setup.tenant, principal_id=setup.human))
+    with human_session(setup) as s:
+        register_agreement(s, setup.ctx, agreement(setup))
+    store, bound = run(
+        setup, private_context=True, data_categories=("customer_original", "internal")
+    )
+    with store.transaction(bound) as (s, _):
+        # The registered agreement covers customer_original only; internal is rejected.
+        with pytest.raises(DomainError) as e:
+            egress(s, bound, "synthetic-provider")
+        assert e.value.code == "FORBIDDEN_SCOPE"
+        assert e.value.detail["reason_key"] == "provider_agreement_category"
+        covering = egress(
+            s,
+            replace(bound, data_categories=frozenset({"customer_original"})),
+            "synthetic-provider",
+        )
+        assert covering.agreement_id is not None and covering.agreement_revision == 1
 
 
 def test_management_direct_write_without_receipt_atom_rolls_back(setup):

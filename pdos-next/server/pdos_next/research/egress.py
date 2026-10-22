@@ -96,4 +96,4 @@ def projected_categories(session, scope, run, text):
 
 def decide(session, scope, run, provider, text):
     categories = projected_categories(session, scope, run, text)
-    return policy.egress(session, scope, provider, data_categories=categories, text=text)
+    return policy.egress(session, scope, provider, data_categories=categories)

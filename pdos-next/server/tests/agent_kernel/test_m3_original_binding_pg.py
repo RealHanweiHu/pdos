@@ -112,9 +112,10 @@ def test_actual_original_reference_binds_only_mounted_version_and_provider_taint
     assert scope.data_categories == frozenset(current.data_categories)
     assert owner.default_preload(scope) == ("proposal_drafting", "gap_check", "rfq_extraction")
     with owner.store.transaction(scope) as (session, _):
-        with pytest.raises(DomainError) as caught:
-            egress(session, scope, "synthetic-provider-with-no-agreement")
-    assert caught.value.detail["reason_key"] == "provider_agreement_required"
+        # P26: no registered agreement no longer blocks egress; the receipt carries none.
+        decision = egress(session, scope, "synthetic-provider-with-no-agreement")
+    assert decision.agreement_id is None
+    assert set(decision.data_categories) == set(current.data_categories)
     assert root_id != version_id
 
 
