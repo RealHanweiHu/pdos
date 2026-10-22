@@ -1,0 +1,167 @@
+{
+  "version": "pai-upload-actual-dto-validation/v1",
+  "status": "passed",
+  "strict_response_count": 6,
+  "input": {
+    "path": "docs/reports/evidence/pdos-next-ui-20261017/pai-upload/pg-http-response.json",
+    "sha256": "65d867bd972681e63b5009041cdb27a3107b71f82985a68838f18314012418fa"
+  },
+  "reader": {
+    "path": "pdos-next/web/src/lib/pai-upload.ts",
+    "sha256": "d6cfb0fcf7ec99f7b9796eb53a1f6e4abf2e9906edd9f89403f2444ba6a2b98e"
+  },
+  "pointer_input_provenance": {
+    "request_fixture": "pdos-next/server/tests/agent_kernel/test_upload_views_pg.py:actual_upload",
+    "metadata_fixture": "pdos-next/server/tests/test_durable_evidence.py:upload_input",
+    "request_digest_verified": true,
+    "file_bytes_persisted": false,
+    "base64_persisted": false
+  },
+  "database_operations": false,
+  "network_requests": false,
+  "browser_used": false,
+  "business_writes": false,
+  "production_code_modified": false,
+  "public_build_run": false,
+  "cases": [
+    {
+      "case": "target",
+      "status": "passed",
+      "scope": {
+        "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+        "product_id": null,
+        "proposal_id": null
+      },
+      "target": {
+        "kind": "category",
+        "id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+        "revision": 1
+      },
+      "can_write": true,
+      "max_bytes": 8388608,
+      "calls": [
+        "v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-target"
+      ]
+    },
+    {
+      "case": "product_target",
+      "status": "passed",
+      "scope": {
+        "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+        "product_id": "7bb8459a-5e67-4f4d-bf4e-d44cd2248e5e",
+        "proposal_id": null
+      },
+      "target": {
+        "kind": "product",
+        "id": "7bb8459a-5e67-4f4d-bf4e-d44cd2248e5e",
+        "revision": 1
+      },
+      "can_write": true,
+      "max_bytes": 8388608,
+      "calls": [
+        "v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-target?product_id=7bb8459a-5e67-4f4d-bf4e-d44cd2248e5e"
+      ]
+    },
+    {
+      "case": "uploaded",
+      "status": "passed",
+      "scope": {
+        "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+        "product_id": null,
+        "proposal_id": null
+      },
+      "state": "committed",
+      "receipt_id": "d3a93d65-5d15-4de6-921c-6853d369e99d",
+      "receipt_subject_revision": 1,
+      "attempt_status": "committed",
+      "original_id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+      "original_revision": 1,
+      "parse_status": "uploaded",
+      "scan_status": "not_scanned",
+      "security_state": "not_scanned",
+      "artifact_id": null,
+      "artifact_revision": null,
+      "source_available": null,
+      "calls": [
+        "v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/dc2d61e2-b0c0-41a9-b864-95e4108062a7?request_digest=fa97affbd037a47bf3b66b40746dc576883f2d873295581e7c010d9dbc21c40c"
+      ]
+    },
+    {
+      "case": "scanning",
+      "status": "passed",
+      "scope": {
+        "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+        "product_id": null,
+        "proposal_id": null
+      },
+      "state": "committed",
+      "receipt_id": "d3a93d65-5d15-4de6-921c-6853d369e99d",
+      "receipt_subject_revision": 1,
+      "attempt_status": "committed",
+      "original_id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+      "original_revision": 1,
+      "parse_status": "uploaded",
+      "scan_status": "not_scanned",
+      "security_state": "scanning",
+      "artifact_id": null,
+      "artifact_revision": null,
+      "source_available": null,
+      "calls": [
+        "v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/dc2d61e2-b0c0-41a9-b864-95e4108062a7?request_digest=fa97affbd037a47bf3b66b40746dc576883f2d873295581e7c010d9dbc21c40c"
+      ]
+    },
+    {
+      "case": "parsed",
+      "status": "passed",
+      "scope": {
+        "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+        "product_id": null,
+        "proposal_id": null
+      },
+      "state": "committed",
+      "receipt_id": "d3a93d65-5d15-4de6-921c-6853d369e99d",
+      "receipt_subject_revision": 1,
+      "attempt_status": "committed",
+      "original_id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+      "original_revision": 2,
+      "parse_status": "parsed",
+      "scan_status": "clean",
+      "security_state": "clean",
+      "artifact_id": "1b4cf8cf-a4a1-4eeb-afc6-6198d18f21b2",
+      "artifact_revision": 1,
+      "source_available": true,
+      "calls": [
+        "v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/dc2d61e2-b0c0-41a9-b864-95e4108062a7?request_digest=fa97affbd037a47bf3b66b40746dc576883f2d873295581e7c010d9dbc21c40c"
+      ]
+    },
+    {
+      "case": "recovered",
+      "status": "passed",
+      "scope": {
+        "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+        "product_id": null,
+        "proposal_id": null
+      },
+      "state": "committed",
+      "receipt_id": "d3a93d65-5d15-4de6-921c-6853d369e99d",
+      "receipt_subject_revision": 1,
+      "attempt_status": "committed",
+      "original_id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+      "original_revision": 2,
+      "parse_status": "parsed",
+      "scan_status": "clean",
+      "security_state": "clean",
+      "artifact_id": "1b4cf8cf-a4a1-4eeb-afc6-6198d18f21b2",
+      "artifact_revision": 1,
+      "source_available": true,
+      "calls": [
+        "v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/dc2d61e2-b0c0-41a9-b864-95e4108062a7?request_digest=fa97affbd037a47bf3b66b40746dc576883f2d873295581e7c010d9dbc21c40c"
+      ]
+    }
+  ],
+  "coverage_limits": [
+    "Actual exported recovery responses cover committed uploaded/scanning/parsed and recovered states; not_observed/reserved/abandoned are not present in this bundle.",
+    "Synthetic scan/parse fixture does not establish production scanner qualification.",
+    "No POST, HTTP upload size boundary, network or runtime execution was performed by this DTO comparison."
+  ]
+}

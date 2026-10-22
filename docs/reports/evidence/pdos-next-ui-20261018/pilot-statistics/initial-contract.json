@@ -1,0 +1,15 @@
+{
+  "head": "34f09790ea1db54eb6a70215b1f780fa9cb11119",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/domain/manufacturing_trials/native_api.py": "5d51c23d3ef77e29d80e5a9e9d836c476028543e14afdd577c6944a2683d41e3",
+    "pdos-next/server/pdos_next/domain/manufacturing_trials/native_service.py": "57bc9ccc2405d894f13a9ba604cf0347b7e5b7dd773a5f31570b146019b69e86",
+    "pdos-next/server/pdos_next/domain/manufacturing_trials/native_schemas.py": "e79841f16f9550ac31bad3118bf4dd1e0e9aabd334b9e37f2b20608bb6752214",
+    "pdos-next/server/pdos_next/domain/manufacturing_trials/native_models.py": "be4ebc7e7ea6b58fa608af1e02c5a0add0eb7df7d517994cdcefb27e74c6107a",
+    "pdos-next/web/src/lib/native-pilots.ts": "7f7199c0f39ef5e70b4a5cd83f375e381b3b8f09377164bc1befc6326af48160",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "101dfb9abb32c5886b18ed6ca67c2aab93e490e779cd385fed6ef54354cbf2d4",
+    "pdos-next/web/src/components/projects/project-workspace.tsx": "d2be2d64c18d267fb4c053cf6fd208dba90ab7fc5ba5baaba94024d60f8c82db"
+  },
+  "scope": "Project pilot list already includes complete record chains; no extra detail GET needed by UI",
+  "ownership": "Other chat owns knowledge/professional authority/common operations; no messages sent",
+  "browser": "Prior localhost55210 denial remains; no browser attempted"
+}

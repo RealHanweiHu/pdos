@@ -1,0 +1,10 @@
+{
+  "source_sha256": {
+    "src/components/category-home.test.mjs": "9e3309495a60fd76788518b53784e32617c7784c2f9492107d5a6f9598dff486",
+    "src/components/preproject/category-matrix.test.mjs": "082d28d3b45d3ab64a7170128329989e51424d27dfad9cf93859881e818ca781",
+    "src/components/preproject/competitor-segments.test.mjs": "de9c1077ec480d2c5c239cb8a6072ddc6913af8dabc1904176d5b27ca872f960",
+    "src/app/api/route-competitor-segments.test.mjs": "c15a19bed7bad1f2c70a318b8bb4b78d4f752f2c5303dfec2baf38b097afeb9f"
+  },
+  "exit_code": 0,
+  "source_changes_during_check": []
+}

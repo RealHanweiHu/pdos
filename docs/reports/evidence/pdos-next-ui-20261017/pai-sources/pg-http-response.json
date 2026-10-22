@@ -1,0 +1,188 @@
+{
+  "session": {
+    "name": "Synthetic owner",
+    "principal_id": "14b0851f-cfff-4dcc-97d5-086a63a35e9e",
+    "model_available": false
+  },
+  "categories": [
+    {
+      "id": "61102442-faec-466b-944d-d385089949fd",
+      "key": "category-edc3ee39b2c3448f9db8da589f34881e",
+      "name": "汽车充气泵",
+      "purpose": "隔离合成品类",
+      "revision": 1,
+      "status": "active",
+      "capabilities": {
+        "product_management": false
+      }
+    }
+  ],
+  "list": {
+    "version": "agent-input-sources/v1",
+    "principal_id": "14b0851f-cfff-4dcc-97d5-086a63a35e9e",
+    "scope": {
+      "category_id": "61102442-faec-466b-944d-d385089949fd",
+      "product_id": null,
+      "proposal_id": null
+    },
+    "as_of": "2026-10-17T20:58:34.244187+00:00",
+    "items": [
+      {
+        "artifact_id": "435d6bcb-e4bd-477a-95b6-b65871ca5b5e",
+        "artifact_revision": 1,
+        "title": "合成已登记文本",
+        "product_id": null,
+        "status": "active",
+        "original": null,
+        "availability": {
+          "available": true,
+          "code": null
+        }
+      },
+      {
+        "artifact_id": "5598cc51-f212-4c40-83e0-23853615211f",
+        "artifact_revision": 1,
+        "title": "合成已解析原件",
+        "product_id": null,
+        "status": "active",
+        "original": {
+          "id": "2debcd2a-1d78-454f-8562-786e2f7b9ac7",
+          "revision": 2,
+          "filename": "synthetic-original.txt",
+          "parse_status": "parsed",
+          "parse_code": null,
+          "scan_status": "clean"
+        },
+        "availability": {
+          "available": true,
+          "code": null
+        }
+      }
+    ],
+    "next_cursor": null
+  },
+  "product_list": {
+    "version": "agent-input-sources/v1",
+    "principal_id": "14b0851f-cfff-4dcc-97d5-086a63a35e9e",
+    "scope": {
+      "category_id": "61102442-faec-466b-944d-d385089949fd",
+      "product_id": "e826cd41-f7c4-4070-b63c-a828b8d96e9d",
+      "proposal_id": null
+    },
+    "as_of": "2026-10-17T20:58:34.301469+00:00",
+    "items": [
+      {
+        "artifact_id": "10e71637-3b17-40d5-a4dc-f8393af5f46b",
+        "artifact_revision": 1,
+        "title": "合成型号资料",
+        "product_id": "e826cd41-f7c4-4070-b63c-a828b8d96e9d",
+        "status": "active",
+        "original": null,
+        "availability": {
+          "available": true,
+          "code": null
+        }
+      },
+      {
+        "artifact_id": "435d6bcb-e4bd-477a-95b6-b65871ca5b5e",
+        "artifact_revision": 1,
+        "title": "合成已登记文本",
+        "product_id": null,
+        "status": "active",
+        "original": null,
+        "availability": {
+          "available": true,
+          "code": null
+        }
+      },
+      {
+        "artifact_id": "5598cc51-f212-4c40-83e0-23853615211f",
+        "artifact_revision": 1,
+        "title": "合成已解析原件",
+        "product_id": null,
+        "status": "active",
+        "original": {
+          "id": "2debcd2a-1d78-454f-8562-786e2f7b9ac7",
+          "revision": 2,
+          "filename": "synthetic-original.txt",
+          "parse_status": "parsed",
+          "parse_code": null,
+          "scan_status": "clean"
+        },
+        "availability": {
+          "available": true,
+          "code": null
+        }
+      }
+    ],
+    "next_cursor": null
+  },
+  "bindings": {
+    "version": "agent-run-source-bindings/v1",
+    "principal_id": "14b0851f-cfff-4dcc-97d5-086a63a35e9e",
+    "scope": {
+      "category_id": "61102442-faec-466b-944d-d385089949fd",
+      "product_id": null,
+      "proposal_id": null
+    },
+    "as_of": "2026-10-17T20:58:34.348356+00:00",
+    "run_id": "5311aa17-a19b-4c96-a7e4-1964f5272637",
+    "session_id": "11f3c90e-a14a-4f38-be6c-7aad24ced44e",
+    "items": [
+      {
+        "artifact_id": "435d6bcb-e4bd-477a-95b6-b65871ca5b5e",
+        "expected_revision": 1,
+        "product_id": null,
+        "current": {
+          "artifact_id": "435d6bcb-e4bd-477a-95b6-b65871ca5b5e",
+          "artifact_revision": 1,
+          "title": "合成已登记文本",
+          "product_id": null,
+          "status": "active",
+          "original": null,
+          "availability": {
+            "available": true,
+            "code": null
+          }
+        }
+      },
+      {
+        "artifact_id": "5598cc51-f212-4c40-83e0-23853615211f",
+        "expected_revision": 1,
+        "product_id": null,
+        "current": {
+          "artifact_id": "5598cc51-f212-4c40-83e0-23853615211f",
+          "artifact_revision": 1,
+          "title": "合成已解析原件",
+          "product_id": null,
+          "status": "active",
+          "original": {
+            "id": "2debcd2a-1d78-454f-8562-786e2f7b9ac7",
+            "revision": 2,
+            "filename": "synthetic-original.txt",
+            "parse_status": "parsed",
+            "parse_code": null,
+            "scan_status": "clean"
+          },
+          "availability": {
+            "available": true,
+            "code": null
+          }
+        }
+      }
+    ]
+  },
+  "selected_sources": [
+    {
+      "artifact_id": "5598cc51-f212-4c40-83e0-23853615211f",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "435d6bcb-e4bd-477a-95b6-b65871ca5b5e",
+      "expected_revision": 1
+    }
+  ],
+  "goal": "本地合成：按选定附件固定版本核对未知项，不调用模型。",
+  "model_calls": 0,
+  "scanner": "explicit synthetic test port; no qualification claim"
+}

@@ -1,0 +1,1824 @@
+{
+  "version": "session-presentation-projection-qa/v1",
+  "fixture_nature": "actual controlled create_run/cancel_run and authenticated HTTP over synthetic G0",
+  "scope": {
+    "tenant_id": "b24d1300-8fa8-4911-b503-f11d104c7c3d",
+    "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+    "product_id": "b3a189a9-396a-4a77-8b79-e4cbdbcc68ff",
+    "project_id": "6d4d3da0-5a76-40ef-a2aa-ad83990d42b8",
+    "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+    "peer_principal_id": "f0a4034f-2313-4904-8077-e4a0d409d868",
+    "foreign_principal_id": "24528fe4-7852-4d88-8a9b-74354abb29d4",
+    "principal_ids_source": "actual test request contexts, not a server identity echo",
+    "personal": {
+      "run_id": "7ad08c00-2570-4599-bbd0-7e6d95e35b8c",
+      "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee"
+    },
+    "other_personal": {
+      "run_id": "278d9f9c-e21c-4591-97cb-138a0011d887",
+      "session_id": "ca0f9cb7-d3c6-4804-999e-537e1a6c5d05"
+    },
+    "category": {
+      "run_id": "afed547e-f06d-49a1-9b79-090bdc8b25da",
+      "session_id": "2f33c8b5-8363-4382-8fd4-ddbaa67f9459",
+      "project_id": "6d4d3da0-5a76-40ef-a2aa-ad83990d42b8"
+    },
+    "peer": {
+      "run_id": "da42fda8-68fd-4bcd-84b0-e88b2a2f0508",
+      "session_id": "cd7ad8a9-941f-4500-9ce2-7f80474716d4",
+      "project_id": "6d4d3da0-5a76-40ef-a2aa-ad83990d42b8"
+    }
+  },
+  "phases": {
+    "legacy_personal": {
+      "path": "/v1/personal/agent-sessions",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "version": "agent-session-list/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "as_of": "2026-10-19T11:43:16.903626+00:00",
+        "items": [
+          {
+            "session_id": "ca0f9cb7-d3c6-4804-999e-537e1a6c5d05",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": null,
+              "product_id": null,
+              "proposal_id": null
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "278d9f9c-e21c-4591-97cb-138a0011d887",
+              "goal": "Synthetic P20 original personal goal 2; keep the original Run",
+              "status": "queued",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null
+          },
+          {
+            "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": null,
+              "product_id": null,
+              "proposal_id": null
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "7ad08c00-2570-4599-bbd0-7e6d95e35b8c",
+              "goal": "Synthetic P20 original personal goal 1; keep the original Run",
+              "status": "cancelled",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    "default_personal": {
+      "path": "/v1/personal/agent-conversations",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "version": "agent-conversation-list/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "as_of": "2026-10-19T11:43:16.948051+00:00",
+        "items": [
+          {
+            "session_id": "ca0f9cb7-d3c6-4804-999e-537e1a6c5d05",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": null,
+              "product_id": null,
+              "proposal_id": null,
+              "project_id": null
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "278d9f9c-e21c-4591-97cb-138a0011d887",
+              "goal": "Synthetic P20 original personal goal 2; keep the original Run",
+              "status": "queued",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null,
+            "presentation": {
+              "id": null,
+              "revision": 0,
+              "title": null,
+              "pinned": false,
+              "archived": false,
+              "created_at": null
+            }
+          },
+          {
+            "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": null,
+              "product_id": null,
+              "proposal_id": null,
+              "project_id": null
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "7ad08c00-2570-4599-bbd0-7e6d95e35b8c",
+              "goal": "Synthetic P20 original personal goal 1; keep the original Run",
+              "status": "cancelled",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null,
+            "presentation": {
+              "id": null,
+              "revision": 0,
+              "title": null,
+              "pinned": false,
+              "archived": false,
+              "created_at": null
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    "default_category": {
+      "path": "/v1/categories/1e40702d-ab5a-482c-90be-83dc3c63e4d7/agent-conversations",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "version": "agent-conversation-list/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+          "proposal_id": null
+        },
+        "as_of": "2026-10-19T11:43:17.118578+00:00",
+        "items": [
+          {
+            "session_id": "2f33c8b5-8363-4382-8fd4-ddbaa67f9459",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+              "product_id": "b3a189a9-396a-4a77-8b79-e4cbdbcc68ff",
+              "proposal_id": null,
+              "project_id": "6d4d3da0-5a76-40ef-a2aa-ad83990d42b8"
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "afed547e-f06d-49a1-9b79-090bdc8b25da",
+              "goal": "Synthetic P20 original owner project goal; never infer a business result",
+              "status": "queued",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null,
+            "presentation": {
+              "id": null,
+              "revision": 0,
+              "title": null,
+              "pinned": false,
+              "archived": false,
+              "created_at": null
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    "pinned_first_page": {
+      "path": "/v1/personal/agent-conversations",
+      "params": {
+        "page_size": 1
+      },
+      "status_code": 200,
+      "body": {
+        "version": "agent-conversation-list/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "as_of": "2026-10-19T11:43:17.305965+00:00",
+        "items": [
+          {
+            "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": null,
+              "product_id": null,
+              "proposal_id": null,
+              "project_id": null
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "7ad08c00-2570-4599-bbd0-7e6d95e35b8c",
+              "goal": "Synthetic P20 original personal goal 1; keep the original Run",
+              "status": "cancelled",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null,
+            "presentation": {
+              "id": "5b7d2875-a3f4-47b1-9387-f18d5c6049bb",
+              "revision": 2,
+              "title": "Synthetic P20 custom title %_\\ literal",
+              "pinned": true,
+              "archived": false,
+              "created_at": "2026-10-19T11:43:17.271211+00:00"
+            }
+          }
+        ],
+        "next_cursor": "6c806100-018c-4048-a8da-2dcaa2c48dee"
+      }
+    },
+    "pinned_next_page": {
+      "path": "/v1/personal/agent-conversations",
+      "params": {
+        "page_size": 1,
+        "cursor": "6c806100-018c-4048-a8da-2dcaa2c48dee"
+      },
+      "status_code": 200,
+      "body": {
+        "version": "agent-conversation-list/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "as_of": "2026-10-19T11:43:17.392727+00:00",
+        "items": [
+          {
+            "session_id": "ca0f9cb7-d3c6-4804-999e-537e1a6c5d05",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": null,
+              "product_id": null,
+              "proposal_id": null,
+              "project_id": null
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "278d9f9c-e21c-4591-97cb-138a0011d887",
+              "goal": "Synthetic P20 original personal goal 2; keep the original Run",
+              "status": "queued",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null,
+            "presentation": {
+              "id": null,
+              "revision": 0,
+              "title": null,
+              "pinned": false,
+              "archived": false,
+              "created_at": null
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    "custom_title_search": {
+      "path": "/v1/personal/agent-conversations",
+      "params": {
+        "q": "%_\\"
+      },
+      "status_code": 200,
+      "body": {
+        "version": "agent-conversation-list/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "as_of": "2026-10-19T11:43:17.754110+00:00",
+        "items": [
+          {
+            "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": null,
+              "product_id": null,
+              "proposal_id": null,
+              "project_id": null
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "7ad08c00-2570-4599-bbd0-7e6d95e35b8c",
+              "goal": "Synthetic P20 original personal goal 1; keep the original Run",
+              "status": "cancelled",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null,
+            "presentation": {
+              "id": "5b7d2875-a3f4-47b1-9387-f18d5c6049bb",
+              "revision": 2,
+              "title": "Synthetic P20 custom title %_\\ literal",
+              "pinned": true,
+              "archived": false,
+              "created_at": "2026-10-19T11:43:17.271211+00:00"
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    "archived_active": {
+      "path": "/v1/personal/agent-conversations",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "version": "agent-conversation-list/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "as_of": "2026-10-19T11:43:18.007703+00:00",
+        "items": [
+          {
+            "session_id": "ca0f9cb7-d3c6-4804-999e-537e1a6c5d05",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": null,
+              "product_id": null,
+              "proposal_id": null,
+              "project_id": null
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "278d9f9c-e21c-4591-97cb-138a0011d887",
+              "goal": "Synthetic P20 original personal goal 2; keep the original Run",
+              "status": "queued",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null,
+            "presentation": {
+              "id": null,
+              "revision": 0,
+              "title": null,
+              "pinned": false,
+              "archived": false,
+              "created_at": null
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    "archived_view": {
+      "path": "/v1/personal/agent-conversations",
+      "params": {
+        "view": "archived"
+      },
+      "status_code": 200,
+      "body": {
+        "version": "agent-conversation-list/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "as_of": "2026-10-19T11:43:18.090129+00:00",
+        "items": [
+          {
+            "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": null,
+              "product_id": null,
+              "proposal_id": null,
+              "project_id": null
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "7ad08c00-2570-4599-bbd0-7e6d95e35b8c",
+              "goal": "Synthetic P20 original personal goal 1; keep the original Run",
+              "status": "cancelled",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null,
+            "presentation": {
+              "id": "938483cd-f8bc-402a-b08e-305bc9d7b9c7",
+              "revision": 3,
+              "title": "Synthetic P20 custom title %_\\ literal",
+              "pinned": true,
+              "archived": true,
+              "created_at": "2026-10-19T11:43:17.974458+00:00"
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    "archived_original_run": {
+      "path": "/v1/personal/agent-runs/7ad08c00-2570-4599-bbd0-7e6d95e35b8c",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "run_id": "7ad08c00-2570-4599-bbd0-7e6d95e35b8c",
+        "goal": "Synthetic P20 original personal goal 1; keep the original Run",
+        "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+        "conversation": {
+          "previous_run_id": null,
+          "next_run_id": null
+        },
+        "product_id": null,
+        "proposal_id": null,
+        "project_id": null,
+        "status": "cancelled",
+        "result": null,
+        "error_code": null,
+        "reconciliation": null,
+        "process": {
+          "run_id": "7ad08c00-2570-4599-bbd0-7e6d95e35b8c",
+          "status": "cancelled",
+          "reverted": false,
+          "error_code": null,
+          "started_at": "2026-10-19T11:43:16.536784+00:00",
+          "observed_at": "2026-10-19T11:43:18.286461+00:00",
+          "last_recorded_at": "2026-10-19T11:43:16.678731+00:00",
+          "ended_at": "2026-10-19T11:43:16.678731+00:00",
+          "elapsed_seconds": 0.141947,
+          "call_counts": {
+            "total": 0,
+            "completed": 0,
+            "pending": 0,
+            "failed": 0
+          },
+          "source_count": 0,
+          "sources": [],
+          "next_source_cursor": null,
+          "business_receipt_count": 0,
+          "receipts": [],
+          "next_receipt_cursor": null,
+          "steps": [
+            {
+              "id": "07c9163c-4cee-4552-a6f0-54bff5c0a214",
+              "sequence": 1,
+              "at": "2026-10-19T11:43:16.678731+00:00",
+              "kind": "run_state",
+              "tool": null,
+              "skill": null,
+              "version": null,
+              "status": "cancelled"
+            }
+          ],
+          "next_before": null
+        },
+        "versions": {
+          "checkpoint_layout": "session-run-ns/v1"
+        },
+        "reverted": false,
+        "reverted_at": null,
+        "reverted_by": null,
+        "revert_receipt_id": null,
+        "cancel_epoch": 1
+      }
+    },
+    "restored_active": {
+      "path": "/v1/personal/agent-conversations",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "version": "agent-conversation-list/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "as_of": "2026-10-19T11:43:18.343308+00:00",
+        "items": [
+          {
+            "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": null,
+              "product_id": null,
+              "proposal_id": null,
+              "project_id": null
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "7ad08c00-2570-4599-bbd0-7e6d95e35b8c",
+              "goal": "Synthetic P20 original personal goal 1; keep the original Run",
+              "status": "cancelled",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null,
+            "presentation": {
+              "id": "f7d57af9-24e7-44bd-b899-a147d5dab500",
+              "revision": 4,
+              "title": "Synthetic P20 custom title %_\\ literal",
+              "pinned": true,
+              "archived": false,
+              "created_at": "2026-10-19T11:43:18.317739+00:00"
+            }
+          },
+          {
+            "session_id": "ca0f9cb7-d3c6-4804-999e-537e1a6c5d05",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": null,
+              "product_id": null,
+              "proposal_id": null,
+              "project_id": null
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "278d9f9c-e21c-4591-97cb-138a0011d887",
+              "goal": "Synthetic P20 original personal goal 2; keep the original Run",
+              "status": "queued",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null,
+            "presentation": {
+              "id": null,
+              "revision": 0,
+              "title": null,
+              "pinned": false,
+              "archived": false,
+              "created_at": null
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    "restored_default_title": {
+      "path": "/v1/personal/agent-conversations",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "version": "agent-conversation-list/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "as_of": "2026-10-19T11:43:18.710688+00:00",
+        "items": [
+          {
+            "session_id": "ca0f9cb7-d3c6-4804-999e-537e1a6c5d05",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": null,
+              "product_id": null,
+              "proposal_id": null,
+              "project_id": null
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "278d9f9c-e21c-4591-97cb-138a0011d887",
+              "goal": "Synthetic P20 original personal goal 2; keep the original Run",
+              "status": "queued",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null,
+            "presentation": {
+              "id": null,
+              "revision": 0,
+              "title": null,
+              "pinned": false,
+              "archived": false,
+              "created_at": null
+            }
+          },
+          {
+            "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": null,
+              "product_id": null,
+              "proposal_id": null,
+              "project_id": null
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "7ad08c00-2570-4599-bbd0-7e6d95e35b8c",
+              "goal": "Synthetic P20 original personal goal 1; keep the original Run",
+              "status": "cancelled",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null,
+            "presentation": {
+              "id": "82eeab7b-318f-4081-8e19-f08e5aee55ee",
+              "revision": 6,
+              "title": null,
+              "pinned": false,
+              "archived": false,
+              "created_at": "2026-10-19T11:43:18.682625+00:00"
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    "peer_own_category": {
+      "path": "/v1/categories/1e40702d-ab5a-482c-90be-83dc3c63e4d7/agent-conversations",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "version": "agent-conversation-list/v1",
+        "principal_id": "f0a4034f-2313-4904-8077-e4a0d409d868",
+        "scope": {
+          "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+          "proposal_id": null
+        },
+        "as_of": "2026-10-19T11:43:18.947289+00:00",
+        "items": [
+          {
+            "session_id": "cd7ad8a9-941f-4500-9ce2-7f80474716d4",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+              "product_id": "b3a189a9-396a-4a77-8b79-e4cbdbcc68ff",
+              "proposal_id": null,
+              "project_id": "6d4d3da0-5a76-40ef-a2aa-ad83990d42b8"
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "da42fda8-68fd-4bcd-84b0-e88b2a2f0508",
+              "goal": "Synthetic P20 peer-owned session on the root-owned Project",
+              "status": "queued",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null,
+            "presentation": {
+              "id": "1f3e21c4-f615-4381-8080-93ade0841488",
+              "revision": 1,
+              "title": "Synthetic peer private conversation",
+              "pinned": false,
+              "archived": false,
+              "created_at": "2026-10-19T11:43:18.908914+00:00"
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    "foreign_personal": {
+      "path": "/v1/personal/agent-conversations",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "version": "agent-conversation-list/v1",
+        "principal_id": "24528fe4-7852-4d88-8a9b-74354abb29d4",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "as_of": "2026-10-19T11:43:19.088025+00:00",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    "peer_run_before_acl": {
+      "path": "/v1/categories/1e40702d-ab5a-482c-90be-83dc3c63e4d7/agent-runs/da42fda8-68fd-4bcd-84b0-e88b2a2f0508",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "run_id": "da42fda8-68fd-4bcd-84b0-e88b2a2f0508",
+        "goal": "Synthetic P20 peer-owned session on the root-owned Project",
+        "session_id": "cd7ad8a9-941f-4500-9ce2-7f80474716d4",
+        "conversation": {
+          "previous_run_id": null,
+          "next_run_id": null
+        },
+        "product_id": "b3a189a9-396a-4a77-8b79-e4cbdbcc68ff",
+        "proposal_id": null,
+        "project_id": "6d4d3da0-5a76-40ef-a2aa-ad83990d42b8",
+        "status": "queued",
+        "result": null,
+        "error_code": null,
+        "reconciliation": null,
+        "process": {
+          "run_id": "da42fda8-68fd-4bcd-84b0-e88b2a2f0508",
+          "status": "queued",
+          "reverted": false,
+          "error_code": null,
+          "started_at": "2026-10-19T11:43:16.536784+00:00",
+          "observed_at": "2026-10-19T11:43:19.386467+00:00",
+          "last_recorded_at": null,
+          "ended_at": null,
+          "elapsed_seconds": null,
+          "call_counts": {
+            "total": 0,
+            "completed": 0,
+            "pending": 0,
+            "failed": 0
+          },
+          "source_count": 0,
+          "sources": [],
+          "next_source_cursor": null,
+          "business_receipt_count": 0,
+          "receipts": [],
+          "next_receipt_cursor": null,
+          "steps": [],
+          "next_before": null
+        },
+        "versions": {
+          "checkpoint_layout": "session-run-ns/v1"
+        },
+        "reverted": false,
+        "reverted_at": null,
+        "reverted_by": null,
+        "revert_receipt_id": null,
+        "cancel_epoch": 0
+      }
+    },
+    "peer_after_acl": {
+      "path": "/v1/categories/1e40702d-ab5a-482c-90be-83dc3c63e4d7/agent-conversations",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "version": "agent-conversation-list/v1",
+        "principal_id": "f0a4034f-2313-4904-8077-e4a0d409d868",
+        "scope": {
+          "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+          "proposal_id": null
+        },
+        "as_of": "2026-10-19T11:43:19.681326+00:00",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    "owner_after_acl": {
+      "path": "/v1/categories/1e40702d-ab5a-482c-90be-83dc3c63e4d7/agent-conversations",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "version": "agent-conversation-list/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+          "proposal_id": null
+        },
+        "as_of": "2026-10-19T11:43:20.015266+00:00",
+        "items": [
+          {
+            "session_id": "2f33c8b5-8363-4382-8fd4-ddbaa67f9459",
+            "revision": 1,
+            "created_at": "2026-10-19T11:43:16.536784+00:00",
+            "scope": {
+              "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+              "product_id": "b3a189a9-396a-4a77-8b79-e4cbdbcc68ff",
+              "proposal_id": null,
+              "project_id": "6d4d3da0-5a76-40ef-a2aa-ad83990d42b8"
+            },
+            "run_count": 1,
+            "latest_run": {
+              "run_id": "afed547e-f06d-49a1-9b79-090bdc8b25da",
+              "goal": "Synthetic P20 original owner project goal; never infer a business result",
+              "status": "queued",
+              "error_code": null,
+              "created_at": "2026-10-19T11:43:16.536784+00:00",
+              "continued_from_id": null,
+              "reverted": false
+            },
+            "matched_run": null,
+            "presentation": {
+              "id": "4d351c33-1186-494c-bd79-74f61b8a992e",
+              "revision": 1,
+              "title": "Synthetic owner category conversation",
+              "pinned": false,
+              "archived": false,
+              "created_at": "2026-10-19T11:43:18.834311+00:00"
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    }
+  },
+  "command_receipts": [
+    {
+      "path": "/v1/personal/agent-sessions/6c806100-018c-4048-a8da-2dcaa2c48dee/presentation",
+      "status_code": 200,
+      "body": {
+        "version": "agent-session-presentation/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "session": {
+          "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+          "category_id": null,
+          "product_id": null,
+          "proposal_id": null,
+          "project_id": null
+        },
+        "presentation": {
+          "id": "1e697013-d688-4bce-abf0-d9a2e50673c1",
+          "revision": 1,
+          "title": "Synthetic P20 custom title %_\\ literal",
+          "pinned": false,
+          "archived": false,
+          "created_at": "2026-10-19T11:43:17.220553+00:00",
+          "action": "rename",
+          "request_key": "5fefb4cc-9dc6-472c-8e34-0a98d6cbc426"
+        }
+      }
+    },
+    {
+      "path": "/v1/personal/agent-sessions/6c806100-018c-4048-a8da-2dcaa2c48dee/presentation",
+      "status_code": 200,
+      "body": {
+        "version": "agent-session-presentation/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "session": {
+          "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+          "category_id": null,
+          "product_id": null,
+          "proposal_id": null,
+          "project_id": null
+        },
+        "presentation": {
+          "id": "5b7d2875-a3f4-47b1-9387-f18d5c6049bb",
+          "revision": 2,
+          "title": "Synthetic P20 custom title %_\\ literal",
+          "pinned": true,
+          "archived": false,
+          "created_at": "2026-10-19T11:43:17.271211+00:00",
+          "action": "pin",
+          "request_key": "e7e2afe5-0888-4fae-8783-06385c276be3"
+        }
+      }
+    },
+    {
+      "path": "/v1/personal/agent-sessions/6c806100-018c-4048-a8da-2dcaa2c48dee/presentation",
+      "status_code": 200,
+      "body": {
+        "version": "agent-session-presentation/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "session": {
+          "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+          "category_id": null,
+          "product_id": null,
+          "proposal_id": null,
+          "project_id": null
+        },
+        "presentation": {
+          "id": "1e697013-d688-4bce-abf0-d9a2e50673c1",
+          "revision": 1,
+          "title": "Synthetic P20 custom title %_\\ literal",
+          "pinned": false,
+          "archived": false,
+          "created_at": "2026-10-19T11:43:17.220553+00:00",
+          "action": "rename",
+          "request_key": "5fefb4cc-9dc6-472c-8e34-0a98d6cbc426"
+        }
+      }
+    },
+    {
+      "path": "/v1/personal/agent-sessions/6c806100-018c-4048-a8da-2dcaa2c48dee/presentation/requests/5fefb4cc-9dc6-472c-8e34-0a98d6cbc426",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "version": "agent-session-presentation/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "session": {
+          "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+          "category_id": null,
+          "product_id": null,
+          "proposal_id": null,
+          "project_id": null
+        },
+        "presentation": {
+          "id": "1e697013-d688-4bce-abf0-d9a2e50673c1",
+          "revision": 1,
+          "title": "Synthetic P20 custom title %_\\ literal",
+          "pinned": false,
+          "archived": false,
+          "created_at": "2026-10-19T11:43:17.220553+00:00",
+          "action": "rename",
+          "request_key": "5fefb4cc-9dc6-472c-8e34-0a98d6cbc426"
+        }
+      }
+    },
+    {
+      "path": "/v1/personal/agent-sessions/6c806100-018c-4048-a8da-2dcaa2c48dee/presentation",
+      "status_code": 200,
+      "body": {
+        "version": "agent-session-presentation/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "session": {
+          "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+          "category_id": null,
+          "product_id": null,
+          "proposal_id": null,
+          "project_id": null
+        },
+        "presentation": {
+          "id": "938483cd-f8bc-402a-b08e-305bc9d7b9c7",
+          "revision": 3,
+          "title": "Synthetic P20 custom title %_\\ literal",
+          "pinned": true,
+          "archived": true,
+          "created_at": "2026-10-19T11:43:17.974458+00:00",
+          "action": "archive",
+          "request_key": "6a9710e0-5b9a-418f-abac-82f08b16d18f"
+        }
+      }
+    },
+    {
+      "path": "/v1/personal/agent-sessions/6c806100-018c-4048-a8da-2dcaa2c48dee/presentation",
+      "status_code": 200,
+      "body": {
+        "version": "agent-session-presentation/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "session": {
+          "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+          "category_id": null,
+          "product_id": null,
+          "proposal_id": null,
+          "project_id": null
+        },
+        "presentation": {
+          "id": "f7d57af9-24e7-44bd-b899-a147d5dab500",
+          "revision": 4,
+          "title": "Synthetic P20 custom title %_\\ literal",
+          "pinned": true,
+          "archived": false,
+          "created_at": "2026-10-19T11:43:18.317739+00:00",
+          "action": "restore",
+          "request_key": "75a3e99b-239e-40bf-9997-eb46fda43357"
+        }
+      }
+    },
+    {
+      "path": "/v1/personal/agent-sessions/6c806100-018c-4048-a8da-2dcaa2c48dee/presentation",
+      "status_code": 200,
+      "body": {
+        "version": "agent-session-presentation/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "session": {
+          "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+          "category_id": null,
+          "product_id": null,
+          "proposal_id": null,
+          "project_id": null
+        },
+        "presentation": {
+          "id": "c66956f5-febf-41f9-9f5a-f012858e4515",
+          "revision": 5,
+          "title": "Synthetic P20 custom title %_\\ literal",
+          "pinned": false,
+          "archived": false,
+          "created_at": "2026-10-19T11:43:18.637184+00:00",
+          "action": "unpin",
+          "request_key": "ba6c0d07-3f67-4ead-b2c8-50a4464bc6d6"
+        }
+      }
+    },
+    {
+      "path": "/v1/personal/agent-sessions/6c806100-018c-4048-a8da-2dcaa2c48dee/presentation",
+      "status_code": 200,
+      "body": {
+        "version": "agent-session-presentation/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": null,
+          "proposal_id": null
+        },
+        "session": {
+          "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+          "category_id": null,
+          "product_id": null,
+          "proposal_id": null,
+          "project_id": null
+        },
+        "presentation": {
+          "id": "82eeab7b-318f-4081-8e19-f08e5aee55ee",
+          "revision": 6,
+          "title": null,
+          "pinned": false,
+          "archived": false,
+          "created_at": "2026-10-19T11:43:18.682625+00:00",
+          "action": "rename",
+          "request_key": "b0537b92-cf4d-430b-9628-9f57621e1f5b"
+        }
+      }
+    },
+    {
+      "path": "/v1/categories/1e40702d-ab5a-482c-90be-83dc3c63e4d7/agent-sessions/2f33c8b5-8363-4382-8fd4-ddbaa67f9459/presentation",
+      "status_code": 200,
+      "body": {
+        "version": "agent-session-presentation/v1",
+        "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+        "scope": {
+          "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+          "proposal_id": null
+        },
+        "session": {
+          "session_id": "2f33c8b5-8363-4382-8fd4-ddbaa67f9459",
+          "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+          "product_id": "b3a189a9-396a-4a77-8b79-e4cbdbcc68ff",
+          "proposal_id": null,
+          "project_id": "6d4d3da0-5a76-40ef-a2aa-ad83990d42b8"
+        },
+        "presentation": {
+          "id": "4d351c33-1186-494c-bd79-74f61b8a992e",
+          "revision": 1,
+          "title": "Synthetic owner category conversation",
+          "pinned": false,
+          "archived": false,
+          "created_at": "2026-10-19T11:43:18.834311+00:00",
+          "action": "rename",
+          "request_key": "6ee0d89e-5a39-4545-a981-5c8853bcdf7e"
+        }
+      }
+    },
+    {
+      "path": "/v1/categories/1e40702d-ab5a-482c-90be-83dc3c63e4d7/agent-sessions/cd7ad8a9-941f-4500-9ce2-7f80474716d4/presentation",
+      "status_code": 200,
+      "body": {
+        "version": "agent-session-presentation/v1",
+        "principal_id": "f0a4034f-2313-4904-8077-e4a0d409d868",
+        "scope": {
+          "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+          "proposal_id": null
+        },
+        "session": {
+          "session_id": "cd7ad8a9-941f-4500-9ce2-7f80474716d4",
+          "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+          "product_id": "b3a189a9-396a-4a77-8b79-e4cbdbcc68ff",
+          "proposal_id": null,
+          "project_id": "6d4d3da0-5a76-40ef-a2aa-ad83990d42b8"
+        },
+        "presentation": {
+          "id": "1f3e21c4-f615-4381-8080-93ade0841488",
+          "revision": 1,
+          "title": "Synthetic peer private conversation",
+          "pinned": false,
+          "archived": false,
+          "created_at": "2026-10-19T11:43:18.908914+00:00",
+          "action": "rename",
+          "request_key": "b95300d6-28e4-43f9-9286-6223b8a87c56"
+        }
+      }
+    }
+  ],
+  "guard_checks": {
+    "changed_request_key": {
+      "path": "/v1/personal/agent-sessions/6c806100-018c-4048-a8da-2dcaa2c48dee/presentation",
+      "status_code": 409,
+      "body": {
+        "code": "DUPLICATE_INTENT_CONFLICT",
+        "message": "请求编号对应不同的会话操作。",
+        "detail": {
+          "reason": "DUPLICATE_INTENT_CONFLICT"
+        }
+      }
+    },
+    "stale_revision": {
+      "path": "/v1/personal/agent-sessions/6c806100-018c-4048-a8da-2dcaa2c48dee/presentation",
+      "status_code": 409,
+      "body": {
+        "code": "VERSION_CONFLICT",
+        "message": "会话显示设置已变化，请刷新后重新操作。",
+        "detail": {
+          "reason": "VERSION_CONFLICT"
+        }
+      }
+    },
+    "old_active_anchor": {
+      "path": "/v1/personal/agent-conversations",
+      "params": {
+        "cursor": "6c806100-018c-4048-a8da-2dcaa2c48dee"
+      },
+      "status_code": 403,
+      "body": {
+        "code": "FORBIDDEN_SCOPE",
+        "message": "分页位置已不在当前可读会话或搜索中，请刷新。",
+        "detail": {
+          "reason": "FORBIDDEN_SCOPE"
+        }
+      }
+    },
+    "foreign_category": {
+      "path": "/v1/categories/1e40702d-ab5a-482c-90be-83dc3c63e4d7/agent-conversations",
+      "params": {},
+      "status_code": 403,
+      "body": {
+        "code": "FORBIDDEN_SCOPE",
+        "message": "品类不在当前授权范围。",
+        "detail": {
+          "reason": "FORBIDDEN_SCOPE"
+        }
+      }
+    },
+    "peer_owner_write": {
+      "path": "/v1/categories/1e40702d-ab5a-482c-90be-83dc3c63e4d7/agent-sessions/2f33c8b5-8363-4382-8fd4-ddbaa67f9459/presentation",
+      "status_code": 404,
+      "body": {
+        "code": "NOT_FOUND",
+        "message": "会话不存在或不在当前本人范围。",
+        "detail": {
+          "reason": "NOT_FOUND"
+        }
+      }
+    },
+    "foreign_owner_write": {
+      "path": "/v1/personal/agent-sessions/6c806100-018c-4048-a8da-2dcaa2c48dee/presentation",
+      "status_code": 404,
+      "body": {
+        "code": "NOT_FOUND",
+        "message": "会话不存在或不在当前本人范围。",
+        "detail": {
+          "reason": "NOT_FOUND"
+        }
+      }
+    },
+    "wrong_scope_write": {
+      "path": "/v1/personal/agent-sessions/2f33c8b5-8363-4382-8fd4-ddbaa67f9459/presentation",
+      "status_code": 404,
+      "body": {
+        "code": "NOT_FOUND",
+        "message": "会话不存在或不在当前本人范围。",
+        "detail": {
+          "reason": "NOT_FOUND"
+        }
+      }
+    },
+    "peer_owner_recovery": {
+      "path": "/v1/categories/1e40702d-ab5a-482c-90be-83dc3c63e4d7/agent-sessions/2f33c8b5-8363-4382-8fd4-ddbaa67f9459/presentation/requests/6ee0d89e-5a39-4545-a981-5c8853bcdf7e",
+      "params": {},
+      "status_code": 404,
+      "body": {
+        "code": "NOT_FOUND",
+        "message": "会话不存在或不在当前本人范围。",
+        "detail": {
+          "reason": "NOT_FOUND"
+        }
+      }
+    },
+    "unknown_owner_request": {
+      "path": "/v1/personal/agent-sessions/6c806100-018c-4048-a8da-2dcaa2c48dee/presentation/requests/f4ae9634-015d-480b-9693-674baa3fe302",
+      "params": {},
+      "status_code": 404,
+      "body": {
+        "code": "NOT_FOUND",
+        "message": "当前会话中没有该操作请求。",
+        "detail": {
+          "reason": "NOT_FOUND"
+        }
+      }
+    },
+    "ai_service_transaction": {
+      "status_code": 403,
+      "body": {
+        "code": "FORBIDDEN_SCOPE",
+        "message": "会话只向当前具名本人显示。",
+        "detail": {
+          "reason": "FORBIDDEN_SCOPE"
+        }
+      },
+      "transport": "actual service transaction; no AI login fixture"
+    },
+    "protected_metadata_boundary": {
+      "before": {
+        "agent_sessions": {
+          "count": 4,
+          "sha256": "59c09bdcac42c317835e9729eeb6cac387411dd0eff8b07deb6a3ea8921a373a"
+        },
+        "agent_runs": {
+          "count": 4,
+          "sha256": "2bd8539e41534edd14bafaa5af1c941f0f0699ba12563c7e147976472021e492"
+        },
+        "agent_run_events": {
+          "count": 1,
+          "sha256": "3fdbfa4d7669885b16c2078e38114914ab7bae055c1a24ab47ceaddef2dbcebf"
+        },
+        "agent_run_inputs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "agent_tool_calls": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "action_receipts": {
+          "count": 4,
+          "sha256": "e89c8ecd3e66a439f13e8d997c3f4a05723221682b1aacf357de8ea509754f42"
+        },
+        "audit_entries": {
+          "count": 4,
+          "sha256": "748c4b5fbf92e1e7265b3aa987407e68a2dc9418911ea9b1fbd08a6c4e5c7a83"
+        },
+        "outbox_events": {
+          "count": 5,
+          "sha256": "f9d3f2c89b1023d5be47cf6d22b830fe38cb7cf16058cfffa83791d9f1748183"
+        },
+        "request_keys": {
+          "count": 4,
+          "sha256": "6ded2ac5672b066bd387b37fec8187d75f40ac2d32baf2c9fbbe325863dc70b0"
+        },
+        "confirmations": {
+          "count": 4,
+          "sha256": "011be6ff5bff3b895ff87d1b60b71f54219156bfe42ac2ec7f3ea0a0586c6403"
+        },
+        "categories": {
+          "count": 1,
+          "sha256": "31970421872af6dad90acbf1ec7d5d20aea7e1275525d040027c9edcc4883fb7"
+        },
+        "products": {
+          "count": 2,
+          "sha256": "e9bb6dc0019ca3d21fc9e6ac092d22218b02074a4cca25d8c507b8082048e900"
+        },
+        "projects": {
+          "count": 1,
+          "sha256": "357a96068241883a80cda274179fedce371cbffe26bd8c0431aba866969fca92"
+        },
+        "project_product_links": {
+          "count": 1,
+          "sha256": "c9dadf5bd7b12f0e444a34735cf1bf8daaaba99b9d6e262ec805cb45ed66650c"
+        },
+        "definition_revisions": {
+          "count": 1,
+          "sha256": "c0da85cd7db8d7750f51298e5f18556b4db3bfe1de5f2b8a97aedb8838c6542c"
+        },
+        "proposals": {
+          "count": 1,
+          "sha256": "3cdb75cfd38919049c50c0f6d76e912048ea68a259fee66ffc24845fd158dc26"
+        },
+        "proposal_items": {
+          "count": 3,
+          "sha256": "457657d6028f149eb4f8d4ffd0022611727d0ddb5272abc24de5292ff5ffd3ec"
+        },
+        "proposal_item_versions": {
+          "count": 3,
+          "sha256": "7f028298209a5f1b0489f1225df597592539f5bd9f33b31f683c27135718151b"
+        },
+        "proposal_revisions": {
+          "count": 4,
+          "sha256": "b96a6c6fca520f5827e3dd51e08886a9a3ed5c8c2eeea332e91f4ca355b1816b"
+        },
+        "proposal_submissions": {
+          "count": 1,
+          "sha256": "d4f91e0d8e8edb2faeac0257f81b4f594a0c168f1b457b96b7717bab3ff46692"
+        },
+        "proposal_decisions": {
+          "count": 1,
+          "sha256": "88b6082ce80333e774672ac551f0f9c4850fdc9f7f4c8169d07c8867a357c472"
+        },
+        "project_open_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "grants": {
+          "count": 3,
+          "sha256": "35ace972d4b63f6b32bd41498d6cbd8b87617eb4456419bf2d9500055ff4c209"
+        },
+        "object_audiences": {
+          "count": 6,
+          "sha256": "779511475ac712778f17ad5c7a72ebe22d1335183cb8d0a2e431769e7713369e"
+        }
+      },
+      "after": {
+        "agent_sessions": {
+          "count": 4,
+          "sha256": "59c09bdcac42c317835e9729eeb6cac387411dd0eff8b07deb6a3ea8921a373a"
+        },
+        "agent_runs": {
+          "count": 4,
+          "sha256": "2bd8539e41534edd14bafaa5af1c941f0f0699ba12563c7e147976472021e492"
+        },
+        "agent_run_events": {
+          "count": 1,
+          "sha256": "3fdbfa4d7669885b16c2078e38114914ab7bae055c1a24ab47ceaddef2dbcebf"
+        },
+        "agent_run_inputs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "agent_tool_calls": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "action_receipts": {
+          "count": 4,
+          "sha256": "e89c8ecd3e66a439f13e8d997c3f4a05723221682b1aacf357de8ea509754f42"
+        },
+        "audit_entries": {
+          "count": 4,
+          "sha256": "748c4b5fbf92e1e7265b3aa987407e68a2dc9418911ea9b1fbd08a6c4e5c7a83"
+        },
+        "outbox_events": {
+          "count": 5,
+          "sha256": "f9d3f2c89b1023d5be47cf6d22b830fe38cb7cf16058cfffa83791d9f1748183"
+        },
+        "request_keys": {
+          "count": 4,
+          "sha256": "6ded2ac5672b066bd387b37fec8187d75f40ac2d32baf2c9fbbe325863dc70b0"
+        },
+        "confirmations": {
+          "count": 4,
+          "sha256": "011be6ff5bff3b895ff87d1b60b71f54219156bfe42ac2ec7f3ea0a0586c6403"
+        },
+        "categories": {
+          "count": 1,
+          "sha256": "31970421872af6dad90acbf1ec7d5d20aea7e1275525d040027c9edcc4883fb7"
+        },
+        "products": {
+          "count": 2,
+          "sha256": "e9bb6dc0019ca3d21fc9e6ac092d22218b02074a4cca25d8c507b8082048e900"
+        },
+        "projects": {
+          "count": 1,
+          "sha256": "357a96068241883a80cda274179fedce371cbffe26bd8c0431aba866969fca92"
+        },
+        "project_product_links": {
+          "count": 1,
+          "sha256": "c9dadf5bd7b12f0e444a34735cf1bf8daaaba99b9d6e262ec805cb45ed66650c"
+        },
+        "definition_revisions": {
+          "count": 1,
+          "sha256": "c0da85cd7db8d7750f51298e5f18556b4db3bfe1de5f2b8a97aedb8838c6542c"
+        },
+        "proposals": {
+          "count": 1,
+          "sha256": "3cdb75cfd38919049c50c0f6d76e912048ea68a259fee66ffc24845fd158dc26"
+        },
+        "proposal_items": {
+          "count": 3,
+          "sha256": "457657d6028f149eb4f8d4ffd0022611727d0ddb5272abc24de5292ff5ffd3ec"
+        },
+        "proposal_item_versions": {
+          "count": 3,
+          "sha256": "7f028298209a5f1b0489f1225df597592539f5bd9f33b31f683c27135718151b"
+        },
+        "proposal_revisions": {
+          "count": 4,
+          "sha256": "b96a6c6fca520f5827e3dd51e08886a9a3ed5c8c2eeea332e91f4ca355b1816b"
+        },
+        "proposal_submissions": {
+          "count": 1,
+          "sha256": "d4f91e0d8e8edb2faeac0257f81b4f594a0c168f1b457b96b7717bab3ff46692"
+        },
+        "proposal_decisions": {
+          "count": 1,
+          "sha256": "88b6082ce80333e774672ac551f0f9c4850fdc9f7f4c8169d07c8867a357c472"
+        },
+        "project_open_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "grants": {
+          "count": 3,
+          "sha256": "35ace972d4b63f6b32bd41498d6cbd8b87617eb4456419bf2d9500055ff4c209"
+        },
+        "object_audiences": {
+          "count": 6,
+          "sha256": "779511475ac712778f17ad5c7a72ebe22d1335183cb8d0a2e431769e7713369e"
+        }
+      }
+    },
+    "acl_negative_fixture": {
+      "nature": "synthetic ACL reduction with the existing lifecycle_reference trigger",
+      "changed_tables": [
+        "object_audiences",
+        "products",
+        "projects"
+      ],
+      "changes": [
+        {
+          "table": "projects",
+          "id": "6d4d3da0-5a76-40ef-a2aa-ad83990d42b8",
+          "operation": "update",
+          "changed_fields": [
+            "visibility"
+          ],
+          "before_sha256": "8e6c84647c22bb614a44899de3b1b93a9607349359ee6d823a18a2387bd9d55e",
+          "after_sha256": "f4f2a70a566abab1ac6886c69a3ba5b7b02aea840193bf8628d6392eb4f8de6f"
+        },
+        {
+          "table": "products",
+          "id": "b3a189a9-396a-4a77-8b79-e4cbdbcc68ff",
+          "operation": "update",
+          "changed_fields": [
+            "lifecycle_epoch"
+          ],
+          "before_sha256": "1206549bdfa7040a7b96a45447a2fa3c3e88299998df2bf37fbd27a22a6263d8",
+          "after_sha256": "e064ef076b16a06150f313637b7640e60962adfa33d11f58d4045af2d390ff12"
+        },
+        {
+          "table": "object_audiences",
+          "id": "99d201a5-f2b0-4e4d-85e1-e8bd8b3cd0de",
+          "operation": "delete",
+          "changed_fields": [],
+          "before_sha256": "f75f2334700aeb696add6f47f91d0f224b284c4b6a2208c44543dcd0b5d2c097",
+          "after_sha256": null
+        }
+      ],
+      "row_hashes": {
+        "projects": {
+          "before": {
+            "6d4d3da0-5a76-40ef-a2aa-ad83990d42b8": "8e6c84647c22bb614a44899de3b1b93a9607349359ee6d823a18a2387bd9d55e"
+          },
+          "after": {
+            "6d4d3da0-5a76-40ef-a2aa-ad83990d42b8": "f4f2a70a566abab1ac6886c69a3ba5b7b02aea840193bf8628d6392eb4f8de6f"
+          }
+        },
+        "products": {
+          "before": {
+            "b3a189a9-396a-4a77-8b79-e4cbdbcc68ff": "1206549bdfa7040a7b96a45447a2fa3c3e88299998df2bf37fbd27a22a6263d8",
+            "d211034d-4692-400e-aece-f2b21d64af06": "fb12709c70cf0ae3b01582f78493fb0a639324c2d1db8073419acead20c4f5a3"
+          },
+          "after": {
+            "b3a189a9-396a-4a77-8b79-e4cbdbcc68ff": "e064ef076b16a06150f313637b7640e60962adfa33d11f58d4045af2d390ff12",
+            "d211034d-4692-400e-aece-f2b21d64af06": "fb12709c70cf0ae3b01582f78493fb0a639324c2d1db8073419acead20c4f5a3"
+          }
+        },
+        "object_audiences": {
+          "before": {
+            "1cf8db71-10de-48b3-8f89-e209e941309b": "a90fabac4a7b82611a05ed610ab1d06e59762f97fde0978b8a6795ab33cddba1",
+            "20c9945c-6a7e-4faf-bd3d-4103d7bcba8e": "37af866a345c1a995d8302d03ade8b7945cce7a3a1de3090ce39af8474f555fe",
+            "42c981e5-7cb8-49ff-93d0-f20e4edc9b6a": "4ebeecb21eab462913d18d936a59b5c7509dfad4342d341ee7e7c840a749101b",
+            "458338ee-996b-4380-b65c-30e6f7da2240": "95cd32d47087df091bdb182d420c8f64d6f290d015eb60cdf4ccb030e9ad954d",
+            "99d201a5-f2b0-4e4d-85e1-e8bd8b3cd0de": "f75f2334700aeb696add6f47f91d0f224b284c4b6a2208c44543dcd0b5d2c097",
+            "b235459d-c15f-4c9d-ad51-046426961b82": "4bcd7c42240b6705dd6b6903a245b094797a4b20a912ce8fdaffdb2373610c0c"
+          },
+          "after": {
+            "1cf8db71-10de-48b3-8f89-e209e941309b": "a90fabac4a7b82611a05ed610ab1d06e59762f97fde0978b8a6795ab33cddba1",
+            "20c9945c-6a7e-4faf-bd3d-4103d7bcba8e": "37af866a345c1a995d8302d03ade8b7945cce7a3a1de3090ce39af8474f555fe",
+            "42c981e5-7cb8-49ff-93d0-f20e4edc9b6a": "4ebeecb21eab462913d18d936a59b5c7509dfad4342d341ee7e7c840a749101b",
+            "458338ee-996b-4380-b65c-30e6f7da2240": "95cd32d47087df091bdb182d420c8f64d6f290d015eb60cdf4ccb030e9ad954d",
+            "b235459d-c15f-4c9d-ad51-046426961b82": "4bcd7c42240b6705dd6b6903a245b094797a4b20a912ce8fdaffdb2373610c0c"
+          }
+        }
+      },
+      "project_visibility": {
+        "before": "category",
+        "after": "private"
+      },
+      "product_lifecycle_epoch": {
+        "product_id": "b3a189a9-396a-4a77-8b79-e4cbdbcc68ff",
+        "before": 6,
+        "after": 7
+      },
+      "removed_peer_audience_ids": [
+        "99d201a5-f2b0-4e4d-85e1-e8bd8b3cd0de"
+      ]
+    },
+    "peer_old_request_after_acl": {
+      "path": "/v1/categories/1e40702d-ab5a-482c-90be-83dc3c63e4d7/agent-sessions/cd7ad8a9-941f-4500-9ce2-7f80474716d4/presentation",
+      "status_code": 404,
+      "body": {
+        "code": "NOT_FOUND",
+        "message": "会话不存在或不在当前本人范围。",
+        "detail": {
+          "reason": "NOT_FOUND"
+        }
+      }
+    },
+    "peer_recovery_after_acl": {
+      "path": "/v1/categories/1e40702d-ab5a-482c-90be-83dc3c63e4d7/agent-sessions/cd7ad8a9-941f-4500-9ce2-7f80474716d4/presentation/requests/b95300d6-28e4-43f9-9286-6223b8a87c56",
+      "params": {},
+      "status_code": 404,
+      "body": {
+        "code": "NOT_FOUND",
+        "message": "会话不存在或不在当前本人范围。",
+        "detail": {
+          "reason": "NOT_FOUND"
+        }
+      }
+    },
+    "peer_new_request_after_acl": {
+      "path": "/v1/categories/1e40702d-ab5a-482c-90be-83dc3c63e4d7/agent-sessions/cd7ad8a9-941f-4500-9ce2-7f80474716d4/presentation",
+      "status_code": 404,
+      "body": {
+        "code": "NOT_FOUND",
+        "message": "会话不存在或不在当前本人范围。",
+        "detail": {
+          "reason": "NOT_FOUND"
+        }
+      }
+    },
+    "peer_run_after_acl": {
+      "path": "/v1/categories/1e40702d-ab5a-482c-90be-83dc3c63e4d7/agent-runs/da42fda8-68fd-4bcd-84b0-e88b2a2f0508",
+      "params": {},
+      "status_code": 403,
+      "body": {
+        "code": "FORBIDDEN_SCOPE",
+        "message": "运行不在当前可读范围。",
+        "detail": {
+          "reason": "FORBIDDEN_SCOPE"
+        }
+      }
+    },
+    "protected_acl_boundary": {
+      "fixture_changes_only": [
+        "object_audiences",
+        "products",
+        "projects"
+      ],
+      "before_metadata_denials": {
+        "agent_sessions": {
+          "count": 4,
+          "sha256": "59c09bdcac42c317835e9729eeb6cac387411dd0eff8b07deb6a3ea8921a373a"
+        },
+        "agent_runs": {
+          "count": 4,
+          "sha256": "2bd8539e41534edd14bafaa5af1c941f0f0699ba12563c7e147976472021e492"
+        },
+        "agent_run_events": {
+          "count": 1,
+          "sha256": "3fdbfa4d7669885b16c2078e38114914ab7bae055c1a24ab47ceaddef2dbcebf"
+        },
+        "agent_run_inputs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "agent_tool_calls": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "action_receipts": {
+          "count": 4,
+          "sha256": "e89c8ecd3e66a439f13e8d997c3f4a05723221682b1aacf357de8ea509754f42"
+        },
+        "audit_entries": {
+          "count": 4,
+          "sha256": "748c4b5fbf92e1e7265b3aa987407e68a2dc9418911ea9b1fbd08a6c4e5c7a83"
+        },
+        "outbox_events": {
+          "count": 5,
+          "sha256": "f9d3f2c89b1023d5be47cf6d22b830fe38cb7cf16058cfffa83791d9f1748183"
+        },
+        "request_keys": {
+          "count": 4,
+          "sha256": "6ded2ac5672b066bd387b37fec8187d75f40ac2d32baf2c9fbbe325863dc70b0"
+        },
+        "confirmations": {
+          "count": 4,
+          "sha256": "011be6ff5bff3b895ff87d1b60b71f54219156bfe42ac2ec7f3ea0a0586c6403"
+        },
+        "categories": {
+          "count": 1,
+          "sha256": "31970421872af6dad90acbf1ec7d5d20aea7e1275525d040027c9edcc4883fb7"
+        },
+        "products": {
+          "count": 2,
+          "sha256": "1d70a955c3ad9c5fe283033ef030fff32ff819db0d501992473062a5de506f44"
+        },
+        "projects": {
+          "count": 1,
+          "sha256": "5be086d24059f9c2c9d8e6754957d68dc47719d96e778c688d91164cd833e6b1"
+        },
+        "project_product_links": {
+          "count": 1,
+          "sha256": "c9dadf5bd7b12f0e444a34735cf1bf8daaaba99b9d6e262ec805cb45ed66650c"
+        },
+        "definition_revisions": {
+          "count": 1,
+          "sha256": "c0da85cd7db8d7750f51298e5f18556b4db3bfe1de5f2b8a97aedb8838c6542c"
+        },
+        "proposals": {
+          "count": 1,
+          "sha256": "3cdb75cfd38919049c50c0f6d76e912048ea68a259fee66ffc24845fd158dc26"
+        },
+        "proposal_items": {
+          "count": 3,
+          "sha256": "457657d6028f149eb4f8d4ffd0022611727d0ddb5272abc24de5292ff5ffd3ec"
+        },
+        "proposal_item_versions": {
+          "count": 3,
+          "sha256": "7f028298209a5f1b0489f1225df597592539f5bd9f33b31f683c27135718151b"
+        },
+        "proposal_revisions": {
+          "count": 4,
+          "sha256": "b96a6c6fca520f5827e3dd51e08886a9a3ed5c8c2eeea332e91f4ca355b1816b"
+        },
+        "proposal_submissions": {
+          "count": 1,
+          "sha256": "d4f91e0d8e8edb2faeac0257f81b4f594a0c168f1b457b96b7717bab3ff46692"
+        },
+        "proposal_decisions": {
+          "count": 1,
+          "sha256": "88b6082ce80333e774672ac551f0f9c4850fdc9f7f4c8169d07c8867a357c472"
+        },
+        "project_open_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "grants": {
+          "count": 3,
+          "sha256": "35ace972d4b63f6b32bd41498d6cbd8b87617eb4456419bf2d9500055ff4c209"
+        },
+        "object_audiences": {
+          "count": 5,
+          "sha256": "9ea6d4a558f8eda2aa0403262200f1272bc58c9449d63b40eedda3ccfc5650db"
+        }
+      },
+      "after_metadata_denials": {
+        "agent_sessions": {
+          "count": 4,
+          "sha256": "59c09bdcac42c317835e9729eeb6cac387411dd0eff8b07deb6a3ea8921a373a"
+        },
+        "agent_runs": {
+          "count": 4,
+          "sha256": "2bd8539e41534edd14bafaa5af1c941f0f0699ba12563c7e147976472021e492"
+        },
+        "agent_run_events": {
+          "count": 1,
+          "sha256": "3fdbfa4d7669885b16c2078e38114914ab7bae055c1a24ab47ceaddef2dbcebf"
+        },
+        "agent_run_inputs": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "agent_tool_calls": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "action_receipts": {
+          "count": 4,
+          "sha256": "e89c8ecd3e66a439f13e8d997c3f4a05723221682b1aacf357de8ea509754f42"
+        },
+        "audit_entries": {
+          "count": 4,
+          "sha256": "748c4b5fbf92e1e7265b3aa987407e68a2dc9418911ea9b1fbd08a6c4e5c7a83"
+        },
+        "outbox_events": {
+          "count": 5,
+          "sha256": "f9d3f2c89b1023d5be47cf6d22b830fe38cb7cf16058cfffa83791d9f1748183"
+        },
+        "request_keys": {
+          "count": 4,
+          "sha256": "6ded2ac5672b066bd387b37fec8187d75f40ac2d32baf2c9fbbe325863dc70b0"
+        },
+        "confirmations": {
+          "count": 4,
+          "sha256": "011be6ff5bff3b895ff87d1b60b71f54219156bfe42ac2ec7f3ea0a0586c6403"
+        },
+        "categories": {
+          "count": 1,
+          "sha256": "31970421872af6dad90acbf1ec7d5d20aea7e1275525d040027c9edcc4883fb7"
+        },
+        "products": {
+          "count": 2,
+          "sha256": "1d70a955c3ad9c5fe283033ef030fff32ff819db0d501992473062a5de506f44"
+        },
+        "projects": {
+          "count": 1,
+          "sha256": "5be086d24059f9c2c9d8e6754957d68dc47719d96e778c688d91164cd833e6b1"
+        },
+        "project_product_links": {
+          "count": 1,
+          "sha256": "c9dadf5bd7b12f0e444a34735cf1bf8daaaba99b9d6e262ec805cb45ed66650c"
+        },
+        "definition_revisions": {
+          "count": 1,
+          "sha256": "c0da85cd7db8d7750f51298e5f18556b4db3bfe1de5f2b8a97aedb8838c6542c"
+        },
+        "proposals": {
+          "count": 1,
+          "sha256": "3cdb75cfd38919049c50c0f6d76e912048ea68a259fee66ffc24845fd158dc26"
+        },
+        "proposal_items": {
+          "count": 3,
+          "sha256": "457657d6028f149eb4f8d4ffd0022611727d0ddb5272abc24de5292ff5ffd3ec"
+        },
+        "proposal_item_versions": {
+          "count": 3,
+          "sha256": "7f028298209a5f1b0489f1225df597592539f5bd9f33b31f683c27135718151b"
+        },
+        "proposal_revisions": {
+          "count": 4,
+          "sha256": "b96a6c6fca520f5827e3dd51e08886a9a3ed5c8c2eeea332e91f4ca355b1816b"
+        },
+        "proposal_submissions": {
+          "count": 1,
+          "sha256": "d4f91e0d8e8edb2faeac0257f81b4f594a0c168f1b457b96b7717bab3ff46692"
+        },
+        "proposal_decisions": {
+          "count": 1,
+          "sha256": "88b6082ce80333e774672ac551f0f9c4850fdc9f7f4c8169d07c8867a357c472"
+        },
+        "project_open_items": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "grants": {
+          "count": 3,
+          "sha256": "35ace972d4b63f6b32bd41498d6cbd8b87617eb4456419bf2d9500055ff4c209"
+        },
+        "object_audiences": {
+          "count": 5,
+          "sha256": "9ea6d4a558f8eda2aa0403262200f1272bc58c9449d63b40eedda3ccfc5650db"
+        }
+      }
+    },
+    "presentation_history": {
+      "count": 8,
+      "sha256": "00e64ec08001787f69a422d622c948892cac29c6ae785ea62985e7ed2f62b2a2",
+      "revisions": {
+        "6c806100-018c-4048-a8da-2dcaa2c48dee": 6,
+        "2f33c8b5-8363-4382-8fd4-ddbaa67f9459": 1,
+        "cd7ad8a9-941f-4500-9ce2-7f80474716d4": 1
+      }
+    }
+  },
+  "limitations": [
+    "Only root executes against a freshly verified explicit isolated pdos_test target",
+    "G0 is four actual public commands with synthetic human review; no real qualification",
+    "Run creation/cancellation use actual services; no HTTP Start coverage",
+    "No model, worker, Temporal, business configuration, Field or S2 chain executes",
+    "Metadata actions must preserve all 24 explicit protected model row counts and digests",
+    "AI rejection uses an actual service Context403; no authenticated AI HTTP coverage",
+    "Project ACL reduction is a narrow negative fixture, not a user-facing revoke command",
+    "No deletion, business approval, external send, production or formal stage acceptance"
+  ]
+}

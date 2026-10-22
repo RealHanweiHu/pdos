@@ -1,0 +1,49 @@
+{
+  "candidate": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/commitment-fulfillment-web-1792347265814380000",
+  "candidate_inputs": 415,
+  "checks": [
+    {
+      "name": "lint",
+      "exit_code": 0
+    },
+    {
+      "name": "build",
+      "exit_code": 0
+    },
+    {
+      "name": "typecheck",
+      "exit_code": 0
+    }
+  ],
+  "owned_source_sha256": {
+    "src/components/projects/project-commitments.tsx": "8d5b5660ebd947d3611097b94993e5fc52a7941f2ec53a8be12688b349a50193",
+    "src/components/projects/project-commitments.module.css": "4dec031e1fe2dc24589c7a611ce970ff3000b549d37b855756e12c9e52face68",
+    "src/components/projects/project-commitments.test.mjs": "9208b27f42851f9165030378b68d301ec110082d4d4553538db459cbc09c63e1"
+  },
+  "owned_changes_since_build": [],
+  "other_frontend_changes_since_build": [],
+  "backend_input_changes_since_actual_test": [],
+  "backend_changes_during_actual_test": [],
+  "runtime_changes_during_actual_test": [],
+  "backend_exit_code": 0,
+  "frontend_components": 30,
+  "frontend_library": 12,
+  "actual_case_count": 1,
+  "actual_case_phases": 3,
+  "actual_domain_gets": 6,
+  "browser_used": false,
+  "browser_gate_preserved": true,
+  "migrations_executed": false,
+  "new_business_operations": false,
+  "models_called": false,
+  "new_source_files": [
+    "pdos-next/server/tests/ui/test_project_commitment_projection_pg.py"
+  ],
+  "owned_frontend_changes": [
+    "src/components/projects/project-commitments.tsx",
+    "src/components/projects/project-commitments.module.css",
+    "src/components/projects/project-commitments.test.mjs"
+  ],
+  "historical_review_fixed_refs_available": false,
+  "joint_database_transaction_claimed": false
+}

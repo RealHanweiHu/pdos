@@ -1,0 +1,78 @@
+{
+  "differences": [
+    {
+      "path": "src/lib/build-change-implementations-view.ts",
+      "candidate_sha256": "5c444475703052a3ebedfbe9e25ec0ae7fdaef5b5aaa966a57a113e466bd281e",
+      "current_sha256": "909823b19831986c2c811f33021ce75947aa46cc17fe271cbaf74e115dc32359"
+    },
+    {
+      "path": "src/lib/build-quality-loop-view.ts",
+      "candidate_sha256": "7cfc49a4ece48f8e072cffc0d1744825b7550dea0cc87b58ce93a1a0c0f266e0",
+      "current_sha256": "d247ed79102315afa5e081fd2e7c42ba2d1d098f69be70f508906fc1625b4ad4"
+    },
+    {
+      "path": "src/lib/build-change-orders-view.test.ts",
+      "candidate_sha256": "678ce9d4b06c6fc4d96fc5b79867db726b978b9b9dd789ed1323f789c7fc3e30",
+      "current_sha256": "bf25feb638703845bfa54a1897f51d0064bd45c7ecc4240408c602f6b058e3ff"
+    },
+    {
+      "path": "src/lib/build-change-orders-view.ts",
+      "candidate_sha256": "c323448685ea49f65f6db670a750bffeccbb2070f8f393081dea7109d544da16",
+      "current_sha256": "18eead7152f93420b5be67f060863bf6f086b83b59ab5815fac8749fdb4ada55"
+    },
+    {
+      "path": "src/lib/build-quality-loop-view.test.ts",
+      "candidate_sha256": "38263f5b6b2a504f3881587b621ba0be587502b1cf859a2657b5c7d02eb273f9",
+      "current_sha256": "5b6f290ba4ff869b1330004c5f70461cf4d1653aca5e9a6b2c8d91ea5d0527a5"
+    },
+    {
+      "path": "src/lib/build-change-implementations-view.test.ts",
+      "candidate_sha256": "11952e2327b2553c16aaa5ad50a6c9a8e5b2294dc93290947fc5512cd211ac18",
+      "current_sha256": "671c4c0f3528be55db67a21bb19f06eb7be3394913ba7ebb3d3c650ab10918f7"
+    },
+    {
+      "path": "src/components/builds/build-change-approvals.tsx",
+      "candidate_sha256": "1528fbbbbe1d6f43f511a6aba62f0c2476b9591de0e66952d9e97a1298db7b22",
+      "current_sha256": "cdae85493ca56d11ce8be36c02e8f67c16c1f7f0b6eb50440a94adc28e50c67d"
+    },
+    {
+      "path": "src/components/builds/build-change-orders.tsx",
+      "candidate_sha256": "e4d420b15fc2f9bf7f1190858550e1ad9d2285dccb8d3f22b766fbd61b54df66",
+      "current_sha256": "3418388a6027693d8410097ad3ce394f0d64ea51587cd672e7e11da05f9aef90"
+    },
+    {
+      "path": "src/components/builds/build-change-implementations.tsx",
+      "candidate_sha256": "aa04336a0cea070c310a9fff1b65d35a59e5444984debe126cbdf7a43c08f415",
+      "current_sha256": "957db58b3e31f4923350b89998e5d608cb57ab77c253bc21d945b78ec6daa517"
+    },
+    {
+      "path": "src/components/field/field-feedback.tsx",
+      "candidate_sha256": "8f6b11a4b66781849eae8b82c9605bfa8aa61d3cf34b3f1600e82ff1b34c6cd8",
+      "current_sha256": "bc62e0b5b79dedfbab151ab2bd601901f1a275d145b253f3171ead3213bb3f46"
+    },
+    {
+      "path": "src/components/field/field-feedback.test.mjs",
+      "candidate_sha256": "98c0a994ee960d23d03de3efee6d0652a1a118cada2060303a6c0984296d7d1d",
+      "current_sha256": "46bdec3e5af14a038aa75ab7e81671b6670ea4323ab0dd56da29030eee51a5fb"
+    },
+    {
+      "path": "src/app/api/[...path]/route.test.ts",
+      "candidate_sha256": "0b4ea83afa8e5821e8b564b26b4dfebe3f29b5dc8e97def53d5c49195582d302",
+      "current_sha256": "21aed6e4b8b0fb129d33243df1f165ffc910b57ac0380e7a45b80244ec7c1c30"
+    },
+    {
+      "path": "src/app/api/[...path]/route.ts",
+      "candidate_sha256": "7d888e91a5c69766de7f4ae73d1ffb1f036175e6d6701ef0779e5c0c00c091c1",
+      "current_sha256": "d4e2867a7d4870eb6cced80c7adec7098204a76be133672c989fb3ef1b4c80c6"
+    }
+  ],
+  "current_src_files_not_in_candidate": [
+    "src/components/builds/build-change-orders.test.mjs",
+    "src/components/builds/change-source-material.tsx",
+    "src/lib/change-source-material.test.ts",
+    "src/lib/change-source-material.ts"
+  ],
+  "basis": "previous validated 476-input frontend plus seven exact manufacturing history overlays; shared BFF only owned query expression",
+  "current_working_tree_restored": false,
+  "coverage": "In-flight field selection/order frontend changes are not covered by this candidate. Owned files and the scoped manufacturing BFF hunk match."
+}

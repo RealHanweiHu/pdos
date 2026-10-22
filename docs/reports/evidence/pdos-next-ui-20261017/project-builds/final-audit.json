@@ -1,0 +1,49 @@
+{
+  "web_inputs": 322,
+  "owned_ui_or_reader_changes_after_final_build": [],
+  "concurrent_shared_web_changes_after_build": [
+    "src/app/api/[...path]/route.ts"
+  ],
+  "concurrent_new_web_inputs": [
+    "src/app/api/manufacturing-publication-route.test.mjs"
+  ],
+  "concurrent_backend_scope_changes_after_pg": [],
+  "concurrent_runtime_changes_after_pg": [
+    "pdos_next/service.py",
+    "pdos_next/models.py",
+    "pdos_next/contracts.py",
+    "pdos_next/command_handlers.py",
+    "pdos_next/domain/professional_authority/service.py"
+  ],
+  "concurrent_new_runtime_inputs": [
+    "pdos_next/domain/manufacturing_baseline/publication_api.py",
+    "pdos_next/domain/manufacturing_baseline/publication_material_owner.py",
+    "pdos_next/domain/manufacturing_baseline/publication_service.py",
+    "pdos_next/domain/manufacturing_baseline/publication_storage_schema.py"
+  ],
+  "concurrent_shared_changes_included_in_pass_claim": false,
+  "final_wording_delta": [
+    "src/components/projects/project-build-summary.tsx",
+    "src/components/projects/project-build-summary.test.mjs"
+  ],
+  "final_wording_affected_component_checks": 9,
+  "initial_frontend_checks": 66,
+  "distinct_frontend_checks": 66,
+  "actual_pg_http_checks": 3,
+  "actual_bff_checks": 9,
+  "preview_domain_request_counts": {
+    "GET": 49
+  },
+  "response_proxy": false,
+  "models_called": false,
+  "migrations_executed_by_this_closure": false,
+  "new_or_expanded_permissions": false,
+  "performance_sampling": false,
+  "formal_stage_acceptance": false,
+  "automation_remains_active": true,
+  "source_inputs_added_between_initial_and_final_copy": [
+    "src/components/manufacturing-publication/manufacturing-publication.tsx",
+    "src/components/manufacturing-publication/publication-contract.test.ts",
+    "src/components/manufacturing-publication/publication-contract.ts"
+  ]
+}

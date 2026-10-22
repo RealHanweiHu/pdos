@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "candidate": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/build-readiness-web-1792386263456224000",
+  "input_count": 493,
+  "owned_sha256": {
+    "src/lib/project-build-readiness.ts": "15884fe333f76be46f2a2671cade173e01b0277ba1d2f97e90f5dd685e63d100",
+    "src/lib/project-build-readiness.test.mjs": "27e87a997416646231ed9dad8d9d2b11bf3cc35c707e496910234dea515e733e",
+    "src/components/projects/project-build-readiness.tsx": "49d2093068c0db3b9143a139776a1ff0216b068af54df63af13063387414987b",
+    "src/components/projects/project-build-readiness.module.css": "8348553ebd7a8484e1c97adbd82005481ae9a2dec85770810753d15bc3d1786c",
+    "src/components/projects/project-build-readiness.test.mjs": "9b4eaf504f82abe56fd81ed51bd3f12ff90e293d4db0a058d1b00cea46eee2fa",
+    "src/components/projects/project-build-summary.tsx": "7359d584e5164505b371fe107c1f313c505d188b13ae1c1d3899424c9bd8a186",
+    "src/components/projects/project-build-summary.test.mjs": "d877cfd67c5e5babc07baa7fc03d898874713948fd36343237b7031140328f8b"
+  },
+  "owned_sources_stable": true,
+  "checks": [
+    {
+      "name": "frontend-tests",
+      "exit_code": 0
+    },
+    {
+      "name": "lint",
+      "exit_code": 0
+    },
+    {
+      "name": "build",
+      "exit_code": 0
+    },
+    {
+      "name": "typecheck",
+      "exit_code": 0
+    }
+  ],
+  "historical_projection_modules": {
+    "pdos_next/domain/builds/service.py": {
+      "historical": "64832dfcb442958612de07cd7d13f62e97bb6d5cc98a4101e3e59de369f4d66b",
+      "current": "64832dfcb442958612de07cd7d13f62e97bb6d5cc98a4101e3e59de369f4d66b",
+      "unchanged": true
+    },
+    "pdos_next/domain/builds/readiness.py": {
+      "historical": "c8211c181c41744676d62a39b3f3b498e5aae5d24518661abf1c06e6d0760527",
+      "current": "c8211c181c41744676d62a39b3f3b498e5aae5d24518661abf1c06e6d0760527",
+      "unchanged": true
+    }
+  },
+  "actual_dto_validation_sha256": "419c07e1e221fdc6e40da1f8da7214c07de6869fd56101f124311baec50cb953",
+  "historical_scope": "Actual old HTTP DTOs reused for new parser and pure component. Two projection modules unchanged; no claim of new HTTP/ACL/domain acceptance or whole current API source equivalence.",
+  "concurrent_boundary": "concurrent-source-boundary.json",
+  "database_calls": 0,
+  "http_calls": 0,
+  "browser_calls": 0,
+  "migrations": 0
+}

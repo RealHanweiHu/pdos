@@ -1,0 +1,98 @@
+{
+  "checkpoint": "project-pilot-statistics/v1",
+  "recorded_utc": "2026-10-18T21:55:35.844122+00:00",
+  "head": "34f09790ea1db54eb6a70215b1f780fa9cb11119",
+  "owned_source_sha256": {
+    "pdos-next/web/src/lib/project-pilots.ts": "1107346d8500f933e9892c9be7299f75eb7742cd06a96989fffb99a2f341ddf5",
+    "pdos-next/web/src/lib/project-pilots.test.mjs": "1a16b19f6d051a89f4a55c9d115cbb66c70c4b10722945f3910df843968cc188",
+    "pdos-next/web/src/components/projects/project-pilots.tsx": "dfd98b6feee50418331069d69a9575ccc644136c02bf1cab98c38f2869cd5886",
+    "pdos-next/web/src/components/projects/project-pilots.module.css": "a597bcfafc190808bd2b107e5af2d401b58a0ab43bdf95c101500ad7e81e7fab",
+    "pdos-next/web/src/components/projects/project-pilots.test.mjs": "8abee6239d115ead54e817b6f902a557a70d3b4da04412692322347dd3ebe3b7",
+    "pdos-next/web/src/components/projects/project-workspace.tsx": "281f03b6c805dd1d52dcdea841a93f6b5b51cd02b1956182b540c6e86b464a0a",
+    "pdos-next/web/src/components/projects/project-views.test.mjs": "17fbfbad7b812b4237019fd4741b2bec90f3887b84a159dfe7cabafd23463deb",
+    "pdos-next/server/tests/ui/test_project_pilots_projection_pg.py": "0a51132401d56b578141661d63228bcccb9a9ff0b272b5f10304b56bbb3acd68"
+  },
+  "owned_sources_match_checked_candidates": true,
+  "frontend_inputs": 459,
+  "frontend_provenance": {
+    "source": "current frontend including committed external wait and G0 risk followup plus prior UI and new pilot statistics pane",
+    "head": "34f09790ea1db54eb6a70215b1f780fa9cb11119",
+    "excluded_active_knowledge_files": [
+      "src/components/knowledge/knowledge-experience.tsx",
+      "src/components/knowledge/knowledge-experience.test.mjs",
+      "src/components/knowledge/knowledge-experience.module.css",
+      "src/lib/knowledge-experience.ts",
+      "src/lib/knowledge-experience.test.ts",
+      "src/app/api/knowledge-experience-route.test.mjs"
+    ],
+    "head_restored_check_copy_files": [
+      "src/components/workspace.tsx",
+      "src/app/api/[...path]/route.ts"
+    ],
+    "prior_report_sha256": "a2e286f6562bf9167704be364b65d3dad43a862fee7b6484b1f79b3c72abd872",
+    "scope": "UI/committed S5 integration plus project pilot records; active knowledge excluded without editing working tree"
+  },
+  "frontend_source_changes_since_copy": [
+    "src/components/workspace.tsx",
+    "src/app/api/[...path]/route.ts"
+  ],
+  "backend_checked_source_changes": [],
+  "initial_contract_changes": [
+    "pdos-next/web/src/components/projects/project-workspace.tsx"
+  ],
+  "initial_contract_change_explanation": "Only root-owned workspace integration changed; native domain/shared reader and initial active BFF state unchanged. Check copy restores committed BFF/workspace to isolate active knowledge.",
+  "dto_dependency_changes": [],
+  "backend_runtime_changes_during_check": [
+    "pdos_next/domain/knowledge/service.py"
+  ],
+  "backend_runtime_changes_since_snapshot": [
+    "pdos_next/domain/knowledge/service.py"
+  ],
+  "checks": {
+    "frontend_tests": 192,
+    "new_actual_pg_cases": 1,
+    "actual_project_gets": 7,
+    "per_phase_count_models": 37,
+    "actual_dto_checks": 27,
+    "actual_dto_offline_calls": 7,
+    "lint": 0,
+    "build": 0,
+    "typecheck": 0
+  },
+  "database": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0799"
+  },
+  "initial_failure": "initial-migration-contention/backend-tests.log",
+  "single_retry_condition": "migration-state-after-frontend.json",
+  "metadata_guard_refusal": "metadata-check-initial-error.json",
+  "report_sha256": {
+    "initial-contract.json": "f7bb230c3ebe04a4d4a05b5724fbd44c03b38c352d26ba97ae8194a53d5332e8",
+    "result.md": "f787a67a3176a84e43db1cc90972af474f7c65105ea4485a626709d15d4fa68d",
+    "lint.log": "e7980c93ddd0f54b278a0786d9120d897dec9dc6255afca53c5129203cd9e5a1",
+    "pg-http-responses.json": "419abe2ee29c63fbde6a2152dd097e65e3b265c0100aa460e7ec4df15fa0d1a7",
+    "candidate.json": "89ebc5eb150b78f30fde2002ce1baf1fbeedd63651012355e7e1b483c987aa57",
+    "typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "initial-static-check-notes.json": "cb2d4376eff898d18591c73cf2437336317a5d73e416f1637aca37a3d1c33041",
+    "backend-tests.log": "c0c9b5f48b15479d4667a225b02c684d429250bad4998f02aca78c2bf9f79655",
+    "database-contention.json": "932e6e40284bd2f226e4c0515d850942b59ce5259a87064c61e48ba122d48d45",
+    "retry-wait-metadata.json": "c34c2ffdf3dba5f968dcfdebf3f52f3ab0def1b8a73f806e3cd02f34dfd78954",
+    "frontend-tests.log": "66398b2a5b82f1a0671069761262a11d1458bf3df25228fca48895d2493756bf",
+    "backend-candidate.json": "caf38252bb0cccff37926db414025e8ad8fd478a02689b5fb9bcb62f027e2f1e",
+    "metadata-check-initial-error.json": "21389d664b26b553c4efbc75d4e0ff638f2ab82c5aff49eb3ce67334b39d5a3a",
+    "migration-state-after-frontend.json": "da60dcaf88147cd7b6e8fd47dec29b9e77b2f5823d952ffd19da9ce23254dbfb",
+    "actual-dto-validation.json": "ab6497f0ffdcbf6552314c1fa41b6f778a3cdfdd5cd05bc7a157f2944370ee5f",
+    "build.log": "42712476d9c72fac085b21001a758e997dfbeeb9db8c4cefe1e9ae6bde5a059a"
+  },
+  "not_exercised": [
+    "actual cursor pagination, per-unit observations or null count records",
+    "actual BFF requests/actual DTO component SSR/browser/320px/light-dark checks",
+    "active knowledge delivery and whole-working-tree acceptance",
+    "stage health/templates/freezes, true ToolTrial and current maturity/qualification",
+    "previous denied upload/new Run and oversized JSON 413 readback",
+    "real models/data egress/golden-case/push/deployment/production/performance sampling"
+  ]
+}

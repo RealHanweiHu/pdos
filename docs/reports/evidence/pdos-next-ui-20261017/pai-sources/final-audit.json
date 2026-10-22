@@ -1,0 +1,47 @@
+{
+  "git_head": "555aa1ae56eaefbd3d3bcfa526c6d65b893a1227",
+  "web_inputs": 350,
+  "web_changes_since_final_freeze": [],
+  "backend_runtime_changes_since_pg": [
+    "pdos_next/domain/manufacturing_trials/native_statistics_owner.py",
+    "pdos_next/domain/manufacturing_trials/native_service.py",
+    "pdos_next/domain/manufacturing_trials/native_material_owner.py",
+    "pdos_next/domain/manufacturing_baseline/publication_service.py"
+  ],
+  "models_called": false,
+  "database_migrated": false,
+  "committed": false,
+  "pushed": false,
+  "stage_acceptance": false,
+  "performance_sampling": false,
+  "synthetic_scanner_only": true,
+  "source_view_sha256": "6601d038eab9e2595a858395a2c76b9cb6f6ff9e86710ab26e134c3d8aab8883",
+  "css_width_repair_after_initial_build": true,
+  "final_counts": {
+    "agent_sessions": 2,
+    "agent_runs": 2,
+    "agent_run_events": 2,
+    "agent_tool_calls": 0,
+    "agent_run_inputs": 0,
+    "audit_entries": 7,
+    "action_receipts": 7,
+    "outbox_events": 7,
+    "request_keys": 5,
+    "artifact_versions": 3,
+    "uploaded_originals": 2
+  },
+  "checks": [
+    {
+      "name": "lint",
+      "exit_code": 0
+    },
+    {
+      "name": "build",
+      "exit_code": 0
+    },
+    {
+      "name": "typecheck",
+      "exit_code": 0
+    }
+  ]
+}

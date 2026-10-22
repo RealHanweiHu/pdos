@@ -1,0 +1,18 @@
+{
+  "scope": "readonly current project commitment presentation, no new business command or schema",
+  "inputs": {
+    "pdos-next/web/src/components/projects/project-workspace.tsx": "eb1a1dc81465fb77daf2fba804e2af61cb96aa09d12c48c39eed7db7365e50fe",
+    "pdos-next/web/src/lib/project-work.ts": "64bd5c26048ed3b0f5e11b005d398b327e855a6df02c808d1438d6e58f6d955b",
+    "pdos-next/server/pdos_next/domain/work_management/views.py": "7d26feb85619bb215e2f8616f0b031e6491bb7407eed7a83a6b663cb8124648d",
+    "pdos-next/server/pdos_next/domain/work_management/schemas.py": "485914c4cc53687497c0ed57ca97dbaf326e6b76363050c0fe058b5a0a7010ab",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "19fdf134fee64268ab7d796ab509ab04d9acf5b8b8a72347475f82b2831d3f99"
+  },
+  "browser_gate_preserved": {
+    "origin": "http://127.0.0.1:55210",
+    "user_denied": true,
+    "no_new_authorization": true
+  },
+  "database_checks_this_closure": false,
+  "models_called": false,
+  "performance_sampling": false
+}

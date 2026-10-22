@@ -1,0 +1,7 @@
+{
+  "exit_code": 0,
+  "source_sha256": {
+    "src/components/my-work-promises.tsx": "b805d055e65b8f9fdaf8d457063a9839ae41b46fbbd7681fc493180405f6287e",
+    "src/components/my-work-promises.test.mjs": "7b552dd126256684e8139c17b00a6bcb237b0488aca6e8f8e4d287e6747271d8"
+  }
+}

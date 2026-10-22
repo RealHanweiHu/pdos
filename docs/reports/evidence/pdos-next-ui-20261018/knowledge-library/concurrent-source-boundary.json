@@ -1,0 +1,28 @@
+{
+  "frontend_differences_from_check_copy": [
+    "src/lib/build-change-orders-view.test.ts",
+    "src/lib/build-change-orders-view.ts",
+    "src/components/builds/build-change-orders.tsx",
+    "src/components/builds/build-change-orders.test.mjs",
+    "src/components/builds/change-source-material.tsx",
+    "src/app/api/[...path]/route.test.ts",
+    "src/app/api/[...path]/route.ts"
+  ],
+  "active_files_excluded_from_check_copy": [
+    "src/components/builds/build-change-completion.tsx",
+    "src/components/builds/build-change-completion.test.mjs",
+    "src/lib/build-change-completion-view.ts",
+    "src/lib/build-change-completion-view.test.ts"
+  ],
+  "excluded_files_currently_present": [
+    "src/components/builds/build-change-completion.tsx",
+    "src/components/builds/build-change-completion.test.mjs",
+    "src/lib/build-change-completion-view.ts",
+    "src/lib/build-change-completion-view.test.ts"
+  ],
+  "runtime_source_changes_after_completed_pg": [
+    "pdos_next/change_publication_finalization.py"
+  ],
+  "backend_changes_during_pg": [],
+  "scope": "Other chat native change completion remains active. Shared files restored only in isolated check copy; current working tree preserved. New knowledge UI, reader and PG test remain frozen. No whole-current-tree pass is claimed."
+}

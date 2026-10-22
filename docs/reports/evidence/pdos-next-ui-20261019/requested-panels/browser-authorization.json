@@ -1,0 +1,35 @@
+{
+  "target": "http://127.0.0.1:55210",
+  "browser": "Codex in-app browser",
+  "authorization_available": false,
+  "authorization_status": "not_confirmed",
+  "events": [
+    {
+      "action": "initial open",
+      "result": "net::ERR_CONNECTION_REFUSED",
+      "local_listener": false
+    },
+    {
+      "action": "restore dedicated API and Next preview",
+      "result": "API startup complete; Next ready; local listener verified"
+    },
+    {
+      "action": "read original error tab / reload",
+      "result": "Blocked browser navigation by Browser Use URL policy",
+      "blocked_scheme": "data:text/html"
+    },
+    {
+      "action": "one same-tab goto original localhost URL after documentation check",
+      "result": "Blocked browser navigation by Browser Use URL policy",
+      "blocked_scheme": "data:text/html"
+    }
+  ],
+  "stopped": true,
+  "user_denied_localhost_this_turn": false,
+  "repeated_recovery_attempt_after_first_policy_denial": true,
+  "application_dom_obtained": false,
+  "screenshots_taken": 0,
+  "file_chooser_used": false,
+  "application_requests": 0,
+  "resume_condition": "Browser access/active tab state must change: localhost origin enabled and a normal application tab available; then restore dedicated preview. Do not repeat unchanged probes or switch browser/port to evade the denial."
+}

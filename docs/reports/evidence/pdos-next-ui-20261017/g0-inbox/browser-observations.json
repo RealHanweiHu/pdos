@@ -1,0 +1,27 @@
+{
+  "actual_api": true,
+  "response_proxy": false,
+  "reviewer": "synthetic named reviewer",
+  "queue_items": 2,
+  "queue_total": 2,
+  "decision_filter_checked": true,
+  "proposal_navigation_checked": true,
+  "fixed_review_notice_checked": true,
+  "named_decision_ui_checked_without_submission": true,
+  "same_scope_refresh_checked": true,
+  "desktop": {
+    "documentWidth": 1280,
+    "queueWidth": 676,
+    "width": 1280
+  },
+  "narrow": {
+    "documentWidth": 320,
+    "queueWidth": 288,
+    "width": 320
+  },
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "screenshots": "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-g0-inbox-20261017"
+}

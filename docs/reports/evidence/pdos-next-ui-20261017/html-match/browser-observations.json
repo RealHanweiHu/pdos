@@ -1,0 +1,68 @@
+{
+  "status": "passed_for_this_frontend_checkpoint",
+  "scope": "HTML布局+当前实际读集，不包含未接入业务能力及正式阶段验收",
+  "cases": [
+    {
+      "case": "桌面1280×900亮暗主题及原稿结构对照",
+      "result": "passed"
+    },
+    {
+      "case": "列表/看板/时间轴同源切换，文本过滤后1条、清除后2条",
+      "result": "passed"
+    },
+    {
+      "case": "项目8标签及问题与变更链接保留category/product/project",
+      "result": "passed"
+    },
+    {
+      "case": "我的工作待答复卡、任务日期分组、通知运行流",
+      "result": "passed"
+    },
+    {
+      "case": "品类6标签、矩阵缺口提示、真实提案链接",
+      "result": "passed"
+    },
+    {
+      "case": "提案独立URL保留全局导航，点击项目回到根页面",
+      "result": "passed"
+    },
+    {
+      "case": "提案最终仅一个可见搜索入口，重复FAB为0，助手范围使用提案标题",
+      "result": "passed"
+    },
+    {
+      "case": "小Pai展开后260px历史、实际技能chip、线程和底部编辑器",
+      "result": "passed"
+    },
+    {
+      "case": "转后台后重开，原运行ID和后台回执仍可见，无POST",
+      "result": "passed"
+    },
+    {
+      "case": "320px项目/工作区/我的工作/品类/提案文档宽度均为320；表格局部横滚；对话线程可读",
+      "result": "passed"
+    },
+    {
+      "case": "移动抽屉打开/导航后关闭、暗色切换",
+      "result": "passed"
+    }
+  ],
+  "api_methods": {
+    "GET": 161
+  },
+  "non_get_requests": 0,
+  "database_operations": 0,
+  "model_calls": 0,
+  "preview": "http://127.0.0.1:55169/?area=work",
+  "screenshots": "output/playwright/pdos-html-match-20261017",
+  "final_screenshots": [
+    "final-my-work-dark.png",
+    "final-my-work-320-dark.png",
+    "final-category-320-dark.png",
+    "final-proposal-dark.png",
+    "after-proposal-320-dark.png",
+    "final-pai-run-dark.png",
+    "after-projects-dark.png",
+    "after-workspace-dark.png"
+  ]
+}

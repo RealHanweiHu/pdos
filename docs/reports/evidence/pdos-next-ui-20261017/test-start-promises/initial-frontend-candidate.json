@@ -1,0 +1,22 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "src/components/my-work.test.mjs",
+    "src/components/my-work-g0.test.mjs",
+    "src/components/my-work-promises.test.mjs",
+    "src/app/api/route-personal-test-start-promises.test.mjs"
+  ],
+  "exit_code": 0,
+  "source_sha256": {
+    "src/components/my-work.test.mjs": "a711f362149095c8a5973c0d6f1a41cdb933bd636662b8e4df8dd9cc1a0a0789",
+    "src/components/my-work-g0.test.mjs": "095d07fe30f7bbcefedd4834db52063f34efbb9987e19b3af8b5d0a3d1693123",
+    "src/components/my-work-promises.test.mjs": "e6137b9b8ba25f2138e11337c5e0133d3734dd07e0a45ddf560e77babb637003",
+    "src/app/api/route-personal-test-start-promises.test.mjs": "06f6c2ad016fc0b1a666c960f79e4fef3cd3de9f122b2f751bb4ebbd1350035e",
+    "src/components/my-work.tsx": "53644cb7d8724b57f17dc0d730f44fda1a49df3d62f3e83d7558a6aa122615b1",
+    "src/components/my-work-promises.tsx": "69757b0d213a866614d3f0fb09b20e52aec0e11c9921532443b5fc3d3d676982",
+    "src/components/my-work.module.css": "3a0d107364172b8d093a01be213e6dfd94539aa6b89e2e3c9fac8cb526408fb2",
+    "src/lib/personal-test-start-promises.ts": "df47205ad98803a32de4c5b1c623effc96c936be2d77afc5fcb2258e93068438",
+    "src/app/api/v1/personal/test-start-promises/route.ts": "aa4f430f518103524b8886ea972247aeff075c1de10ed228e605479201026280"
+  }
+}

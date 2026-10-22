@@ -1,0 +1,62 @@
+[
+  {
+    "checkboxes": [
+      {
+        "checked": true,
+        "height": 16,
+        "width": 16
+      },
+      {
+        "checked": true,
+        "height": 16,
+        "width": 16
+      }
+    ],
+    "document": 320,
+    "label": "selected-320-light",
+    "panel": 278,
+    "theme": "light",
+    "viewport": 320
+  },
+  {
+    "document": 1280,
+    "label": "selected-desktop-dark",
+    "panel": 737,
+    "theme": "dark",
+    "viewport": 1280
+  },
+  {
+    "document": 320,
+    "label": "selected-320-dark",
+    "panel": 278,
+    "theme": "dark",
+    "viewport": 320
+  },
+  {
+    "binding": 296,
+    "document": 320,
+    "label": "bindings-expanded-320-dark",
+    "text": "本次绑定来源 · 2\n重新核对来源\n\n以下是本次运行的固定绑定记录，不代表已完成解析或模型执行。\n\n合成已登记文本 · 绑定 v1\n\n当前来源可读。\n\n登记详情\n\n合成已解析原件 · 绑定 v1\n\n当前来源可读。\n\n登记详情\n\n资料状态：有效\n\n登记来源 5598cc51-f212-4c40-83e0-23853615211f · 版本 1\n\n原件：synthetic-original.txt · 版本 2\n\n解析状态：已登记解析结果 · 扫描状态：已记录扫描通过\n\n原始状态记录\n\n原件 2debcd2a-1d78-454f-8562-786e2f7b9ac7",
+    "theme": "dark",
+    "viewport": 320
+  },
+  {
+    "binding": 755,
+    "document": 1280,
+    "label": "bindings-desktop-light",
+    "theme": "light",
+    "viewport": 1280
+  },
+  {
+    "binding": 296,
+    "document": 320,
+    "label": "bindings-expanded-320-light",
+    "theme": "light",
+    "viewport": 320
+  },
+  {
+    "boundSources": true,
+    "label": "reopen-same-run",
+    "sameRun": true
+  }
+]

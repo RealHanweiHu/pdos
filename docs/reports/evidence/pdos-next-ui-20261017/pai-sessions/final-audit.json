@@ -1,0 +1,40 @@
+{
+  "web_inputs": 335,
+  "owned_ui_changes_after_build": [],
+  "backend_scope_changes_after_recheck": [],
+  "concurrent_web_changes_after_build": [
+    "src/components/manufacturing-publication/manufacturing-publication.test.mjs",
+    "src/components/manufacturing-publication/manufacturing-publication.tsx"
+  ],
+  "concurrent_new_web_inputs": [],
+  "concurrent_runtime_changes_after_recheck": [],
+  "concurrent_new_runtime_inputs": [],
+  "concurrent_changes_included_in_pass_claim": false,
+  "distinct_backend_pure_checks": 8,
+  "distinct_pg_cases": 7,
+  "initial_pg": {
+    "passed": 6,
+    "failed_new_fixture": 1
+  },
+  "fixture_recheck": {
+    "passed": 1,
+    "production_reader_changed": false
+  },
+  "frontend_checks": 92,
+  "actual_bff_checks": 14,
+  "preview_domain_request_counts": {
+    "GET": 254,
+    "POST": 2
+  },
+  "continuation_post_count": 1,
+  "cancel_post_count": 1,
+  "reload_post_count_delta": 0,
+  "single_new_run_same_session": true,
+  "models_called": false,
+  "migrations_executed": false,
+  "new_or_expanded_permissions": false,
+  "response_proxy": false,
+  "formal_stage_acceptance": false,
+  "performance_sampling": false,
+  "automation_remains_active": true
+}

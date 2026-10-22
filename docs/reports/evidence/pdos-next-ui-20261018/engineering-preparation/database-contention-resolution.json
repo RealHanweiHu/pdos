@@ -1,0 +1,14 @@
+{
+  "initial_attempt": "initial-database-contention/backend-tests.log",
+  "initial_stage": "pytest session fixture engine connect; before test synthetic records",
+  "reason": "remaining connection slots reserved for superuser",
+  "change_before_retry": "ignored central verification script disposes its own safety/head engine before pytest; explicit target/marker/head checks retained",
+  "other_sessions_terminated": false,
+  "database_restarted": false,
+  "retry_count": 1,
+  "retry_exit_code": 0,
+  "retry_evidence": "backend-tests.log",
+  "retry_duration_seconds": 42.03,
+  "retry_guard_disposal_recorded": true,
+  "production_changes_for_retry": false
+}

@@ -1,0 +1,28 @@
+...F.................................................................... [ 22%]
+........................................................................ [ 45%]
+........................................................................ [ 68%]
+........................................................................ [ 90%]
+.............................                                            [100%]
+=================================== FAILURES ===================================
+_____________ test_no_description_is_generated_from_the_name_alone _____________
+
+    def test_no_description_is_generated_from_the_name_alone():
+        for item in default_registry().definitions("main"):
+            description = item["description"]
+            # Either a written note, or an explicit statement that it is unwritten.
+            assert description.rstrip("。") != item["name"]
+            assert len(description) > len(item["name"]) + 4
+            if item["name"] not in registry() or not registry()[item["name"]].written:
+>               assert "何时调用尚未登记" in description or "；" in description
+E               AssertionError: assert ('何时调用尚未登记' in '调用获授权的 MCP 只读工具，由隔离子任务返回有原文依据的行。' or '；' in '调用获授权的 MCP 只读工具，由隔离子任务返回有原文依据的行。')
+
+tests/agent_kernel/test_command_usage.py:38: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_session_presentation.py::test_search_compiles_with_current_actual_parents_and_project_before_pagination
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/session_presentation.py:122: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    .distinct(presentation.session_id)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_command_usage.py::test_no_description_is_generated_from_the_name_alone
+1 failed, 316 passed, 1 warning in 4.11s

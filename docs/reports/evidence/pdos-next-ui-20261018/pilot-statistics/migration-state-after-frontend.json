@@ -1,0 +1,12 @@
+{
+  "host": "127.0.0.1",
+  "port": 64245,
+  "database": "pdos_test",
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "head": "s0_0799",
+  "other_access_exclusive_locks": 0,
+  "read_only": true,
+  "own_guard_disposed": true,
+  "initial_head": "s0_0798",
+  "condition_changed": true
+}

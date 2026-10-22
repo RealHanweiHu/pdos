@@ -1,0 +1,252 @@
+{
+  "session": {
+    "name": "Synthetic owner",
+    "principal_id": "a2e46928-098b-402f-a88e-dfe7f255b8a8",
+    "model_available": false
+  },
+  "categories": [
+    {
+      "id": "ae6c185d-26fb-4c7e-9330-ec795faee684",
+      "key": "category-e5ae98f8b9b24047a75033bb57371c8b",
+      "name": "汽车充气泵",
+      "purpose": "隔离合成品类",
+      "revision": 1,
+      "status": "active",
+      "capabilities": {
+        "product_management": false
+      }
+    }
+  ],
+  "category": {
+    "list": {
+      "version": "agent-session-list/v1",
+      "principal_id": "a2e46928-098b-402f-a88e-dfe7f255b8a8",
+      "scope": {
+        "category_id": "ae6c185d-26fb-4c7e-9330-ec795faee684",
+        "proposal_id": null
+      },
+      "as_of": "2026-10-17T19:49:14.948795+00:00",
+      "items": [
+        {
+          "session_id": "2279642f-48a9-4088-8a18-8b839f0dc642",
+          "revision": 1,
+          "created_at": "2026-10-17T19:49:13.967198+00:00",
+          "scope": {
+            "category_id": "ae6c185d-26fb-4c7e-9330-ec795faee684",
+            "product_id": null,
+            "proposal_id": null
+          },
+          "run_count": 2,
+          "latest_run": {
+            "run_id": "467e3769-626d-4bb9-ba82-332a1533152b",
+            "goal": "合成后续目标：继续核对同一原工作的未知项。",
+            "status": "queued",
+            "error_code": null,
+            "created_at": "2026-10-17T19:49:14.091969+00:00",
+            "continued_from_id": "0faebe33-ca6e-4140-853a-c58e5a721146",
+            "reverted": false
+          },
+          "matched_run": null
+        }
+      ],
+      "next_cursor": null
+    },
+    "runs": {
+      "version": "agent-session-runs/v1",
+      "principal_id": "a2e46928-098b-402f-a88e-dfe7f255b8a8",
+      "scope": {
+        "category_id": "ae6c185d-26fb-4c7e-9330-ec795faee684",
+        "proposal_id": null
+      },
+      "as_of": "2026-10-17T19:49:14.993312+00:00",
+      "session": {
+        "session_id": "2279642f-48a9-4088-8a18-8b839f0dc642",
+        "revision": 1,
+        "created_at": "2026-10-17T19:49:13.967198+00:00",
+        "scope": {
+          "category_id": "ae6c185d-26fb-4c7e-9330-ec795faee684",
+          "product_id": null,
+          "proposal_id": null
+        },
+        "run_count": 2
+      },
+      "items": [
+        {
+          "run_id": "467e3769-626d-4bb9-ba82-332a1533152b",
+          "goal": "合成后续目标：继续核对同一原工作的未知项。",
+          "status": "queued",
+          "error_code": null,
+          "created_at": "2026-10-17T19:49:14.091969+00:00",
+          "continued_from_id": "0faebe33-ca6e-4140-853a-c58e5a721146",
+          "reverted": false,
+          "conversation": {
+            "previous_run_id": "0faebe33-ca6e-4140-853a-c58e5a721146",
+            "next_run_id": null
+          }
+        },
+        {
+          "run_id": "0faebe33-ca6e-4140-853a-c58e5a721146",
+          "goal": "合成原目标：先核对适用工况。",
+          "status": "cancelled",
+          "error_code": null,
+          "created_at": "2026-10-17T19:49:13.974119+00:00",
+          "continued_from_id": null,
+          "reverted": false,
+          "conversation": {
+            "previous_run_id": null,
+            "next_run_id": "467e3769-626d-4bb9-ba82-332a1533152b"
+          }
+        }
+      ],
+      "next_cursor": null
+    },
+    "chain": {
+      "original": {
+        "run_id": "0faebe33-ca6e-4140-853a-c58e5a721146",
+        "session_id": "2279642f-48a9-4088-8a18-8b839f0dc642",
+        "status": "queued",
+        "continued_from_id": null,
+        "execution_state": "durable_runtime_unavailable"
+      },
+      "original_request": {
+        "goal": "合成原目标：先核对适用工况。",
+        "idempotency_key": "60466576-52e3-4c16-b5f5-dab9fadf22d3"
+      },
+      "cancel": {
+        "run_id": "0faebe33-ca6e-4140-853a-c58e5a721146",
+        "status": "cancelled",
+        "cancel_epoch": 1,
+        "held_tokens": 0,
+        "workflow_cancel_pending": true
+      },
+      "continued": {
+        "run_id": "467e3769-626d-4bb9-ba82-332a1533152b",
+        "session_id": "2279642f-48a9-4088-8a18-8b839f0dc642",
+        "status": "queued",
+        "continued_from_id": "0faebe33-ca6e-4140-853a-c58e5a721146",
+        "execution_state": "durable_runtime_unavailable"
+      },
+      "continue_request": {
+        "goal": "合成后续目标：继续核对同一原工作的未知项。",
+        "idempotency_key": "3f02506f-c648-4a37-99f6-7c896604c6a5",
+        "continue_from_run_id": "0faebe33-ca6e-4140-853a-c58e5a721146"
+      }
+    }
+  },
+  "personal": {
+    "list": {
+      "version": "agent-session-list/v1",
+      "principal_id": "a2e46928-098b-402f-a88e-dfe7f255b8a8",
+      "scope": {
+        "category_id": null,
+        "proposal_id": null
+      },
+      "as_of": "2026-10-17T19:49:15.068949+00:00",
+      "items": [
+        {
+          "session_id": "39926f7a-0af8-4728-880e-f79cb756f87b",
+          "revision": 1,
+          "created_at": "2026-10-17T19:49:14.136848+00:00",
+          "scope": {
+            "category_id": null,
+            "product_id": null,
+            "proposal_id": null
+          },
+          "run_count": 2,
+          "latest_run": {
+            "run_id": "674f4be9-b13c-4164-9c82-fdf676728a7e",
+            "goal": "合成后续目标：继续核对同一原工作的未知项。",
+            "status": "queued",
+            "error_code": null,
+            "created_at": "2026-10-17T19:49:14.254299+00:00",
+            "continued_from_id": "cd3fe7d9-20fe-4d2e-81da-35b309481976",
+            "reverted": false
+          },
+          "matched_run": null
+        }
+      ],
+      "next_cursor": null
+    },
+    "runs": {
+      "version": "agent-session-runs/v1",
+      "principal_id": "a2e46928-098b-402f-a88e-dfe7f255b8a8",
+      "scope": {
+        "category_id": null,
+        "proposal_id": null
+      },
+      "as_of": "2026-10-17T19:49:15.106236+00:00",
+      "session": {
+        "session_id": "39926f7a-0af8-4728-880e-f79cb756f87b",
+        "revision": 1,
+        "created_at": "2026-10-17T19:49:14.136848+00:00",
+        "scope": {
+          "category_id": null,
+          "product_id": null,
+          "proposal_id": null
+        },
+        "run_count": 2
+      },
+      "items": [
+        {
+          "run_id": "674f4be9-b13c-4164-9c82-fdf676728a7e",
+          "goal": "合成后续目标：继续核对同一原工作的未知项。",
+          "status": "queued",
+          "error_code": null,
+          "created_at": "2026-10-17T19:49:14.254299+00:00",
+          "continued_from_id": "cd3fe7d9-20fe-4d2e-81da-35b309481976",
+          "reverted": false,
+          "conversation": {
+            "previous_run_id": "cd3fe7d9-20fe-4d2e-81da-35b309481976",
+            "next_run_id": null
+          }
+        },
+        {
+          "run_id": "cd3fe7d9-20fe-4d2e-81da-35b309481976",
+          "goal": "合成原目标：先核对适用工况。",
+          "status": "cancelled",
+          "error_code": null,
+          "created_at": "2026-10-17T19:49:14.144103+00:00",
+          "continued_from_id": null,
+          "reverted": false,
+          "conversation": {
+            "previous_run_id": null,
+            "next_run_id": "674f4be9-b13c-4164-9c82-fdf676728a7e"
+          }
+        }
+      ],
+      "next_cursor": null
+    },
+    "chain": {
+      "original": {
+        "run_id": "cd3fe7d9-20fe-4d2e-81da-35b309481976",
+        "session_id": "39926f7a-0af8-4728-880e-f79cb756f87b",
+        "status": "queued",
+        "continued_from_id": null,
+        "execution_state": "durable_runtime_unavailable"
+      },
+      "original_request": {
+        "goal": "合成原目标：先核对适用工况。",
+        "idempotency_key": "4b6e2475-e2ac-4659-929c-712dec8ce773"
+      },
+      "cancel": {
+        "run_id": "cd3fe7d9-20fe-4d2e-81da-35b309481976",
+        "status": "cancelled",
+        "cancel_epoch": 1,
+        "held_tokens": 0,
+        "workflow_cancel_pending": true
+      },
+      "continued": {
+        "run_id": "674f4be9-b13c-4164-9c82-fdf676728a7e",
+        "session_id": "39926f7a-0af8-4728-880e-f79cb756f87b",
+        "status": "queued",
+        "continued_from_id": "cd3fe7d9-20fe-4d2e-81da-35b309481976",
+        "execution_state": "durable_runtime_unavailable"
+      },
+      "continue_request": {
+        "goal": "合成后续目标：继续核对同一原工作的未知项。",
+        "idempotency_key": "913ac484-b4c2-4e1a-9980-3ff4a7c2dd3e",
+        "continue_from_run_id": "cd3fe7d9-20fe-4d2e-81da-35b309481976"
+      }
+    }
+  }
+}

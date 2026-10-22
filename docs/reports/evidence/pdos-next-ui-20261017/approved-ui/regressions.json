@@ -1,0 +1,39 @@
+[
+  {
+    "name": "libraries",
+    "exit_code": 0,
+    "command": [
+      "node",
+      "pdos-next/tools/s0_web_checkpoint.cjs",
+      "portfolio-reads",
+      "global-navigation",
+      "workspace-navigation"
+    ]
+  },
+  {
+    "name": "components",
+    "exit_code": 0,
+    "command": [
+      "node",
+      "--test",
+      "pdos-next/web/src/components/projects/project-views.test.mjs",
+      "pdos-next/web/src/components/projects/project-planning.test.mjs",
+      "pdos-next/web/src/components/xiaopai.test.mjs",
+      "pdos-next/web/src/components/category-create/components.test.mjs",
+      "pdos-next/web/src/components/pai/run-process.test.mjs",
+      "pdos-next/web/src/components/pai/run-continuation.test.mjs",
+      "pdos-next/web/src/components/pai/run-candidates.test.mjs"
+    ]
+  },
+  {
+    "name": "capabilities",
+    "exit_code": 0,
+    "command": [
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+      "-m",
+      "pytest",
+      "tests/test_category_capabilities_projection.py",
+      "-q"
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "source_sha256": {
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/api.py": "a90e6f4d13188d21b2d564ca997a7d7d21b55630739382bb89161700096028ac",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py": "8291048d8814908987484113f7ac4988db6b6b6e0f3fb5a62c9a690cec33b5e5",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/models.py": "8081bf54481125d9a3f048695d28e97e1106a31c0c8773c2a519b42659dd3c4e",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/schemas.py": "89260258191df29b6f3f4bc966db07b1910bea6dd56e9cba3bc03fab28f3253c",
+    "pdos-next/web/src/components/manufacturing-preparation/manufacturing-preparation-contract.ts": "2fc6fa24f90012a1fabd14b88442ad95bb90fe0aa5f10ccc77eb4fa2fae370fc",
+    "pdos-next/web/src/lib/project-activity.ts": "cf985cb6f3627e6cf9543ebc0b2371fc66a5552e221952c4a3943c3f49d4883a",
+    "pdos-next/web/src/components/projects/project-activity.tsx": "c077bd395c38a8801941b07cc3e641a714bf25d13c3c5529d17b37a796bb0ef6",
+    "pdos-next/web/src/components/projects/project-activity.module.css": "d10c7989f169903a57ead964d8218b1302c6add654f263ae2ff91b19f979b207",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "06c4d234f3d6c5792b5f2998bd361b5ee5f56e874412f814f76718c02aaa2f49"
+  },
+  "base_head": "e4cff2b",
+  "scope": "UI read-only project preparation and existing activity relocation; Run project binding remains with existing chat"
+}

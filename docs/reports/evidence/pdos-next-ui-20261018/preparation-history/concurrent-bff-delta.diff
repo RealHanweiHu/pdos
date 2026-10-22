@@ -1,0 +1,37 @@
+--- validated-copy/src/app/api/[...path]/route.ts
++++ concurrent-working-tree/src/app/api/[...path]/route.ts
+@@ -43,9 +43,22 @@
+ const isRecord = (value: unknown): value is Record<string, unknown> => !!value && typeof value === "object" && !Array.isArray(value);
+ const positiveRevision = (value: unknown): value is number => typeof value === "number" && Number.isSafeInteger(value) && value > 0 && value <= 2147483647;
+ function validSelectionMaterial(value: unknown): boolean {
+-  if (!isRecord(value) || Object.keys(value).some(key => !["change_id", "expected_change_revision", "source"].includes(key)) || typeof value.change_id !== "string" || !uuid.test(value.change_id) || !positiveRevision(value.expected_change_revision) || !isRecord(value.source)) return false;
+-  const source = value.source;
+-  return Object.keys(source).every(key => ["id", "revision", "kind", "position"].includes(key)) && typeof source.id === "string" && uuid.test(source.id) && positiveRevision(source.revision) && source.kind === "artifact" && typeof source.position === "string" && /^line:[1-9]\d*;quote_sha256:[0-9a-f]{64}$/.test(source.position);
++  if (!isRecord(value) || typeof value.change_id !== "string" || !uuid.test(value.change_id) || !positiveRevision(value.expected_change_revision)) return false;
++  if ("source" in value) {
++    if (Object.keys(value).some(key => !["change_id", "expected_change_revision", "source"].includes(key)) || !isRecord(value.source)) return false;
++    const source = value.source;
++    return Object.keys(source).every(key => ["id", "revision", "kind", "position"].includes(key)) && typeof source.id === "string" && uuid.test(source.id) && positiveRevision(source.revision) && source.kind === "artifact" && typeof source.position === "string" && /^line:[1-9]\d*;quote_sha256:[0-9a-f]{64}$/.test(source.position);
++  }
++  if (Object.keys(value).some(key => !["change_id", "expected_change_revision", "field_intent", "item", "status", "valid_until", "reason"].includes(key)) || !isRecord(value.field_intent)) return false;
++  const target = value.field_intent;
++  if (Object.keys(target).some(key => !["kind", "feedback", "executor_id"].includes(key)) || target.kind !== "field_intent" || !isRecord(target.feedback) || Object.keys(target.feedback).some(key => !["id", "revision"].includes(key)) || typeof target.feedback.id !== "string" || !uuid.test(target.feedback.id) || !positiveRevision(target.feedback.revision) || typeof target.executor_id !== "string" || !uuid.test(target.executor_id)) return false;
++  if (!["applicable", "not_applicable", "unknown"].includes(String(value.status)) || typeof value.reason !== "string" || value.reason.trim().length < 3 || value.reason.trim().length > 2000 || value.valid_until !== undefined && value.valid_until !== null && (typeof value.valid_until !== "string" || !/(?:Z|[+-]\d{2}:\d{2})$/.test(value.valid_until) || !Number.isFinite(Date.parse(value.valid_until)))) return false;
++  const item = value.item;
++  if (!isRecord(item) || Object.keys(item).some(key => !["id", "discipline", "selection", "intent", "verification_requirement"].includes(key)) || typeof item.id !== "string" || !uuid.test(item.id) || !["engineering", "manufacturing", "customer", "regulatory"].includes(String(item.discipline)) || typeof item.verification_requirement !== "string" || !item.verification_requirement.trim() || !isRecord(item.selection) || !isRecord(item.intent)) return false;
++  // The BFF checks a complete input shape; native references, applicability,
++  // authority and scope remain the domain owner's independent decisions.
++  const selection = item.selection, intent = item.intent;
++  return Object.keys(selection).every(key => ["objects", "units", "conditions", "sources"].includes(key)) && [selection.objects, selection.units, selection.conditions, selection.sources].every(rows => Array.isArray(rows) && rows.length > 0) && Object.keys(intent).every(key => ["id", "kind", "basis", "description"].includes(key)) && typeof intent.id === "string" && uuid.test(intent.id) && ["new_engineering_configuration", "new_manufacturing_configuration", "new_build", "new_test_run", "erp_mes_effectivity"].includes(String(intent.kind)) && Array.isArray(intent.basis) && intent.basis.length > 0 && typeof intent.description === "string" && !!intent.description.trim();
+ }
+ function validImplementationCapture(value: unknown): boolean {
+   if (!isRecord(value) || Object.keys(value).some(key => !["capture_key", "change_id", "expected_change_revision", "visibility", "order_id", "item_id", "source"].includes(key)) || typeof value.capture_key !== "string" || [...value.capture_key].length < 8 || [...value.capture_key].length > 160 || typeof value.order_id !== "string" || !uuid.test(value.order_id) || typeof value.item_id !== "string" || !uuid.test(value.item_id) || (value.visibility !== undefined && !["private", "category", "audience"].includes(String(value.visibility)))) return false;
+@@ -552,7 +565,7 @@
+     if (selectionMaterial) {
+       let value: unknown;
+       try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交所选变更与精确原文完整行。" }, { status: 422 }); }
+-      if (!validSelectionMaterial(value)) return Response.json({ code: "VALIDATION_FAILED", message: "此入口只读取明确变更版本与原文完整行中的实际材料。" }, { status: 422 });
++      if (!validSelectionMaterial(value)) return Response.json({ code: "VALIDATION_FAILED", message: "请提交明确变更版本的已登记材料，或完整的现场反馈未来计划。" }, { status: 422 });
+     }
+     if (implementationCapture) {
+       let value: unknown;

@@ -1,0 +1,122 @@
+{
+  "stages": 4,
+  "scope": {
+    "categoryId": "1840eff2-d4de-4085-b52e-682112757d75",
+    "productId": "888b76dd-d4e1-475d-b5b5-fae9a637f9f2",
+    "projectId": "98801941-67b8-4da4-9bab-fdd8170d6de4"
+  },
+  "rows": [
+    {
+      "stage": "started_no_results",
+      "projectId": "98801941-67b8-4da4-9bab-fdd8170d6de4",
+      "buildId": "18fb2317-b390-4d29-9eac-a7de6a32f4cf",
+      "buildRevision": 1,
+      "projectFixedRevision": 1,
+      "plannedQuantity": "10.00000000",
+      "runRevision": 2,
+      "fixedRequestRevision": 4,
+      "currentRequestRevision": 6,
+      "currentProjection": null,
+      "coverage": {
+        "sampleCount": 2,
+        "itemCount": 1,
+        "pairCount": 2,
+        "measuredPairCount": 0,
+        "missingPairCount": 2
+      },
+      "rawValues": [],
+      "unavailableCount": 0,
+      "hasMore": false,
+      "unindexedRunCount": 0
+    },
+    {
+      "stage": "partial_results",
+      "projectId": "98801941-67b8-4da4-9bab-fdd8170d6de4",
+      "buildId": "18fb2317-b390-4d29-9eac-a7de6a32f4cf",
+      "buildRevision": 1,
+      "projectFixedRevision": 1,
+      "plannedQuantity": "10.00000000",
+      "runRevision": 3,
+      "fixedRequestRevision": 4,
+      "currentRequestRevision": 7,
+      "currentProjection": {
+        "revision": 1,
+        "runRevision": 3,
+        "result": "indeterminate"
+      },
+      "coverage": {
+        "sampleCount": 2,
+        "itemCount": 1,
+        "pairCount": 2,
+        "measuredPairCount": 1,
+        "missingPairCount": 1
+      },
+      "rawValues": [
+        "10.0000"
+      ],
+      "unavailableCount": 0,
+      "hasMore": false,
+      "unindexedRunCount": 0
+    },
+    {
+      "stage": "complete_numeric_results",
+      "projectId": "98801941-67b8-4da4-9bab-fdd8170d6de4",
+      "buildId": "18fb2317-b390-4d29-9eac-a7de6a32f4cf",
+      "buildRevision": 1,
+      "projectFixedRevision": 1,
+      "plannedQuantity": "10.00000000",
+      "runRevision": 4,
+      "fixedRequestRevision": 4,
+      "currentRequestRevision": 8,
+      "currentProjection": {
+        "revision": 1,
+        "runRevision": 4,
+        "result": "pass"
+      },
+      "coverage": {
+        "sampleCount": 2,
+        "itemCount": 1,
+        "pairCount": 2,
+        "measuredPairCount": 2,
+        "missingPairCount": 0
+      },
+      "rawValues": [
+        "10.0000",
+        "10.0000"
+      ],
+      "unavailableCount": 0,
+      "hasMore": false,
+      "unindexedRunCount": 0
+    },
+    {
+      "stage": "reviewed_retaining_result_basis",
+      "projectId": "98801941-67b8-4da4-9bab-fdd8170d6de4",
+      "buildId": "18fb2317-b390-4d29-9eac-a7de6a32f4cf",
+      "buildRevision": 1,
+      "projectFixedRevision": 1,
+      "plannedQuantity": "10.00000000",
+      "runRevision": 5,
+      "fixedRequestRevision": 4,
+      "currentRequestRevision": 8,
+      "currentProjection": {
+        "revision": 1,
+        "runRevision": 4,
+        "result": "pass"
+      },
+      "coverage": {
+        "sampleCount": 2,
+        "itemCount": 1,
+        "pairCount": 2,
+        "measuredPairCount": 2,
+        "missingPairCount": 0
+      },
+      "rawValues": [
+        "10.0000",
+        "10.0000"
+      ],
+      "unavailableCount": 0,
+      "hasMore": false,
+      "unindexedRunCount": 0
+    }
+  ]
+}

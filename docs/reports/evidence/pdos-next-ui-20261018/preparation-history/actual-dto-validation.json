@@ -1,0 +1,1321 @@
+{
+  "version": "project-preparation-history-actual-dto-validation/v1",
+  "passed": true,
+  "input": "docs/reports/evidence/pdos-next-ui-20261018/preparation-history/pg-http-responses.json",
+  "input_sha256": "b85bbec9866424ed3ad8c0478cfdc16e01ccfd52cb7fbdbb37703506a73a5584",
+  "helper_sha256": "f2effe4ff15f385b8fd2c7cc1e408805da6428de7c11245a55be4e66605c6726",
+  "source_sha256": {
+    "pdos-next/web/src/lib/project-manufacturing-preparation.ts": "5f0bc7d6b867b5228751ea7f6992febe89c996e7d9c2c5fd9c76ddb904060c53",
+    "pdos-next/web/src/components/manufacturing-preparation/manufacturing-preparation-contract.ts": "2fc6fa24f90012a1fabd14b88442ad95bb90fe0aa5f10ccc77eb4fa2fae370fc",
+    "pdos-next/web/src/components/projects/project-manufacturing-preparation.tsx": "aded9719165cfe85f32923192f5fcb01c9091c7a09b0b3c75bd452539096408b",
+    "pdos-next/web/src/components/ui/button.tsx": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24",
+    "pdos-next/web/src/lib/utils.ts": "64fc84c1be627f0d586fb4ba64d824a1604f44282381f5bae68cdf86e10bb6ec",
+    "pdos-next/web/src/components/projects/project-manufacturing-preparation.module.css": "1504f1516b560f4e7361b46062a1dfd31169b7761413e4630fba25829b8f5e9f"
+  },
+  "network": false,
+  "database": false,
+  "browser": false,
+  "component_ssr": "real_PreparationVersion_offline_without_documents_or_api_props_only_css_identity_substitute",
+  "calls": [
+    {
+      "original_read": "baseline_fixed_children_before_revision/project_preparations",
+      "classification": "project_reader",
+      "method": "GET",
+      "path": "v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations?project_id=e978ef26-811e-40ac-9eb6-632501de0d59",
+      "status_code": 200,
+      "original_body_sha256": "2987ca761cd7d079b377a1ed3bdc6700a8c2a3cfd6434a7bfb86f5a4e76cd79f"
+    },
+    {
+      "original_read": "baseline_fixed_children_before_revision/fixed_wi_v1",
+      "classification": "project_reader",
+      "method": "GET",
+      "path": "v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/work_instruction/5a031424-b9c2-490c-b3ef-ca9b7917a09e?revision=1",
+      "status_code": 200,
+      "original_body_sha256": "7d350f322be54bbeab07541499d180e9b0da930a228b770791018857f7e1f0b6"
+    },
+    {
+      "original_read": "baseline_fixed_children_before_revision/fixed_cp_v1",
+      "classification": "project_reader",
+      "method": "GET",
+      "path": "v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/control_plan/89264e01-9d75-4810-b489-5a1bb0c102ea?revision=1",
+      "status_code": 200,
+      "original_body_sha256": "5e46a76c4783a686646241bc0ec42ed8479f3fe7dbd9d22d9ca6b12f91c1ed32"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/project_preparations",
+      "classification": "project_reader",
+      "method": "GET",
+      "path": "v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations?project_id=e978ef26-811e-40ac-9eb6-632501de0d59",
+      "status_code": 200,
+      "original_body_sha256": "8e0f8a9b91cbe5ce828a276ed3a752cc3fa5afa8c8ae3026df346abfc70df6c7"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/fixed_wi_v1",
+      "classification": "project_reader",
+      "method": "GET",
+      "path": "v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/work_instruction/5a031424-b9c2-490c-b3ef-ca9b7917a09e?revision=1",
+      "status_code": 200,
+      "original_body_sha256": "49be7109aae564e30037f2641fa7038b09149172b11d77f089fc56f23d1b17d2"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/fixed_cp_v1",
+      "classification": "project_reader",
+      "method": "GET",
+      "path": "v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/control_plan/89264e01-9d75-4810-b489-5a1bb0c102ea?revision=1",
+      "status_code": 200,
+      "original_body_sha256": "5e46a76c4783a686646241bc0ec42ed8479f3fe7dbd9d22d9ca6b12f91c1ed32"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/wrong_wi_revision",
+      "classification": "original_transport_only",
+      "method": "GET",
+      "path": "v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/work_instruction/5a031424-b9c2-490c-b3ef-ca9b7917a09e?revision=2",
+      "status_code": 409,
+      "original_body_sha256": "fa4e1375886db02fd4400d95cf336d3ade53635d5969f57086c24a0192bffa58"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/peer_private_wi",
+      "classification": "project_reader",
+      "method": "GET",
+      "path": "v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/work_instruction/5a031424-b9c2-490c-b3ef-ca9b7917a09e?revision=1",
+      "status_code": 403,
+      "original_body_sha256": "ca42deb2f1d8066ccdb0c57bcad6b2a6617b58c15fe5d7f0cdb037ea46bb6fae"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/foreign_baseline",
+      "classification": "original_transport_only",
+      "method": "GET",
+      "path": "v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/manufacturing_baseline/b64768b4-0539-4718-a674-500c77e08953?revision=1",
+      "status_code": 403,
+      "original_body_sha256": "32f31d9d9b7ebc3790399b13c2232f6c6eede6e00091f6c1ec91bba3d35f2420"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/invalid_history_cursor",
+      "classification": "project_reader",
+      "method": "GET",
+      "path": "v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations?project_id=e978ef26-811e-40ac-9eb6-632501de0d59&history_cursor=not-a-history-cursor",
+      "status_code": 422,
+      "original_body_sha256": "e9bf3ecf4d7fd6ac2693891ee838addcd2921d7332d2b135d970164d4661b5dc"
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/project_preparations",
+      "classification": "project_reader",
+      "method": "GET",
+      "path": "v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations?project_id=e978ef26-811e-40ac-9eb6-632501de0d59",
+      "status_code": 200,
+      "original_body_sha256": "8e3c6a71a7e618858150c218084767241cd106a6cac13a15011b99f6f5d72d24"
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/fixed_wi_v1",
+      "classification": "project_reader",
+      "method": "GET",
+      "path": "v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/work_instruction/5a031424-b9c2-490c-b3ef-ca9b7917a09e?revision=1",
+      "status_code": 200,
+      "original_body_sha256": "cb14390a1a27d7ac07422765d51366f510481b7fdc17d1292ad28ebddb7afc72"
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/fixed_cp_v1",
+      "classification": "project_reader",
+      "method": "GET",
+      "path": "v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/control_plan/89264e01-9d75-4810-b489-5a1bb0c102ea?revision=1",
+      "status_code": 200,
+      "original_body_sha256": "5e39e71b761c09b5425bbc280e4bb83c344aa09af9b5e65364ae3ceec4291ab0"
+    }
+  ],
+  "checks": [
+    {
+      "check": "actual_three_phase_eighteen_get_export",
+      "passed": true
+    },
+    {
+      "check": "frozen_reader_and_shared_parser",
+      "passed": true
+    },
+    {
+      "check": "actual_baseline_binding_source_baseline_fixed_children_before_revision",
+      "passed": true
+    },
+    {
+      "check": "original_current_history_and_coverage_preserved_baseline_fixed_children_before_revision/project_preparations",
+      "passed": true
+    },
+    {
+      "check": "original_fixed_binding_and_entire_child_preserved_baseline_fixed_children_before_revision/fixed_wi_v1",
+      "passed": true
+    },
+    {
+      "check": "original_fixed_binding_and_entire_child_preserved_baseline_fixed_children_before_revision/fixed_cp_v1",
+      "passed": true
+    },
+    {
+      "check": "recorded_counts_unchanged_baseline_fixed_children_before_revision",
+      "passed": true
+    },
+    {
+      "check": "actual_baseline_binding_source_wi_current_v2_baseline_children_still_v1",
+      "passed": true
+    },
+    {
+      "check": "original_current_history_and_coverage_preserved_wi_current_v2_baseline_children_still_v1/project_preparations",
+      "passed": true
+    },
+    {
+      "check": "original_fixed_binding_and_entire_child_preserved_wi_current_v2_baseline_children_still_v1/fixed_wi_v1",
+      "passed": true
+    },
+    {
+      "check": "real_unbound_current_v2_wi_current_v2_baseline_children_still_v1/fixed_wi_v2",
+      "passed": true
+    },
+    {
+      "check": "original_fixed_binding_and_entire_child_preserved_wi_current_v2_baseline_children_still_v1/fixed_cp_v1",
+      "passed": true
+    },
+    {
+      "check": "recorded_counts_unchanged_wi_current_v2_baseline_children_still_v1",
+      "passed": true
+    },
+    {
+      "check": "actual_baseline_binding_source_negative_source_fixture_withdrawn_fixed_children_retained",
+      "passed": true
+    },
+    {
+      "check": "original_current_history_and_coverage_preserved_negative_source_fixture_withdrawn_fixed_children_retained/project_preparations",
+      "passed": true
+    },
+    {
+      "check": "original_fixed_binding_and_entire_child_preserved_negative_source_fixture_withdrawn_fixed_children_retained/fixed_wi_v1",
+      "passed": true
+    },
+    {
+      "check": "real_unbound_current_v2_negative_source_fixture_withdrawn_fixed_children_retained/fixed_wi_v2",
+      "passed": true
+    },
+    {
+      "check": "original_fixed_binding_and_entire_child_preserved_negative_source_fixture_withdrawn_fixed_children_retained/fixed_cp_v1",
+      "passed": true
+    },
+    {
+      "check": "recorded_counts_unchanged_negative_source_fixture_withdrawn_fixed_children_retained",
+      "passed": true
+    },
+    {
+      "check": "actual_v1_remains_bound_while_wi_current_advances_to_v2",
+      "passed": true
+    },
+    {
+      "check": "negative_source_fixture_changes_only_current_source_status",
+      "passed": true
+    },
+    {
+      "check": "cross_project_post_remains_backend_evidence_only",
+      "passed": true
+    },
+    {
+      "check": "real_pure_ssr_original_body_baseline_fixed_children_before_revision/fixed_baseline",
+      "passed": true
+    },
+    {
+      "check": "real_pure_ssr_original_body_baseline_fixed_children_before_revision/fixed_wi_v1",
+      "passed": true
+    },
+    {
+      "check": "real_pure_ssr_original_body_baseline_fixed_children_before_revision/fixed_cp_v1",
+      "passed": true
+    },
+    {
+      "check": "real_pure_ssr_original_body_wi_current_v2_baseline_children_still_v1/fixed_baseline",
+      "passed": true
+    },
+    {
+      "check": "real_pure_ssr_original_body_wi_current_v2_baseline_children_still_v1/fixed_wi_v1",
+      "passed": true
+    },
+    {
+      "check": "real_pure_ssr_original_body_wi_current_v2_baseline_children_still_v1/fixed_wi_v2",
+      "passed": true
+    },
+    {
+      "check": "real_pure_ssr_original_body_wi_current_v2_baseline_children_still_v1/fixed_cp_v1",
+      "passed": true
+    },
+    {
+      "check": "real_pure_ssr_original_body_negative_source_fixture_withdrawn_fixed_children_retained/fixed_baseline",
+      "passed": true
+    },
+    {
+      "check": "real_pure_ssr_original_body_negative_source_fixture_withdrawn_fixed_children_retained/fixed_wi_v1",
+      "passed": true
+    },
+    {
+      "check": "real_pure_ssr_original_body_negative_source_fixture_withdrawn_fixed_children_retained/fixed_wi_v2",
+      "passed": true
+    },
+    {
+      "check": "real_pure_ssr_original_body_negative_source_fixture_withdrawn_fixed_children_retained/fixed_cp_v1",
+      "passed": true
+    },
+    {
+      "check": "all_original_indices_accounted_for_once_without_added_requests_or_mutations",
+      "passed": true
+    }
+  ],
+  "used_reads": [
+    {
+      "original_read": "baseline_fixed_children_before_revision/fixed_baseline",
+      "classification": "baseline_source_and_shared_parser_only",
+      "note": "Original baseline GET supplies its actual binding; not claimed as a child-reader API call",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/manufacturing_baseline/b64768b4-0539-4718-a674-500c77e08953",
+      "params": {
+        "revision": 1
+      },
+      "status_code": 200,
+      "original_body_sha256": "74fec8e939d0ed46e28ab60801f2d0a8bd125182ba537b0d7a09c0446aa64120"
+    },
+    {
+      "original_read": "baseline_fixed_children_before_revision/project_preparations",
+      "classification": "list_reader_success",
+      "note": "One complete new snapshot; no previous heads/history or count accumulation",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations",
+      "params": {
+        "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59"
+      },
+      "status_code": 200,
+      "original_body_sha256": "2987ca761cd7d079b377a1ed3bdc6700a8c2a3cfd6434a7bfb86f5a4e76cd79f"
+    },
+    {
+      "original_read": "baseline_fixed_children_before_revision/fixed_wi_v1",
+      "classification": "fixed_child_reader_success",
+      "note": "Exact original baseline binding and fixed GET, never a Current substitution",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/work_instruction/5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+      "params": {
+        "revision": 1
+      },
+      "status_code": 200,
+      "original_body_sha256": "7d350f322be54bbeab07541499d180e9b0da930a228b770791018857f7e1f0b6"
+    },
+    {
+      "original_read": "baseline_fixed_children_before_revision/fixed_cp_v1",
+      "classification": "fixed_child_reader_success",
+      "note": "Exact original baseline binding and fixed GET, never a Current substitution",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/control_plan/89264e01-9d75-4810-b489-5a1bb0c102ea",
+      "params": {
+        "revision": 1
+      },
+      "status_code": 200,
+      "original_body_sha256": "5e46a76c4783a686646241bc0ec42ed8479f3fe7dbd9d22d9ca6b12f91c1ed32"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/fixed_baseline",
+      "classification": "baseline_source_and_shared_parser_only",
+      "note": "Original baseline GET supplies its actual binding; not claimed as a child-reader API call",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/manufacturing_baseline/b64768b4-0539-4718-a674-500c77e08953",
+      "params": {
+        "revision": 1
+      },
+      "status_code": 200,
+      "original_body_sha256": "84c26b1b35a75c306caf65ba5850d7ff0ebeb73c47cd670c9bcefbfae9acaa90"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/project_preparations",
+      "classification": "list_reader_success",
+      "note": "One complete new snapshot; no previous heads/history or count accumulation",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations",
+      "params": {
+        "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59"
+      },
+      "status_code": 200,
+      "original_body_sha256": "8e0f8a9b91cbe5ce828a276ed3a752cc3fa5afa8c8ae3026df346abfc70df6c7"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/fixed_wi_v1",
+      "classification": "fixed_child_reader_success",
+      "note": "Exact original baseline binding and fixed GET, never a Current substitution",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/work_instruction/5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+      "params": {
+        "revision": 1
+      },
+      "status_code": 200,
+      "original_body_sha256": "49be7109aae564e30037f2641fa7038b09149172b11d77f089fc56f23d1b17d2"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/fixed_wi_v2",
+      "classification": "unbound_current_and_shared_parser_only",
+      "note": "Saved baseline binds v1, so this actual v2 GET must not be forced through a fabricated child binding",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/work_instruction/be14ab3f-17f8-4ffb-9696-4f0ac2ae0fb6",
+      "params": {
+        "revision": 2
+      },
+      "status_code": 200,
+      "original_body_sha256": "1cc298b2663e089f431052d1939f64f48917c4a005cd9339c7c761d88e8edc2d"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/fixed_cp_v1",
+      "classification": "fixed_child_reader_success",
+      "note": "Exact original baseline binding and fixed GET, never a Current substitution",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/control_plan/89264e01-9d75-4810-b489-5a1bb0c102ea",
+      "params": {
+        "revision": 1
+      },
+      "status_code": 200,
+      "original_body_sha256": "5e46a76c4783a686646241bc0ec42ed8479f3fe7dbd9d22d9ca6b12f91c1ed32"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/wrong_wi_revision",
+      "classification": "original_transport_error_only",
+      "note": "Revision 2 is not the baseline's real v1 binding; no fake binding is made",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/work_instruction/5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+      "params": {
+        "revision": 2
+      },
+      "status_code": 409,
+      "original_body_sha256": "fa4e1375886db02fd4400d95cf336d3ade53635d5969f57086c24a0192bffa58"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/peer_private_wi",
+      "classification": "fixed_child_reader_error",
+      "note": "Original peer private-child failure, no old text fallback",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/work_instruction/5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+      "params": {
+        "revision": 1
+      },
+      "status_code": 403,
+      "original_body_sha256": "ca42deb2f1d8066ccdb0c57bcad6b2a6617b58c15fe5d7f0cdb037ea46bb6fae"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/foreign_baseline",
+      "classification": "original_transport_error_only",
+      "note": "A baseline is not a WI/CP child; no fake child selection is made",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/manufacturing_baseline/b64768b4-0539-4718-a674-500c77e08953",
+      "params": {
+        "revision": 1
+      },
+      "status_code": 403,
+      "original_body_sha256": "32f31d9d9b7ebc3790399b13c2232f6c6eede6e00091f6c1ec91bba3d35f2420"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/invalid_history_cursor",
+      "classification": "list_reader_error",
+      "note": "Original invalid opaque cursor error, not successful cursor pagination",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations",
+      "params": {
+        "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+        "history_cursor": "not-a-history-cursor"
+      },
+      "status_code": 422,
+      "original_body_sha256": "e9bf3ecf4d7fd6ac2693891ee838addcd2921d7332d2b135d970164d4661b5dc"
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/fixed_baseline",
+      "classification": "baseline_source_and_shared_parser_only",
+      "note": "Original baseline GET supplies its actual binding; not claimed as a child-reader API call",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/manufacturing_baseline/b64768b4-0539-4718-a674-500c77e08953",
+      "params": {
+        "revision": 1
+      },
+      "status_code": 200,
+      "original_body_sha256": "84c26b1b35a75c306caf65ba5850d7ff0ebeb73c47cd670c9bcefbfae9acaa90"
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/project_preparations",
+      "classification": "list_reader_success",
+      "note": "One complete new snapshot; no previous heads/history or count accumulation",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations",
+      "params": {
+        "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59"
+      },
+      "status_code": 200,
+      "original_body_sha256": "8e3c6a71a7e618858150c218084767241cd106a6cac13a15011b99f6f5d72d24"
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/fixed_wi_v1",
+      "classification": "fixed_child_reader_success",
+      "note": "Exact original baseline binding and fixed GET, never a Current substitution",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/work_instruction/5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+      "params": {
+        "revision": 1
+      },
+      "status_code": 200,
+      "original_body_sha256": "cb14390a1a27d7ac07422765d51366f510481b7fdc17d1292ad28ebddb7afc72"
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/fixed_wi_v2",
+      "classification": "unbound_current_and_shared_parser_only",
+      "note": "Saved baseline binds v1, so this actual v2 GET must not be forced through a fabricated child binding",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/work_instruction/be14ab3f-17f8-4ffb-9696-4f0ac2ae0fb6",
+      "params": {
+        "revision": 2
+      },
+      "status_code": 200,
+      "original_body_sha256": "e049213cc51564d1fa027470637c6fc04410633079573f161bff80772b8bf5ba"
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/fixed_cp_v1",
+      "classification": "fixed_child_reader_success",
+      "note": "Exact original baseline binding and fixed GET, never a Current substitution",
+      "original_path": "/v1/categories/dccfc6e5-cf9d-4c31-962c-69942ecc09d2/products/2d96767f-1e83-4b34-8410-5fb3dc38163c/manufacturing-preparations/control_plan/89264e01-9d75-4810-b489-5a1bb0c102ea",
+      "params": {
+        "revision": 1
+      },
+      "status_code": 200,
+      "original_body_sha256": "5e39e71b761c09b5425bbc280e4bb83c344aa09af9b5e65364ae3ceec4291ab0"
+    }
+  ],
+  "unused_reads": [],
+  "results": [
+    {
+      "original_read": "baseline_fixed_children_before_revision/project_preparations",
+      "current": [
+        {
+          "id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+          "revision": 1,
+          "kind": "work_instruction",
+          "series_id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+          "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+          "process": {
+            "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+            "revision": 1
+          },
+          "operation_key": "assembly",
+          "is_current": true,
+          "source_status": "current",
+          "created_at": "2026-10-18T23:50:58.234771+00:00",
+          "receipt_id": "13e9b551-627a-4f8c-bd66-71f7d06c6721",
+          "body_sha256_for_integrity_only": "714c787021c00ae60c070f888ec8cc3d7c86440c0311eb9ef4fa6f98f124fa4b",
+          "saved_bindings": [],
+          "sources_sha256": "5359dc2480ba10a0429ec61f197c6eee542e6eea1632f5b99cd6c33a69932267",
+          "stored_gaps_sha256": "7d33af7ca196fe56665513572ffe1344629df1c8f5fd0ff92a314ef7e3976511",
+          "inventory": {
+            "decimal_strings": [],
+            "null_count": 8,
+            "displayed_null_count": 6
+          }
+        },
+        {
+          "id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+          "revision": 1,
+          "kind": "control_plan",
+          "series_id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+          "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+          "process": {
+            "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+            "revision": 1
+          },
+          "operation_key": "assembly",
+          "is_current": true,
+          "source_status": "current",
+          "created_at": "2026-10-18T23:51:04.269449+00:00",
+          "receipt_id": "0babca3a-b2d7-4e54-85e3-65122f86c037",
+          "body_sha256_for_integrity_only": "89c6dee08d43fd666ba6cbc0520f78cc028a1a254330c534aad5e3443e3831cc",
+          "saved_bindings": [],
+          "sources_sha256": "dbd7dd4c4fd065eee63514a645ae4ce3e25e9f4afcf932d9ad6abc3b08885080",
+          "stored_gaps_sha256": "887f113f5ab4d31bd0156ef854116d758f9acd114878044f6d82c030e880144c",
+          "inventory": {
+            "decimal_strings": [],
+            "null_count": 8,
+            "displayed_null_count": 6
+          }
+        },
+        {
+          "id": "b64768b4-0539-4718-a674-500c77e08953",
+          "revision": 1,
+          "kind": "manufacturing_baseline",
+          "series_id": "b64768b4-0539-4718-a674-500c77e08953",
+          "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+          "process": {
+            "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+            "revision": 1
+          },
+          "operation_key": null,
+          "is_current": true,
+          "source_status": "current",
+          "created_at": "2026-10-18T23:51:14.025603+00:00",
+          "receipt_id": "e4bd0741-048d-4454-8830-703cdd3af973",
+          "body_sha256_for_integrity_only": "f1420341a52d1879ce23aabcf6d7caab7ede41309d383a7ea7d5c5be6741bfe7",
+          "saved_bindings": [
+            {
+              "id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+              "kind": "work_instruction",
+              "revision": 1,
+              "body_sha256": "07be4e2fa68070f7753823e54be08e84297d812cb28a6278fdc89c5809e98be2",
+              "operation_key": "assembly"
+            },
+            {
+              "id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+              "kind": "control_plan",
+              "revision": 1,
+              "body_sha256": "ce4d8fa5086056cb16c1712cdcd820f4870c2ecb7f201c7b16fcbc7f5aa1073e",
+              "operation_key": "assembly"
+            }
+          ],
+          "sources_sha256": "512723d760a8d5d59f4987351931a12e397635e0609f9c446cc0ad1754934e99",
+          "stored_gaps_sha256": "bff37124b9bd538bb0e8180576d850c994b566926cff92e37904d61424910fb0",
+          "inventory": {
+            "decimal_strings": [],
+            "null_count": 4,
+            "displayed_null_count": 2
+          }
+        }
+      ],
+      "history": [],
+      "next_cursor": null,
+      "unavailable_count": 0
+    },
+    {
+      "original_read": "baseline_fixed_children_before_revision/fixed_wi_v1",
+      "binding": {
+        "id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+        "kind": "work_instruction",
+        "revision": 1,
+        "body_sha256": "07be4e2fa68070f7753823e54be08e84297d812cb28a6278fdc89c5809e98be2",
+        "operation_key": "assembly"
+      },
+      "document": {
+        "id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+        "revision": 1,
+        "kind": "work_instruction",
+        "series_id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+        "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+        "process": {
+          "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+          "revision": 1
+        },
+        "operation_key": "assembly",
+        "is_current": true,
+        "source_status": "current",
+        "created_at": "2026-10-18T23:50:58.234771+00:00",
+        "receipt_id": "13e9b551-627a-4f8c-bd66-71f7d06c6721",
+        "body_sha256_for_integrity_only": "714c787021c00ae60c070f888ec8cc3d7c86440c0311eb9ef4fa6f98f124fa4b",
+        "saved_bindings": [],
+        "sources_sha256": "5359dc2480ba10a0429ec61f197c6eee542e6eea1632f5b99cd6c33a69932267",
+        "stored_gaps_sha256": "7d33af7ca196fe56665513572ffe1344629df1c8f5fd0ff92a314ef7e3976511",
+        "inventory": {
+          "decimal_strings": [],
+          "null_count": 8,
+          "displayed_null_count": 6
+        }
+      },
+      "bodyHashVerification": "not_returned_by_endpoint"
+    },
+    {
+      "original_read": "baseline_fixed_children_before_revision/fixed_cp_v1",
+      "binding": {
+        "id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+        "kind": "control_plan",
+        "revision": 1,
+        "body_sha256": "ce4d8fa5086056cb16c1712cdcd820f4870c2ecb7f201c7b16fcbc7f5aa1073e",
+        "operation_key": "assembly"
+      },
+      "document": {
+        "id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+        "revision": 1,
+        "kind": "control_plan",
+        "series_id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+        "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+        "process": {
+          "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+          "revision": 1
+        },
+        "operation_key": "assembly",
+        "is_current": true,
+        "source_status": "current",
+        "created_at": "2026-10-18T23:51:04.269449+00:00",
+        "receipt_id": "0babca3a-b2d7-4e54-85e3-65122f86c037",
+        "body_sha256_for_integrity_only": "89c6dee08d43fd666ba6cbc0520f78cc028a1a254330c534aad5e3443e3831cc",
+        "saved_bindings": [],
+        "sources_sha256": "dbd7dd4c4fd065eee63514a645ae4ce3e25e9f4afcf932d9ad6abc3b08885080",
+        "stored_gaps_sha256": "887f113f5ab4d31bd0156ef854116d758f9acd114878044f6d82c030e880144c",
+        "inventory": {
+          "decimal_strings": [],
+          "null_count": 8,
+          "displayed_null_count": 6
+        }
+      },
+      "bodyHashVerification": "not_returned_by_endpoint"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/project_preparations",
+      "current": [
+        {
+          "id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+          "revision": 1,
+          "kind": "control_plan",
+          "series_id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+          "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+          "process": {
+            "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+            "revision": 1
+          },
+          "operation_key": "assembly",
+          "is_current": true,
+          "source_status": "current",
+          "created_at": "2026-10-18T23:51:04.269449+00:00",
+          "receipt_id": "0babca3a-b2d7-4e54-85e3-65122f86c037",
+          "body_sha256_for_integrity_only": "89c6dee08d43fd666ba6cbc0520f78cc028a1a254330c534aad5e3443e3831cc",
+          "saved_bindings": [],
+          "sources_sha256": "dbd7dd4c4fd065eee63514a645ae4ce3e25e9f4afcf932d9ad6abc3b08885080",
+          "stored_gaps_sha256": "887f113f5ab4d31bd0156ef854116d758f9acd114878044f6d82c030e880144c",
+          "inventory": {
+            "decimal_strings": [],
+            "null_count": 8,
+            "displayed_null_count": 6
+          }
+        },
+        {
+          "id": "b64768b4-0539-4718-a674-500c77e08953",
+          "revision": 1,
+          "kind": "manufacturing_baseline",
+          "series_id": "b64768b4-0539-4718-a674-500c77e08953",
+          "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+          "process": {
+            "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+            "revision": 1
+          },
+          "operation_key": null,
+          "is_current": true,
+          "source_status": "needs_recheck",
+          "created_at": "2026-10-18T23:51:14.025603+00:00",
+          "receipt_id": "e4bd0741-048d-4454-8830-703cdd3af973",
+          "body_sha256_for_integrity_only": "f1420341a52d1879ce23aabcf6d7caab7ede41309d383a7ea7d5c5be6741bfe7",
+          "saved_bindings": [
+            {
+              "id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+              "kind": "work_instruction",
+              "revision": 1,
+              "body_sha256": "07be4e2fa68070f7753823e54be08e84297d812cb28a6278fdc89c5809e98be2",
+              "operation_key": "assembly"
+            },
+            {
+              "id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+              "kind": "control_plan",
+              "revision": 1,
+              "body_sha256": "ce4d8fa5086056cb16c1712cdcd820f4870c2ecb7f201c7b16fcbc7f5aa1073e",
+              "operation_key": "assembly"
+            }
+          ],
+          "sources_sha256": "512723d760a8d5d59f4987351931a12e397635e0609f9c446cc0ad1754934e99",
+          "stored_gaps_sha256": "bff37124b9bd538bb0e8180576d850c994b566926cff92e37904d61424910fb0",
+          "inventory": {
+            "decimal_strings": [],
+            "null_count": 4,
+            "displayed_null_count": 2
+          }
+        },
+        {
+          "id": "be14ab3f-17f8-4ffb-9696-4f0ac2ae0fb6",
+          "revision": 2,
+          "kind": "work_instruction",
+          "series_id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+          "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+          "process": {
+            "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+            "revision": 1
+          },
+          "operation_key": "assembly",
+          "is_current": true,
+          "source_status": "current",
+          "created_at": "2026-10-18T23:51:25.496428+00:00",
+          "receipt_id": "2296f5db-0e59-4eb4-a810-9c7f5e0ff190",
+          "body_sha256_for_integrity_only": "b7e92c4fe8c67b97755d07cef7ee5698d8c914df3c4e825dff18bfcf8d1d9383",
+          "saved_bindings": [],
+          "sources_sha256": "b9e1c6170be096b0bbab161dcb0fa5107f82bff876a0212ff836175a18a08f3f",
+          "stored_gaps_sha256": "7d33af7ca196fe56665513572ffe1344629df1c8f5fd0ff92a314ef7e3976511",
+          "inventory": {
+            "decimal_strings": [],
+            "null_count": 6,
+            "displayed_null_count": 6
+          }
+        }
+      ],
+      "history": [
+        {
+          "id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+          "revision": 1,
+          "kind": "work_instruction",
+          "series_id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+          "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+          "process": {
+            "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+            "revision": 1
+          },
+          "operation_key": "assembly",
+          "is_current": false,
+          "source_status": "current",
+          "created_at": "2026-10-18T23:50:58.234771+00:00",
+          "receipt_id": "13e9b551-627a-4f8c-bd66-71f7d06c6721",
+          "body_sha256_for_integrity_only": "714c787021c00ae60c070f888ec8cc3d7c86440c0311eb9ef4fa6f98f124fa4b",
+          "saved_bindings": [],
+          "sources_sha256": "5359dc2480ba10a0429ec61f197c6eee542e6eea1632f5b99cd6c33a69932267",
+          "stored_gaps_sha256": "7d33af7ca196fe56665513572ffe1344629df1c8f5fd0ff92a314ef7e3976511",
+          "inventory": {
+            "decimal_strings": [],
+            "null_count": 8,
+            "displayed_null_count": 6
+          }
+        }
+      ],
+      "next_cursor": null,
+      "unavailable_count": 0
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/fixed_wi_v1",
+      "binding": {
+        "id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+        "kind": "work_instruction",
+        "revision": 1,
+        "body_sha256": "07be4e2fa68070f7753823e54be08e84297d812cb28a6278fdc89c5809e98be2",
+        "operation_key": "assembly"
+      },
+      "document": {
+        "id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+        "revision": 1,
+        "kind": "work_instruction",
+        "series_id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+        "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+        "process": {
+          "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+          "revision": 1
+        },
+        "operation_key": "assembly",
+        "is_current": false,
+        "source_status": "current",
+        "created_at": "2026-10-18T23:50:58.234771+00:00",
+        "receipt_id": "13e9b551-627a-4f8c-bd66-71f7d06c6721",
+        "body_sha256_for_integrity_only": "714c787021c00ae60c070f888ec8cc3d7c86440c0311eb9ef4fa6f98f124fa4b",
+        "saved_bindings": [],
+        "sources_sha256": "5359dc2480ba10a0429ec61f197c6eee542e6eea1632f5b99cd6c33a69932267",
+        "stored_gaps_sha256": "7d33af7ca196fe56665513572ffe1344629df1c8f5fd0ff92a314ef7e3976511",
+        "inventory": {
+          "decimal_strings": [],
+          "null_count": 8,
+          "displayed_null_count": 6
+        }
+      },
+      "bodyHashVerification": "not_returned_by_endpoint"
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/fixed_cp_v1",
+      "binding": {
+        "id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+        "kind": "control_plan",
+        "revision": 1,
+        "body_sha256": "ce4d8fa5086056cb16c1712cdcd820f4870c2ecb7f201c7b16fcbc7f5aa1073e",
+        "operation_key": "assembly"
+      },
+      "document": {
+        "id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+        "revision": 1,
+        "kind": "control_plan",
+        "series_id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+        "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+        "process": {
+          "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+          "revision": 1
+        },
+        "operation_key": "assembly",
+        "is_current": true,
+        "source_status": "current",
+        "created_at": "2026-10-18T23:51:04.269449+00:00",
+        "receipt_id": "0babca3a-b2d7-4e54-85e3-65122f86c037",
+        "body_sha256_for_integrity_only": "89c6dee08d43fd666ba6cbc0520f78cc028a1a254330c534aad5e3443e3831cc",
+        "saved_bindings": [],
+        "sources_sha256": "dbd7dd4c4fd065eee63514a645ae4ce3e25e9f4afcf932d9ad6abc3b08885080",
+        "stored_gaps_sha256": "887f113f5ab4d31bd0156ef854116d758f9acd114878044f6d82c030e880144c",
+        "inventory": {
+          "decimal_strings": [],
+          "null_count": 8,
+          "displayed_null_count": 6
+        }
+      },
+      "bodyHashVerification": "not_returned_by_endpoint"
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/project_preparations",
+      "current": [
+        {
+          "id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+          "revision": 1,
+          "kind": "control_plan",
+          "series_id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+          "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+          "process": {
+            "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+            "revision": 1
+          },
+          "operation_key": "assembly",
+          "is_current": true,
+          "source_status": "needs_recheck",
+          "created_at": "2026-10-18T23:51:04.269449+00:00",
+          "receipt_id": "0babca3a-b2d7-4e54-85e3-65122f86c037",
+          "body_sha256_for_integrity_only": "89c6dee08d43fd666ba6cbc0520f78cc028a1a254330c534aad5e3443e3831cc",
+          "saved_bindings": [],
+          "sources_sha256": "dbd7dd4c4fd065eee63514a645ae4ce3e25e9f4afcf932d9ad6abc3b08885080",
+          "stored_gaps_sha256": "887f113f5ab4d31bd0156ef854116d758f9acd114878044f6d82c030e880144c",
+          "inventory": {
+            "decimal_strings": [],
+            "null_count": 8,
+            "displayed_null_count": 6
+          }
+        },
+        {
+          "id": "b64768b4-0539-4718-a674-500c77e08953",
+          "revision": 1,
+          "kind": "manufacturing_baseline",
+          "series_id": "b64768b4-0539-4718-a674-500c77e08953",
+          "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+          "process": {
+            "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+            "revision": 1
+          },
+          "operation_key": null,
+          "is_current": true,
+          "source_status": "needs_recheck",
+          "created_at": "2026-10-18T23:51:14.025603+00:00",
+          "receipt_id": "e4bd0741-048d-4454-8830-703cdd3af973",
+          "body_sha256_for_integrity_only": "f1420341a52d1879ce23aabcf6d7caab7ede41309d383a7ea7d5c5be6741bfe7",
+          "saved_bindings": [
+            {
+              "id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+              "kind": "work_instruction",
+              "revision": 1,
+              "body_sha256": "07be4e2fa68070f7753823e54be08e84297d812cb28a6278fdc89c5809e98be2",
+              "operation_key": "assembly"
+            },
+            {
+              "id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+              "kind": "control_plan",
+              "revision": 1,
+              "body_sha256": "ce4d8fa5086056cb16c1712cdcd820f4870c2ecb7f201c7b16fcbc7f5aa1073e",
+              "operation_key": "assembly"
+            }
+          ],
+          "sources_sha256": "512723d760a8d5d59f4987351931a12e397635e0609f9c446cc0ad1754934e99",
+          "stored_gaps_sha256": "bff37124b9bd538bb0e8180576d850c994b566926cff92e37904d61424910fb0",
+          "inventory": {
+            "decimal_strings": [],
+            "null_count": 4,
+            "displayed_null_count": 2
+          }
+        },
+        {
+          "id": "be14ab3f-17f8-4ffb-9696-4f0ac2ae0fb6",
+          "revision": 2,
+          "kind": "work_instruction",
+          "series_id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+          "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+          "process": {
+            "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+            "revision": 1
+          },
+          "operation_key": "assembly",
+          "is_current": true,
+          "source_status": "needs_recheck",
+          "created_at": "2026-10-18T23:51:25.496428+00:00",
+          "receipt_id": "2296f5db-0e59-4eb4-a810-9c7f5e0ff190",
+          "body_sha256_for_integrity_only": "b7e92c4fe8c67b97755d07cef7ee5698d8c914df3c4e825dff18bfcf8d1d9383",
+          "saved_bindings": [],
+          "sources_sha256": "b9e1c6170be096b0bbab161dcb0fa5107f82bff876a0212ff836175a18a08f3f",
+          "stored_gaps_sha256": "7d33af7ca196fe56665513572ffe1344629df1c8f5fd0ff92a314ef7e3976511",
+          "inventory": {
+            "decimal_strings": [],
+            "null_count": 6,
+            "displayed_null_count": 6
+          }
+        }
+      ],
+      "history": [
+        {
+          "id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+          "revision": 1,
+          "kind": "work_instruction",
+          "series_id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+          "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+          "process": {
+            "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+            "revision": 1
+          },
+          "operation_key": "assembly",
+          "is_current": false,
+          "source_status": "needs_recheck",
+          "created_at": "2026-10-18T23:50:58.234771+00:00",
+          "receipt_id": "13e9b551-627a-4f8c-bd66-71f7d06c6721",
+          "body_sha256_for_integrity_only": "714c787021c00ae60c070f888ec8cc3d7c86440c0311eb9ef4fa6f98f124fa4b",
+          "saved_bindings": [],
+          "sources_sha256": "5359dc2480ba10a0429ec61f197c6eee542e6eea1632f5b99cd6c33a69932267",
+          "stored_gaps_sha256": "7d33af7ca196fe56665513572ffe1344629df1c8f5fd0ff92a314ef7e3976511",
+          "inventory": {
+            "decimal_strings": [],
+            "null_count": 8,
+            "displayed_null_count": 6
+          }
+        }
+      ],
+      "next_cursor": null,
+      "unavailable_count": 0
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/fixed_wi_v1",
+      "binding": {
+        "id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+        "kind": "work_instruction",
+        "revision": 1,
+        "body_sha256": "07be4e2fa68070f7753823e54be08e84297d812cb28a6278fdc89c5809e98be2",
+        "operation_key": "assembly"
+      },
+      "document": {
+        "id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+        "revision": 1,
+        "kind": "work_instruction",
+        "series_id": "5a031424-b9c2-490c-b3ef-ca9b7917a09e",
+        "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+        "process": {
+          "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+          "revision": 1
+        },
+        "operation_key": "assembly",
+        "is_current": false,
+        "source_status": "needs_recheck",
+        "created_at": "2026-10-18T23:50:58.234771+00:00",
+        "receipt_id": "13e9b551-627a-4f8c-bd66-71f7d06c6721",
+        "body_sha256_for_integrity_only": "714c787021c00ae60c070f888ec8cc3d7c86440c0311eb9ef4fa6f98f124fa4b",
+        "saved_bindings": [],
+        "sources_sha256": "5359dc2480ba10a0429ec61f197c6eee542e6eea1632f5b99cd6c33a69932267",
+        "stored_gaps_sha256": "7d33af7ca196fe56665513572ffe1344629df1c8f5fd0ff92a314ef7e3976511",
+        "inventory": {
+          "decimal_strings": [],
+          "null_count": 8,
+          "displayed_null_count": 6
+        }
+      },
+      "bodyHashVerification": "not_returned_by_endpoint"
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/fixed_cp_v1",
+      "binding": {
+        "id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+        "kind": "control_plan",
+        "revision": 1,
+        "body_sha256": "ce4d8fa5086056cb16c1712cdcd820f4870c2ecb7f201c7b16fcbc7f5aa1073e",
+        "operation_key": "assembly"
+      },
+      "document": {
+        "id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+        "revision": 1,
+        "kind": "control_plan",
+        "series_id": "89264e01-9d75-4810-b489-5a1bb0c102ea",
+        "project_id": "e978ef26-811e-40ac-9eb6-632501de0d59",
+        "process": {
+          "id": "87cb27c4-9b27-4057-a639-179c7a70f9b9",
+          "revision": 1
+        },
+        "operation_key": "assembly",
+        "is_current": true,
+        "source_status": "needs_recheck",
+        "created_at": "2026-10-18T23:51:04.269449+00:00",
+        "receipt_id": "0babca3a-b2d7-4e54-85e3-65122f86c037",
+        "body_sha256_for_integrity_only": "89c6dee08d43fd666ba6cbc0520f78cc028a1a254330c534aad5e3443e3831cc",
+        "saved_bindings": [],
+        "sources_sha256": "dbd7dd4c4fd065eee63514a645ae4ce3e25e9f4afcf932d9ad6abc3b08885080",
+        "stored_gaps_sha256": "887f113f5ab4d31bd0156ef854116d758f9acd114878044f6d82c030e880144c",
+        "inventory": {
+          "decimal_strings": [],
+          "null_count": 8,
+          "displayed_null_count": 6
+        }
+      },
+      "bodyHashVerification": "not_returned_by_endpoint"
+    }
+  ],
+  "rendered": [
+    {
+      "original_read": "baseline_fixed_children_before_revision/fixed_baseline",
+      "component": "PreparationVersion",
+      "html_sha256": "9ba7fc6896c5b498fc91c5ecfe2577686edbdd9c9367af63fc42f2064585d836",
+      "raw_dto_sha256": "74fec8e939d0ed46e28ab60801f2d0a8bd125182ba537b0d7a09c0446aa64120",
+      "null_count": 4
+    },
+    {
+      "original_read": "baseline_fixed_children_before_revision/fixed_wi_v1",
+      "component": "PreparationVersion",
+      "html_sha256": "a918d467fcc854134fff6d60115755717f7765abd5502d55d4fe9ad377814bda",
+      "raw_dto_sha256": "7d350f322be54bbeab07541499d180e9b0da930a228b770791018857f7e1f0b6",
+      "null_count": 8
+    },
+    {
+      "original_read": "baseline_fixed_children_before_revision/fixed_cp_v1",
+      "component": "PreparationVersion",
+      "html_sha256": "3b2c479da7503379782c6191f4b381ceb85a0fbc69f4318c2e2f9a8b4134d001",
+      "raw_dto_sha256": "5e46a76c4783a686646241bc0ec42ed8479f3fe7dbd9d22d9ca6b12f91c1ed32",
+      "null_count": 8
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/fixed_baseline",
+      "component": "PreparationVersion",
+      "html_sha256": "5e3dd85bc9dca3a6e12105e325850f32406aeee3484eddf745ccd7adda5ed5fc",
+      "raw_dto_sha256": "84c26b1b35a75c306caf65ba5850d7ff0ebeb73c47cd670c9bcefbfae9acaa90",
+      "null_count": 4
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/fixed_wi_v1",
+      "component": "PreparationVersion",
+      "html_sha256": "7fc52d59d9eb2cb54fdb36ebee99c6d4b8c72bee4138de9d54dbd42a78f3027c",
+      "raw_dto_sha256": "49be7109aae564e30037f2641fa7038b09149172b11d77f089fc56f23d1b17d2",
+      "null_count": 8
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/fixed_wi_v2",
+      "component": "PreparationVersion",
+      "html_sha256": "3e84e301e0bb7f5a63373246f63efe4d427068b9253bff0adbf93b4c9eed8ce2",
+      "raw_dto_sha256": "1cc298b2663e089f431052d1939f64f48917c4a005cd9339c7c761d88e8edc2d",
+      "null_count": 6
+    },
+    {
+      "original_read": "wi_current_v2_baseline_children_still_v1/fixed_cp_v1",
+      "component": "PreparationVersion",
+      "html_sha256": "3b2c479da7503379782c6191f4b381ceb85a0fbc69f4318c2e2f9a8b4134d001",
+      "raw_dto_sha256": "5e46a76c4783a686646241bc0ec42ed8479f3fe7dbd9d22d9ca6b12f91c1ed32",
+      "null_count": 8
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/fixed_baseline",
+      "component": "PreparationVersion",
+      "html_sha256": "5e3dd85bc9dca3a6e12105e325850f32406aeee3484eddf745ccd7adda5ed5fc",
+      "raw_dto_sha256": "84c26b1b35a75c306caf65ba5850d7ff0ebeb73c47cd670c9bcefbfae9acaa90",
+      "null_count": 4
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/fixed_wi_v1",
+      "component": "PreparationVersion",
+      "html_sha256": "6a7c273edf73f4448b32b27cc1eb9e86d83c5f169b559fc55f80614f578e238e",
+      "raw_dto_sha256": "cb14390a1a27d7ac07422765d51366f510481b7fdc17d1292ad28ebddb7afc72",
+      "null_count": 8
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/fixed_wi_v2",
+      "component": "PreparationVersion",
+      "html_sha256": "a8db51bee5c7f0b039d572a6259400a7db6d7d964d9ab5cb4f13d837ca16c788",
+      "raw_dto_sha256": "e049213cc51564d1fa027470637c6fc04410633079573f161bff80772b8bf5ba",
+      "null_count": 6
+    },
+    {
+      "original_read": "negative_source_fixture_withdrawn_fixed_children_retained/fixed_cp_v1",
+      "component": "PreparationVersion",
+      "html_sha256": "e849fc3a25bdf2f447c9e8499ec52ddf1d5bf7fbbe635d89d41c0ec79fe74b76",
+      "raw_dto_sha256": "5e39e71b761c09b5425bbc280e4bb83c344aa09af9b5e65364ae3ceec4291ab0",
+      "null_count": 8
+    }
+  ],
+  "boundaries": [
+    "Original GETs are indexed by phase/read name and accounted for once; source/parser-only reads are not claimed as reader API calls",
+    "Only exact recorded paths/params and unmodified bodies can satisfy an offline API call; no extra GET or invented baseline binding is supplied",
+    "The three project responses are independent current-plus-history snapshots; no prior Current or unavailable count is accumulated",
+    "Actual fixed baseline GETs supply their saved bindings and undergo the real shared parser; they are not sent to a child-document reader",
+    "WI v2 has no binding in the saved v1 baseline, so its actual fixed GETs only validate the original Current facts via the shared parser",
+    "The wrong-revision and forbidden-baseline GETs cannot be generated from a legitimate child binding; their exact original transport errors are checked separately, not counted as UI reader calls",
+    "Binding body_sha256 is a saved fingerprint. PreparationView lacks a returned body_sha256; the reader does not claim hash revalidation",
+    "The negative-source phase is an explicit isolated Artifact fixture change, not an available user withdrawal command",
+    "Cross-project inputs POST is original backend guard evidence only and is never supplied to an offline UI GET",
+    "Pure React SSR is offline original PreparationVersion rendering without documents/API props; it does not test browser interactions, visuals or automatic loading",
+    "Actual cross-page reading over 50 history records is not exercised; invalid cursor rejection does not establish valid pagination"
+  ],
+  "fixture_version": "project-preparation-history-projection-qa/v1",
+  "history_coverage": {
+    "actual_server_page_size": 50,
+    "actual_cross_page_verified": false,
+    "valid_server_next_cursor_observed": false
+  },
+  "read_only_counts": [
+    {
+      "phase": "baseline_fixed_children_before_revision",
+      "before": {
+        "products": 2,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 3,
+        "definition_sources": 0,
+        "definition_specs": 0,
+        "parts": 2,
+        "bom_revisions": 1,
+        "bom_lines": 2,
+        "engineering_configurations": 2,
+        "process_revisions": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "action_receipts": 20,
+        "audit_entries": 19,
+        "outbox_events": 21,
+        "request_keys": 19,
+        "artifact_versions": 3,
+        "confirmations": 14,
+        "professional_authority_facts": 2,
+        "grants": 3,
+        "object_audiences": 16
+      },
+      "after": {
+        "products": 2,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 3,
+        "definition_sources": 0,
+        "definition_specs": 0,
+        "parts": 2,
+        "bom_revisions": 1,
+        "bom_lines": 2,
+        "engineering_configurations": 2,
+        "process_revisions": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "action_receipts": 20,
+        "audit_entries": 19,
+        "outbox_events": 21,
+        "request_keys": 19,
+        "artifact_versions": 3,
+        "confirmations": 14,
+        "professional_authority_facts": 2,
+        "grants": 3,
+        "object_audiences": 16
+      },
+      "unchanged": true,
+      "origin": "Original PG evidence; no database operation by this helper"
+    },
+    {
+      "phase": "wi_current_v2_baseline_children_still_v1",
+      "before": {
+        "products": 2,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 3,
+        "definition_sources": 0,
+        "definition_specs": 0,
+        "parts": 2,
+        "bom_revisions": 1,
+        "bom_lines": 2,
+        "engineering_configurations": 2,
+        "process_revisions": 2,
+        "manufacturing_preparation_versions": 4,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "action_receipts": 21,
+        "audit_entries": 20,
+        "outbox_events": 22,
+        "request_keys": 20,
+        "artifact_versions": 3,
+        "confirmations": 15,
+        "professional_authority_facts": 2,
+        "grants": 3,
+        "object_audiences": 16
+      },
+      "after": {
+        "products": 2,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 3,
+        "definition_sources": 0,
+        "definition_specs": 0,
+        "parts": 2,
+        "bom_revisions": 1,
+        "bom_lines": 2,
+        "engineering_configurations": 2,
+        "process_revisions": 2,
+        "manufacturing_preparation_versions": 4,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "action_receipts": 21,
+        "audit_entries": 20,
+        "outbox_events": 22,
+        "request_keys": 20,
+        "artifact_versions": 3,
+        "confirmations": 15,
+        "professional_authority_facts": 2,
+        "grants": 3,
+        "object_audiences": 16
+      },
+      "unchanged": true,
+      "origin": "Original PG evidence; no database operation by this helper"
+    },
+    {
+      "phase": "negative_source_fixture_withdrawn_fixed_children_retained",
+      "before": {
+        "products": 2,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 3,
+        "definition_sources": 0,
+        "definition_specs": 0,
+        "parts": 2,
+        "bom_revisions": 1,
+        "bom_lines": 2,
+        "engineering_configurations": 2,
+        "process_revisions": 2,
+        "manufacturing_preparation_versions": 4,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "action_receipts": 21,
+        "audit_entries": 20,
+        "outbox_events": 22,
+        "request_keys": 20,
+        "artifact_versions": 3,
+        "confirmations": 15,
+        "professional_authority_facts": 2,
+        "grants": 3,
+        "object_audiences": 16
+      },
+      "after": {
+        "products": 2,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 3,
+        "definition_sources": 0,
+        "definition_specs": 0,
+        "parts": 2,
+        "bom_revisions": 1,
+        "bom_lines": 2,
+        "engineering_configurations": 2,
+        "process_revisions": 2,
+        "manufacturing_preparation_versions": 4,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "action_receipts": 21,
+        "audit_entries": 20,
+        "outbox_events": 22,
+        "request_keys": 20,
+        "artifact_versions": 3,
+        "confirmations": 15,
+        "professional_authority_facts": 2,
+        "grants": 3,
+        "object_audiences": 16
+      },
+      "unchanged": true,
+      "origin": "Original PG evidence; no database operation by this helper"
+    }
+  ],
+  "summary": {
+    "phases": 3,
+    "original_get_responses": 18,
+    "list_reader_calls": 4,
+    "fixed_child_reader_calls": 7,
+    "reader_calls": 11,
+    "original_transport_only_calls": 2,
+    "total_offline_api_calls": 13,
+    "baseline_source_parser_reads": 3,
+    "unbound_current_v2_parser_reads": 2,
+    "successful_bound_child_reads": 6,
+    "original_errors": {
+      "wrong_revision_409_transport_only": 1,
+      "peer_private_child_403_reader": 1,
+      "foreign_baseline_403_transport_only": 1,
+      "invalid_cursor_422_reader": 1
+    },
+    "used_original_read_indices": 18,
+    "unused_original_read_indices": 0,
+    "backend_only_inputs_post_evidence": 1,
+    "actual_cross_page_verified": false,
+    "actual_valid_history_cursor": false,
+    "actual_source_withdrawal_user_command": false,
+    "saved_binding_hash_revalidated_by_endpoint": false,
+    "pure_display_ssr_instances": 11,
+    "actual_decimal_string_instances_in_fixed_responses": 0
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "web_differences_from_verified_candidate": [
+    "src/lib/build-change-orders-view.test.ts",
+    "src/lib/build-change-orders-view.ts",
+    "src/components/builds/build-change-orders.tsx",
+    "src/components/builds/build-change-orders.test.mjs",
+    "src/components/builds/change-source-material.tsx",
+    "src/app/api/[...path]/route.test.ts",
+    "src/app/api/[...path]/route.ts"
+  ],
+  "web_extra_files_excluded": [
+    "src/components/builds/build-change-completion.test.mjs",
+    "src/components/builds/build-change-completion.tsx",
+    "src/components/knowledge/knowledge-native-result-picker.test.mjs",
+    "src/components/knowledge/knowledge-native-result-picker.tsx",
+    "src/lib/build-change-completion-view.test.ts",
+    "src/lib/build-change-completion-view.ts",
+    "src/lib/knowledge-experience-native.test.ts",
+    "src/lib/knowledge-experience-native.ts"
+  ],
+  "backend_changes_after_bounded_check": [],
+  "scope": "Other native completion, shared BFF, and knowledge picker work stays intact and is excluded; this is not a whole current worktree validation."
+}

@@ -1,0 +1,36 @@
+{
+  "matrix_response": "pg-http-response.json (exact saved HTTP body)",
+  "surrounding_reads": "synthetic read-only fixtures",
+  "desktop": {
+    "width": 1280,
+    "height": 900,
+    "documentWidth": 1280,
+    "firstColumnWidth": 120,
+    "tableWidth": 984
+  },
+  "mobile": {
+    "documentWidth": 320,
+    "tables": [
+      {
+        "containerWidth": 262,
+        "overflow": "auto",
+        "scrollWidth": 660,
+        "width": 660
+      }
+    ],
+    "width": 320
+  },
+  "horizontalScrollLeft": 208,
+  "checked": [
+    "default exact PG matrix response",
+    "duplicate boundaries rejected; previous verified read retained",
+    "default reread clears input error",
+    "named human source statement and fixed G0 digest visible",
+    "desktop light and dark",
+    "320px light and dark; no document overflow; table scrolls independently"
+  ],
+  "limitations": [
+    "browser proxy blocks all non-GET; business writes and RLS verified separately by PG tests",
+    "only default breaks saved in browser preview; alternative Decimal boundaries verified through PG and frontend tests"
+  ]
+}

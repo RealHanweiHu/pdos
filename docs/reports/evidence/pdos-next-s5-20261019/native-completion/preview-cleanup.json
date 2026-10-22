@@ -1,0 +1,12 @@
+{
+  "own_previews_stopped": [
+    52309,
+    52310
+  ],
+  "own_browser_closed": true,
+  "own_short_preview_logins_deleted": 2,
+  "includes_unexported_login_from_failed_preview_helper": true,
+  "grant_or_qualification_changes": 0,
+  "business_writes": 0,
+  "shared_database_and_temporal_retained": true
+}

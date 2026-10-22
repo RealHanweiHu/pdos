@@ -1,0 +1,61 @@
+{
+  "usesActualDomainApi": true,
+  "responseProxy": false,
+  "ordinaryNonProductManager": true,
+  "checks": {
+    "historicalGoalSearch": true,
+    "explicitSessionAndRunSelection": true,
+    "sameSessionThreeRuns": true,
+    "committedThenResponse503": true,
+    "reloadNoAutomaticPost": true,
+    "originalContinuationRecoveredByGet": true,
+    "existingChildOpened": true,
+    "panelCloseReopenKeepsSameSelection": true,
+    "personalCategorySeparation": true
+  },
+  "categoryDesktop": {
+    "documentWidth": 1280,
+    "history": 239,
+    "selectedRun": [
+      "本地合成：核对会话续接与刷新恢复，不调用模型。等待执行10/17/2026, 12:57 PM"
+    ],
+    "theme": "light",
+    "threadVisible": true,
+    "viewport": 1280
+  },
+  "categoryNarrowThread": {
+    "documentWidth": 320,
+    "rail": 320,
+    "theme": "light",
+    "thread": 320,
+    "viewport": 320
+  },
+  "categoryNarrowHistory": {
+    "documentWidth": 320,
+    "historyWidth": 300,
+    "identityVisible": true,
+    "theme": "light",
+    "viewport": 320
+  },
+  "categoryNarrowDark": {
+    "documentWidth": 320,
+    "historyWidth": 300,
+    "theme": "dark",
+    "viewport": 320
+  },
+  "personalNarrowHistory": {
+    "documentWidth": 320,
+    "historyWidth": 300,
+    "oldCategoryGoalVisible": false,
+    "theme": "dark",
+    "viewport": 320
+  },
+  "personalDesktop": {
+    "documentWidth": 1280,
+    "oldCategoryGoalVisible": false,
+    "personalRunVisible": true,
+    "theme": "light",
+    "viewport": 1280
+  },
+  "screenshotDirectory": "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-pai-sessions-20261017"
+}

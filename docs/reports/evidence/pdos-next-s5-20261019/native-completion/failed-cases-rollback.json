@@ -1,0 +1,36 @@
+{
+  "target": "127.0.0.1:64245/pdos_test",
+  "head": "s0_0810",
+  "cases": [
+    {
+      "case": 1,
+      "change_versions_retained": 8,
+      "status": "implementing",
+      "completion_records": 0,
+      "completion_receipts": 0,
+      "completion_proofs_consumed": 0,
+      "prepared_unconsumed_proofs": 0,
+      "business_writes": 0
+    },
+    {
+      "case": 2,
+      "change_versions_retained": 8,
+      "status": "implementing",
+      "completion_records": 0,
+      "completion_receipts": 0,
+      "completion_proofs_consumed": 0,
+      "prepared_unconsumed_proofs": 1,
+      "business_writes": 0
+    },
+    {
+      "case": 3,
+      "change_versions_retained": 8,
+      "status": "implementing",
+      "completion_records": 0,
+      "completion_receipts": 0,
+      "completion_proofs_consumed": 0,
+      "prepared_unconsumed_proofs": 1,
+      "business_writes": 0
+    }
+  ]
+}

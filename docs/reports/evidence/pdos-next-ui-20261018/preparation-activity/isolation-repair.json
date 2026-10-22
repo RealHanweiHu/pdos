@@ -1,0 +1,7 @@
+{
+  "cause": "Current coedited ProjectCockpit already contained the other chat Run/PaiContext integration, copied into a prior-contract frontend snapshot. This failed TS2345 at projectId. No production file was reverted.",
+  "repair": "Reconstruct only this chat two-line activity relocation on the last frozen cockpit; exact hash equals component agent pre-concurrency freeze. Other 8 owned files retained.",
+  "cockpit_owned_sha256": "de44b8bcce6350f3d13c94e9adb350665a411f8de247db592fdc7799d6c06d23",
+  "current_coedited_sha256": "1159014697b76f39350687b45061919c646805ccbf76e50aaab6f8e90333fad4",
+  "working_tree_cockpit_preserved": true
+}

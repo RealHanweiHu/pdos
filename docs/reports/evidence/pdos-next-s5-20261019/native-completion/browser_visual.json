@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "light": {
+    "viewport": 1440,
+    "width": 1440,
+    "dark": false
+  },
+  "dark": {
+    "viewport": 320,
+    "width": 320,
+    "dark": true
+  },
+  "completionText": "5 · 实际采用、独立验证与分别关闭\n\n明确选择真实批次和测试对应。三步分别核对、分别确认；实际采用限定于本计划声明的继任开发 Build。\n\n重新读取实际依据\n\n当前变更 v8 · 实施办理中\n\n实际开发 Build 采用 · 一次确认\n当前缺项\n\n本次未列出此类记录。\n\n本次实际采用计划项\n明确选择已有实际新配置的计划项\n计划项 1 · Future engineering configuration revision after named approval\n计划项 2 · Future manufacturing configuration revision after named approval\n真实继任开发 Build 与实际产出批次\n从当前实际批次明确选择\nSynthetic separate approved-configuration verification Build · 批次 v1 · 2026/10/18 17:36:56\n\n实际批次、样件及实施输出由服务器重新核对。这里只记录明确开发范围；其他 Build、库存、在制品和 ERP / MES 切换分别保留。\n\n读取本项实际采用的一次确认\n独立验证本变更 · 具名复核\n当前缺项\n核对项\nMISSING_REQUIRED_EVIDENCE\n具体说明\n请先核对全部计划项的实际采用。\n计划项 1 · Future engineering configuration revision after named approval\n\n核验要求：New samples and Run with independent verification\n\n为计划项 1 添加真实测试对应\n计划项 2 · Future manufacturing configuration revision after named approval\n\n核验要求：New samples and Run with independent verification\n\n为计划项 2 添加真实测试对应\n本次具名独立验证说明\n\n原测量、固定方法、全部计划项覆盖、采用后的观察窗口和当前独立性由服务器核对。提出、批准、实施或测试执行者不能自证；Run 已复核或处置也须另行作出本变更的独立决定。\n\n读取本变更独立验证的具名批准\n分别关闭本变更 · 具名决定\n当前缺项\n核对项\nMISSING_REQUIRED_EVIDENCE\n具体说明\n请先核对全部计划项的实际采用。\n单独关闭决定\n尚未记录\n本次具名关闭说明\n\n完整实际采用和当前独立通过仍须核对；本次关闭单独批准，不改写原测试结果或其他业务对象。\n\n读取单独具名关闭本变更的批准",
+  "businessCommandsSubmitted": 0,
+  "scope": "Actual persisted partial PG1 case, final directory fix; full transition tested separately by PG2",
+  "screenshots": [
+    "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-s5-native-completion-20261019/light-completion.png",
+    "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-s5-native-completion-20261019/dark-mobile-completion.png"
+  ]
+}

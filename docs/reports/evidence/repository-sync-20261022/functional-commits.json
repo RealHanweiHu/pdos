@@ -1,0 +1,43 @@
+[
+  {
+    "batch": "policy",
+    "sha": "de31d56dee4cf85693e30c8588480164e9c656ad",
+    "message": "fix(pdos-next): align provider egress with the approved optional agreement policy",
+    "files": 14,
+    "stat": "14 files changed, 144 insertions(+), 88 deletions(-)"
+  },
+  {
+    "batch": "minimax",
+    "sha": "49c254b62cc581727a354bfeaf692adc1eff1fea",
+    "message": "feat(pdos-next): wire local MiniMax credentials and metered model configuration",
+    "files": 6,
+    "stat": "6 files changed, 144 insertions(+), 21 deletions(-)"
+  },
+  {
+    "batch": "backend",
+    "sha": "1583fab19ae76358eced24dddc51b230637c80f0",
+    "message": "feat(pdos-next): complete native change closure and scoped workspace read APIs",
+    "files": 104,
+    "stat": "104 files changed, 24838 insertions(+), 40 deletions(-)"
+  },
+  {
+    "batch": "tool-notes",
+    "sha": "a162493e05f68e49bf8ada55d109e0a1c1867085",
+    "message": "feat(pai): require registered command calling notes",
+    "files": 5,
+    "stat": "5 files changed, 1251 insertions(+), 6 deletions(-)"
+  },
+  {
+    "batch": "frontend",
+    "sha": "0efed69f580dc4179ecbbfe9d3e704b988698581",
+    "message": "feat(web): connect project workspaces and persistent Pai conversations",
+    "files": 170,
+    "stat": "170 files changed, 15177 insertions(+), 531 deletions(-)"
+  },
+  {
+    "batch": "pilot-g0-finalization",
+    "sha": "6aa4c87db852466fbce5b7bde4954324af2a4076",
+    "message": "fix(preproject): finalize pilot G0 migration and receipt checks",
+    "files": 3
+  }
+]

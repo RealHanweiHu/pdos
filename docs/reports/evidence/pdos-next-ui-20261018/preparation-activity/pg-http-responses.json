@@ -1,0 +1,3051 @@
+{
+  "version": "project-manufacturing-preparation-projection-qa/v1",
+  "fixture_nature": "actual HTTP/domain commands with isolated synthetic authority/evidence",
+  "scope": {
+    "category_id": "a53c51aa-4c05-4f3c-978e-4817dcc73ba3",
+    "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+    "other_project_id": "3af5795d-bf80-4e26-85f2-514020658e43",
+    "process": {
+      "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+      "revision": 1
+    },
+    "wi_v1": {
+      "kind": "work_instruction",
+      "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+      "revision": 1
+    },
+    "wi_v2": {
+      "kind": "work_instruction",
+      "id": "309fab90-b9f8-49c1-8b09-d9ae4c5eb725",
+      "revision": 2
+    },
+    "wi_alternative": {
+      "kind": "work_instruction",
+      "id": "c17f2e1d-bf2b-48a0-8694-ac65ccf59b4a",
+      "revision": 1
+    },
+    "control_plan": {
+      "kind": "control_plan",
+      "id": "bab832f5-744e-486d-a533-d6831adf271e",
+      "revision": 1
+    },
+    "baseline": {
+      "kind": "manufacturing_baseline",
+      "id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+      "revision": 1
+    }
+  },
+  "phases": [
+    {
+      "phase": "baseline_fixed_to_wi_v1",
+      "reads": {
+        "project_preparations": {
+          "route": "/v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations",
+          "params": {
+            "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+          },
+          "status_code": 200,
+          "body": {
+            "schema_version": "pdos-manufacturing-preparation-v1",
+            "versions": [
+              {
+                "schema_version": "pdos-manufacturing-preparation-v1",
+                "id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+                "kind": "manufacturing_baseline",
+                "revision": 1,
+                "series_id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                "visibility": "private",
+                "title": "Synthetic manufacturing_baseline documentation",
+                "status": "draft",
+                "purpose": "Build and verify a synthetic design",
+                "process": {
+                  "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                  "revision": 1
+                },
+                "operation_key": null,
+                "previous_id": null,
+                "previous_revision": null,
+                "created_at": "2026-10-18T19:05:31.446428+00:00",
+                "is_current": true,
+                "source_status": "current",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "074aeaf6-bf3a-4f35-af3b-77e1c36830dc",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1
+                  }
+                ],
+                "body": {
+                  "gaps": [
+                    {
+                      "code": "PROCESS_RISK_UNKNOWN",
+                      "detail": "过程风险依据未知。"
+                    },
+                    {
+                      "code": "PACKAGING_LABEL_UNKNOWN",
+                      "detail": "包装标识依据未知。"
+                    },
+                    {
+                      "code": "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+                      "detail": "模具真实验收与适用性尚未接通。"
+                    },
+                    {
+                      "code": "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+                      "detail": "治具真实验收及校准尚未接通。"
+                    },
+                    {
+                      "code": "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+                      "detail": "制造基线尚无具名发布决定。"
+                    },
+                    {
+                      "code": "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED",
+                      "detail": "制造影响范围全集尚未核对。"
+                    }
+                  ],
+                  "kind": "manufacturing_baseline",
+                  "input": {
+                    "title": "Synthetic manufacturing_baseline documentation",
+                    "reason": "Save exact synthetic manufacturing_baseline draft; qualification for release remains unknown",
+                    "process": {
+                      "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                      "revision": 1
+                    },
+                    "sources": [
+                      {
+                        "line": 4,
+                        "quote": "Synthetic baseline: retain fixed current documentation; tooling qualification and release are unknown.",
+                        "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "operations": [
+                      {
+                        "control_plan": {
+                          "id": "bab832f5-744e-486d-a533-d6831adf271e",
+                          "kind": "control_plan",
+                          "revision": 1
+                        },
+                        "operation_key": "assembly",
+                        "work_instruction": {
+                          "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                          "kind": "work_instruction",
+                          "revision": 1
+                        }
+                      }
+                    ],
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                    "risk_notes": null,
+                    "visibility": "private",
+                    "previous_id": null,
+                    "packaging_label_basis": null,
+                    "expected_previous_revision": null
+                  },
+                  "scope": {
+                    "purpose": "Build and verify a synthetic design",
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+                  },
+                  "status": "draft",
+                  "qualification": "unknown",
+                  "schema_version": "pdos-manufacturing-preparation-v1",
+                  "process_snapshot": {
+                    "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "line": null,
+                    "name": "Synthetic manufacturing configuration",
+                    "site": null,
+                    "reason": "Synthetic fixed preparation",
+                    "status": "draft",
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic requirement is unverified",
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                    "revision": 1,
+                    "series_id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "created_at": "2026-10-18T19:04:48.710168+00:00",
+                    "operations": [
+                      {
+                        "key": "assembly",
+                        "sop": null,
+                        "kind": "assembly",
+                        "name": "Synthetic assembly",
+                        "notes": null,
+                        "depends_on": [],
+                        "bom_line_keys": [
+                          "motor"
+                        ],
+                        "cycle_time_minutes": null,
+                        "acceptance_criterion": null,
+                        "resource_requirements": []
+                      }
+                    ],
+                    "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "source_status": "current",
+                    "engineering_revision": 1,
+                    "qualification_status": "unknown",
+                    "external_verification": "not_checked",
+                    "required_source_read_set": [
+                      {
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "engineering_configuration": {
+                      "id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e",
+                      "name": "Synthetic engineering configuration",
+                      "bom_id": "ea340cbf-7502-47f8-a9c9-3bbf2097fda3",
+                      "status": "draft",
+                      "revision": 1,
+                      "definition_id": "a2228b95-f653-4a07-8c7c-5f38ce12ad32",
+                      "source_status": "current"
+                    },
+                    "expected_previous_revision": null,
+                    "engineering_configuration_id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e"
+                  },
+                  "document_bindings": [
+                    {
+                      "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                      "kind": "work_instruction",
+                      "revision": 1,
+                      "body_sha256": "c94271aff18cb13fcc9b5985c20028a08183e8644fd293f24fedebfa339ca321",
+                      "operation_key": "assembly"
+                    },
+                    {
+                      "id": "bab832f5-744e-486d-a533-d6831adf271e",
+                      "kind": "control_plan",
+                      "revision": 1,
+                      "body_sha256": "e84354d6d9a92f35be8ebfdb05d5814d4aeec2a72257c44519096007c858877e",
+                      "operation_key": "assembly"
+                    }
+                  ],
+                  "manufacturing_release": null,
+                  "negative_enumeration_complete": false
+                },
+                "sources": [
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1,
+                    "line": 4,
+                    "quote": "Synthetic baseline: retain fixed current documentation; tooling qualification and release are unknown."
+                  }
+                ],
+                "receipt_id": "78df246b-d856-4108-ba6e-57a082569c50",
+                "manufacturing_release": null,
+                "qualification": "unknown",
+                "negative_enumeration_complete": false
+              },
+              {
+                "schema_version": "pdos-manufacturing-preparation-v1",
+                "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                "kind": "work_instruction",
+                "revision": 1,
+                "series_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                "visibility": "private",
+                "title": "Synthetic work_instruction documentation",
+                "status": "draft",
+                "purpose": "Build and verify a synthetic design",
+                "process": {
+                  "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                  "revision": 1
+                },
+                "operation_key": "assembly",
+                "previous_id": null,
+                "previous_revision": null,
+                "created_at": "2026-10-18T19:05:06.308008+00:00",
+                "is_current": true,
+                "source_status": "current",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "074aeaf6-bf3a-4f35-af3b-77e1c36830dc",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1
+                  }
+                ],
+                "body": {
+                  "gaps": [
+                    {
+                      "code": "INSTRUCTION_CONDITIONS_UNKNOWN",
+                      "detail": "作业适用条件未知。"
+                    },
+                    {
+                      "code": "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+                      "detail": "模具真实验收与适用性尚未接通。"
+                    },
+                    {
+                      "code": "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+                      "detail": "治具真实验收及校准尚未接通。"
+                    },
+                    {
+                      "code": "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+                      "detail": "制造基线尚无具名发布决定。"
+                    },
+                    {
+                      "code": "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED",
+                      "detail": "制造影响范围全集尚未核对。"
+                    }
+                  ],
+                  "kind": "work_instruction",
+                  "input": {
+                    "steps": [
+                      {
+                        "key": "assemble",
+                        "text": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                        "sources": [
+                          {
+                            "line": 1,
+                            "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                            "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "key": "torque",
+                            "unit": null,
+                            "lower": null,
+                            "upper": null,
+                            "nominal": null,
+                            "sources": []
+                          }
+                        ],
+                        "safety_notes": null
+                      }
+                    ],
+                    "title": "Synthetic work_instruction documentation",
+                    "reason": "Save exact synthetic work_instruction draft; qualification for release remains unknown",
+                    "process": {
+                      "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                      "revision": 1
+                    },
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                        "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "conditions": null,
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "operation_key": "assembly",
+                    "expected_previous_revision": null
+                  },
+                  "scope": {
+                    "purpose": "Build and verify a synthetic design",
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+                  },
+                  "status": "draft",
+                  "qualification": "unknown",
+                  "schema_version": "pdos-manufacturing-preparation-v1",
+                  "process_snapshot": {
+                    "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "line": null,
+                    "name": "Synthetic manufacturing configuration",
+                    "site": null,
+                    "reason": "Synthetic fixed preparation",
+                    "status": "draft",
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic requirement is unverified",
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                    "revision": 1,
+                    "series_id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "created_at": "2026-10-18T19:04:48.710168+00:00",
+                    "operations": [
+                      {
+                        "key": "assembly",
+                        "sop": null,
+                        "kind": "assembly",
+                        "name": "Synthetic assembly",
+                        "notes": null,
+                        "depends_on": [],
+                        "bom_line_keys": [
+                          "motor"
+                        ],
+                        "cycle_time_minutes": null,
+                        "acceptance_criterion": null,
+                        "resource_requirements": []
+                      }
+                    ],
+                    "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "source_status": "current",
+                    "engineering_revision": 1,
+                    "qualification_status": "unknown",
+                    "external_verification": "not_checked",
+                    "required_source_read_set": [
+                      {
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "engineering_configuration": {
+                      "id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e",
+                      "name": "Synthetic engineering configuration",
+                      "bom_id": "ea340cbf-7502-47f8-a9c9-3bbf2097fda3",
+                      "status": "draft",
+                      "revision": 1,
+                      "definition_id": "a2228b95-f653-4a07-8c7c-5f38ce12ad32",
+                      "source_status": "current"
+                    },
+                    "expected_previous_revision": null,
+                    "engineering_configuration_id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e"
+                  },
+                  "document_bindings": [],
+                  "manufacturing_release": null,
+                  "negative_enumeration_complete": false
+                },
+                "sources": [
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1,
+                    "line": 1,
+                    "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown."
+                  }
+                ],
+                "receipt_id": "7e41ee1c-4ba7-4eae-8392-6c7ab5d08f1e",
+                "manufacturing_release": null,
+                "qualification": "unknown",
+                "negative_enumeration_complete": false
+              },
+              {
+                "schema_version": "pdos-manufacturing-preparation-v1",
+                "id": "bab832f5-744e-486d-a533-d6831adf271e",
+                "kind": "control_plan",
+                "revision": 1,
+                "series_id": "bab832f5-744e-486d-a533-d6831adf271e",
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                "visibility": "private",
+                "title": "Synthetic control_plan documentation",
+                "status": "draft",
+                "purpose": "Build and verify a synthetic design",
+                "process": {
+                  "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                  "revision": 1
+                },
+                "operation_key": "assembly",
+                "previous_id": null,
+                "previous_revision": null,
+                "created_at": "2026-10-18T19:05:13.610571+00:00",
+                "is_current": true,
+                "source_status": "current",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "074aeaf6-bf3a-4f35-af3b-77e1c36830dc",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1
+                  }
+                ],
+                "body": {
+                  "gaps": [
+                    {
+                      "key": "fit",
+                      "code": "CONTROL_CHECK_INCOMPLETE",
+                      "detail": "控制项的检验、采样、反应或责任依据未齐。",
+                      "fields": [
+                        "method",
+                        "criterion",
+                        "frequency",
+                        "sampling_method",
+                        "reaction_plan",
+                        "responsible_role"
+                      ]
+                    },
+                    {
+                      "code": "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+                      "detail": "模具真实验收与适用性尚未接通。"
+                    },
+                    {
+                      "code": "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+                      "detail": "治具真实验收及校准尚未接通。"
+                    },
+                    {
+                      "code": "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+                      "detail": "制造基线尚无具名发布决定。"
+                    },
+                    {
+                      "code": "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED",
+                      "detail": "制造影响范围全集尚未核对。"
+                    }
+                  ],
+                  "kind": "control_plan",
+                  "input": {
+                    "title": "Synthetic control_plan documentation",
+                    "checks": [
+                      {
+                        "key": "fit",
+                        "method": null,
+                        "feature": "Synthetic housing fit",
+                        "sources": [
+                          {
+                            "line": 3,
+                            "quote": "Synthetic CP feature: inspect housing fit; method, acceptance limit and sampling are unknown.",
+                            "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "criterion": null,
+                        "frequency": null,
+                        "reaction_plan": null,
+                        "sampling_method": null,
+                        "responsible_role": null
+                      }
+                    ],
+                    "reason": "Save exact synthetic control_plan draft; qualification for release remains unknown",
+                    "process": {
+                      "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                      "revision": 1
+                    },
+                    "sources": [
+                      {
+                        "line": 3,
+                        "quote": "Synthetic CP feature: inspect housing fit; method, acceptance limit and sampling are unknown.",
+                        "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "operation_key": "assembly",
+                    "expected_previous_revision": null
+                  },
+                  "scope": {
+                    "purpose": "Build and verify a synthetic design",
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+                  },
+                  "status": "draft",
+                  "qualification": "unknown",
+                  "schema_version": "pdos-manufacturing-preparation-v1",
+                  "process_snapshot": {
+                    "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "line": null,
+                    "name": "Synthetic manufacturing configuration",
+                    "site": null,
+                    "reason": "Synthetic fixed preparation",
+                    "status": "draft",
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic requirement is unverified",
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                    "revision": 1,
+                    "series_id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "created_at": "2026-10-18T19:04:48.710168+00:00",
+                    "operations": [
+                      {
+                        "key": "assembly",
+                        "sop": null,
+                        "kind": "assembly",
+                        "name": "Synthetic assembly",
+                        "notes": null,
+                        "depends_on": [],
+                        "bom_line_keys": [
+                          "motor"
+                        ],
+                        "cycle_time_minutes": null,
+                        "acceptance_criterion": null,
+                        "resource_requirements": []
+                      }
+                    ],
+                    "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "source_status": "current",
+                    "engineering_revision": 1,
+                    "qualification_status": "unknown",
+                    "external_verification": "not_checked",
+                    "required_source_read_set": [
+                      {
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "engineering_configuration": {
+                      "id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e",
+                      "name": "Synthetic engineering configuration",
+                      "bom_id": "ea340cbf-7502-47f8-a9c9-3bbf2097fda3",
+                      "status": "draft",
+                      "revision": 1,
+                      "definition_id": "a2228b95-f653-4a07-8c7c-5f38ce12ad32",
+                      "source_status": "current"
+                    },
+                    "expected_previous_revision": null,
+                    "engineering_configuration_id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e"
+                  },
+                  "document_bindings": [],
+                  "manufacturing_release": null,
+                  "negative_enumeration_complete": false
+                },
+                "sources": [
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1,
+                    "line": 3,
+                    "quote": "Synthetic CP feature: inspect housing fit; method, acceptance limit and sampling are unknown."
+                  }
+                ],
+                "receipt_id": "b37eb66d-d895-486b-813b-8b7a54f45e28",
+                "manufacturing_release": null,
+                "qualification": "unknown",
+                "negative_enumeration_complete": false
+              },
+              {
+                "schema_version": "pdos-manufacturing-preparation-v1",
+                "id": "c17f2e1d-bf2b-48a0-8694-ac65ccf59b4a",
+                "kind": "work_instruction",
+                "revision": 1,
+                "series_id": "c17f2e1d-bf2b-48a0-8694-ac65ccf59b4a",
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                "visibility": "private",
+                "title": "Synthetic independent alternative instruction series",
+                "status": "draft",
+                "purpose": "Build and verify a synthetic design",
+                "process": {
+                  "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                  "revision": 1
+                },
+                "operation_key": "assembly",
+                "previous_id": null,
+                "previous_revision": null,
+                "created_at": "2026-10-18T19:05:20.607630+00:00",
+                "is_current": true,
+                "source_status": "current",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "074aeaf6-bf3a-4f35-af3b-77e1c36830dc",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1
+                  }
+                ],
+                "body": {
+                  "gaps": [
+                    {
+                      "code": "INSTRUCTION_CONDITIONS_UNKNOWN",
+                      "detail": "作业适用条件未知。"
+                    },
+                    {
+                      "code": "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+                      "detail": "模具真实验收与适用性尚未接通。"
+                    },
+                    {
+                      "code": "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+                      "detail": "治具真实验收及校准尚未接通。"
+                    },
+                    {
+                      "code": "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+                      "detail": "制造基线尚无具名发布决定。"
+                    },
+                    {
+                      "code": "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED",
+                      "detail": "制造影响范围全集尚未核对。"
+                    }
+                  ],
+                  "kind": "work_instruction",
+                  "input": {
+                    "steps": [
+                      {
+                        "key": "assemble",
+                        "text": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                        "sources": [
+                          {
+                            "line": 1,
+                            "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                            "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "key": "torque",
+                            "unit": null,
+                            "lower": null,
+                            "upper": null,
+                            "nominal": null,
+                            "sources": []
+                          }
+                        ],
+                        "safety_notes": null
+                      }
+                    ],
+                    "title": "Synthetic independent alternative instruction series",
+                    "reason": "Retain a separate synthetic instruction series for the same operation",
+                    "process": {
+                      "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                      "revision": 1
+                    },
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                        "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "conditions": null,
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "operation_key": "assembly",
+                    "expected_previous_revision": null
+                  },
+                  "scope": {
+                    "purpose": "Build and verify a synthetic design",
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+                  },
+                  "status": "draft",
+                  "qualification": "unknown",
+                  "schema_version": "pdos-manufacturing-preparation-v1",
+                  "process_snapshot": {
+                    "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "line": null,
+                    "name": "Synthetic manufacturing configuration",
+                    "site": null,
+                    "reason": "Synthetic fixed preparation",
+                    "status": "draft",
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic requirement is unverified",
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                    "revision": 1,
+                    "series_id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "created_at": "2026-10-18T19:04:48.710168+00:00",
+                    "operations": [
+                      {
+                        "key": "assembly",
+                        "sop": null,
+                        "kind": "assembly",
+                        "name": "Synthetic assembly",
+                        "notes": null,
+                        "depends_on": [],
+                        "bom_line_keys": [
+                          "motor"
+                        ],
+                        "cycle_time_minutes": null,
+                        "acceptance_criterion": null,
+                        "resource_requirements": []
+                      }
+                    ],
+                    "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "source_status": "current",
+                    "engineering_revision": 1,
+                    "qualification_status": "unknown",
+                    "external_verification": "not_checked",
+                    "required_source_read_set": [
+                      {
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "engineering_configuration": {
+                      "id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e",
+                      "name": "Synthetic engineering configuration",
+                      "bom_id": "ea340cbf-7502-47f8-a9c9-3bbf2097fda3",
+                      "status": "draft",
+                      "revision": 1,
+                      "definition_id": "a2228b95-f653-4a07-8c7c-5f38ce12ad32",
+                      "source_status": "current"
+                    },
+                    "expected_previous_revision": null,
+                    "engineering_configuration_id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e"
+                  },
+                  "document_bindings": [],
+                  "manufacturing_release": null,
+                  "negative_enumeration_complete": false
+                },
+                "sources": [
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1,
+                    "line": 1,
+                    "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown."
+                  }
+                ],
+                "receipt_id": "d2205acd-ca4a-4e2c-a96e-a7d7df173baf",
+                "manufacturing_release": null,
+                "qualification": "unknown",
+                "negative_enumeration_complete": false
+              }
+            ],
+            "history_page": {
+              "next_cursor": null
+            },
+            "has_more": false,
+            "unavailable_count": 0,
+            "qualification": "unknown",
+            "manufacturing_release": null,
+            "negative_enumeration_complete": false
+          }
+        },
+        "fixed_wi_v1": {
+          "route": "/v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations/work_instruction/68191e4f-b77f-4f19-a243-9da1f4eda39f",
+          "params": {
+            "revision": 1
+          },
+          "status_code": 200,
+          "body": {
+            "schema_version": "pdos-manufacturing-preparation-v1",
+            "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+            "kind": "work_instruction",
+            "revision": 1,
+            "series_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+            "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+            "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+            "visibility": "private",
+            "title": "Synthetic work_instruction documentation",
+            "status": "draft",
+            "purpose": "Build and verify a synthetic design",
+            "process": {
+              "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+              "revision": 1
+            },
+            "operation_key": "assembly",
+            "previous_id": null,
+            "previous_revision": null,
+            "created_at": "2026-10-18T19:05:06.308008+00:00",
+            "is_current": true,
+            "source_status": "current",
+            "required_source_read_set": [
+              {
+                "artifact_id": "074aeaf6-bf3a-4f35-af3b-77e1c36830dc",
+                "expected_revision": 1
+              },
+              {
+                "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                "expected_revision": 1
+              },
+              {
+                "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                "expected_revision": 1
+              }
+            ],
+            "body": {
+              "gaps": [
+                {
+                  "code": "INSTRUCTION_CONDITIONS_UNKNOWN",
+                  "detail": "作业适用条件未知。"
+                },
+                {
+                  "code": "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+                  "detail": "模具真实验收与适用性尚未接通。"
+                },
+                {
+                  "code": "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+                  "detail": "治具真实验收及校准尚未接通。"
+                },
+                {
+                  "code": "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+                  "detail": "制造基线尚无具名发布决定。"
+                },
+                {
+                  "code": "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED",
+                  "detail": "制造影响范围全集尚未核对。"
+                }
+              ],
+              "kind": "work_instruction",
+              "input": {
+                "steps": [
+                  {
+                    "key": "assemble",
+                    "text": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                        "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "parameters": [
+                      {
+                        "key": "torque",
+                        "unit": null,
+                        "lower": null,
+                        "upper": null,
+                        "nominal": null,
+                        "sources": []
+                      }
+                    ],
+                    "safety_notes": null
+                  }
+                ],
+                "title": "Synthetic work_instruction documentation",
+                "reason": "Save exact synthetic work_instruction draft; qualification for release remains unknown",
+                "process": {
+                  "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                  "revision": 1
+                },
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1
+                  }
+                ],
+                "conditions": null,
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                "visibility": "private",
+                "previous_id": null,
+                "operation_key": "assembly",
+                "expected_previous_revision": null
+              },
+              "scope": {
+                "purpose": "Build and verify a synthetic design",
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+              },
+              "status": "draft",
+              "qualification": "unknown",
+              "schema_version": "pdos-manufacturing-preparation-v1",
+              "process_snapshot": {
+                "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                "line": null,
+                "name": "Synthetic manufacturing configuration",
+                "site": null,
+                "reason": "Synthetic fixed preparation",
+                "status": "draft",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  }
+                ],
+                "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                "revision": 1,
+                "series_id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                "created_at": "2026-10-18T19:04:48.710168+00:00",
+                "operations": [
+                  {
+                    "key": "assembly",
+                    "sop": null,
+                    "kind": "assembly",
+                    "name": "Synthetic assembly",
+                    "notes": null,
+                    "depends_on": [],
+                    "bom_line_keys": [
+                      "motor"
+                    ],
+                    "cycle_time_minutes": null,
+                    "acceptance_criterion": null,
+                    "resource_requirements": []
+                  }
+                ],
+                "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+                "visibility": "private",
+                "previous_id": null,
+                "source_status": "current",
+                "engineering_revision": 1,
+                "qualification_status": "unknown",
+                "external_verification": "not_checked",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  }
+                ],
+                "engineering_configuration": {
+                  "id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e",
+                  "name": "Synthetic engineering configuration",
+                  "bom_id": "ea340cbf-7502-47f8-a9c9-3bbf2097fda3",
+                  "status": "draft",
+                  "revision": 1,
+                  "definition_id": "a2228b95-f653-4a07-8c7c-5f38ce12ad32",
+                  "source_status": "current"
+                },
+                "expected_previous_revision": null,
+                "engineering_configuration_id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e"
+              },
+              "document_bindings": [],
+              "manufacturing_release": null,
+              "negative_enumeration_complete": false
+            },
+            "sources": [
+              {
+                "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                "expected_revision": 1,
+                "line": 1,
+                "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown."
+              }
+            ],
+            "receipt_id": "7e41ee1c-4ba7-4eae-8392-6c7ab5d08f1e",
+            "manufacturing_release": null,
+            "qualification": "unknown",
+            "negative_enumeration_complete": false
+          }
+        },
+        "fixed_baseline": {
+          "route": "/v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations/manufacturing_baseline/43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+          "params": {
+            "revision": 1
+          },
+          "status_code": 200,
+          "body": {
+            "schema_version": "pdos-manufacturing-preparation-v1",
+            "id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+            "kind": "manufacturing_baseline",
+            "revision": 1,
+            "series_id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+            "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+            "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+            "visibility": "private",
+            "title": "Synthetic manufacturing_baseline documentation",
+            "status": "draft",
+            "purpose": "Build and verify a synthetic design",
+            "process": {
+              "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+              "revision": 1
+            },
+            "operation_key": null,
+            "previous_id": null,
+            "previous_revision": null,
+            "created_at": "2026-10-18T19:05:31.446428+00:00",
+            "is_current": true,
+            "source_status": "current",
+            "required_source_read_set": [
+              {
+                "artifact_id": "074aeaf6-bf3a-4f35-af3b-77e1c36830dc",
+                "expected_revision": 1
+              },
+              {
+                "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                "expected_revision": 1
+              },
+              {
+                "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                "expected_revision": 1
+              }
+            ],
+            "body": {
+              "gaps": [
+                {
+                  "code": "PROCESS_RISK_UNKNOWN",
+                  "detail": "过程风险依据未知。"
+                },
+                {
+                  "code": "PACKAGING_LABEL_UNKNOWN",
+                  "detail": "包装标识依据未知。"
+                },
+                {
+                  "code": "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+                  "detail": "模具真实验收与适用性尚未接通。"
+                },
+                {
+                  "code": "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+                  "detail": "治具真实验收及校准尚未接通。"
+                },
+                {
+                  "code": "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+                  "detail": "制造基线尚无具名发布决定。"
+                },
+                {
+                  "code": "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED",
+                  "detail": "制造影响范围全集尚未核对。"
+                }
+              ],
+              "kind": "manufacturing_baseline",
+              "input": {
+                "title": "Synthetic manufacturing_baseline documentation",
+                "reason": "Save exact synthetic manufacturing_baseline draft; qualification for release remains unknown",
+                "process": {
+                  "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                  "revision": 1
+                },
+                "sources": [
+                  {
+                    "line": 4,
+                    "quote": "Synthetic baseline: retain fixed current documentation; tooling qualification and release are unknown.",
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1
+                  }
+                ],
+                "operations": [
+                  {
+                    "control_plan": {
+                      "id": "bab832f5-744e-486d-a533-d6831adf271e",
+                      "kind": "control_plan",
+                      "revision": 1
+                    },
+                    "operation_key": "assembly",
+                    "work_instruction": {
+                      "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                      "kind": "work_instruction",
+                      "revision": 1
+                    }
+                  }
+                ],
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                "risk_notes": null,
+                "visibility": "private",
+                "previous_id": null,
+                "packaging_label_basis": null,
+                "expected_previous_revision": null
+              },
+              "scope": {
+                "purpose": "Build and verify a synthetic design",
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+              },
+              "status": "draft",
+              "qualification": "unknown",
+              "schema_version": "pdos-manufacturing-preparation-v1",
+              "process_snapshot": {
+                "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                "line": null,
+                "name": "Synthetic manufacturing configuration",
+                "site": null,
+                "reason": "Synthetic fixed preparation",
+                "status": "draft",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  }
+                ],
+                "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                "revision": 1,
+                "series_id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                "created_at": "2026-10-18T19:04:48.710168+00:00",
+                "operations": [
+                  {
+                    "key": "assembly",
+                    "sop": null,
+                    "kind": "assembly",
+                    "name": "Synthetic assembly",
+                    "notes": null,
+                    "depends_on": [],
+                    "bom_line_keys": [
+                      "motor"
+                    ],
+                    "cycle_time_minutes": null,
+                    "acceptance_criterion": null,
+                    "resource_requirements": []
+                  }
+                ],
+                "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+                "visibility": "private",
+                "previous_id": null,
+                "source_status": "current",
+                "engineering_revision": 1,
+                "qualification_status": "unknown",
+                "external_verification": "not_checked",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  }
+                ],
+                "engineering_configuration": {
+                  "id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e",
+                  "name": "Synthetic engineering configuration",
+                  "bom_id": "ea340cbf-7502-47f8-a9c9-3bbf2097fda3",
+                  "status": "draft",
+                  "revision": 1,
+                  "definition_id": "a2228b95-f653-4a07-8c7c-5f38ce12ad32",
+                  "source_status": "current"
+                },
+                "expected_previous_revision": null,
+                "engineering_configuration_id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e"
+              },
+              "document_bindings": [
+                {
+                  "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                  "kind": "work_instruction",
+                  "revision": 1,
+                  "body_sha256": "c94271aff18cb13fcc9b5985c20028a08183e8644fd293f24fedebfa339ca321",
+                  "operation_key": "assembly"
+                },
+                {
+                  "id": "bab832f5-744e-486d-a533-d6831adf271e",
+                  "kind": "control_plan",
+                  "revision": 1,
+                  "body_sha256": "e84354d6d9a92f35be8ebfdb05d5814d4aeec2a72257c44519096007c858877e",
+                  "operation_key": "assembly"
+                }
+              ],
+              "manufacturing_release": null,
+              "negative_enumeration_complete": false
+            },
+            "sources": [
+              {
+                "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                "expected_revision": 1,
+                "line": 4,
+                "quote": "Synthetic baseline: retain fixed current documentation; tooling qualification and release are unknown."
+              }
+            ],
+            "receipt_id": "78df246b-d856-4108-ba6e-57a082569c50",
+            "manufacturing_release": null,
+            "qualification": "unknown",
+            "negative_enumeration_complete": false
+          }
+        }
+      },
+      "read_only_counts": {
+        "before": {
+          "products": 2,
+          "projects": 2,
+          "project_product_links": 2,
+          "definition_revisions": 3,
+          "definition_sources": 0,
+          "definition_specs": 0,
+          "parts": 2,
+          "bom_revisions": 1,
+          "bom_lines": 2,
+          "engineering_configurations": 2,
+          "process_revisions": 2,
+          "manufacturing_preparation_versions": 4,
+          "manufacturing_preparation_currents": 4,
+          "manufacturing_baseline_document_links": 2,
+          "action_receipts": 21,
+          "audit_entries": 20,
+          "outbox_events": 22,
+          "request_keys": 20,
+          "artifact_versions": 3,
+          "confirmations": 15,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 16
+        },
+        "after": {
+          "products": 2,
+          "projects": 2,
+          "project_product_links": 2,
+          "definition_revisions": 3,
+          "definition_sources": 0,
+          "definition_specs": 0,
+          "parts": 2,
+          "bom_revisions": 1,
+          "bom_lines": 2,
+          "engineering_configurations": 2,
+          "process_revisions": 2,
+          "manufacturing_preparation_versions": 4,
+          "manufacturing_preparation_currents": 4,
+          "manufacturing_baseline_document_links": 2,
+          "action_receipts": 21,
+          "audit_entries": 20,
+          "outbox_events": 22,
+          "request_keys": 20,
+          "artifact_versions": 3,
+          "confirmations": 15,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 16
+        },
+        "unchanged": true
+      }
+    },
+    {
+      "phase": "wi_series_advanced_baseline_retains_v1",
+      "reads": {
+        "project_preparations": {
+          "route": "/v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations",
+          "params": {
+            "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+          },
+          "status_code": 200,
+          "body": {
+            "schema_version": "pdos-manufacturing-preparation-v1",
+            "versions": [
+              {
+                "schema_version": "pdos-manufacturing-preparation-v1",
+                "id": "309fab90-b9f8-49c1-8b09-d9ae4c5eb725",
+                "kind": "work_instruction",
+                "revision": 2,
+                "series_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                "visibility": "private",
+                "title": "Synthetic work_instruction documentation",
+                "status": "draft",
+                "purpose": "Build and verify a synthetic design",
+                "process": {
+                  "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                  "revision": 1
+                },
+                "operation_key": "assembly",
+                "previous_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                "previous_revision": 1,
+                "created_at": "2026-10-18T19:05:42.457051+00:00",
+                "is_current": true,
+                "source_status": "current",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "074aeaf6-bf3a-4f35-af3b-77e1c36830dc",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1
+                  }
+                ],
+                "body": {
+                  "gaps": [
+                    {
+                      "code": "INSTRUCTION_CONDITIONS_UNKNOWN",
+                      "detail": "作业适用条件未知。"
+                    },
+                    {
+                      "code": "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+                      "detail": "模具真实验收与适用性尚未接通。"
+                    },
+                    {
+                      "code": "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+                      "detail": "治具真实验收及校准尚未接通。"
+                    },
+                    {
+                      "code": "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+                      "detail": "制造基线尚无具名发布决定。"
+                    },
+                    {
+                      "code": "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED",
+                      "detail": "制造影响范围全集尚未核对。"
+                    }
+                  ],
+                  "kind": "work_instruction",
+                  "input": {
+                    "steps": [
+                      {
+                        "key": "assemble",
+                        "text": "Synthetic WI revision: inspect the unpowered assembly before continuing; torque is unknown.",
+                        "sources": [
+                          {
+                            "line": 2,
+                            "quote": "Synthetic WI revision: inspect the unpowered assembly before continuing; torque is unknown.",
+                            "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "key": "torque",
+                            "unit": null,
+                            "lower": null,
+                            "upper": null,
+                            "nominal": null,
+                            "sources": []
+                          }
+                        ],
+                        "safety_notes": null
+                      }
+                    ],
+                    "title": "Synthetic work_instruction documentation",
+                    "reason": "Save exact synthetic work_instruction draft; qualification for release remains unknown",
+                    "process": {
+                      "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                      "revision": 1
+                    },
+                    "sources": [
+                      {
+                        "line": 2,
+                        "quote": "Synthetic WI revision: inspect the unpowered assembly before continuing; torque is unknown.",
+                        "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "conditions": null,
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                    "visibility": "private",
+                    "previous_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                    "operation_key": "assembly",
+                    "expected_previous_revision": 1
+                  },
+                  "scope": {
+                    "purpose": "Build and verify a synthetic design",
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+                  },
+                  "status": "draft",
+                  "qualification": "unknown",
+                  "schema_version": "pdos-manufacturing-preparation-v1",
+                  "process_snapshot": {
+                    "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "line": null,
+                    "name": "Synthetic manufacturing configuration",
+                    "site": null,
+                    "reason": "Synthetic fixed preparation",
+                    "status": "draft",
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic requirement is unverified",
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                    "revision": 1,
+                    "series_id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "created_at": "2026-10-18T19:04:48.710168+00:00",
+                    "operations": [
+                      {
+                        "key": "assembly",
+                        "sop": null,
+                        "kind": "assembly",
+                        "name": "Synthetic assembly",
+                        "notes": null,
+                        "depends_on": [],
+                        "bom_line_keys": [
+                          "motor"
+                        ],
+                        "cycle_time_minutes": null,
+                        "acceptance_criterion": null,
+                        "resource_requirements": []
+                      }
+                    ],
+                    "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "source_status": "current",
+                    "engineering_revision": 1,
+                    "qualification_status": "unknown",
+                    "external_verification": "not_checked",
+                    "required_source_read_set": [
+                      {
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "engineering_configuration": {
+                      "id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e",
+                      "name": "Synthetic engineering configuration",
+                      "bom_id": "ea340cbf-7502-47f8-a9c9-3bbf2097fda3",
+                      "status": "draft",
+                      "revision": 1,
+                      "definition_id": "a2228b95-f653-4a07-8c7c-5f38ce12ad32",
+                      "source_status": "current"
+                    },
+                    "expected_previous_revision": null,
+                    "engineering_configuration_id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e"
+                  },
+                  "document_bindings": [],
+                  "manufacturing_release": null,
+                  "negative_enumeration_complete": false
+                },
+                "sources": [
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1,
+                    "line": 2,
+                    "quote": "Synthetic WI revision: inspect the unpowered assembly before continuing; torque is unknown."
+                  }
+                ],
+                "receipt_id": "f17ea8e5-0dab-4c85-b782-db9e2e16fe5a",
+                "manufacturing_release": null,
+                "qualification": "unknown",
+                "negative_enumeration_complete": false
+              },
+              {
+                "schema_version": "pdos-manufacturing-preparation-v1",
+                "id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+                "kind": "manufacturing_baseline",
+                "revision": 1,
+                "series_id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                "visibility": "private",
+                "title": "Synthetic manufacturing_baseline documentation",
+                "status": "draft",
+                "purpose": "Build and verify a synthetic design",
+                "process": {
+                  "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                  "revision": 1
+                },
+                "operation_key": null,
+                "previous_id": null,
+                "previous_revision": null,
+                "created_at": "2026-10-18T19:05:31.446428+00:00",
+                "is_current": true,
+                "source_status": "needs_recheck",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "074aeaf6-bf3a-4f35-af3b-77e1c36830dc",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1
+                  }
+                ],
+                "body": {
+                  "gaps": [
+                    {
+                      "code": "PROCESS_RISK_UNKNOWN",
+                      "detail": "过程风险依据未知。"
+                    },
+                    {
+                      "code": "PACKAGING_LABEL_UNKNOWN",
+                      "detail": "包装标识依据未知。"
+                    },
+                    {
+                      "code": "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+                      "detail": "模具真实验收与适用性尚未接通。"
+                    },
+                    {
+                      "code": "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+                      "detail": "治具真实验收及校准尚未接通。"
+                    },
+                    {
+                      "code": "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+                      "detail": "制造基线尚无具名发布决定。"
+                    },
+                    {
+                      "code": "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED",
+                      "detail": "制造影响范围全集尚未核对。"
+                    }
+                  ],
+                  "kind": "manufacturing_baseline",
+                  "input": {
+                    "title": "Synthetic manufacturing_baseline documentation",
+                    "reason": "Save exact synthetic manufacturing_baseline draft; qualification for release remains unknown",
+                    "process": {
+                      "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                      "revision": 1
+                    },
+                    "sources": [
+                      {
+                        "line": 4,
+                        "quote": "Synthetic baseline: retain fixed current documentation; tooling qualification and release are unknown.",
+                        "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "operations": [
+                      {
+                        "control_plan": {
+                          "id": "bab832f5-744e-486d-a533-d6831adf271e",
+                          "kind": "control_plan",
+                          "revision": 1
+                        },
+                        "operation_key": "assembly",
+                        "work_instruction": {
+                          "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                          "kind": "work_instruction",
+                          "revision": 1
+                        }
+                      }
+                    ],
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                    "risk_notes": null,
+                    "visibility": "private",
+                    "previous_id": null,
+                    "packaging_label_basis": null,
+                    "expected_previous_revision": null
+                  },
+                  "scope": {
+                    "purpose": "Build and verify a synthetic design",
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+                  },
+                  "status": "draft",
+                  "qualification": "unknown",
+                  "schema_version": "pdos-manufacturing-preparation-v1",
+                  "process_snapshot": {
+                    "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "line": null,
+                    "name": "Synthetic manufacturing configuration",
+                    "site": null,
+                    "reason": "Synthetic fixed preparation",
+                    "status": "draft",
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic requirement is unverified",
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                    "revision": 1,
+                    "series_id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "created_at": "2026-10-18T19:04:48.710168+00:00",
+                    "operations": [
+                      {
+                        "key": "assembly",
+                        "sop": null,
+                        "kind": "assembly",
+                        "name": "Synthetic assembly",
+                        "notes": null,
+                        "depends_on": [],
+                        "bom_line_keys": [
+                          "motor"
+                        ],
+                        "cycle_time_minutes": null,
+                        "acceptance_criterion": null,
+                        "resource_requirements": []
+                      }
+                    ],
+                    "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "source_status": "current",
+                    "engineering_revision": 1,
+                    "qualification_status": "unknown",
+                    "external_verification": "not_checked",
+                    "required_source_read_set": [
+                      {
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "engineering_configuration": {
+                      "id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e",
+                      "name": "Synthetic engineering configuration",
+                      "bom_id": "ea340cbf-7502-47f8-a9c9-3bbf2097fda3",
+                      "status": "draft",
+                      "revision": 1,
+                      "definition_id": "a2228b95-f653-4a07-8c7c-5f38ce12ad32",
+                      "source_status": "current"
+                    },
+                    "expected_previous_revision": null,
+                    "engineering_configuration_id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e"
+                  },
+                  "document_bindings": [
+                    {
+                      "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                      "kind": "work_instruction",
+                      "revision": 1,
+                      "body_sha256": "c94271aff18cb13fcc9b5985c20028a08183e8644fd293f24fedebfa339ca321",
+                      "operation_key": "assembly"
+                    },
+                    {
+                      "id": "bab832f5-744e-486d-a533-d6831adf271e",
+                      "kind": "control_plan",
+                      "revision": 1,
+                      "body_sha256": "e84354d6d9a92f35be8ebfdb05d5814d4aeec2a72257c44519096007c858877e",
+                      "operation_key": "assembly"
+                    }
+                  ],
+                  "manufacturing_release": null,
+                  "negative_enumeration_complete": false
+                },
+                "sources": [
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1,
+                    "line": 4,
+                    "quote": "Synthetic baseline: retain fixed current documentation; tooling qualification and release are unknown."
+                  }
+                ],
+                "receipt_id": "78df246b-d856-4108-ba6e-57a082569c50",
+                "manufacturing_release": null,
+                "qualification": "unknown",
+                "negative_enumeration_complete": false
+              },
+              {
+                "schema_version": "pdos-manufacturing-preparation-v1",
+                "id": "bab832f5-744e-486d-a533-d6831adf271e",
+                "kind": "control_plan",
+                "revision": 1,
+                "series_id": "bab832f5-744e-486d-a533-d6831adf271e",
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                "visibility": "private",
+                "title": "Synthetic control_plan documentation",
+                "status": "draft",
+                "purpose": "Build and verify a synthetic design",
+                "process": {
+                  "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                  "revision": 1
+                },
+                "operation_key": "assembly",
+                "previous_id": null,
+                "previous_revision": null,
+                "created_at": "2026-10-18T19:05:13.610571+00:00",
+                "is_current": true,
+                "source_status": "current",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "074aeaf6-bf3a-4f35-af3b-77e1c36830dc",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1
+                  }
+                ],
+                "body": {
+                  "gaps": [
+                    {
+                      "key": "fit",
+                      "code": "CONTROL_CHECK_INCOMPLETE",
+                      "detail": "控制项的检验、采样、反应或责任依据未齐。",
+                      "fields": [
+                        "method",
+                        "criterion",
+                        "frequency",
+                        "sampling_method",
+                        "reaction_plan",
+                        "responsible_role"
+                      ]
+                    },
+                    {
+                      "code": "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+                      "detail": "模具真实验收与适用性尚未接通。"
+                    },
+                    {
+                      "code": "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+                      "detail": "治具真实验收及校准尚未接通。"
+                    },
+                    {
+                      "code": "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+                      "detail": "制造基线尚无具名发布决定。"
+                    },
+                    {
+                      "code": "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED",
+                      "detail": "制造影响范围全集尚未核对。"
+                    }
+                  ],
+                  "kind": "control_plan",
+                  "input": {
+                    "title": "Synthetic control_plan documentation",
+                    "checks": [
+                      {
+                        "key": "fit",
+                        "method": null,
+                        "feature": "Synthetic housing fit",
+                        "sources": [
+                          {
+                            "line": 3,
+                            "quote": "Synthetic CP feature: inspect housing fit; method, acceptance limit and sampling are unknown.",
+                            "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "criterion": null,
+                        "frequency": null,
+                        "reaction_plan": null,
+                        "sampling_method": null,
+                        "responsible_role": null
+                      }
+                    ],
+                    "reason": "Save exact synthetic control_plan draft; qualification for release remains unknown",
+                    "process": {
+                      "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                      "revision": 1
+                    },
+                    "sources": [
+                      {
+                        "line": 3,
+                        "quote": "Synthetic CP feature: inspect housing fit; method, acceptance limit and sampling are unknown.",
+                        "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "operation_key": "assembly",
+                    "expected_previous_revision": null
+                  },
+                  "scope": {
+                    "purpose": "Build and verify a synthetic design",
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+                  },
+                  "status": "draft",
+                  "qualification": "unknown",
+                  "schema_version": "pdos-manufacturing-preparation-v1",
+                  "process_snapshot": {
+                    "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "line": null,
+                    "name": "Synthetic manufacturing configuration",
+                    "site": null,
+                    "reason": "Synthetic fixed preparation",
+                    "status": "draft",
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic requirement is unverified",
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                    "revision": 1,
+                    "series_id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "created_at": "2026-10-18T19:04:48.710168+00:00",
+                    "operations": [
+                      {
+                        "key": "assembly",
+                        "sop": null,
+                        "kind": "assembly",
+                        "name": "Synthetic assembly",
+                        "notes": null,
+                        "depends_on": [],
+                        "bom_line_keys": [
+                          "motor"
+                        ],
+                        "cycle_time_minutes": null,
+                        "acceptance_criterion": null,
+                        "resource_requirements": []
+                      }
+                    ],
+                    "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "source_status": "current",
+                    "engineering_revision": 1,
+                    "qualification_status": "unknown",
+                    "external_verification": "not_checked",
+                    "required_source_read_set": [
+                      {
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "engineering_configuration": {
+                      "id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e",
+                      "name": "Synthetic engineering configuration",
+                      "bom_id": "ea340cbf-7502-47f8-a9c9-3bbf2097fda3",
+                      "status": "draft",
+                      "revision": 1,
+                      "definition_id": "a2228b95-f653-4a07-8c7c-5f38ce12ad32",
+                      "source_status": "current"
+                    },
+                    "expected_previous_revision": null,
+                    "engineering_configuration_id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e"
+                  },
+                  "document_bindings": [],
+                  "manufacturing_release": null,
+                  "negative_enumeration_complete": false
+                },
+                "sources": [
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1,
+                    "line": 3,
+                    "quote": "Synthetic CP feature: inspect housing fit; method, acceptance limit and sampling are unknown."
+                  }
+                ],
+                "receipt_id": "b37eb66d-d895-486b-813b-8b7a54f45e28",
+                "manufacturing_release": null,
+                "qualification": "unknown",
+                "negative_enumeration_complete": false
+              },
+              {
+                "schema_version": "pdos-manufacturing-preparation-v1",
+                "id": "c17f2e1d-bf2b-48a0-8694-ac65ccf59b4a",
+                "kind": "work_instruction",
+                "revision": 1,
+                "series_id": "c17f2e1d-bf2b-48a0-8694-ac65ccf59b4a",
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                "visibility": "private",
+                "title": "Synthetic independent alternative instruction series",
+                "status": "draft",
+                "purpose": "Build and verify a synthetic design",
+                "process": {
+                  "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                  "revision": 1
+                },
+                "operation_key": "assembly",
+                "previous_id": null,
+                "previous_revision": null,
+                "created_at": "2026-10-18T19:05:20.607630+00:00",
+                "is_current": true,
+                "source_status": "current",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "074aeaf6-bf3a-4f35-af3b-77e1c36830dc",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1
+                  }
+                ],
+                "body": {
+                  "gaps": [
+                    {
+                      "code": "INSTRUCTION_CONDITIONS_UNKNOWN",
+                      "detail": "作业适用条件未知。"
+                    },
+                    {
+                      "code": "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+                      "detail": "模具真实验收与适用性尚未接通。"
+                    },
+                    {
+                      "code": "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+                      "detail": "治具真实验收及校准尚未接通。"
+                    },
+                    {
+                      "code": "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+                      "detail": "制造基线尚无具名发布决定。"
+                    },
+                    {
+                      "code": "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED",
+                      "detail": "制造影响范围全集尚未核对。"
+                    }
+                  ],
+                  "kind": "work_instruction",
+                  "input": {
+                    "steps": [
+                      {
+                        "key": "assemble",
+                        "text": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                        "sources": [
+                          {
+                            "line": 1,
+                            "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                            "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "key": "torque",
+                            "unit": null,
+                            "lower": null,
+                            "upper": null,
+                            "nominal": null,
+                            "sources": []
+                          }
+                        ],
+                        "safety_notes": null
+                      }
+                    ],
+                    "title": "Synthetic independent alternative instruction series",
+                    "reason": "Retain a separate synthetic instruction series for the same operation",
+                    "process": {
+                      "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                      "revision": 1
+                    },
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                        "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "conditions": null,
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "operation_key": "assembly",
+                    "expected_previous_revision": null
+                  },
+                  "scope": {
+                    "purpose": "Build and verify a synthetic design",
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+                  },
+                  "status": "draft",
+                  "qualification": "unknown",
+                  "schema_version": "pdos-manufacturing-preparation-v1",
+                  "process_snapshot": {
+                    "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "line": null,
+                    "name": "Synthetic manufacturing configuration",
+                    "site": null,
+                    "reason": "Synthetic fixed preparation",
+                    "status": "draft",
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic requirement is unverified",
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                    "revision": 1,
+                    "series_id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "created_at": "2026-10-18T19:04:48.710168+00:00",
+                    "operations": [
+                      {
+                        "key": "assembly",
+                        "sop": null,
+                        "kind": "assembly",
+                        "name": "Synthetic assembly",
+                        "notes": null,
+                        "depends_on": [],
+                        "bom_line_keys": [
+                          "motor"
+                        ],
+                        "cycle_time_minutes": null,
+                        "acceptance_criterion": null,
+                        "resource_requirements": []
+                      }
+                    ],
+                    "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "source_status": "current",
+                    "engineering_revision": 1,
+                    "qualification_status": "unknown",
+                    "external_verification": "not_checked",
+                    "required_source_read_set": [
+                      {
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "engineering_configuration": {
+                      "id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e",
+                      "name": "Synthetic engineering configuration",
+                      "bom_id": "ea340cbf-7502-47f8-a9c9-3bbf2097fda3",
+                      "status": "draft",
+                      "revision": 1,
+                      "definition_id": "a2228b95-f653-4a07-8c7c-5f38ce12ad32",
+                      "source_status": "current"
+                    },
+                    "expected_previous_revision": null,
+                    "engineering_configuration_id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e"
+                  },
+                  "document_bindings": [],
+                  "manufacturing_release": null,
+                  "negative_enumeration_complete": false
+                },
+                "sources": [
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1,
+                    "line": 1,
+                    "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown."
+                  }
+                ],
+                "receipt_id": "d2205acd-ca4a-4e2c-a96e-a7d7df173baf",
+                "manufacturing_release": null,
+                "qualification": "unknown",
+                "negative_enumeration_complete": false
+              },
+              {
+                "schema_version": "pdos-manufacturing-preparation-v1",
+                "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                "kind": "work_instruction",
+                "revision": 1,
+                "series_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                "visibility": "private",
+                "title": "Synthetic work_instruction documentation",
+                "status": "draft",
+                "purpose": "Build and verify a synthetic design",
+                "process": {
+                  "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                  "revision": 1
+                },
+                "operation_key": "assembly",
+                "previous_id": null,
+                "previous_revision": null,
+                "created_at": "2026-10-18T19:05:06.308008+00:00",
+                "is_current": false,
+                "source_status": "current",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "074aeaf6-bf3a-4f35-af3b-77e1c36830dc",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  },
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1
+                  }
+                ],
+                "body": {
+                  "gaps": [
+                    {
+                      "code": "INSTRUCTION_CONDITIONS_UNKNOWN",
+                      "detail": "作业适用条件未知。"
+                    },
+                    {
+                      "code": "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+                      "detail": "模具真实验收与适用性尚未接通。"
+                    },
+                    {
+                      "code": "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+                      "detail": "治具真实验收及校准尚未接通。"
+                    },
+                    {
+                      "code": "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+                      "detail": "制造基线尚无具名发布决定。"
+                    },
+                    {
+                      "code": "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED",
+                      "detail": "制造影响范围全集尚未核对。"
+                    }
+                  ],
+                  "kind": "work_instruction",
+                  "input": {
+                    "steps": [
+                      {
+                        "key": "assemble",
+                        "text": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                        "sources": [
+                          {
+                            "line": 1,
+                            "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                            "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "key": "torque",
+                            "unit": null,
+                            "lower": null,
+                            "upper": null,
+                            "nominal": null,
+                            "sources": []
+                          }
+                        ],
+                        "safety_notes": null
+                      }
+                    ],
+                    "title": "Synthetic work_instruction documentation",
+                    "reason": "Save exact synthetic work_instruction draft; qualification for release remains unknown",
+                    "process": {
+                      "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                      "revision": 1
+                    },
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                        "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "conditions": null,
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "operation_key": "assembly",
+                    "expected_previous_revision": null
+                  },
+                  "scope": {
+                    "purpose": "Build and verify a synthetic design",
+                    "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+                  },
+                  "status": "draft",
+                  "qualification": "unknown",
+                  "schema_version": "pdos-manufacturing-preparation-v1",
+                  "process_snapshot": {
+                    "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "line": null,
+                    "name": "Synthetic manufacturing configuration",
+                    "site": null,
+                    "reason": "Synthetic fixed preparation",
+                    "status": "draft",
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic requirement is unverified",
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                    "revision": 1,
+                    "series_id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                    "created_at": "2026-10-18T19:04:48.710168+00:00",
+                    "operations": [
+                      {
+                        "key": "assembly",
+                        "sop": null,
+                        "kind": "assembly",
+                        "name": "Synthetic assembly",
+                        "notes": null,
+                        "depends_on": [],
+                        "bom_line_keys": [
+                          "motor"
+                        ],
+                        "cycle_time_minutes": null,
+                        "acceptance_criterion": null,
+                        "resource_requirements": []
+                      }
+                    ],
+                    "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+                    "visibility": "private",
+                    "previous_id": null,
+                    "source_status": "current",
+                    "engineering_revision": 1,
+                    "qualification_status": "unknown",
+                    "external_verification": "not_checked",
+                    "required_source_read_set": [
+                      {
+                        "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "engineering_configuration": {
+                      "id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e",
+                      "name": "Synthetic engineering configuration",
+                      "bom_id": "ea340cbf-7502-47f8-a9c9-3bbf2097fda3",
+                      "status": "draft",
+                      "revision": 1,
+                      "definition_id": "a2228b95-f653-4a07-8c7c-5f38ce12ad32",
+                      "source_status": "current"
+                    },
+                    "expected_previous_revision": null,
+                    "engineering_configuration_id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e"
+                  },
+                  "document_bindings": [],
+                  "manufacturing_release": null,
+                  "negative_enumeration_complete": false
+                },
+                "sources": [
+                  {
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1,
+                    "line": 1,
+                    "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown."
+                  }
+                ],
+                "receipt_id": "7e41ee1c-4ba7-4eae-8392-6c7ab5d08f1e",
+                "manufacturing_release": null,
+                "qualification": "unknown",
+                "negative_enumeration_complete": false
+              }
+            ],
+            "history_page": {
+              "next_cursor": null
+            },
+            "has_more": false,
+            "unavailable_count": 0,
+            "qualification": "unknown",
+            "manufacturing_release": null,
+            "negative_enumeration_complete": false
+          }
+        },
+        "fixed_wi_v1": {
+          "route": "/v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations/work_instruction/68191e4f-b77f-4f19-a243-9da1f4eda39f",
+          "params": {
+            "revision": 1
+          },
+          "status_code": 200,
+          "body": {
+            "schema_version": "pdos-manufacturing-preparation-v1",
+            "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+            "kind": "work_instruction",
+            "revision": 1,
+            "series_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+            "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+            "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+            "visibility": "private",
+            "title": "Synthetic work_instruction documentation",
+            "status": "draft",
+            "purpose": "Build and verify a synthetic design",
+            "process": {
+              "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+              "revision": 1
+            },
+            "operation_key": "assembly",
+            "previous_id": null,
+            "previous_revision": null,
+            "created_at": "2026-10-18T19:05:06.308008+00:00",
+            "is_current": false,
+            "source_status": "current",
+            "required_source_read_set": [
+              {
+                "artifact_id": "074aeaf6-bf3a-4f35-af3b-77e1c36830dc",
+                "expected_revision": 1
+              },
+              {
+                "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                "expected_revision": 1
+              },
+              {
+                "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                "expected_revision": 1
+              }
+            ],
+            "body": {
+              "gaps": [
+                {
+                  "code": "INSTRUCTION_CONDITIONS_UNKNOWN",
+                  "detail": "作业适用条件未知。"
+                },
+                {
+                  "code": "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+                  "detail": "模具真实验收与适用性尚未接通。"
+                },
+                {
+                  "code": "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+                  "detail": "治具真实验收及校准尚未接通。"
+                },
+                {
+                  "code": "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+                  "detail": "制造基线尚无具名发布决定。"
+                },
+                {
+                  "code": "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED",
+                  "detail": "制造影响范围全集尚未核对。"
+                }
+              ],
+              "kind": "work_instruction",
+              "input": {
+                "steps": [
+                  {
+                    "key": "assemble",
+                    "text": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                    "sources": [
+                      {
+                        "line": 1,
+                        "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                        "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "parameters": [
+                      {
+                        "key": "torque",
+                        "unit": null,
+                        "lower": null,
+                        "upper": null,
+                        "nominal": null,
+                        "sources": []
+                      }
+                    ],
+                    "safety_notes": null
+                  }
+                ],
+                "title": "Synthetic work_instruction documentation",
+                "reason": "Save exact synthetic work_instruction draft; qualification for release remains unknown",
+                "process": {
+                  "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                  "revision": 1
+                },
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown.",
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1
+                  }
+                ],
+                "conditions": null,
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                "visibility": "private",
+                "previous_id": null,
+                "operation_key": "assembly",
+                "expected_previous_revision": null
+              },
+              "scope": {
+                "purpose": "Build and verify a synthetic design",
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+              },
+              "status": "draft",
+              "qualification": "unknown",
+              "schema_version": "pdos-manufacturing-preparation-v1",
+              "process_snapshot": {
+                "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                "line": null,
+                "name": "Synthetic manufacturing configuration",
+                "site": null,
+                "reason": "Synthetic fixed preparation",
+                "status": "draft",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  }
+                ],
+                "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                "revision": 1,
+                "series_id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                "created_at": "2026-10-18T19:04:48.710168+00:00",
+                "operations": [
+                  {
+                    "key": "assembly",
+                    "sop": null,
+                    "kind": "assembly",
+                    "name": "Synthetic assembly",
+                    "notes": null,
+                    "depends_on": [],
+                    "bom_line_keys": [
+                      "motor"
+                    ],
+                    "cycle_time_minutes": null,
+                    "acceptance_criterion": null,
+                    "resource_requirements": []
+                  }
+                ],
+                "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+                "visibility": "private",
+                "previous_id": null,
+                "source_status": "current",
+                "engineering_revision": 1,
+                "qualification_status": "unknown",
+                "external_verification": "not_checked",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  }
+                ],
+                "engineering_configuration": {
+                  "id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e",
+                  "name": "Synthetic engineering configuration",
+                  "bom_id": "ea340cbf-7502-47f8-a9c9-3bbf2097fda3",
+                  "status": "draft",
+                  "revision": 1,
+                  "definition_id": "a2228b95-f653-4a07-8c7c-5f38ce12ad32",
+                  "source_status": "current"
+                },
+                "expected_previous_revision": null,
+                "engineering_configuration_id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e"
+              },
+              "document_bindings": [],
+              "manufacturing_release": null,
+              "negative_enumeration_complete": false
+            },
+            "sources": [
+              {
+                "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                "expected_revision": 1,
+                "line": 1,
+                "quote": "Synthetic WI first step: assemble the supplied motor; process torque remains unknown."
+              }
+            ],
+            "receipt_id": "7e41ee1c-4ba7-4eae-8392-6c7ab5d08f1e",
+            "manufacturing_release": null,
+            "qualification": "unknown",
+            "negative_enumeration_complete": false
+          }
+        },
+        "fixed_wi_v2": {
+          "route": "/v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations/work_instruction/309fab90-b9f8-49c1-8b09-d9ae4c5eb725",
+          "params": {
+            "revision": 2
+          },
+          "status_code": 200,
+          "body": {
+            "schema_version": "pdos-manufacturing-preparation-v1",
+            "id": "309fab90-b9f8-49c1-8b09-d9ae4c5eb725",
+            "kind": "work_instruction",
+            "revision": 2,
+            "series_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+            "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+            "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+            "visibility": "private",
+            "title": "Synthetic work_instruction documentation",
+            "status": "draft",
+            "purpose": "Build and verify a synthetic design",
+            "process": {
+              "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+              "revision": 1
+            },
+            "operation_key": "assembly",
+            "previous_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+            "previous_revision": 1,
+            "created_at": "2026-10-18T19:05:42.457051+00:00",
+            "is_current": true,
+            "source_status": "current",
+            "required_source_read_set": [
+              {
+                "artifact_id": "074aeaf6-bf3a-4f35-af3b-77e1c36830dc",
+                "expected_revision": 1
+              },
+              {
+                "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                "expected_revision": 1
+              },
+              {
+                "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                "expected_revision": 1
+              }
+            ],
+            "body": {
+              "gaps": [
+                {
+                  "code": "INSTRUCTION_CONDITIONS_UNKNOWN",
+                  "detail": "作业适用条件未知。"
+                },
+                {
+                  "code": "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+                  "detail": "模具真实验收与适用性尚未接通。"
+                },
+                {
+                  "code": "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+                  "detail": "治具真实验收及校准尚未接通。"
+                },
+                {
+                  "code": "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+                  "detail": "制造基线尚无具名发布决定。"
+                },
+                {
+                  "code": "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED",
+                  "detail": "制造影响范围全集尚未核对。"
+                }
+              ],
+              "kind": "work_instruction",
+              "input": {
+                "steps": [
+                  {
+                    "key": "assemble",
+                    "text": "Synthetic WI revision: inspect the unpowered assembly before continuing; torque is unknown.",
+                    "sources": [
+                      {
+                        "line": 2,
+                        "quote": "Synthetic WI revision: inspect the unpowered assembly before continuing; torque is unknown.",
+                        "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                        "expected_revision": 1
+                      }
+                    ],
+                    "parameters": [
+                      {
+                        "key": "torque",
+                        "unit": null,
+                        "lower": null,
+                        "upper": null,
+                        "nominal": null,
+                        "sources": []
+                      }
+                    ],
+                    "safety_notes": null
+                  }
+                ],
+                "title": "Synthetic work_instruction documentation",
+                "reason": "Save exact synthetic work_instruction draft; qualification for release remains unknown",
+                "process": {
+                  "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                  "revision": 1
+                },
+                "sources": [
+                  {
+                    "line": 2,
+                    "quote": "Synthetic WI revision: inspect the unpowered assembly before continuing; torque is unknown.",
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1
+                  }
+                ],
+                "conditions": null,
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                "visibility": "private",
+                "previous_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                "operation_key": "assembly",
+                "expected_previous_revision": 1
+              },
+              "scope": {
+                "purpose": "Build and verify a synthetic design",
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+              },
+              "status": "draft",
+              "qualification": "unknown",
+              "schema_version": "pdos-manufacturing-preparation-v1",
+              "process_snapshot": {
+                "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                "line": null,
+                "name": "Synthetic manufacturing configuration",
+                "site": null,
+                "reason": "Synthetic fixed preparation",
+                "status": "draft",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  }
+                ],
+                "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                "revision": 1,
+                "series_id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                "created_at": "2026-10-18T19:04:48.710168+00:00",
+                "operations": [
+                  {
+                    "key": "assembly",
+                    "sop": null,
+                    "kind": "assembly",
+                    "name": "Synthetic assembly",
+                    "notes": null,
+                    "depends_on": [],
+                    "bom_line_keys": [
+                      "motor"
+                    ],
+                    "cycle_time_minutes": null,
+                    "acceptance_criterion": null,
+                    "resource_requirements": []
+                  }
+                ],
+                "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+                "visibility": "private",
+                "previous_id": null,
+                "source_status": "current",
+                "engineering_revision": 1,
+                "qualification_status": "unknown",
+                "external_verification": "not_checked",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  }
+                ],
+                "engineering_configuration": {
+                  "id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e",
+                  "name": "Synthetic engineering configuration",
+                  "bom_id": "ea340cbf-7502-47f8-a9c9-3bbf2097fda3",
+                  "status": "draft",
+                  "revision": 1,
+                  "definition_id": "a2228b95-f653-4a07-8c7c-5f38ce12ad32",
+                  "source_status": "current"
+                },
+                "expected_previous_revision": null,
+                "engineering_configuration_id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e"
+              },
+              "document_bindings": [],
+              "manufacturing_release": null,
+              "negative_enumeration_complete": false
+            },
+            "sources": [
+              {
+                "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                "expected_revision": 1,
+                "line": 2,
+                "quote": "Synthetic WI revision: inspect the unpowered assembly before continuing; torque is unknown."
+              }
+            ],
+            "receipt_id": "f17ea8e5-0dab-4c85-b782-db9e2e16fe5a",
+            "manufacturing_release": null,
+            "qualification": "unknown",
+            "negative_enumeration_complete": false
+          }
+        },
+        "fixed_baseline": {
+          "route": "/v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations/manufacturing_baseline/43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+          "params": {
+            "revision": 1
+          },
+          "status_code": 200,
+          "body": {
+            "schema_version": "pdos-manufacturing-preparation-v1",
+            "id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+            "kind": "manufacturing_baseline",
+            "revision": 1,
+            "series_id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+            "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+            "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+            "visibility": "private",
+            "title": "Synthetic manufacturing_baseline documentation",
+            "status": "draft",
+            "purpose": "Build and verify a synthetic design",
+            "process": {
+              "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+              "revision": 1
+            },
+            "operation_key": null,
+            "previous_id": null,
+            "previous_revision": null,
+            "created_at": "2026-10-18T19:05:31.446428+00:00",
+            "is_current": true,
+            "source_status": "needs_recheck",
+            "required_source_read_set": [
+              {
+                "artifact_id": "074aeaf6-bf3a-4f35-af3b-77e1c36830dc",
+                "expected_revision": 1
+              },
+              {
+                "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                "expected_revision": 1
+              },
+              {
+                "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                "expected_revision": 1
+              }
+            ],
+            "body": {
+              "gaps": [
+                {
+                  "code": "PROCESS_RISK_UNKNOWN",
+                  "detail": "过程风险依据未知。"
+                },
+                {
+                  "code": "PACKAGING_LABEL_UNKNOWN",
+                  "detail": "包装标识依据未知。"
+                },
+                {
+                  "code": "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+                  "detail": "模具真实验收与适用性尚未接通。"
+                },
+                {
+                  "code": "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+                  "detail": "治具真实验收及校准尚未接通。"
+                },
+                {
+                  "code": "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+                  "detail": "制造基线尚无具名发布决定。"
+                },
+                {
+                  "code": "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED",
+                  "detail": "制造影响范围全集尚未核对。"
+                }
+              ],
+              "kind": "manufacturing_baseline",
+              "input": {
+                "title": "Synthetic manufacturing_baseline documentation",
+                "reason": "Save exact synthetic manufacturing_baseline draft; qualification for release remains unknown",
+                "process": {
+                  "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                  "revision": 1
+                },
+                "sources": [
+                  {
+                    "line": 4,
+                    "quote": "Synthetic baseline: retain fixed current documentation; tooling qualification and release are unknown.",
+                    "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                    "expected_revision": 1
+                  }
+                ],
+                "operations": [
+                  {
+                    "control_plan": {
+                      "id": "bab832f5-744e-486d-a533-d6831adf271e",
+                      "kind": "control_plan",
+                      "revision": 1
+                    },
+                    "operation_key": "assembly",
+                    "work_instruction": {
+                      "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                      "kind": "work_instruction",
+                      "revision": 1
+                    }
+                  }
+                ],
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+                "risk_notes": null,
+                "visibility": "private",
+                "previous_id": null,
+                "packaging_label_basis": null,
+                "expected_previous_revision": null
+              },
+              "scope": {
+                "purpose": "Build and verify a synthetic design",
+                "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+              },
+              "status": "draft",
+              "qualification": "unknown",
+              "schema_version": "pdos-manufacturing-preparation-v1",
+              "process_snapshot": {
+                "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                "line": null,
+                "name": "Synthetic manufacturing configuration",
+                "site": null,
+                "reason": "Synthetic fixed preparation",
+                "status": "draft",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  }
+                ],
+                "owner_id": "e91cb481-c43b-471a-8f64-4b0d0ff5369d",
+                "revision": 1,
+                "series_id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+                "created_at": "2026-10-18T19:04:48.710168+00:00",
+                "operations": [
+                  {
+                    "key": "assembly",
+                    "sop": null,
+                    "kind": "assembly",
+                    "name": "Synthetic assembly",
+                    "notes": null,
+                    "depends_on": [],
+                    "bom_line_keys": [
+                      "motor"
+                    ],
+                    "cycle_time_minutes": null,
+                    "acceptance_criterion": null,
+                    "resource_requirements": []
+                  }
+                ],
+                "product_id": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+                "visibility": "private",
+                "previous_id": null,
+                "source_status": "current",
+                "engineering_revision": 1,
+                "qualification_status": "unknown",
+                "external_verification": "not_checked",
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "7e6adeb8-0052-4885-a831-befddf6f752e",
+                    "expected_revision": 1
+                  }
+                ],
+                "engineering_configuration": {
+                  "id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e",
+                  "name": "Synthetic engineering configuration",
+                  "bom_id": "ea340cbf-7502-47f8-a9c9-3bbf2097fda3",
+                  "status": "draft",
+                  "revision": 1,
+                  "definition_id": "a2228b95-f653-4a07-8c7c-5f38ce12ad32",
+                  "source_status": "current"
+                },
+                "expected_previous_revision": null,
+                "engineering_configuration_id": "6b1843a6-8292-4533-a3cd-a0764b8e0e2e"
+              },
+              "document_bindings": [
+                {
+                  "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+                  "kind": "work_instruction",
+                  "revision": 1,
+                  "body_sha256": "c94271aff18cb13fcc9b5985c20028a08183e8644fd293f24fedebfa339ca321",
+                  "operation_key": "assembly"
+                },
+                {
+                  "id": "bab832f5-744e-486d-a533-d6831adf271e",
+                  "kind": "control_plan",
+                  "revision": 1,
+                  "body_sha256": "e84354d6d9a92f35be8ebfdb05d5814d4aeec2a72257c44519096007c858877e",
+                  "operation_key": "assembly"
+                }
+              ],
+              "manufacturing_release": null,
+              "negative_enumeration_complete": false
+            },
+            "sources": [
+              {
+                "artifact_id": "871f172b-4dd5-4bd7-ba8d-2a6b73890377",
+                "expected_revision": 1,
+                "line": 4,
+                "quote": "Synthetic baseline: retain fixed current documentation; tooling qualification and release are unknown."
+              }
+            ],
+            "receipt_id": "78df246b-d856-4108-ba6e-57a082569c50",
+            "manufacturing_release": null,
+            "qualification": "unknown",
+            "negative_enumeration_complete": false
+          }
+        },
+        "other_project_preparations": {
+          "route": "/v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations",
+          "params": {
+            "project_id": "3af5795d-bf80-4e26-85f2-514020658e43"
+          },
+          "status_code": 200,
+          "body": {
+            "schema_version": "pdos-manufacturing-preparation-v1",
+            "versions": [],
+            "history_page": {
+              "next_cursor": null
+            },
+            "has_more": false,
+            "unavailable_count": 0,
+            "qualification": "unknown",
+            "manufacturing_release": null,
+            "negative_enumeration_complete": false
+          }
+        },
+        "peer_preparations": {
+          "route": "/v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations",
+          "params": {
+            "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+          },
+          "status_code": 200,
+          "body": {
+            "schema_version": "pdos-manufacturing-preparation-v1",
+            "versions": [],
+            "history_page": {
+              "next_cursor": null
+            },
+            "has_more": false,
+            "unavailable_count": 0,
+            "qualification": "unknown",
+            "manufacturing_release": null,
+            "negative_enumeration_complete": false
+          }
+        },
+        "peer_fixed_wi_v1": {
+          "route": "/v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations/work_instruction/68191e4f-b77f-4f19-a243-9da1f4eda39f",
+          "params": {
+            "revision": 1
+          },
+          "status_code": 403,
+          "body": {
+            "code": "FORBIDDEN_SCOPE",
+            "message": "所选固定准备版本不可读取。",
+            "detail": {
+              "reason": "FORBIDDEN_SCOPE"
+            }
+          }
+        },
+        "missing_project": {
+          "route": "/v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations",
+          "params": {
+            "project_id": "4ae5d193-7abe-45fd-9871-31585375ae83"
+          },
+          "status_code": 403,
+          "body": {
+            "code": "FORBIDDEN_SCOPE",
+            "message": "当前项目不可用，首版计划由项目负责人建立。",
+            "detail": {
+              "reason": "FORBIDDEN_SCOPE"
+            }
+          }
+        },
+        "foreign_tenant_preparations": {
+          "route": "/v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations",
+          "params": {
+            "project_id": "1a40cb53-458d-4883-b93c-6f717208b367"
+          },
+          "status_code": 403,
+          "body": {
+            "code": "FORBIDDEN_SCOPE",
+            "message": "品类不在当前授权范围。",
+            "detail": {
+              "reason": "FORBIDDEN_SCOPE"
+            }
+          }
+        },
+        "foreign_tenant_fixed_baseline": {
+          "route": "/v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations/manufacturing_baseline/43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+          "params": {
+            "revision": 1
+          },
+          "status_code": 403,
+          "body": {
+            "code": "FORBIDDEN_SCOPE",
+            "message": "品类不在当前授权范围。",
+            "detail": {
+              "reason": "FORBIDDEN_SCOPE"
+            }
+          }
+        }
+      },
+      "read_only_counts": {
+        "before": {
+          "products": 2,
+          "projects": 2,
+          "project_product_links": 2,
+          "definition_revisions": 3,
+          "definition_sources": 0,
+          "definition_specs": 0,
+          "parts": 2,
+          "bom_revisions": 1,
+          "bom_lines": 2,
+          "engineering_configurations": 2,
+          "process_revisions": 2,
+          "manufacturing_preparation_versions": 5,
+          "manufacturing_preparation_currents": 4,
+          "manufacturing_baseline_document_links": 2,
+          "action_receipts": 22,
+          "audit_entries": 21,
+          "outbox_events": 23,
+          "request_keys": 21,
+          "artifact_versions": 3,
+          "confirmations": 16,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 16
+        },
+        "after": {
+          "products": 2,
+          "projects": 2,
+          "project_product_links": 2,
+          "definition_revisions": 3,
+          "definition_sources": 0,
+          "definition_specs": 0,
+          "parts": 2,
+          "bom_revisions": 1,
+          "bom_lines": 2,
+          "engineering_configurations": 2,
+          "process_revisions": 2,
+          "manufacturing_preparation_versions": 5,
+          "manufacturing_preparation_currents": 4,
+          "manufacturing_baseline_document_links": 2,
+          "action_receipts": 22,
+          "audit_entries": 21,
+          "outbox_events": 23,
+          "request_keys": 21,
+          "artifact_versions": 3,
+          "confirmations": 16,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 16
+        },
+        "unchanged": true
+      }
+    }
+  ],
+  "limitations": [
+    "Every body is an unmodified actual GET JSON response.",
+    "Gaps and document bindings are saved assessments, not fresh global readiness.",
+    "Separate GETs do not imply one shared atomic snapshot.",
+    "is_current is per series; multiple current work-instruction series remain distinct.",
+    "The baseline retains WI v1 after WI v2 and requires recheck; it is not rewritten.",
+    "Draft/null manufacturing_release/unknown qualification do not enumerate releases.",
+    "Synthetic write authority is not real manufacturing or production qualification."
+  ]
+}

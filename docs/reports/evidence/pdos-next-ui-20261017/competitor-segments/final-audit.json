@@ -1,0 +1,18 @@
+{
+  "web_inputs": 314,
+  "web_changes_after_build": [],
+  "backend_scope_changes_after_checks": [],
+  "other_runtime_changes_after_checks": [],
+  "request_counts": {
+    "GET": 30,
+    "POST": 3
+  },
+  "save_posts": 2,
+  "preview_posts": 1,
+  "models_called": false,
+  "migrations_executed": false,
+  "new_or_expanded_permissions": false,
+  "source_roundtrip_preserved": true,
+  "same_original_request_replayed": true,
+  "final_matrix_fixed_version_verified": true
+}

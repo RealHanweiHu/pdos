@@ -1,0 +1,94 @@
+{
+  "checkpoint": "engineering-preparation/v1",
+  "recorded_utc": "2026-10-18T19:53:24.452048+00:00",
+  "head": "edae14c08fda83fbb9116a3dbf455a5218910593",
+  "owned_source_sha256": {
+    "pdos-next/web/src/lib/project-build-engineering.ts": "3752a2ffab44968a21cfc582d3ed95360232dbf57256ade9f980dc3ac4e73dff",
+    "pdos-next/web/src/lib/project-build-engineering.test.mjs": "778eb33da6334f5fe1c0f5960ce1b4363d0873705c51a19bfbd98499874b4c3e",
+    "pdos-next/web/src/components/projects/project-build-engineering.tsx": "e60113adf39f5e6ef2c36e361859ffdc0dbcc7f02da9c2fbf71159d6c33844d6",
+    "pdos-next/web/src/components/projects/project-build-engineering.module.css": "a0ce6ba3e8099a2fb51c232c91352650bf109ccddd709f8ba36b53ca865a5a68",
+    "pdos-next/web/src/components/projects/project-build-engineering.test.mjs": "81ecc8f5d784556cd97f178e3724552fec1b8c267670bbc6a5ddb5c6a972570d",
+    "pdos-next/web/src/components/projects/project-workspace.tsx": "723c6f06b9206b19385af8f5062dd2e72be375561bb3ad3036125003d9a36a2b",
+    "pdos-next/web/src/components/projects/project-views.test.mjs": "cace99e847322766f4b188873f0da079eeb6290fe34f8000fc00bba8051d2119",
+    "pdos-next/server/tests/ui/test_project_build_engineering_projection_pg.py": "00e7127c1b7c8ed97a2e1dd1181b0ba949b4a719168bc4c1773a7b1613886fc0"
+  },
+  "owned_files_match_checked_candidates": true,
+  "initial_read_contract_changes": [],
+  "checked_backend_source_changes": [],
+  "frontend_candidate_inputs": 430,
+  "frontend_source_changes_since_copy": [
+    "src/components/my-work.tsx"
+  ],
+  "frontend_scope": {
+    "source": "current working frontend including committed edae14c Run context and prior UI",
+    "excluded_active_attention_inputs": [
+      "src/components/my-work-attention.tsx",
+      "src/components/my-work-attention.test.mjs",
+      "src/components/my-work-attention.module.css",
+      "src/lib/personal-attention.ts",
+      "src/lib/personal-attention-proxy.ts",
+      "src/lib/personal-attention-proxy.test.mjs",
+      "src/app/api/v1/personal/attention/route.ts"
+    ],
+    "retained_previous_my_work_sha256": "94d14309bdb1542f5f81cbbd30b0855220dbe1f91e40594aa357f5d6ac7e648f",
+    "prior_report_sha256": "bc7ef71e9c5380a335b8b625c333c7cb1ff4ddf72be1154c62e27335ca2bb1bd",
+    "scope": "full UI/committed Run-context integration plus new engineering summary; active attention excluded without editing working tree"
+  },
+  "project_run_context_merge": "current cockpit and current PaiContext/Activity plus committed edae14c included; build and types pass; no new browser or Run execution",
+  "backend_changes_during_check": [
+    "pdos_next/personal_attention_api.py",
+    "pdos_next/personal_attention.py"
+  ],
+  "backend_changes_since_snapshot": [
+    "pdos_next/personal_attention_work.py",
+    "pdos_next/personal_attention_api.py",
+    "pdos_next/personal_attention_decisions.py",
+    "pdos_next/personal_attention_verification.py",
+    "pdos_next/personal_attention.py"
+  ],
+  "backend_exclusion": "personal attention changes do not enter the existing configurations/Build GET path; no whole-runtime or attention acceptance claimed",
+  "checks": {
+    "frontend": 120,
+    "actual_pg_cases": 1,
+    "actual_get_responses": 6,
+    "per_phase_readonly_count_models": 19,
+    "actual_dto_offline_checks": 20,
+    "actual_dto_offline_calls": 11,
+    "lint": 0,
+    "build": 0,
+    "typecheck": 0
+  },
+  "database": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0794"
+  },
+  "first_failure_retained": "database-contention-resolution.json",
+  "report_sha256": {
+    "initial-contract.json": "184da5edfd56b36f9e23be61e4b241f52ef54a70be9542f9553a25aaf49c3405",
+    "result.md": "84d207564ec7d27aa5765a520b8fd3fd06c465fe1106bb12569c9fc52b2e376f",
+    "lint.log": "b8b0600985dacf87351617b813209c7b8a594ba147625f3d40a5bbbee7109183",
+    "pg-http-responses.json": "9c656565f6b77b9660811fc5c9ba79260a5f2e6e073ce0a0e91d3c91d68c32e7",
+    "candidate.json": "c9fab7c5a230a32b052549355c9dc2305b01f48f9a75d2640abcb80d7fe7ba75",
+    "typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend-tests.log": "67757241bf0e38f556c1621e53d57504859d61d5c6b3db09fa0361936041e97c",
+    "frontend-tests.log": "a903f1122dbabe67e6b81aad383b1a9bca92c8888e6f1ab56a775e4f56d7a89b",
+    "backend-candidate.json": "792a15b6920225244678e89085458923761224339336f5bfc4e0fab22c2e82d1",
+    "database-block.json": "9fe10fc25f27ebbbf6c35f14835bf979b144b710913a9bac643587495556cdca",
+    "database-contention-resolution.json": "3e868d7e17321500b70772060231e1c59191d7bb323160377b9f1dfb1ba97f2c",
+    "actual-dto-validation.json": "434feaaf11de2524166409c82fdac12ac8152876cba80e5eb8d2beae02c614c6",
+    "build.log": "f104163666a75c6ff8a0b5f134f56ea65a32a0a2c5e36efb8bf1db30888ff2bb"
+  },
+  "not_exercised": [
+    "browser, real new-panel layout at 320px and light/dark themes",
+    "new Next BFF HTTP or component SSR",
+    "actual scientific decimal representation",
+    "latest engineering configuration or drift comparison",
+    "interface contracts/design responsibility/firmware flash/inventory/readiness",
+    "active attention/full triage integration",
+    "upload denied browser/Run flow and oversized JSON 413 readback",
+    "real models, data egress, formal stage acceptance or performance"
+  ]
+}

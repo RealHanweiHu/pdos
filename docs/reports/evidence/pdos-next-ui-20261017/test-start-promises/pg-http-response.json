@@ -1,0 +1,76 @@
+{
+  "page": {
+    "version": "personal-test-start-promises/v1",
+    "principal_id": "2e4a4f53-1033-4b74-a408-4daaee493404",
+    "as_of": "2026-10-17T16:50:05.980985+00:00",
+    "total_records": 1,
+    "items": [
+      {
+        "id": "8b8e301a-4e0b-49d2-8b61-a19f3ec6b9c3",
+        "recorded_at": "2026-10-17T16:49:47.692261+00:00",
+        "category": {
+          "id": "3e1c10d7-762e-4bbe-9ec8-1906921f0d98",
+          "name": "汽车充气泵"
+        },
+        "product": {
+          "id": "40bc1d97-65b8-47e0-a972-506cca1d01e2",
+          "name": "Shared synthetic project"
+        },
+        "project": {
+          "id": "1407726c-8b0e-4aec-a3fa-27f2e60b0ebc",
+          "name": "Shared synthetic project"
+        },
+        "build": {
+          "id": "55bd377d-8aa9-4494-b4a2-63ac2eada1ef",
+          "name": "Synthetic first prototype"
+        },
+        "request": {
+          "id": "f214d078-f2ef-4552-8804-710c38b77869"
+        },
+        "run": {
+          "id": "4401bcb7-3c4c-4cec-bda9-77390db22f29",
+          "revision": 2,
+          "status": "running"
+        },
+        "promise": {
+          "occurred_at": "2026-10-17T16:49:48.692261Z",
+          "original_timezone": "UTC",
+          "effective_at": null
+        },
+        "actual_start": {
+          "occurred_at": "2026-10-17T16:49:59.749613Z",
+          "original_timezone": "UTC",
+          "effective_at": null,
+          "received_at": "2026-10-17T16:50:01.389065Z"
+        },
+        "recipient": null,
+        "recipient_status": "not_recorded",
+        "timing": "started_late",
+        "coverage": {
+          "sample_count": 1,
+          "item_count": 1,
+          "pair_count": 1
+        }
+      }
+    ],
+    "next_cursor": null
+  },
+  "session": {
+    "name": "Synthetic qualified quality",
+    "principal_id": "2e4a4f53-1033-4b74-a408-4daaee493404",
+    "model_available": false
+  },
+  "categories": [
+    {
+      "id": "3e1c10d7-762e-4bbe-9ec8-1906921f0d98",
+      "key": "category-07ecc3d9453f4f1bacd6ba4a55091d12",
+      "name": "汽车充气泵",
+      "purpose": "隔离合成品类",
+      "revision": 1,
+      "status": "active",
+      "capabilities": {
+        "product_management": false
+      }
+    }
+  ]
+}

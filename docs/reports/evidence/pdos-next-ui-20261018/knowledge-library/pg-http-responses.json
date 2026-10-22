@@ -1,0 +1,3482 @@
+{
+  "version": "knowledge-library-projection-qa/v1",
+  "fixture_nature": "actual Command/HTTP facts with controlled synthetic authority",
+  "scope": {
+    "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+    "product_id": "3e960e40-918f-4650-81d1-b7658a7ea9f3",
+    "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+    "principal_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+    "peer_principal_id": "5ec104b5-90e2-4290-b3f6-c1138f2491d8",
+    "foreign_principal_id": "f7935c75-59e0-496e-9cb4-de868f323090",
+    "principal_ids_source": "isolated fixture request contexts; not GET response echoes",
+    "category_experience": {
+      "product_id": null,
+      "project_id": null
+    },
+    "model_experience": {
+      "product_id": "3e960e40-918f-4650-81d1-b7658a7ea9f3",
+      "project_id": null
+    },
+    "category_private": {
+      "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+      "revision": 1
+    },
+    "category_shared_v1": {
+      "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+      "revision": 1
+    },
+    "model_private": {
+      "id": "bbd628cb-673e-52d8-b9e0-359514302552",
+      "revision": 1
+    },
+    "model_shared": {
+      "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+      "revision": 1
+    },
+    "rule_v1": {
+      "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+      "revision": 1
+    },
+    "category_shared_v2": {
+      "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+      "revision": 2
+    },
+    "rule_v2": {
+      "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+      "revision": 2
+    }
+  },
+  "phases": [
+    {
+      "phase": "category_and_model_candidates_with_named_rule_v1",
+      "reads": {
+        "products": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products",
+          "params": {},
+          "status_code": 200,
+          "body": [
+            {
+              "id": "395b6456-c97d-4b9d-bc7b-1e42c9379c0a",
+              "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+              "visibility": "category",
+              "name": "Synthetic product",
+              "purpose": "Isolated command verification",
+              "revision": 1,
+              "status": "draft"
+            },
+            {
+              "id": "3e960e40-918f-4650-81d1-b7658a7ea9f3",
+              "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+              "visibility": "category",
+              "name": "Approved revision fixture",
+              "purpose": "Verify preparation",
+              "revision": 1,
+              "status": "draft"
+            }
+          ]
+        },
+        "category_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/experience",
+          "params": {},
+          "status_code": 200,
+          "body": {
+            "product_revision": 1,
+            "projects": [],
+            "configurations": [],
+            "candidates": [
+              {
+                "title": "Synthetic knowledge-library category_shared",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "version_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:36.689150+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:36.689150+00:00",
+                    "receipt_id": "8d7322e4-765c-4440-b8b3-0ad92f5ae084"
+                  }
+                ],
+                "can_revise": true
+              },
+              {
+                "title": "Synthetic knowledge-library category_private",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "version_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "private",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:34.839258+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:34.839258+00:00",
+                    "receipt_id": "59e8727b-7ec7-4172-9088-3b9371a0457b"
+                  }
+                ],
+                "can_revise": true
+              }
+            ],
+            "rules": [],
+            "as_of": "2026-10-19T01:03:45.627918+00:00"
+          }
+        },
+        "model_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products/3e960e40-918f-4650-81d1-b7658a7ea9f3/experience",
+          "params": {},
+          "status_code": 200,
+          "body": {
+            "product_revision": 1,
+            "projects": [
+              {
+                "id": "93900873-e806-4c7c-9987-d3643129953f",
+                "revision": 1,
+                "name": "Approved revision fixture",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category"
+              }
+            ],
+            "configurations": [
+              {
+                "kind": "engineering_configuration",
+                "id": "f240a3f0-6c0d-4b7d-8624-0130d1a7f9a6",
+                "revision": 1,
+                "name": "Synthetic original engineering configuration"
+              },
+              {
+                "kind": "process_revision",
+                "id": "1b0ef116-e87d-4000-b593-8dc728c6fab0",
+                "revision": 1,
+                "name": "Synthetic original motor assembly process"
+              }
+            ],
+            "candidates": [
+              {
+                "title": "Synthetic knowledge-library model_shared",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "version_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:39.981033+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:39.981033+00:00",
+                    "receipt_id": "c7f39f76-6bcd-4533-9b90-80d1f9a5b149"
+                  }
+                ],
+                "can_revise": true
+              },
+              {
+                "title": "Synthetic knowledge-library model_private",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "bbd628cb-673e-52d8-b9e0-359514302552",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "bbd628cb-673e-52d8-b9e0-359514302552",
+                "version_id": "bbd628cb-673e-52d8-b9e0-359514302552",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "private",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:38.254366+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "bbd628cb-673e-52d8-b9e0-359514302552",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:38.254366+00:00",
+                    "receipt_id": "50503617-1ef9-42b4-92e4-083d032fc943"
+                  }
+                ],
+                "can_revise": true
+              },
+              {
+                "title": "Synthetic knowledge-library category_shared",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "version_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:36.689150+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:36.689150+00:00",
+                    "receipt_id": "8d7322e4-765c-4440-b8b3-0ad92f5ae084"
+                  }
+                ],
+                "can_revise": false
+              },
+              {
+                "title": "Synthetic knowledge-library category_private",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "version_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "private",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:34.839258+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:34.839258+00:00",
+                    "receipt_id": "59e8727b-7ec7-4172-9088-3b9371a0457b"
+                  }
+                ],
+                "can_revise": false
+              }
+            ],
+            "rules": [
+              {
+                "title": "Synthetic configuration-bound reuse rule",
+                "nature": "synthetic",
+                "rule_id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "revision": 1,
+                "candidate": {
+                  "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                  "revision": 1
+                },
+                "rule_text": "For this configured purpose, establish configuration identity before reuse.",
+                "applicability": {
+                  "target": {
+                    "id": "f240a3f0-6c0d-4b7d-8624-0130d1a7f9a6",
+                    "kind": "engineering_configuration",
+                    "revision": 1
+                  },
+                  "purpose": "Apply one synthetic field lesson to this fixed engineering configuration",
+                  "decision": "applicable",
+                  "rationale": "The actual target and source were explicitly reviewed.",
+                  "conditions": [
+                    "Only the selected configuration and stated internal purpose"
+                  ],
+                  "valid_from": "2026-10-19T01:02:34.409348Z",
+                  "assessor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                  "differences": [],
+                  "valid_until": null,
+                  "adopted_rule": "Explicit named evidence review",
+                  "candidate_version": {
+                    "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                    "revision": 1
+                  },
+                  "withdrawal_reason": null
+                },
+                "assessment_id": "6adec75c-7449-57fb-8fb8-d987c29cb8a4",
+                "candidate_version_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "version_id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:43.207873+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:43.207873+00:00",
+                    "receipt_id": "2424dd80-d959-4f49-ad7b-d29f273c320b"
+                  }
+                ],
+                "can_revise": true,
+                "usability": {
+                  "state": "current",
+                  "reason_codes": []
+                }
+              }
+            ],
+            "as_of": "2026-10-19T01:03:45.720626+00:00"
+          }
+        },
+        "peer_products": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products",
+          "params": {},
+          "status_code": 200,
+          "body": [
+            {
+              "id": "395b6456-c97d-4b9d-bc7b-1e42c9379c0a",
+              "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+              "visibility": "category",
+              "name": "Synthetic product",
+              "purpose": "Isolated command verification",
+              "revision": 1,
+              "status": "draft"
+            },
+            {
+              "id": "3e960e40-918f-4650-81d1-b7658a7ea9f3",
+              "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+              "visibility": "category",
+              "name": "Approved revision fixture",
+              "purpose": "Verify preparation",
+              "revision": 1,
+              "status": "draft"
+            }
+          ]
+        },
+        "peer_category_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/experience",
+          "params": {},
+          "status_code": 200,
+          "body": {
+            "product_revision": 1,
+            "projects": [],
+            "configurations": [],
+            "candidates": [
+              {
+                "title": "Synthetic knowledge-library category_shared",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "version_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:36.689150+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:36.689150+00:00",
+                    "receipt_id": "8d7322e4-765c-4440-b8b3-0ad92f5ae084"
+                  }
+                ],
+                "can_revise": false
+              }
+            ],
+            "rules": [],
+            "as_of": "2026-10-19T01:03:46.392989+00:00"
+          }
+        },
+        "peer_model_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products/3e960e40-918f-4650-81d1-b7658a7ea9f3/experience",
+          "params": {},
+          "status_code": 200,
+          "body": {
+            "product_revision": 1,
+            "projects": [
+              {
+                "id": "93900873-e806-4c7c-9987-d3643129953f",
+                "revision": 1,
+                "name": "Approved revision fixture",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category"
+              }
+            ],
+            "configurations": [
+              {
+                "kind": "engineering_configuration",
+                "id": "f240a3f0-6c0d-4b7d-8624-0130d1a7f9a6",
+                "revision": 1,
+                "name": "Synthetic original engineering configuration"
+              },
+              {
+                "kind": "process_revision",
+                "id": "1b0ef116-e87d-4000-b593-8dc728c6fab0",
+                "revision": 1,
+                "name": "Synthetic original motor assembly process"
+              }
+            ],
+            "candidates": [
+              {
+                "title": "Synthetic knowledge-library model_shared",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "version_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:39.981033+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:39.981033+00:00",
+                    "receipt_id": "c7f39f76-6bcd-4533-9b90-80d1f9a5b149"
+                  }
+                ],
+                "can_revise": false
+              },
+              {
+                "title": "Synthetic knowledge-library category_shared",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "version_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:36.689150+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:36.689150+00:00",
+                    "receipt_id": "8d7322e4-765c-4440-b8b3-0ad92f5ae084"
+                  }
+                ],
+                "can_revise": false
+              }
+            ],
+            "rules": [
+              {
+                "title": "Synthetic configuration-bound reuse rule",
+                "nature": "synthetic",
+                "rule_id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "revision": 1,
+                "candidate": {
+                  "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                  "revision": 1
+                },
+                "rule_text": "For this configured purpose, establish configuration identity before reuse.",
+                "applicability": {
+                  "target": {
+                    "id": "f240a3f0-6c0d-4b7d-8624-0130d1a7f9a6",
+                    "kind": "engineering_configuration",
+                    "revision": 1
+                  },
+                  "purpose": "Apply one synthetic field lesson to this fixed engineering configuration",
+                  "decision": "applicable",
+                  "rationale": "The actual target and source were explicitly reviewed.",
+                  "conditions": [
+                    "Only the selected configuration and stated internal purpose"
+                  ],
+                  "valid_from": "2026-10-19T01:02:34.409348Z",
+                  "assessor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                  "differences": [],
+                  "valid_until": null,
+                  "adopted_rule": "Explicit named evidence review",
+                  "candidate_version": {
+                    "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                    "revision": 1
+                  },
+                  "withdrawal_reason": null
+                },
+                "assessment_id": "6adec75c-7449-57fb-8fb8-d987c29cb8a4",
+                "candidate_version_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "version_id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:43.207873+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:43.207873+00:00",
+                    "receipt_id": "2424dd80-d959-4f49-ad7b-d29f273c320b"
+                  }
+                ],
+                "can_revise": false,
+                "usability": {
+                  "state": "needs_recheck",
+                  "reason_codes": [
+                    "AUTHORITY_SNAPSHOT_INVALID"
+                  ]
+                }
+              }
+            ],
+            "as_of": "2026-10-19T01:03:46.448871+00:00"
+          }
+        },
+        "foreign_products": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products",
+          "params": {},
+          "status_code": 403,
+          "body": {
+            "code": "FORBIDDEN_SCOPE",
+            "message": "品类不在当前授权范围。",
+            "detail": {
+              "reason": "FORBIDDEN_SCOPE"
+            }
+          }
+        },
+        "foreign_category_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/experience",
+          "params": {},
+          "status_code": 403,
+          "body": {
+            "code": "FORBIDDEN_SCOPE",
+            "message": "品类不在当前授权范围。",
+            "detail": {
+              "reason": "FORBIDDEN_SCOPE"
+            }
+          }
+        },
+        "foreign_model_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products/3e960e40-918f-4650-81d1-b7658a7ea9f3/experience",
+          "params": {},
+          "status_code": 403,
+          "body": {
+            "code": "FORBIDDEN_SCOPE",
+            "message": "品类不在当前授权范围。",
+            "detail": {
+              "reason": "FORBIDDEN_SCOPE"
+            }
+          }
+        }
+      },
+      "read_only_counts": {
+        "before": {
+          "knowledge_candidate_versions": 4,
+          "knowledge_candidate_currents": 4,
+          "knowledge_applicability_assessments": 1,
+          "knowledge_rule_versions": 1,
+          "knowledge_rule_currents": 1,
+          "action_receipts": 17,
+          "audit_entries": 17,
+          "outbox_events": 18,
+          "request_keys": 17,
+          "confirmations": 8,
+          "categories": 1,
+          "products": 2,
+          "projects": 1,
+          "project_product_links": 1,
+          "definition_revisions": 1,
+          "engineering_configurations": 1,
+          "process_revisions": 1,
+          "bom_revisions": 1,
+          "bom_lines": 1,
+          "parts": 1,
+          "artifact_versions": 3,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 6
+        },
+        "after": {
+          "knowledge_candidate_versions": 4,
+          "knowledge_candidate_currents": 4,
+          "knowledge_applicability_assessments": 1,
+          "knowledge_rule_versions": 1,
+          "knowledge_rule_currents": 1,
+          "action_receipts": 17,
+          "audit_entries": 17,
+          "outbox_events": 18,
+          "request_keys": 17,
+          "confirmations": 8,
+          "categories": 1,
+          "products": 2,
+          "projects": 1,
+          "project_product_links": 1,
+          "definition_revisions": 1,
+          "engineering_configurations": 1,
+          "process_revisions": 1,
+          "bom_revisions": 1,
+          "bom_lines": 1,
+          "parts": 1,
+          "artifact_versions": 3,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 6
+        },
+        "unchanged": true
+      },
+      "read_only_snapshot": {
+        "before": {
+          "knowledge_candidate_versions": {
+            "count": 4,
+            "sha256": "56a6999664fb8293ca0732639867201f73fd1f6b393f38961b3c343a8d3a48cd"
+          },
+          "knowledge_candidate_currents": {
+            "count": 4,
+            "sha256": "2fc3f90dfa826c54e2431d0e540681900671da8f0321d993c58841b57a5ed62f"
+          },
+          "knowledge_applicability_assessments": {
+            "count": 1,
+            "sha256": "13daf77d810349e5ab880c6ced79b4ce2bef2840b3c23b9e33b7d09d494457d8"
+          },
+          "knowledge_rule_versions": {
+            "count": 1,
+            "sha256": "94d291c672178d3327b4fb5ea30e64efd4478a4945948067ad5fd1ccc7bd7fd4"
+          },
+          "knowledge_rule_currents": {
+            "count": 1,
+            "sha256": "dfaf20f1207ba90b55e4eb8b93c705b9b7e908cf0e30fb28bbbecfa1d53e4922"
+          },
+          "action_receipts": {
+            "count": 17,
+            "sha256": "f3c3edea80af0cdaf037785f70f1fe11151f575a7d37f901b6b58abf39644a89"
+          },
+          "audit_entries": {
+            "count": 17,
+            "sha256": "8f6fef9c1361d6b394626ee0a60f6a55c527b8ef8df66806c5d11bbd80502bf1"
+          },
+          "outbox_events": {
+            "count": 18,
+            "sha256": "3cdc06bf0067e507ad01619ab906d5fa422a3b44f2d95f4d2afade536d78a47c"
+          },
+          "request_keys": {
+            "count": 17,
+            "sha256": "ca6e907398ada701f48e1789b6f704a0d64bec1561b5c0082785d840bf570c31"
+          },
+          "confirmations": {
+            "count": 8,
+            "sha256": "7b0bf88f321dfc0cfc4fa143c7139340d237cd944fd5a839c4834fc4b9eb4689"
+          },
+          "categories": {
+            "count": 1,
+            "sha256": "bf29a415c922821b38de3a8552daa1c620dc5d73b0fe19e4c6fdafec1553c940"
+          },
+          "products": {
+            "count": 2,
+            "sha256": "90f8567f4d31c5510212c7aa7097da100a963dba3a656bed4f39b2cd0e228a2e"
+          },
+          "projects": {
+            "count": 1,
+            "sha256": "559be9a3eb8077a3b98f738a5c872961182403c008be6cdd2014dc838c8c510f"
+          },
+          "project_product_links": {
+            "count": 1,
+            "sha256": "67fdedc296fa53853a7f351d565c228dc5087687bbbf055b0b8640b5d03917d9"
+          },
+          "definition_revisions": {
+            "count": 1,
+            "sha256": "795b442fa2120456e2929dd527eb112d43d911ced5aa5831e77bd82fa0bb909d"
+          },
+          "engineering_configurations": {
+            "count": 1,
+            "sha256": "36d82c71531dc90d8b16d976bdda13bc3cd125e729ce3ddb8cf81fa22d0c38f8"
+          },
+          "process_revisions": {
+            "count": 1,
+            "sha256": "3f1084062b1d097f8d13a3da6693a3b46eec3fdf9de3ee3263413af97f73614b"
+          },
+          "bom_revisions": {
+            "count": 1,
+            "sha256": "121496ff113ccfc9a43a458c266ddef02b9675f91ad20230335462308bf77449"
+          },
+          "bom_lines": {
+            "count": 1,
+            "sha256": "13329d6cd66106adb6432f349d9db4e603b909ea137a2f6a789ff1da9244404b"
+          },
+          "parts": {
+            "count": 1,
+            "sha256": "31047b80fb9aca0bfb7ba6f836d864029b041e22edae28b1843297deaef6faff"
+          },
+          "artifact_versions": {
+            "count": 3,
+            "sha256": "e82d059ec0f2bbe237339e45519a5013e2b76fdfff267f21d7ca816bab8e3cc2"
+          },
+          "professional_authority_facts": {
+            "count": 2,
+            "sha256": "9465bd57c1a8a5448424a126103e568150ab995bbcfa1dc0a3e5cf83318c2eeb"
+          },
+          "grants": {
+            "count": 3,
+            "sha256": "a9a616b9b1e55966e131cc4ec91009d866b03e815d3e3d068875584a98a74952"
+          },
+          "object_audiences": {
+            "count": 6,
+            "sha256": "53308c185b95d9ec1ec5ec777799f941fe7087aa5de535f0e67375d89bdbe061"
+          }
+        },
+        "after": {
+          "knowledge_candidate_versions": {
+            "count": 4,
+            "sha256": "56a6999664fb8293ca0732639867201f73fd1f6b393f38961b3c343a8d3a48cd"
+          },
+          "knowledge_candidate_currents": {
+            "count": 4,
+            "sha256": "2fc3f90dfa826c54e2431d0e540681900671da8f0321d993c58841b57a5ed62f"
+          },
+          "knowledge_applicability_assessments": {
+            "count": 1,
+            "sha256": "13daf77d810349e5ab880c6ced79b4ce2bef2840b3c23b9e33b7d09d494457d8"
+          },
+          "knowledge_rule_versions": {
+            "count": 1,
+            "sha256": "94d291c672178d3327b4fb5ea30e64efd4478a4945948067ad5fd1ccc7bd7fd4"
+          },
+          "knowledge_rule_currents": {
+            "count": 1,
+            "sha256": "dfaf20f1207ba90b55e4eb8b93c705b9b7e908cf0e30fb28bbbecfa1d53e4922"
+          },
+          "action_receipts": {
+            "count": 17,
+            "sha256": "f3c3edea80af0cdaf037785f70f1fe11151f575a7d37f901b6b58abf39644a89"
+          },
+          "audit_entries": {
+            "count": 17,
+            "sha256": "8f6fef9c1361d6b394626ee0a60f6a55c527b8ef8df66806c5d11bbd80502bf1"
+          },
+          "outbox_events": {
+            "count": 18,
+            "sha256": "3cdc06bf0067e507ad01619ab906d5fa422a3b44f2d95f4d2afade536d78a47c"
+          },
+          "request_keys": {
+            "count": 17,
+            "sha256": "ca6e907398ada701f48e1789b6f704a0d64bec1561b5c0082785d840bf570c31"
+          },
+          "confirmations": {
+            "count": 8,
+            "sha256": "7b0bf88f321dfc0cfc4fa143c7139340d237cd944fd5a839c4834fc4b9eb4689"
+          },
+          "categories": {
+            "count": 1,
+            "sha256": "bf29a415c922821b38de3a8552daa1c620dc5d73b0fe19e4c6fdafec1553c940"
+          },
+          "products": {
+            "count": 2,
+            "sha256": "90f8567f4d31c5510212c7aa7097da100a963dba3a656bed4f39b2cd0e228a2e"
+          },
+          "projects": {
+            "count": 1,
+            "sha256": "559be9a3eb8077a3b98f738a5c872961182403c008be6cdd2014dc838c8c510f"
+          },
+          "project_product_links": {
+            "count": 1,
+            "sha256": "67fdedc296fa53853a7f351d565c228dc5087687bbbf055b0b8640b5d03917d9"
+          },
+          "definition_revisions": {
+            "count": 1,
+            "sha256": "795b442fa2120456e2929dd527eb112d43d911ced5aa5831e77bd82fa0bb909d"
+          },
+          "engineering_configurations": {
+            "count": 1,
+            "sha256": "36d82c71531dc90d8b16d976bdda13bc3cd125e729ce3ddb8cf81fa22d0c38f8"
+          },
+          "process_revisions": {
+            "count": 1,
+            "sha256": "3f1084062b1d097f8d13a3da6693a3b46eec3fdf9de3ee3263413af97f73614b"
+          },
+          "bom_revisions": {
+            "count": 1,
+            "sha256": "121496ff113ccfc9a43a458c266ddef02b9675f91ad20230335462308bf77449"
+          },
+          "bom_lines": {
+            "count": 1,
+            "sha256": "13329d6cd66106adb6432f349d9db4e603b909ea137a2f6a789ff1da9244404b"
+          },
+          "parts": {
+            "count": 1,
+            "sha256": "31047b80fb9aca0bfb7ba6f836d864029b041e22edae28b1843297deaef6faff"
+          },
+          "artifact_versions": {
+            "count": 3,
+            "sha256": "e82d059ec0f2bbe237339e45519a5013e2b76fdfff267f21d7ca816bab8e3cc2"
+          },
+          "professional_authority_facts": {
+            "count": 2,
+            "sha256": "9465bd57c1a8a5448424a126103e568150ab995bbcfa1dc0a3e5cf83318c2eeb"
+          },
+          "grants": {
+            "count": 3,
+            "sha256": "a9a616b9b1e55966e131cc4ec91009d866b03e815d3e3d068875584a98a74952"
+          },
+          "object_audiences": {
+            "count": 6,
+            "sha256": "53308c185b95d9ec1ec5ec777799f941fe7087aa5de535f0e67375d89bdbe061"
+          }
+        },
+        "unchanged": true
+      }
+    },
+    {
+      "phase": "candidate_and_rule_current_versions_advanced",
+      "reads": {
+        "products": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products",
+          "params": {},
+          "status_code": 200,
+          "body": [
+            {
+              "id": "395b6456-c97d-4b9d-bc7b-1e42c9379c0a",
+              "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+              "visibility": "category",
+              "name": "Synthetic product",
+              "purpose": "Isolated command verification",
+              "revision": 1,
+              "status": "draft"
+            },
+            {
+              "id": "3e960e40-918f-4650-81d1-b7658a7ea9f3",
+              "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+              "visibility": "category",
+              "name": "Approved revision fixture",
+              "purpose": "Verify preparation",
+              "revision": 1,
+              "status": "draft"
+            }
+          ]
+        },
+        "category_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/experience",
+          "params": {},
+          "status_code": 200,
+          "body": {
+            "product_revision": 1,
+            "projects": [],
+            "configurations": [],
+            "candidates": [
+              {
+                "title": "Synthetic knowledge-library category_shared_revision",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 2,
+                "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "version_id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:47.312744+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:36.689150+00:00",
+                    "receipt_id": "8d7322e4-765c-4440-b8b3-0ad92f5ae084"
+                  },
+                  {
+                    "id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                    "revision": 2,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:47.312744+00:00",
+                    "receipt_id": "6503d8da-c5d4-4717-a4f0-4f9055da864f"
+                  }
+                ],
+                "can_revise": true
+              },
+              {
+                "title": "Synthetic knowledge-library category_private",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "version_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "private",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:34.839258+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:34.839258+00:00",
+                    "receipt_id": "59e8727b-7ec7-4172-9088-3b9371a0457b"
+                  }
+                ],
+                "can_revise": true
+              }
+            ],
+            "rules": [],
+            "as_of": "2026-10-19T01:03:52.840473+00:00"
+          }
+        },
+        "model_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products/3e960e40-918f-4650-81d1-b7658a7ea9f3/experience",
+          "params": {},
+          "status_code": 200,
+          "body": {
+            "product_revision": 1,
+            "projects": [
+              {
+                "id": "93900873-e806-4c7c-9987-d3643129953f",
+                "revision": 1,
+                "name": "Approved revision fixture",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category"
+              }
+            ],
+            "configurations": [
+              {
+                "kind": "engineering_configuration",
+                "id": "f240a3f0-6c0d-4b7d-8624-0130d1a7f9a6",
+                "revision": 1,
+                "name": "Synthetic original engineering configuration"
+              },
+              {
+                "kind": "process_revision",
+                "id": "1b0ef116-e87d-4000-b593-8dc728c6fab0",
+                "revision": 1,
+                "name": "Synthetic original motor assembly process"
+              }
+            ],
+            "candidates": [
+              {
+                "title": "Synthetic knowledge-library model_shared",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "version_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:39.981033+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:39.981033+00:00",
+                    "receipt_id": "c7f39f76-6bcd-4533-9b90-80d1f9a5b149"
+                  }
+                ],
+                "can_revise": true
+              },
+              {
+                "title": "Synthetic knowledge-library model_private",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "bbd628cb-673e-52d8-b9e0-359514302552",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "bbd628cb-673e-52d8-b9e0-359514302552",
+                "version_id": "bbd628cb-673e-52d8-b9e0-359514302552",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "private",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:38.254366+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "bbd628cb-673e-52d8-b9e0-359514302552",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:38.254366+00:00",
+                    "receipt_id": "50503617-1ef9-42b4-92e4-083d032fc943"
+                  }
+                ],
+                "can_revise": true
+              },
+              {
+                "title": "Synthetic knowledge-library category_shared_revision",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 2,
+                "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "version_id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:47.312744+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:36.689150+00:00",
+                    "receipt_id": "8d7322e4-765c-4440-b8b3-0ad92f5ae084"
+                  },
+                  {
+                    "id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                    "revision": 2,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:47.312744+00:00",
+                    "receipt_id": "6503d8da-c5d4-4717-a4f0-4f9055da864f"
+                  }
+                ],
+                "can_revise": false
+              },
+              {
+                "title": "Synthetic knowledge-library category_private",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "version_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "private",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:34.839258+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:34.839258+00:00",
+                    "receipt_id": "59e8727b-7ec7-4172-9088-3b9371a0457b"
+                  }
+                ],
+                "can_revise": false
+              }
+            ],
+            "rules": [
+              {
+                "title": "Synthetic configuration-bound reuse rule",
+                "nature": "synthetic",
+                "rule_id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "revision": 2,
+                "candidate": {
+                  "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                  "revision": 2
+                },
+                "rule_text": "For this configured purpose, establish configuration identity before reuse.",
+                "applicability": {
+                  "target": {
+                    "id": "f240a3f0-6c0d-4b7d-8624-0130d1a7f9a6",
+                    "kind": "engineering_configuration",
+                    "revision": 1
+                  },
+                  "purpose": "Apply one synthetic field lesson to this fixed engineering configuration",
+                  "decision": "applicable",
+                  "rationale": "The actual target and source were explicitly reviewed.",
+                  "conditions": [
+                    "Only the selected configuration and stated internal purpose"
+                  ],
+                  "valid_from": "2026-10-19T01:02:34.409348Z",
+                  "assessor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                  "differences": [],
+                  "valid_until": null,
+                  "adopted_rule": "Explicit named evidence review",
+                  "candidate_version": {
+                    "id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                    "revision": 2
+                  },
+                  "withdrawal_reason": null
+                },
+                "assessment_id": "c431f115-913b-5e12-8e7a-74acfb63f872",
+                "candidate_version_id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "version_id": "1331e309-43f5-570c-93f5-12d119bd9696",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:50.551059+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:43.207873+00:00",
+                    "receipt_id": "2424dd80-d959-4f49-ad7b-d29f273c320b"
+                  },
+                  {
+                    "id": "1331e309-43f5-570c-93f5-12d119bd9696",
+                    "revision": 2,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:50.551059+00:00",
+                    "receipt_id": "5dfe84d0-a826-4641-84db-d57e5fdb847d"
+                  }
+                ],
+                "can_revise": true,
+                "usability": {
+                  "state": "current",
+                  "reason_codes": []
+                }
+              }
+            ],
+            "as_of": "2026-10-19T01:03:52.938833+00:00"
+          }
+        },
+        "peer_products": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products",
+          "params": {},
+          "status_code": 200,
+          "body": [
+            {
+              "id": "395b6456-c97d-4b9d-bc7b-1e42c9379c0a",
+              "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+              "visibility": "category",
+              "name": "Synthetic product",
+              "purpose": "Isolated command verification",
+              "revision": 1,
+              "status": "draft"
+            },
+            {
+              "id": "3e960e40-918f-4650-81d1-b7658a7ea9f3",
+              "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+              "visibility": "category",
+              "name": "Approved revision fixture",
+              "purpose": "Verify preparation",
+              "revision": 1,
+              "status": "draft"
+            }
+          ]
+        },
+        "peer_category_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/experience",
+          "params": {},
+          "status_code": 200,
+          "body": {
+            "product_revision": 1,
+            "projects": [],
+            "configurations": [],
+            "candidates": [
+              {
+                "title": "Synthetic knowledge-library category_shared_revision",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 2,
+                "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "version_id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:47.312744+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:36.689150+00:00",
+                    "receipt_id": "8d7322e4-765c-4440-b8b3-0ad92f5ae084"
+                  },
+                  {
+                    "id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                    "revision": 2,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:47.312744+00:00",
+                    "receipt_id": "6503d8da-c5d4-4717-a4f0-4f9055da864f"
+                  }
+                ],
+                "can_revise": false
+              }
+            ],
+            "rules": [],
+            "as_of": "2026-10-19T01:03:53.584001+00:00"
+          }
+        },
+        "peer_model_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products/3e960e40-918f-4650-81d1-b7658a7ea9f3/experience",
+          "params": {},
+          "status_code": 200,
+          "body": {
+            "product_revision": 1,
+            "projects": [
+              {
+                "id": "93900873-e806-4c7c-9987-d3643129953f",
+                "revision": 1,
+                "name": "Approved revision fixture",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category"
+              }
+            ],
+            "configurations": [
+              {
+                "kind": "engineering_configuration",
+                "id": "f240a3f0-6c0d-4b7d-8624-0130d1a7f9a6",
+                "revision": 1,
+                "name": "Synthetic original engineering configuration"
+              },
+              {
+                "kind": "process_revision",
+                "id": "1b0ef116-e87d-4000-b593-8dc728c6fab0",
+                "revision": 1,
+                "name": "Synthetic original motor assembly process"
+              }
+            ],
+            "candidates": [
+              {
+                "title": "Synthetic knowledge-library model_shared",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "version_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:39.981033+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:39.981033+00:00",
+                    "receipt_id": "c7f39f76-6bcd-4533-9b90-80d1f9a5b149"
+                  }
+                ],
+                "can_revise": false
+              },
+              {
+                "title": "Synthetic knowledge-library category_shared_revision",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 2,
+                "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "version_id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:47.312744+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:36.689150+00:00",
+                    "receipt_id": "8d7322e4-765c-4440-b8b3-0ad92f5ae084"
+                  },
+                  {
+                    "id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                    "revision": 2,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:47.312744+00:00",
+                    "receipt_id": "6503d8da-c5d4-4717-a4f0-4f9055da864f"
+                  }
+                ],
+                "can_revise": false
+              }
+            ],
+            "rules": [
+              {
+                "title": "Synthetic configuration-bound reuse rule",
+                "nature": "synthetic",
+                "rule_id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "revision": 2,
+                "candidate": {
+                  "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                  "revision": 2
+                },
+                "rule_text": "For this configured purpose, establish configuration identity before reuse.",
+                "applicability": {
+                  "target": {
+                    "id": "f240a3f0-6c0d-4b7d-8624-0130d1a7f9a6",
+                    "kind": "engineering_configuration",
+                    "revision": 1
+                  },
+                  "purpose": "Apply one synthetic field lesson to this fixed engineering configuration",
+                  "decision": "applicable",
+                  "rationale": "The actual target and source were explicitly reviewed.",
+                  "conditions": [
+                    "Only the selected configuration and stated internal purpose"
+                  ],
+                  "valid_from": "2026-10-19T01:02:34.409348Z",
+                  "assessor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                  "differences": [],
+                  "valid_until": null,
+                  "adopted_rule": "Explicit named evidence review",
+                  "candidate_version": {
+                    "id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                    "revision": 2
+                  },
+                  "withdrawal_reason": null
+                },
+                "assessment_id": "c431f115-913b-5e12-8e7a-74acfb63f872",
+                "candidate_version_id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "version_id": "1331e309-43f5-570c-93f5-12d119bd9696",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:50.551059+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:43.207873+00:00",
+                    "receipt_id": "2424dd80-d959-4f49-ad7b-d29f273c320b"
+                  },
+                  {
+                    "id": "1331e309-43f5-570c-93f5-12d119bd9696",
+                    "revision": 2,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:50.551059+00:00",
+                    "receipt_id": "5dfe84d0-a826-4641-84db-d57e5fdb847d"
+                  }
+                ],
+                "can_revise": false,
+                "usability": {
+                  "state": "needs_recheck",
+                  "reason_codes": [
+                    "AUTHORITY_SNAPSHOT_INVALID"
+                  ]
+                }
+              }
+            ],
+            "as_of": "2026-10-19T01:03:53.665756+00:00"
+          }
+        },
+        "foreign_products": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products",
+          "params": {},
+          "status_code": 403,
+          "body": {
+            "code": "FORBIDDEN_SCOPE",
+            "message": "品类不在当前授权范围。",
+            "detail": {
+              "reason": "FORBIDDEN_SCOPE"
+            }
+          }
+        },
+        "foreign_category_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/experience",
+          "params": {},
+          "status_code": 403,
+          "body": {
+            "code": "FORBIDDEN_SCOPE",
+            "message": "品类不在当前授权范围。",
+            "detail": {
+              "reason": "FORBIDDEN_SCOPE"
+            }
+          }
+        },
+        "foreign_model_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products/3e960e40-918f-4650-81d1-b7658a7ea9f3/experience",
+          "params": {},
+          "status_code": 403,
+          "body": {
+            "code": "FORBIDDEN_SCOPE",
+            "message": "品类不在当前授权范围。",
+            "detail": {
+              "reason": "FORBIDDEN_SCOPE"
+            }
+          }
+        }
+      },
+      "read_only_counts": {
+        "before": {
+          "knowledge_candidate_versions": 5,
+          "knowledge_candidate_currents": 4,
+          "knowledge_applicability_assessments": 2,
+          "knowledge_rule_versions": 2,
+          "knowledge_rule_currents": 1,
+          "action_receipts": 19,
+          "audit_entries": 19,
+          "outbox_events": 20,
+          "request_keys": 19,
+          "confirmations": 9,
+          "categories": 1,
+          "products": 2,
+          "projects": 1,
+          "project_product_links": 1,
+          "definition_revisions": 1,
+          "engineering_configurations": 1,
+          "process_revisions": 1,
+          "bom_revisions": 1,
+          "bom_lines": 1,
+          "parts": 1,
+          "artifact_versions": 3,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 6
+        },
+        "after": {
+          "knowledge_candidate_versions": 5,
+          "knowledge_candidate_currents": 4,
+          "knowledge_applicability_assessments": 2,
+          "knowledge_rule_versions": 2,
+          "knowledge_rule_currents": 1,
+          "action_receipts": 19,
+          "audit_entries": 19,
+          "outbox_events": 20,
+          "request_keys": 19,
+          "confirmations": 9,
+          "categories": 1,
+          "products": 2,
+          "projects": 1,
+          "project_product_links": 1,
+          "definition_revisions": 1,
+          "engineering_configurations": 1,
+          "process_revisions": 1,
+          "bom_revisions": 1,
+          "bom_lines": 1,
+          "parts": 1,
+          "artifact_versions": 3,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 6
+        },
+        "unchanged": true
+      },
+      "read_only_snapshot": {
+        "before": {
+          "knowledge_candidate_versions": {
+            "count": 5,
+            "sha256": "b0b0188847e843b84944f6e2806e08461b325f4dd2cda90d0ef6419e7d7333b8"
+          },
+          "knowledge_candidate_currents": {
+            "count": 4,
+            "sha256": "723137622fce27fc4449d8198319e9c965eaac95e448193c201548ed84790879"
+          },
+          "knowledge_applicability_assessments": {
+            "count": 2,
+            "sha256": "37723eb360199de4d9a10fb68c112ac6eb4e9bcd82d9e39d7dc53365aacba32e"
+          },
+          "knowledge_rule_versions": {
+            "count": 2,
+            "sha256": "3809112c66a7b297ad89584127de0103d2851dec1540618faafcb57bc1c719e8"
+          },
+          "knowledge_rule_currents": {
+            "count": 1,
+            "sha256": "a6713a5f25df9e47b03764d03c186f1c23ceb09c187e5c549cf5596c98495c0f"
+          },
+          "action_receipts": {
+            "count": 19,
+            "sha256": "72e1b2a1b2f7e3ad36a04a805f72ac4f4cf8d1496ba063118ffb26b89e69b6d0"
+          },
+          "audit_entries": {
+            "count": 19,
+            "sha256": "e51d24a3bb90fa9d6ec64b94e7573f4e1b007fc0bb5677bf575f132f0207cf90"
+          },
+          "outbox_events": {
+            "count": 20,
+            "sha256": "7984a9668ae67be6f3c691a79ffb01e8425eb57be7c6cbedccd2d0ad1250e4cb"
+          },
+          "request_keys": {
+            "count": 19,
+            "sha256": "a5fcab082521e8dccd09f9939bed997b29dda8895903c5c0d602cef6880b4dea"
+          },
+          "confirmations": {
+            "count": 9,
+            "sha256": "4bf9cd450756d51c2efc14db37638ffd3f7c1bcd72690265295536e04f0c646c"
+          },
+          "categories": {
+            "count": 1,
+            "sha256": "fd6c77d309f4dc4884471b6e8c53e9753a691c72324f16a5ddd7bb2ffbed8417"
+          },
+          "products": {
+            "count": 2,
+            "sha256": "90e45396993fd621695f365db3f133f9d6f9e9e785f3f30df69eb754ac293fe6"
+          },
+          "projects": {
+            "count": 1,
+            "sha256": "559be9a3eb8077a3b98f738a5c872961182403c008be6cdd2014dc838c8c510f"
+          },
+          "project_product_links": {
+            "count": 1,
+            "sha256": "67fdedc296fa53853a7f351d565c228dc5087687bbbf055b0b8640b5d03917d9"
+          },
+          "definition_revisions": {
+            "count": 1,
+            "sha256": "795b442fa2120456e2929dd527eb112d43d911ced5aa5831e77bd82fa0bb909d"
+          },
+          "engineering_configurations": {
+            "count": 1,
+            "sha256": "36d82c71531dc90d8b16d976bdda13bc3cd125e729ce3ddb8cf81fa22d0c38f8"
+          },
+          "process_revisions": {
+            "count": 1,
+            "sha256": "3f1084062b1d097f8d13a3da6693a3b46eec3fdf9de3ee3263413af97f73614b"
+          },
+          "bom_revisions": {
+            "count": 1,
+            "sha256": "121496ff113ccfc9a43a458c266ddef02b9675f91ad20230335462308bf77449"
+          },
+          "bom_lines": {
+            "count": 1,
+            "sha256": "13329d6cd66106adb6432f349d9db4e603b909ea137a2f6a789ff1da9244404b"
+          },
+          "parts": {
+            "count": 1,
+            "sha256": "31047b80fb9aca0bfb7ba6f836d864029b041e22edae28b1843297deaef6faff"
+          },
+          "artifact_versions": {
+            "count": 3,
+            "sha256": "e82d059ec0f2bbe237339e45519a5013e2b76fdfff267f21d7ca816bab8e3cc2"
+          },
+          "professional_authority_facts": {
+            "count": 2,
+            "sha256": "9465bd57c1a8a5448424a126103e568150ab995bbcfa1dc0a3e5cf83318c2eeb"
+          },
+          "grants": {
+            "count": 3,
+            "sha256": "a9a616b9b1e55966e131cc4ec91009d866b03e815d3e3d068875584a98a74952"
+          },
+          "object_audiences": {
+            "count": 6,
+            "sha256": "53308c185b95d9ec1ec5ec777799f941fe7087aa5de535f0e67375d89bdbe061"
+          }
+        },
+        "after": {
+          "knowledge_candidate_versions": {
+            "count": 5,
+            "sha256": "b0b0188847e843b84944f6e2806e08461b325f4dd2cda90d0ef6419e7d7333b8"
+          },
+          "knowledge_candidate_currents": {
+            "count": 4,
+            "sha256": "723137622fce27fc4449d8198319e9c965eaac95e448193c201548ed84790879"
+          },
+          "knowledge_applicability_assessments": {
+            "count": 2,
+            "sha256": "37723eb360199de4d9a10fb68c112ac6eb4e9bcd82d9e39d7dc53365aacba32e"
+          },
+          "knowledge_rule_versions": {
+            "count": 2,
+            "sha256": "3809112c66a7b297ad89584127de0103d2851dec1540618faafcb57bc1c719e8"
+          },
+          "knowledge_rule_currents": {
+            "count": 1,
+            "sha256": "a6713a5f25df9e47b03764d03c186f1c23ceb09c187e5c549cf5596c98495c0f"
+          },
+          "action_receipts": {
+            "count": 19,
+            "sha256": "72e1b2a1b2f7e3ad36a04a805f72ac4f4cf8d1496ba063118ffb26b89e69b6d0"
+          },
+          "audit_entries": {
+            "count": 19,
+            "sha256": "e51d24a3bb90fa9d6ec64b94e7573f4e1b007fc0bb5677bf575f132f0207cf90"
+          },
+          "outbox_events": {
+            "count": 20,
+            "sha256": "7984a9668ae67be6f3c691a79ffb01e8425eb57be7c6cbedccd2d0ad1250e4cb"
+          },
+          "request_keys": {
+            "count": 19,
+            "sha256": "a5fcab082521e8dccd09f9939bed997b29dda8895903c5c0d602cef6880b4dea"
+          },
+          "confirmations": {
+            "count": 9,
+            "sha256": "4bf9cd450756d51c2efc14db37638ffd3f7c1bcd72690265295536e04f0c646c"
+          },
+          "categories": {
+            "count": 1,
+            "sha256": "fd6c77d309f4dc4884471b6e8c53e9753a691c72324f16a5ddd7bb2ffbed8417"
+          },
+          "products": {
+            "count": 2,
+            "sha256": "90e45396993fd621695f365db3f133f9d6f9e9e785f3f30df69eb754ac293fe6"
+          },
+          "projects": {
+            "count": 1,
+            "sha256": "559be9a3eb8077a3b98f738a5c872961182403c008be6cdd2014dc838c8c510f"
+          },
+          "project_product_links": {
+            "count": 1,
+            "sha256": "67fdedc296fa53853a7f351d565c228dc5087687bbbf055b0b8640b5d03917d9"
+          },
+          "definition_revisions": {
+            "count": 1,
+            "sha256": "795b442fa2120456e2929dd527eb112d43d911ced5aa5831e77bd82fa0bb909d"
+          },
+          "engineering_configurations": {
+            "count": 1,
+            "sha256": "36d82c71531dc90d8b16d976bdda13bc3cd125e729ce3ddb8cf81fa22d0c38f8"
+          },
+          "process_revisions": {
+            "count": 1,
+            "sha256": "3f1084062b1d097f8d13a3da6693a3b46eec3fdf9de3ee3263413af97f73614b"
+          },
+          "bom_revisions": {
+            "count": 1,
+            "sha256": "121496ff113ccfc9a43a458c266ddef02b9675f91ad20230335462308bf77449"
+          },
+          "bom_lines": {
+            "count": 1,
+            "sha256": "13329d6cd66106adb6432f349d9db4e603b909ea137a2f6a789ff1da9244404b"
+          },
+          "parts": {
+            "count": 1,
+            "sha256": "31047b80fb9aca0bfb7ba6f836d864029b041e22edae28b1843297deaef6faff"
+          },
+          "artifact_versions": {
+            "count": 3,
+            "sha256": "e82d059ec0f2bbe237339e45519a5013e2b76fdfff267f21d7ca816bab8e3cc2"
+          },
+          "professional_authority_facts": {
+            "count": 2,
+            "sha256": "9465bd57c1a8a5448424a126103e568150ab995bbcfa1dc0a3e5cf83318c2eeb"
+          },
+          "grants": {
+            "count": 3,
+            "sha256": "a9a616b9b1e55966e131cc4ec91009d866b03e815d3e3d068875584a98a74952"
+          },
+          "object_audiences": {
+            "count": 6,
+            "sha256": "53308c185b95d9ec1ec5ec777799f941fe7087aa5de535f0e67375d89bdbe061"
+          }
+        },
+        "unchanged": true
+      }
+    },
+    {
+      "phase": "negative_category_source_withdrawn_rule_requires_recheck",
+      "reads": {
+        "products": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products",
+          "params": {},
+          "status_code": 200,
+          "body": [
+            {
+              "id": "395b6456-c97d-4b9d-bc7b-1e42c9379c0a",
+              "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+              "visibility": "category",
+              "name": "Synthetic product",
+              "purpose": "Isolated command verification",
+              "revision": 1,
+              "status": "draft"
+            },
+            {
+              "id": "3e960e40-918f-4650-81d1-b7658a7ea9f3",
+              "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+              "visibility": "category",
+              "name": "Approved revision fixture",
+              "purpose": "Verify preparation",
+              "revision": 1,
+              "status": "draft"
+            }
+          ]
+        },
+        "category_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/experience",
+          "params": {},
+          "status_code": 200,
+          "body": {
+            "product_revision": 1,
+            "projects": [],
+            "configurations": [],
+            "candidates": [
+              {
+                "title": "Synthetic knowledge-library category_shared_revision",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 2,
+                "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "version_id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:47.312744+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:36.689150+00:00",
+                    "receipt_id": "8d7322e4-765c-4440-b8b3-0ad92f5ae084"
+                  },
+                  {
+                    "id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                    "revision": 2,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:47.312744+00:00",
+                    "receipt_id": "6503d8da-c5d4-4717-a4f0-4f9055da864f"
+                  }
+                ],
+                "can_revise": true
+              },
+              {
+                "title": "Synthetic knowledge-library category_private",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "version_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "private",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:34.839258+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:34.839258+00:00",
+                    "receipt_id": "59e8727b-7ec7-4172-9088-3b9371a0457b"
+                  }
+                ],
+                "can_revise": true
+              }
+            ],
+            "rules": [],
+            "as_of": "2026-10-19T01:03:54.333253+00:00"
+          }
+        },
+        "model_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products/3e960e40-918f-4650-81d1-b7658a7ea9f3/experience",
+          "params": {},
+          "status_code": 200,
+          "body": {
+            "product_revision": 1,
+            "projects": [
+              {
+                "id": "93900873-e806-4c7c-9987-d3643129953f",
+                "revision": 1,
+                "name": "Approved revision fixture",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category"
+              }
+            ],
+            "configurations": [
+              {
+                "kind": "engineering_configuration",
+                "id": "f240a3f0-6c0d-4b7d-8624-0130d1a7f9a6",
+                "revision": 1,
+                "name": "Synthetic original engineering configuration"
+              },
+              {
+                "kind": "process_revision",
+                "id": "1b0ef116-e87d-4000-b593-8dc728c6fab0",
+                "revision": 1,
+                "name": "Synthetic original motor assembly process"
+              }
+            ],
+            "candidates": [
+              {
+                "title": "Synthetic knowledge-library model_shared",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "version_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:39.981033+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:39.981033+00:00",
+                    "receipt_id": "c7f39f76-6bcd-4533-9b90-80d1f9a5b149"
+                  }
+                ],
+                "can_revise": true
+              },
+              {
+                "title": "Synthetic knowledge-library model_private",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "bbd628cb-673e-52d8-b9e0-359514302552",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "bbd628cb-673e-52d8-b9e0-359514302552",
+                "version_id": "bbd628cb-673e-52d8-b9e0-359514302552",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "private",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:38.254366+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "bbd628cb-673e-52d8-b9e0-359514302552",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:38.254366+00:00",
+                    "receipt_id": "50503617-1ef9-42b4-92e4-083d032fc943"
+                  }
+                ],
+                "can_revise": true
+              },
+              {
+                "title": "Synthetic knowledge-library category_shared_revision",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 2,
+                "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "version_id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:47.312744+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:36.689150+00:00",
+                    "receipt_id": "8d7322e4-765c-4440-b8b3-0ad92f5ae084"
+                  },
+                  {
+                    "id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                    "revision": 2,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:47.312744+00:00",
+                    "receipt_id": "6503d8da-c5d4-4717-a4f0-4f9055da864f"
+                  }
+                ],
+                "can_revise": false
+              },
+              {
+                "title": "Synthetic knowledge-library category_private",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "version_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "private",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:34.839258+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:34.839258+00:00",
+                    "receipt_id": "59e8727b-7ec7-4172-9088-3b9371a0457b"
+                  }
+                ],
+                "can_revise": false
+              }
+            ],
+            "rules": [
+              {
+                "title": "Synthetic configuration-bound reuse rule",
+                "nature": "synthetic",
+                "rule_id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "revision": 2,
+                "candidate": {
+                  "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                  "revision": 2
+                },
+                "rule_text": "For this configured purpose, establish configuration identity before reuse.",
+                "applicability": {
+                  "target": {
+                    "id": "f240a3f0-6c0d-4b7d-8624-0130d1a7f9a6",
+                    "kind": "engineering_configuration",
+                    "revision": 1
+                  },
+                  "purpose": "Apply one synthetic field lesson to this fixed engineering configuration",
+                  "decision": "applicable",
+                  "rationale": "The actual target and source were explicitly reviewed.",
+                  "conditions": [
+                    "Only the selected configuration and stated internal purpose"
+                  ],
+                  "valid_from": "2026-10-19T01:02:34.409348Z",
+                  "assessor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                  "differences": [],
+                  "valid_until": null,
+                  "adopted_rule": "Explicit named evidence review",
+                  "candidate_version": {
+                    "id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                    "revision": 2
+                  },
+                  "withdrawal_reason": null
+                },
+                "assessment_id": "c431f115-913b-5e12-8e7a-74acfb63f872",
+                "candidate_version_id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "version_id": "1331e309-43f5-570c-93f5-12d119bd9696",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:50.551059+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:43.207873+00:00",
+                    "receipt_id": "2424dd80-d959-4f49-ad7b-d29f273c320b"
+                  },
+                  {
+                    "id": "1331e309-43f5-570c-93f5-12d119bd9696",
+                    "revision": 2,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:50.551059+00:00",
+                    "receipt_id": "5dfe84d0-a826-4641-84db-d57e5fdb847d"
+                  }
+                ],
+                "can_revise": true,
+                "usability": {
+                  "state": "needs_recheck",
+                  "reason_codes": [
+                    "SOURCE_UNAVAILABLE"
+                  ]
+                }
+              }
+            ],
+            "as_of": "2026-10-19T01:03:54.424128+00:00"
+          }
+        },
+        "peer_products": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products",
+          "params": {},
+          "status_code": 200,
+          "body": [
+            {
+              "id": "395b6456-c97d-4b9d-bc7b-1e42c9379c0a",
+              "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+              "visibility": "category",
+              "name": "Synthetic product",
+              "purpose": "Isolated command verification",
+              "revision": 1,
+              "status": "draft"
+            },
+            {
+              "id": "3e960e40-918f-4650-81d1-b7658a7ea9f3",
+              "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+              "visibility": "category",
+              "name": "Approved revision fixture",
+              "purpose": "Verify preparation",
+              "revision": 1,
+              "status": "draft"
+            }
+          ]
+        },
+        "peer_category_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/experience",
+          "params": {},
+          "status_code": 200,
+          "body": {
+            "product_revision": 1,
+            "projects": [],
+            "configurations": [],
+            "candidates": [
+              {
+                "title": "Synthetic knowledge-library category_shared_revision",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 2,
+                "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "version_id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:47.312744+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:36.689150+00:00",
+                    "receipt_id": "8d7322e4-765c-4440-b8b3-0ad92f5ae084"
+                  },
+                  {
+                    "id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                    "revision": 2,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:47.312744+00:00",
+                    "receipt_id": "6503d8da-c5d4-4717-a4f0-4f9055da864f"
+                  }
+                ],
+                "can_revise": false
+              }
+            ],
+            "rules": [],
+            "as_of": "2026-10-19T01:03:55.018364+00:00"
+          }
+        },
+        "peer_model_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products/3e960e40-918f-4650-81d1-b7658a7ea9f3/experience",
+          "params": {},
+          "status_code": 200,
+          "body": {
+            "product_revision": 1,
+            "projects": [
+              {
+                "id": "93900873-e806-4c7c-9987-d3643129953f",
+                "revision": 1,
+                "name": "Approved revision fixture",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category"
+              }
+            ],
+            "configurations": [
+              {
+                "kind": "engineering_configuration",
+                "id": "f240a3f0-6c0d-4b7d-8624-0130d1a7f9a6",
+                "revision": 1,
+                "name": "Synthetic original engineering configuration"
+              },
+              {
+                "kind": "process_revision",
+                "id": "1b0ef116-e87d-4000-b593-8dc728c6fab0",
+                "revision": 1,
+                "name": "Synthetic original motor assembly process"
+              }
+            ],
+            "candidates": [
+              {
+                "title": "Synthetic knowledge-library model_shared",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 1,
+                "candidate_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "version_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:39.981033+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:39.981033+00:00",
+                    "receipt_id": "c7f39f76-6bcd-4533-9b90-80d1f9a5b149"
+                  }
+                ],
+                "can_revise": false
+              },
+              {
+                "title": "Synthetic knowledge-library category_shared_revision",
+                "lesson": "Reuse a result only after its actual configuration is established.",
+                "revision": 2,
+                "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "result_receipts": [],
+                "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+                "applicability_hypothesis": "Check separately against the selected engineering version.",
+                "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "version_id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                "project_id": null,
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:47.312744+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:36.689150+00:00",
+                    "receipt_id": "8d7322e4-765c-4440-b8b3-0ad92f5ae084"
+                  },
+                  {
+                    "id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                    "revision": 2,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:47.312744+00:00",
+                    "receipt_id": "6503d8da-c5d4-4717-a4f0-4f9055da864f"
+                  }
+                ],
+                "can_revise": false
+              }
+            ],
+            "rules": [
+              {
+                "title": "Synthetic configuration-bound reuse rule",
+                "nature": "synthetic",
+                "rule_id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "revision": 2,
+                "candidate": {
+                  "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                  "revision": 2
+                },
+                "rule_text": "For this configured purpose, establish configuration identity before reuse.",
+                "applicability": {
+                  "target": {
+                    "id": "f240a3f0-6c0d-4b7d-8624-0130d1a7f9a6",
+                    "kind": "engineering_configuration",
+                    "revision": 1
+                  },
+                  "purpose": "Apply one synthetic field lesson to this fixed engineering configuration",
+                  "decision": "applicable",
+                  "rationale": "The actual target and source were explicitly reviewed.",
+                  "conditions": [
+                    "Only the selected configuration and stated internal purpose"
+                  ],
+                  "valid_from": "2026-10-19T01:02:34.409348Z",
+                  "assessor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                  "differences": [],
+                  "valid_until": null,
+                  "adopted_rule": "Explicit named evidence review",
+                  "candidate_version": {
+                    "id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                    "revision": 2
+                  },
+                  "withdrawal_reason": null
+                },
+                "assessment_id": "c431f115-913b-5e12-8e7a-74acfb63f872",
+                "candidate_version_id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "version_id": "1331e309-43f5-570c-93f5-12d119bd9696",
+                "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+                "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "visibility": "category",
+                "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "origin": "human",
+                "created_at": "2026-10-19T01:03:50.551059+00:00",
+                "sources": [
+                  {
+                    "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                    "revision": 1
+                  }
+                ],
+                "history": [
+                  {
+                    "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                    "revision": 1,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:43.207873+00:00",
+                    "receipt_id": "2424dd80-d959-4f49-ad7b-d29f273c320b"
+                  },
+                  {
+                    "id": "1331e309-43f5-570c-93f5-12d119bd9696",
+                    "revision": 2,
+                    "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                    "created_at": "2026-10-19T01:03:50.551059+00:00",
+                    "receipt_id": "5dfe84d0-a826-4641-84db-d57e5fdb847d"
+                  }
+                ],
+                "can_revise": false,
+                "usability": {
+                  "state": "needs_recheck",
+                  "reason_codes": [
+                    "AUTHORITY_SNAPSHOT_INVALID",
+                    "SOURCE_UNAVAILABLE"
+                  ]
+                }
+              }
+            ],
+            "as_of": "2026-10-19T01:03:55.098809+00:00"
+          }
+        },
+        "foreign_products": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products",
+          "params": {},
+          "status_code": 403,
+          "body": {
+            "code": "FORBIDDEN_SCOPE",
+            "message": "品类不在当前授权范围。",
+            "detail": {
+              "reason": "FORBIDDEN_SCOPE"
+            }
+          }
+        },
+        "foreign_category_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/experience",
+          "params": {},
+          "status_code": 403,
+          "body": {
+            "code": "FORBIDDEN_SCOPE",
+            "message": "品类不在当前授权范围。",
+            "detail": {
+              "reason": "FORBIDDEN_SCOPE"
+            }
+          }
+        },
+        "foreign_model_experience": {
+          "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products/3e960e40-918f-4650-81d1-b7658a7ea9f3/experience",
+          "params": {},
+          "status_code": 403,
+          "body": {
+            "code": "FORBIDDEN_SCOPE",
+            "message": "品类不在当前授权范围。",
+            "detail": {
+              "reason": "FORBIDDEN_SCOPE"
+            }
+          }
+        }
+      },
+      "read_only_counts": {
+        "before": {
+          "knowledge_candidate_versions": 5,
+          "knowledge_candidate_currents": 4,
+          "knowledge_applicability_assessments": 2,
+          "knowledge_rule_versions": 2,
+          "knowledge_rule_currents": 1,
+          "action_receipts": 19,
+          "audit_entries": 19,
+          "outbox_events": 20,
+          "request_keys": 19,
+          "confirmations": 9,
+          "categories": 1,
+          "products": 2,
+          "projects": 1,
+          "project_product_links": 1,
+          "definition_revisions": 1,
+          "engineering_configurations": 1,
+          "process_revisions": 1,
+          "bom_revisions": 1,
+          "bom_lines": 1,
+          "parts": 1,
+          "artifact_versions": 3,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 6
+        },
+        "after": {
+          "knowledge_candidate_versions": 5,
+          "knowledge_candidate_currents": 4,
+          "knowledge_applicability_assessments": 2,
+          "knowledge_rule_versions": 2,
+          "knowledge_rule_currents": 1,
+          "action_receipts": 19,
+          "audit_entries": 19,
+          "outbox_events": 20,
+          "request_keys": 19,
+          "confirmations": 9,
+          "categories": 1,
+          "products": 2,
+          "projects": 1,
+          "project_product_links": 1,
+          "definition_revisions": 1,
+          "engineering_configurations": 1,
+          "process_revisions": 1,
+          "bom_revisions": 1,
+          "bom_lines": 1,
+          "parts": 1,
+          "artifact_versions": 3,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 6
+        },
+        "unchanged": true
+      },
+      "read_only_snapshot": {
+        "before": {
+          "knowledge_candidate_versions": {
+            "count": 5,
+            "sha256": "b0b0188847e843b84944f6e2806e08461b325f4dd2cda90d0ef6419e7d7333b8"
+          },
+          "knowledge_candidate_currents": {
+            "count": 4,
+            "sha256": "723137622fce27fc4449d8198319e9c965eaac95e448193c201548ed84790879"
+          },
+          "knowledge_applicability_assessments": {
+            "count": 2,
+            "sha256": "37723eb360199de4d9a10fb68c112ac6eb4e9bcd82d9e39d7dc53365aacba32e"
+          },
+          "knowledge_rule_versions": {
+            "count": 2,
+            "sha256": "3809112c66a7b297ad89584127de0103d2851dec1540618faafcb57bc1c719e8"
+          },
+          "knowledge_rule_currents": {
+            "count": 1,
+            "sha256": "a6713a5f25df9e47b03764d03c186f1c23ceb09c187e5c549cf5596c98495c0f"
+          },
+          "action_receipts": {
+            "count": 19,
+            "sha256": "72e1b2a1b2f7e3ad36a04a805f72ac4f4cf8d1496ba063118ffb26b89e69b6d0"
+          },
+          "audit_entries": {
+            "count": 19,
+            "sha256": "e51d24a3bb90fa9d6ec64b94e7573f4e1b007fc0bb5677bf575f132f0207cf90"
+          },
+          "outbox_events": {
+            "count": 20,
+            "sha256": "7984a9668ae67be6f3c691a79ffb01e8425eb57be7c6cbedccd2d0ad1250e4cb"
+          },
+          "request_keys": {
+            "count": 19,
+            "sha256": "a5fcab082521e8dccd09f9939bed997b29dda8895903c5c0d602cef6880b4dea"
+          },
+          "confirmations": {
+            "count": 9,
+            "sha256": "4bf9cd450756d51c2efc14db37638ffd3f7c1bcd72690265295536e04f0c646c"
+          },
+          "categories": {
+            "count": 1,
+            "sha256": "1f51a7ee5496dbac02effc0f6ca5f27cc136d8ed4b9d10798db2ebe42028e3b5"
+          },
+          "products": {
+            "count": 2,
+            "sha256": "90e45396993fd621695f365db3f133f9d6f9e9e785f3f30df69eb754ac293fe6"
+          },
+          "projects": {
+            "count": 1,
+            "sha256": "559be9a3eb8077a3b98f738a5c872961182403c008be6cdd2014dc838c8c510f"
+          },
+          "project_product_links": {
+            "count": 1,
+            "sha256": "67fdedc296fa53853a7f351d565c228dc5087687bbbf055b0b8640b5d03917d9"
+          },
+          "definition_revisions": {
+            "count": 1,
+            "sha256": "795b442fa2120456e2929dd527eb112d43d911ced5aa5831e77bd82fa0bb909d"
+          },
+          "engineering_configurations": {
+            "count": 1,
+            "sha256": "36d82c71531dc90d8b16d976bdda13bc3cd125e729ce3ddb8cf81fa22d0c38f8"
+          },
+          "process_revisions": {
+            "count": 1,
+            "sha256": "3f1084062b1d097f8d13a3da6693a3b46eec3fdf9de3ee3263413af97f73614b"
+          },
+          "bom_revisions": {
+            "count": 1,
+            "sha256": "121496ff113ccfc9a43a458c266ddef02b9675f91ad20230335462308bf77449"
+          },
+          "bom_lines": {
+            "count": 1,
+            "sha256": "13329d6cd66106adb6432f349d9db4e603b909ea137a2f6a789ff1da9244404b"
+          },
+          "parts": {
+            "count": 1,
+            "sha256": "31047b80fb9aca0bfb7ba6f836d864029b041e22edae28b1843297deaef6faff"
+          },
+          "artifact_versions": {
+            "count": 3,
+            "sha256": "05d9ba0e6aaa37ef80d777ebf9761ed06327bdc6eb1a72910ab5f12cc5af2f00"
+          },
+          "professional_authority_facts": {
+            "count": 2,
+            "sha256": "9465bd57c1a8a5448424a126103e568150ab995bbcfa1dc0a3e5cf83318c2eeb"
+          },
+          "grants": {
+            "count": 3,
+            "sha256": "a9a616b9b1e55966e131cc4ec91009d866b03e815d3e3d068875584a98a74952"
+          },
+          "object_audiences": {
+            "count": 6,
+            "sha256": "53308c185b95d9ec1ec5ec777799f941fe7087aa5de535f0e67375d89bdbe061"
+          }
+        },
+        "after": {
+          "knowledge_candidate_versions": {
+            "count": 5,
+            "sha256": "b0b0188847e843b84944f6e2806e08461b325f4dd2cda90d0ef6419e7d7333b8"
+          },
+          "knowledge_candidate_currents": {
+            "count": 4,
+            "sha256": "723137622fce27fc4449d8198319e9c965eaac95e448193c201548ed84790879"
+          },
+          "knowledge_applicability_assessments": {
+            "count": 2,
+            "sha256": "37723eb360199de4d9a10fb68c112ac6eb4e9bcd82d9e39d7dc53365aacba32e"
+          },
+          "knowledge_rule_versions": {
+            "count": 2,
+            "sha256": "3809112c66a7b297ad89584127de0103d2851dec1540618faafcb57bc1c719e8"
+          },
+          "knowledge_rule_currents": {
+            "count": 1,
+            "sha256": "a6713a5f25df9e47b03764d03c186f1c23ceb09c187e5c549cf5596c98495c0f"
+          },
+          "action_receipts": {
+            "count": 19,
+            "sha256": "72e1b2a1b2f7e3ad36a04a805f72ac4f4cf8d1496ba063118ffb26b89e69b6d0"
+          },
+          "audit_entries": {
+            "count": 19,
+            "sha256": "e51d24a3bb90fa9d6ec64b94e7573f4e1b007fc0bb5677bf575f132f0207cf90"
+          },
+          "outbox_events": {
+            "count": 20,
+            "sha256": "7984a9668ae67be6f3c691a79ffb01e8425eb57be7c6cbedccd2d0ad1250e4cb"
+          },
+          "request_keys": {
+            "count": 19,
+            "sha256": "a5fcab082521e8dccd09f9939bed997b29dda8895903c5c0d602cef6880b4dea"
+          },
+          "confirmations": {
+            "count": 9,
+            "sha256": "4bf9cd450756d51c2efc14db37638ffd3f7c1bcd72690265295536e04f0c646c"
+          },
+          "categories": {
+            "count": 1,
+            "sha256": "1f51a7ee5496dbac02effc0f6ca5f27cc136d8ed4b9d10798db2ebe42028e3b5"
+          },
+          "products": {
+            "count": 2,
+            "sha256": "90e45396993fd621695f365db3f133f9d6f9e9e785f3f30df69eb754ac293fe6"
+          },
+          "projects": {
+            "count": 1,
+            "sha256": "559be9a3eb8077a3b98f738a5c872961182403c008be6cdd2014dc838c8c510f"
+          },
+          "project_product_links": {
+            "count": 1,
+            "sha256": "67fdedc296fa53853a7f351d565c228dc5087687bbbf055b0b8640b5d03917d9"
+          },
+          "definition_revisions": {
+            "count": 1,
+            "sha256": "795b442fa2120456e2929dd527eb112d43d911ced5aa5831e77bd82fa0bb909d"
+          },
+          "engineering_configurations": {
+            "count": 1,
+            "sha256": "36d82c71531dc90d8b16d976bdda13bc3cd125e729ce3ddb8cf81fa22d0c38f8"
+          },
+          "process_revisions": {
+            "count": 1,
+            "sha256": "3f1084062b1d097f8d13a3da6693a3b46eec3fdf9de3ee3263413af97f73614b"
+          },
+          "bom_revisions": {
+            "count": 1,
+            "sha256": "121496ff113ccfc9a43a458c266ddef02b9675f91ad20230335462308bf77449"
+          },
+          "bom_lines": {
+            "count": 1,
+            "sha256": "13329d6cd66106adb6432f349d9db4e603b909ea137a2f6a789ff1da9244404b"
+          },
+          "parts": {
+            "count": 1,
+            "sha256": "31047b80fb9aca0bfb7ba6f836d864029b041e22edae28b1843297deaef6faff"
+          },
+          "artifact_versions": {
+            "count": 3,
+            "sha256": "05d9ba0e6aaa37ef80d777ebf9761ed06327bdc6eb1a72910ab5f12cc5af2f00"
+          },
+          "professional_authority_facts": {
+            "count": 2,
+            "sha256": "9465bd57c1a8a5448424a126103e568150ab995bbcfa1dc0a3e5cf83318c2eeb"
+          },
+          "grants": {
+            "count": 3,
+            "sha256": "a9a616b9b1e55966e131cc4ec91009d866b03e815d3e3d068875584a98a74952"
+          },
+          "object_audiences": {
+            "count": 6,
+            "sha256": "53308c185b95d9ec1ec5ec777799f941fe7087aa5de535f0e67375d89bdbe061"
+          }
+        },
+        "unchanged": true
+      }
+    }
+  ],
+  "guard_checks": {
+    "candidate_revision_read": {
+      "path": "/v1/categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products/3e960e40-918f-4650-81d1-b7658a7ea9f3/experience",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "product_revision": 1,
+        "projects": [
+          {
+            "id": "93900873-e806-4c7c-9987-d3643129953f",
+            "revision": 1,
+            "name": "Approved revision fixture",
+            "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+            "visibility": "category"
+          }
+        ],
+        "configurations": [
+          {
+            "kind": "engineering_configuration",
+            "id": "f240a3f0-6c0d-4b7d-8624-0130d1a7f9a6",
+            "revision": 1,
+            "name": "Synthetic original engineering configuration"
+          },
+          {
+            "kind": "process_revision",
+            "id": "1b0ef116-e87d-4000-b593-8dc728c6fab0",
+            "revision": 1,
+            "name": "Synthetic original motor assembly process"
+          }
+        ],
+        "candidates": [
+          {
+            "title": "Synthetic knowledge-library model_shared",
+            "lesson": "Reuse a result only after its actual configuration is established.",
+            "revision": 1,
+            "candidate_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+            "result_receipts": [],
+            "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+            "applicability_hypothesis": "Check separately against the selected engineering version.",
+            "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+            "version_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+            "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+            "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+            "visibility": "category",
+            "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+            "origin": "human",
+            "created_at": "2026-10-19T01:03:39.981033+00:00",
+            "sources": [
+              {
+                "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                "revision": 1
+              }
+            ],
+            "history": [
+              {
+                "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+                "revision": 1,
+                "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "created_at": "2026-10-19T01:03:39.981033+00:00",
+                "receipt_id": "c7f39f76-6bcd-4533-9b90-80d1f9a5b149"
+              }
+            ],
+            "can_revise": true
+          },
+          {
+            "title": "Synthetic knowledge-library model_private",
+            "lesson": "Reuse a result only after its actual configuration is established.",
+            "revision": 1,
+            "candidate_id": "bbd628cb-673e-52d8-b9e0-359514302552",
+            "result_receipts": [],
+            "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+            "applicability_hypothesis": "Check separately against the selected engineering version.",
+            "id": "bbd628cb-673e-52d8-b9e0-359514302552",
+            "version_id": "bbd628cb-673e-52d8-b9e0-359514302552",
+            "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+            "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+            "visibility": "private",
+            "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+            "origin": "human",
+            "created_at": "2026-10-19T01:03:38.254366+00:00",
+            "sources": [
+              {
+                "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                "revision": 1
+              }
+            ],
+            "history": [
+              {
+                "id": "bbd628cb-673e-52d8-b9e0-359514302552",
+                "revision": 1,
+                "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "created_at": "2026-10-19T01:03:38.254366+00:00",
+                "receipt_id": "50503617-1ef9-42b4-92e4-083d032fc943"
+              }
+            ],
+            "can_revise": true
+          },
+          {
+            "title": "Synthetic knowledge-library category_shared_revision",
+            "lesson": "Reuse a result only after its actual configuration is established.",
+            "revision": 2,
+            "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+            "result_receipts": [],
+            "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+            "applicability_hypothesis": "Check separately against the selected engineering version.",
+            "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+            "version_id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+            "project_id": null,
+            "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+            "visibility": "category",
+            "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+            "origin": "human",
+            "created_at": "2026-10-19T01:03:47.312744+00:00",
+            "sources": [
+              {
+                "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                "revision": 1
+              }
+            ],
+            "history": [
+              {
+                "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "revision": 1,
+                "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "created_at": "2026-10-19T01:03:36.689150+00:00",
+                "receipt_id": "8d7322e4-765c-4440-b8b3-0ad92f5ae084"
+              },
+              {
+                "id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+                "revision": 2,
+                "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "created_at": "2026-10-19T01:03:47.312744+00:00",
+                "receipt_id": "6503d8da-c5d4-4717-a4f0-4f9055da864f"
+              }
+            ],
+            "can_revise": false
+          },
+          {
+            "title": "Synthetic knowledge-library category_private",
+            "lesson": "Reuse a result only after its actual configuration is established.",
+            "revision": 1,
+            "candidate_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+            "result_receipts": [],
+            "evidence_summary": "One explicit synthetic source, with no asserted production sample.",
+            "applicability_hypothesis": "Check separately against the selected engineering version.",
+            "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+            "version_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+            "project_id": null,
+            "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+            "visibility": "private",
+            "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+            "origin": "human",
+            "created_at": "2026-10-19T01:03:34.839258+00:00",
+            "sources": [
+              {
+                "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                "revision": 1
+              }
+            ],
+            "history": [
+              {
+                "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+                "revision": 1,
+                "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "created_at": "2026-10-19T01:03:34.839258+00:00",
+                "receipt_id": "59e8727b-7ec7-4172-9088-3b9371a0457b"
+              }
+            ],
+            "can_revise": false
+          }
+        ],
+        "rules": [
+          {
+            "title": "Synthetic configuration-bound reuse rule",
+            "nature": "synthetic",
+            "rule_id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+            "revision": 1,
+            "candidate": {
+              "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+              "revision": 1
+            },
+            "rule_text": "For this configured purpose, establish configuration identity before reuse.",
+            "applicability": {
+              "target": {
+                "id": "f240a3f0-6c0d-4b7d-8624-0130d1a7f9a6",
+                "kind": "engineering_configuration",
+                "revision": 1
+              },
+              "purpose": "Apply one synthetic field lesson to this fixed engineering configuration",
+              "decision": "applicable",
+              "rationale": "The actual target and source were explicitly reviewed.",
+              "conditions": [
+                "Only the selected configuration and stated internal purpose"
+              ],
+              "valid_from": "2026-10-19T01:02:34.409348Z",
+              "assessor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+              "differences": [],
+              "valid_until": null,
+              "adopted_rule": "Explicit named evidence review",
+              "candidate_version": {
+                "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+                "revision": 1
+              },
+              "withdrawal_reason": null
+            },
+            "assessment_id": "6adec75c-7449-57fb-8fb8-d987c29cb8a4",
+            "candidate_version_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+            "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+            "version_id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+            "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+            "owner_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+            "visibility": "category",
+            "author_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+            "origin": "human",
+            "created_at": "2026-10-19T01:03:43.207873+00:00",
+            "sources": [
+              {
+                "id": "b9d622ea-693f-4753-9ab1-d8a1090f7240",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449",
+                "revision": 1
+              }
+            ],
+            "history": [
+              {
+                "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+                "revision": 1,
+                "actor_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+                "created_at": "2026-10-19T01:03:43.207873+00:00",
+                "receipt_id": "2424dd80-d959-4f49-ad7b-d29f273c320b"
+              }
+            ],
+            "can_revise": true,
+            "usability": {
+              "state": "current",
+              "reason_codes": []
+            }
+          }
+        ],
+        "as_of": "2026-10-19T01:03:48.852835+00:00"
+      },
+      "read_only_counts": {
+        "before": {
+          "knowledge_candidate_versions": 5,
+          "knowledge_candidate_currents": 4,
+          "knowledge_applicability_assessments": 1,
+          "knowledge_rule_versions": 1,
+          "knowledge_rule_currents": 1,
+          "action_receipts": 18,
+          "audit_entries": 18,
+          "outbox_events": 19,
+          "request_keys": 18,
+          "confirmations": 8,
+          "categories": 1,
+          "products": 2,
+          "projects": 1,
+          "project_product_links": 1,
+          "definition_revisions": 1,
+          "engineering_configurations": 1,
+          "process_revisions": 1,
+          "bom_revisions": 1,
+          "bom_lines": 1,
+          "parts": 1,
+          "artifact_versions": 3,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 6
+        },
+        "after": {
+          "knowledge_candidate_versions": 5,
+          "knowledge_candidate_currents": 4,
+          "knowledge_applicability_assessments": 1,
+          "knowledge_rule_versions": 1,
+          "knowledge_rule_currents": 1,
+          "action_receipts": 18,
+          "audit_entries": 18,
+          "outbox_events": 19,
+          "request_keys": 18,
+          "confirmations": 8,
+          "categories": 1,
+          "products": 2,
+          "projects": 1,
+          "project_product_links": 1,
+          "definition_revisions": 1,
+          "engineering_configurations": 1,
+          "process_revisions": 1,
+          "bom_revisions": 1,
+          "bom_lines": 1,
+          "parts": 1,
+          "artifact_versions": 3,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 6
+        },
+        "unchanged": true
+      },
+      "read_only_snapshot": {
+        "before": {
+          "knowledge_candidate_versions": {
+            "count": 5,
+            "sha256": "b0b0188847e843b84944f6e2806e08461b325f4dd2cda90d0ef6419e7d7333b8"
+          },
+          "knowledge_candidate_currents": {
+            "count": 4,
+            "sha256": "723137622fce27fc4449d8198319e9c965eaac95e448193c201548ed84790879"
+          },
+          "knowledge_applicability_assessments": {
+            "count": 1,
+            "sha256": "13daf77d810349e5ab880c6ced79b4ce2bef2840b3c23b9e33b7d09d494457d8"
+          },
+          "knowledge_rule_versions": {
+            "count": 1,
+            "sha256": "94d291c672178d3327b4fb5ea30e64efd4478a4945948067ad5fd1ccc7bd7fd4"
+          },
+          "knowledge_rule_currents": {
+            "count": 1,
+            "sha256": "dfaf20f1207ba90b55e4eb8b93c705b9b7e908cf0e30fb28bbbecfa1d53e4922"
+          },
+          "action_receipts": {
+            "count": 18,
+            "sha256": "aa50b965c2dc6642779050c70cb71d6109921521865e58d672e3dec7bd4cdc9e"
+          },
+          "audit_entries": {
+            "count": 18,
+            "sha256": "40e1d833926680f6fa2b7f0087de337b08314916ba1933e72e8954d35f109fab"
+          },
+          "outbox_events": {
+            "count": 19,
+            "sha256": "2df8af8fa09b1408780290c188d759cee08d93d4eb0f4ea9f87a6b6f3010f7a3"
+          },
+          "request_keys": {
+            "count": 18,
+            "sha256": "f876a5efb85de1523386693733f61bf1f60154745a6524f840bb7feab2f90af6"
+          },
+          "confirmations": {
+            "count": 8,
+            "sha256": "7b0bf88f321dfc0cfc4fa143c7139340d237cd944fd5a839c4834fc4b9eb4689"
+          },
+          "categories": {
+            "count": 1,
+            "sha256": "fd6c77d309f4dc4884471b6e8c53e9753a691c72324f16a5ddd7bb2ffbed8417"
+          },
+          "products": {
+            "count": 2,
+            "sha256": "90f8567f4d31c5510212c7aa7097da100a963dba3a656bed4f39b2cd0e228a2e"
+          },
+          "projects": {
+            "count": 1,
+            "sha256": "559be9a3eb8077a3b98f738a5c872961182403c008be6cdd2014dc838c8c510f"
+          },
+          "project_product_links": {
+            "count": 1,
+            "sha256": "67fdedc296fa53853a7f351d565c228dc5087687bbbf055b0b8640b5d03917d9"
+          },
+          "definition_revisions": {
+            "count": 1,
+            "sha256": "795b442fa2120456e2929dd527eb112d43d911ced5aa5831e77bd82fa0bb909d"
+          },
+          "engineering_configurations": {
+            "count": 1,
+            "sha256": "36d82c71531dc90d8b16d976bdda13bc3cd125e729ce3ddb8cf81fa22d0c38f8"
+          },
+          "process_revisions": {
+            "count": 1,
+            "sha256": "3f1084062b1d097f8d13a3da6693a3b46eec3fdf9de3ee3263413af97f73614b"
+          },
+          "bom_revisions": {
+            "count": 1,
+            "sha256": "121496ff113ccfc9a43a458c266ddef02b9675f91ad20230335462308bf77449"
+          },
+          "bom_lines": {
+            "count": 1,
+            "sha256": "13329d6cd66106adb6432f349d9db4e603b909ea137a2f6a789ff1da9244404b"
+          },
+          "parts": {
+            "count": 1,
+            "sha256": "31047b80fb9aca0bfb7ba6f836d864029b041e22edae28b1843297deaef6faff"
+          },
+          "artifact_versions": {
+            "count": 3,
+            "sha256": "e82d059ec0f2bbe237339e45519a5013e2b76fdfff267f21d7ca816bab8e3cc2"
+          },
+          "professional_authority_facts": {
+            "count": 2,
+            "sha256": "9465bd57c1a8a5448424a126103e568150ab995bbcfa1dc0a3e5cf83318c2eeb"
+          },
+          "grants": {
+            "count": 3,
+            "sha256": "a9a616b9b1e55966e131cc4ec91009d866b03e815d3e3d068875584a98a74952"
+          },
+          "object_audiences": {
+            "count": 6,
+            "sha256": "53308c185b95d9ec1ec5ec777799f941fe7087aa5de535f0e67375d89bdbe061"
+          }
+        },
+        "after": {
+          "knowledge_candidate_versions": {
+            "count": 5,
+            "sha256": "b0b0188847e843b84944f6e2806e08461b325f4dd2cda90d0ef6419e7d7333b8"
+          },
+          "knowledge_candidate_currents": {
+            "count": 4,
+            "sha256": "723137622fce27fc4449d8198319e9c965eaac95e448193c201548ed84790879"
+          },
+          "knowledge_applicability_assessments": {
+            "count": 1,
+            "sha256": "13daf77d810349e5ab880c6ced79b4ce2bef2840b3c23b9e33b7d09d494457d8"
+          },
+          "knowledge_rule_versions": {
+            "count": 1,
+            "sha256": "94d291c672178d3327b4fb5ea30e64efd4478a4945948067ad5fd1ccc7bd7fd4"
+          },
+          "knowledge_rule_currents": {
+            "count": 1,
+            "sha256": "dfaf20f1207ba90b55e4eb8b93c705b9b7e908cf0e30fb28bbbecfa1d53e4922"
+          },
+          "action_receipts": {
+            "count": 18,
+            "sha256": "aa50b965c2dc6642779050c70cb71d6109921521865e58d672e3dec7bd4cdc9e"
+          },
+          "audit_entries": {
+            "count": 18,
+            "sha256": "40e1d833926680f6fa2b7f0087de337b08314916ba1933e72e8954d35f109fab"
+          },
+          "outbox_events": {
+            "count": 19,
+            "sha256": "2df8af8fa09b1408780290c188d759cee08d93d4eb0f4ea9f87a6b6f3010f7a3"
+          },
+          "request_keys": {
+            "count": 18,
+            "sha256": "f876a5efb85de1523386693733f61bf1f60154745a6524f840bb7feab2f90af6"
+          },
+          "confirmations": {
+            "count": 8,
+            "sha256": "7b0bf88f321dfc0cfc4fa143c7139340d237cd944fd5a839c4834fc4b9eb4689"
+          },
+          "categories": {
+            "count": 1,
+            "sha256": "fd6c77d309f4dc4884471b6e8c53e9753a691c72324f16a5ddd7bb2ffbed8417"
+          },
+          "products": {
+            "count": 2,
+            "sha256": "90f8567f4d31c5510212c7aa7097da100a963dba3a656bed4f39b2cd0e228a2e"
+          },
+          "projects": {
+            "count": 1,
+            "sha256": "559be9a3eb8077a3b98f738a5c872961182403c008be6cdd2014dc838c8c510f"
+          },
+          "project_product_links": {
+            "count": 1,
+            "sha256": "67fdedc296fa53853a7f351d565c228dc5087687bbbf055b0b8640b5d03917d9"
+          },
+          "definition_revisions": {
+            "count": 1,
+            "sha256": "795b442fa2120456e2929dd527eb112d43d911ced5aa5831e77bd82fa0bb909d"
+          },
+          "engineering_configurations": {
+            "count": 1,
+            "sha256": "36d82c71531dc90d8b16d976bdda13bc3cd125e729ce3ddb8cf81fa22d0c38f8"
+          },
+          "process_revisions": {
+            "count": 1,
+            "sha256": "3f1084062b1d097f8d13a3da6693a3b46eec3fdf9de3ee3263413af97f73614b"
+          },
+          "bom_revisions": {
+            "count": 1,
+            "sha256": "121496ff113ccfc9a43a458c266ddef02b9675f91ad20230335462308bf77449"
+          },
+          "bom_lines": {
+            "count": 1,
+            "sha256": "13329d6cd66106adb6432f349d9db4e603b909ea137a2f6a789ff1da9244404b"
+          },
+          "parts": {
+            "count": 1,
+            "sha256": "31047b80fb9aca0bfb7ba6f836d864029b041e22edae28b1843297deaef6faff"
+          },
+          "artifact_versions": {
+            "count": 3,
+            "sha256": "e82d059ec0f2bbe237339e45519a5013e2b76fdfff267f21d7ca816bab8e3cc2"
+          },
+          "professional_authority_facts": {
+            "count": 2,
+            "sha256": "9465bd57c1a8a5448424a126103e568150ab995bbcfa1dc0a3e5cf83318c2eeb"
+          },
+          "grants": {
+            "count": 3,
+            "sha256": "a9a616b9b1e55966e131cc4ec91009d866b03e815d3e3d068875584a98a74952"
+          },
+          "object_audiences": {
+            "count": 6,
+            "sha256": "53308c185b95d9ec1ec5ec777799f941fe7087aa5de535f0e67375d89bdbe061"
+          }
+        },
+        "unchanged": true
+      }
+    }
+  },
+  "command_receipts": {
+    "category_private": {
+      "id": "59e8727b-7ec7-4172-9088-3b9371a0457b",
+      "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+      "product_id": null,
+      "operation": "knowledge.candidate.create",
+      "subject_type": "knowledge_candidate",
+      "subject_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+      "subject_revision": 1,
+      "writer_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "requester_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "created_at": "2026-10-19T01:03:34.850930+00:00",
+      "agent_run_id": null,
+      "result": {
+        "id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+        "revision": 1,
+        "status": "draft",
+        "candidate_id": "a4269efe-fd72-5c07-9115-ded24bf48283",
+        "project_id": null
+      }
+    },
+    "category_shared": {
+      "id": "8d7322e4-765c-4440-b8b3-0ad92f5ae084",
+      "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+      "product_id": null,
+      "operation": "knowledge.candidate.create",
+      "subject_type": "knowledge_candidate",
+      "subject_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+      "subject_revision": 1,
+      "writer_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "requester_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "created_at": "2026-10-19T01:03:36.697655+00:00",
+      "agent_run_id": null,
+      "result": {
+        "id": "065550f3-77e2-5486-96fc-cda92a542c22",
+        "revision": 1,
+        "status": "draft",
+        "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+        "project_id": null
+      }
+    },
+    "model_private": {
+      "id": "50503617-1ef9-42b4-92e4-083d032fc943",
+      "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+      "product_id": "3e960e40-918f-4650-81d1-b7658a7ea9f3",
+      "operation": "knowledge.candidate.create",
+      "subject_type": "knowledge_candidate",
+      "subject_id": "bbd628cb-673e-52d8-b9e0-359514302552",
+      "subject_revision": 1,
+      "writer_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "requester_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "created_at": "2026-10-19T01:03:38.270862+00:00",
+      "agent_run_id": null,
+      "result": {
+        "id": "bbd628cb-673e-52d8-b9e0-359514302552",
+        "revision": 1,
+        "status": "draft",
+        "candidate_id": "bbd628cb-673e-52d8-b9e0-359514302552",
+        "project_id": "93900873-e806-4c7c-9987-d3643129953f"
+      }
+    },
+    "model_shared": {
+      "id": "c7f39f76-6bcd-4533-9b90-80d1f9a5b149",
+      "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+      "product_id": "3e960e40-918f-4650-81d1-b7658a7ea9f3",
+      "operation": "knowledge.candidate.create",
+      "subject_type": "knowledge_candidate",
+      "subject_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+      "subject_revision": 1,
+      "writer_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "requester_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "created_at": "2026-10-19T01:03:39.999730+00:00",
+      "agent_run_id": null,
+      "result": {
+        "id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+        "revision": 1,
+        "status": "draft",
+        "candidate_id": "2241f5fd-4ab1-5a3b-90d9-8d29da50322e",
+        "project_id": "93900873-e806-4c7c-9987-d3643129953f"
+      }
+    },
+    "rule_v1": {
+      "id": "2424dd80-d959-4f49-ad7b-d29f273c320b",
+      "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+      "product_id": "3e960e40-918f-4650-81d1-b7658a7ea9f3",
+      "operation": "knowledge.rule.publish",
+      "subject_type": "design_rule",
+      "subject_id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+      "subject_revision": 1,
+      "writer_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "requester_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "created_at": "2026-10-19T01:03:43.260991+00:00",
+      "agent_run_id": null,
+      "result": {
+        "id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+        "revision": 1,
+        "status": "published",
+        "rule_id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+        "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+        "assessment_id": "6adec75c-7449-57fb-8fb8-d987c29cb8a4"
+      }
+    },
+    "category_shared_revision": {
+      "id": "6503d8da-c5d4-4717-a4f0-4f9055da864f",
+      "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+      "product_id": null,
+      "operation": "knowledge.candidate.create",
+      "subject_type": "knowledge_candidate",
+      "subject_id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+      "subject_revision": 2,
+      "writer_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "requester_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "created_at": "2026-10-19T01:03:47.345520+00:00",
+      "agent_run_id": null,
+      "result": {
+        "id": "81fc7cfc-27c7-51fb-a798-275dfe8fa303",
+        "revision": 2,
+        "status": "draft",
+        "candidate_id": "065550f3-77e2-5486-96fc-cda92a542c22",
+        "project_id": null
+      }
+    },
+    "rule_v2": {
+      "id": "5dfe84d0-a826-4641-84db-d57e5fdb847d",
+      "category_id": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+      "product_id": "3e960e40-918f-4650-81d1-b7658a7ea9f3",
+      "operation": "knowledge.rule.publish",
+      "subject_type": "design_rule",
+      "subject_id": "1331e309-43f5-570c-93f5-12d119bd9696",
+      "subject_revision": 2,
+      "writer_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "requester_id": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "created_at": "2026-10-19T01:03:50.653225+00:00",
+      "agent_run_id": null,
+      "result": {
+        "id": "1331e309-43f5-570c-93f5-12d119bd9696",
+        "revision": 2,
+        "status": "published",
+        "rule_id": "c57961f9-2feb-5b92-b00c-e920e3246961",
+        "project_id": "93900873-e806-4c7c-9987-d3643129953f",
+        "assessment_id": "c431f115-913b-5e12-8e7a-74acfb63f872"
+      }
+    }
+  },
+  "limitations": [
+    "Every path/status/body is an original actual products/category/model GET response.",
+    "Category reading binds product_id=None; model reading is an explicit separate choice.",
+    "Model responses may include category candidates; category reading has no rules.",
+    "Candidate hypotheses are not published rules; permission flags remain server facts.",
+    "Principal UUIDs identify fixture request contexts, not identities echoed by GETs.",
+    "The rule is synthetic and explicitly bound to the named target/purpose/conditions.",
+    "Candidate revision alone does not invalidate a fixed older rule or rewrite its body.",
+    "Current history contains version metadata, not full historical rule bodies.",
+    "The precisely owned source status change is a negative fixture, not a user command.",
+    "Independent authority and configuration sources stay active after that source change.",
+    "No real qualification, external call, model, real-tenant publication or deployment."
+  ]
+}

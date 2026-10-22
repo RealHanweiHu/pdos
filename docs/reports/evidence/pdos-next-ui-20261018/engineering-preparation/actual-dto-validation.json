@@ -1,0 +1,549 @@
+{
+  "version": "project-build-engineering-actual-dto-validation/v1",
+  "validation": "Original actual project-filtered Builds HTTP bodies through both frozen real readers; no field supplementation",
+  "input": "docs/reports/evidence/pdos-next-ui-20261018/engineering-preparation/pg-http-responses.json",
+  "network": false,
+  "database": false,
+  "browser": false,
+  "component_ssr": "not_run",
+  "input_sha256": "9c656565f6b77b9660811fc5c9ba79260a5f2e6e073ce0a0e91d3c91d68c32e7",
+  "source_sha256": {
+    "builds": "f313ae12b425e269d4b326ab8897809a57a30f44c27ca7628ab92b2d035ec095",
+    "engineering": "3752a2ffab44968a21cfc582d3ed95360232dbf57256ade9f980dc3ac4e73dff"
+  },
+  "calls": [
+    {
+      "scenario": "build_pins_engineering_v1/project_builds",
+      "method": "GET",
+      "path": "v1/categories/8d6a2d32-7944-4e53-a4a6-674fd3a5f6c9/products/67583813-01a2-4d9c-87ad-d4937e5d02a6/builds?project_id=b5cd1cf6-077f-4f04-94cb-034a51039c08",
+      "status": 200,
+      "original_body_sha256": "2300e6c8333f3236c2f705dbb85acb840da0cd81bcf437703f665a45a4bd2af7"
+    },
+    {
+      "scenario": "build_pins_engineering_v1/project_builds",
+      "method": "GET",
+      "path": "v1/categories/8d6a2d32-7944-4e53-a4a6-674fd3a5f6c9/products/67583813-01a2-4d9c-87ad-d4937e5d02a6/builds?project_id=b5cd1cf6-077f-4f04-94cb-034a51039c08",
+      "status": 200,
+      "original_body_sha256": "2300e6c8333f3236c2f705dbb85acb840da0cd81bcf437703f665a45a4bd2af7"
+    },
+    {
+      "scenario": "ec_series_advanced_build_retains_v1/project_builds",
+      "method": "GET",
+      "path": "v1/categories/8d6a2d32-7944-4e53-a4a6-674fd3a5f6c9/products/67583813-01a2-4d9c-87ad-d4937e5d02a6/builds?project_id=b5cd1cf6-077f-4f04-94cb-034a51039c08",
+      "status": 200,
+      "original_body_sha256": "2300e6c8333f3236c2f705dbb85acb840da0cd81bcf437703f665a45a4bd2af7"
+    },
+    {
+      "scenario": "ec_series_advanced_build_retains_v1/project_builds",
+      "method": "GET",
+      "path": "v1/categories/8d6a2d32-7944-4e53-a4a6-674fd3a5f6c9/products/67583813-01a2-4d9c-87ad-d4937e5d02a6/builds?project_id=b5cd1cf6-077f-4f04-94cb-034a51039c08",
+      "status": 200,
+      "original_body_sha256": "2300e6c8333f3236c2f705dbb85acb840da0cd81bcf437703f665a45a4bd2af7"
+    },
+    {
+      "scenario": "other_project_builds",
+      "method": "GET",
+      "path": "v1/categories/8d6a2d32-7944-4e53-a4a6-674fd3a5f6c9/products/67583813-01a2-4d9c-87ad-d4937e5d02a6/builds?project_id=a7d38cb4-ac29-42b7-84ae-4b12d363905d",
+      "status": 200,
+      "original_body_sha256": "10394dc73f5eef5c84e7ed5beb838cf92dae726d58ee17eb263c70ff4a2a24d1"
+    },
+    {
+      "scenario": "other_project_builds",
+      "method": "GET",
+      "path": "v1/categories/8d6a2d32-7944-4e53-a4a6-674fd3a5f6c9/products/67583813-01a2-4d9c-87ad-d4937e5d02a6/builds?project_id=a7d38cb4-ac29-42b7-84ae-4b12d363905d",
+      "status": 200,
+      "original_body_sha256": "10394dc73f5eef5c84e7ed5beb838cf92dae726d58ee17eb263c70ff4a2a24d1"
+    },
+    {
+      "scenario": "peer_project_builds",
+      "method": "GET",
+      "path": "v1/categories/8d6a2d32-7944-4e53-a4a6-674fd3a5f6c9/products/67583813-01a2-4d9c-87ad-d4937e5d02a6/builds?project_id=b5cd1cf6-077f-4f04-94cb-034a51039c08",
+      "status": 200,
+      "original_body_sha256": "3bd94d4d0ed0c52a0ec41445cb2a9494ea96c02273645d61698a55996d79ce52"
+    },
+    {
+      "scenario": "peer_project_builds",
+      "method": "GET",
+      "path": "v1/categories/8d6a2d32-7944-4e53-a4a6-674fd3a5f6c9/products/67583813-01a2-4d9c-87ad-d4937e5d02a6/builds?project_id=b5cd1cf6-077f-4f04-94cb-034a51039c08",
+      "status": 200,
+      "original_body_sha256": "3bd94d4d0ed0c52a0ec41445cb2a9494ea96c02273645d61698a55996d79ce52"
+    },
+    {
+      "scenario": "missing_project",
+      "method": "GET",
+      "path": "v1/categories/8d6a2d32-7944-4e53-a4a6-674fd3a5f6c9/products/67583813-01a2-4d9c-87ad-d4937e5d02a6/builds?project_id=129fab90-573f-4dfb-893c-9b8a72b1d4d8",
+      "status": 403,
+      "original_body_sha256": "b7735634d9bcb44081cc516d3d7c6a644244a02b692ac1c6a223176bff0764ff"
+    },
+    {
+      "scenario": "foreign_tenant_builds",
+      "method": "GET",
+      "path": "v1/categories/8d6a2d32-7944-4e53-a4a6-674fd3a5f6c9/products/67583813-01a2-4d9c-87ad-d4937e5d02a6/builds?project_id=b5cd1cf6-077f-4f04-94cb-034a51039c08",
+      "status": 403,
+      "original_body_sha256": "32f31d9d9b7ebc3790399b13c2232f6c6eede6e00091f6c1ec91bba3d35f2420"
+    },
+    {
+      "scenario": "foreign_tenant_builds",
+      "method": "GET",
+      "path": "v1/categories/8d6a2d32-7944-4e53-a4a6-674fd3a5f6c9/products/67583813-01a2-4d9c-87ad-d4937e5d02a6/builds?project_id=b5cd1cf6-077f-4f04-94cb-034a51039c08",
+      "status": 403,
+      "original_body_sha256": "32f31d9d9b7ebc3790399b13c2232f6c6eede6e00091f6c1ec91bba3d35f2420"
+    }
+  ],
+  "checks": [
+    {
+      "check": "original_actual_two_phase_export",
+      "passed": true
+    },
+    {
+      "check": "both_frozen_real_readers_match",
+      "passed": true
+    },
+    {
+      "check": "exact_primary_request_scope_build_pins_engineering_v1",
+      "passed": true
+    },
+    {
+      "check": "complete_original_build_configuration_and_coverage_preserved_build_pins_engineering_v1",
+      "passed": true
+    },
+    {
+      "check": "three_nonempty_external_refs_and_both_legal_shapes_preserved_build_pins_engineering_v1",
+      "passed": true
+    },
+    {
+      "check": "fixed_definition_bom_part_original_decimals_unknowns_and_saved_instants_build_pins_engineering_v1",
+      "passed": true
+    },
+    {
+      "check": "nineteen_actual_pg_business_counts_unchanged_build_pins_engineering_v1",
+      "passed": true
+    },
+    {
+      "check": "exact_primary_request_scope_ec_series_advanced_build_retains_v1",
+      "passed": true
+    },
+    {
+      "check": "complete_original_build_configuration_and_coverage_preserved_ec_series_advanced_build_retains_v1",
+      "passed": true
+    },
+    {
+      "check": "three_nonempty_external_refs_and_both_legal_shapes_preserved_ec_series_advanced_build_retains_v1",
+      "passed": true
+    },
+    {
+      "check": "fixed_definition_bom_part_original_decimals_unknowns_and_saved_instants_ec_series_advanced_build_retains_v1",
+      "passed": true
+    },
+    {
+      "check": "nineteen_actual_pg_business_counts_unchanged_ec_series_advanced_build_retains_v1",
+      "passed": true
+    },
+    {
+      "check": "actual_receipts_establish_separate_ec_v2_while_both_build_reads_keep_v1",
+      "passed": true
+    },
+    {
+      "check": "other_project_exact_build_and_engineering_are_not_mixed",
+      "passed": true
+    },
+    {
+      "check": "peer_has_actual_empty_read_set",
+      "passed": true
+    },
+    {
+      "check": "peer_cannot_reuse_old_owner_selection",
+      "passed": true
+    },
+    {
+      "check": "actual_missing_project_403_is_not_empty",
+      "passed": true
+    },
+    {
+      "check": "actual_foreign_tenant_build_403_is_not_empty",
+      "passed": true
+    },
+    {
+      "check": "actual_foreign_tenant_engineering_403_preserves_error",
+      "passed": true
+    },
+    {
+      "check": "raw_fixture_and_both_product_sources_unchanged",
+      "passed": true
+    }
+  ],
+  "phases": [
+    {
+      "phase": "build_pins_engineering_v1",
+      "status": 200,
+      "project_id": "b5cd1cf6-077f-4f04-94cb-034a51039c08",
+      "build_id": "951af03f-75e8-4000-82f0-1cccabb193b3",
+      "build_revision": 1,
+      "frozen_project_revision": 1,
+      "build_created_at": "2026-10-18T19:48:51.081892+00:00",
+      "unavailable_count": 0,
+      "has_more": false,
+      "configuration": {
+        "id": "966b7e8d-e255-4d52-9cc4-7feccff4f216",
+        "revision": 1,
+        "series_id": "966b7e8d-e255-4d52-9cc4-7feccff4f216",
+        "product_id": "67583813-01a2-4d9c-87ad-d4937e5d02a6",
+        "created_at": "2026-10-18T19:48:46.872523+00:00",
+        "source_status": "current",
+        "status": "draft",
+        "external_verification": "not_checked",
+        "definition": {
+          "id": "afd281bc-2603-416e-bfd8-9a38b86f355d",
+          "revision": 1,
+          "title": "Synthetic development",
+          "status": "draft",
+          "visibility": "private",
+          "source_status": "current"
+        },
+        "bom": {
+          "id": "0edab175-c340-4ea2-ad7d-a3f2144e2860",
+          "revision": 1,
+          "created_at": "2026-10-18T19:48:43.310293+00:00",
+          "lines": [
+            {
+              "key": "motor",
+              "part_id": "e8de913e-80b3-4520-85ef-8e379bd64651",
+              "expected_part_revision": 1,
+              "quantity": "2",
+              "unit": "ea",
+              "loss_rate": "0.1",
+              "critical": true,
+              "part": {
+                "id": "e8de913e-80b3-4520-85ef-8e379bd64651",
+                "revision": 1,
+                "product_id": "67583813-01a2-4d9c-87ad-d4937e5d02a6",
+                "created_at": "2026-10-18T19:48:43.336627+00:00",
+                "source_status": "current",
+                "mapping_status": "unknown",
+                "erp_number": null,
+                "mapping_version": null,
+                "external_verification": "not_checked"
+              }
+            },
+            {
+              "key": "unknown",
+              "part_id": "21eb4087-d23e-4482-acf3-be0763553d46",
+              "expected_part_revision": 1,
+              "quantity": null,
+              "unit": "ea",
+              "loss_rate": null,
+              "critical": false,
+              "part": {
+                "id": "21eb4087-d23e-4482-acf3-be0763553d46",
+                "revision": 1,
+                "product_id": "67583813-01a2-4d9c-87ad-d4937e5d02a6",
+                "created_at": "2026-10-18T19:48:43.418591+00:00",
+                "source_status": "current",
+                "mapping_status": "unknown",
+                "erp_number": null,
+                "mapping_version": null,
+                "external_verification": "not_checked"
+              }
+            }
+          ]
+        },
+        "design_versions": {
+          "firmware": {
+            "as_of": "2026-10-17T00:00:00Z",
+            "basis": null,
+            "system": "Synthetic firmware registry",
+            "revision": "firmware-v1",
+            "external_id": "SYN-FIRMWARE-IMAGE",
+            "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          "electronic": {
+            "as_of": null,
+            "basis": {
+              "artifact_id": "1ad7b9b2-11e8-440a-b6da-6b0590a6900b",
+              "expected_revision": 1,
+              "line": 1,
+              "quote_sha256": "e9c775c84611994ccb49ef47b91074f288ad1b45f5a27dd3f14e482e6aa5a118"
+            },
+            "system": "Synthetic electronic source declaration",
+            "revision": null,
+            "external_id": "SYN-BOARD-BASIS",
+            "content_sha256": null
+          },
+          "mechanical": {
+            "as_of": "2026-10-18T11:22:33+08:00",
+            "basis": null,
+            "system": "Synthetic mechanical registry",
+            "revision": "mechanical-A",
+            "external_id": "SYN-CAD-A",
+            "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        }
+      }
+    },
+    {
+      "phase": "ec_series_advanced_build_retains_v1",
+      "status": 200,
+      "project_id": "b5cd1cf6-077f-4f04-94cb-034a51039c08",
+      "build_id": "951af03f-75e8-4000-82f0-1cccabb193b3",
+      "build_revision": 1,
+      "frozen_project_revision": 1,
+      "build_created_at": "2026-10-18T19:48:51.081892+00:00",
+      "unavailable_count": 0,
+      "has_more": false,
+      "configuration": {
+        "id": "966b7e8d-e255-4d52-9cc4-7feccff4f216",
+        "revision": 1,
+        "series_id": "966b7e8d-e255-4d52-9cc4-7feccff4f216",
+        "product_id": "67583813-01a2-4d9c-87ad-d4937e5d02a6",
+        "created_at": "2026-10-18T19:48:46.872523+00:00",
+        "source_status": "current",
+        "status": "draft",
+        "external_verification": "not_checked",
+        "definition": {
+          "id": "afd281bc-2603-416e-bfd8-9a38b86f355d",
+          "revision": 1,
+          "title": "Synthetic development",
+          "status": "draft",
+          "visibility": "private",
+          "source_status": "current"
+        },
+        "bom": {
+          "id": "0edab175-c340-4ea2-ad7d-a3f2144e2860",
+          "revision": 1,
+          "created_at": "2026-10-18T19:48:43.310293+00:00",
+          "lines": [
+            {
+              "key": "motor",
+              "part_id": "e8de913e-80b3-4520-85ef-8e379bd64651",
+              "expected_part_revision": 1,
+              "quantity": "2",
+              "unit": "ea",
+              "loss_rate": "0.1",
+              "critical": true,
+              "part": {
+                "id": "e8de913e-80b3-4520-85ef-8e379bd64651",
+                "revision": 1,
+                "product_id": "67583813-01a2-4d9c-87ad-d4937e5d02a6",
+                "created_at": "2026-10-18T19:48:43.336627+00:00",
+                "source_status": "current",
+                "mapping_status": "unknown",
+                "erp_number": null,
+                "mapping_version": null,
+                "external_verification": "not_checked"
+              }
+            },
+            {
+              "key": "unknown",
+              "part_id": "21eb4087-d23e-4482-acf3-be0763553d46",
+              "expected_part_revision": 1,
+              "quantity": null,
+              "unit": "ea",
+              "loss_rate": null,
+              "critical": false,
+              "part": {
+                "id": "21eb4087-d23e-4482-acf3-be0763553d46",
+                "revision": 1,
+                "product_id": "67583813-01a2-4d9c-87ad-d4937e5d02a6",
+                "created_at": "2026-10-18T19:48:43.418591+00:00",
+                "source_status": "current",
+                "mapping_status": "unknown",
+                "erp_number": null,
+                "mapping_version": null,
+                "external_verification": "not_checked"
+              }
+            }
+          ]
+        },
+        "design_versions": {
+          "firmware": {
+            "as_of": "2026-10-17T00:00:00Z",
+            "basis": null,
+            "system": "Synthetic firmware registry",
+            "revision": "firmware-v1",
+            "external_id": "SYN-FIRMWARE-IMAGE",
+            "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          "electronic": {
+            "as_of": null,
+            "basis": {
+              "artifact_id": "1ad7b9b2-11e8-440a-b6da-6b0590a6900b",
+              "expected_revision": 1,
+              "line": 1,
+              "quote_sha256": "e9c775c84611994ccb49ef47b91074f288ad1b45f5a27dd3f14e482e6aa5a118"
+            },
+            "system": "Synthetic electronic source declaration",
+            "revision": null,
+            "external_id": "SYN-BOARD-BASIS",
+            "content_sha256": null
+          },
+          "mechanical": {
+            "as_of": "2026-10-18T11:22:33+08:00",
+            "basis": null,
+            "system": "Synthetic mechanical registry",
+            "revision": "mechanical-A",
+            "external_id": "SYN-CAD-A",
+            "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        }
+      }
+    }
+  ],
+  "passed": true,
+  "boundaries": [
+    "Only the exact project-filtered Builds GET already recorded by the PG case is served to either reader",
+    "All response bodies are cloned unmodified; scope identities, defaults, fixed references and source fields are never added",
+    "EC v2 is established solely by actual scope and command-receipt metadata; no latest-configuration lookup or drift conclusion",
+    "External as_of is the original declared document reference cutoff, not release, occurrence or flashing time",
+    "Draft, source-current, mapping and external-verification fields are retained, never interpreted as approval, readiness, verified ERP mapping or device state",
+    "BOM quantities and losses are original strings or null, with no demand, inventory, coverage or percentage calculation",
+    "Permissions and business count invariance are recorded PG evidence, not newly exercised authorization or database behavior",
+    "No component, SSR, browser, BFF, business write or source quote content is exported by this check"
+  ],
+  "fixture_version": "project-build-engineering-projection-qa/v1",
+  "helper_sha256": "30caea750f72a6e6691d449be2b0f7c46f8aa0f48fd32de9480a775bb20dc8b6",
+  "command_receipt_metadata": {
+    "engineering_v1": {
+      "receipt_id": "1a0d3dcf-5130-431a-a22a-69ce7c42a50f",
+      "subject_id": "966b7e8d-e255-4d52-9cc4-7feccff4f216",
+      "revision": 1
+    },
+    "engineering_v2": {
+      "receipt_id": "efc2682f-9acc-46a6-81ea-cf844e73ea5c",
+      "subject_id": "3c8cb542-62f0-41ad-9212-585286b1e407",
+      "revision": 2
+    },
+    "build": {
+      "receipt_id": "bcd67700-2624-41cb-a065-6447b6586fdc",
+      "subject_id": "951af03f-75e8-4000-82f0-1cccabb193b3",
+      "revision": 1
+    },
+    "latest_lookup": false
+  },
+  "permissions": {
+    "other_project": {
+      "project_id": "a7d38cb4-ac29-42b7-84ae-4b12d363905d",
+      "build_id": "48f0c615-26e8-451c-85a7-aaeafcc0bfe1",
+      "exact_scope": true
+    },
+    "peer": {
+      "readable_builds": 0,
+      "old_owner_selection_rejected": true
+    },
+    "missing_project_status": 403,
+    "foreign_tenant_status": 403
+  },
+  "read_only_counts": [
+    {
+      "phase": "build_pins_engineering_v1",
+      "before": {
+        "products": 2,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 3,
+        "bom_revisions": 1,
+        "bom_lines": 2,
+        "parts": 2,
+        "engineering_configurations": 3,
+        "process_revisions": 3,
+        "builds": 2,
+        "build_readiness": 0,
+        "artifact_versions": 1,
+        "grants": 3,
+        "object_audiences": 16,
+        "confirmations": 15,
+        "request_keys": 16,
+        "action_receipts": 17,
+        "audit_entries": 16,
+        "outbox_events": 18
+      },
+      "after": {
+        "products": 2,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 3,
+        "bom_revisions": 1,
+        "bom_lines": 2,
+        "parts": 2,
+        "engineering_configurations": 3,
+        "process_revisions": 3,
+        "builds": 2,
+        "build_readiness": 0,
+        "artifact_versions": 1,
+        "grants": 3,
+        "object_audiences": 16,
+        "confirmations": 15,
+        "request_keys": 16,
+        "action_receipts": 17,
+        "audit_entries": 16,
+        "outbox_events": 18
+      },
+      "unchanged": true,
+      "origin": "Actual PG export; no database client or operation in this check"
+    },
+    {
+      "phase": "ec_series_advanced_build_retains_v1",
+      "before": {
+        "products": 2,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 3,
+        "bom_revisions": 1,
+        "bom_lines": 2,
+        "parts": 2,
+        "engineering_configurations": 4,
+        "process_revisions": 3,
+        "builds": 2,
+        "build_readiness": 0,
+        "artifact_versions": 1,
+        "grants": 3,
+        "object_audiences": 16,
+        "confirmations": 16,
+        "request_keys": 17,
+        "action_receipts": 18,
+        "audit_entries": 17,
+        "outbox_events": 19
+      },
+      "after": {
+        "products": 2,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 3,
+        "bom_revisions": 1,
+        "bom_lines": 2,
+        "parts": 2,
+        "engineering_configurations": 4,
+        "process_revisions": 3,
+        "builds": 2,
+        "build_readiness": 0,
+        "artifact_versions": 1,
+        "grants": 3,
+        "object_audiences": 16,
+        "confirmations": 16,
+        "request_keys": 17,
+        "action_receipts": 18,
+        "audit_entries": 17,
+        "outbox_events": 19
+      },
+      "unchanged": true,
+      "origin": "Actual PG export; no database client or operation in this check"
+    }
+  ],
+  "summary": {
+    "primary_phases": 2,
+    "primary_nonempty_external_reference_instances": 6,
+    "primary_unique_external_slots": 3,
+    "metadata_complete_slots_per_phase": 2,
+    "source_basis_substitution_slots_per_phase": 1,
+    "original_decimal_string_instances": 4,
+    "unknown_decimal_field_instances": 4,
+    "actual_decimal_examples": [
+      "2",
+      "0.1"
+    ],
+    "scientific_decimal_coverage": "not exercised by this actual fixture",
+    "same_build_and_ec_v1_retained": true,
+    "original_get_response_count": 6,
+    "offline_get_calls": 11,
+    "business_model_counts_per_phase": 19
+  }
+}

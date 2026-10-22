@@ -1,0 +1,56 @@
+{
+  "frontend_input_count": 420,
+  "checks": [
+    {
+      "name": "frontend-tests",
+      "exit_code": 0
+    },
+    {
+      "name": "lint",
+      "exit_code": 0
+    },
+    {
+      "name": "build",
+      "exit_code": 0
+    },
+    {
+      "name": "typecheck",
+      "exit_code": 0
+    }
+  ],
+  "frontend_source_changes": [],
+  "backend_core_changes": [],
+  "backend_runtime_changes_during_actual_test": [],
+  "excluded_runtime_changes_after_test": [
+    {
+      "path": "pdos_next/project_activity.py",
+      "tested_sha256": "ac329c56d6f6506337295bdf0c3d4791e6e3c1883248ec5347cd242d2c735cdf",
+      "current_sha256": "0122ec5f82a62b66c60f980e38c45429e25ec9381758947314e39398b75a03fc",
+      "owner": "existing S5 project activity chat",
+      "coverage": "not covered by this UI physical-output check; actual output services/API/shared contracts remain unchanged"
+    }
+  ],
+  "unchanged_shared_contract_changes": [],
+  "owned_sha256": {
+    "pdos-next/web/src/lib/project-build-output.ts": "2cc8529cde25ace2952b753c57c964586e7b4e3c0389bcb33d38de5fcacb9d5d",
+    "pdos-next/web/src/lib/project-build-output.test.mjs": "539167ee0968db3ddf448d3cd9ae2038ebf18662fce46e6f795a55fceb0ce372",
+    "pdos-next/web/src/components/projects/project-build-output.tsx": "bc17d8f9eb4e74e5e52639629fdc356c5640f02ab4356d1dcea393349596a760",
+    "pdos-next/web/src/components/projects/project-build-output.module.css": "47726e0ed69fdafda1c1a954e926098debbbdb9428134c5c2c80af4177a0632b",
+    "pdos-next/web/src/components/projects/project-build-output.test.mjs": "3e743dd1ff9547b2d76300e34be9f0d63ca067a1501e8bf1f684f02a720142da",
+    "pdos-next/web/src/components/projects/project-build-summary.tsx": "9cfef96daba40b313c7f9e4ca4deebb33bd39399f71cb5a8bb8c3e979020d4ea",
+    "pdos-next/web/src/components/projects/project-build-summary.test.mjs": "6c77219faf1d2050c7d307947afe17cf18421277e0be947af1d873b2c935a3db",
+    "pdos-next/server/tests/ui/test_project_build_output_projection_pg.py": "a84e5440589d2f30fb0cd8a4c007bc4e00a6123f0854a1c26a23390f4ce9164c",
+    "docs/reports/evidence/pdos-next-ui-20261018/build-output/result.md": "2ef481f470a986331d19f5f7c3f14c021ce3bbbd6dca3edb508359cc43f5dac7",
+    "pdos-next/web/design-qa.md": "32c0a9b0a28979cc961920aec5241807664285af1ba8d20237c3d23263154878",
+    "docs/reports/evidence/pdos-next-ui-20261017/html-match/result.md": "15df112182c80f19d75ecee3e46fc69d9cb3688c4801e1dc01b6241d743e62a0",
+    "tasks/ai-native-integrated-todo.md": "a8e4aa4dd0fc7c40f4a41c98ba26191d65c3b825d62d594bfdc019e285483409"
+  },
+  "raw_dto_sha256": "a9580b9536c30ea1e62083fbc24fb0e47cd52a4d3f61f61cf1b85b14fda6cee6",
+  "offline_validation_sha256": "1127ddfb4a3101edfd376f5efeb200f230abb8505e2ac80384ea4281a89bbdb5",
+  "git_diff_check": true,
+  "trailing_whitespace": [],
+  "broken_evidence_links": [],
+  "browser_used": false,
+  "migrations_executed": false,
+  "closure": "Implementation and selected actual read validation; visual QA remains blocked by prior browser denial."
+}

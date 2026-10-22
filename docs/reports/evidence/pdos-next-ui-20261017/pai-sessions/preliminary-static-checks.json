@@ -1,0 +1,15 @@
+{
+  "reported_by": "ui_pai",
+  "checks": {
+    "new_pure_checks": 8,
+    "ruff": "passed",
+    "py_compile": "passed",
+    "pg_static_import": "passed"
+  },
+  "note": "Preliminary non-DB checks were executed by the owning subagent; root centralized the seven actual PG/HTTP cases.",
+  "source_sha256": {
+    "pdos_next/agent_kernel/api.py": "b8a9462b1da7979a07a5f560f291f1aa23d0fbe36e2d58174ba1c102d146c605",
+    "pdos_next/agent_kernel/session_views.py": "79346c224a939b7d8245856ea4d209d5b22a8856166f23625350a77b6258ebd4",
+    "tests/agent_kernel/test_session_views.py": "8665f96b972197c526b82d2316f8655a16fb82da160c60b3b0a11cfaf9ba075d"
+  }
+}

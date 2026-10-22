@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "id": "0386211a-7a2b-43ee-823f-6db422d8c74a",
+      "version": 1,
+      "origin": "human",
+      "content_sha256": "f0a24aad82030fb32e55cd98dfbebddbaa9ae926adb9d091ea24e68f086adefc",
+      "source_sha256": "eceec894327ab509c11647aac7804ce9e2aff4ea80db8f609de97ff9900dc7ab",
+      "segment_refs": []
+    }
+  ],
+  "receipts": [
+    {
+      "id": "4039e718-44e3-4437-9e81-7bd1b41a5b2c",
+      "command_id": "ceffc84c-1226-4b2f-bb43-1ca126562329",
+      "revision": 1
+    }
+  ],
+  "request_key_count": 1,
+  "current": {
+    "id": "0386211a-7a2b-43ee-823f-6db422d8c74a",
+    "version": 1
+  }
+}

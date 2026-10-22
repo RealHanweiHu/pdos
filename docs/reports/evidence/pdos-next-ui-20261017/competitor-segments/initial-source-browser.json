@@ -1,0 +1,42 @@
+{
+  "entries": [
+    {
+      "id": "04ef00e3-6c87-4c09-b2fc-98fa84202027",
+      "version": 1,
+      "origin": "human",
+      "content_sha256": "1ddd1d1d80d657235b33e520167336a468c2ec6f29d708ddb18e5dd1aef974a7",
+      "source_sha256": "fb247a2e1d584da7d70ae74f4ee677604536df876f955b3275cffad327737083",
+      "segment_refs": []
+    },
+    {
+      "id": "7cb58fd7-5882-4956-98a2-551b97cbf4c7",
+      "version": 2,
+      "origin": "human",
+      "content_sha256": "4f09172fc9aab66bf199d7564003f8947a83454309697ec93424642462f57ade",
+      "source_sha256": "842371fa5413ed61564dcaf17d6aab3f053b5f8bcaeee63eff58d2319ee8e39a",
+      "segment_refs": [
+        {
+          "version": 1,
+          "entry_id": "b57d341b-787b-469c-8b9c-667e146bb6cc"
+        }
+      ]
+    }
+  ],
+  "receipts": [
+    {
+      "id": "f4902d61-8948-4b26-b15a-323444d1ffeb",
+      "command_id": "53c14100-b00b-47e7-b20e-a15132b64013",
+      "revision": 1
+    },
+    {
+      "id": "34ebe052-4c7c-4fec-80ab-66ab6db5821f",
+      "command_id": "96fb589c-6b6b-4bdc-a103-6a0c03bc5b98",
+      "revision": 2
+    }
+  ],
+  "request_key_count": 2,
+  "current": {
+    "id": "7cb58fd7-5882-4956-98a2-551b97cbf4c7",
+    "version": 2
+  }
+}

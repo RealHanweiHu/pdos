@@ -1,0 +1,780 @@
+{
+  "category_id": "3a52d294-035d-4de5-99a3-60feff4fc00b",
+  "proposal_id": "d3ded64d-d4d7-4ba3-bdc4-6970f557285f",
+  "actor": {
+    "principal_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+    "name": "Synthetic owner"
+  },
+  "category": {
+    "id": "3a52d294-035d-4de5-99a3-60feff4fc00b",
+    "key": "category-b4ce184182f24b13b8fa1fc4cb7f1fe4",
+    "name": "汽车充气泵",
+    "purpose": "隔离合成品类",
+    "revision": 1,
+    "status": "active",
+    "capabilities": {
+      "product_management": false
+    }
+  },
+  "voices": {
+    "version": "proposal-voices/v1",
+    "category_id": "3a52d294-035d-4de5-99a3-60feff4fc00b",
+    "document": {
+      "proposal_id": "d3ded64d-d4d7-4ba3-bdc4-6970f557285f",
+      "revision": 1,
+      "document_digest": "a60b080d28e2830b0e3fa9370b35d14583021a26b78060380e44d2a6717f1384",
+      "submission_id": null,
+      "document_mode": "current"
+    },
+    "as_of": "2026-10-17T14:44:34.732027+00:00",
+    "entries": [
+      {
+        "knowledge_id": "7b0252ef-6f12-4327-b3ac-334f5f8dad3e",
+        "lineage_id": "168c27f3-efa4-45e2-90b9-1d87cdcc5b3e",
+        "version": 1,
+        "label": "合成便携与显示诉求",
+        "source_platform": "合成公开访谈",
+        "origin": "human",
+        "status": "active",
+        "current_version": 1,
+        "sample_size": 2,
+        "source_refs": [
+          {
+            "id": "9a891f34-3d12-442b-9f99-9b3cb61707e7",
+            "line": 1,
+            "type": "artifact",
+            "quote": "合成原话：收纳要方便",
+            "version": 1,
+            "statement": null
+          },
+          {
+            "id": "9a891f34-3d12-442b-9f99-9b3cb61707e7",
+            "line": 1,
+            "type": "artifact",
+            "quote": "合成原话：收纳要方便",
+            "version": 1,
+            "statement": null
+          },
+          {
+            "id": "9a891f34-3d12-442b-9f99-9b3cb61707e7",
+            "line": 2,
+            "type": "artifact",
+            "quote": "合成原话：需要看清胎压",
+            "version": 1,
+            "statement": null
+          }
+        ],
+        "representative_refs": [
+          {
+            "id": "9a891f34-3d12-442b-9f99-9b3cb61707e7",
+            "line": 1,
+            "type": "artifact",
+            "quote": "合成原话：收纳要方便",
+            "version": 1,
+            "statement": null
+          },
+          {
+            "id": "9a891f34-3d12-442b-9f99-9b3cb61707e7",
+            "line": 1,
+            "type": "artifact",
+            "quote": "合成原话：收纳要方便",
+            "version": 1,
+            "statement": null
+          },
+          {
+            "id": "9a891f34-3d12-442b-9f99-9b3cb61707e7",
+            "line": 2,
+            "type": "artifact",
+            "quote": "合成原话：需要看清胎压",
+            "version": 1,
+            "statement": null
+          }
+        ],
+        "source_changes": [],
+        "related_items": [
+          {
+            "item_id": "fb28697f-f898-44a3-9bb8-1d6d5d3f65b9",
+            "version": 1,
+            "kind": "section",
+            "label": "解决便携充气需求"
+          },
+          {
+            "item_id": "be387514-1119-4fa0-87e8-6a18462ebdb5",
+            "version": 1,
+            "kind": "section",
+            "label": "保留便携与清晰显示"
+          }
+        ],
+        "used_in_context": true
+      },
+      {
+        "knowledge_id": "ebbd6a36-6981-4c40-8e24-3b862a9610a4",
+        "lineage_id": "427f7b39-5f8c-42be-9be6-ec15bd589f98",
+        "version": 1,
+        "label": "合成显示诉求",
+        "source_platform": "合成公开访谈",
+        "origin": "human",
+        "status": "active",
+        "current_version": 1,
+        "sample_size": 1,
+        "source_refs": [
+          {
+            "id": "9a891f34-3d12-442b-9f99-9b3cb61707e7",
+            "line": 2,
+            "type": "artifact",
+            "quote": "合成原话：需要看清胎压",
+            "version": 1,
+            "statement": null
+          }
+        ],
+        "representative_refs": [
+          {
+            "id": "9a891f34-3d12-442b-9f99-9b3cb61707e7",
+            "line": 2,
+            "type": "artifact",
+            "quote": "合成原话：需要看清胎压",
+            "version": 1,
+            "statement": null
+          }
+        ],
+        "source_changes": [],
+        "related_items": [
+          {
+            "item_id": "fb28697f-f898-44a3-9bb8-1d6d5d3f65b9",
+            "version": 1,
+            "kind": "section",
+            "label": "解决便携充气需求"
+          }
+        ],
+        "used_in_context": false
+      }
+    ],
+    "unavailable": [],
+    "counts": {
+      "entries": 2,
+      "unavailable_entries": 0
+    }
+  },
+  "proposal": {
+    "id": "d3ded64d-d4d7-4ba3-bdc4-6970f557285f",
+    "category_id": "3a52d294-035d-4de5-99a3-60feff4fc00b",
+    "owner_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+    "revision": 1,
+    "status": "draft",
+    "visibility": "private",
+    "private_source_count": 0,
+    "context_hint": false,
+    "context_changes": [],
+    "title": "合成用户声音取舍提案",
+    "brief": "合成新品评审",
+    "entry_kind": "new_product",
+    "target_kind": "new_product",
+    "baseline_product_id": null,
+    "baseline_definition_id": null,
+    "baseline_definition_revision": null,
+    "items": [
+      {
+        "item_id": "fb28697f-f898-44a3-9bb8-1d6d5d3f65b9",
+        "version": 1,
+        "kind": "section",
+        "content": {
+          "key": "worth_it",
+          "text": "解决便携充气需求"
+        },
+        "source_refs": [
+          {
+            "id": "7b0252ef-6f12-4327-b3ac-334f5f8dad3e",
+            "line": null,
+            "type": "knowledge",
+            "quote": null,
+            "version": 1,
+            "statement": null
+          },
+          {
+            "id": "7b0252ef-6f12-4327-b3ac-334f5f8dad3e",
+            "line": null,
+            "type": "knowledge",
+            "quote": null,
+            "version": 1,
+            "statement": null
+          },
+          {
+            "id": "ebbd6a36-6981-4c40-8e24-3b862a9610a4",
+            "line": null,
+            "type": "knowledge",
+            "quote": null,
+            "version": 1,
+            "statement": null
+          }
+        ],
+        "origin": "human",
+        "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+        "run_id": null,
+        "confirmed_by": null,
+        "human_value": true,
+        "removed": false
+      },
+      {
+        "item_id": "324de7b8-e14d-45c4-93fc-7aa86d10dc25",
+        "version": 1,
+        "kind": "option",
+        "content": {
+          "kind": "new",
+          "name": "开发便携款"
+        },
+        "source_refs": [],
+        "origin": "human",
+        "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+        "run_id": null,
+        "confirmed_by": null,
+        "human_value": true,
+        "removed": false
+      },
+      {
+        "item_id": "e5417828-1e8d-4261-8c4c-0e5aaba82558",
+        "version": 1,
+        "kind": "option",
+        "content": {
+          "kind": "do_nothing",
+          "name": "保持现状"
+        },
+        "source_refs": [],
+        "origin": "human",
+        "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+        "run_id": null,
+        "confirmed_by": null,
+        "human_value": true,
+        "removed": false
+      },
+      {
+        "item_id": "689834b6-0b79-4bcb-b784-9a3c0d9db90d",
+        "version": 1,
+        "kind": "spec",
+        "content": {
+          "key": "noise",
+          "unit": null,
+          "lower": null,
+          "upper": null,
+          "value": null,
+          "nature": "decided",
+          "reason": null,
+          "modality": null,
+          "owner_id": null,
+          "parameter": "噪声",
+          "tolerance": null,
+          "exceptions": [],
+          "text_value": null,
+          "value_type": "number",
+          "item_status": "unknown",
+          "availability": "unknown",
+          "parameter_id": null,
+          "condition_note": null,
+          "test_conditions": [],
+          "parameter_version": null,
+          "applicable_variants": [],
+          "verification_method": null,
+          "acceptance_criterion": null
+        },
+        "source_refs": [],
+        "origin": "human",
+        "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+        "run_id": null,
+        "confirmed_by": null,
+        "human_value": true,
+        "removed": false
+      },
+      {
+        "item_id": "ed893ae4-491f-45d0-924d-bf10fae63b34",
+        "version": 1,
+        "kind": "spec",
+        "content": {
+          "key": "display",
+          "unit": null,
+          "lower": null,
+          "upper": null,
+          "value": null,
+          "nature": "decided",
+          "reason": null,
+          "modality": null,
+          "owner_id": null,
+          "parameter": "压力显示",
+          "tolerance": null,
+          "exceptions": [],
+          "text_value": "true",
+          "value_type": "boolean",
+          "item_status": "confirmed",
+          "availability": "known",
+          "parameter_id": null,
+          "condition_note": null,
+          "test_conditions": [],
+          "parameter_version": null,
+          "applicable_variants": [],
+          "verification_method": null,
+          "acceptance_criterion": null
+        },
+        "source_refs": [
+          {
+            "id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+            "line": null,
+            "type": "human",
+            "quote": null,
+            "version": 1,
+            "statement": "具名产品决定"
+          }
+        ],
+        "origin": "human",
+        "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+        "run_id": null,
+        "confirmed_by": null,
+        "human_value": true,
+        "removed": false
+      },
+      {
+        "item_id": "be387514-1119-4fa0-87e8-6a18462ebdb5",
+        "version": 1,
+        "kind": "section",
+        "content": {
+          "key": "features_in_out",
+          "text": "保留便携与清晰显示"
+        },
+        "source_refs": [
+          {
+            "id": "7b0252ef-6f12-4327-b3ac-334f5f8dad3e",
+            "line": null,
+            "type": "knowledge",
+            "quote": null,
+            "version": 1,
+            "statement": null
+          }
+        ],
+        "origin": "human",
+        "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+        "run_id": null,
+        "confirmed_by": null,
+        "human_value": true,
+        "removed": false
+      },
+      {
+        "item_id": "d2030b3b-bc95-4c95-894a-fbeb3b52f2ba",
+        "version": 1,
+        "kind": "question",
+        "content": {
+          "answer": null,
+          "status": "open",
+          "due_date": "2026-10-20",
+          "owner_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+          "question": "噪声条件待确定",
+          "related_item_ids": [],
+          "supersedes_item_id": null
+        },
+        "source_refs": [],
+        "origin": "human",
+        "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+        "run_id": null,
+        "confirmed_by": null,
+        "human_value": true,
+        "removed": false
+      }
+    ],
+    "source_refs": [],
+    "context_refs": [
+      {
+        "id": "7b0252ef-6f12-4327-b3ac-334f5f8dad3e",
+        "line": null,
+        "type": "knowledge",
+        "quote": null,
+        "version": 1,
+        "statement": null
+      },
+      {
+        "id": "7b0252ef-6f12-4327-b3ac-334f5f8dad3e",
+        "line": null,
+        "type": "knowledge",
+        "quote": null,
+        "version": 1,
+        "statement": null
+      },
+      {
+        "id": "9cf97e2d-abd0-4178-93b5-873ec7005665",
+        "line": null,
+        "type": "knowledge",
+        "quote": null,
+        "version": 1,
+        "statement": null
+      }
+    ],
+    "maturity": {
+      "spec_count": 2,
+      "option_count": 2,
+      "item_status_counts": {
+        "unknown": 1,
+        "confirmed": 1
+      },
+      "availability_counts": {
+        "unknown": 1,
+        "known": 1
+      },
+      "required_dispositions": [
+        {
+          "subject_type": "spec_item",
+          "subject_id": "689834b6-0b79-4bcb-b784-9a3c0d9db90d",
+          "title": "噪声",
+          "content": {
+            "key": "noise",
+            "unit": null,
+            "lower": null,
+            "upper": null,
+            "value": null,
+            "nature": "decided",
+            "reason": null,
+            "modality": null,
+            "owner_id": null,
+            "parameter": "噪声",
+            "tolerance": null,
+            "exceptions": [],
+            "text_value": null,
+            "value_type": "number",
+            "item_status": "unknown",
+            "availability": "unknown",
+            "parameter_id": null,
+            "condition_note": null,
+            "test_conditions": [],
+            "parameter_version": null,
+            "applicable_variants": [],
+            "verification_method": null,
+            "acceptance_criterion": null
+          }
+        },
+        {
+          "subject_type": "question",
+          "subject_id": "d2030b3b-bc95-4c95-894a-fbeb3b52f2ba",
+          "title": "噪声条件待确定",
+          "content": {
+            "answer": null,
+            "status": "open",
+            "due_date": "2026-10-20",
+            "owner_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+            "question": "噪声条件待确定",
+            "related_item_ids": [],
+            "supersedes_item_id": null
+          }
+        }
+      ],
+      "submission_checks": {
+        "worth_it_present": true,
+        "alternative_or_reason_required": false
+      },
+      "freeze_blockers": [
+        {
+          "item_id": "689834b6-0b79-4bcb-b784-9a3c0d9db90d",
+          "version": 1,
+          "kind": "spec",
+          "content": {
+            "key": "noise",
+            "unit": null,
+            "lower": null,
+            "upper": null,
+            "value": null,
+            "nature": "decided",
+            "reason": null,
+            "modality": null,
+            "owner_id": null,
+            "parameter": "噪声",
+            "tolerance": null,
+            "exceptions": [],
+            "text_value": null,
+            "value_type": "number",
+            "item_status": "unknown",
+            "availability": "unknown",
+            "parameter_id": null,
+            "condition_note": null,
+            "test_conditions": [],
+            "parameter_version": null,
+            "applicable_variants": [],
+            "verification_method": null,
+            "acceptance_criterion": null
+          },
+          "source_refs": [],
+          "origin": "human",
+          "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+          "run_id": null,
+          "confirmed_by": null,
+          "human_value": true,
+          "removed": false
+        }
+      ],
+      "guidance": "10–20 条关键规格仅作提示；未知项可带入 G0 并逐条处置。"
+    },
+    "submission": null,
+    "decision": null,
+    "display_document": {
+      "title": "合成用户声音取舍提案",
+      "brief": "合成新品评审",
+      "entry_kind": "new_product",
+      "target_kind": "new_product",
+      "baseline_product_id": null,
+      "baseline_definition_id": null,
+      "baseline_definition_revision": null,
+      "items": [
+        {
+          "item_id": "fb28697f-f898-44a3-9bb8-1d6d5d3f65b9",
+          "version": 1,
+          "kind": "section",
+          "content": {
+            "key": "worth_it",
+            "text": "解决便携充气需求"
+          },
+          "source_refs": [
+            {
+              "id": "7b0252ef-6f12-4327-b3ac-334f5f8dad3e",
+              "line": null,
+              "type": "knowledge",
+              "quote": null,
+              "version": 1,
+              "statement": null
+            },
+            {
+              "id": "7b0252ef-6f12-4327-b3ac-334f5f8dad3e",
+              "line": null,
+              "type": "knowledge",
+              "quote": null,
+              "version": 1,
+              "statement": null
+            },
+            {
+              "id": "ebbd6a36-6981-4c40-8e24-3b862a9610a4",
+              "line": null,
+              "type": "knowledge",
+              "quote": null,
+              "version": 1,
+              "statement": null
+            }
+          ],
+          "origin": "human",
+          "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+          "run_id": null,
+          "confirmed_by": null,
+          "human_value": true,
+          "removed": false
+        },
+        {
+          "item_id": "324de7b8-e14d-45c4-93fc-7aa86d10dc25",
+          "version": 1,
+          "kind": "option",
+          "content": {
+            "kind": "new",
+            "name": "开发便携款"
+          },
+          "source_refs": [],
+          "origin": "human",
+          "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+          "run_id": null,
+          "confirmed_by": null,
+          "human_value": true,
+          "removed": false
+        },
+        {
+          "item_id": "e5417828-1e8d-4261-8c4c-0e5aaba82558",
+          "version": 1,
+          "kind": "option",
+          "content": {
+            "kind": "do_nothing",
+            "name": "保持现状"
+          },
+          "source_refs": [],
+          "origin": "human",
+          "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+          "run_id": null,
+          "confirmed_by": null,
+          "human_value": true,
+          "removed": false
+        },
+        {
+          "item_id": "689834b6-0b79-4bcb-b784-9a3c0d9db90d",
+          "version": 1,
+          "kind": "spec",
+          "content": {
+            "key": "noise",
+            "unit": null,
+            "lower": null,
+            "upper": null,
+            "value": null,
+            "nature": "decided",
+            "reason": null,
+            "modality": null,
+            "owner_id": null,
+            "parameter": "噪声",
+            "tolerance": null,
+            "exceptions": [],
+            "text_value": null,
+            "value_type": "number",
+            "item_status": "unknown",
+            "availability": "unknown",
+            "parameter_id": null,
+            "condition_note": null,
+            "test_conditions": [],
+            "parameter_version": null,
+            "applicable_variants": [],
+            "verification_method": null,
+            "acceptance_criterion": null
+          },
+          "source_refs": [],
+          "origin": "human",
+          "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+          "run_id": null,
+          "confirmed_by": null,
+          "human_value": true,
+          "removed": false
+        },
+        {
+          "item_id": "ed893ae4-491f-45d0-924d-bf10fae63b34",
+          "version": 1,
+          "kind": "spec",
+          "content": {
+            "key": "display",
+            "unit": null,
+            "lower": null,
+            "upper": null,
+            "value": null,
+            "nature": "decided",
+            "reason": null,
+            "modality": null,
+            "owner_id": null,
+            "parameter": "压力显示",
+            "tolerance": null,
+            "exceptions": [],
+            "text_value": "true",
+            "value_type": "boolean",
+            "item_status": "confirmed",
+            "availability": "known",
+            "parameter_id": null,
+            "condition_note": null,
+            "test_conditions": [],
+            "parameter_version": null,
+            "applicable_variants": [],
+            "verification_method": null,
+            "acceptance_criterion": null
+          },
+          "source_refs": [
+            {
+              "id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+              "line": null,
+              "type": "human",
+              "quote": null,
+              "version": 1,
+              "statement": "具名产品决定"
+            }
+          ],
+          "origin": "human",
+          "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+          "run_id": null,
+          "confirmed_by": null,
+          "human_value": true,
+          "removed": false
+        },
+        {
+          "item_id": "be387514-1119-4fa0-87e8-6a18462ebdb5",
+          "version": 1,
+          "kind": "section",
+          "content": {
+            "key": "features_in_out",
+            "text": "保留便携与清晰显示"
+          },
+          "source_refs": [
+            {
+              "id": "7b0252ef-6f12-4327-b3ac-334f5f8dad3e",
+              "line": null,
+              "type": "knowledge",
+              "quote": null,
+              "version": 1,
+              "statement": null
+            }
+          ],
+          "origin": "human",
+          "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+          "run_id": null,
+          "confirmed_by": null,
+          "human_value": true,
+          "removed": false
+        },
+        {
+          "item_id": "d2030b3b-bc95-4c95-894a-fbeb3b52f2ba",
+          "version": 1,
+          "kind": "question",
+          "content": {
+            "answer": null,
+            "status": "open",
+            "due_date": "2026-10-20",
+            "owner_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+            "question": "噪声条件待确定",
+            "related_item_ids": [],
+            "supersedes_item_id": null
+          },
+          "source_refs": [],
+          "origin": "human",
+          "writer_id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+          "run_id": null,
+          "confirmed_by": null,
+          "human_value": true,
+          "removed": false
+        }
+      ],
+      "source_refs": [],
+      "context_refs": [
+        {
+          "id": "7b0252ef-6f12-4327-b3ac-334f5f8dad3e",
+          "line": null,
+          "type": "knowledge",
+          "quote": null,
+          "version": 1,
+          "statement": null
+        },
+        {
+          "id": "7b0252ef-6f12-4327-b3ac-334f5f8dad3e",
+          "line": null,
+          "type": "knowledge",
+          "quote": null,
+          "version": 1,
+          "statement": null
+        },
+        {
+          "id": "9cf97e2d-abd0-4178-93b5-873ec7005665",
+          "line": null,
+          "type": "knowledge",
+          "quote": null,
+          "version": 1,
+          "statement": null
+        }
+      ]
+    },
+    "document_identity": {
+      "proposal_id": "d3ded64d-d4d7-4ba3-bdc4-6970f557285f",
+      "revision": 1,
+      "document_digest": "a60b080d28e2830b0e3fa9370b35d14583021a26b78060380e44d2a6717f1384",
+      "submission_id": null,
+      "document_mode": "current"
+    }
+  },
+  "participants": {
+    "items": [
+      {
+        "id": "15bb9a91-52de-40e3-aec4-7aaafc787771",
+        "name": "合成工程专家",
+        "can_write": false,
+        "reviewer_eligible": false
+      },
+      {
+        "id": "bdcdf051-9ea2-4eaa-958f-20cca14a7812",
+        "name": "Synthetic peer",
+        "can_write": false,
+        "reviewer_eligible": true
+      },
+      {
+        "id": "c3da1117-0259-4b04-97e1-1888b1cdfb6e",
+        "name": "Synthetic owner",
+        "can_write": true,
+        "reviewer_eligible": false
+      }
+    ]
+  }
+}

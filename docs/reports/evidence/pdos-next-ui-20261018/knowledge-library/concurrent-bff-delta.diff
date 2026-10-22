@@ -1,0 +1,71 @@
+diff --git a/pdos-next/web/src/app/api/[...path]/route.ts b/pdos-next/web/src/app/api/[...path]/route.ts
+index 1b16d66..18193e3 100644
+--- a/pdos-next/web/src/app/api/[...path]/route.ts
++++ b/pdos-next/web/src/app/api/[...path]/route.ts
+@@ -34,7 +34,7 @@ const externalHandoffPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}
+ const externalHandoffCommands = new Set(["integration.handoff.authorize", "integration.receipt.record"]);
+ const releaseExceptionPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:release-exception\/inputs|release-exceptions(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?)$/i;
+ const releaseExceptionCommands = new Set(["release.exception.decide", "release.exception.withdraw"]);
+-const qualityChangePaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/(?:quality-execution(?:\/inputs)?|change-execution(?:\/(?:inputs|captures|order-context|selection-material|implementation-captures))?)$/;
++const qualityChangePaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/(?:quality-execution(?:\/inputs)?|change-execution(?:\/(?:inputs|captures|order-context|selection-material|implementation-captures|completion-context|completion-material))?)$/;
+ const qualityFollowupPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/quality-followup(?:\/inputs)?$/;
+ const capaCandidatePaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/capa-candidates$/;
+ const capaFactPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/capa-facts(?:\/inputs)?$/;
+@@ -202,6 +202,7 @@ const longCommands = new Set([
+   "quality.issue.create", "quality.issue.merge", "quality.issue.triage",
+   "quality.issue.containment.record", "quality.capa.draft", "change.request.create", "change.impact.compute",
+   "change.selection.decide", "change.order.prepare", "change.order.approve", "change.implementation.record",
++  "change.effectivity.record", "change.verification.record", "change.close",
+ ]);
+ 
+ async function forward(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
+@@ -234,6 +235,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path:
+   const qualityChange = qualityChangePaths.test(pathname);
+   const selectionMaterial = qualityChange && pathname.endsWith("/selection-material");
+   const implementationCapture = qualityChange && pathname.endsWith("/implementation-captures");
++  const completionMaterial = qualityChange && pathname.endsWith("/completion-material");
+   const manufacturingPreparation = manufacturingPreparationPaths.test(pathname);
+   const manufacturingPublication = manufacturingPublicationPaths.test(pathname);
+   const nativePilot = nativePilotPaths.test(pathname);
+@@ -471,7 +473,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path:
+     const method = input ? "POST" : "GET";
+     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: method } });
+     for (const [key, value] of request.nextUrl.searchParams) {
+-      const valid = !input && (fixed ? key === "revision" && /^[1-9]\d*$/.test(value) && positiveRevision(Number(value)) : ["project_id", "process_id"].includes(key) && uuid.test(value));
++      const valid = !input && (fixed ? key === "revision" && /^[1-9]\d*$/.test(value) && positiveRevision(Number(value)) : key === "history_cursor" ? value.length > 0 && value.length <= 2000 : ["project_id", "process_id"].includes(key) && uuid.test(value));
+       if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "请指定真实项目、固定配置或精确正整数版本。" }, { status: 422 });
+       query.set(key, value);
+     }
+@@ -488,9 +490,9 @@ async function forward(request: NextRequest, context: { params: Promise<{ path:
+     }
+     if (method === "GET" && !query.has("issue_id")) return Response.json({ code: "VALIDATION_FAILED", message: "请明确选择一个问题。" }, { status: 422 });
+   } else if (qualityChange) {
+-    const method = /\/(?:inputs|captures|selection-material|implementation-captures)$/.test(pathname) ? "POST" : "GET";
++    const method = /\/(?:inputs|captures|selection-material|implementation-captures|completion-material)$/.test(pathname) ? "POST" : "GET";
+     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: method } });
+-    const orderContext = pathname.endsWith("/order-context");
++    const orderContext = pathname.endsWith("/order-context") || pathname.endsWith("/completion-context");
+     const allowed = method === "POST" ? [] : pathname.endsWith("/quality-execution") ? ["build_id", "run_id", "issue_id"] : orderContext ? ["change_id"] : ["issue_id", "field_feedback_id", "change_id", "project_id"];
+     for (const [key, value] of request.nextUrl.searchParams) {
+       if (!allowed.includes(key) || query.has(key) || !uuid.test(value)) {
+@@ -567,6 +569,11 @@ async function forward(request: NextRequest, context: { params: Promise<{ path:
+       try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交所选变更与精确原文完整行。" }, { status: 422 }); }
+       if (!validSelectionMaterial(value)) return Response.json({ code: "VALIDATION_FAILED", message: "请提交明确变更版本的已登记材料，或完整的现场反馈未来计划。" }, { status: 422 });
+     }
++    if (completionMaterial) {
++      let value: unknown;
++      try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整实际采用或复核范围。" }, { status: 422 }); }
++      if (!isRecord(value) || Object.keys(value).some(key => !["operation", "payload"].includes(key)) || !["change.effectivity.record", "change.verification.record", "change.close"].includes(String(value.operation)) || !isRecord(value.payload) || typeof value.payload.change_id !== "string" || !uuid.test(value.payload.change_id) || !positiveRevision(value.payload.expected_change_revision) || !["private", "category", "audience"].includes(String(value.payload.visibility)) || value.payload.confirmation_token != null || value.payload.approval_token != null) return Response.json({ code: "VALIDATION_FAILED", message: "请固定当前变更与实际批次、复测范围或关闭说明。" }, { status: 422 });
++    }
+     if (implementationCapture) {
+       let value: unknown;
+       try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整原捕获请求与实际原文行。" }, { status: 422 }); }
+@@ -639,7 +646,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path:
+     if (disposition) headers.set("Content-Disposition", disposition);
+     return new Response(await response.arrayBuffer(), { status: response.status, headers });
+   } catch {
+-    if (request.method === "GET" || resourceInspect || standardMatch || selectionMaterial || (providerAgreement || mcpManagement || agentSkill || skillQualification || agentBudget) && pathname.endsWith("/recover")) return Response.json({ code: "SOURCE_UNAVAILABLE", detail: { reason: "TRANSPORT_UNAVAILABLE" }, message: "暂未读取到当前事实，请刷新核对。本次读取没有发起操作。" }, { status: 503 });
++    if (request.method === "GET" || resourceInspect || standardMatch || selectionMaterial || completionMaterial || (providerAgreement || mcpManagement || agentSkill || skillQualification || agentBudget) && pathname.endsWith("/recover")) return Response.json({ code: "SOURCE_UNAVAILABLE", detail: { reason: "TRANSPORT_UNAVAILABLE" }, message: "暂未读取到当前事实，请刷新核对。本次读取没有发起操作。" }, { status: 503 });
+     return Response.json({ code: "EXTERNAL_OUTCOME_UNKNOWN", detail: { reason: "TRANSPORT_OUTCOME_UNKNOWN" }, message: "暂未取得服务回执。请重试原操作以核对结果。" }, { status: 503 });
+   }
+ }

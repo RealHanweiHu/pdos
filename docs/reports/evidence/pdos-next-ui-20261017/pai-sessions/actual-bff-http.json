@@ -1,0 +1,105 @@
+{
+  "passed": 14,
+  "checks": [
+    {
+      "label": "category actual owned Session list",
+      "method": "GET",
+      "path": "/api/v1/categories/ae6c185d-26fb-4c7e-9330-ec795faee684/agent-sessions",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "category actual same Session Run heads",
+      "method": "GET",
+      "path": "/api/v1/categories/ae6c185d-26fb-4c7e-9330-ec795faee684/agent-sessions/2279642f-48a9-4088-8a18-8b839f0dc642/runs",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "personal actual owned Session list",
+      "method": "GET",
+      "path": "/api/v1/personal/agent-sessions",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "personal actual same Session Run heads",
+      "method": "GET",
+      "path": "/api/v1/personal/agent-sessions/39926f7a-0af8-4728-880e-f79cb756f87b/runs",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "server search identifies historical original goal",
+      "method": "GET",
+      "path": "/api/v1/categories/ae6c185d-26fb-4c7e-9330-ec795faee684/agent-sessions?q=%E5%8E%9F%E7%9B%AE%E6%A0%87",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "actual one-record Run page",
+      "method": "GET",
+      "path": "/api/v1/categories/ae6c185d-26fb-4c7e-9330-ec795faee684/agent-sessions/2279642f-48a9-4088-8a18-8b839f0dc642/runs?page_size=1",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "actual older same-Session Run page",
+      "method": "GET",
+      "path": "/api/v1/categories/ae6c185d-26fb-4c7e-9330-ec795faee684/agent-sessions/2279642f-48a9-4088-8a18-8b839f0dc642/runs?page_size=1&cursor=467e3769-626d-4bb9-ba82-332a1533152b",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "personal cannot inspect category Session",
+      "method": "GET",
+      "path": "/api/v1/personal/agent-sessions/2279642f-48a9-4088-8a18-8b839f0dc642/runs",
+      "status": 404,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "foreign Session cursor rejected by domain",
+      "method": "GET",
+      "path": "/api/v1/categories/ae6c185d-26fb-4c7e-9330-ec795faee684/agent-sessions?cursor=1f3ea5ff-86fd-4a43-b17d-a3541060a7b8",
+      "status": 403,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "missing browser identity rejected",
+      "method": "GET",
+      "path": "/api/v1/categories/ae6c185d-26fb-4c7e-9330-ec795faee684/agent-sessions",
+      "status": 401,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "duplicate pagination rejected",
+      "method": "GET",
+      "path": "/api/v1/categories/ae6c185d-26fb-4c7e-9330-ec795faee684/agent-sessions?page_size=1&page_size=2",
+      "status": 422,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "unexpected scope rejected",
+      "method": "GET",
+      "path": "/api/v1/categories/ae6c185d-26fb-4c7e-9330-ec795faee684/agent-sessions?requester_id=a2e46928-098b-402f-a88e-dfe7f255b8a8",
+      "status": 422,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "Run details reject search queries",
+      "method": "GET",
+      "path": "/api/v1/categories/ae6c185d-26fb-4c7e-9330-ec795faee684/agent-sessions/2279642f-48a9-4088-8a18-8b839f0dc642/runs?q=anything",
+      "status": 422,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "personal proposal binding rejected",
+      "method": "GET",
+      "path": "/api/v1/personal/agent-sessions?proposal_id=c37c0f4b-14ac-4c65-a67c-7008a125a3a0",
+      "status": 422,
+      "cache_control": "no-store"
+    }
+  ],
+  "uses_actual_domain_api": true,
+  "response_proxy": false
+}

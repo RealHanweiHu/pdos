@@ -1,0 +1,7 @@
+{
+  "error": "Refusing unverified test target",
+  "cause": "Read-only metadata helper omitted explicit local.environment(state) binding before verify_test_target",
+  "queries_after_guard": "none; stopped before migration/lock read",
+  "repair": "Bind explicit verified TEST_DATABASE_URL and roles from known local state before same guard; keep marker/port check and dispose engine",
+  "shared_state_changed_by_probe": false
+}

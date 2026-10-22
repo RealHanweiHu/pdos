@@ -1,0 +1,491 @@
+{
+  "audit_kind": "registered_M9_read_contract_and_historical_public_evidence_only",
+  "audit_date": "2026-10-18",
+  "registered_candidate": {
+    "base_commit": "77045ba1eb6660143018b03268e4daa8b467165d",
+    "delivery_parent": "fa33172fa2c4b3b345fcfea4a63888cd8d64aa24",
+    "candidate_sha256": "ec0a0e29766f72bb79c871958d76ad8cb53d2e02cad9e0a77e1e8c0663d84267",
+    "owned_file_count": 39,
+    "source_changed_in_registered_report": [],
+    "formal_stage_acceptance": false,
+    "current_file_hash_comparison": [
+      {
+        "path": "docs/design/2026-10-18-pdos-next-s5-project-work-contract.md",
+        "registered_sha256": "f8f3f91b60f5d7f2de2d662807a21f250320e08c5b50bcb3e1554a8a6fa2422c",
+        "observed_sha256": "f8f3f91b60f5d7f2de2d662807a21f250320e08c5b50bcb3e1554a8a6fa2422c",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/contracts/auxiliary-operations.json",
+        "registered_sha256": "c59a790dad1f5aed6b25ffd6239f74eb458b29cf2ba7036de7e08fb49c0fae79",
+        "observed_sha256": "c59a790dad1f5aed6b25ffd6239f74eb458b29cf2ba7036de7e08fb49c0fae79",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/contracts/openapi.json",
+        "registered_sha256": "01e606025cdece70ee2d5b2a251f1cecf0047fd52db3f9bcfc7ccdeccd32831f",
+        "observed_sha256": "01e606025cdece70ee2d5b2a251f1cecf0047fd52db3f9bcfc7ccdeccd32831f",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/contracts/payloads.schema.json",
+        "registered_sha256": "8a23709afcaee5f145e67c4a20d1d4aac71a97dbf7c54649e03174422a1c504c",
+        "observed_sha256": "8a23709afcaee5f145e67c4a20d1d4aac71a97dbf7c54649e03174422a1c504c",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/migrations/schema_s0_0789.py",
+        "registered_sha256": "b44881430903bb428355a205049198b2fcd9cd03e55eb93d1d35a97233c02d89",
+        "observed_sha256": "b44881430903bb428355a205049198b2fcd9cd03e55eb93d1d35a97233c02d89",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/migrations/schema_s0_0790.py",
+        "registered_sha256": "bff3f9d90fbf634c05c20869f5bb7d3d3e550cf02990320eb12124ac873e5840",
+        "observed_sha256": "bff3f9d90fbf634c05c20869f5bb7d3d3e550cf02990320eb12124ac873e5840",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/migrations/versions/s0_0789_commitment_fulfillment.py",
+        "registered_sha256": "d2a6bb22bf62922ece6adc94211a664f4eeef1851a4a12f8765a0f57569ccb01",
+        "observed_sha256": "d2a6bb22bf62922ece6adc94211a664f4eeef1851a4a12f8765a0f57569ccb01",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/migrations/versions/s0_0790_work_receipt_audience.py",
+        "registered_sha256": "36a8e5ee3db840c7a253ed6eafedc34685d6d9480899ea28533e4e7cac8ff7a3",
+        "observed_sha256": "36a8e5ee3db840c7a253ed6eafedc34685d6d9480899ea28533e4e7cac8ff7a3",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/pdos_next/api.py",
+        "registered_sha256": "26f5a8fdee12d47debe266ad4d4ed54b6cbc811d6c155e73d2eb496464cd1f67",
+        "observed_sha256": "4c427a0e3f7eebfa199202ad1973d52f3ae704dfd1a7747d483e9db22a013de9",
+        "matches_registered": false
+      },
+      {
+        "path": "pdos-next/server/pdos_next/change_implementation_owner.py",
+        "registered_sha256": "a488b89f51b15eb697b31376ec043f8109d27a925a4108dc0ede4ee2dd89c5fd",
+        "observed_sha256": "a488b89f51b15eb697b31376ec043f8109d27a925a4108dc0ede4ee2dd89c5fd",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/pdos_next/command_handlers.py",
+        "registered_sha256": "f2ee8bd0efdf6d24359f6f785b895014c849fccdf6dad9796179d8553568540b",
+        "observed_sha256": "f2ee8bd0efdf6d24359f6f785b895014c849fccdf6dad9796179d8553568540b",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/pdos_next/contracts.py",
+        "registered_sha256": "6b995f853ad557039dae29c5e3fcfcd91e3c14f5579b6a29549b669a061939d5",
+        "observed_sha256": "6b995f853ad557039dae29c5e3fcfcd91e3c14f5579b6a29549b669a061939d5",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/work_fulfillment/api.py",
+        "registered_sha256": "983941c0421a56dccde1f05491f7adc3f9595a5119cbfccb8667138a8f560a06",
+        "observed_sha256": "983941c0421a56dccde1f05491f7adc3f9595a5119cbfccb8667138a8f560a06",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/work_fulfillment/models.py",
+        "registered_sha256": "f212c89e6d671762434e7a1555e89855bf101ebfb1f26e973de07067ae70e1d8",
+        "observed_sha256": "f212c89e6d671762434e7a1555e89855bf101ebfb1f26e973de07067ae70e1d8",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/work_fulfillment/rules.py",
+        "registered_sha256": "6d68a9bca4d9fe42008469e36a9b6e2a1a6c97982fa7c80bbc13436029b62ca1",
+        "observed_sha256": "6d68a9bca4d9fe42008469e36a9b6e2a1a6c97982fa7c80bbc13436029b62ca1",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/work_fulfillment/schemas.py",
+        "registered_sha256": "df66b0ee08771c56a05830a3f72540c303a9f6ba0ed110f9e03b16a1481c1517",
+        "observed_sha256": "df66b0ee08771c56a05830a3f72540c303a9f6ba0ed110f9e03b16a1481c1517",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/work_fulfillment/service.py",
+        "registered_sha256": "a132315b2e511ebac923f6fd9529644ad761cdaeb6a057669a15261481b38fa8",
+        "observed_sha256": "a132315b2e511ebac923f6fd9529644ad761cdaeb6a057669a15261481b38fa8",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/work_fulfillment/storage_sql.py",
+        "registered_sha256": "d6a532eb4581316da75d7483c9f9a7781d63001178bb6f4db32420065cf472be",
+        "observed_sha256": "d6a532eb4581316da75d7483c9f9a7781d63001178bb6f4db32420065cf472be",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/work_fulfillment/views.py",
+        "registered_sha256": "c5a9409f1a46abb4cb1ba7269cbee96e0f7a032d543b62754c0e63e25a862938",
+        "observed_sha256": "c5a9409f1a46abb4cb1ba7269cbee96e0f7a032d543b62754c0e63e25a862938",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/work_management/owner.py",
+        "registered_sha256": "fcc42b0dc73978ac654a5e5413d1248f4893e6a7522a6c7dc179705ae3963d3c",
+        "observed_sha256": "fcc42b0dc73978ac654a5e5413d1248f4893e6a7522a6c7dc179705ae3963d3c",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/pdos_next/lifecycle_catalog.py",
+        "registered_sha256": "eba5bb1d2c476b55f433a77bf95d6a31f81828f1e3ed534cc218118dafce3fde",
+        "observed_sha256": "eba5bb1d2c476b55f433a77bf95d6a31f81828f1e3ed534cc218118dafce3fde",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/pdos_next/models.py",
+        "registered_sha256": "bc50f6bcb1e5ff35ccec9bf5144ab4f1ea081e901fc99419d71eadc5094410e6",
+        "observed_sha256": "bc50f6bcb1e5ff35ccec9bf5144ab4f1ea081e901fc99419d71eadc5094410e6",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/pdos_next/personal_project_work.py",
+        "registered_sha256": "64ca84a5f8870fc1188396a39dddd0061ec72d51126965c4e97bc0947e81c3e8",
+        "observed_sha256": "c545c2771612cfc991d8cf993607f920fab50db4e2b8e3a402ecd6101c59b858",
+        "matches_registered": false
+      },
+      {
+        "path": "pdos-next/server/pdos_next/service.py",
+        "registered_sha256": "1d321cbbfb2755fb0dd9f7104f28a19cc4a98768911523ac163673870442fbf4",
+        "observed_sha256": "1d321cbbfb2755fb0dd9f7104f28a19cc4a98768911523ac163673870442fbf4",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/tests/work_fulfillment/test_rules.py",
+        "registered_sha256": "999ca3f21664934f8a2164a1a36a41bf0a3334d914c78be6664fac25dd3a24af",
+        "observed_sha256": "999ca3f21664934f8a2164a1a36a41bf0a3334d914c78be6664fac25dd3a24af",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/tests/work_fulfillment/test_storage.py",
+        "registered_sha256": "2607d4c7392f349da68e5d7695798924c27c0a37db1d263f620ddd5e93f873c0",
+        "observed_sha256": "2607d4c7392f349da68e5d7695798924c27c0a37db1d263f620ddd5e93f873c0",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/tests/work_fulfillment_pg/__init__.py",
+        "registered_sha256": "da5e560c948e01eadee60b1925932fe41a41bdf888a1e6c691daac15b393a609",
+        "observed_sha256": "da5e560c948e01eadee60b1925932fe41a41bdf888a1e6c691daac15b393a609",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/tests/work_fulfillment_pg/test_audience.py",
+        "registered_sha256": "f1b83a6339ab0513f62bfed7faebff5321c0d8ba5766315cbbe4f706364dde61",
+        "observed_sha256": "f1b83a6339ab0513f62bfed7faebff5321c0d8ba5766315cbbe4f706364dde61",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/tests/work_fulfillment_pg/test_browser_seed.py",
+        "registered_sha256": "1071f950c4451d680e0e77c6a4d737dad928085775752fe1a30a1fb98c4a52a8",
+        "observed_sha256": "1071f950c4451d680e0e77c6a4d737dad928085775752fe1a30a1fb98c4a52a8",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/server/tests/work_fulfillment_pg/test_workflow.py",
+        "registered_sha256": "819343736e1a91998cf97895380f51d35be7605030bea9759466a2741f40d69e",
+        "observed_sha256": "819343736e1a91998cf97895380f51d35be7605030bea9759466a2741f40d69e",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+        "registered_sha256": "169a109f817c0079e2291bfaf4a8e7ffb1158028582d7d8a4f7aa37f5d64cb59",
+        "observed_sha256": "06c4d234f3d6c5792b5f2998bd361b5ee5f56e874412f814f76718c02aaa2f49",
+        "matches_registered": false
+      },
+      {
+        "path": "pdos-next/web/src/app/api/commitment-fulfillment-route.test.mjs",
+        "registered_sha256": "7a40af1cc281075cc07b1d3fabaf960c6ff9e9f793da8524afb9d94270aaeb3d",
+        "observed_sha256": "7a40af1cc281075cc07b1d3fabaf960c6ff9e9f793da8524afb9d94270aaeb3d",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/web/src/components/projects/commitment-fulfillment.module.css",
+        "registered_sha256": "12caec333825c70a78d3956c016eebe31a3801fb592d0f1f20de719dc12a2356",
+        "observed_sha256": "12caec333825c70a78d3956c016eebe31a3801fb592d0f1f20de719dc12a2356",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/web/src/components/projects/commitment-fulfillment.test.mjs",
+        "registered_sha256": "efc7a3716dd9271734142ad5486500d527ac8bc2bf7a26f812ba1012afc6f866",
+        "observed_sha256": "efc7a3716dd9271734142ad5486500d527ac8bc2bf7a26f812ba1012afc6f866",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/web/src/components/projects/commitment-fulfillment.tsx",
+        "registered_sha256": "f8a4ad9beaa3f2d10afcdff870de365c73a88770910f8e7c53c18c07f1fefc0c",
+        "observed_sha256": "f8a4ad9beaa3f2d10afcdff870de365c73a88770910f8e7c53c18c07f1fefc0c",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/web/src/components/projects/project-work.test.mjs",
+        "registered_sha256": "f2c59be9729e36f4ad37332c5da02dcc0798731a29489167cd6e87fe5019c87c",
+        "observed_sha256": "f2c59be9729e36f4ad37332c5da02dcc0798731a29489167cd6e87fe5019c87c",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/web/src/components/projects/project-work.tsx",
+        "registered_sha256": "db63fc74f7bd5098e7a6705311ed366a18e7b629d22539a54f2d5744f55882eb",
+        "observed_sha256": "db63fc74f7bd5098e7a6705311ed366a18e7b629d22539a54f2d5744f55882eb",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/web/src/lib/commitment-fulfillment.test.mjs",
+        "registered_sha256": "a9148e9819a461ac3948ada96f783d45f446713444732182507d719fec09525f",
+        "observed_sha256": "a9148e9819a461ac3948ada96f783d45f446713444732182507d719fec09525f",
+        "matches_registered": true
+      },
+      {
+        "path": "pdos-next/web/src/lib/commitment-fulfillment.ts",
+        "registered_sha256": "b9ff3e22bb86b18ec1f5fcf03ac25b9913c0c2aca2c74f99c3a495043d9d5d1a",
+        "observed_sha256": "b9ff3e22bb86b18ec1f5fcf03ac25b9913c0c2aca2c74f99c3a495043d9d5d1a",
+        "matches_registered": true
+      }
+    ],
+    "matching_file_count": 36
+  },
+  "source_evidence": [
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/commitment-fulfillment/candidate.json",
+      "sha256": "ec0a0e29766f72bb79c871958d76ad8cb53d2e02cad9e0a77e1e8c0663d84267",
+      "role": "Registered historical delivery ownership and hashes"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/commitment-fulfillment/result.md",
+      "sha256": "998513d35415ba081514205e45cba36e0d38105b55ce601e3f2ebd3bdbafca1f",
+      "role": "Historical checkpoint provenance and limitations"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/commitment-fulfillment/pg-http-02.json",
+      "sha256": "fc0b065fcd0204cb37c1126d0f60a08463fd58c049d05f86c8274e7ec2719099",
+      "role": "Historical actual PG/HTTP runner report; not rerun"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/commitment-fulfillment/browser-seed.json",
+      "sha256": "5bfc6f5419f070ba25b7686b2ac36582ee68782049f72b4e52aa91c373d7db99",
+      "role": "Historical actual seed execution; no credentials in public report"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/commitment-fulfillment/browser-database-proof.json",
+      "sha256": "30987437acee3c504b2553c70e50ae6b43ea85115bb252fa7243badde126eb26",
+      "role": "Historical actual database reconciliation summary; not direct DB access by this audit"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/commitment-fulfillment/browser-write-recovery.json",
+      "sha256": "13968c1a9367b3ccdf4bc5b757d8c0384cce7c068bdec7a125dad6d959442de9",
+      "role": "Historical actual browser/BFF/API response-loss recovery summary"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/commitment-fulfillment/browser-final-read.json",
+      "sha256": "9f0a396d9e509836cc311630d1d185e4b38d2b8a9fe686ce6a212dc903afd0c3",
+      "role": "Historical final read-only UI/width summary, NOT a GET DTO"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/commitment-fulfillment/browser-cli.log",
+      "sha256": "b1cc44796bedd647c393af6756ee0552b4f4f5efa884199bfdf96e6af48a5d27",
+      "role": "Historical actual UI region text and request references; NOT a complete JSON GET DTO"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/project-work/browser-final-api.json",
+      "sha256": "7562405cae3f510837e3026cee5c7c15dd7910937e60e2fe380045c12768b35c",
+      "role": "Actual older full GET /project-work DTO, retains original fields but has no fulfillment projection"
+    }
+  ],
+  "actual_full_response_search": {
+    "new_evidence_directory": "docs/reports/evidence/pdos-next-s5-20261018/commitment-fulfillment",
+    "public_json_files_examined": 20,
+    "saved_full_new_fulfillment_response_found": false,
+    "matches": [],
+    "limitation": "No saved complete new GET response was located in the examined public directory. Browser/DB summaries are actual historical evidence, but are not substituted for a full DTO.",
+    "older_actual_project_work_response": {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/project-work/browser-final-api.json",
+      "sha256": "7562405cae3f510837e3026cee5c7c15dd7910937e60e2fe380045c12768b35c",
+      "project_id": "c51618c9-5a5e-4fb6-854d-511eab271c1d",
+      "as_of": "2026-10-18T00:55:42.564022+00:00",
+      "commitment_count": 4,
+      "has_fulfillment_field": false,
+      "use": "Old-contract/missing-fulfillment compatibility only; do not add invented fulfillment fields and label the result actual."
+    }
+  },
+  "authoritative_read_contract": {
+    "route": "GET /v1/categories/{category_id}/products/{product_id}/project-work/fulfillment?project_id={project_id}",
+    "old_project_work_route_changed": false,
+    "query_allowlist": [
+      "project_id"
+    ],
+    "ordinary_caller_RR_RLS": true,
+    "envelope_fields": [
+      "project",
+      "product_revision",
+      "commitments",
+      "as_of"
+    ],
+    "commitment_fields_added_by_fulfillment_workspace": [
+      "series_id",
+      "sources",
+      "task",
+      "submission",
+      "fulfillment",
+      "can_review"
+    ],
+    "raw_commitment_fields_retained_from_CommitmentSnapshot": [
+      "id",
+      "revision",
+      "task_id",
+      "task_revision",
+      "promisor_id",
+      "recipient_id",
+      "outcome_keys",
+      "promised_at",
+      "original_timezone",
+      "calendar_id",
+      "replaces",
+      "recorded_at",
+      "status",
+      "created_at"
+    ],
+    "fulfillment_fields": {
+      "state": [
+        "open",
+        "fulfilled"
+      ],
+      "revision": "0 means no current review; otherwise current review revision",
+      "review": "null or actual current review head",
+      "history": "retained review heads for this exact commitment id, ordered by review revision"
+    },
+    "review_head_fields": [
+      "id",
+      "revision",
+      "decision",
+      "state",
+      "checks",
+      "actor_id",
+      "recorded_at",
+      "receipt_id"
+    ],
+    "review_decision_to_state": {
+      "accepted": "fulfilled",
+      "returned": "open"
+    },
+    "initial_no_review": {
+      "state": "open",
+      "revision": 0,
+      "review": null,
+      "history": []
+    },
+    "review_recorded_at_meaning": "Server-saved review registration time; not an actual completion time.",
+    "current_task_head_fields": [
+      "id",
+      "version_id",
+      "revision",
+      "title",
+      "state"
+    ],
+    "submission_fields": [
+      "id",
+      "revision",
+      "actor_id",
+      "results",
+      "time"
+    ],
+    "submission_time_fields": [
+      "actual_at",
+      "original_timezone",
+      "calendar_id",
+      "actor_id",
+      "recorded_at"
+    ],
+    "submission_meaning": "Actual submit fact whose saved submission matches the CURRENT task snapshot. It is not a fixed-reference field from each historical fulfillment review."
+  },
+  "fixed_reference_truth_and_limits": {
+    "commitment_exact_reference": [
+      "item.id",
+      "item.revision"
+    ],
+    "promise_original_fixed_task_reference": [
+      "item.task_id",
+      "item.task_revision"
+    ],
+    "current_task_context_reference": [
+      "item.task.id",
+      "item.task.version_id",
+      "item.task.revision"
+    ],
+    "currently_retained_actual_submission_reference": [
+      "item.submission.id",
+      "item.submission.revision"
+    ],
+    "review_exact_reference": [
+      "review.id",
+      "review.revision"
+    ],
+    "historical_review_fixed_commitment_task_submission_refs_returned": false,
+    "historical_review_storage_fields_not_exposed_by_review_view": [
+      "commitment_id",
+      "commitment_revision",
+      "task_id",
+      "task_revision",
+      "task_version_id",
+      "submission_id",
+      "submission_revision",
+      "series_id",
+      "promisor_id",
+      "recipient_id",
+      "previous_id",
+      "previous_revision"
+    ],
+    "display_limit": "The current task/submission may be shown only as current context. Do not relabel them as the task/submission checked by an older review. If exact historical review references are required, the current GET does not provide them.",
+    "never_join_fulfillment_only_by": [
+      "task_id",
+      "series_id",
+      "recipient_id"
+    ],
+    "cross_read_join_guard": "A separate project-work and fulfillment read must match exact commitment id/revision and preserved identity/declared fields before attaching fulfillment to a displayed row; differing snapshots must be refreshed or shown unavailable, not silently combined."
+  },
+  "actual_historical_summary_facts": {
+    "source": "docs/reports/evidence/pdos-next-s5-20261018/commitment-fulfillment/browser-database-proof.json",
+    "fulfillment_facts": 1,
+    "current_review_revision": 1,
+    "state": "fulfilled",
+    "task_unchanged": {
+      "revision": 5,
+      "state": "submitted"
+    },
+    "promise_unchanged": {
+      "revision": 1,
+      "promised_at": null
+    },
+    "receipt_id": "bee9767f-413c-4590-9a66-393080593a88",
+    "meaning": "A promise can be fulfilled while the task remains submitted v5, with promise v1 promised_at still null. This summary does not contain the full GET DTO or all review fields."
+  },
+  "display_recommendations": [
+    "Read fulfillment through the existing dedicated readFulfillment helper/GET only; do not import its mutation/preview/receipt-replay workflow into the read-only summary pane.",
+    "Render current state from the exact promise fulfillment.state and current review, not task completed, deadline comparison or any accepted historical row.",
+    "Promise replacement starts a separate exact-version review stream; a fulfilled predecessor must not make its successor fulfilled.",
+    "can_review is write eligibility and must not filter readable rows or hide historical fulfillment.",
+    "If the dedicated read fails or a cross-read identity/version check fails, show fulfillment unavailable; do not call it open/unfulfilled and do not synthesize a zero history.",
+    "Keep fulfilled current promises visible in the project read-only pane; exclusion from a pending personal queue is a separate domain behavior.",
+    "Preserve promised_at null, original timezone, promise recorded_at/created_at, submission actual/recorded time and review recorded_at as distinct fields."
+  ],
+  "validation_performed_by_this_audit": {
+    "source_read_and_hash_only": true,
+    "tests_run": 0,
+    "database_calls": 0,
+    "http_calls": 0,
+    "browser_calls": 0,
+    "private_credentials_read": false,
+    "source_code_modified": false,
+    "registered_evidence_modified": false,
+    "dto_synthesized": false,
+    "public_build_run": false
+  },
+  "limitations": [
+    "Historical registered candidate validation is reported as existing evidence, not rerun or promoted to current-candidate domain/stage acceptance.",
+    "The current project summary pane has not been changed or tested in this audit. Project activity and automation consumers belong to another chat.",
+    "No complete actual new fulfillment GET DTO is available among the examined public JSON artifacts; no synthetic DTO is presented as actual.",
+    "The current registered review_view does not expose historical fixed-reference details even though immutable stored review facts bind them.",
+    "No current authorization, scanner/model qualification, production enablement or external effect is inferred."
+  ]
+}

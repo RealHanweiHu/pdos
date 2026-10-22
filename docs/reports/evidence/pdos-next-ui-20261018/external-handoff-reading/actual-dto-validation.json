@@ -1,0 +1,4643 @@
+{
+  "version": "project-external-handoffs-actual-dto-validation/v1",
+  "input": "docs/reports/evidence/pdos-next-ui-20261018/external-handoff-reading/pg-http-responses.json",
+  "passed": true,
+  "input_sha256": "3eb9716db632657743f5a166592ee2c9e4652a3ef210fdb924f35c3beef696a0",
+  "source_sha256": {
+    "pdos-next/web/src/lib/project-external-handoffs.ts": "1e0838f0edb808d94c6140ed6ed3f2cbe53dc8d7d39af5d21dc90db4c20bffeb",
+    "pdos-next/web/src/components/manufacturing-preparation/manufacturing-preparation-contract.ts": "2fc6fa24f90012a1fabd14b88442ad95bb90fe0aa5f10ccc77eb4fa2fae370fc",
+    "pdos-next/web/src/lib/build-quality-loop-view.ts": "7cfc49a4ece48f8e072cffc0d1744825b7550dea0cc87b58ce93a1a0c0f266e0",
+    "pdos-next/web/src/lib/project-build-scope.ts": "9a800dc150bd35811e354c468f298d71d33abe31ad65a6f591034b1a22864f32",
+    "pdos-next/web/src/lib/product-view.ts": "ef9e4740e02f4ab9b11fb70c89097424dae09cb637ed719d8202627e7c15ec15",
+    "pdos-next/web/src/lib/spec-bound-values.ts": "b6c082364ffbc5c8ad0344603b951a1fc2bff59526b42b6b4fc77f3e59c37ea5",
+    "pdos-next/web/src/lib/external-handoffs.ts": "823c33c939e77a2085abc940eec749d5faf952ad3d3307425e9c18096b0c17ce",
+    "pdos-next/web/src/components/projects/project-external-handoffs.tsx": "c331d8d91ce7fe45b189f6726bc00a31ecad036ec3053a5b79da2252520ad19c",
+    "pdos-next/web/src/components/ui/button.tsx": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24",
+    "pdos-next/web/src/lib/utils.ts": "64fc84c1be627f0d586fb4ba64d824a1604f44282381f5bae68cdf86e10bb6ec",
+    "pdos-next/web/src/components/projects/project-external-handoffs.module.css": "8c4ec75c6908c13fb0c0cb7f81dfd678135e3c3cef7fac6c280dfb1b80f7113e"
+  },
+  "helper_sha256": "6d6cd8ae9071db9c22fae2cb78e728576952adbf23e5db40cd76b21aa584d44e",
+  "network": false,
+  "database": false,
+  "browser": false,
+  "component_ssr": "real_pure_display_exports_offline_only_css_identity_substitute",
+  "checks": [
+    {
+      "check": "original_actual_eight_phase_thirty_get_manifest",
+      "passed": true
+    },
+    {
+      "check": "frozen_reader_and_shared_validators",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_authorized_without_receipts/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_authorized_without_receipts/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_authorized_without_receipts/detail",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_authorized_without_receipts/detail",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_authorized_without_receipts/receipts",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_authorized_without_receipts/receipts",
+      "passed": true
+    },
+    {
+      "check": "same_original_watermark_and_36_read_only_counts_authorized_without_receipts",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_sent_outcome_unknown/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_sent_outcome_unknown/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_sent_outcome_unknown/detail",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_sent_outcome_unknown/detail",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_sent_outcome_unknown/receipts",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_sent_outcome_unknown/receipts",
+      "passed": true
+    },
+    {
+      "check": "same_original_watermark_and_36_read_only_counts_sent_outcome_unknown",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_sent_explicitly_reconciled/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_sent_explicitly_reconciled/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_sent_explicitly_reconciled/detail",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_sent_explicitly_reconciled/detail",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_sent_explicitly_reconciled/receipts",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_sent_explicitly_reconciled/receipts",
+      "passed": true
+    },
+    {
+      "check": "same_original_watermark_and_36_read_only_counts_sent_explicitly_reconciled",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_partially_accepted/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_partially_accepted/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_partially_accepted/detail",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_partially_accepted/detail",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_partially_accepted/receipts",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_partially_accepted/receipts",
+      "passed": true
+    },
+    {
+      "check": "same_original_watermark_and_36_read_only_counts_partially_accepted",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_fully_accepted/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_fully_accepted/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_fully_accepted/detail",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_fully_accepted/detail",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_fully_accepted/receipts",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_fully_accepted/receipts",
+      "passed": true
+    },
+    {
+      "check": "same_original_watermark_and_36_read_only_counts_fully_accepted",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_effectiveness_recorded/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_effectiveness_recorded/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_effectiveness_recorded/detail",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_effectiveness_recorded/detail",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_effectiveness_recorded/receipts",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_effectiveness_recorded/receipts",
+      "passed": true
+    },
+    {
+      "check": "same_original_watermark_and_36_read_only_counts_effectiveness_recorded",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_manifest_conflict_retained/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_manifest_conflict_retained/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_manifest_conflict_retained/detail",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_manifest_conflict_retained/detail",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_manifest_conflict_retained/receipts",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_manifest_conflict_retained/receipts",
+      "passed": true
+    },
+    {
+      "check": "same_original_watermark_and_36_read_only_counts_manifest_conflict_retained",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_policy_withdrawn_fixed_history_retained/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_policy_withdrawn_fixed_history_retained/project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_policy_withdrawn_fixed_history_retained/detail",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_policy_withdrawn_fixed_history_retained/detail",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_policy_withdrawn_fixed_history_retained/receipts",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_policy_withdrawn_fixed_history_retained/receipts",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_policy_withdrawn_fixed_history_retained/peer_project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_policy_withdrawn_fixed_history_retained/peer_project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_policy_withdrawn_fixed_history_retained/peer_detail",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_policy_withdrawn_fixed_history_retained/peer_detail",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_policy_withdrawn_fixed_history_retained/peer_receipts",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_preserved_policy_withdrawn_fixed_history_retained/peer_receipts",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_policy_withdrawn_fixed_history_retained/foreign_project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "original_foreign_403_preserved_policy_withdrawn_fixed_history_retained/foreign_project_handoffs",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_policy_withdrawn_fixed_history_retained/foreign_detail",
+      "passed": true
+    },
+    {
+      "check": "original_foreign_403_preserved_policy_withdrawn_fixed_history_retained/foreign_detail",
+      "passed": true
+    },
+    {
+      "check": "exact_original_get_route_policy_withdrawn_fixed_history_retained/foreign_receipts",
+      "passed": true
+    },
+    {
+      "check": "original_foreign_403_preserved_policy_withdrawn_fixed_history_retained/foreign_receipts",
+      "passed": true
+    },
+    {
+      "check": "same_original_watermark_and_36_read_only_counts_policy_withdrawn_fixed_history_retained",
+      "passed": true
+    },
+    {
+      "check": "immutable_authorization_intent_authority_and_receipts_across_all_eight_phases",
+      "passed": true
+    },
+    {
+      "check": "server_unknown_reconciliation_partial_acceptance_and_conflict_stay_separate",
+      "passed": true
+    },
+    {
+      "check": "policy_withdrawal_keeps_all_fixed_and_raw_fields_except_applicability",
+      "passed": true
+    },
+    {
+      "check": "legitimate_peer_matches_original_scope_and_no_foreign_response_becomes_empty",
+      "passed": true
+    },
+    {
+      "check": "actual_pure_react_ssr_exact_details_sources_destinations_and_states_authorized_without_receipts",
+      "passed": true
+    },
+    {
+      "check": "actual_pure_react_ssr_exact_details_sources_destinations_and_states_sent_outcome_unknown",
+      "passed": true
+    },
+    {
+      "check": "actual_pure_react_ssr_exact_details_sources_destinations_and_states_sent_explicitly_reconciled",
+      "passed": true
+    },
+    {
+      "check": "actual_pure_react_ssr_exact_details_sources_destinations_and_states_partially_accepted",
+      "passed": true
+    },
+    {
+      "check": "actual_pure_react_ssr_exact_details_sources_destinations_and_states_fully_accepted",
+      "passed": true
+    },
+    {
+      "check": "actual_pure_react_ssr_exact_details_sources_destinations_and_states_effectiveness_recorded",
+      "passed": true
+    },
+    {
+      "check": "actual_pure_react_ssr_exact_details_sources_destinations_and_states_manifest_conflict_retained",
+      "passed": true
+    },
+    {
+      "check": "actual_pure_react_ssr_exact_details_sources_destinations_and_states_policy_withdrawn_fixed_history_retained",
+      "passed": true
+    },
+    {
+      "check": "unmodified_input_and_loaded_product_sources",
+      "passed": true
+    }
+  ],
+  "calls": [
+    {
+      "original_read": "authorized_without_receipts/project_handoffs",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs?project_id=2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+      "status": 200,
+      "original_body_sha256": "7a632139e3159be61ca20fc103ea86c78f906fa0828e243c669e386f85a3bd56"
+    },
+    {
+      "original_read": "authorized_without_receipts/detail",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857",
+      "status": 200,
+      "original_body_sha256": "4e48a34c85fa6f245cd719a1f3c924422d07e7066728127a078fcc2e9bcc8fc2"
+    },
+    {
+      "original_read": "authorized_without_receipts/receipts",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857/receipts",
+      "status": 200,
+      "original_body_sha256": "ebc7c4a4b0c96df6021e7d59af9d3ff6eba6eb91fcbb8479fdf7c3fb6a10f373"
+    },
+    {
+      "original_read": "sent_outcome_unknown/project_handoffs",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs?project_id=2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+      "status": 200,
+      "original_body_sha256": "64a8c6f0235d477cf2a8ec6ba7f07503a9d386f170811320ecdf55b673e94751"
+    },
+    {
+      "original_read": "sent_outcome_unknown/detail",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857",
+      "status": 200,
+      "original_body_sha256": "238e6e3d5e0d380cc8b80445201263f151c3fc235ec452e0f4ca380a42329ba4"
+    },
+    {
+      "original_read": "sent_outcome_unknown/receipts",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857/receipts",
+      "status": 200,
+      "original_body_sha256": "33238f6c9f7a23d25e0966cf96afd8655891cee3b5eda091d12492aaee529267"
+    },
+    {
+      "original_read": "sent_explicitly_reconciled/project_handoffs",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs?project_id=2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+      "status": 200,
+      "original_body_sha256": "13d86b8a71db13fc36f3e485f8b48b50e9b89866376c689321b39f25448f697a"
+    },
+    {
+      "original_read": "sent_explicitly_reconciled/detail",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857",
+      "status": 200,
+      "original_body_sha256": "08cbe012254bcee1da4d90e30879c343e2a5eb215ad51f94bdc5b999d8ea94a4"
+    },
+    {
+      "original_read": "sent_explicitly_reconciled/receipts",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857/receipts",
+      "status": 200,
+      "original_body_sha256": "a02479f7ac637f00f421bd1aaa5c036fd56a0bdab7441d0e2d4f418550c19d40"
+    },
+    {
+      "original_read": "partially_accepted/project_handoffs",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs?project_id=2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+      "status": 200,
+      "original_body_sha256": "75bfb9583b3f48c82699abd97ed5d6c7115a522ec2174b56a8798fadc28e4e3c"
+    },
+    {
+      "original_read": "partially_accepted/detail",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857",
+      "status": 200,
+      "original_body_sha256": "19d8a80a609022629d41c66646df063f0d430d72d4571e59d2a28c002e931d18"
+    },
+    {
+      "original_read": "partially_accepted/receipts",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857/receipts",
+      "status": 200,
+      "original_body_sha256": "4c8871b11da48ecb76253b69fbbbf08166cb92ce4b007a0d029c9884f1ac63e0"
+    },
+    {
+      "original_read": "fully_accepted/project_handoffs",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs?project_id=2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+      "status": 200,
+      "original_body_sha256": "c24efecb57c05a60dcc9f007c8eecf40125f767ed45a87c3d57858856ebd33dd"
+    },
+    {
+      "original_read": "fully_accepted/detail",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857",
+      "status": 200,
+      "original_body_sha256": "e8d43639e05f899374db8f9f21ec5757f7486e4e1b498439e3149f13f37c76f2"
+    },
+    {
+      "original_read": "fully_accepted/receipts",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857/receipts",
+      "status": 200,
+      "original_body_sha256": "74cfde217b7a4f3c08dc5c5443a3e3a2e9a3ade0bc77c1efa025cfca871d2c58"
+    },
+    {
+      "original_read": "effectiveness_recorded/project_handoffs",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs?project_id=2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+      "status": 200,
+      "original_body_sha256": "d30fb6a892ac11b83584550df766ac0939aaab5ad1804501a9cf795349edc9a6"
+    },
+    {
+      "original_read": "effectiveness_recorded/detail",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857",
+      "status": 200,
+      "original_body_sha256": "271020cd4a40bcd6d49aaae083fe18c5747ed01ae85d183894215ac0be9f88b4"
+    },
+    {
+      "original_read": "effectiveness_recorded/receipts",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857/receipts",
+      "status": 200,
+      "original_body_sha256": "4f547b0b7c628af3274b7a53bc20b77063d5960756727944061c62971cc248b6"
+    },
+    {
+      "original_read": "manifest_conflict_retained/project_handoffs",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs?project_id=2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+      "status": 200,
+      "original_body_sha256": "b035feeeffe6ef1d0dfd4dd5780ea6f26c68a90f1412f761d92e00ef407e7d4d"
+    },
+    {
+      "original_read": "manifest_conflict_retained/detail",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857",
+      "status": 200,
+      "original_body_sha256": "6776aee97eeac5415fd5aa5f608e85b00cbe84307b78f037955997958affdebe"
+    },
+    {
+      "original_read": "manifest_conflict_retained/receipts",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857/receipts",
+      "status": 200,
+      "original_body_sha256": "2d634e9031bda52845f0c11c3c8c4c13b267996b90052b25992b694f8511da69"
+    },
+    {
+      "original_read": "policy_withdrawn_fixed_history_retained/project_handoffs",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs?project_id=2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+      "status": 200,
+      "original_body_sha256": "b035feeeffe6ef1d0dfd4dd5780ea6f26c68a90f1412f761d92e00ef407e7d4d"
+    },
+    {
+      "original_read": "policy_withdrawn_fixed_history_retained/detail",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857",
+      "status": 200,
+      "original_body_sha256": "3d7ec81c349a22503aa30655a42efb4ff757df732676dddaa22500e607196c6e"
+    },
+    {
+      "original_read": "policy_withdrawn_fixed_history_retained/receipts",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857/receipts",
+      "status": 200,
+      "original_body_sha256": "2d634e9031bda52845f0c11c3c8c4c13b267996b90052b25992b694f8511da69"
+    },
+    {
+      "original_read": "policy_withdrawn_fixed_history_retained/peer_project_handoffs",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs?project_id=2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+      "status": 200,
+      "original_body_sha256": "b035feeeffe6ef1d0dfd4dd5780ea6f26c68a90f1412f761d92e00ef407e7d4d"
+    },
+    {
+      "original_read": "policy_withdrawn_fixed_history_retained/peer_detail",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857",
+      "status": 200,
+      "original_body_sha256": "3d7ec81c349a22503aa30655a42efb4ff757df732676dddaa22500e607196c6e"
+    },
+    {
+      "original_read": "policy_withdrawn_fixed_history_retained/peer_receipts",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857/receipts",
+      "status": 200,
+      "original_body_sha256": "2d634e9031bda52845f0c11c3c8c4c13b267996b90052b25992b694f8511da69"
+    },
+    {
+      "original_read": "policy_withdrawn_fixed_history_retained/foreign_project_handoffs",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs?project_id=2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+      "status": 403,
+      "original_body_sha256": "32f31d9d9b7ebc3790399b13c2232f6c6eede6e00091f6c1ec91bba3d35f2420"
+    },
+    {
+      "original_read": "policy_withdrawn_fixed_history_retained/foreign_detail",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857",
+      "status": 403,
+      "original_body_sha256": "32f31d9d9b7ebc3790399b13c2232f6c6eede6e00091f6c1ec91bba3d35f2420"
+    },
+    {
+      "original_read": "policy_withdrawn_fixed_history_retained/foreign_receipts",
+      "method": "GET",
+      "path": "v1/categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs/91668fab-1122-4fc9-b6ca-64717f92e857/receipts",
+      "status": 403,
+      "original_body_sha256": "32f31d9d9b7ebc3790399b13c2232f6c6eede6e00091f6c1ec91bba3d35f2420"
+    }
+  ],
+  "results": [
+    {
+      "scenario": "authorized_without_receipts/project_handoffs",
+      "status": 200,
+      "kind": "project_handoffs",
+      "next_cursor": null,
+      "items": [
+        {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1,
+          "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+          "purpose": "Verify preparation",
+          "package": {
+            "id": "f3880b4e-e87e-4b31-9c11-b795176bb29e",
+            "revision": 1
+          },
+          "visibility": "category",
+          "created_at": "2026-10-18T22:51:40.716981+00:00",
+          "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+          "as_of": {
+            "id": "1754b918-5eb3-485b-83ee-b32687607083",
+            "handoff": {
+              "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+              "revision": 1
+            },
+            "intent": {
+              "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+              "revision": 1
+            },
+            "receipt_count": 0,
+            "latest_receipt": null,
+            "epoch": 1,
+            "projection_sha256": "62dd75b920ca610ff0d91184341d34c4032b59bdba62b16b49d677ca80797fc7"
+          },
+          "reading": {
+            "sent": {
+              "stage": "sent",
+              "state": "not_recorded",
+              "active": [],
+              "mismatches": [],
+              "covered_scopes": []
+            },
+            "failed": false,
+            "status": "authorized",
+            "accepted": {
+              "stage": "accepted",
+              "state": "not_recorded",
+              "active": [],
+              "mismatches": [],
+              "covered_scopes": []
+            },
+            "conflict": false,
+            "rejected": false,
+            "effective": {
+              "stage": "effective",
+              "state": "not_recorded",
+              "active": [],
+              "mismatches": [],
+              "covered_scopes": []
+            },
+            "network_send": false,
+            "delivery_unknown": false
+          },
+          "network_send": false
+        }
+      ]
+    },
+    {
+      "scenario": "authorized_without_receipts/detail",
+      "status": 200,
+      "kind": "detail",
+      "detail": {
+        "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+        "revision": 1,
+        "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+        "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+        "created_at": "2026-10-18T22:51:40.716981+00:00",
+        "purpose": "Verify preparation",
+        "applicability": "current",
+        "as_of": {
+          "id": "1754b918-5eb3-485b-83ee-b32687607083",
+          "handoff": {
+            "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+            "revision": 1
+          },
+          "intent": {
+            "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+            "revision": 1
+          },
+          "receipt_count": 0,
+          "latest_receipt": null,
+          "epoch": 1,
+          "projection_sha256": "62dd75b920ca610ff0d91184341d34c4032b59bdba62b16b49d677ca80797fc7"
+        },
+        "reading": {
+          "sent": {
+            "stage": "sent",
+            "state": "not_recorded",
+            "active": [],
+            "mismatches": [],
+            "covered_scopes": []
+          },
+          "failed": false,
+          "status": "authorized",
+          "accepted": {
+            "stage": "accepted",
+            "state": "not_recorded",
+            "active": [],
+            "mismatches": [],
+            "covered_scopes": []
+          },
+          "conflict": false,
+          "rejected": false,
+          "effective": {
+            "stage": "effective",
+            "state": "not_recorded",
+            "active": [],
+            "mismatches": [],
+            "covered_scopes": []
+          },
+          "network_send": false,
+          "delivery_unknown": false
+        },
+        "network_send": false,
+        "authorization_sha256": "aa10e8bae7238ea29c9e17d67495c68034d91654230c322183d8beae11ef8475",
+        "saved_authority_sha256": "59835fb55711727e7bc3a162aee710a9a0a54aab48a720e1c386f71f73c9e960",
+        "fixed_intent_sha256": "865ecb6ecdfa12e646c4b5919d01fb0fb20482aa5368f4b64239c6843221f98a",
+        "manifest_sha256": "91198ce9ae32e5fd63b962d3f30912a8f780ed9f73321764be3e372b6c4cfd1b",
+        "mappings_sha256": "37f014526b5ae751e81ebe3299dcf3cb5785b54e9736cb579521b0d876490032",
+        "sources_sha256": "b7cb2b53ecb2609c4df4169a4a709c7253060b09108f9a4c1ab8f11f5e95c9da"
+      }
+    },
+    {
+      "scenario": "authorized_without_receipts/receipts",
+      "status": 200,
+      "kind": "receipts",
+      "as_of": {
+        "id": "1754b918-5eb3-485b-83ee-b32687607083",
+        "handoff": {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1
+        },
+        "intent": {
+          "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+          "revision": 1
+        },
+        "receipt_count": 0,
+        "latest_receipt": null,
+        "epoch": 1,
+        "projection_sha256": "62dd75b920ca610ff0d91184341d34c4032b59bdba62b16b49d677ca80797fc7"
+      },
+      "before_sequence": null,
+      "items": []
+    },
+    {
+      "scenario": "sent_outcome_unknown/project_handoffs",
+      "status": 200,
+      "kind": "project_handoffs",
+      "next_cursor": null,
+      "items": [
+        {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1,
+          "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+          "purpose": "Verify preparation",
+          "package": {
+            "id": "f3880b4e-e87e-4b31-9c11-b795176bb29e",
+            "revision": 1
+          },
+          "visibility": "category",
+          "created_at": "2026-10-18T22:51:40.716981+00:00",
+          "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+          "as_of": {
+            "id": "1754b918-5eb3-485b-83ee-b32687607083",
+            "handoff": {
+              "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+              "revision": 1
+            },
+            "intent": {
+              "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+              "revision": 1
+            },
+            "receipt_count": 1,
+            "latest_receipt": {
+              "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+              "revision": 1
+            },
+            "epoch": 2,
+            "projection_sha256": "49d244122f6e16a4ff42437be899b6dd288cea682ce54165b9e2934c04fd0f0c"
+          },
+          "reading": {
+            "sent": {
+              "stage": "sent",
+              "state": "unknown",
+              "active": [
+                {
+                  "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": []
+            },
+            "failed": false,
+            "status": "authorized",
+            "accepted": {
+              "stage": "accepted",
+              "state": "not_recorded",
+              "active": [],
+              "mismatches": [],
+              "covered_scopes": []
+            },
+            "conflict": false,
+            "rejected": false,
+            "effective": {
+              "stage": "effective",
+              "state": "not_recorded",
+              "active": [],
+              "mismatches": [],
+              "covered_scopes": []
+            },
+            "network_send": false,
+            "delivery_unknown": true
+          },
+          "network_send": false
+        }
+      ]
+    },
+    {
+      "scenario": "sent_outcome_unknown/detail",
+      "status": 200,
+      "kind": "detail",
+      "detail": {
+        "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+        "revision": 1,
+        "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+        "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+        "created_at": "2026-10-18T22:51:40.716981+00:00",
+        "purpose": "Verify preparation",
+        "applicability": "current",
+        "as_of": {
+          "id": "1754b918-5eb3-485b-83ee-b32687607083",
+          "handoff": {
+            "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+            "revision": 1
+          },
+          "intent": {
+            "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+            "revision": 1
+          },
+          "receipt_count": 1,
+          "latest_receipt": {
+            "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+            "revision": 1
+          },
+          "epoch": 2,
+          "projection_sha256": "49d244122f6e16a4ff42437be899b6dd288cea682ce54165b9e2934c04fd0f0c"
+        },
+        "reading": {
+          "sent": {
+            "stage": "sent",
+            "state": "unknown",
+            "active": [
+              {
+                "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": []
+          },
+          "failed": false,
+          "status": "authorized",
+          "accepted": {
+            "stage": "accepted",
+            "state": "not_recorded",
+            "active": [],
+            "mismatches": [],
+            "covered_scopes": []
+          },
+          "conflict": false,
+          "rejected": false,
+          "effective": {
+            "stage": "effective",
+            "state": "not_recorded",
+            "active": [],
+            "mismatches": [],
+            "covered_scopes": []
+          },
+          "network_send": false,
+          "delivery_unknown": true
+        },
+        "network_send": false,
+        "authorization_sha256": "aa10e8bae7238ea29c9e17d67495c68034d91654230c322183d8beae11ef8475",
+        "saved_authority_sha256": "59835fb55711727e7bc3a162aee710a9a0a54aab48a720e1c386f71f73c9e960",
+        "fixed_intent_sha256": "865ecb6ecdfa12e646c4b5919d01fb0fb20482aa5368f4b64239c6843221f98a",
+        "manifest_sha256": "91198ce9ae32e5fd63b962d3f30912a8f780ed9f73321764be3e372b6c4cfd1b",
+        "mappings_sha256": "37f014526b5ae751e81ebe3299dcf3cb5785b54e9736cb579521b0d876490032",
+        "sources_sha256": "b7cb2b53ecb2609c4df4169a4a709c7253060b09108f9a4c1ab8f11f5e95c9da"
+      }
+    },
+    {
+      "scenario": "sent_outcome_unknown/receipts",
+      "status": 200,
+      "kind": "receipts",
+      "as_of": {
+        "id": "1754b918-5eb3-485b-83ee-b32687607083",
+        "handoff": {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1
+        },
+        "intent": {
+          "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+          "revision": 1
+        },
+        "receipt_count": 1,
+        "latest_receipt": {
+          "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+          "revision": 1
+        },
+        "epoch": 2,
+        "projection_sha256": "49d244122f6e16a4ff42437be899b6dd288cea682ce54165b9e2934c04fd0f0c"
+      },
+      "before_sequence": null,
+      "items": [
+        {
+          "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+          "revision": 1,
+          "sequence": 1,
+          "receipt_id": "d9b0cd43-a813-4303-93a5-a7305ec1be71",
+          "received_at": "2026-10-18T22:51:47.055667+00:00",
+          "occurred_at": "2026-10-18T22:51:45.926443Z",
+          "stage": "sent",
+          "outcome": "unknown",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "41135254b27a85d86f544deacbd62119e4680f526b689fa87063fd2c8836fb94",
+          "source_sha256": "947394529924bede5562f8919c926cca9bbcb35d069fdd3add9d5a754f710150",
+          "issuer_sha256": "34e916eeac0c2e64ac54c2458fc356419fef63d88f84322b0e85a5b6e1d3e805",
+          "full_row_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+        }
+      ]
+    },
+    {
+      "scenario": "sent_explicitly_reconciled/project_handoffs",
+      "status": 200,
+      "kind": "project_handoffs",
+      "next_cursor": null,
+      "items": [
+        {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1,
+          "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+          "purpose": "Verify preparation",
+          "package": {
+            "id": "f3880b4e-e87e-4b31-9c11-b795176bb29e",
+            "revision": 1
+          },
+          "visibility": "category",
+          "created_at": "2026-10-18T22:51:40.716981+00:00",
+          "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+          "as_of": {
+            "id": "1754b918-5eb3-485b-83ee-b32687607083",
+            "handoff": {
+              "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+              "revision": 1
+            },
+            "intent": {
+              "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+              "revision": 1
+            },
+            "receipt_count": 2,
+            "latest_receipt": {
+              "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+              "revision": 1
+            },
+            "epoch": 3,
+            "projection_sha256": "d8aaf86630912f25feef39be3378323f99593c98c8d23d34c9073255d9c6fe0d"
+          },
+          "reading": {
+            "sent": {
+              "stage": "sent",
+              "state": "succeeded",
+              "active": [
+                {
+                  "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "failed": false,
+            "status": "sent",
+            "accepted": {
+              "stage": "accepted",
+              "state": "not_recorded",
+              "active": [],
+              "mismatches": [],
+              "covered_scopes": []
+            },
+            "conflict": false,
+            "rejected": false,
+            "effective": {
+              "stage": "effective",
+              "state": "not_recorded",
+              "active": [],
+              "mismatches": [],
+              "covered_scopes": []
+            },
+            "network_send": false,
+            "delivery_unknown": false
+          },
+          "network_send": false
+        }
+      ]
+    },
+    {
+      "scenario": "sent_explicitly_reconciled/detail",
+      "status": 200,
+      "kind": "detail",
+      "detail": {
+        "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+        "revision": 1,
+        "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+        "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+        "created_at": "2026-10-18T22:51:40.716981+00:00",
+        "purpose": "Verify preparation",
+        "applicability": "current",
+        "as_of": {
+          "id": "1754b918-5eb3-485b-83ee-b32687607083",
+          "handoff": {
+            "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+            "revision": 1
+          },
+          "intent": {
+            "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+            "revision": 1
+          },
+          "receipt_count": 2,
+          "latest_receipt": {
+            "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+            "revision": 1
+          },
+          "epoch": 3,
+          "projection_sha256": "d8aaf86630912f25feef39be3378323f99593c98c8d23d34c9073255d9c6fe0d"
+        },
+        "reading": {
+          "sent": {
+            "stage": "sent",
+            "state": "succeeded",
+            "active": [
+              {
+                "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "failed": false,
+          "status": "sent",
+          "accepted": {
+            "stage": "accepted",
+            "state": "not_recorded",
+            "active": [],
+            "mismatches": [],
+            "covered_scopes": []
+          },
+          "conflict": false,
+          "rejected": false,
+          "effective": {
+            "stage": "effective",
+            "state": "not_recorded",
+            "active": [],
+            "mismatches": [],
+            "covered_scopes": []
+          },
+          "network_send": false,
+          "delivery_unknown": false
+        },
+        "network_send": false,
+        "authorization_sha256": "aa10e8bae7238ea29c9e17d67495c68034d91654230c322183d8beae11ef8475",
+        "saved_authority_sha256": "59835fb55711727e7bc3a162aee710a9a0a54aab48a720e1c386f71f73c9e960",
+        "fixed_intent_sha256": "865ecb6ecdfa12e646c4b5919d01fb0fb20482aa5368f4b64239c6843221f98a",
+        "manifest_sha256": "91198ce9ae32e5fd63b962d3f30912a8f780ed9f73321764be3e372b6c4cfd1b",
+        "mappings_sha256": "37f014526b5ae751e81ebe3299dcf3cb5785b54e9736cb579521b0d876490032",
+        "sources_sha256": "b7cb2b53ecb2609c4df4169a4a709c7253060b09108f9a4c1ab8f11f5e95c9da"
+      }
+    },
+    {
+      "scenario": "sent_explicitly_reconciled/receipts",
+      "status": 200,
+      "kind": "receipts",
+      "as_of": {
+        "id": "1754b918-5eb3-485b-83ee-b32687607083",
+        "handoff": {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1
+        },
+        "intent": {
+          "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+          "revision": 1
+        },
+        "receipt_count": 2,
+        "latest_receipt": {
+          "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+          "revision": 1
+        },
+        "epoch": 3,
+        "projection_sha256": "d8aaf86630912f25feef39be3378323f99593c98c8d23d34c9073255d9c6fe0d"
+      },
+      "before_sequence": null,
+      "items": [
+        {
+          "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+          "revision": 1,
+          "sequence": 2,
+          "receipt_id": "c34bcb3a-12b0-4453-8a91-f622d9f7eb4b",
+          "received_at": "2026-10-18T22:51:53.134569+00:00",
+          "occurred_at": "2026-10-18T22:51:51.889031Z",
+          "stage": "sent",
+          "outcome": "succeeded",
+          "reconciles": {
+            "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+            "revision": 1
+          },
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "72cd46fa42cf707f1fcd46409e7fe39f55db140f68ceb3f8a9d57cb13eb1b4b4",
+          "source_sha256": "87b501bfeba46d230c005607410b44ab50d9602bb644946718750cadd4f9593d",
+          "issuer_sha256": "8cad5ea46ce1ef11107b9ad9152dad4d97c72e624ddea8120dac75987671d87c",
+          "full_row_sha256": "0967322304d23423751624a021e9b515eb0fbe65ce59e77693122eb2cccac9eb"
+        },
+        {
+          "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+          "revision": 1,
+          "sequence": 1,
+          "receipt_id": "d9b0cd43-a813-4303-93a5-a7305ec1be71",
+          "received_at": "2026-10-18T22:51:47.055667+00:00",
+          "occurred_at": "2026-10-18T22:51:45.926443Z",
+          "stage": "sent",
+          "outcome": "unknown",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "41135254b27a85d86f544deacbd62119e4680f526b689fa87063fd2c8836fb94",
+          "source_sha256": "947394529924bede5562f8919c926cca9bbcb35d069fdd3add9d5a754f710150",
+          "issuer_sha256": "34e916eeac0c2e64ac54c2458fc356419fef63d88f84322b0e85a5b6e1d3e805",
+          "full_row_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+        }
+      ]
+    },
+    {
+      "scenario": "partially_accepted/project_handoffs",
+      "status": 200,
+      "kind": "project_handoffs",
+      "next_cursor": null,
+      "items": [
+        {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1,
+          "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+          "purpose": "Verify preparation",
+          "package": {
+            "id": "f3880b4e-e87e-4b31-9c11-b795176bb29e",
+            "revision": 1
+          },
+          "visibility": "category",
+          "created_at": "2026-10-18T22:51:40.716981+00:00",
+          "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+          "as_of": {
+            "id": "1754b918-5eb3-485b-83ee-b32687607083",
+            "handoff": {
+              "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+              "revision": 1
+            },
+            "intent": {
+              "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+              "revision": 1
+            },
+            "receipt_count": 3,
+            "latest_receipt": {
+              "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+              "revision": 1
+            },
+            "epoch": 4,
+            "projection_sha256": "9b0213b42b5864f6f5a8f69fef5fbb5e846096adcc0cad9268cdd4633f039ce3"
+          },
+          "reading": {
+            "sent": {
+              "stage": "sent",
+              "state": "succeeded",
+              "active": [
+                {
+                  "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "failed": false,
+            "status": "sent",
+            "accepted": {
+              "stage": "accepted",
+              "state": "partial",
+              "active": [
+                {
+                  "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "conflict": false,
+            "rejected": false,
+            "effective": {
+              "stage": "effective",
+              "state": "not_recorded",
+              "active": [],
+              "mismatches": [],
+              "covered_scopes": []
+            },
+            "network_send": false,
+            "delivery_unknown": false
+          },
+          "network_send": false
+        }
+      ]
+    },
+    {
+      "scenario": "partially_accepted/detail",
+      "status": 200,
+      "kind": "detail",
+      "detail": {
+        "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+        "revision": 1,
+        "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+        "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+        "created_at": "2026-10-18T22:51:40.716981+00:00",
+        "purpose": "Verify preparation",
+        "applicability": "current",
+        "as_of": {
+          "id": "1754b918-5eb3-485b-83ee-b32687607083",
+          "handoff": {
+            "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+            "revision": 1
+          },
+          "intent": {
+            "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+            "revision": 1
+          },
+          "receipt_count": 3,
+          "latest_receipt": {
+            "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+            "revision": 1
+          },
+          "epoch": 4,
+          "projection_sha256": "9b0213b42b5864f6f5a8f69fef5fbb5e846096adcc0cad9268cdd4633f039ce3"
+        },
+        "reading": {
+          "sent": {
+            "stage": "sent",
+            "state": "succeeded",
+            "active": [
+              {
+                "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "failed": false,
+          "status": "sent",
+          "accepted": {
+            "stage": "accepted",
+            "state": "partial",
+            "active": [
+              {
+                "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "conflict": false,
+          "rejected": false,
+          "effective": {
+            "stage": "effective",
+            "state": "not_recorded",
+            "active": [],
+            "mismatches": [],
+            "covered_scopes": []
+          },
+          "network_send": false,
+          "delivery_unknown": false
+        },
+        "network_send": false,
+        "authorization_sha256": "aa10e8bae7238ea29c9e17d67495c68034d91654230c322183d8beae11ef8475",
+        "saved_authority_sha256": "59835fb55711727e7bc3a162aee710a9a0a54aab48a720e1c386f71f73c9e960",
+        "fixed_intent_sha256": "865ecb6ecdfa12e646c4b5919d01fb0fb20482aa5368f4b64239c6843221f98a",
+        "manifest_sha256": "91198ce9ae32e5fd63b962d3f30912a8f780ed9f73321764be3e372b6c4cfd1b",
+        "mappings_sha256": "37f014526b5ae751e81ebe3299dcf3cb5785b54e9736cb579521b0d876490032",
+        "sources_sha256": "b7cb2b53ecb2609c4df4169a4a709c7253060b09108f9a4c1ab8f11f5e95c9da"
+      }
+    },
+    {
+      "scenario": "partially_accepted/receipts",
+      "status": 200,
+      "kind": "receipts",
+      "as_of": {
+        "id": "1754b918-5eb3-485b-83ee-b32687607083",
+        "handoff": {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1
+        },
+        "intent": {
+          "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+          "revision": 1
+        },
+        "receipt_count": 3,
+        "latest_receipt": {
+          "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+          "revision": 1
+        },
+        "epoch": 4,
+        "projection_sha256": "9b0213b42b5864f6f5a8f69fef5fbb5e846096adcc0cad9268cdd4633f039ce3"
+      },
+      "before_sequence": null,
+      "items": [
+        {
+          "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+          "revision": 1,
+          "sequence": 3,
+          "receipt_id": "0d304a71-9a1c-4593-8d6e-9245f9271e63",
+          "received_at": "2026-10-18T22:51:57.488903+00:00",
+          "occurred_at": "2026-10-18T22:51:56.481768Z",
+          "stage": "accepted",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "e67236bb81e69c59741b06a9269fe560f62d5e75e490606d3bcaf8d86b860484",
+          "source_sha256": "be0acd088758191bade15c9a1bd7a077f62f308bfaf73b5f5b5aaed4488ef43e",
+          "issuer_sha256": "14dab05aeb66264a2272c45eef266dfcab0d4ece8a27c743502f5937398fa357",
+          "full_row_sha256": "1c416a7585f4e988cfa470547980082ee9c2d9bca56cc0a754c646d47f73c145"
+        },
+        {
+          "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+          "revision": 1,
+          "sequence": 2,
+          "receipt_id": "c34bcb3a-12b0-4453-8a91-f622d9f7eb4b",
+          "received_at": "2026-10-18T22:51:53.134569+00:00",
+          "occurred_at": "2026-10-18T22:51:51.889031Z",
+          "stage": "sent",
+          "outcome": "succeeded",
+          "reconciles": {
+            "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+            "revision": 1
+          },
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "72cd46fa42cf707f1fcd46409e7fe39f55db140f68ceb3f8a9d57cb13eb1b4b4",
+          "source_sha256": "87b501bfeba46d230c005607410b44ab50d9602bb644946718750cadd4f9593d",
+          "issuer_sha256": "8cad5ea46ce1ef11107b9ad9152dad4d97c72e624ddea8120dac75987671d87c",
+          "full_row_sha256": "0967322304d23423751624a021e9b515eb0fbe65ce59e77693122eb2cccac9eb"
+        },
+        {
+          "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+          "revision": 1,
+          "sequence": 1,
+          "receipt_id": "d9b0cd43-a813-4303-93a5-a7305ec1be71",
+          "received_at": "2026-10-18T22:51:47.055667+00:00",
+          "occurred_at": "2026-10-18T22:51:45.926443Z",
+          "stage": "sent",
+          "outcome": "unknown",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "41135254b27a85d86f544deacbd62119e4680f526b689fa87063fd2c8836fb94",
+          "source_sha256": "947394529924bede5562f8919c926cca9bbcb35d069fdd3add9d5a754f710150",
+          "issuer_sha256": "34e916eeac0c2e64ac54c2458fc356419fef63d88f84322b0e85a5b6e1d3e805",
+          "full_row_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+        }
+      ]
+    },
+    {
+      "scenario": "fully_accepted/project_handoffs",
+      "status": 200,
+      "kind": "project_handoffs",
+      "next_cursor": null,
+      "items": [
+        {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1,
+          "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+          "purpose": "Verify preparation",
+          "package": {
+            "id": "f3880b4e-e87e-4b31-9c11-b795176bb29e",
+            "revision": 1
+          },
+          "visibility": "category",
+          "created_at": "2026-10-18T22:51:40.716981+00:00",
+          "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+          "as_of": {
+            "id": "1754b918-5eb3-485b-83ee-b32687607083",
+            "handoff": {
+              "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+              "revision": 1
+            },
+            "intent": {
+              "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+              "revision": 1
+            },
+            "receipt_count": 4,
+            "latest_receipt": {
+              "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+              "revision": 1
+            },
+            "epoch": 5,
+            "projection_sha256": "5c1548cfe8d65dd05605c12c39420cdb475503ee586533a00dad3c60497db223"
+          },
+          "reading": {
+            "sent": {
+              "stage": "sent",
+              "state": "succeeded",
+              "active": [
+                {
+                  "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "failed": false,
+            "status": "acknowledged",
+            "accepted": {
+              "stage": "accepted",
+              "state": "succeeded",
+              "active": [
+                {
+                  "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+                  "revision": 1
+                },
+                {
+                  "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN"
+                  ],
+                  "quantity": null
+                },
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "conflict": false,
+            "rejected": false,
+            "effective": {
+              "stage": "effective",
+              "state": "not_recorded",
+              "active": [],
+              "mismatches": [],
+              "covered_scopes": []
+            },
+            "network_send": false,
+            "delivery_unknown": false
+          },
+          "network_send": false
+        }
+      ]
+    },
+    {
+      "scenario": "fully_accepted/detail",
+      "status": 200,
+      "kind": "detail",
+      "detail": {
+        "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+        "revision": 1,
+        "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+        "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+        "created_at": "2026-10-18T22:51:40.716981+00:00",
+        "purpose": "Verify preparation",
+        "applicability": "current",
+        "as_of": {
+          "id": "1754b918-5eb3-485b-83ee-b32687607083",
+          "handoff": {
+            "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+            "revision": 1
+          },
+          "intent": {
+            "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+            "revision": 1
+          },
+          "receipt_count": 4,
+          "latest_receipt": {
+            "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+            "revision": 1
+          },
+          "epoch": 5,
+          "projection_sha256": "5c1548cfe8d65dd05605c12c39420cdb475503ee586533a00dad3c60497db223"
+        },
+        "reading": {
+          "sent": {
+            "stage": "sent",
+            "state": "succeeded",
+            "active": [
+              {
+                "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "failed": false,
+          "status": "acknowledged",
+          "accepted": {
+            "stage": "accepted",
+            "state": "succeeded",
+            "active": [
+              {
+                "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+                "revision": 1
+              },
+              {
+                "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN"
+                ],
+                "quantity": null
+              },
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "conflict": false,
+          "rejected": false,
+          "effective": {
+            "stage": "effective",
+            "state": "not_recorded",
+            "active": [],
+            "mismatches": [],
+            "covered_scopes": []
+          },
+          "network_send": false,
+          "delivery_unknown": false
+        },
+        "network_send": false,
+        "authorization_sha256": "aa10e8bae7238ea29c9e17d67495c68034d91654230c322183d8beae11ef8475",
+        "saved_authority_sha256": "59835fb55711727e7bc3a162aee710a9a0a54aab48a720e1c386f71f73c9e960",
+        "fixed_intent_sha256": "865ecb6ecdfa12e646c4b5919d01fb0fb20482aa5368f4b64239c6843221f98a",
+        "manifest_sha256": "91198ce9ae32e5fd63b962d3f30912a8f780ed9f73321764be3e372b6c4cfd1b",
+        "mappings_sha256": "37f014526b5ae751e81ebe3299dcf3cb5785b54e9736cb579521b0d876490032",
+        "sources_sha256": "b7cb2b53ecb2609c4df4169a4a709c7253060b09108f9a4c1ab8f11f5e95c9da"
+      }
+    },
+    {
+      "scenario": "fully_accepted/receipts",
+      "status": 200,
+      "kind": "receipts",
+      "as_of": {
+        "id": "1754b918-5eb3-485b-83ee-b32687607083",
+        "handoff": {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1
+        },
+        "intent": {
+          "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+          "revision": 1
+        },
+        "receipt_count": 4,
+        "latest_receipt": {
+          "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+          "revision": 1
+        },
+        "epoch": 5,
+        "projection_sha256": "5c1548cfe8d65dd05605c12c39420cdb475503ee586533a00dad3c60497db223"
+      },
+      "before_sequence": null,
+      "items": [
+        {
+          "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+          "revision": 1,
+          "sequence": 4,
+          "receipt_id": "d2b5ef27-6dad-4542-a185-8063a3983cac",
+          "received_at": "2026-10-18T22:52:02.671778+00:00",
+          "occurred_at": "2026-10-18T22:52:01.480056Z",
+          "stage": "accepted",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "958ea3cc1e65b43a276c2470723a80b30e07336fdc09b8650cc77e3dcbf89d71",
+          "source_sha256": "a3dc621c197c326789e2b6d7e70f0d81ccb3e7d668accb3d2396b9da786846d9",
+          "issuer_sha256": "2eca2ce4eda698f715287c7c514d0fd6e7613188d7294a25b70f7ce9f3d33f3f",
+          "full_row_sha256": "eb0e2632bbded8d2e755a947176020a3edb4fa9ee80a1ea88a1d843c049e583a"
+        },
+        {
+          "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+          "revision": 1,
+          "sequence": 3,
+          "receipt_id": "0d304a71-9a1c-4593-8d6e-9245f9271e63",
+          "received_at": "2026-10-18T22:51:57.488903+00:00",
+          "occurred_at": "2026-10-18T22:51:56.481768Z",
+          "stage": "accepted",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "e67236bb81e69c59741b06a9269fe560f62d5e75e490606d3bcaf8d86b860484",
+          "source_sha256": "be0acd088758191bade15c9a1bd7a077f62f308bfaf73b5f5b5aaed4488ef43e",
+          "issuer_sha256": "14dab05aeb66264a2272c45eef266dfcab0d4ece8a27c743502f5937398fa357",
+          "full_row_sha256": "1c416a7585f4e988cfa470547980082ee9c2d9bca56cc0a754c646d47f73c145"
+        },
+        {
+          "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+          "revision": 1,
+          "sequence": 2,
+          "receipt_id": "c34bcb3a-12b0-4453-8a91-f622d9f7eb4b",
+          "received_at": "2026-10-18T22:51:53.134569+00:00",
+          "occurred_at": "2026-10-18T22:51:51.889031Z",
+          "stage": "sent",
+          "outcome": "succeeded",
+          "reconciles": {
+            "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+            "revision": 1
+          },
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "72cd46fa42cf707f1fcd46409e7fe39f55db140f68ceb3f8a9d57cb13eb1b4b4",
+          "source_sha256": "87b501bfeba46d230c005607410b44ab50d9602bb644946718750cadd4f9593d",
+          "issuer_sha256": "8cad5ea46ce1ef11107b9ad9152dad4d97c72e624ddea8120dac75987671d87c",
+          "full_row_sha256": "0967322304d23423751624a021e9b515eb0fbe65ce59e77693122eb2cccac9eb"
+        },
+        {
+          "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+          "revision": 1,
+          "sequence": 1,
+          "receipt_id": "d9b0cd43-a813-4303-93a5-a7305ec1be71",
+          "received_at": "2026-10-18T22:51:47.055667+00:00",
+          "occurred_at": "2026-10-18T22:51:45.926443Z",
+          "stage": "sent",
+          "outcome": "unknown",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "41135254b27a85d86f544deacbd62119e4680f526b689fa87063fd2c8836fb94",
+          "source_sha256": "947394529924bede5562f8919c926cca9bbcb35d069fdd3add9d5a754f710150",
+          "issuer_sha256": "34e916eeac0c2e64ac54c2458fc356419fef63d88f84322b0e85a5b6e1d3e805",
+          "full_row_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+        }
+      ]
+    },
+    {
+      "scenario": "effectiveness_recorded/project_handoffs",
+      "status": 200,
+      "kind": "project_handoffs",
+      "next_cursor": null,
+      "items": [
+        {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1,
+          "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+          "purpose": "Verify preparation",
+          "package": {
+            "id": "f3880b4e-e87e-4b31-9c11-b795176bb29e",
+            "revision": 1
+          },
+          "visibility": "category",
+          "created_at": "2026-10-18T22:51:40.716981+00:00",
+          "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+          "as_of": {
+            "id": "1754b918-5eb3-485b-83ee-b32687607083",
+            "handoff": {
+              "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+              "revision": 1
+            },
+            "intent": {
+              "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+              "revision": 1
+            },
+            "receipt_count": 5,
+            "latest_receipt": {
+              "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+              "revision": 1
+            },
+            "epoch": 6,
+            "projection_sha256": "f3a07f63503a5d128dbc603df09226348fdbbd6b22e58e661961c59feb55072d"
+          },
+          "reading": {
+            "sent": {
+              "stage": "sent",
+              "state": "succeeded",
+              "active": [
+                {
+                  "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "failed": false,
+            "status": "reconciled",
+            "accepted": {
+              "stage": "accepted",
+              "state": "succeeded",
+              "active": [
+                {
+                  "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+                  "revision": 1
+                },
+                {
+                  "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN"
+                  ],
+                  "quantity": null
+                },
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "conflict": false,
+            "rejected": false,
+            "effective": {
+              "stage": "effective",
+              "state": "succeeded",
+              "active": [
+                {
+                  "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "network_send": false,
+            "delivery_unknown": false
+          },
+          "network_send": false
+        }
+      ]
+    },
+    {
+      "scenario": "effectiveness_recorded/detail",
+      "status": 200,
+      "kind": "detail",
+      "detail": {
+        "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+        "revision": 1,
+        "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+        "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+        "created_at": "2026-10-18T22:51:40.716981+00:00",
+        "purpose": "Verify preparation",
+        "applicability": "current",
+        "as_of": {
+          "id": "1754b918-5eb3-485b-83ee-b32687607083",
+          "handoff": {
+            "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+            "revision": 1
+          },
+          "intent": {
+            "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+            "revision": 1
+          },
+          "receipt_count": 5,
+          "latest_receipt": {
+            "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+            "revision": 1
+          },
+          "epoch": 6,
+          "projection_sha256": "f3a07f63503a5d128dbc603df09226348fdbbd6b22e58e661961c59feb55072d"
+        },
+        "reading": {
+          "sent": {
+            "stage": "sent",
+            "state": "succeeded",
+            "active": [
+              {
+                "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "failed": false,
+          "status": "reconciled",
+          "accepted": {
+            "stage": "accepted",
+            "state": "succeeded",
+            "active": [
+              {
+                "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+                "revision": 1
+              },
+              {
+                "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN"
+                ],
+                "quantity": null
+              },
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "conflict": false,
+          "rejected": false,
+          "effective": {
+            "stage": "effective",
+            "state": "succeeded",
+            "active": [
+              {
+                "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "network_send": false,
+          "delivery_unknown": false
+        },
+        "network_send": false,
+        "authorization_sha256": "aa10e8bae7238ea29c9e17d67495c68034d91654230c322183d8beae11ef8475",
+        "saved_authority_sha256": "59835fb55711727e7bc3a162aee710a9a0a54aab48a720e1c386f71f73c9e960",
+        "fixed_intent_sha256": "865ecb6ecdfa12e646c4b5919d01fb0fb20482aa5368f4b64239c6843221f98a",
+        "manifest_sha256": "91198ce9ae32e5fd63b962d3f30912a8f780ed9f73321764be3e372b6c4cfd1b",
+        "mappings_sha256": "37f014526b5ae751e81ebe3299dcf3cb5785b54e9736cb579521b0d876490032",
+        "sources_sha256": "b7cb2b53ecb2609c4df4169a4a709c7253060b09108f9a4c1ab8f11f5e95c9da"
+      }
+    },
+    {
+      "scenario": "effectiveness_recorded/receipts",
+      "status": 200,
+      "kind": "receipts",
+      "as_of": {
+        "id": "1754b918-5eb3-485b-83ee-b32687607083",
+        "handoff": {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1
+        },
+        "intent": {
+          "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+          "revision": 1
+        },
+        "receipt_count": 5,
+        "latest_receipt": {
+          "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+          "revision": 1
+        },
+        "epoch": 6,
+        "projection_sha256": "f3a07f63503a5d128dbc603df09226348fdbbd6b22e58e661961c59feb55072d"
+      },
+      "before_sequence": null,
+      "items": [
+        {
+          "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+          "revision": 1,
+          "sequence": 5,
+          "receipt_id": "d93f90e1-ee69-4b79-819f-d8bdd8d3db86",
+          "received_at": "2026-10-18T22:52:06.811584+00:00",
+          "occurred_at": "2026-10-18T22:52:06.030274Z",
+          "stage": "effective",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "6a52a0aeaf2d80db3b72ff0eee23781ac5d08f2802a86ead0deee7caadb25bcf",
+          "source_sha256": "8041a41bba06d613e78598f224ebf33dc7f95c4ca0f6b59f115e5c4a0b852840",
+          "issuer_sha256": "0ecc17800e125e0ea78009f47ef000811bf4682f0d7b7da7919743f3daba518e",
+          "full_row_sha256": "27d59c7510ddfb0a8bd45ad227507b4175532091e2b75d7714efd83e22f6a938"
+        },
+        {
+          "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+          "revision": 1,
+          "sequence": 4,
+          "receipt_id": "d2b5ef27-6dad-4542-a185-8063a3983cac",
+          "received_at": "2026-10-18T22:52:02.671778+00:00",
+          "occurred_at": "2026-10-18T22:52:01.480056Z",
+          "stage": "accepted",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "958ea3cc1e65b43a276c2470723a80b30e07336fdc09b8650cc77e3dcbf89d71",
+          "source_sha256": "a3dc621c197c326789e2b6d7e70f0d81ccb3e7d668accb3d2396b9da786846d9",
+          "issuer_sha256": "2eca2ce4eda698f715287c7c514d0fd6e7613188d7294a25b70f7ce9f3d33f3f",
+          "full_row_sha256": "eb0e2632bbded8d2e755a947176020a3edb4fa9ee80a1ea88a1d843c049e583a"
+        },
+        {
+          "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+          "revision": 1,
+          "sequence": 3,
+          "receipt_id": "0d304a71-9a1c-4593-8d6e-9245f9271e63",
+          "received_at": "2026-10-18T22:51:57.488903+00:00",
+          "occurred_at": "2026-10-18T22:51:56.481768Z",
+          "stage": "accepted",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "e67236bb81e69c59741b06a9269fe560f62d5e75e490606d3bcaf8d86b860484",
+          "source_sha256": "be0acd088758191bade15c9a1bd7a077f62f308bfaf73b5f5b5aaed4488ef43e",
+          "issuer_sha256": "14dab05aeb66264a2272c45eef266dfcab0d4ece8a27c743502f5937398fa357",
+          "full_row_sha256": "1c416a7585f4e988cfa470547980082ee9c2d9bca56cc0a754c646d47f73c145"
+        },
+        {
+          "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+          "revision": 1,
+          "sequence": 2,
+          "receipt_id": "c34bcb3a-12b0-4453-8a91-f622d9f7eb4b",
+          "received_at": "2026-10-18T22:51:53.134569+00:00",
+          "occurred_at": "2026-10-18T22:51:51.889031Z",
+          "stage": "sent",
+          "outcome": "succeeded",
+          "reconciles": {
+            "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+            "revision": 1
+          },
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "72cd46fa42cf707f1fcd46409e7fe39f55db140f68ceb3f8a9d57cb13eb1b4b4",
+          "source_sha256": "87b501bfeba46d230c005607410b44ab50d9602bb644946718750cadd4f9593d",
+          "issuer_sha256": "8cad5ea46ce1ef11107b9ad9152dad4d97c72e624ddea8120dac75987671d87c",
+          "full_row_sha256": "0967322304d23423751624a021e9b515eb0fbe65ce59e77693122eb2cccac9eb"
+        },
+        {
+          "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+          "revision": 1,
+          "sequence": 1,
+          "receipt_id": "d9b0cd43-a813-4303-93a5-a7305ec1be71",
+          "received_at": "2026-10-18T22:51:47.055667+00:00",
+          "occurred_at": "2026-10-18T22:51:45.926443Z",
+          "stage": "sent",
+          "outcome": "unknown",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "41135254b27a85d86f544deacbd62119e4680f526b689fa87063fd2c8836fb94",
+          "source_sha256": "947394529924bede5562f8919c926cca9bbcb35d069fdd3add9d5a754f710150",
+          "issuer_sha256": "34e916eeac0c2e64ac54c2458fc356419fef63d88f84322b0e85a5b6e1d3e805",
+          "full_row_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+        }
+      ]
+    },
+    {
+      "scenario": "manifest_conflict_retained/project_handoffs",
+      "status": 200,
+      "kind": "project_handoffs",
+      "next_cursor": null,
+      "items": [
+        {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1,
+          "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+          "purpose": "Verify preparation",
+          "package": {
+            "id": "f3880b4e-e87e-4b31-9c11-b795176bb29e",
+            "revision": 1
+          },
+          "visibility": "category",
+          "created_at": "2026-10-18T22:51:40.716981+00:00",
+          "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+          "as_of": {
+            "id": "1754b918-5eb3-485b-83ee-b32687607083",
+            "handoff": {
+              "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+              "revision": 1
+            },
+            "intent": {
+              "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+              "revision": 1
+            },
+            "receipt_count": 6,
+            "latest_receipt": {
+              "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+              "revision": 1
+            },
+            "epoch": 7,
+            "projection_sha256": "b4bb7ed1ab6e4500cd23824c27c8da2dcb6c57f7eba26ed3f85c73872e182a47"
+          },
+          "reading": {
+            "sent": {
+              "stage": "sent",
+              "state": "succeeded",
+              "active": [
+                {
+                  "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "failed": false,
+            "status": "acknowledged",
+            "accepted": {
+              "stage": "accepted",
+              "state": "succeeded",
+              "active": [
+                {
+                  "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+                  "revision": 1
+                },
+                {
+                  "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN"
+                  ],
+                  "quantity": null
+                },
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "conflict": true,
+            "rejected": false,
+            "effective": {
+              "stage": "effective",
+              "state": "conflict",
+              "active": [
+                {
+                  "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+                  "revision": 1
+                },
+                {
+                  "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [
+                "MANIFEST_MISMATCH"
+              ],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "network_send": false,
+            "delivery_unknown": false
+          },
+          "network_send": false
+        }
+      ]
+    },
+    {
+      "scenario": "manifest_conflict_retained/detail",
+      "status": 200,
+      "kind": "detail",
+      "detail": {
+        "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+        "revision": 1,
+        "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+        "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+        "created_at": "2026-10-18T22:51:40.716981+00:00",
+        "purpose": "Verify preparation",
+        "applicability": "current",
+        "as_of": {
+          "id": "1754b918-5eb3-485b-83ee-b32687607083",
+          "handoff": {
+            "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+            "revision": 1
+          },
+          "intent": {
+            "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+            "revision": 1
+          },
+          "receipt_count": 6,
+          "latest_receipt": {
+            "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+            "revision": 1
+          },
+          "epoch": 7,
+          "projection_sha256": "b4bb7ed1ab6e4500cd23824c27c8da2dcb6c57f7eba26ed3f85c73872e182a47"
+        },
+        "reading": {
+          "sent": {
+            "stage": "sent",
+            "state": "succeeded",
+            "active": [
+              {
+                "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "failed": false,
+          "status": "acknowledged",
+          "accepted": {
+            "stage": "accepted",
+            "state": "succeeded",
+            "active": [
+              {
+                "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+                "revision": 1
+              },
+              {
+                "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN"
+                ],
+                "quantity": null
+              },
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "conflict": true,
+          "rejected": false,
+          "effective": {
+            "stage": "effective",
+            "state": "conflict",
+            "active": [
+              {
+                "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+                "revision": 1
+              },
+              {
+                "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+                "revision": 1
+              }
+            ],
+            "mismatches": [
+              "MANIFEST_MISMATCH"
+            ],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "network_send": false,
+          "delivery_unknown": false
+        },
+        "network_send": false,
+        "authorization_sha256": "aa10e8bae7238ea29c9e17d67495c68034d91654230c322183d8beae11ef8475",
+        "saved_authority_sha256": "59835fb55711727e7bc3a162aee710a9a0a54aab48a720e1c386f71f73c9e960",
+        "fixed_intent_sha256": "865ecb6ecdfa12e646c4b5919d01fb0fb20482aa5368f4b64239c6843221f98a",
+        "manifest_sha256": "91198ce9ae32e5fd63b962d3f30912a8f780ed9f73321764be3e372b6c4cfd1b",
+        "mappings_sha256": "37f014526b5ae751e81ebe3299dcf3cb5785b54e9736cb579521b0d876490032",
+        "sources_sha256": "b7cb2b53ecb2609c4df4169a4a709c7253060b09108f9a4c1ab8f11f5e95c9da"
+      }
+    },
+    {
+      "scenario": "manifest_conflict_retained/receipts",
+      "status": 200,
+      "kind": "receipts",
+      "as_of": {
+        "id": "1754b918-5eb3-485b-83ee-b32687607083",
+        "handoff": {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1
+        },
+        "intent": {
+          "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+          "revision": 1
+        },
+        "receipt_count": 6,
+        "latest_receipt": {
+          "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+          "revision": 1
+        },
+        "epoch": 7,
+        "projection_sha256": "b4bb7ed1ab6e4500cd23824c27c8da2dcb6c57f7eba26ed3f85c73872e182a47"
+      },
+      "before_sequence": null,
+      "items": [
+        {
+          "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+          "revision": 1,
+          "sequence": 6,
+          "receipt_id": "6b085c42-80a2-4547-9872-c07caeeed8f3",
+          "received_at": "2026-10-18T22:52:10.867282+00:00",
+          "occurred_at": "2026-10-18T22:52:09.833653Z",
+          "stage": "effective",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [
+            "MANIFEST_MISMATCH"
+          ],
+          "original_sha256": "c4213ee846322e1f13a7c55bd8a8d0a98c54e89f147bd36726c2aa487d2631f0",
+          "source_sha256": "8ac689003d1820db7e8e365e9e5566ff61b5492808c3b3a0c240f18ed644dd14",
+          "issuer_sha256": "7b5adb1252a7fd994eb60da4b33af0026a70bae0aa2ff9e80294b6006f6e1c55",
+          "full_row_sha256": "0f4ec0a319b9f3ec9baf81d7302d4121252864b0ecffac660bae96f677c8fa86"
+        },
+        {
+          "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+          "revision": 1,
+          "sequence": 5,
+          "receipt_id": "d93f90e1-ee69-4b79-819f-d8bdd8d3db86",
+          "received_at": "2026-10-18T22:52:06.811584+00:00",
+          "occurred_at": "2026-10-18T22:52:06.030274Z",
+          "stage": "effective",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "6a52a0aeaf2d80db3b72ff0eee23781ac5d08f2802a86ead0deee7caadb25bcf",
+          "source_sha256": "8041a41bba06d613e78598f224ebf33dc7f95c4ca0f6b59f115e5c4a0b852840",
+          "issuer_sha256": "0ecc17800e125e0ea78009f47ef000811bf4682f0d7b7da7919743f3daba518e",
+          "full_row_sha256": "27d59c7510ddfb0a8bd45ad227507b4175532091e2b75d7714efd83e22f6a938"
+        },
+        {
+          "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+          "revision": 1,
+          "sequence": 4,
+          "receipt_id": "d2b5ef27-6dad-4542-a185-8063a3983cac",
+          "received_at": "2026-10-18T22:52:02.671778+00:00",
+          "occurred_at": "2026-10-18T22:52:01.480056Z",
+          "stage": "accepted",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "958ea3cc1e65b43a276c2470723a80b30e07336fdc09b8650cc77e3dcbf89d71",
+          "source_sha256": "a3dc621c197c326789e2b6d7e70f0d81ccb3e7d668accb3d2396b9da786846d9",
+          "issuer_sha256": "2eca2ce4eda698f715287c7c514d0fd6e7613188d7294a25b70f7ce9f3d33f3f",
+          "full_row_sha256": "eb0e2632bbded8d2e755a947176020a3edb4fa9ee80a1ea88a1d843c049e583a"
+        },
+        {
+          "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+          "revision": 1,
+          "sequence": 3,
+          "receipt_id": "0d304a71-9a1c-4593-8d6e-9245f9271e63",
+          "received_at": "2026-10-18T22:51:57.488903+00:00",
+          "occurred_at": "2026-10-18T22:51:56.481768Z",
+          "stage": "accepted",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "e67236bb81e69c59741b06a9269fe560f62d5e75e490606d3bcaf8d86b860484",
+          "source_sha256": "be0acd088758191bade15c9a1bd7a077f62f308bfaf73b5f5b5aaed4488ef43e",
+          "issuer_sha256": "14dab05aeb66264a2272c45eef266dfcab0d4ece8a27c743502f5937398fa357",
+          "full_row_sha256": "1c416a7585f4e988cfa470547980082ee9c2d9bca56cc0a754c646d47f73c145"
+        },
+        {
+          "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+          "revision": 1,
+          "sequence": 2,
+          "receipt_id": "c34bcb3a-12b0-4453-8a91-f622d9f7eb4b",
+          "received_at": "2026-10-18T22:51:53.134569+00:00",
+          "occurred_at": "2026-10-18T22:51:51.889031Z",
+          "stage": "sent",
+          "outcome": "succeeded",
+          "reconciles": {
+            "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+            "revision": 1
+          },
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "72cd46fa42cf707f1fcd46409e7fe39f55db140f68ceb3f8a9d57cb13eb1b4b4",
+          "source_sha256": "87b501bfeba46d230c005607410b44ab50d9602bb644946718750cadd4f9593d",
+          "issuer_sha256": "8cad5ea46ce1ef11107b9ad9152dad4d97c72e624ddea8120dac75987671d87c",
+          "full_row_sha256": "0967322304d23423751624a021e9b515eb0fbe65ce59e77693122eb2cccac9eb"
+        },
+        {
+          "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+          "revision": 1,
+          "sequence": 1,
+          "receipt_id": "d9b0cd43-a813-4303-93a5-a7305ec1be71",
+          "received_at": "2026-10-18T22:51:47.055667+00:00",
+          "occurred_at": "2026-10-18T22:51:45.926443Z",
+          "stage": "sent",
+          "outcome": "unknown",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "41135254b27a85d86f544deacbd62119e4680f526b689fa87063fd2c8836fb94",
+          "source_sha256": "947394529924bede5562f8919c926cca9bbcb35d069fdd3add9d5a754f710150",
+          "issuer_sha256": "34e916eeac0c2e64ac54c2458fc356419fef63d88f84322b0e85a5b6e1d3e805",
+          "full_row_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+        }
+      ]
+    },
+    {
+      "scenario": "policy_withdrawn_fixed_history_retained/project_handoffs",
+      "status": 200,
+      "kind": "project_handoffs",
+      "next_cursor": null,
+      "items": [
+        {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1,
+          "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+          "purpose": "Verify preparation",
+          "package": {
+            "id": "f3880b4e-e87e-4b31-9c11-b795176bb29e",
+            "revision": 1
+          },
+          "visibility": "category",
+          "created_at": "2026-10-18T22:51:40.716981+00:00",
+          "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+          "as_of": {
+            "id": "1754b918-5eb3-485b-83ee-b32687607083",
+            "handoff": {
+              "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+              "revision": 1
+            },
+            "intent": {
+              "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+              "revision": 1
+            },
+            "receipt_count": 6,
+            "latest_receipt": {
+              "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+              "revision": 1
+            },
+            "epoch": 7,
+            "projection_sha256": "b4bb7ed1ab6e4500cd23824c27c8da2dcb6c57f7eba26ed3f85c73872e182a47"
+          },
+          "reading": {
+            "sent": {
+              "stage": "sent",
+              "state": "succeeded",
+              "active": [
+                {
+                  "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "failed": false,
+            "status": "acknowledged",
+            "accepted": {
+              "stage": "accepted",
+              "state": "succeeded",
+              "active": [
+                {
+                  "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+                  "revision": 1
+                },
+                {
+                  "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN"
+                  ],
+                  "quantity": null
+                },
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "conflict": true,
+            "rejected": false,
+            "effective": {
+              "stage": "effective",
+              "state": "conflict",
+              "active": [
+                {
+                  "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+                  "revision": 1
+                },
+                {
+                  "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [
+                "MANIFEST_MISMATCH"
+              ],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "network_send": false,
+            "delivery_unknown": false
+          },
+          "network_send": false
+        }
+      ]
+    },
+    {
+      "scenario": "policy_withdrawn_fixed_history_retained/detail",
+      "status": 200,
+      "kind": "detail",
+      "detail": {
+        "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+        "revision": 1,
+        "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+        "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+        "created_at": "2026-10-18T22:51:40.716981+00:00",
+        "purpose": "Verify preparation",
+        "applicability": "needs_recheck",
+        "as_of": {
+          "id": "1754b918-5eb3-485b-83ee-b32687607083",
+          "handoff": {
+            "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+            "revision": 1
+          },
+          "intent": {
+            "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+            "revision": 1
+          },
+          "receipt_count": 6,
+          "latest_receipt": {
+            "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+            "revision": 1
+          },
+          "epoch": 7,
+          "projection_sha256": "b4bb7ed1ab6e4500cd23824c27c8da2dcb6c57f7eba26ed3f85c73872e182a47"
+        },
+        "reading": {
+          "sent": {
+            "stage": "sent",
+            "state": "succeeded",
+            "active": [
+              {
+                "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "failed": false,
+          "status": "acknowledged",
+          "accepted": {
+            "stage": "accepted",
+            "state": "succeeded",
+            "active": [
+              {
+                "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+                "revision": 1
+              },
+              {
+                "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN"
+                ],
+                "quantity": null
+              },
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "conflict": true,
+          "rejected": false,
+          "effective": {
+            "stage": "effective",
+            "state": "conflict",
+            "active": [
+              {
+                "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+                "revision": 1
+              },
+              {
+                "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+                "revision": 1
+              }
+            ],
+            "mismatches": [
+              "MANIFEST_MISMATCH"
+            ],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "network_send": false,
+          "delivery_unknown": false
+        },
+        "network_send": false,
+        "authorization_sha256": "aa10e8bae7238ea29c9e17d67495c68034d91654230c322183d8beae11ef8475",
+        "saved_authority_sha256": "59835fb55711727e7bc3a162aee710a9a0a54aab48a720e1c386f71f73c9e960",
+        "fixed_intent_sha256": "865ecb6ecdfa12e646c4b5919d01fb0fb20482aa5368f4b64239c6843221f98a",
+        "manifest_sha256": "91198ce9ae32e5fd63b962d3f30912a8f780ed9f73321764be3e372b6c4cfd1b",
+        "mappings_sha256": "37f014526b5ae751e81ebe3299dcf3cb5785b54e9736cb579521b0d876490032",
+        "sources_sha256": "b7cb2b53ecb2609c4df4169a4a709c7253060b09108f9a4c1ab8f11f5e95c9da"
+      }
+    },
+    {
+      "scenario": "policy_withdrawn_fixed_history_retained/receipts",
+      "status": 200,
+      "kind": "receipts",
+      "as_of": {
+        "id": "1754b918-5eb3-485b-83ee-b32687607083",
+        "handoff": {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1
+        },
+        "intent": {
+          "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+          "revision": 1
+        },
+        "receipt_count": 6,
+        "latest_receipt": {
+          "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+          "revision": 1
+        },
+        "epoch": 7,
+        "projection_sha256": "b4bb7ed1ab6e4500cd23824c27c8da2dcb6c57f7eba26ed3f85c73872e182a47"
+      },
+      "before_sequence": null,
+      "items": [
+        {
+          "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+          "revision": 1,
+          "sequence": 6,
+          "receipt_id": "6b085c42-80a2-4547-9872-c07caeeed8f3",
+          "received_at": "2026-10-18T22:52:10.867282+00:00",
+          "occurred_at": "2026-10-18T22:52:09.833653Z",
+          "stage": "effective",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [
+            "MANIFEST_MISMATCH"
+          ],
+          "original_sha256": "c4213ee846322e1f13a7c55bd8a8d0a98c54e89f147bd36726c2aa487d2631f0",
+          "source_sha256": "8ac689003d1820db7e8e365e9e5566ff61b5492808c3b3a0c240f18ed644dd14",
+          "issuer_sha256": "7b5adb1252a7fd994eb60da4b33af0026a70bae0aa2ff9e80294b6006f6e1c55",
+          "full_row_sha256": "0f4ec0a319b9f3ec9baf81d7302d4121252864b0ecffac660bae96f677c8fa86"
+        },
+        {
+          "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+          "revision": 1,
+          "sequence": 5,
+          "receipt_id": "d93f90e1-ee69-4b79-819f-d8bdd8d3db86",
+          "received_at": "2026-10-18T22:52:06.811584+00:00",
+          "occurred_at": "2026-10-18T22:52:06.030274Z",
+          "stage": "effective",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "6a52a0aeaf2d80db3b72ff0eee23781ac5d08f2802a86ead0deee7caadb25bcf",
+          "source_sha256": "8041a41bba06d613e78598f224ebf33dc7f95c4ca0f6b59f115e5c4a0b852840",
+          "issuer_sha256": "0ecc17800e125e0ea78009f47ef000811bf4682f0d7b7da7919743f3daba518e",
+          "full_row_sha256": "27d59c7510ddfb0a8bd45ad227507b4175532091e2b75d7714efd83e22f6a938"
+        },
+        {
+          "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+          "revision": 1,
+          "sequence": 4,
+          "receipt_id": "d2b5ef27-6dad-4542-a185-8063a3983cac",
+          "received_at": "2026-10-18T22:52:02.671778+00:00",
+          "occurred_at": "2026-10-18T22:52:01.480056Z",
+          "stage": "accepted",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "958ea3cc1e65b43a276c2470723a80b30e07336fdc09b8650cc77e3dcbf89d71",
+          "source_sha256": "a3dc621c197c326789e2b6d7e70f0d81ccb3e7d668accb3d2396b9da786846d9",
+          "issuer_sha256": "2eca2ce4eda698f715287c7c514d0fd6e7613188d7294a25b70f7ce9f3d33f3f",
+          "full_row_sha256": "eb0e2632bbded8d2e755a947176020a3edb4fa9ee80a1ea88a1d843c049e583a"
+        },
+        {
+          "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+          "revision": 1,
+          "sequence": 3,
+          "receipt_id": "0d304a71-9a1c-4593-8d6e-9245f9271e63",
+          "received_at": "2026-10-18T22:51:57.488903+00:00",
+          "occurred_at": "2026-10-18T22:51:56.481768Z",
+          "stage": "accepted",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "e67236bb81e69c59741b06a9269fe560f62d5e75e490606d3bcaf8d86b860484",
+          "source_sha256": "be0acd088758191bade15c9a1bd7a077f62f308bfaf73b5f5b5aaed4488ef43e",
+          "issuer_sha256": "14dab05aeb66264a2272c45eef266dfcab0d4ece8a27c743502f5937398fa357",
+          "full_row_sha256": "1c416a7585f4e988cfa470547980082ee9c2d9bca56cc0a754c646d47f73c145"
+        },
+        {
+          "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+          "revision": 1,
+          "sequence": 2,
+          "receipt_id": "c34bcb3a-12b0-4453-8a91-f622d9f7eb4b",
+          "received_at": "2026-10-18T22:51:53.134569+00:00",
+          "occurred_at": "2026-10-18T22:51:51.889031Z",
+          "stage": "sent",
+          "outcome": "succeeded",
+          "reconciles": {
+            "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+            "revision": 1
+          },
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "72cd46fa42cf707f1fcd46409e7fe39f55db140f68ceb3f8a9d57cb13eb1b4b4",
+          "source_sha256": "87b501bfeba46d230c005607410b44ab50d9602bb644946718750cadd4f9593d",
+          "issuer_sha256": "8cad5ea46ce1ef11107b9ad9152dad4d97c72e624ddea8120dac75987671d87c",
+          "full_row_sha256": "0967322304d23423751624a021e9b515eb0fbe65ce59e77693122eb2cccac9eb"
+        },
+        {
+          "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+          "revision": 1,
+          "sequence": 1,
+          "receipt_id": "d9b0cd43-a813-4303-93a5-a7305ec1be71",
+          "received_at": "2026-10-18T22:51:47.055667+00:00",
+          "occurred_at": "2026-10-18T22:51:45.926443Z",
+          "stage": "sent",
+          "outcome": "unknown",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "41135254b27a85d86f544deacbd62119e4680f526b689fa87063fd2c8836fb94",
+          "source_sha256": "947394529924bede5562f8919c926cca9bbcb35d069fdd3add9d5a754f710150",
+          "issuer_sha256": "34e916eeac0c2e64ac54c2458fc356419fef63d88f84322b0e85a5b6e1d3e805",
+          "full_row_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+        }
+      ]
+    },
+    {
+      "scenario": "policy_withdrawn_fixed_history_retained/peer_project_handoffs",
+      "status": 200,
+      "kind": "project_handoffs",
+      "next_cursor": null,
+      "items": [
+        {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1,
+          "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+          "purpose": "Verify preparation",
+          "package": {
+            "id": "f3880b4e-e87e-4b31-9c11-b795176bb29e",
+            "revision": 1
+          },
+          "visibility": "category",
+          "created_at": "2026-10-18T22:51:40.716981+00:00",
+          "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+          "as_of": {
+            "id": "1754b918-5eb3-485b-83ee-b32687607083",
+            "handoff": {
+              "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+              "revision": 1
+            },
+            "intent": {
+              "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+              "revision": 1
+            },
+            "receipt_count": 6,
+            "latest_receipt": {
+              "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+              "revision": 1
+            },
+            "epoch": 7,
+            "projection_sha256": "b4bb7ed1ab6e4500cd23824c27c8da2dcb6c57f7eba26ed3f85c73872e182a47"
+          },
+          "reading": {
+            "sent": {
+              "stage": "sent",
+              "state": "succeeded",
+              "active": [
+                {
+                  "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "failed": false,
+            "status": "acknowledged",
+            "accepted": {
+              "stage": "accepted",
+              "state": "succeeded",
+              "active": [
+                {
+                  "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+                  "revision": 1
+                },
+                {
+                  "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN"
+                  ],
+                  "quantity": null
+                },
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "conflict": true,
+            "rejected": false,
+            "effective": {
+              "stage": "effective",
+              "state": "conflict",
+              "active": [
+                {
+                  "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+                  "revision": 1
+                },
+                {
+                  "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+                  "revision": 1
+                }
+              ],
+              "mismatches": [
+                "MANIFEST_MISMATCH"
+              ],
+              "covered_scopes": [
+                {
+                  "lots": [],
+                  "site": "SYN-INTERNAL-LAB",
+                  "unit": null,
+                  "lines": [],
+                  "regions": [
+                    "CN",
+                    "DE"
+                  ],
+                  "quantity": null
+                }
+              ]
+            },
+            "network_send": false,
+            "delivery_unknown": false
+          },
+          "network_send": false
+        }
+      ]
+    },
+    {
+      "scenario": "policy_withdrawn_fixed_history_retained/peer_detail",
+      "status": 200,
+      "kind": "detail",
+      "detail": {
+        "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+        "revision": 1,
+        "project_id": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+        "receipt_id": "7bbfc629-a600-483a-9a6c-70b6a407b436",
+        "created_at": "2026-10-18T22:51:40.716981+00:00",
+        "purpose": "Verify preparation",
+        "applicability": "needs_recheck",
+        "as_of": {
+          "id": "1754b918-5eb3-485b-83ee-b32687607083",
+          "handoff": {
+            "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+            "revision": 1
+          },
+          "intent": {
+            "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+            "revision": 1
+          },
+          "receipt_count": 6,
+          "latest_receipt": {
+            "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+            "revision": 1
+          },
+          "epoch": 7,
+          "projection_sha256": "b4bb7ed1ab6e4500cd23824c27c8da2dcb6c57f7eba26ed3f85c73872e182a47"
+        },
+        "reading": {
+          "sent": {
+            "stage": "sent",
+            "state": "succeeded",
+            "active": [
+              {
+                "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "failed": false,
+          "status": "acknowledged",
+          "accepted": {
+            "stage": "accepted",
+            "state": "succeeded",
+            "active": [
+              {
+                "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+                "revision": 1
+              },
+              {
+                "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+                "revision": 1
+              }
+            ],
+            "mismatches": [],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN"
+                ],
+                "quantity": null
+              },
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "conflict": true,
+          "rejected": false,
+          "effective": {
+            "stage": "effective",
+            "state": "conflict",
+            "active": [
+              {
+                "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+                "revision": 1
+              },
+              {
+                "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+                "revision": 1
+              }
+            ],
+            "mismatches": [
+              "MANIFEST_MISMATCH"
+            ],
+            "covered_scopes": [
+              {
+                "lots": [],
+                "site": "SYN-INTERNAL-LAB",
+                "unit": null,
+                "lines": [],
+                "regions": [
+                  "CN",
+                  "DE"
+                ],
+                "quantity": null
+              }
+            ]
+          },
+          "network_send": false,
+          "delivery_unknown": false
+        },
+        "network_send": false,
+        "authorization_sha256": "aa10e8bae7238ea29c9e17d67495c68034d91654230c322183d8beae11ef8475",
+        "saved_authority_sha256": "59835fb55711727e7bc3a162aee710a9a0a54aab48a720e1c386f71f73c9e960",
+        "fixed_intent_sha256": "865ecb6ecdfa12e646c4b5919d01fb0fb20482aa5368f4b64239c6843221f98a",
+        "manifest_sha256": "91198ce9ae32e5fd63b962d3f30912a8f780ed9f73321764be3e372b6c4cfd1b",
+        "mappings_sha256": "37f014526b5ae751e81ebe3299dcf3cb5785b54e9736cb579521b0d876490032",
+        "sources_sha256": "b7cb2b53ecb2609c4df4169a4a709c7253060b09108f9a4c1ab8f11f5e95c9da"
+      }
+    },
+    {
+      "scenario": "policy_withdrawn_fixed_history_retained/peer_receipts",
+      "status": 200,
+      "kind": "receipts",
+      "as_of": {
+        "id": "1754b918-5eb3-485b-83ee-b32687607083",
+        "handoff": {
+          "id": "91668fab-1122-4fc9-b6ca-64717f92e857",
+          "revision": 1
+        },
+        "intent": {
+          "id": "08dc95cf-ea4d-4eac-af44-7e60258b79be",
+          "revision": 1
+        },
+        "receipt_count": 6,
+        "latest_receipt": {
+          "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+          "revision": 1
+        },
+        "epoch": 7,
+        "projection_sha256": "b4bb7ed1ab6e4500cd23824c27c8da2dcb6c57f7eba26ed3f85c73872e182a47"
+      },
+      "before_sequence": null,
+      "items": [
+        {
+          "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+          "revision": 1,
+          "sequence": 6,
+          "receipt_id": "6b085c42-80a2-4547-9872-c07caeeed8f3",
+          "received_at": "2026-10-18T22:52:10.867282+00:00",
+          "occurred_at": "2026-10-18T22:52:09.833653Z",
+          "stage": "effective",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [
+            "MANIFEST_MISMATCH"
+          ],
+          "original_sha256": "c4213ee846322e1f13a7c55bd8a8d0a98c54e89f147bd36726c2aa487d2631f0",
+          "source_sha256": "8ac689003d1820db7e8e365e9e5566ff61b5492808c3b3a0c240f18ed644dd14",
+          "issuer_sha256": "7b5adb1252a7fd994eb60da4b33af0026a70bae0aa2ff9e80294b6006f6e1c55",
+          "full_row_sha256": "0f4ec0a319b9f3ec9baf81d7302d4121252864b0ecffac660bae96f677c8fa86"
+        },
+        {
+          "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+          "revision": 1,
+          "sequence": 5,
+          "receipt_id": "d93f90e1-ee69-4b79-819f-d8bdd8d3db86",
+          "received_at": "2026-10-18T22:52:06.811584+00:00",
+          "occurred_at": "2026-10-18T22:52:06.030274Z",
+          "stage": "effective",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "6a52a0aeaf2d80db3b72ff0eee23781ac5d08f2802a86ead0deee7caadb25bcf",
+          "source_sha256": "8041a41bba06d613e78598f224ebf33dc7f95c4ca0f6b59f115e5c4a0b852840",
+          "issuer_sha256": "0ecc17800e125e0ea78009f47ef000811bf4682f0d7b7da7919743f3daba518e",
+          "full_row_sha256": "27d59c7510ddfb0a8bd45ad227507b4175532091e2b75d7714efd83e22f6a938"
+        },
+        {
+          "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+          "revision": 1,
+          "sequence": 4,
+          "receipt_id": "d2b5ef27-6dad-4542-a185-8063a3983cac",
+          "received_at": "2026-10-18T22:52:02.671778+00:00",
+          "occurred_at": "2026-10-18T22:52:01.480056Z",
+          "stage": "accepted",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "958ea3cc1e65b43a276c2470723a80b30e07336fdc09b8650cc77e3dcbf89d71",
+          "source_sha256": "a3dc621c197c326789e2b6d7e70f0d81ccb3e7d668accb3d2396b9da786846d9",
+          "issuer_sha256": "2eca2ce4eda698f715287c7c514d0fd6e7613188d7294a25b70f7ce9f3d33f3f",
+          "full_row_sha256": "eb0e2632bbded8d2e755a947176020a3edb4fa9ee80a1ea88a1d843c049e583a"
+        },
+        {
+          "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+          "revision": 1,
+          "sequence": 3,
+          "receipt_id": "0d304a71-9a1c-4593-8d6e-9245f9271e63",
+          "received_at": "2026-10-18T22:51:57.488903+00:00",
+          "occurred_at": "2026-10-18T22:51:56.481768Z",
+          "stage": "accepted",
+          "outcome": "succeeded",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "e67236bb81e69c59741b06a9269fe560f62d5e75e490606d3bcaf8d86b860484",
+          "source_sha256": "be0acd088758191bade15c9a1bd7a077f62f308bfaf73b5f5b5aaed4488ef43e",
+          "issuer_sha256": "14dab05aeb66264a2272c45eef266dfcab0d4ece8a27c743502f5937398fa357",
+          "full_row_sha256": "1c416a7585f4e988cfa470547980082ee9c2d9bca56cc0a754c646d47f73c145"
+        },
+        {
+          "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+          "revision": 1,
+          "sequence": 2,
+          "receipt_id": "c34bcb3a-12b0-4453-8a91-f622d9f7eb4b",
+          "received_at": "2026-10-18T22:51:53.134569+00:00",
+          "occurred_at": "2026-10-18T22:51:51.889031Z",
+          "stage": "sent",
+          "outcome": "succeeded",
+          "reconciles": {
+            "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+            "revision": 1
+          },
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "72cd46fa42cf707f1fcd46409e7fe39f55db140f68ceb3f8a9d57cb13eb1b4b4",
+          "source_sha256": "87b501bfeba46d230c005607410b44ab50d9602bb644946718750cadd4f9593d",
+          "issuer_sha256": "8cad5ea46ce1ef11107b9ad9152dad4d97c72e624ddea8120dac75987671d87c",
+          "full_row_sha256": "0967322304d23423751624a021e9b515eb0fbe65ce59e77693122eb2cccac9eb"
+        },
+        {
+          "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+          "revision": 1,
+          "sequence": 1,
+          "receipt_id": "d9b0cd43-a813-4303-93a5-a7305ec1be71",
+          "received_at": "2026-10-18T22:51:47.055667+00:00",
+          "occurred_at": "2026-10-18T22:51:45.926443Z",
+          "stage": "sent",
+          "outcome": "unknown",
+          "reconciles": null,
+          "release_scope": {
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "unit": null,
+            "lines": [],
+            "regions": [
+              "CN",
+              "DE"
+            ],
+            "quantity": null
+          },
+          "mismatches": [],
+          "original_sha256": "41135254b27a85d86f544deacbd62119e4680f526b689fa87063fd2c8836fb94",
+          "source_sha256": "947394529924bede5562f8919c926cca9bbcb35d069fdd3add9d5a754f710150",
+          "issuer_sha256": "34e916eeac0c2e64ac54c2458fc356419fef63d88f84322b0e85a5b6e1d3e805",
+          "full_row_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+        }
+      ]
+    },
+    {
+      "scenario": "policy_withdrawn_fixed_history_retained/foreign_project_handoffs",
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "fallback": false
+    },
+    {
+      "scenario": "policy_withdrawn_fixed_history_retained/foreign_detail",
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "fallback": false
+    },
+    {
+      "scenario": "policy_withdrawn_fixed_history_retained/foreign_receipts",
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "fallback": false
+    }
+  ],
+  "rendered": [
+    {
+      "phase": "authorized_without_receipts",
+      "component": "ProjectExternalHandoffDetail",
+      "html_sha256": "ab3ab7271fd729ea5239ff86ebdd56debffde7263adfe5370fcf8d888366d19c",
+      "raw_dto_sha256": "4e48a34c85fa6f245cd719a1f3c924422d07e7066728127a078fcc2e9bcc8fc2"
+    },
+    {
+      "phase": "sent_outcome_unknown",
+      "component": "ProjectExternalHandoffDetail",
+      "html_sha256": "771f3c2f71cf3144099a82ab6e20284e72873fddcb2ba776d06edd896d640426",
+      "raw_dto_sha256": "238e6e3d5e0d380cc8b80445201263f151c3fc235ec452e0f4ca380a42329ba4"
+    },
+    {
+      "phase": "sent_outcome_unknown",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+      "html_sha256": "fa1b85faa902cacf45ec2db269558f4ababb9741289f3bc1c19d8ef0c1cd25d3",
+      "raw_dto_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+    },
+    {
+      "phase": "sent_explicitly_reconciled",
+      "component": "ProjectExternalHandoffDetail",
+      "html_sha256": "e1405b4214a4c38832cd809263b7702621173870bcf4bc0ce8d247447d792ab8",
+      "raw_dto_sha256": "08cbe012254bcee1da4d90e30879c343e2a5eb215ad51f94bdc5b999d8ea94a4"
+    },
+    {
+      "phase": "sent_explicitly_reconciled",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+      "html_sha256": "3b752f41c14884f962158cc73c53c7484c2ddd5f7459e4750ed5de81f54487c2",
+      "raw_dto_sha256": "0967322304d23423751624a021e9b515eb0fbe65ce59e77693122eb2cccac9eb"
+    },
+    {
+      "phase": "sent_explicitly_reconciled",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+      "html_sha256": "fa1b85faa902cacf45ec2db269558f4ababb9741289f3bc1c19d8ef0c1cd25d3",
+      "raw_dto_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+    },
+    {
+      "phase": "partially_accepted",
+      "component": "ProjectExternalHandoffDetail",
+      "html_sha256": "6079e4573e54291564367299b17115ca00f6fdf649900966ff038f57e94ed2ae",
+      "raw_dto_sha256": "19d8a80a609022629d41c66646df063f0d430d72d4571e59d2a28c002e931d18"
+    },
+    {
+      "phase": "partially_accepted",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+      "html_sha256": "375d8248459d38a46649bb9124e236ac3357c83e88cbb853cee5e63f8a20f636",
+      "raw_dto_sha256": "1c416a7585f4e988cfa470547980082ee9c2d9bca56cc0a754c646d47f73c145"
+    },
+    {
+      "phase": "partially_accepted",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+      "html_sha256": "3b752f41c14884f962158cc73c53c7484c2ddd5f7459e4750ed5de81f54487c2",
+      "raw_dto_sha256": "0967322304d23423751624a021e9b515eb0fbe65ce59e77693122eb2cccac9eb"
+    },
+    {
+      "phase": "partially_accepted",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+      "html_sha256": "fa1b85faa902cacf45ec2db269558f4ababb9741289f3bc1c19d8ef0c1cd25d3",
+      "raw_dto_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+    },
+    {
+      "phase": "fully_accepted",
+      "component": "ProjectExternalHandoffDetail",
+      "html_sha256": "524efb7d4a3023c72c36033fd633e08305b0d575ebc1111a660d20be8cdea10b",
+      "raw_dto_sha256": "e8d43639e05f899374db8f9f21ec5757f7486e4e1b498439e3149f13f37c76f2"
+    },
+    {
+      "phase": "fully_accepted",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+      "html_sha256": "b2264465d4cb3c9a812114cd8d26b56a62c4a468c709600f73de1a1674c492d7",
+      "raw_dto_sha256": "eb0e2632bbded8d2e755a947176020a3edb4fa9ee80a1ea88a1d843c049e583a"
+    },
+    {
+      "phase": "fully_accepted",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+      "html_sha256": "375d8248459d38a46649bb9124e236ac3357c83e88cbb853cee5e63f8a20f636",
+      "raw_dto_sha256": "1c416a7585f4e988cfa470547980082ee9c2d9bca56cc0a754c646d47f73c145"
+    },
+    {
+      "phase": "fully_accepted",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+      "html_sha256": "3b752f41c14884f962158cc73c53c7484c2ddd5f7459e4750ed5de81f54487c2",
+      "raw_dto_sha256": "0967322304d23423751624a021e9b515eb0fbe65ce59e77693122eb2cccac9eb"
+    },
+    {
+      "phase": "fully_accepted",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+      "html_sha256": "fa1b85faa902cacf45ec2db269558f4ababb9741289f3bc1c19d8ef0c1cd25d3",
+      "raw_dto_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+    },
+    {
+      "phase": "effectiveness_recorded",
+      "component": "ProjectExternalHandoffDetail",
+      "html_sha256": "118e3cd19d3dd28b67df75633f72fcc9899142820fb100c4ee559a452fcc603f",
+      "raw_dto_sha256": "271020cd4a40bcd6d49aaae083fe18c5747ed01ae85d183894215ac0be9f88b4"
+    },
+    {
+      "phase": "effectiveness_recorded",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+      "html_sha256": "0a1aefddfbd13d3bab6e5d61c3d8740fd1da5621ab9d613d281cffa647a51fc7",
+      "raw_dto_sha256": "27d59c7510ddfb0a8bd45ad227507b4175532091e2b75d7714efd83e22f6a938"
+    },
+    {
+      "phase": "effectiveness_recorded",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+      "html_sha256": "b2264465d4cb3c9a812114cd8d26b56a62c4a468c709600f73de1a1674c492d7",
+      "raw_dto_sha256": "eb0e2632bbded8d2e755a947176020a3edb4fa9ee80a1ea88a1d843c049e583a"
+    },
+    {
+      "phase": "effectiveness_recorded",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+      "html_sha256": "375d8248459d38a46649bb9124e236ac3357c83e88cbb853cee5e63f8a20f636",
+      "raw_dto_sha256": "1c416a7585f4e988cfa470547980082ee9c2d9bca56cc0a754c646d47f73c145"
+    },
+    {
+      "phase": "effectiveness_recorded",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+      "html_sha256": "3b752f41c14884f962158cc73c53c7484c2ddd5f7459e4750ed5de81f54487c2",
+      "raw_dto_sha256": "0967322304d23423751624a021e9b515eb0fbe65ce59e77693122eb2cccac9eb"
+    },
+    {
+      "phase": "effectiveness_recorded",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+      "html_sha256": "fa1b85faa902cacf45ec2db269558f4ababb9741289f3bc1c19d8ef0c1cd25d3",
+      "raw_dto_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+    },
+    {
+      "phase": "manifest_conflict_retained",
+      "component": "ProjectExternalHandoffDetail",
+      "html_sha256": "a44f494a70c041b2e31262407c641e07cd191343fcc112230cb2294e1b14f69e",
+      "raw_dto_sha256": "6776aee97eeac5415fd5aa5f608e85b00cbe84307b78f037955997958affdebe"
+    },
+    {
+      "phase": "manifest_conflict_retained",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+      "html_sha256": "ae842a5295275b8074193d8d7da41dc80dff1cb74d89aec69e61aae7bd332a11",
+      "raw_dto_sha256": "0f4ec0a319b9f3ec9baf81d7302d4121252864b0ecffac660bae96f677c8fa86"
+    },
+    {
+      "phase": "manifest_conflict_retained",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+      "html_sha256": "0a1aefddfbd13d3bab6e5d61c3d8740fd1da5621ab9d613d281cffa647a51fc7",
+      "raw_dto_sha256": "27d59c7510ddfb0a8bd45ad227507b4175532091e2b75d7714efd83e22f6a938"
+    },
+    {
+      "phase": "manifest_conflict_retained",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+      "html_sha256": "b2264465d4cb3c9a812114cd8d26b56a62c4a468c709600f73de1a1674c492d7",
+      "raw_dto_sha256": "eb0e2632bbded8d2e755a947176020a3edb4fa9ee80a1ea88a1d843c049e583a"
+    },
+    {
+      "phase": "manifest_conflict_retained",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+      "html_sha256": "375d8248459d38a46649bb9124e236ac3357c83e88cbb853cee5e63f8a20f636",
+      "raw_dto_sha256": "1c416a7585f4e988cfa470547980082ee9c2d9bca56cc0a754c646d47f73c145"
+    },
+    {
+      "phase": "manifest_conflict_retained",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+      "html_sha256": "3b752f41c14884f962158cc73c53c7484c2ddd5f7459e4750ed5de81f54487c2",
+      "raw_dto_sha256": "0967322304d23423751624a021e9b515eb0fbe65ce59e77693122eb2cccac9eb"
+    },
+    {
+      "phase": "manifest_conflict_retained",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+      "html_sha256": "fa1b85faa902cacf45ec2db269558f4ababb9741289f3bc1c19d8ef0c1cd25d3",
+      "raw_dto_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+    },
+    {
+      "phase": "policy_withdrawn_fixed_history_retained",
+      "component": "ProjectExternalHandoffDetail",
+      "html_sha256": "cf31337c7c3b2a6de6787c36969abdfbe21c49631def6ec8393cd204e7877441",
+      "raw_dto_sha256": "3d7ec81c349a22503aa30655a42efb4ff757df732676dddaa22500e607196c6e"
+    },
+    {
+      "phase": "policy_withdrawn_fixed_history_retained",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "7fb283e9-acc0-47fe-926e-0abff7b9fbf9",
+      "html_sha256": "ae842a5295275b8074193d8d7da41dc80dff1cb74d89aec69e61aae7bd332a11",
+      "raw_dto_sha256": "0f4ec0a319b9f3ec9baf81d7302d4121252864b0ecffac660bae96f677c8fa86"
+    },
+    {
+      "phase": "policy_withdrawn_fixed_history_retained",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "5d5db481-c271-408b-9937-7e01a5cb041d",
+      "html_sha256": "0a1aefddfbd13d3bab6e5d61c3d8740fd1da5621ab9d613d281cffa647a51fc7",
+      "raw_dto_sha256": "27d59c7510ddfb0a8bd45ad227507b4175532091e2b75d7714efd83e22f6a938"
+    },
+    {
+      "phase": "policy_withdrawn_fixed_history_retained",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "82ec3baf-9b26-4277-927b-45f031d022f9",
+      "html_sha256": "b2264465d4cb3c9a812114cd8d26b56a62c4a468c709600f73de1a1674c492d7",
+      "raw_dto_sha256": "eb0e2632bbded8d2e755a947176020a3edb4fa9ee80a1ea88a1d843c049e583a"
+    },
+    {
+      "phase": "policy_withdrawn_fixed_history_retained",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "901a0dc4-6a55-4d4b-893c-b546484a1b77",
+      "html_sha256": "375d8248459d38a46649bb9124e236ac3357c83e88cbb853cee5e63f8a20f636",
+      "raw_dto_sha256": "1c416a7585f4e988cfa470547980082ee9c2d9bca56cc0a754c646d47f73c145"
+    },
+    {
+      "phase": "policy_withdrawn_fixed_history_retained",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "70046e5c-2c82-42e0-bf0f-4a5d0a75f435",
+      "html_sha256": "3b752f41c14884f962158cc73c53c7484c2ddd5f7459e4750ed5de81f54487c2",
+      "raw_dto_sha256": "0967322304d23423751624a021e9b515eb0fbe65ce59e77693122eb2cccac9eb"
+    },
+    {
+      "phase": "policy_withdrawn_fixed_history_retained",
+      "component": "ProjectExternalHandoffReceipt",
+      "id": "c95ee708-7ff4-4ea2-a70d-91be1668dd36",
+      "html_sha256": "fa1b85faa902cacf45ec2db269558f4ababb9741289f3bc1c19d8ef0c1cd25d3",
+      "raw_dto_sha256": "bad584fd6f24967b65f111176916ad466100ecbb1ceac71777804a084dc56c17"
+    }
+  ],
+  "boundaries": [
+    "Only exact original recorded GET paths and params are replayed once into the real three project readers; bodies are cloned without adding fields",
+    "Original GET identity includes its phase and actor-labelled read name; equal paths in different snapshots remain distinct recorded reads",
+    "List, detail and receipt snapshots were separate actual transactions; equality of their original watermark is checked, not replaced by a shared-transaction claim",
+    "Raw authorization, saved authority, intent, manifest, mappings, receipts, source positions, issuer proof and both clocks are preserved",
+    "Server stage projections are displayed unchanged; no client recomputation of send, acceptance or effectiveness takes place",
+    "network_send false never attests real external delivery, current authority, production or a connector",
+    "Peer and foreign labels describe the original actual responses; no peer principal-id envelope is exported to independently attest its identity in this client reader",
+    "All actual list and receipt cursors are null; actual history_cursor and before_sequence pagination are not exercised",
+    "Pure React SSR is offline rendering of real exported display components, not browser, interaction, responsive, theme or visual acceptance",
+    "Business count invariance is evidence from the original PG export; this helper never connects to the database"
+  ],
+  "fixture_version": "project-external-handoffs-projection-qa/v1",
+  "read_only_counts": [
+    {
+      "phase": "authorized_without_receipts",
+      "before": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 37,
+        "audit_entries": 37,
+        "outbox_events": 38,
+        "request_keys": 35,
+        "confirmations": 14,
+        "artifact_versions": 10,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 0
+      },
+      "after": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 37,
+        "audit_entries": 37,
+        "outbox_events": 38,
+        "request_keys": 35,
+        "confirmations": 14,
+        "artifact_versions": 10,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 0
+      },
+      "unchanged": true,
+      "origin": "Original PG evidence; no database operation by this script"
+    },
+    {
+      "phase": "sent_outcome_unknown",
+      "before": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 40,
+        "audit_entries": 40,
+        "outbox_events": 41,
+        "request_keys": 38,
+        "confirmations": 14,
+        "artifact_versions": 12,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 1
+      },
+      "after": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 40,
+        "audit_entries": 40,
+        "outbox_events": 41,
+        "request_keys": 38,
+        "confirmations": 14,
+        "artifact_versions": 12,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 1
+      },
+      "unchanged": true,
+      "origin": "Original PG evidence; no database operation by this script"
+    },
+    {
+      "phase": "sent_explicitly_reconciled",
+      "before": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 43,
+        "audit_entries": 43,
+        "outbox_events": 44,
+        "request_keys": 41,
+        "confirmations": 14,
+        "artifact_versions": 14,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 2
+      },
+      "after": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 43,
+        "audit_entries": 43,
+        "outbox_events": 44,
+        "request_keys": 41,
+        "confirmations": 14,
+        "artifact_versions": 14,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 2
+      },
+      "unchanged": true,
+      "origin": "Original PG evidence; no database operation by this script"
+    },
+    {
+      "phase": "partially_accepted",
+      "before": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 45,
+        "audit_entries": 45,
+        "outbox_events": 46,
+        "request_keys": 43,
+        "confirmations": 14,
+        "artifact_versions": 15,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 3
+      },
+      "after": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 45,
+        "audit_entries": 45,
+        "outbox_events": 46,
+        "request_keys": 43,
+        "confirmations": 14,
+        "artifact_versions": 15,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 3
+      },
+      "unchanged": true,
+      "origin": "Original PG evidence; no database operation by this script"
+    },
+    {
+      "phase": "fully_accepted",
+      "before": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 47,
+        "audit_entries": 47,
+        "outbox_events": 48,
+        "request_keys": 45,
+        "confirmations": 14,
+        "artifact_versions": 16,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 4
+      },
+      "after": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 47,
+        "audit_entries": 47,
+        "outbox_events": 48,
+        "request_keys": 45,
+        "confirmations": 14,
+        "artifact_versions": 16,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 4
+      },
+      "unchanged": true,
+      "origin": "Original PG evidence; no database operation by this script"
+    },
+    {
+      "phase": "effectiveness_recorded",
+      "before": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 49,
+        "audit_entries": 49,
+        "outbox_events": 50,
+        "request_keys": 47,
+        "confirmations": 14,
+        "artifact_versions": 17,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 5
+      },
+      "after": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 49,
+        "audit_entries": 49,
+        "outbox_events": 50,
+        "request_keys": 47,
+        "confirmations": 14,
+        "artifact_versions": 17,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 5
+      },
+      "unchanged": true,
+      "origin": "Original PG evidence; no database operation by this script"
+    },
+    {
+      "phase": "manifest_conflict_retained",
+      "before": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 51,
+        "audit_entries": 51,
+        "outbox_events": 52,
+        "request_keys": 49,
+        "confirmations": 14,
+        "artifact_versions": 18,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 6
+      },
+      "after": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 51,
+        "audit_entries": 51,
+        "outbox_events": 52,
+        "request_keys": 49,
+        "confirmations": 14,
+        "artifact_versions": 18,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 6
+      },
+      "unchanged": true,
+      "origin": "Original PG evidence; no database operation by this script"
+    },
+    {
+      "phase": "policy_withdrawn_fixed_history_retained",
+      "before": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 2,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 53,
+        "audit_entries": 53,
+        "outbox_events": 54,
+        "request_keys": 51,
+        "confirmations": 14,
+        "artifact_versions": 19,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 6
+      },
+      "after": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 8,
+        "release_policy_facts": 2,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 53,
+        "audit_entries": 53,
+        "outbox_events": 54,
+        "request_keys": 51,
+        "confirmations": 14,
+        "artifact_versions": 19,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6,
+        "external_handoff_authorizations": 1,
+        "external_delivery_intents": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 6
+      },
+      "unchanged": true,
+      "origin": "Original PG evidence; no database operation by this script"
+    }
+  ],
+  "summary": {
+    "phases": 8,
+    "original_get_responses": 30,
+    "offline_get_calls": 30,
+    "one_to_one_original_read_mapping": true,
+    "successful_lists": 9,
+    "successful_details": 9,
+    "successful_receipt_pages": 9,
+    "original_foreign_403": 3,
+    "unique_raw_receipts": 6,
+    "model_counts_per_phase": 36,
+    "actual_cursor_pages": 0,
+    "actual_pagination": "not_exercised",
+    "pure_display_ssr_instances": 35,
+    "detail_ssr_instances": 8,
+    "receipt_ssr_instances": 27,
+    "added_synthetic_gets": 0,
+    "client_stage_recomputation": false,
+    "real_external_delivery": "not_exercised_not_authorized"
+  }
+}

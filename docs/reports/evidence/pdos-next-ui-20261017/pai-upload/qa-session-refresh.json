@@ -1,0 +1,9 @@
+{
+  "head": "s0_0786",
+  "login_expired": true,
+  "grant_expired": true,
+  "same_synthetic_principal": true,
+  "same_existing_permissions": true,
+  "refresh_hours": 1,
+  "credentials_exposed": false
+}

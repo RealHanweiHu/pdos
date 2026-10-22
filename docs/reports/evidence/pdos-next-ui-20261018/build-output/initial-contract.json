@@ -1,0 +1,11 @@
+{
+  "source_sha256": {
+    "pdos-next/server/pdos_next/api.py": "4c427a0e3f7eebfa199202ad1973d52f3ae704dfd1a7747d483e9db22a013de9",
+    "pdos-next/server/pdos_next/domain/build_execution/service.py": "36e6a53f461b0de45e0733cbbba505190b110179aecf46b8e7a59b9c1f944500",
+    "pdos-next/server/pdos_next/domain/build_execution/models.py": "e708fc97a0d9f1f015b0e3f0d517b528382a03ce9d6cdb897077e559738d6859",
+    "pdos-next/server/pdos_next/domain/builds/service.py": "64832dfcb442958612de07cd7d13f62e97bb6d5cc98a4101e3e59de369f4d66b",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "06c4d234f3d6c5792b5f2998bd361b5ee5f56e874412f814f76718c02aaa2f49",
+    "pdos-next/web/src/lib/project-build-summary.ts": "f313ae12b425e269d4b326ab8897809a57a30f44c27ca7628ab92b2d035ec095"
+  },
+  "scope": "readonly output from existing GET; no browser or shared domain writes"
+}

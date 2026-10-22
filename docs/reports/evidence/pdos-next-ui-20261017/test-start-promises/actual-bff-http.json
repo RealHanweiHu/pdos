@@ -1,0 +1,70 @@
+{
+  "checks": [
+    {
+      "label": "actual signed promise history",
+      "method": "GET",
+      "path": "/api/v1/personal/test-start-promises?page_size=20",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "actual first keyset page",
+      "method": "GET",
+      "path": "/api/v1/personal/test-start-promises?page_size=1",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "actual tail after last visible signed fact",
+      "method": "GET",
+      "path": "/api/v1/personal/test-start-promises?page_size=20&cursor=8b8e301a-4e0b-49d2-8b61-a19f3ec6b9c3",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "caller product scope cannot be replaced",
+      "method": "GET",
+      "path": "/api/v1/personal/test-start-promises?product_id=40bc1d97-65b8-47e0-a972-506cca1d01e2",
+      "status": 422,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "repeated pagination rejected",
+      "method": "GET",
+      "path": "/api/v1/personal/test-start-promises?page_size=1&page_size=2",
+      "status": 422,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "missing session rejected",
+      "method": "GET",
+      "path": "/api/v1/personal/test-start-promises",
+      "status": 401,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "malformed cursor rejected",
+      "method": "GET",
+      "path": "/api/v1/personal/test-start-promises?cursor=bad",
+      "status": 422,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "unknown cursor rejected by domain",
+      "method": "GET",
+      "path": "/api/v1/personal/test-start-promises?cursor=416f5c52-b4f8-43a5-b8a5-10e376e0b582",
+      "status": 403,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "promise history is read only",
+      "method": "POST",
+      "path": "/api/v1/personal/test-start-promises",
+      "status": 405,
+      "cache_control": ""
+    }
+  ],
+  "passed": 9,
+  "uses_actual_domain_api": true,
+  "uses_response_proxy": false
+}

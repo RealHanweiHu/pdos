@@ -1,0 +1,19 @@
+{
+  "counts": {
+    "agent_sessions": 0,
+    "agent_runs": 0,
+    "agent_run_events": 0,
+    "agent_tool_calls": 0,
+    "agent_run_inputs": 0,
+    "audit_entries": 4,
+    "action_receipts": 4,
+    "outbox_events": 4,
+    "request_keys": 2,
+    "artifact_versions": 1,
+    "uploaded_originals": 1,
+    "upload_attempts": 1,
+    "original_scan_requests": 1,
+    "original_scan_results": 1
+  },
+  "runs": {}
+}

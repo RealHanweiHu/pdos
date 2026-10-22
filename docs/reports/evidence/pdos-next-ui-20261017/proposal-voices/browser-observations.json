@@ -1,0 +1,31 @@
+{
+  "backend": "actual FastAPI → explicitly verified isolated pdos_test",
+  "browser": "production Next on 55176; actual static BFF routes; no response proxy",
+  "login": "existing local synthetic login button; opaque test session stays in private .local file",
+  "desktop": {
+    "width": 1280,
+    "documentWidth": 1280,
+    "light": true,
+    "dark": true
+  },
+  "mobile": {
+    "documentWidth": 320,
+    "voicePanelWidth": 288,
+    "width": 320
+  },
+  "mobileSourceDetailsDocumentWidth": 320,
+  "checked": [
+    "exact scoped voices GET",
+    "two actual fixed knowledge entries; duplicate references do not inflate saved sample size",
+    "source quote and line/version metadata visible",
+    "related item labels visible; UUIDs in details",
+    "actual reread returns current scoped result",
+    "desktop light/dark and 320px light/dark",
+    "source details wrap without document overflow"
+  ],
+  "separateChecks": "PG/HTTP verifies frozen reviewer identity, withdrawal, private scope, tenant/category and source ACL; actual-bff-http.json verifies matrix and voices forwarding and rejected inputs",
+  "remaining": [
+    "no new sampling/classification workflow in this read view",
+    "not real-pilot G0 acceptance or qualification"
+  ]
+}

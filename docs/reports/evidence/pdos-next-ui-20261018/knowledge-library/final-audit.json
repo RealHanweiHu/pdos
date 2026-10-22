@@ -1,0 +1,86 @@
+{
+  "passed": true,
+  "git_head_at_final_audit": "8288308935c9be319ba816b021315521539a0267",
+  "frontend_candidate": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/knowledge-library-web-1792371670597180000",
+  "frontend_input_count": 488,
+  "frontend_checks": [
+    {
+      "name": "frontend-tests",
+      "exit_code": 0
+    },
+    {
+      "name": "lint",
+      "exit_code": 0
+    },
+    {
+      "name": "build",
+      "exit_code": 0
+    },
+    {
+      "name": "typecheck",
+      "exit_code": 0
+    }
+  ],
+  "owned_frontend_sha256": {
+    "src/lib/knowledge-library.ts": "8e6a71c941fb05a27ab5169f3f33f2f19e33741e26cd71c6d65f5c1ecc60cfaa",
+    "src/lib/knowledge-library.test.mjs": "e1a550f968669fd516da74af406bcf45c90f82803676ce0645b10167456d6703",
+    "src/components/knowledge/knowledge-library.tsx": "c5cbf5fb998ea7a0fa441338fef00720034ac37a4858830c141748d1bf1af3e4",
+    "src/components/knowledge/knowledge-library.module.css": "1ae655fbb449aa0ce24eb9219da7458cd44bedaf0a31a182d1900608332cc964",
+    "src/components/knowledge/knowledge-library.test.mjs": "7e888cb780cd81a98e608ea009d3f973cae49a06d7e05a105b2420c17379ee43",
+    "src/components/app-shell.tsx": "a22b44fdb8b477dc5b660390920554b9c83065be1f305fcc78f04dd5092cf91d",
+    "src/components/app-shell-knowledge.test.mjs": "02cd09c3d18c4495189fa5c15d87219b28b50aa5497578d90b89f03235cf2383"
+  },
+  "owned_frontend_unchanged_since_candidate": true,
+  "owned_pg_test": {
+    "path": "tests/ui/test_knowledge_library_projection_pg.py",
+    "sha256": "8d1ca64eb2f4fc35097823419c1354a22e814d0dd2b6f87a134387b33d4dacb1",
+    "unchanged_since_pg": true
+  },
+  "shared_knowledge_contract_unchanged": true,
+  "pg_runtime_unchanged_during_check": true,
+  "original_dto_sha256": "06377265c94696d197ae5e316e51a5d87b8466697297c576a0aa4c533d51c7a4",
+  "actual_dto_validation_sha256": "06f27d8d631b2751d28d5a990cf5c6cc70331c0dcd957067f88106ca88bd9b35",
+  "offline_helper_sha256": "d04a569a9a71f612352e6dc149ed18105a34f92d05fc99b68095e5013963e045",
+  "read_index_coverage": {
+    "phases": 3,
+    "original_get_responses": 28,
+    "raw_successful_responses": 19,
+    "raw_foreign_403_responses": 9,
+    "used_original_read_indices": 28,
+    "unused_original_read_indices": 0,
+    "strict_reader_calls": 28,
+    "transport_only_calls_without_identity_scope": 0,
+    "shared_parser_only_reads_without_identity_scope": 0,
+    "product_metadata_only_reads_without_identity_scope": 0,
+    "total_offline_api_calls": 28,
+    "pure_display_ssr_instances": 38,
+    "actual_as_of_values": [
+      "2026-10-19T01:03:45.627918+00:00",
+      "2026-10-19T01:03:45.720626+00:00",
+      "2026-10-19T01:03:46.392989+00:00",
+      "2026-10-19T01:03:46.448871+00:00",
+      "2026-10-19T01:03:52.840473+00:00",
+      "2026-10-19T01:03:52.938833+00:00",
+      "2026-10-19T01:03:53.584001+00:00",
+      "2026-10-19T01:03:53.665756+00:00",
+      "2026-10-19T01:03:54.333253+00:00",
+      "2026-10-19T01:03:54.424128+00:00",
+      "2026-10-19T01:03:55.018364+00:00",
+      "2026-10-19T01:03:55.098809+00:00",
+      "2026-10-19T01:03:48.852835+00:00"
+    ],
+    "bounded_returned_rows_only_not_totals": true,
+    "actual_limit_100_reached": false,
+    "current_candidate_replaces_old_rule": false,
+    "client_usability_recomputed": false,
+    "negative_fixture_is_user_withdrawal": false,
+    "actual_real_qualification": false,
+    "added_synthetic_gets": 0
+  },
+  "concurrent_boundary": "concurrent-source-boundary.json",
+  "initial_peer_assertion_failure_preserved": true,
+  "initial_offline_ssr_failure_preserved": true,
+  "database_access": false,
+  "browser_access": false,
+  "migrations_executed": false
+}

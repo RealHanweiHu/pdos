@@ -1,0 +1,250 @@
+{
+  "status": "ready",
+  "verified_target": {
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d"
+  },
+  "created_counts": {
+    "segments": 0,
+    "competitors": 1
+  },
+  "reused_segment_entry_ids": [
+    "95287309-d8e4-43d3-85a8-463d1e7ce84a",
+    "b57d341b-787b-469c-8b9c-667e146bb6cc"
+  ],
+  "existing_identity_permissions_and_versions_unchanged": true,
+  "synthetic_only": true,
+  "session": {
+    "name": "验收账号（仅验收演练）",
+    "principal_id": "dec60567-2e73-49cd-b9da-8aa373149213",
+    "model_available": false
+  },
+  "categories": [
+    {
+      "id": "80c895fd-d129-4578-b095-6a0791b54105",
+      "key": "category-e995d8e4d9eb44b99a07330c1a0d9b9f",
+      "name": "汽车充气泵",
+      "purpose": "验收演练品类范围，不代表真实品类资料",
+      "revision": 1,
+      "status": "active",
+      "capabilities": {
+        "product_management": true
+      }
+    }
+  ],
+  "created": {
+    "id": "8b222d57-d19b-4157-b11f-6840b6ab2f7d",
+    "revision": 1,
+    "status": "active",
+    "lineage_id": "8b222d57-d19b-4157-b11f-6840b6ab2f7d",
+    "version": 1,
+    "entry_id": "6f285882-2c50-4dc2-9439-c3f1691c3a80"
+  },
+  "assignment": {
+    "version": "competitor-segment-assignment/v1",
+    "category_id": "80c895fd-d129-4578-b095-6a0791b54105",
+    "principal_id": "dec60567-2e73-49cd-b9da-8aa373149213",
+    "as_of": "2026-10-17T18:15:50.752307+00:00",
+    "competitor": {
+      "id": "6f285882-2c50-4dc2-9439-c3f1691c3a80",
+      "lineage_id": "8b222d57-d19b-4157-b11f-6840b6ab2f7d",
+      "version": 1,
+      "origin": "human",
+      "writer_id": "dec60567-2e73-49cd-b9da-8aa373149213",
+      "run_id": null,
+      "confirmed_by": null,
+      "content": {
+        "brand": "合成浏览器",
+        "model": "合成浏览器来源保真竞品",
+        "metrics": [],
+        "features": [],
+        "prices": [
+          {
+            "amount": "150.000000000001",
+            "currency": "CNY",
+            "observed_on": "2026-10-17",
+            "price_type": "retail",
+            "includes_tax": true,
+            "includes_shipping": null,
+            "channel": null,
+            "region": null,
+            "source_ref": {
+              "type": "human",
+              "id": "dec60567-2e73-49cd-b9da-8aa373149213",
+              "version": 1,
+              "line": null,
+              "quote": null,
+              "statement": "隔离浏览器第二条合成竞品资料；仅核对来源往返，不代表客户资料或实测。"
+            }
+          }
+        ],
+        "segment_refs": []
+      },
+      "regions": [],
+      "source_refs": [
+        {
+          "id": "dec60567-2e73-49cd-b9da-8aa373149213",
+          "line": null,
+          "type": "human",
+          "quote": null,
+          "version": 1,
+          "statement": "隔离浏览器第二条合成竞品资料；仅核对来源往返，不代表客户资料或实测。"
+        },
+        {
+          "id": "dec60567-2e73-49cd-b9da-8aa373149213",
+          "line": null,
+          "type": "human",
+          "quote": null,
+          "version": 1,
+          "statement": "同一合成资料的另一条具名说明；重复引用应保留次数。"
+        },
+        {
+          "id": "dec60567-2e73-49cd-b9da-8aa373149213",
+          "line": null,
+          "type": "human",
+          "quote": null,
+          "version": 1,
+          "statement": "隔离浏览器第二条合成竞品资料；仅核对来源往返，不代表客户资料或实测。"
+        }
+      ]
+    },
+    "can_edit": true,
+    "blockers": [],
+    "selected_segments": [],
+    "segments": [
+      {
+        "entry_id": "b57d341b-787b-469c-8b9c-667e146bb6cc",
+        "version": 1,
+        "lineage_id": "487313f7-003d-4adf-b4a7-f943cc8f368b",
+        "label": "合成浏览器汽车应急",
+        "source_refs": [
+          {
+            "id": "dec60567-2e73-49cd-b9da-8aa373149213",
+            "line": null,
+            "type": "human",
+            "quote": null,
+            "version": 1,
+            "statement": "隔离浏览器核对用合成资料；不代表实测、客户输入或真实自然人资格。"
+          }
+        ]
+      },
+      {
+        "entry_id": "95287309-d8e4-43d3-85a8-463d1e7ce84a",
+        "version": 1,
+        "lineage_id": "db0ed02e-0e1a-42c9-8a1f-cfb60905a183",
+        "label": "合成浏览器自行车便携",
+        "source_refs": [
+          {
+            "id": "dec60567-2e73-49cd-b9da-8aa373149213",
+            "line": null,
+            "type": "human",
+            "quote": null,
+            "version": 1,
+            "statement": "隔离浏览器核对用合成资料；不代表实测、客户输入或真实自然人资格。"
+          }
+        ]
+      }
+    ],
+    "unavailable_segment_count": 0
+  },
+  "competitor": {
+    "id": "6f285882-2c50-4dc2-9439-c3f1691c3a80",
+    "lineage_id": "8b222d57-d19b-4157-b11f-6840b6ab2f7d",
+    "version": 1,
+    "origin": "human",
+    "writer_id": "dec60567-2e73-49cd-b9da-8aa373149213",
+    "run_id": null,
+    "confirmed_by": null,
+    "content": {
+      "brand": "合成浏览器",
+      "model": "合成浏览器来源保真竞品",
+      "metrics": [],
+      "features": [],
+      "prices": [
+        {
+          "amount": "150.000000000001",
+          "currency": "CNY",
+          "observed_on": "2026-10-17",
+          "price_type": "retail",
+          "includes_tax": true,
+          "includes_shipping": null,
+          "channel": null,
+          "region": null,
+          "source_ref": {
+            "type": "human",
+            "id": "dec60567-2e73-49cd-b9da-8aa373149213",
+            "version": 1,
+            "line": null,
+            "quote": null,
+            "statement": "隔离浏览器第二条合成竞品资料；仅核对来源往返，不代表客户资料或实测。"
+          }
+        }
+      ],
+      "segment_refs": []
+    },
+    "regions": [],
+    "source_refs": [
+      {
+        "id": "dec60567-2e73-49cd-b9da-8aa373149213",
+        "line": null,
+        "type": "human",
+        "quote": null,
+        "version": 1,
+        "statement": "隔离浏览器第二条合成竞品资料；仅核对来源往返，不代表客户资料或实测。"
+      },
+      {
+        "id": "dec60567-2e73-49cd-b9da-8aa373149213",
+        "line": null,
+        "type": "human",
+        "quote": null,
+        "version": 1,
+        "statement": "同一合成资料的另一条具名说明；重复引用应保留次数。"
+      },
+      {
+        "id": "dec60567-2e73-49cd-b9da-8aa373149213",
+        "line": null,
+        "type": "human",
+        "quote": null,
+        "version": 1,
+        "statement": "隔离浏览器第二条合成竞品资料；仅核对来源往返，不代表客户资料或实测。"
+      }
+    ]
+  },
+  "segments": [
+    {
+      "entry_id": "b57d341b-787b-469c-8b9c-667e146bb6cc",
+      "version": 1,
+      "lineage_id": "487313f7-003d-4adf-b4a7-f943cc8f368b",
+      "label": "合成浏览器汽车应急",
+      "source_refs": [
+        {
+          "id": "dec60567-2e73-49cd-b9da-8aa373149213",
+          "line": null,
+          "type": "human",
+          "quote": null,
+          "version": 1,
+          "statement": "隔离浏览器核对用合成资料；不代表实测、客户输入或真实自然人资格。"
+        }
+      ]
+    },
+    {
+      "entry_id": "95287309-d8e4-43d3-85a8-463d1e7ce84a",
+      "version": 1,
+      "lineage_id": "db0ed02e-0e1a-42c9-8a1f-cfb60905a183",
+      "label": "合成浏览器自行车便携",
+      "source_refs": [
+        {
+          "id": "dec60567-2e73-49cd-b9da-8aa373149213",
+          "line": null,
+          "type": "human",
+          "quote": null,
+          "version": 1,
+          "statement": "隔离浏览器核对用合成资料；不代表实测、客户输入或真实自然人资格。"
+        }
+      ]
+    }
+  ],
+  "explicit_source_count": 3,
+  "nested_same_source_count": 1
+}

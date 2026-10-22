@@ -1,0 +1,33 @@
+{
+  "actual_api": true,
+  "response_proxy": false,
+  "origin": "http://localhost:55184",
+  "session": "synthetic named quality signer via local-session UI",
+  "records": 1,
+  "original_promise_unchanged_after_start": true,
+  "microseconds_visible": true,
+  "recipient_explicitly_not_recorded": true,
+  "native_document_link_repair_verified": true,
+  "workbench_reached": true,
+  "actual_build_selected": true,
+  "current_request_visible_but_not_selected": true,
+  "domain_actions_submitted": false,
+  "same_scope_refresh_checked": true,
+  "desktop": {
+    "documentWidth": 1280,
+    "recordWidth": 318,
+    "records": 1,
+    "width": 1280
+  },
+  "narrow": {
+    "detailsExpanded": true,
+    "documentWidth": 320,
+    "recordWidth": 286,
+    "width": 320
+  },
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "screenshots": "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-test-start-promises-20261017"
+}

@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "checked_reads": 4,
+  "database_operations": false,
+  "source_modified": false,
+  "pure_tests_rerun": false,
+  "input": {
+    "path": "docs/reports/evidence/pdos-next-ui-20261017/pai-sessions/pg-http-response.json",
+    "sha256": "56753dce20ed5ab39e6435e9790a9f18f7c5646e5ec0b24bcdc6d9b883d9d22e"
+  },
+  "reader": {
+    "path": "pdos-next/web/src/lib/pai-sessions.ts",
+    "sha256": "d2e907edac089970b4a608500554f328afa38d36e91037cc82af62612dce7a36"
+  },
+  "script": {
+    "path": "docs/reports/evidence/pdos-next-ui-20261017/pai-sessions/dto-contract-check.mjs",
+    "sha256": "a6cbbf6a103b670f605953623403a309861f7c340516e0805469c1b54a4770db"
+  },
+  "output": {
+    "path": "docs/reports/evidence/pdos-next-ui-20261017/pai-sessions/dto-contract-check.json",
+    "sha256": "dbf0ccf4abb8b26c127935fe641872e171138c85593b799122ca49198e170093"
+  },
+  "scope": "Frozen reader comparison against category/personal list+Run metadata in the actual HTTP/PG response bundle; does not claim the separate PG fixture failure passed."
+}

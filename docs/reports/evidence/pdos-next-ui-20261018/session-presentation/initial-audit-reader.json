@@ -1,0 +1,6 @@
+{
+  "error": "KeyError passed",
+  "cause": "audit helper expected bool passed but offline DTO report uses result=passed",
+  "changed": "audit helper reads exact report result field; no feature/runtime/test/source change",
+  "runtime_or_database_reruns": 0
+}

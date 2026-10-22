@@ -1,0 +1,370 @@
+{
+  "version": "project-build-readiness-historical-dto-validation/v1",
+  "passed": true,
+  "validation": "Direct frozen parser and actual pure component SSR over three distinct original historical Build DTOs",
+  "helper_sha256": "c6e05f8c8ea818ed6d4a13fae47d965a6fc20b45b862aedbe9563b379648570e",
+  "input_files": [
+    {
+      "kind": "nonnull_readiness_primary",
+      "file": "docs/reports/evidence/pdos-next-ui-20261017/project-builds/pg-http-response.json",
+      "sha256": "add0f19f8186a839ad986cd8eca1acd11f7b0d27554fb3a64e04881d60f670cd",
+      "candidate": "docs/reports/evidence/pdos-next-ui-20261017/project-builds/backend-candidate.json",
+      "historical_actual_http_only": true
+    },
+    {
+      "kind": "null_readiness_supplement",
+      "file": "docs/reports/evidence/pdos-next-ui-20261018/build-output/pg-http-responses.json",
+      "sha256": "a9580b9536c30ea1e62083fbc24fb0e47cd52a4d3f61f61cf1b85b14fda6cee6",
+      "candidate": "docs/reports/evidence/pdos-next-ui-20261018/build-output/backend-candidate.json",
+      "historical_actual_http_only": true
+    }
+  ],
+  "source_sha256": {
+    "pdos-next/web/src/lib/project-build-readiness.ts": "15884fe333f76be46f2a2671cade173e01b0277ba1d2f97e90f5dd685e63d100",
+    "pdos-next/web/src/components/manufacturing-preparation/manufacturing-preparation-contract.ts": "2fc6fa24f90012a1fabd14b88442ad95bb90fe0aa5f10ccc77eb4fa2fae370fc",
+    "pdos-next/web/src/components/projects/project-build-readiness.tsx": "49d2093068c0db3b9143a139776a1ff0216b068af54df63af13063387414987b",
+    "pdos-next/web/src/components/projects/project-build-readiness.module.css": "8348553ebd7a8484e1c97adbd82005481ae9a2dec85770810753d15bc3d1786c"
+  },
+  "network": false,
+  "database": false,
+  "browser": false,
+  "bff": false,
+  "new_http_requests": 0,
+  "generated_api_providers": 0,
+  "component_ssr": "actual_frozen_pure_component_css_identity_no_business_substitute_offline_only",
+  "checks": [
+    {
+      "check": "original_file_sha256_nonnull_readiness_primary",
+      "passed": true
+    },
+    {
+      "check": "original_file_sha256_null_readiness_supplement",
+      "passed": true
+    },
+    {
+      "check": "primary_and_supplement_original_manifest",
+      "passed": true
+    },
+    {
+      "check": "supplement_exact_original_scope_project_builds",
+      "passed": true
+    },
+    {
+      "check": "supplement_exact_original_scope_other_project_builds",
+      "passed": true
+    },
+    {
+      "check": "frozen_parser_source",
+      "passed": true
+    },
+    {
+      "check": "frozen_pure_component_and_css_source",
+      "passed": true
+    },
+    {
+      "check": "actual_exports_exist",
+      "passed": true
+    },
+    {
+      "check": "direct_original_parser_identity_project-builds/builds/items/0",
+      "passed": true
+    },
+    {
+      "check": "original_ssr_read_only_project-builds/builds/items/0",
+      "passed": true
+    },
+    {
+      "check": "primary_outer_blocked_saved_result_unknown_and_null_ready",
+      "passed": true
+    },
+    {
+      "check": "primary_exact_checks_and_fixed_source_references_displayed",
+      "passed": true
+    },
+    {
+      "check": "primary_fixed_input_binding_preserved_without_latest_configuration_lookup",
+      "passed": true
+    },
+    {
+      "check": "primary_demand_and_coverage_decimal_precision_nulls_and_hash_displayed",
+      "passed": true
+    },
+    {
+      "check": "direct_original_parser_identity_build-output/reads/project_builds/body/items/0",
+      "passed": true
+    },
+    {
+      "check": "original_ssr_read_only_build-output/reads/project_builds/body/items/0",
+      "passed": true
+    },
+    {
+      "check": "original_null_readiness_display_not_passed_or_current_qualification_build-output/reads/project_builds/body/items/0",
+      "passed": true
+    },
+    {
+      "check": "direct_original_parser_identity_build-output/reads/other_project_builds/body/items/0",
+      "passed": true
+    },
+    {
+      "check": "original_ssr_read_only_build-output/reads/other_project_builds/body/items/0",
+      "passed": true
+    },
+    {
+      "check": "original_null_readiness_display_not_passed_or_current_qualification_build-output/reads/other_project_builds/body/items/0",
+      "passed": true
+    },
+    {
+      "check": "three_distinct_original_rows_once_no_generated_transport_all_sources_unchanged",
+      "passed": true
+    }
+  ],
+  "historical_read_reuse": [
+    {
+      "original_index": "project-builds/builds/items/0",
+      "input": "docs/reports/evidence/pdos-next-ui-20261017/project-builds/pg-http-response.json",
+      "json_pointer": "/builds/items/0",
+      "original_scope": {
+        "categoryId": "1840eff2-d4de-4085-b52e-682112757d75",
+        "productId": "888b76dd-d4e1-475d-b5b5-fae9a637f9f2",
+        "projectId": "98801941-67b8-4da4-9bab-fdd8170d6de4"
+      },
+      "scope_provenance": "Original export scope category_id/product_id/project_id; successful body was exported by the historical actual test. No raw route/status wrapper was stored.",
+      "original_transport": null,
+      "original_response_body_sha256": "3d870d6a410a52a086db64885116c3acde52149722756f7612b1ce0a9e362ff2",
+      "original_build_sha256": "0b11853fea7f247f763476a708e5701feb3949f5836cc88554992d0e1df0a096",
+      "original_readiness_sha256": "1701ba05fca7e7552b82ed5bd8643d894a17b21c6f27cb3533239eceb60f61bd",
+      "response_reuse_count": 1,
+      "new_http_requests": 0,
+      "historical_only": true
+    },
+    {
+      "original_index": "build-output/reads/project_builds/body/items/0",
+      "input": "docs/reports/evidence/pdos-next-ui-20261018/build-output/pg-http-responses.json",
+      "json_pointer": "/reads/project_builds/body/items/0",
+      "original_scope": {
+        "categoryId": "5ff2c048-df46-4e22-b7d0-a633ed1a2bdc",
+        "productId": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+        "projectId": "19bce1e2-344a-452c-a7eb-81ddf551a728"
+      },
+      "scope_provenance": "Exact original reads.project_builds.params.project_id plus scope.project_id, category_id and product_id",
+      "original_transport": {
+        "route": "/v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds",
+        "params": {
+          "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728"
+        },
+        "status_code": 200
+      },
+      "original_response_body_sha256": "ff9ea6e8d3bfc3c43de5990ffa7226969c8f92319211fce8a6b96b379dfbaa6b",
+      "original_build_sha256": "2ea65db5205800f88b751f40e7c38d13819dbbb996303a4df2df1cbebd5d8b01",
+      "original_readiness_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "response_reuse_count": 1,
+      "new_http_requests": 0,
+      "historical_only": true
+    },
+    {
+      "original_index": "build-output/reads/other_project_builds/body/items/0",
+      "input": "docs/reports/evidence/pdos-next-ui-20261018/build-output/pg-http-responses.json",
+      "json_pointer": "/reads/other_project_builds/body/items/0",
+      "original_scope": {
+        "categoryId": "5ff2c048-df46-4e22-b7d0-a633ed1a2bdc",
+        "productId": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+        "projectId": "ff0ceba7-3583-4d72-8e11-317984adea00"
+      },
+      "scope_provenance": "Exact original reads.other_project_builds.params.project_id plus scope.other_project_id, category_id and product_id",
+      "original_transport": {
+        "route": "/v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds",
+        "params": {
+          "project_id": "ff0ceba7-3583-4d72-8e11-317984adea00"
+        },
+        "status_code": 200
+      },
+      "original_response_body_sha256": "f33c445248bda9da80449a74995fbabaf579baa45d0ddc7d97b6a78cbd66e8a1",
+      "original_build_sha256": "e3a6658381ffb8cb38ff60aaa0261564fce720355e8129254d420138e0a00674",
+      "original_readiness_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "response_reuse_count": 1,
+      "new_http_requests": 0,
+      "historical_only": true
+    }
+  ],
+  "parser_results": [
+    {
+      "original_index": "project-builds/builds/items/0",
+      "scope": {
+        "categoryId": "1840eff2-d4de-4085-b52e-682112757d75",
+        "productId": "888b76dd-d4e1-475d-b5b5-fae9a637f9f2",
+        "projectId": "98801941-67b8-4da4-9bab-fdd8170d6de4"
+      },
+      "original_build_id": "18fb2317-b390-4d29-9eac-a7de6a32f4cf",
+      "original_build_revision": 1,
+      "original_build_sha256": "0b11853fea7f247f763476a708e5701feb3949f5836cc88554992d0e1df0a096",
+      "parsed_readiness_is_original_identity": true,
+      "readiness_id": "9b94f5df-61ea-455f-8197-018100c86d28",
+      "readiness_present": true,
+      "wrapper_status": "blocked",
+      "result_status": "unknown",
+      "as_of": "2026-10-17T18:55:53.897642Z",
+      "input_sha256": "08a330dac6dc1521562c7e51ac3d5d3c3da666dd7020e56522f5ce4dc0a25347",
+      "original_input_snapshot_sha256": "ecbb072b6431170b5d528f46fa7986933d086b4df575c20dc48a663f10edf5e0",
+      "original_coverage_sha256": "259de14c1abeb9ffdb2a661aa9c5239fe5dc5bb43cc4d1cd07b7276f23d36823"
+    },
+    {
+      "original_index": "build-output/reads/project_builds/body/items/0",
+      "scope": {
+        "categoryId": "5ff2c048-df46-4e22-b7d0-a633ed1a2bdc",
+        "productId": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+        "projectId": "19bce1e2-344a-452c-a7eb-81ddf551a728"
+      },
+      "original_build_id": "805baeb1-0b31-4f7f-9814-b144545d4bb5",
+      "original_build_revision": 1,
+      "original_build_sha256": "2ea65db5205800f88b751f40e7c38d13819dbbb996303a4df2df1cbebd5d8b01",
+      "parsed_readiness_is_original_identity": true,
+      "readiness_id": null,
+      "readiness_present": false
+    },
+    {
+      "original_index": "build-output/reads/other_project_builds/body/items/0",
+      "scope": {
+        "categoryId": "5ff2c048-df46-4e22-b7d0-a633ed1a2bdc",
+        "productId": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+        "projectId": "ff0ceba7-3583-4d72-8e11-317984adea00"
+      },
+      "original_build_id": "db94591a-1376-4de7-a944-6502389ca84a",
+      "original_build_revision": 1,
+      "original_build_sha256": "e3a6658381ffb8cb38ff60aaa0261564fce720355e8129254d420138e0a00674",
+      "parsed_readiness_is_original_identity": true,
+      "readiness_id": null,
+      "readiness_present": false
+    }
+  ],
+  "rendered": [
+    {
+      "original_index": "project-builds/builds/items/0",
+      "component": "ProjectBuildReadiness",
+      "original_build_id": "18fb2317-b390-4d29-9eac-a7de6a32f4cf",
+      "original_build_revision": 1,
+      "scope": {
+        "categoryId": "1840eff2-d4de-4085-b52e-682112757d75",
+        "productId": "888b76dd-d4e1-475d-b5b5-fae9a637f9f2",
+        "projectId": "98801941-67b8-4da4-9bab-fdd8170d6de4"
+      },
+      "readiness_present": true,
+      "original_build_sha256": "0b11853fea7f247f763476a708e5701feb3949f5836cc88554992d0e1df0a096",
+      "html_sha256": "d851cfbeca4f0d55c52d7251b7fb0f0872389986fb81ae304e98f59510bf9547",
+      "html_bytes": 10720,
+      "wrapper_status": "blocked",
+      "result_status": "unknown",
+      "original_as_of": "2026-10-17T18:55:53.897642Z"
+    },
+    {
+      "original_index": "build-output/reads/project_builds/body/items/0",
+      "component": "ProjectBuildReadiness",
+      "original_build_id": "805baeb1-0b31-4f7f-9814-b144545d4bb5",
+      "original_build_revision": 1,
+      "scope": {
+        "categoryId": "5ff2c048-df46-4e22-b7d0-a633ed1a2bdc",
+        "productId": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+        "projectId": "19bce1e2-344a-452c-a7eb-81ddf551a728"
+      },
+      "readiness_present": false,
+      "original_build_sha256": "2ea65db5205800f88b751f40e7c38d13819dbbb996303a4df2df1cbebd5d8b01",
+      "html_sha256": "818c97ae46a07c715346935ef232e26861079243e729c7ca8860ea19928309e8",
+      "html_bytes": 236
+    },
+    {
+      "original_index": "build-output/reads/other_project_builds/body/items/0",
+      "component": "ProjectBuildReadiness",
+      "original_build_id": "db94591a-1376-4de7-a944-6502389ca84a",
+      "original_build_revision": 1,
+      "scope": {
+        "categoryId": "5ff2c048-df46-4e22-b7d0-a633ed1a2bdc",
+        "productId": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+        "projectId": "ff0ceba7-3583-4d72-8e11-317984adea00"
+      },
+      "readiness_present": false,
+      "original_build_sha256": "e3a6658381ffb8cb38ff60aaa0261564fce720355e8129254d420138e0a00674",
+      "html_sha256": "818c97ae46a07c715346935ef232e26861079243e729c7ca8860ea19928309e8",
+      "html_bytes": 236
+    }
+  ],
+  "backend_source_comparison": [
+    {
+      "original_input": "docs/reports/evidence/pdos-next-ui-20261017/project-builds/pg-http-response.json",
+      "historical_candidate": "docs/reports/evidence/pdos-next-ui-20261017/project-builds/backend-candidate.json",
+      "historical_candidate_sha256": "62325b0bf08f39c07035e9c9e8acfbc5911e08b0687db6fe356028ae05027d04",
+      "historical_database_head_metadata_only": "s0_0776",
+      "modules": [
+        {
+          "file": "pdos-next/server/pdos_next/domain/builds/service.py",
+          "historical_sha256": "64832dfcb442958612de07cd7d13f62e97bb6d5cc98a4101e3e59de369f4d66b",
+          "current_sha256": "64832dfcb442958612de07cd7d13f62e97bb6d5cc98a4101e3e59de369f4d66b",
+          "stable": true
+        },
+        {
+          "file": "pdos-next/server/pdos_next/domain/builds/readiness.py",
+          "historical_sha256": "c8211c181c41744676d62a39b3f3b498e5aae5d24518661abf1c06e6d0760527",
+          "current_sha256": "c8211c181c41744676d62a39b3f3b498e5aae5d24518661abf1c06e6d0760527",
+          "stable": true
+        }
+      ],
+      "two_modules_stable": true,
+      "current_http_covered": false,
+      "limitation": "Only these two source modules match history; no whole current API/HTTP candidate is verified"
+    },
+    {
+      "original_input": "docs/reports/evidence/pdos-next-ui-20261018/build-output/pg-http-responses.json",
+      "historical_candidate": "docs/reports/evidence/pdos-next-ui-20261018/build-output/backend-candidate.json",
+      "historical_candidate_sha256": "4f9915edad2b16633770810a33decba9c97a75d647ad7d75a35de319b80cc4f1",
+      "historical_database_head_metadata_only": "s0_0792",
+      "modules": [
+        {
+          "file": "pdos-next/server/pdos_next/domain/builds/service.py",
+          "historical_sha256": "64832dfcb442958612de07cd7d13f62e97bb6d5cc98a4101e3e59de369f4d66b",
+          "current_sha256": "64832dfcb442958612de07cd7d13f62e97bb6d5cc98a4101e3e59de369f4d66b",
+          "stable": true
+        },
+        {
+          "file": "pdos-next/server/pdos_next/domain/builds/readiness.py",
+          "historical_sha256": "c8211c181c41744676d62a39b3f3b498e5aae5d24518661abf1c06e6d0760527",
+          "current_sha256": "c8211c181c41744676d62a39b3f3b498e5aae5d24518661abf1c06e6d0760527",
+          "stable": true
+        }
+      ],
+      "two_modules_stable": true,
+      "current_http_covered": false,
+      "limitation": "Only these two source modules match history; no whole current API/HTTP candidate is verified"
+    }
+  ],
+  "boundaries": [
+    "This helper reuses historical actual synthetic HTTP JSON only; it runs no database, HTTP, BFF, browser, model, credentials, migration or external send",
+    "The primary export stores a successful original builds body without a transport wrapper; its route or status is not manufactured",
+    "The primary request scope comes from the original exported scope; supplementary scopes come from exact original request params and exported project/other_project IDs",
+    "The other-project row is parsed only with its actual other_project_id, never the main project's scope",
+    "Three distinct original Build responses and rows are counted once; result_stages and component-internal parsing are not additional original GETs",
+    "The two original null readiness rows supplement null display only; no current ACL, qualification or domain acceptance is inferred",
+    "BuildReadiness outer blocked and saved result unknown/ready:null remain separate server facts",
+    "Saved source bindings, source validity and is_current are historical snapshot fields; they are not current permission or professional qualification",
+    "Demand, coverage, null gaps and raw decimal strings are displayed without readiness recomputation, quantity arithmetic, domain input-hash re-derivation or clock inference; helper SHA256 values are file/row provenance only",
+    "Only Build service.py and readiness.py are compared against historical backend hashes; stability of these modules does not establish the current complete API candidate",
+    "Real React SSR executes the frozen component; CSS uses identity class names with no business or icon substitute. If imported, Phosphor uses unchanged original CommonJS bytes",
+    "SSR is not browser interaction, responsive/theme QA, BFF integration, a new HTTP check, S2 acceptance or permission to start a Build"
+  ],
+  "loader_compatibility": {
+    "package": "@phosphor-icons/react",
+    "mode": "not_imported_by_actual_pure_component_no_icon_substitute_used"
+  },
+  "summary": {
+    "historical_original_build_read_responses_reused": 3,
+    "distinct_original_build_rows": 3,
+    "distinct_saved_readiness_records": 1,
+    "original_null_readiness_rows": 2,
+    "direct_parser_calls": 3,
+    "pure_component_ssr_instances": 3,
+    "component_internal_parse_is_new_get": false,
+    "new_http_requests": 0,
+    "generated_api_providers": 0,
+    "current_http_or_acl_verified": false,
+    "recomputed_current_readiness": false,
+    "actual_professional_qualification_verified": false,
+    "physical_inventory_or_resource_occupancy_asserted": false
+  }
+}

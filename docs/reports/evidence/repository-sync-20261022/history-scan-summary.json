@@ -1,0 +1,7 @@
+{
+  "outgoing_blobs": 9822,
+  "bytes_checked": 520035850,
+  "provider_keys": 0,
+  "private_keys": 0,
+  "review": "DSN hits are example credentials, variable interpolation and explicit test fixtures; Bearer hits are synthetic test constants or an expired 2026-10-10 one-hour local test session. No live provider credential was found. Pattern checking is not a general security certification."
+}

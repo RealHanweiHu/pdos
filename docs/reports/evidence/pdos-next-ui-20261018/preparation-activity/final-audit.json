@@ -1,0 +1,139 @@
+{
+  "input_count": 425,
+  "checks": [
+    {
+      "name": "frontend-tests",
+      "exit_code": 0
+    },
+    {
+      "name": "lint",
+      "exit_code": 0
+    },
+    {
+      "name": "build",
+      "exit_code": 0
+    },
+    {
+      "name": "typecheck",
+      "exit_code": 0
+    }
+  ],
+  "candidate_inputs_unchanged": true,
+  "owned_current_changes": [],
+  "coedited_cockpit": {
+    "tested_owned_sha256": "de44b8bcce6350f3d13c94e9adb350665a411f8de247db592fdc7799d6c06d23",
+    "current_sha256": "1159014697b76f39350687b45061919c646805ccbf76e50aaab6f8e90333fad4",
+    "owned_activity_relocation_preserved": true,
+    "other_chat_onPaiContext_preserved": true,
+    "current_full_file_not_claimed_tested": true
+  },
+  "excluded_current_frontend_deltas": [
+    {
+      "path": "src/components/xiaopai.tsx",
+      "tested_sha256": "2352ab8d1f70ae28ea40acd5bca859de5eb19fffdab5807257a5f8c6c463ef66",
+      "current_sha256": "63e8dabf9cd4f7e5507d7b9916d1556c6d242a4cdfb7f178f9ea3a1957122e5e"
+    },
+    {
+      "path": "src/components/workspace.tsx",
+      "tested_sha256": "927998b7216e534d58a4a52a5e2b45051878325df631c88ba1248679cb59f99e",
+      "current_sha256": "0910cd4064cdfa83a73d89e584fb481767ba1308e0c19b2bab86cd348f69b082"
+    },
+    {
+      "path": "src/components/pai-rail.tsx",
+      "tested_sha256": "8cb9da78d03dbabc804e185dc7d4c28ac4c044b8c215a9454b11f42df3cb6006",
+      "current_sha256": "4a786f459dcc4ae7baf6ffb9e87daab7d58332effacb51800dbc21f42c79ba17"
+    },
+    {
+      "path": "src/components/app-shell.tsx",
+      "tested_sha256": "bcb5592d4d3703cb354e08bda0ecf008368f729aac1d34ad118537d503fa0284",
+      "current_sha256": "78ff357b848713e56509401bc0806260fcc667359e9e2930f9441a2de1a4948e"
+    },
+    {
+      "path": "src/lib/project-activity.test.mjs",
+      "tested_sha256": "72ce5d10407c41d221f3e1fc3e8e005c10a6e25fb485917e93e1f1f94b49f726",
+      "current_sha256": "9748ee139681c2052106b394ff842cece7362bd4b60221a57add7c1f4cad4966"
+    },
+    {
+      "path": "src/lib/project-activity.ts",
+      "tested_sha256": "cf985cb6f3627e6cf9543ebc0b2371fc66a5552e221952c4a3943c3f49d4883a",
+      "current_sha256": "4b0b55b9f24ff736ee0bde867006ebf52a7f572914e38006b9bbbbb5ac954ad0"
+    },
+    {
+      "path": "src/lib/run-start-intent.ts",
+      "tested_sha256": "4b19c712f9e9fca59d6f9572fdaa9f67c882d4c94376d28e102c7047c438f40b",
+      "current_sha256": "cfc4c01d0a25164a2f20c632f8a15d1bbe03979b7ccb9754c664ff853d1a274f"
+    },
+    {
+      "path": "src/lib/run-start-intent.test.mjs",
+      "tested_sha256": "1e586312cf8deb73d8174cd61db79059eef95878679e25bf94a6a7de7a00daca",
+      "current_sha256": "fd07a9ed9c8cb7dce14ca042f93fd6bb0f7bb3d17e232a7046af4178bcbf4acd"
+    },
+    {
+      "path": "src/components/projects/project-cockpit.tsx",
+      "tested_sha256": "de44b8bcce6350f3d13c94e9adb350665a411f8de247db592fdc7799d6c06d23",
+      "current_sha256": "1159014697b76f39350687b45061919c646805ccbf76e50aaab6f8e90333fad4"
+    },
+    {
+      "path": "src/components/projects/project-activity.test.mjs",
+      "tested_sha256": "59b679a415bd7fda970a69858f14a94e1eec5ac6f589a61995a0e3b54d9cb1ce",
+      "current_sha256": "e26ca983e52a323b45dd9b4f46ac0292087351de67522283e121dc5538877fe8"
+    },
+    {
+      "path": "src/components/projects/project-activity.tsx",
+      "tested_sha256": "c077bd395c38a8801941b07cc3e641a714bf25d13c3c5529d17b37a796bb0ef6",
+      "current_sha256": "603ddffd67162370f4c7908cd5d13b15fa70d250e7376a57bc056150f6e6f2b0"
+    }
+  ],
+  "excluded_new_frontend_inputs": [],
+  "backend_core_changes_after_actual_test": [],
+  "runtime_changes_during_actual_test": [
+    "pdos_next/agent_kernel/context_projection.py"
+  ],
+  "excluded_runtime_deltas_after_test": [
+    {
+      "path": "pdos_next/project_activity.py",
+      "tested_sha256": "e9af0a13f843988f7fc822f82604b2bf204374e254ed48a54247687d8263c6de",
+      "current_sha256": "e9e1ed90cfbf9dbd89ccb1cf2ac46c1b82635bb60d03e14862d1cb43e2b9f6a6"
+    },
+    {
+      "path": "pdos_next/agent_kernel/models.py",
+      "tested_sha256": "7325b72828e63267319c54e1dacfc7e7890542c850a4dce9471a44754d944669",
+      "current_sha256": "df35cee04a97c08a642d7ac7612f3e561cc52014917b532409c08add0829e0fd"
+    },
+    {
+      "path": "pdos_next/agent_kernel/context_projection.py",
+      "tested_sha256": "52abcfee50ee70e3f5508221c6ed193076b8326fa21148dd3db6565b04ae1279",
+      "current_sha256": "33cf455d1c1073985788b52b8f811f61199d4943141fc71f102a5bef211ab7ab"
+    }
+  ],
+  "excluded_new_runtime_inputs": [],
+  "shared_contract_changes": [
+    "pdos-next/web/src/lib/project-activity.ts",
+    "pdos-next/web/src/components/projects/project-activity.tsx"
+  ],
+  "raw_dto_sha256": "9145c715e0522127706d070534d464873f1e1b65e73c7687636b450f273deaf9",
+  "offline_validation_sha256": "be8a48568bfade5b983237b08d448d47c5e494d6c03530b11dab921ae0636b18",
+  "working_file_sha256": {
+    "pdos-next/web/src/components/projects/project-workspace.tsx": "6ad84229acefdc8dacbe202a156bc2d97915a3fe75cef0270143afc4731dd7e3",
+    "pdos-next/web/src/components/projects/project-cockpit.tsx": "1159014697b76f39350687b45061919c646805ccbf76e50aaab6f8e90333fad4",
+    "pdos-next/web/src/components/projects/project-views.module.css": "f15f3e0e93f760fac1c0273dff317ae0551f425412adcaedc8bab3bc94624c8e",
+    "pdos-next/web/src/components/projects/project-views.test.mjs": "ccce6b1de0eac75f055b4043e8d6ca9740287de73c590e258e3f334d107ef5a6",
+    "pdos-next/web/src/lib/project-manufacturing-preparation.ts": "d1c2912363163a00b49f1492144d7edc12ff85a4cea1346a53ccfc24ac59344f",
+    "pdos-next/web/src/lib/project-manufacturing-preparation.test.mjs": "15ef0adf31435b8fae886eead8962a278d0181bd1f2e2cbe8cec61cf8c89ca6a",
+    "pdos-next/web/src/components/projects/project-manufacturing-preparation.tsx": "ef83ff76252ba6189278dd8dc1df63221cef11717c9586a02f8e4e44abea80b3",
+    "pdos-next/web/src/components/projects/project-manufacturing-preparation.module.css": "383ec36b65d7c7ed4b398c85c869d55d50b26791df2c73249cbc5d66f2ec5997",
+    "pdos-next/web/src/components/projects/project-manufacturing-preparation.test.mjs": "a2e4f02ca3de42bb1a60548d07f4ad55377782ef9f754dd7999818d158f3d5a2",
+    "pdos-next/server/tests/ui/test_project_manufacturing_preparation_projection_pg.py": "7d99093eb53aa6ac5f1e115b6b6b76c24b57d7846bbe56c5c8ab2d474f38165d",
+    "docs/reports/evidence/pdos-next-ui-20261018/preparation-activity/result.md": "42a76bb7f9fc3b9a708b6242a7ea7ce23ba2f9de9009ffa05e0b5cf84ea635a0",
+    "pdos-next/web/design-qa.md": "a201dc25638b682648970ba26f31177a1ca03d3a65334604ac27a56e80082caf",
+    "docs/reports/evidence/pdos-next-ui-20261017/html-match/result.md": "34da232b930575671c76113866cdc6a23cc9358da6a4c2f35657441f27a58bef",
+    "tasks/ai-native-integrated-todo.md": "69d9d1f7908401ab4d4a9db25acadf977728d010ddff24f3a442b4e8c2e4d911"
+  },
+  "diff_check": true,
+  "trailing_whitespace": [],
+  "broken_links": [],
+  "browser_used": false,
+  "new_bff_validation": false,
+  "migrations_executed": false,
+  "scope": "New manufacturing preparation reading plus existing activity relocation; concurrent Run binding and combined working-tree integration excluded."
+}

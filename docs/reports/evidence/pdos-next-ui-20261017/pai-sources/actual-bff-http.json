@@ -1,0 +1,312 @@
+{
+  "passed": 13,
+  "checks": [
+    {
+      "label": "actual registered category heads",
+      "method": "GET",
+      "path": "/api/v1/categories/61102442-faec-466b-944d-d385089949fd/agent-input-sources",
+      "status": 200,
+      "cache_control": "private, no-store"
+    },
+    {
+      "label": "actual root and selected Product heads",
+      "method": "GET",
+      "path": "/api/v1/categories/61102442-faec-466b-944d-d385089949fd/agent-input-sources?product_id=e826cd41-f7c4-4070-b63c-a828b8d96e9d",
+      "status": 200,
+      "cache_control": "private, no-store"
+    },
+    {
+      "label": "first one-record source page",
+      "method": "GET",
+      "path": "/api/v1/categories/61102442-faec-466b-944d-d385089949fd/agent-input-sources?page_size=1",
+      "status": 200,
+      "cache_control": "private, no-store"
+    },
+    {
+      "label": "second one-record source page",
+      "method": "GET",
+      "path": "/api/v1/categories/61102442-faec-466b-944d-d385089949fd/agent-input-sources?page_size=1&cursor=435d6bcb-e4bd-477a-95b6-b65871ca5b5e",
+      "status": 200,
+      "cache_control": "private, no-store"
+    },
+    {
+      "label": "actual newly accepted Run fixed bindings",
+      "method": "GET",
+      "path": "/api/v1/categories/61102442-faec-466b-944d-d385089949fd/agent-runs/4ca55bfe-e98a-42f8-b7a2-7a12ff16bbc2/source-bindings",
+      "status": 200,
+      "cache_control": "private, no-store"
+    },
+    {
+      "label": "missing browser identity rejected",
+      "method": "GET",
+      "path": "/api/v1/categories/61102442-faec-466b-944d-d385089949fd/agent-input-sources",
+      "status": 401,
+      "cache_control": "private, no-store"
+    },
+    {
+      "label": "duplicate explicit scope rejected",
+      "method": "GET",
+      "path": "/api/v1/categories/61102442-faec-466b-944d-d385089949fd/agent-input-sources?product_id=e826cd41-f7c4-4070-b63c-a828b8d96e9d&product_id=e826cd41-f7c4-4070-b63c-a828b8d96e9d",
+      "status": 422,
+      "cache_control": "private, no-store"
+    },
+    {
+      "label": "unknown owner query rejected",
+      "method": "GET",
+      "path": "/api/v1/categories/61102442-faec-466b-944d-d385089949fd/agent-input-sources?owner_id=14b0851f-cfff-4dcc-97d5-086a63a35e9e",
+      "status": 422,
+      "cache_control": "private, no-store"
+    },
+    {
+      "label": "unbounded list rejected",
+      "method": "GET",
+      "path": "/api/v1/categories/61102442-faec-466b-944d-d385089949fd/agent-input-sources?page_size=51",
+      "status": 422,
+      "cache_control": "private, no-store"
+    },
+    {
+      "label": "foreign cursor rejected by domain",
+      "method": "GET",
+      "path": "/api/v1/categories/61102442-faec-466b-944d-d385089949fd/agent-input-sources?cursor=b70a4432-6e7d-4f27-8d3c-7eaddf916551",
+      "status": 403,
+      "cache_control": "private, no-store"
+    },
+    {
+      "label": "unreadable Product rejected by domain",
+      "method": "GET",
+      "path": "/api/v1/categories/61102442-faec-466b-944d-d385089949fd/agent-input-sources?product_id=f5d32d22-651a-4d40-b2a4-a3d772252c7e",
+      "status": 403,
+      "cache_control": "private, no-store"
+    },
+    {
+      "label": "bindings reject caller scope replacement",
+      "method": "GET",
+      "path": "/api/v1/categories/61102442-faec-466b-944d-d385089949fd/agent-runs/4ca55bfe-e98a-42f8-b7a2-7a12ff16bbc2/source-bindings?product_id=e826cd41-f7c4-4070-b63c-a828b8d96e9d",
+      "status": 422,
+      "cache_control": "private, no-store"
+    },
+    {
+      "label": "foreign Run rejected by domain",
+      "method": "GET",
+      "path": "/api/v1/categories/61102442-faec-466b-944d-d385089949fd/agent-runs/d80eaf08-b1fd-4aeb-86c4-00b881afd3d2/source-bindings",
+      "status": 403,
+      "cache_control": "private, no-store"
+    }
+  ],
+  "uses_actual_domain_api": true,
+  "response_proxy": false,
+  "responses": {
+    "actual registered category heads": {
+      "version": "agent-input-sources/v1",
+      "principal_id": "14b0851f-cfff-4dcc-97d5-086a63a35e9e",
+      "scope": {
+        "category_id": "61102442-faec-466b-944d-d385089949fd",
+        "product_id": null,
+        "proposal_id": null
+      },
+      "as_of": "2026-10-17T21:08:55.646076+00:00",
+      "items": [
+        {
+          "artifact_id": "435d6bcb-e4bd-477a-95b6-b65871ca5b5e",
+          "artifact_revision": 1,
+          "title": "\u5408\u6210\u5df2\u767b\u8bb0\u6587\u672c",
+          "product_id": null,
+          "status": "active",
+          "original": null,
+          "availability": {
+            "available": true,
+            "code": null
+          }
+        },
+        {
+          "artifact_id": "5598cc51-f212-4c40-83e0-23853615211f",
+          "artifact_revision": 1,
+          "title": "\u5408\u6210\u5df2\u89e3\u6790\u539f\u4ef6",
+          "product_id": null,
+          "status": "active",
+          "original": {
+            "id": "2debcd2a-1d78-454f-8562-786e2f7b9ac7",
+            "revision": 2,
+            "filename": "synthetic-original.txt",
+            "parse_status": "parsed",
+            "parse_code": null,
+            "scan_status": "clean"
+          },
+          "availability": {
+            "available": true,
+            "code": null
+          }
+        }
+      ],
+      "next_cursor": null
+    },
+    "actual root and selected Product heads": {
+      "version": "agent-input-sources/v1",
+      "principal_id": "14b0851f-cfff-4dcc-97d5-086a63a35e9e",
+      "scope": {
+        "category_id": "61102442-faec-466b-944d-d385089949fd",
+        "product_id": "e826cd41-f7c4-4070-b63c-a828b8d96e9d",
+        "proposal_id": null
+      },
+      "as_of": "2026-10-17T21:08:55.716580+00:00",
+      "items": [
+        {
+          "artifact_id": "10e71637-3b17-40d5-a4dc-f8393af5f46b",
+          "artifact_revision": 1,
+          "title": "\u5408\u6210\u578b\u53f7\u8d44\u6599",
+          "product_id": "e826cd41-f7c4-4070-b63c-a828b8d96e9d",
+          "status": "active",
+          "original": null,
+          "availability": {
+            "available": true,
+            "code": null
+          }
+        },
+        {
+          "artifact_id": "435d6bcb-e4bd-477a-95b6-b65871ca5b5e",
+          "artifact_revision": 1,
+          "title": "\u5408\u6210\u5df2\u767b\u8bb0\u6587\u672c",
+          "product_id": null,
+          "status": "active",
+          "original": null,
+          "availability": {
+            "available": true,
+            "code": null
+          }
+        },
+        {
+          "artifact_id": "5598cc51-f212-4c40-83e0-23853615211f",
+          "artifact_revision": 1,
+          "title": "\u5408\u6210\u5df2\u89e3\u6790\u539f\u4ef6",
+          "product_id": null,
+          "status": "active",
+          "original": {
+            "id": "2debcd2a-1d78-454f-8562-786e2f7b9ac7",
+            "revision": 2,
+            "filename": "synthetic-original.txt",
+            "parse_status": "parsed",
+            "parse_code": null,
+            "scan_status": "clean"
+          },
+          "availability": {
+            "available": true,
+            "code": null
+          }
+        }
+      ],
+      "next_cursor": null
+    },
+    "first one-record source page": {
+      "version": "agent-input-sources/v1",
+      "principal_id": "14b0851f-cfff-4dcc-97d5-086a63a35e9e",
+      "scope": {
+        "category_id": "61102442-faec-466b-944d-d385089949fd",
+        "product_id": null,
+        "proposal_id": null
+      },
+      "as_of": "2026-10-17T21:08:55.787374+00:00",
+      "items": [
+        {
+          "artifact_id": "435d6bcb-e4bd-477a-95b6-b65871ca5b5e",
+          "artifact_revision": 1,
+          "title": "\u5408\u6210\u5df2\u767b\u8bb0\u6587\u672c",
+          "product_id": null,
+          "status": "active",
+          "original": null,
+          "availability": {
+            "available": true,
+            "code": null
+          }
+        }
+      ],
+      "next_cursor": "435d6bcb-e4bd-477a-95b6-b65871ca5b5e"
+    },
+    "second one-record source page": {
+      "version": "agent-input-sources/v1",
+      "principal_id": "14b0851f-cfff-4dcc-97d5-086a63a35e9e",
+      "scope": {
+        "category_id": "61102442-faec-466b-944d-d385089949fd",
+        "product_id": null,
+        "proposal_id": null
+      },
+      "as_of": "2026-10-17T21:08:55.825821+00:00",
+      "items": [
+        {
+          "artifact_id": "5598cc51-f212-4c40-83e0-23853615211f",
+          "artifact_revision": 1,
+          "title": "\u5408\u6210\u5df2\u89e3\u6790\u539f\u4ef6",
+          "product_id": null,
+          "status": "active",
+          "original": {
+            "id": "2debcd2a-1d78-454f-8562-786e2f7b9ac7",
+            "revision": 2,
+            "filename": "synthetic-original.txt",
+            "parse_status": "parsed",
+            "parse_code": null,
+            "scan_status": "clean"
+          },
+          "availability": {
+            "available": true,
+            "code": null
+          }
+        }
+      ],
+      "next_cursor": null
+    },
+    "actual newly accepted Run fixed bindings": {
+      "version": "agent-run-source-bindings/v1",
+      "principal_id": "14b0851f-cfff-4dcc-97d5-086a63a35e9e",
+      "scope": {
+        "category_id": "61102442-faec-466b-944d-d385089949fd",
+        "product_id": null,
+        "proposal_id": null
+      },
+      "as_of": "2026-10-17T21:08:55.893400+00:00",
+      "run_id": "4ca55bfe-e98a-42f8-b7a2-7a12ff16bbc2",
+      "session_id": "ae3094c2-0771-44a2-93f6-1fc884d33e70",
+      "items": [
+        {
+          "artifact_id": "435d6bcb-e4bd-477a-95b6-b65871ca5b5e",
+          "expected_revision": 1,
+          "product_id": null,
+          "current": {
+            "artifact_id": "435d6bcb-e4bd-477a-95b6-b65871ca5b5e",
+            "artifact_revision": 1,
+            "title": "\u5408\u6210\u5df2\u767b\u8bb0\u6587\u672c",
+            "product_id": null,
+            "status": "active",
+            "original": null,
+            "availability": {
+              "available": true,
+              "code": null
+            }
+          }
+        },
+        {
+          "artifact_id": "5598cc51-f212-4c40-83e0-23853615211f",
+          "expected_revision": 1,
+          "product_id": null,
+          "current": {
+            "artifact_id": "5598cc51-f212-4c40-83e0-23853615211f",
+            "artifact_revision": 1,
+            "title": "\u5408\u6210\u5df2\u89e3\u6790\u539f\u4ef6",
+            "product_id": null,
+            "status": "active",
+            "original": {
+              "id": "2debcd2a-1d78-454f-8562-786e2f7b9ac7",
+              "revision": 2,
+              "filename": "synthetic-original.txt",
+              "parse_status": "parsed",
+              "parse_code": null,
+              "scan_status": "clean"
+            },
+            "availability": {
+              "available": true,
+              "code": null
+            }
+          }
+        }
+      ]
+    }
+  }
+}
